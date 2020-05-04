@@ -1,26 +1,25 @@
 import React from "react";
-import logo from "./logo.svg";
+
+import { Route, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
+
+import Home from "./firegame/home";
+import Timeline from "./routes/timeline/app";
 
 function App() {
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.tsx</code> and save to reload.
-				</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
-		</div>
+		<Router>
+			<div>
+				<Route exact path="/" component={Home} />
+				{getRoutes()}
+			</div>
+		</Router>
 	);
+}
+
+function getRoutes() {
+	var routes = [<Route path="/timeline" component={Timeline} />];
+	return <>{routes}</>;
 }
 
 export default App;
