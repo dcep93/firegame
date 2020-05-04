@@ -1,9 +1,11 @@
-import React from "react";
+import React from "./shared/react";
 
+// @ts-ignore
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 
 import Home from "./firegame/home";
+
 import Timeline from "./routes/timeline/app";
 
 function App() {
