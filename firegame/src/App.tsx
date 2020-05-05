@@ -1,11 +1,18 @@
-import React from "./shared/react";
-
 // @ts-ignore
-import { Route, BrowserRouter as Router } from "react-router-dom";
+import React from "react";
+
+import {
+	BrowserRouter as Router,
+	Route,
+	RouteComponentProps,
+	// @ts-ignore
+} from "react-router-dom";
 
 import Home from "./firegame/home";
 
-import Timeline from "./routes/timeline/app";
+import timeline from "./routes/timeline/app";
+
+const components = { timeline };
 
 function App() {
 	return (
@@ -19,7 +26,18 @@ function App() {
 }
 
 function getRoutes() {
-	var routes = [<Route path="/timeline" component={Timeline} />];
+	var routes = [];
+	for (let [key, value] of Object.entries(components)) {
+		routes.push(
+			<Route
+				key={key}
+				path={`/${key}/:roomId(\\d+)?`}
+				render={(props: RouteComponentProps) =>
+					value(props.match.params.roomId || -1)
+				}
+			/>
+		);
+	}
 	return <>{routes}</>;
 }
 
