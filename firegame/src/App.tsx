@@ -1,11 +1,9 @@
-// @ts-ignore
 import React from "react";
 
 import {
 	BrowserRouter as Router,
 	Route,
 	RouteComponentProps,
-	// @ts-ignore
 } from "react-router-dom";
 
 import Home from "./firegame/home";
@@ -26,15 +24,15 @@ function App() {
 }
 
 function getRoutes() {
-	var routes = [];
-	for (let [key, value] of Object.entries(components)) {
+	const routes: any = [];
+	for (let [path, Xcomponent] of Object.entries(components)) {
 		routes.push(
 			<Route
-				key={key}
-				path={`/${key}/:roomId(\\d+)?`}
-				render={(props: RouteComponentProps) =>
-					value(props.match.params.roomId || -1)
-				}
+				key={path}
+				path={`/${path}/:roomId(\\d+)?`}
+				render={(props: RouteComponentProps) => (
+					<Xcomponent roomId={props.match.params.roomId || -1} />
+				)}
 			/>
 		);
 	}
