@@ -22,6 +22,7 @@ class WrapperRender<T> extends GameListener<T> {
 		return (
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}
+				myUserId={this.state.userId}
 				game={this.state.game!.game!}
 				id={this.state.game!.id}
 			/>
