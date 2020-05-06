@@ -20,9 +20,9 @@ class Lobby extends React.Component<{
 		}
 	}
 
-	setUsername(e: FormEvent<HTMLFormElement>) {
+	setUsername(e: FormEvent<HTMLFormElement>): void {
 		e.preventDefault();
-		const username = this.inputRef.current!.value;
+		const username: string = this.inputRef.current!.value;
 		this.props.setUsername(username);
 	}
 }

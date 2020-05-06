@@ -5,7 +5,7 @@ import Game from "../../../shared/Game";
 type GameType = { dan: number };
 
 class Timeline extends Game<GameType> {
-	buildNewGame() {
+	buildNewGame(): GameType {
 		return { dan: Date.now() };
 	}
 
@@ -20,7 +20,7 @@ class Timeline extends Game<GameType> {
 		);
 	}
 
-	increment() {
+	increment(): void {
 		this.props.game.dan++;
 		this.props.sendGameState(this.props.game);
 	}

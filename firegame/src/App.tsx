@@ -25,7 +25,7 @@ function App() {
 	);
 }
 
-function getRoutes() {
+function getRoutes(): JSX.Element {
 	const routes: JSX.Element[] = [];
 	for (let [name, component] of Object.entries(components)) {
 		routes.push(
