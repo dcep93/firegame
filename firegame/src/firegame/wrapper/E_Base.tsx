@@ -12,7 +12,6 @@ export interface PropsType {
 
 interface StateType<T> {
 	userId: string;
-	username?: string;
 	lobby?: LobbyType;
 	game?: GameStateType<T>;
 }

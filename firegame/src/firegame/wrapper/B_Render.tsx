@@ -9,7 +9,7 @@ class WrapperRender<T> extends GameListener<T> {
 		return (
 			<div>
 				<Lobby
-					username={this.state.username}
+					myUserId={this.state.userId}
 					lobby={this.state.lobby}
 					setUsername={this.setUsername.bind(this)}
 				/>

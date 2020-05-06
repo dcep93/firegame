@@ -3,13 +3,13 @@ import React, { FormEvent } from "react";
 export type LobbyType = { [userId: string]: string };
 
 class Lobby extends React.Component<{
-	username?: string;
+	myUserId: string;
 	lobby: LobbyType;
 	setUsername: (username: string) => void;
 }> {
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	render() {
-		if (this.props.username !== undefined) {
+		if (this.props.lobby[this.props.myUserId] !== undefined) {
 			return <pre>{JSON.stringify(this.props.lobby, null, 2)}</pre>;
 		} else {
 			return (

@@ -46,14 +46,10 @@ abstract class LobbyListener<T> extends Base<T> {
 		if (remoteLobby) {
 			for (let [userId, person] of Object.entries(remoteLobby)) {
 				lobby[userId] = person.username;
+				if (userId === this.state.userId) this.signin();
 			}
 		}
 		if (!this.lobbyEquals(lobby)) this.setState({ lobby });
-		const me: string | null = lobby[this.state.userId];
-		if (me && this.state.username !== me) {
-			this.setState({ username: me });
-			this.signin();
-		}
 	}
 
 	lobbyEquals(lobby: LobbyType): boolean {
