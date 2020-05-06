@@ -14,11 +14,13 @@ class Firebase {
 	}
 
 	static latestChild(path): any {
-		return Promise.resolve(false);
+		return new Promise((resolve) =>
+			database.ref(path).limitToLast(1).once("value", resolve)
+		).then((result: any) => result.val());
 	}
 
 	static push(path, obj) {
-		return;
+		return database.ref(path).push(obj);
 	}
 
 	static connect(path, callback) {

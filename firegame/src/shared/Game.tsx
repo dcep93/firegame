@@ -19,7 +19,6 @@ abstract class Game extends Lobby {
 	componentDidMount() {
 		Firebase.init();
 		this.initLobby();
-		this.ensureGameHasStarted();
 	}
 
 	setUserId() {
@@ -42,10 +41,10 @@ abstract class Game extends Lobby {
 			if (!result) {
 				Promise.resolve()
 					.then(this.startNewGame.bind(this))
-					.then(this.sendState.bind(this))
+					.then(this.sendGameState.bind(this))
 					.then(this.listenForGameUpdates.bind(this));
 			} else {
-				minUpdateKey = result.key();
+				minUpdateKey = result.key;
 				this.listenForGameUpdates();
 			}
 		});
@@ -56,11 +55,12 @@ abstract class Game extends Lobby {
 	}
 
 	maybeUpdateGame(record) {
-		console.log(record);
-		if (minUpdateKey <= record.key) this.setState({ game: record.value });
+		for (let [key, value] of Object.entries(record)) {
+			if (minUpdateKey <= key) this.setState({ game: value });
+		}
 	}
 
-	sendState(state) {
+	sendGameState(state) {
 		return Firebase.push(this.gamePath(), state);
 	}
 

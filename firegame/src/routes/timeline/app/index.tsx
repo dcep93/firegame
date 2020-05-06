@@ -8,7 +8,7 @@ class App extends Game {
 	}
 
 	startNewGame() {
-		return Date.now();
+		return { thetimeitisrightnow: Date.now() };
 	}
 
 	renderGame() {

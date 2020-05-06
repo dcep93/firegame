@@ -23,6 +23,8 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	heartbeatInterval;
 	abstract gameName(): string;
 
+	abstract ensureGameHasStarted();
+
 	lobbyPath() {
 		return `${this.gameName()}/lobby/${this.props.roomId}`;
 	}
@@ -32,15 +34,18 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	initLobby() {
+		// is this necessary
 		Firebase.set(`${this.lobbyPath()}/alive`, true);
 		Firebase.connect(this.lobbyPath(), this.setLobby.bind(this));
 	}
 
 	setLobby(lobby) {
-		const updates: any = { lobby };
+		this.setState({ lobby });
 		const me = (lobby.users || {})[this.state.userId];
-		if (me !== undefined) updates.username = me.username;
-		this.setState(updates);
+		if (me && this.state.username !== me.username) {
+			this.setState({ username: me.username });
+			this.ensureGameHasStarted();
+		}
 	}
 
 	renderLobby() {
