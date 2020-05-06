@@ -184,12 +184,16 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 
 	// paths
 
+	roomPath() {
+		return `${this.props.name}/${this.props.roomId}`;
+	}
+
 	gamePath() {
-		return `${this.props.name}/game/${this.props.roomId}`;
+		return `${this.roomPath()}/game`;
 	}
 
 	lobbyPath() {
-		return `${this.props.name}/lobby/${this.props.roomId}`;
+		return `${this.roomPath()}/lobby`;
 	}
 
 	mePath(userId: string) {
