@@ -1,6 +1,5 @@
 import React from "react";
 
-// why does this render twice on every setState call
 abstract class Game<T> extends React.Component<{
 	sendGameState: (newState: T) => void;
 	game: T;
