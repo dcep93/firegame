@@ -4,6 +4,9 @@ import Firebase from "./Firebase";
 
 const HEARTBEAT_INTERVAL = 1000;
 
+// todo gamestatetype with id
+type RecordType = { [updateKey: string]: GameStateType };
+
 interface LobbyType {
 	[userId: string]: PersonType;
 }
@@ -13,6 +16,13 @@ interface PersonType {
 	username: string;
 	timestamp: number;
 	signInTime: number;
+}
+
+// todo component not any
+interface PropsType {
+	component: any;
+	name: string;
+	roomId: number;
 }
 
 interface StateType {
@@ -27,14 +37,28 @@ type GameStateType = any;
 var minUpdateKey = "";
 var gameHasStarted = false;
 
-class Wrapper extends React.Component<
-	{
-		component: any;
-		name: string;
-		roomId: number;
-	},
-	StateType
-> {
+// todo T
+class Wrapper<T> extends React.Component<PropsType, StateType> {
+	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+
+	constructor(props: PropsType) {
+		super(props);
+		this.setUserId();
+		this.state = { userId: localStorage.userId };
+	}
+
+	render() {
+		if (this.state.lobby === undefined) return "Loading...";
+		return (
+			<div>
+				{this.renderLobby()}
+				{this.state.game && this.renderGame()}
+			</div>
+		);
+	}
+
+	// game
+
 	renderGame() {
 		return (
 			<this.props.component
@@ -44,35 +68,61 @@ class Wrapper extends React.Component<
 			/>
 		);
 	}
-	// todo typing
-	constructor(props: any) {
-		super(props);
-		this.setUserId();
-		this.state = { userId: localStorage.userId };
-	}
-	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 
-	lobbyPath() {
-		return `${this.props.name}/lobby/${this.props.roomId}`;
+	ensureGameHasStarted() {
+		if (gameHasStarted) return;
+		gameHasStarted = true;
+		this.heartbeat();
+		Firebase.latestChildOnce(this.gamePath()).then(
+			(result: RecordType | null) => {
+				if (!result) {
+					Promise.resolve()
+						.then(this.props.component.buildNewGame)
+						.then(this.sendGameState.bind(this))
+						.then(this.listenForGameUpdates.bind(this));
+				} else {
+					minUpdateKey = Object.keys(result)[0];
+					this.listenForGameUpdates();
+				}
+			}
+		);
 	}
 
-	mePath(userId: string) {
-		return `${this.lobbyPath()}/${userId}`;
+	listenForGameUpdates() {
+		Firebase.latestChild(this.gamePath(), this.maybeUpdateGame.bind(this));
+	}
+
+	maybeUpdateGame(record: RecordType) {
+		for (let [key, value] of Object.entries(record)) {
+			if (minUpdateKey <= key) this.setState({ game: value });
+		}
+	}
+
+	sendGameState(gameState: GameStateType) {
+		const out = {
+			game: gameState,
+			id: (this.state.game ? this.state.game.id : 0) + 1,
+		};
+		return Firebase.push(this.gamePath(), out);
+	}
+
+	// init
+
+	setUserId() {
+		if (!localStorage.userId)
+			localStorage.userId = btoa(Math.random().toString());
+	}
+
+	componentDidMount() {
+		Firebase.init();
+		this.initLobby();
 	}
 
 	initLobby() {
 		Firebase.connect(this.lobbyPath(), this.setLobby.bind(this));
 	}
 
-	lobbyEquals(lobby: { [userId: string]: string }): boolean {
-		if (!this.state.lobby) return false;
-		if (Object.keys(lobby).length !== Object.keys(this.state.lobby).length)
-			return false;
-		for (let [userId, username] of Object.entries(lobby)) {
-			if (this.state.lobby[userId] !== username) return false;
-		}
-		return true;
-	}
+	// lobby
 
 	setLobby(remoteLobby: LobbyType) {
 		const lobby: { [userId: string]: string } = {};
@@ -89,16 +139,15 @@ class Wrapper extends React.Component<
 		}
 	}
 
-	renderLobby() {
-		if (this.state.username !== undefined) {
-			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
-		} else {
-			return (
-				<form onSubmit={this.setUsername.bind(this)}>
-					<input type="text" ref={this.inputRef} />
-				</form>
-			);
+	// todo does pure component eliminate the need for this
+	lobbyEquals(lobby: { [userId: string]: string }): boolean {
+		if (!this.state.lobby) return false;
+		if (Object.keys(lobby).length !== Object.keys(this.state.lobby).length)
+			return false;
+		for (let [userId, username] of Object.entries(lobby)) {
+			if (this.state.lobby[userId] !== username) return false;
 		}
+		return true;
 	}
 
 	setUsername(e: FormEvent<HTMLFormElement>) {
@@ -123,65 +172,30 @@ class Wrapper extends React.Component<
 		Firebase.set(`${this.mePath(this.state.userId)}/timestamp`, Date.now());
 	}
 
-	render() {
-		if (this.state.lobby === undefined) return "Loading...";
-		return (
-			<div>
-				{this.renderLobby()}
-				{this.state.game && this.renderGame()}
-			</div>
-		);
-	}
-
-	componentDidMount() {
-		Firebase.init();
-		this.initLobby();
-	}
-
-	setUserId() {
-		if (!localStorage.userId)
-			localStorage.userId = btoa(Math.random().toString());
-	}
-
-	ensureGameHasStarted() {
-		if (gameHasStarted) return;
-		gameHasStarted = true;
-		this.heartbeat();
-		Firebase.latestChildOnce(this.gamePath()).then(
-			(result: GameStateType | null) => {
-				if (!result) {
-					Promise.resolve()
-						.then(this.props.component.buildNewGame)
-						.then(this.sendGameState.bind(this))
-						.then(this.listenForGameUpdates.bind(this));
-				} else {
-					minUpdateKey = Object.keys(result)[0];
-					this.listenForGameUpdates();
-				}
-			}
-		);
-	}
-
-	listenForGameUpdates() {
-		Firebase.latestChild(this.gamePath(), this.maybeUpdateGame.bind(this));
-	}
-
-	maybeUpdateGame(record: { [key: string]: GameStateType }) {
-		for (let [key, value] of Object.entries(record)) {
-			if (minUpdateKey <= key) this.setState({ game: value });
+	renderLobby() {
+		if (this.state.username !== undefined) {
+			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
+		} else {
+			return (
+				<form onSubmit={this.setUsername.bind(this)}>
+					<input type="text" ref={this.inputRef} />
+				</form>
+			);
 		}
 	}
 
-	sendGameState(gameState: GameStateType) {
-		const out = {
-			game: gameState,
-			id: ((this.state.game && this.state.game.id) || 0) + 1,
-		};
-		return Firebase.push(this.gamePath(), out);
-	}
+	// paths
 
 	gamePath() {
 		return `${this.props.name}/game/${this.props.roomId}`;
+	}
+
+	lobbyPath() {
+		return `${this.props.name}/lobby/${this.props.roomId}`;
+	}
+
+	mePath(userId: string) {
+		return `${this.lobbyPath()}/${userId}`;
 	}
 }
 
