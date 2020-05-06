@@ -3,14 +3,11 @@ import React from "react";
 import Game from "../../../shared/Game";
 
 class App extends Game {
-	render() {
+	renderGame() {
 		return (
-			<div>
-				<p>
-					{`timeline function ${this.props.roomId} ${this.state.username} ${this.state.sessionId}`}
-				</p>
-				{this.renderLobby()}
-			</div>
+			<p>
+				{`timeline function ${this.props.roomId} ${this.state.username} ${this.state.sessionId}`}
+			</p>
 		);
 	}
 }
