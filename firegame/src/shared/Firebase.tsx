@@ -10,7 +10,7 @@ type DatabaseType = { ref: (path: string) => any };
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
-// tood
+// todo
 class Firebase {
 	static init() {
 		firebase.initializeApp(config);

@@ -2,21 +2,29 @@ import React from "react";
 
 import Game from "../../../shared/Game";
 
-import Timeline from "./timeline";
+type GameType = any;
 
-class App extends Game {
-	buildNewGame() {
-		return { thetimeitisrightnow: Date.now() };
+class Timeline extends Game {
+	static buildNewGame() {
+		return { dan: Date.now() };
 	}
 
-	renderGame() {
+	render() {
+		console.log("render", this.props.id);
 		return (
-			<Timeline
-				game={this.state.game}
-				sendGameState={this.sendGameState.bind(this)}
-			/>
+			<div>
+				<p>{`timeline ${JSON.stringify(this.props.game)} ${
+					this.props.id
+				}`}</p>
+				<button onClick={this.increment.bind(this)}>abc</button>
+			</div>
 		);
+	}
+
+	increment() {
+		this.props.game.dan++;
+		this.props.sendGameState(this.props.game);
 	}
 }
 
-export default App;
+export default Timeline;

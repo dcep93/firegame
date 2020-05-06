@@ -4,15 +4,6 @@ import Firebase from "./Firebase";
 
 const HEARTBEAT_INTERVAL = 1000;
 
-type GameStateType = any;
-
-interface StateType {
-	userId: string;
-	username?: string;
-	lobby?: { [userId: string]: string };
-	game?: GameStateType;
-}
-
 interface LobbyType {
 	[userId: string]: PersonType;
 }
@@ -24,13 +15,42 @@ interface PersonType {
 	signInTime: number;
 }
 
-abstract class Lobby extends React.Component<
-	{ name: string; roomId: number },
+interface StateType {
+	userId: string;
+	username?: string;
+	lobby?: { [userId: string]: string };
+	game?: GameStateType;
+}
+
+type GameStateType = any;
+
+var minUpdateKey = "";
+var gameHasStarted = false;
+
+class Wrapper extends React.Component<
+	{
+		component: any;
+		name: string;
+		roomId: number;
+	},
 	StateType
 > {
+	renderGame() {
+		return (
+			<this.props.component
+				sendGameState={this.sendGameState.bind(this)}
+				game={this.state.game.game}
+				id={this.state.game.id}
+			/>
+		);
+	}
+	// todo typing
+	constructor(props: any) {
+		super(props);
+		this.setUserId();
+		this.state = { userId: localStorage.userId };
+	}
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-
-	abstract ensureGameHasStarted(): void;
 
 	lobbyPath() {
 		return `${this.props.name}/lobby/${this.props.roomId}`;
@@ -102,6 +122,67 @@ abstract class Lobby extends React.Component<
 	updateTimestamp() {
 		Firebase.set(`${this.mePath(this.state.userId)}/timestamp`, Date.now());
 	}
+
+	render() {
+		if (this.state.lobby === undefined) return "Loading...";
+		return (
+			<div>
+				{this.renderLobby()}
+				{this.state.game && this.renderGame()}
+			</div>
+		);
+	}
+
+	componentDidMount() {
+		Firebase.init();
+		this.initLobby();
+	}
+
+	setUserId() {
+		if (!localStorage.userId)
+			localStorage.userId = btoa(Math.random().toString());
+	}
+
+	ensureGameHasStarted() {
+		if (gameHasStarted) return;
+		gameHasStarted = true;
+		this.heartbeat();
+		Firebase.latestChild(this.gamePath()).then(
+			(result: GameStateType | null) => {
+				if (!result) {
+					Promise.resolve()
+						.then(this.props.component.buildNewGame)
+						.then(this.sendGameState.bind(this))
+						.then(this.listenForGameUpdates.bind(this));
+				} else {
+					minUpdateKey = Object.keys(result)[0];
+					this.listenForGameUpdates();
+				}
+			}
+		);
+	}
+
+	listenForGameUpdates() {
+		Firebase.latestChild2(this.gamePath(), this.maybeUpdateGame.bind(this));
+	}
+
+	maybeUpdateGame(record: { [key: string]: GameStateType }) {
+		for (let [key, value] of Object.entries(record)) {
+			if (minUpdateKey <= key) this.setState({ game: value });
+		}
+	}
+
+	sendGameState(gameState: GameStateType) {
+		const out = {
+			game: gameState,
+			id: ((this.state.game && this.state.game.id) || 0) + 1,
+		};
+		return Firebase.push(this.gamePath(), out);
+	}
+
+	gamePath() {
+		return `${this.props.name}/game/${this.props.roomId}`;
+	}
 }
 
-export default Lobby;
+export default Wrapper;
