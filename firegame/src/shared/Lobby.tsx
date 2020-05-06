@@ -15,14 +15,16 @@ interface StateType {
 			signInTime: number;
 		};
 	};
+	game?: any;
 }
 
-class Lobby extends React.Component<{ roomId: number }, StateType> {
+abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	heartbeatInterval;
+	abstract gameName(): string;
 
 	roomPath() {
-		return `timeline/lobby/${this.props.roomId}`;
+		return `${this.gameName()}/lobby/${this.props.roomId}`;
 	}
 
 	mePath(userId: string) {

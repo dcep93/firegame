@@ -13,6 +13,14 @@ class Firebase {
 		database = firebase.database();
 	}
 
+	static latestChild(path): any {
+		return Promise.resolve(true);
+	}
+
+	static push(path, obj) {
+		return;
+	}
+
 	static connect(path, callback) {
 		return database.ref(path).on("value", (snapshot) => {
 			var val = snapshot.val();
