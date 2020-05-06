@@ -15,12 +15,6 @@ class Firebase {
 		database = firebase.database();
 	}
 
-	static latestChildOnce(path: string): Promise<BlobType> {
-		return new Promise((resolve) =>
-			database.ref(path).limitToLast(1).once("value", resolve)
-		).then((result: any) => result && result.val());
-	}
-
 	static latestChild(
 		path: string,
 		callback: (value: BlobType) => void

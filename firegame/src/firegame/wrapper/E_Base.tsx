@@ -17,7 +17,7 @@ interface StateType<T> {
 	game?: GameStateType<T>;
 }
 
-type GameStateType<T> = { id: number; game?: T };
+export type GameStateType<T> = { id: number; game?: T };
 
 class WrapperBase<T> extends React.Component<PropsType, StateType<T>> {}
 

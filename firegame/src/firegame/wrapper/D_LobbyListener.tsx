@@ -1,6 +1,9 @@
 import Firebase from "../Firebase";
 
 import Base from "./E_Base";
+import { LobbyType } from "../Lobby";
+
+// ping every second, values expire after 5 seconds to determine disconnects
 
 const HEARTBEAT_INTERVAL = 1000;
 
@@ -39,7 +42,7 @@ abstract class LobbyListener<T> extends Base<T> {
 	}
 
 	setLobby(remoteLobby: { [userId: string]: PersonType }): void {
-		const lobby: { [userId: string]: string } = {};
+		const lobby: LobbyType = {};
 		if (remoteLobby) {
 			for (let [userId, person] of Object.entries(remoteLobby)) {
 				lobby[userId] = person.username;
@@ -53,7 +56,7 @@ abstract class LobbyListener<T> extends Base<T> {
 		}
 	}
 
-	lobbyEquals(lobby: { [userId: string]: string }): boolean {
+	lobbyEquals(lobby: LobbyType): boolean {
 		if (!this.state.lobby) return false;
 		if (Object.keys(lobby).length !== Object.keys(this.state.lobby).length)
 			return false;

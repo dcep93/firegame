@@ -1,38 +1,27 @@
 import Firebase from "../Firebase";
 
 import LobbyListener from "./D_LobbyListener";
+import { GameStateType } from "./E_Base";
 
-var minUpdateKey: string = "";
+// games expire after 4 hours of no activity
 
-type RecordType = { [updateKey: string]: GameStateType<any> };
-type GameStateType<T> = { id: number; game?: T };
+type RecordType<T> = { [updateKey: string]: GameStateType<T> };
 
 class GameListener<T> extends LobbyListener<T> {
 	enterGame(): void {
-		Firebase.latestChildOnce(this.gamePath()).then(
-			(result: RecordType | null) => {
-				if (!result) {
-					this.listenForGameUpdates();
-				} else {
-					minUpdateKey = Object.keys(result)[0];
-					this.listenForGameUpdates();
-				}
-			}
+		Firebase.latestChild(
+			this.gamePath(),
+			this.receiveGameUpdate.bind(this)
 		);
 	}
 
-	listenForGameUpdates(): void {
-		Firebase.latestChild(this.gamePath(), this.maybeUpdateGame.bind(this));
-	}
-
-	maybeUpdateGame(record: RecordType): void {
+	receiveGameUpdate(record: RecordType<T>): void {
 		if (!record) {
 			const game: GameStateType<T> = { id: 0 };
 			return this.setState({ game });
 		}
-		for (let [key, value] of Object.entries(record)) {
-			if (minUpdateKey <= key) this.setState({ game: value });
-		}
+		const value = Object.values(record)[0];
+		this.setState({ game: value });
 	}
 
 	sendGameState(gameState: T): void {
