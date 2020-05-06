@@ -8,10 +8,10 @@ export interface PropsType {
 	component: typeof Game;
 	name: string;
 	roomId: number;
+	userId: string;
 }
 
 interface StateType<T> {
-	userId: string;
 	lobby?: LobbyType;
 	game?: GameStateType<T>;
 }

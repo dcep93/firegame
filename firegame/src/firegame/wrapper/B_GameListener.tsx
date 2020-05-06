@@ -1,7 +1,7 @@
 import Firebase from "../Firebase";
 
-import LobbyListener from "./D_LobbyListener";
-import { GameStateType } from "./E_Base";
+import LobbyListener from "./C_LobbyListener";
+import { GameStateType } from "./D_Base";
 
 // games expire after 4 hours of no activity
 

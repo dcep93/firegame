@@ -1,7 +1,7 @@
 import React from "react";
 
 import Lobby from "../Lobby";
-import GameListener from "./C_GameListener";
+import GameListener from "./B_GameListener";
 
 class WrapperRender<T> extends GameListener<T> {
 	render() {
@@ -9,7 +9,7 @@ class WrapperRender<T> extends GameListener<T> {
 		return (
 			<div>
 				<Lobby
-					myUserId={this.state.userId}
+					userId={this.props.userId}
 					lobby={this.state.lobby}
 					setUsername={this.setUsername.bind(this)}
 				/>
@@ -22,9 +22,10 @@ class WrapperRender<T> extends GameListener<T> {
 		return (
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}
-				myUserId={this.state.userId}
+				userId={this.props.userId}
 				game={this.state.game!.game!}
 				id={this.state.game!.id}
+				lobby={this.state.lobby!}
 			/>
 		);
 	}

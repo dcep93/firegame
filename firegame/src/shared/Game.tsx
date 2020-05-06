@@ -1,10 +1,12 @@
 import React from "react";
+import { LobbyType } from "../firegame/Lobby";
 
 abstract class Game<T> extends React.Component<{
 	sendGameState: (newState: T) => void;
 	game: T;
 	id: number;
-	myUserId: string;
+	userId: string;
+	lobby: LobbyType;
 }> {
 	abstract buildNewGame(): T;
 
