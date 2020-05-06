@@ -9,18 +9,17 @@ type GameStateType = any;
 interface StateType {
 	userId: string;
 	username?: string;
-	lobby?: LobbyType;
+	lobby?: { [userId: string]: string };
 	game?: GameStateType;
 }
 
 interface LobbyType {
-	alive: boolean;
-	users: { [userId: string]: PersonType };
+	[userId: string]: PersonType;
 }
 
 interface PersonType {
 	userId: string;
-	username?: string;
+	username: string;
 	timestamp: number;
 	signInTime: number;
 }
@@ -36,19 +35,24 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	mePath(userId: string) {
-		return `${this.lobbyPath()}/users/${userId}`;
+		return `${this.lobbyPath()}/${userId}`;
 	}
 
 	initLobby() {
 		Firebase.connect(this.lobbyPath(), this.setLobby.bind(this));
 	}
 
-	setLobby(lobby: LobbyType) {
+	setLobby(remoteLobby: LobbyType) {
+		const lobby: { [userId: string]: string } = {};
+		if (remoteLobby) {
+			for (let [userId, person] of Object.entries(remoteLobby)) {
+				lobby[userId] = person.username;
+			}
+		}
 		this.setState({ lobby });
-		const me: PersonType | null =
-			lobby && lobby.users && lobby.users[this.state.userId];
-		if (me && this.state.username !== me.username) {
-			this.setState({ username: me.username });
+		const me: string | null = lobby[this.state.userId];
+		if (me && this.state.username !== me) {
+			this.setState({ username: me });
 			this.ensureGameHasStarted();
 		}
 	}
