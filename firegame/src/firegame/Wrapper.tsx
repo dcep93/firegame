@@ -2,7 +2,7 @@ import React, { FormEvent } from "react";
 
 import Firebase from "./Firebase";
 
-import Game from "./Game";
+import Game from "../shared/Game";
 
 const VERSION = "v0.0.3";
 
