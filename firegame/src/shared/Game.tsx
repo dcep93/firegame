@@ -38,13 +38,14 @@ abstract class Game extends Lobby {
 
 	ensureGameHasStarted() {
 		Firebase.latestChild(this.gamePath()).then((result) => {
+			console.log(result);
 			if (!result) {
 				Promise.resolve()
 					.then(this.startNewGame.bind(this))
 					.then(this.sendGameState.bind(this))
 					.then(this.listenForGameUpdates.bind(this));
 			} else {
-				minUpdateKey = result.key;
+				minUpdateKey = Object.keys(result)[0];
 				this.listenForGameUpdates();
 			}
 		});
@@ -60,8 +61,8 @@ abstract class Game extends Lobby {
 		}
 	}
 
-	sendGameState(state) {
-		return Firebase.push(this.gamePath(), state);
+	sendGameState(gameState) {
+		return Firebase.push(this.gamePath(), gameState);
 	}
 
 	gamePath() {

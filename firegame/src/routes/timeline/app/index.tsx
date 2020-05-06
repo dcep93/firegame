@@ -11,13 +11,21 @@ class App extends Game {
 		return { thetimeitisrightnow: Date.now() };
 	}
 
+	increment() {
+		this.state.game.thetimeitisrightnow++;
+		this.sendGameState(this.state.game);
+	}
+
 	renderGame() {
 		return (
-			<p>
-				{`timeline function ${this.props.roomId} ${JSON.stringify(
-					this.state.game
-				)} ${this.state.username} ${this.state.userId}`}
-			</p>
+			<div>
+				<p>
+					{`timeline function ${this.props.roomId} ${JSON.stringify(
+						this.state.game
+					)} ${this.state.username} ${this.state.userId}`}
+				</p>
+				<button onClick={this.increment.bind(this)}>Button</button>
+			</div>
 		);
 	}
 }
