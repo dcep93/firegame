@@ -14,7 +14,6 @@ class Firebase {
 	}
 
 	static connect(path, callback) {
-		console.log("connect", path);
 		return database.ref(path).on("value", (snapshot) => {
 			var val = snapshot.val();
 			callback(val);
