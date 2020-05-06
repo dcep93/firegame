@@ -6,10 +6,13 @@ abstract class Game<T> extends React.Component<{
 	game: T;
 	id: number;
 }> {
-	// would be nice if this could be
-	// an abstract static method
-	static buildNewGame() {
-		return {};
+	abstract buildNewGame(): T;
+
+	componentDidMount() {
+		if (!this.props.game) {
+			const newGame = this.buildNewGame();
+			this.props.sendGameState(newGame);
+		}
 	}
 }
 

@@ -2,10 +2,11 @@ import React, { FormEvent } from "react";
 
 import Firebase from "./Firebase";
 
+import Game from "./Game";
+
 const HEARTBEAT_INTERVAL = 1000;
 
-// todo gamestatetype with id
-type RecordType = { [updateKey: string]: GameStateType };
+type RecordType = { [updateKey: string]: GameStateType<any> };
 
 interface LobbyType {
 	[userId: string]: PersonType;
@@ -18,27 +19,25 @@ interface PersonType {
 	signInTime: number;
 }
 
-// todo component not any
 interface PropsType {
-	component: any;
+	component: typeof Game;
 	name: string;
 	roomId: number;
 }
 
-interface StateType {
+interface StateType<T> {
 	userId: string;
 	username?: string;
 	lobby?: { [userId: string]: string };
-	game?: GameStateType;
+	game?: GameStateType<T>;
 }
 
-type GameStateType = any;
+type GameStateType<T> = { id: number; game: T };
 
 var minUpdateKey = "";
 var gameHasStarted = false;
 
-// todo T
-class Wrapper<T> extends React.Component<PropsType, StateType> {
+class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 
 	constructor(props: PropsType) {
@@ -63,8 +62,8 @@ class Wrapper<T> extends React.Component<PropsType, StateType> {
 		return (
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}
-				game={this.state.game.game}
-				id={this.state.game.id}
+				game={this.state.game!.game}
+				id={this.state.game!.id}
 			/>
 		);
 	}
@@ -76,10 +75,7 @@ class Wrapper<T> extends React.Component<PropsType, StateType> {
 		Firebase.latestChildOnce(this.gamePath()).then(
 			(result: RecordType | null) => {
 				if (!result) {
-					Promise.resolve()
-						.then(this.props.component.buildNewGame)
-						.then(this.sendGameState.bind(this))
-						.then(this.listenForGameUpdates.bind(this));
+					this.listenForGameUpdates();
 				} else {
 					minUpdateKey = Object.keys(result)[0];
 					this.listenForGameUpdates();
@@ -93,12 +89,15 @@ class Wrapper<T> extends React.Component<PropsType, StateType> {
 	}
 
 	maybeUpdateGame(record: RecordType) {
+		// @ts-ignore
+		const game: GameState<T> = { id: 1 };
+		if (!record) return this.setState({ game });
 		for (let [key, value] of Object.entries(record)) {
 			if (minUpdateKey <= key) this.setState({ game: value });
 		}
 	}
 
-	sendGameState(gameState: GameStateType) {
+	sendGameState(gameState: T) {
 		const out = {
 			game: gameState,
 			id: (this.state.game ? this.state.game.id : 0) + 1,
@@ -139,7 +138,6 @@ class Wrapper<T> extends React.Component<PropsType, StateType> {
 		}
 	}
 
-	// todo does pure component eliminate the need for this
 	lobbyEquals(lobby: { [userId: string]: string }): boolean {
 		if (!this.state.lobby) return false;
 		if (Object.keys(lobby).length !== Object.keys(this.state.lobby).length)

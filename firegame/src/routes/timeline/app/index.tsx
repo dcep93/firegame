@@ -5,7 +5,7 @@ import Game from "../../../shared/Game";
 type GameType = { dan: number };
 
 class Timeline extends Game<GameType> {
-	static buildNewGame() {
+	buildNewGame() {
 		return { dan: Date.now() };
 	}
 
