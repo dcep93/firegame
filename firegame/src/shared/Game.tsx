@@ -31,6 +31,7 @@ abstract class Game extends Lobby {
 	}
 
 	render() {
+		console.log("render");
 		if (this.state.lobby === undefined) return "Loading...";
 		return (
 			<div>
@@ -49,6 +50,7 @@ abstract class Game extends Lobby {
 				if (!result) {
 					Promise.resolve()
 						.then(this.buildNewGame.bind(this))
+						.then(this.assignId)
 						.then(this.sendGameStateHelper.bind(this))
 						.then(this.listenForGameUpdates.bind(this));
 				} else {
@@ -60,7 +62,7 @@ abstract class Game extends Lobby {
 	}
 
 	listenForGameUpdates() {
-		Firebase.connect(this.gamePath(), this.maybeUpdateGame.bind(this));
+		Firebase.latestChild2(this.gamePath(), this.maybeUpdateGame.bind(this));
 	}
 
 	maybeUpdateGame(record: { [key: string]: GameStateType }) {
@@ -69,7 +71,13 @@ abstract class Game extends Lobby {
 		}
 	}
 
+	assignId(gameState: GameStateType) {
+		gameState.id = 1;
+		return gameState;
+	}
+
 	sendGameState() {
+		this.state.game.id++;
 		this.sendGameStateHelper(this.state.game);
 	}
 

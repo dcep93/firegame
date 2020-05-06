@@ -42,6 +42,16 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 		Firebase.connect(this.lobbyPath(), this.setLobby.bind(this));
 	}
 
+	lobbyEquals(lobby: { [userId: string]: string }): boolean {
+		if (!this.state.lobby) return false;
+		if (Object.keys(lobby).length !== Object.keys(this.state.lobby).length)
+			return false;
+		for (let [userId, username] of Object.entries(lobby)) {
+			if (this.state.lobby[userId] !== username) return false;
+		}
+		return true;
+	}
+
 	setLobby(remoteLobby: LobbyType) {
 		const lobby: { [userId: string]: string } = {};
 		if (remoteLobby) {
@@ -49,7 +59,7 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 				lobby[userId] = person.username;
 			}
 		}
-		this.setState({ lobby });
+		if (!this.lobbyEquals(lobby)) this.setState({ lobby });
 		const me: string | null = lobby[this.state.userId];
 		if (me && this.state.username !== me) {
 			this.setState({ username: me });

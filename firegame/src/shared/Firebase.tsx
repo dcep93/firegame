@@ -10,6 +10,7 @@ type DatabaseType = { ref: (path: string) => any };
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
+// tood
 class Firebase {
 	static init() {
 		firebase.initializeApp(config);
@@ -20,6 +21,19 @@ class Firebase {
 		return new Promise((resolve) =>
 			database.ref(path).limitToLast(1).once("value", resolve)
 		).then((result: any) => result && result.val());
+	}
+
+	static latestChild2(
+		path: string,
+		callback: (value: BlobType) => void
+	): void {
+		database
+			.ref(path)
+			.limitToLast(1)
+			.on("value", (snapshot: ResultType) => {
+				var val = snapshot.val();
+				callback(val);
+			});
 	}
 
 	static push(path: string, obj: BlobType) {
