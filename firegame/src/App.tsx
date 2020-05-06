@@ -26,13 +26,16 @@ function App() {
 
 function getRoutes() {
 	const routes: JSX.Element[] = [];
-	for (let [path, Xcomponent] of Object.entries(components)) {
+	for (let [name, Xcomponent] of Object.entries(components)) {
 		routes.push(
 			<Route
-				key={path}
-				path={`/${path}/:roomId(\\d+)?`}
+				key={name}
+				path={`/${name}/:roomId(\\d+)?`}
 				render={(props: RouteComponentProps) => (
-					<Xcomponent roomId={props.match.params.roomId || -1} />
+					<Xcomponent
+						name={name}
+						roomId={props.match.params.roomId || -1}
+					/>
 				)}
 			/>
 		);

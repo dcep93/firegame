@@ -31,7 +31,6 @@ abstract class Game extends Lobby {
 	}
 
 	render() {
-		console.log("render");
 		if (this.state.lobby === undefined) return "Loading...";
 		return (
 			<div>
@@ -51,7 +50,7 @@ abstract class Game extends Lobby {
 					Promise.resolve()
 						.then(this.buildNewGame.bind(this))
 						.then(this.assignId)
-						.then(this.sendGameStateHelper.bind(this))
+						.then(this.sendGameState.bind(this))
 						.then(this.listenForGameUpdates.bind(this));
 				} else {
 					minUpdateKey = Object.keys(result)[0];
@@ -76,17 +75,13 @@ abstract class Game extends Lobby {
 		return gameState;
 	}
 
-	sendGameState() {
-		this.state.game.id++;
-		this.sendGameStateHelper(this.state.game);
-	}
-
-	sendGameStateHelper(gameState: GameStateType) {
+	sendGameState(gameState: GameStateType) {
+		gameState.id++;
 		return Firebase.push(this.gamePath(), gameState);
 	}
 
 	gamePath() {
-		return `${this.gameName()}/game/${this.props.roomId}`;
+		return `${this.props.name}/game/${this.props.roomId}`;
 	}
 }
 

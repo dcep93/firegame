@@ -24,14 +24,16 @@ interface PersonType {
 	signInTime: number;
 }
 
-abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
+abstract class Lobby extends React.Component<
+	{ name: string; roomId: number },
+	StateType
+> {
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-	abstract gameName(): string;
 
 	abstract ensureGameHasStarted(): void;
 
 	lobbyPath() {
-		return `${this.gameName()}/lobby/${this.props.roomId}`;
+		return `${this.props.name}/lobby/${this.props.roomId}`;
 	}
 
 	mePath(userId: string) {
