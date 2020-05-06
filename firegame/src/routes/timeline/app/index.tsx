@@ -13,7 +13,7 @@ class App extends Game {
 
 	increment() {
 		this.state.game.thetimeitisrightnow++;
-		this.sendGameState(this.state.game);
+		this.sendGameStateHelper();
 	}
 
 	renderGame() {

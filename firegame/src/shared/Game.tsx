@@ -61,6 +61,10 @@ abstract class Game extends Lobby {
 		}
 	}
 
+	sendGameStateHelper() {
+		this.sendGameState(this.state.game);
+	}
+
 	sendGameState(gameState) {
 		return Firebase.push(this.gamePath(), gameState);
 	}
