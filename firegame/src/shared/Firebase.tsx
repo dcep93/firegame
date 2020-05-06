@@ -9,7 +9,6 @@ var database;
 
 class Firebase {
 	static init() {
-		console.log("init");
 		firebase.initializeApp(config);
 		database = firebase.database();
 	}
@@ -23,7 +22,6 @@ class Firebase {
 	}
 
 	static set(path, obj) {
-		console.log("set", path);
 		return database.ref(path).set(obj);
 	}
 }

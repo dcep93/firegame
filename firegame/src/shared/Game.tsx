@@ -18,12 +18,8 @@ interface StateType {
 }
 
 abstract class Game extends React.Component<{ roomId: number }, StateType> {
+	heartbeatInterval;
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-	inputForm = (
-		<form onSubmit={this.setUsername.bind(this)}>
-			<input type="text" ref={this.inputRef} />
-		</form>
-	);
 
 	constructor(props) {
 		super(props);
@@ -47,22 +43,21 @@ abstract class Game extends React.Component<{ roomId: number }, StateType> {
 		const sessionId = this.state.sessionId;
 		const now = Date.now();
 		const myUserObj = {
-			[sessionId]: {
-				sessionId,
-				username,
-				timestamp: now,
-				signInTime: now,
-			},
+			sessionId,
+			username,
+			timestamp: now,
+			signInTime: now,
 		};
 		Firebase.set(
-			`lobby/${this.props.roomId}/${sessionId}`,
+			`timeline/lobby/${this.props.roomId}/users/${sessionId}`,
 			myUserObj
 		).then(() => this.setState({ username }));
 	}
 
 	initLobby() {
+		Firebase.set(`timeline/lobby/${this.props.roomId}/alive`, true);
 		Firebase.connect(
-			`lobby/${this.props.roomId}`,
+			`timeline/lobby/${this.props.roomId}`,
 			this.setLobby.bind(this)
 		);
 	}
@@ -74,21 +69,30 @@ abstract class Game extends React.Component<{ roomId: number }, StateType> {
 	renderLobby() {
 		if (this.state.lobby === undefined) {
 			return "Loading...";
-		} else if (this.state.lobby[this.state.sessionId] !== undefined) {
-			this.heartbeat();
-			return <pre>{JSON.stringify(this.state.lobby)}</pre>;
+		} else if (
+			(this.state.lobby.users || {})[this.state.sessionId] !== undefined
+		) {
+			if (this.heartbeatInterval === undefined) this.heartbeat();
+			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
 		} else {
-			return this.inputForm;
+			return (
+				<form onSubmit={this.setUsername.bind(this)}>
+					<input type="text" ref={this.inputRef} />
+				</form>
+			);
 		}
 	}
 
 	heartbeat() {
-		setInterval(this.updateTimestamp, HEARTBEAT_INTERVAL);
+		this.heartbeatInterval = setInterval(
+			this.updateTimestamp.bind(this),
+			HEARTBEAT_INTERVAL
+		);
 	}
 
 	updateTimestamp() {
 		Firebase.set(
-			`lobby/${this.props.roomId}/${this.state.sessionId}/timestamp`,
+			`timeline/lobby/${this.props.roomId}/users/${this.state.sessionId}/timestamp`,
 			Date.now()
 		);
 	}
