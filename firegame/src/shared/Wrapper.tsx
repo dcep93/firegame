@@ -147,7 +147,7 @@ class Wrapper extends React.Component<
 		if (gameHasStarted) return;
 		gameHasStarted = true;
 		this.heartbeat();
-		Firebase.latestChild(this.gamePath()).then(
+		Firebase.latestChildOnce(this.gamePath()).then(
 			(result: GameStateType | null) => {
 				if (!result) {
 					Promise.resolve()
@@ -163,7 +163,7 @@ class Wrapper extends React.Component<
 	}
 
 	listenForGameUpdates() {
-		Firebase.latestChild2(this.gamePath(), this.maybeUpdateGame.bind(this));
+		Firebase.latestChild(this.gamePath(), this.maybeUpdateGame.bind(this));
 	}
 
 	maybeUpdateGame(record: { [key: string]: GameStateType }) {

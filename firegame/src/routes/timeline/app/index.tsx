@@ -2,15 +2,14 @@ import React from "react";
 
 import Game from "../../../shared/Game";
 
-type GameType = any;
+type GameType = { dan: number };
 
-class Timeline extends Game {
+class Timeline extends Game<GameType> {
 	static buildNewGame() {
 		return { dan: Date.now() };
 	}
 
 	render() {
-		console.log("render", this.props.id);
 		return (
 			<div>
 				<p>{`timeline ${JSON.stringify(this.props.game)} ${
