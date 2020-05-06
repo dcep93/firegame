@@ -24,6 +24,7 @@ abstract class Game extends Lobby {
 	}
 
 	render() {
+		if (this.state.lobby === undefined) return "Loading...";
 		return (
 			<div>
 				{this.renderLobby()}

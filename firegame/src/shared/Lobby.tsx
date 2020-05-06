@@ -42,10 +42,8 @@ class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	renderLobby() {
-		if (this.state.lobby === undefined) {
-			return "Loading...";
-		} else if (
-			(this.state.lobby.users || {})[this.state.sessionId] !== undefined
+		if (
+			(this.state.lobby!.users || {})[this.state.sessionId] !== undefined
 		) {
 			if (this.heartbeatInterval === undefined) this.heartbeat();
 			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
