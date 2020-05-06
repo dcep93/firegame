@@ -4,11 +4,13 @@ import Firebase from "./Firebase";
 
 const HEARTBEAT_INTERVAL = 1000;
 
+type GameStateType = any;
+
 interface StateType {
 	userId: string;
 	username?: string;
 	lobby?: LobbyType;
-	game?: any;
+	game?: GameStateType;
 }
 
 interface LobbyType {

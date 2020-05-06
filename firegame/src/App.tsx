@@ -4,6 +4,7 @@ import {
 	BrowserRouter as Router,
 	Route,
 	RouteComponentProps,
+	// @ts-ignore
 } from "react-router-dom";
 
 import Home from "./firegame/home";
@@ -24,7 +25,7 @@ function App() {
 }
 
 function getRoutes() {
-	const routes: any = [];
+	const routes: JSX.Element[] = [];
 	for (let [path, Xcomponent] of Object.entries(components)) {
 		routes.push(
 			<Route

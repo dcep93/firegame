@@ -7,17 +7,15 @@ import Lobby from "./Lobby";
 var minUpdateKey = "";
 var gameHasStarted = false;
 
+type GameStateType = any;
+
 abstract class Game extends Lobby {
 	abstract renderGame(): JSX.Element;
-	abstract buildNewGame(): any;
-
-	constructor(props: any) {
-		super(props);
-		this.setUserId();
-		this.state = { userId: localStorage.userId };
-	}
+	abstract buildNewGame(): GameStateType;
 
 	componentDidMount() {
+		this.setUserId();
+		this.state = { userId: localStorage.userId };
 		Firebase.init();
 		this.initLobby();
 	}
@@ -41,24 +39,26 @@ abstract class Game extends Lobby {
 		if (gameHasStarted) return;
 		gameHasStarted = true;
 		this.heartbeat();
-		Firebase.latestChild(this.gamePath()).then((result: any) => {
-			if (!result) {
-				Promise.resolve()
-					.then(this.buildNewGame.bind(this))
-					.then(this.sendGameStateHelper.bind(this))
-					.then(this.listenForGameUpdates.bind(this));
-			} else {
-				minUpdateKey = Object.keys(result)[0];
-				this.listenForGameUpdates();
+		Firebase.latestChild(this.gamePath()).then(
+			(result: GameStateType | null) => {
+				if (!result) {
+					Promise.resolve()
+						.then(this.buildNewGame.bind(this))
+						.then(this.sendGameStateHelper.bind(this))
+						.then(this.listenForGameUpdates.bind(this));
+				} else {
+					minUpdateKey = Object.keys(result)[0];
+					this.listenForGameUpdates();
+				}
 			}
-		});
+		);
 	}
 
 	listenForGameUpdates() {
 		Firebase.connect(this.gamePath(), this.maybeUpdateGame.bind(this));
 	}
 
-	maybeUpdateGame(record: { [key: string]: any }) {
+	maybeUpdateGame(record: { [key: string]: GameStateType }) {
 		for (let [key, value] of Object.entries(record)) {
 			if (minUpdateKey <= key) this.setState({ game: value });
 		}
@@ -68,7 +68,7 @@ abstract class Game extends Lobby {
 		this.sendGameStateHelper(this.state.game);
 	}
 
-	sendGameStateHelper(gameState: any) {
+	sendGameStateHelper(gameState: GameStateType) {
 		return Firebase.push(this.gamePath(), gameState);
 	}
 
