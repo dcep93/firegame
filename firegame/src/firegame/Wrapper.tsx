@@ -1,18 +1,16 @@
-import React, { FormEvent } from "react";
+import React from "react";
 
 import Firebase from "./Firebase";
 
 import Game from "../shared/Game";
+
+import Lobby, { LobbyType } from "./Lobby";
 
 const VERSION = "v0.0.3";
 
 const HEARTBEAT_INTERVAL = 1000;
 
 type RecordType = { [updateKey: string]: GameStateType<any> };
-
-interface LobbyType {
-	[userId: string]: PersonType;
-}
 
 interface PersonType {
 	userId: string;
@@ -30,18 +28,16 @@ interface PropsType {
 interface StateType<T> {
 	userId: string;
 	username?: string;
-	lobby?: { [userId: string]: string };
+	lobby?: LobbyType;
 	game?: GameStateType<T>;
 }
 
-type GameStateType<T> = { id: number; game: T };
+type GameStateType<T> = { id: number; game?: T };
 
 var minUpdateKey = "";
 var gameHasStarted = false;
 
 class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
-	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-
 	constructor(props: PropsType) {
 		super(props);
 		this.setUserId();
@@ -52,7 +48,11 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 		if (this.state.lobby === undefined) return "Loading...";
 		return (
 			<div>
-				{this.renderLobby()}
+				<Lobby
+					username={this.state.username}
+					lobby={this.state.lobby}
+					setUsername={this.setUsername.bind(this)}
+				/>
 				{this.state.game && this.renderGame()}
 			</div>
 		);
@@ -64,7 +64,7 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 		return (
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}
-				game={this.state.game!.game}
+				game={this.state.game!.game!}
 				id={this.state.game!.id}
 			/>
 		);
@@ -92,8 +92,7 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 
 	maybeUpdateGame(record: RecordType) {
 		if (!record) {
-			// @ts-ignore
-			const game: GameState<T> = { id: 0 };
+			const game: GameStateType<T> = { id: 0 };
 			return this.setState({ game });
 		}
 		for (let [key, value] of Object.entries(record)) {
@@ -129,7 +128,7 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 
 	// lobby
 
-	setLobby(remoteLobby: LobbyType) {
+	setLobby(remoteLobby: { [userId: string]: PersonType }) {
 		const lobby: { [userId: string]: string } = {};
 		if (remoteLobby) {
 			for (let [userId, person] of Object.entries(remoteLobby)) {
@@ -154,9 +153,7 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 		return true;
 	}
 
-	setUsername(e: FormEvent<HTMLFormElement>) {
-		e.preventDefault();
-		const username = this.inputRef.current!.value;
+	setUsername(username: string) {
 		const userId = this.state.userId;
 		const now = Date.now();
 		const myUserObj = {
@@ -174,18 +171,6 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 
 	updateTimestamp() {
 		Firebase.set(`${this.mePath(this.state.userId)}/timestamp`, Date.now());
-	}
-
-	renderLobby() {
-		if (this.state.username !== undefined) {
-			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
-		} else {
-			return (
-				<form onSubmit={this.setUsername.bind(this)}>
-					<input type="text" ref={this.inputRef} />
-				</form>
-			);
-		}
 	}
 
 	// paths
