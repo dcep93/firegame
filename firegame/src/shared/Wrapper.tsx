@@ -4,6 +4,8 @@ import Firebase from "./Firebase";
 
 import Game from "./Game";
 
+const VERSION = "v0.0.2";
+
 const HEARTBEAT_INTERVAL = 1000;
 
 type RecordType = { [updateKey: string]: GameStateType<any> };
@@ -108,8 +110,10 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 	// init
 
 	setUserId() {
-		if (!localStorage.userId)
-			localStorage.userId = btoa(Math.random().toString());
+		if (localStorage.version !== VERSION) {
+			localStorage.version = VERSION;
+			localStorage.userId = `u.${Math.random().toString(16)}`;
+		}
 	}
 
 	componentDidMount() {
