@@ -3,8 +3,6 @@ import Firebase from "../Firebase";
 import Base from "./D_Base";
 import { LobbyType } from "../Lobby";
 
-// ping every second, values expire after 5 seconds to determine disconnects
-
 const PRESENT_EXPIRE = 5000;
 const HEARTBEAT_INTERVAL = 1000;
 

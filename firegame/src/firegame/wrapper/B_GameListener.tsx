@@ -3,9 +3,7 @@ import Firebase from "../Firebase";
 import LobbyListener from "./C_LobbyListener";
 import { GameStateType } from "./D_Base";
 
-// games expire after 4 hours of no activity
-
-const MAX_GAME_AGE = 4 * 60 * 60 * 1000;
+const GAME_EXPIRE_TIME = 2 * 60 * 60 * 1000;
 
 type RecordType<T> = { [updateKey: string]: GameStateType<T> };
 
@@ -20,7 +18,7 @@ class GameListener<T> extends LobbyListener<T> {
 	receiveGameUpdate(record: RecordType<T>): void {
 		if (record) {
 			const game = Object.values(record)[0];
-			if (Firebase.now() - game.timestamp < MAX_GAME_AGE) {
+			if (Firebase.now() - game.timestamp < GAME_EXPIRE_TIME) {
 				this.setState({ game });
 				return;
 			}
