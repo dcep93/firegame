@@ -14,7 +14,8 @@ interface StateType {
 }
 
 interface LobbyType {
-	[userId: string]: PersonType;
+	alive: boolean;
+	users: { [userId: string]: PersonType };
 }
 
 interface PersonType {
@@ -39,20 +40,13 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	initLobby() {
-		// todo is this necessary
-		Firebase.set(`${this.lobbyPath()}/alive`, true);
 		Firebase.connect(this.lobbyPath(), this.setLobby.bind(this));
-	}
-
-	getFromLobby(lobby?: LobbyType): PersonType | null {
-		// todo
-		return null;
-		// return (lobby!.users || {})[this.state.userId];
 	}
 
 	setLobby(lobby: LobbyType) {
 		this.setState({ lobby });
-		const me: PersonType | null = this.getFromLobby(lobby);
+		const me: PersonType | null =
+			lobby && lobby.users && lobby.users[this.state.userId];
 		if (me && this.state.username !== me.username) {
 			this.setState({ username: me.username });
 			this.ensureGameHasStarted();
@@ -60,7 +54,7 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	renderLobby() {
-		if (this.getFromLobby(this.state.lobby) !== undefined) {
+		if (this.state.username !== undefined) {
 			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
 		} else {
 			return (

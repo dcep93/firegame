@@ -13,9 +13,14 @@ abstract class Game extends Lobby {
 	abstract renderGame(): JSX.Element;
 	abstract buildNewGame(): GameStateType;
 
-	componentDidMount() {
+	// todo typing
+	constructor(props: any) {
+		super(props);
 		this.setUserId();
 		this.state = { userId: localStorage.userId };
+	}
+
+	componentDidMount() {
 		Firebase.init();
 		this.initLobby();
 	}
