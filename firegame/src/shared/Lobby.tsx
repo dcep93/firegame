@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEvent } from "react";
 
 import Firebase from "./Firebase";
 
@@ -7,23 +7,26 @@ const HEARTBEAT_INTERVAL = 1000;
 interface StateType {
 	userId: string;
 	username?: string;
-	lobby?: {
-		[userId: string]: {
-			userId: string;
-			username?: string;
-			timestamp: number;
-			signInTime: number;
-		};
-	};
+	lobby?: LobbyType;
 	game?: any;
+}
+
+interface LobbyType {
+	[userId: string]: PersonType;
+}
+
+interface PersonType {
+	userId: string;
+	username?: string;
+	timestamp: number;
+	signInTime: number;
 }
 
 abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-	heartbeatInterval;
 	abstract gameName(): string;
 
-	abstract ensureGameHasStarted();
+	abstract ensureGameHasStarted(): void;
 
 	lobbyPath() {
 		return `${this.gameName()}/lobby/${this.props.roomId}`;
@@ -34,14 +37,20 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	initLobby() {
-		// is this necessary
+		// todo is this necessary
 		Firebase.set(`${this.lobbyPath()}/alive`, true);
 		Firebase.connect(this.lobbyPath(), this.setLobby.bind(this));
 	}
 
-	setLobby(lobby) {
+	getFromLobby(lobby?: LobbyType): PersonType | null {
+		// todo
+		return null;
+		// return (lobby!.users || {})[this.state.userId];
+	}
+
+	setLobby(lobby: LobbyType) {
 		this.setState({ lobby });
-		const me = (lobby.users || {})[this.state.userId];
+		const me: PersonType | null = this.getFromLobby(lobby);
 		if (me && this.state.username !== me.username) {
 			this.setState({ username: me.username });
 			this.ensureGameHasStarted();
@@ -49,8 +58,7 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	renderLobby() {
-		if ((this.state.lobby!.users || {})[this.state.userId] !== undefined) {
-			if (this.heartbeatInterval === undefined) this.heartbeat();
+		if (this.getFromLobby(this.state.lobby) !== undefined) {
 			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
 		} else {
 			return (
@@ -61,7 +69,7 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 		}
 	}
 
-	setUsername(e) {
+	setUsername(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		const username = this.inputRef.current!.value;
 		const userId = this.state.userId;
@@ -76,10 +84,7 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	heartbeat() {
-		this.heartbeatInterval = setInterval(
-			this.updateTimestamp.bind(this),
-			HEARTBEAT_INTERVAL
-		);
+		setInterval(this.updateTimestamp.bind(this), HEARTBEAT_INTERVAL);
 	}
 
 	updateTimestamp() {

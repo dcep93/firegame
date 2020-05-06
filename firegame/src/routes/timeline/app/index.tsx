@@ -7,13 +7,13 @@ class App extends Game {
 		return "timeline";
 	}
 
-	startNewGame() {
+	buildNewGame() {
 		return { thetimeitisrightnow: Date.now() };
 	}
 
 	increment() {
 		this.state.game.thetimeitisrightnow++;
-		this.sendGameStateHelper();
+		this.sendGameState();
 	}
 
 	renderGame() {

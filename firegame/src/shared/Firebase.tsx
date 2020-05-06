@@ -5,7 +5,7 @@ import "firebase/database";
 
 const config = { databaseURL: "https://firegame-7eb05.firebaseio.com/" };
 
-var database;
+var database: any;
 
 class Firebase {
 	static init() {
@@ -13,24 +13,24 @@ class Firebase {
 		database = firebase.database();
 	}
 
-	static latestChild(path): any {
+	static latestChild(path: string): any {
 		return new Promise((resolve) =>
 			database.ref(path).limitToLast(1).once("value", resolve)
 		).then((result: any) => result.val());
 	}
 
-	static push(path, obj) {
+	static push(path: string, obj: any) {
 		return database.ref(path).push(obj);
 	}
 
-	static connect(path, callback) {
-		return database.ref(path).on("value", (snapshot) => {
+	static connect(path: string, callback: (value: any) => void): void {
+		database.ref(path).on("value", (snapshot: any) => {
 			var val = snapshot.val();
 			callback(val);
 		});
 	}
 
-	static set(path, obj) {
+	static set(path: string, obj: any) {
 		return database.ref(path).set(obj);
 	}
 }
