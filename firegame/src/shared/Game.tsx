@@ -8,7 +8,7 @@ abstract class Game<T> extends React.Component<{
 	abstract buildNewGame(): T;
 
 	componentDidMount() {
-		if (!this.props.game) {
+		if (!this.props.id) {
 			const newGame = this.buildNewGame();
 			this.props.sendGameState(newGame);
 		}

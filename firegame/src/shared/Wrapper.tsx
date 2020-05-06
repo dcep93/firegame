@@ -104,7 +104,7 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 			game: gameState,
 			id: (this.state.game ? this.state.game.id : 0) + 1,
 		};
-		return Firebase.push(this.gamePath(), out);
+		Firebase.push(this.gamePath(), out);
 	}
 
 	// init

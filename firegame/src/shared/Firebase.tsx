@@ -5,8 +5,7 @@ import "firebase/database";
 
 const config = { databaseURL: "https://firegame-7eb05.firebaseio.com/" };
 
-var database: DatabaseType;
-type DatabaseType = { ref: (path: string) => any };
+var database: { ref: (path: string) => any };
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
@@ -16,7 +15,7 @@ class Firebase {
 		database = firebase.database();
 	}
 
-	static latestChildOnce(path: string): BlobType {
+	static latestChildOnce(path: string): Promise<BlobType> {
 		return new Promise((resolve) =>
 			database.ref(path).limitToLast(1).once("value", resolve)
 		).then((result: any) => result && result.val());
@@ -35,8 +34,8 @@ class Firebase {
 			});
 	}
 
-	static push(path: string, obj: BlobType) {
-		return database.ref(path).push(obj);
+	static push(path: string, obj: BlobType): void {
+		database.ref(path).push(obj);
 	}
 
 	static connect(path: string, callback: (value: BlobType) => void): void {
@@ -46,8 +45,8 @@ class Firebase {
 		});
 	}
 
-	static set(path: string, obj: BlobType) {
-		return database.ref(path).set(obj);
+	static set(path: string, obj: BlobType): void {
+		database.ref(path).set(obj);
 	}
 }
 
