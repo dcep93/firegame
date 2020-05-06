@@ -3,7 +3,7 @@ import React from "react";
 import Lobby from "../Lobby";
 import GameListener from "./B_GameListener";
 
-class WrapperRender<T> extends GameListener<T> {
+class Render<T> extends GameListener<T> {
 	render() {
 		if (this.state.lobby === undefined) return "Loading...";
 		return (
@@ -31,4 +31,4 @@ class WrapperRender<T> extends GameListener<T> {
 	}
 }
 
-export default WrapperRender;
+export default Render;
