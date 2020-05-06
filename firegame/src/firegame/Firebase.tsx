@@ -9,10 +9,19 @@ var database: { ref: (path: string) => any };
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
+var offset: number = 0;
 class Firebase {
 	static init(): void {
 		firebase.initializeApp(config);
 		database = firebase.database();
+		database
+			.ref(".info/serverTimeOffset")
+			.once("value")
+			.then((data: ResultType) => (offset = data.val()));
+	}
+
+	static now(): number {
+		return offset + Date.now();
 	}
 
 	static latestChild(

@@ -5,6 +5,7 @@ import { LobbyType } from "../Lobby";
 
 // ping every second, values expire after 5 seconds to determine disconnects
 
+const PRESENT_EXPIRE = 5000;
 const HEARTBEAT_INTERVAL = 1000;
 
 var gameHasStarted: boolean = false;
@@ -24,7 +25,7 @@ abstract class LobbyListener<T> extends Base<T> {
 
 	setUsername(username: string): void {
 		const userId: string = this.props.userId;
-		const now: number = Date.now();
+		const now: number = Firebase.now();
 		const myUserObj: PersonType = {
 			userId,
 			username,
@@ -45,6 +46,8 @@ abstract class LobbyListener<T> extends Base<T> {
 		const lobby: LobbyType = {};
 		if (remoteLobby) {
 			for (let [userId, person] of Object.entries(remoteLobby)) {
+				if (Firebase.now() - person.timestamp > PRESENT_EXPIRE)
+					continue;
 				lobby[userId] = person.username;
 				if (userId === this.props.userId) this.signin();
 			}
@@ -67,7 +70,10 @@ abstract class LobbyListener<T> extends Base<T> {
 	}
 
 	updateTimestamp(): void {
-		Firebase.set(`${this.mePath(this.props.userId)}/timestamp`, Date.now());
+		Firebase.set(
+			`${this.mePath(this.props.userId)}/timestamp`,
+			Firebase.now()
+		);
 	}
 
 	lobbyPath(): string {

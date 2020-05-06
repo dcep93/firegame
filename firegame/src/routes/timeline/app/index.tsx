@@ -1,12 +1,13 @@
 import React from "react";
 
 import Game from "../../../shared/Game";
+import Firebase from "../../../firegame/Firebase";
 
 type GameType = { dan: number };
 
 class Timeline extends Game<GameType> {
 	buildNewGame(): GameType {
-		return { dan: Date.now() };
+		return { dan: Firebase.now() };
 	}
 
 	render() {
