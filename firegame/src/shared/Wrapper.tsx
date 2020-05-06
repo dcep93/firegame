@@ -91,9 +91,11 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 	}
 
 	maybeUpdateGame(record: RecordType) {
-		// @ts-ignore
-		const game: GameState<T> = { id: 1 };
-		if (!record) return this.setState({ game });
+		if (!record) {
+			// @ts-ignore
+			const game: GameState<T> = { id: 0 };
+			return this.setState({ game });
+		}
 		for (let [key, value] of Object.entries(record)) {
 			if (minUpdateKey <= key) this.setState({ game: value });
 		}
@@ -102,7 +104,7 @@ class Wrapper<T> extends React.Component<PropsType, StateType<T>> {
 	sendGameState(gameState: T) {
 		const out = {
 			game: gameState,
-			id: (this.state.game ? this.state.game.id : 0) + 1,
+			id: this.state.game!.id + 1,
 		};
 		Firebase.push(this.gamePath(), out);
 	}
