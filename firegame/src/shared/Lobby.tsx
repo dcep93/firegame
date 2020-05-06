@@ -23,17 +23,17 @@ abstract class Lobby extends React.Component<{ roomId: number }, StateType> {
 	heartbeatInterval;
 	abstract gameName(): string;
 
-	roomPath() {
+	lobbyPath() {
 		return `${this.gameName()}/lobby/${this.props.roomId}`;
 	}
 
 	mePath(userId: string) {
-		return `${this.roomPath()}/users/${userId}`;
+		return `${this.lobbyPath()}/users/${userId}`;
 	}
 
 	initLobby() {
-		Firebase.set(`${this.roomPath()}/alive`, true);
-		Firebase.connect(this.roomPath(), this.setLobby.bind(this));
+		Firebase.set(`${this.lobbyPath()}/alive`, true);
+		Firebase.connect(this.lobbyPath(), this.setLobby.bind(this));
 	}
 
 	setLobby(lobby) {

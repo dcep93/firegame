@@ -14,7 +14,7 @@ class Firebase {
 	}
 
 	static latestChild(path): any {
-		return Promise.resolve(true);
+		return Promise.resolve(false);
 	}
 
 	static push(path, obj) {

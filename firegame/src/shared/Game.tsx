@@ -24,7 +24,7 @@ abstract class Game extends Lobby {
 
 	setUserId() {
 		if (!localStorage.userId)
-			sessionStorage.userId = btoa(Math.random().toString());
+			localStorage.userId = btoa(Math.random().toString());
 	}
 
 	render() {
@@ -38,7 +38,7 @@ abstract class Game extends Lobby {
 	}
 
 	ensureGameHasStarted() {
-		Firebase.latestChild("getgameforthisroom").then((result) => {
+		Firebase.latestChild(this.gamePath()).then((result) => {
 			if (!result) {
 				Promise.resolve()
 					.then(this.startNewGame.bind(this))
@@ -52,18 +52,20 @@ abstract class Game extends Lobby {
 	}
 
 	listenForGameUpdates() {
-		Firebase.connect(
-			"getgameforthisroomchildren",
-			this.maybeUpdateGame.bind(this)
-		);
+		Firebase.connect(this.gamePath(), this.maybeUpdateGame.bind(this));
 	}
 
 	maybeUpdateGame(record) {
+		console.log(record);
 		if (minUpdateKey <= record.key) this.setState({ game: record.value });
 	}
 
 	sendState(state) {
-		Firebase.push("getgameforthisroomchildren", state);
+		return Firebase.push(this.gamePath(), state);
+	}
+
+	gamePath() {
+		return `${this.gameName()}/game/${this.props.roomId}`;
 	}
 }
 
