@@ -5,11 +5,11 @@ import Firebase from "./Firebase";
 const HEARTBEAT_INTERVAL = 1000;
 
 interface StateType {
-	sessionId: string;
+	userId: string;
 	username?: string;
 	lobby?: {
-		[sessionId: string]: {
-			sessionId: string;
+		[userId: string]: {
+			userId: string;
 			username?: string;
 			timestamp: number;
 			signInTime: number;
@@ -25,8 +25,8 @@ class Lobby extends React.Component<{ roomId: number }, StateType> {
 		return `timeline/lobby/${this.props.roomId}`;
 	}
 
-	mePath(sessionId: string) {
-		return `${this.roomPath()}/users/${sessionId}`;
+	mePath(userId: string) {
+		return `${this.roomPath()}/users/${userId}`;
 	}
 
 	initLobby() {
@@ -36,15 +36,13 @@ class Lobby extends React.Component<{ roomId: number }, StateType> {
 
 	setLobby(lobby) {
 		const updates: any = { lobby };
-		const me = (lobby.users || {})[this.state.sessionId];
+		const me = (lobby.users || {})[this.state.userId];
 		if (me !== undefined) updates.username = me.username;
 		this.setState(updates);
 	}
 
 	renderLobby() {
-		if (
-			(this.state.lobby!.users || {})[this.state.sessionId] !== undefined
-		) {
+		if ((this.state.lobby!.users || {})[this.state.userId] !== undefined) {
 			if (this.heartbeatInterval === undefined) this.heartbeat();
 			return <pre>{JSON.stringify(this.state.lobby, null, 2)}</pre>;
 		} else {
@@ -59,15 +57,15 @@ class Lobby extends React.Component<{ roomId: number }, StateType> {
 	setUsername(e) {
 		e.preventDefault();
 		const username = this.inputRef.current!.value;
-		const sessionId = this.state.sessionId;
+		const userId = this.state.userId;
 		const now = Date.now();
 		const myUserObj = {
-			sessionId,
+			userId,
 			username,
 			timestamp: now,
 			signInTime: now,
 		};
-		Firebase.set(`${this.mePath(sessionId)}`, myUserObj);
+		Firebase.set(`${this.mePath(userId)}`, myUserObj);
 	}
 
 	heartbeat() {
@@ -78,10 +76,7 @@ class Lobby extends React.Component<{ roomId: number }, StateType> {
 	}
 
 	updateTimestamp() {
-		Firebase.set(
-			`${this.mePath(this.state.sessionId)}/timestamp`,
-			Date.now()
-		);
+		Firebase.set(`${this.mePath(this.state.userId)}/timestamp`, Date.now());
 	}
 }
 

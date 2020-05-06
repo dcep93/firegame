@@ -6,7 +6,7 @@ class App extends Game {
 	renderGame() {
 		return (
 			<p>
-				{`timeline function ${this.props.roomId} ${this.state.username} ${this.state.sessionId}`}
+				{`timeline function ${this.props.roomId} ${this.state.username} ${this.state.userId}`}
 			</p>
 		);
 	}

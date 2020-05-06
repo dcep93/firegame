@@ -9,8 +9,8 @@ abstract class Game extends Lobby {
 
 	constructor(props) {
 		super(props);
-		this.setSessionId();
-		this.state = { sessionId: sessionStorage.sessionId };
+		this.setUserId();
+		this.state = { userId: localStorage.userId };
 	}
 
 	componentDidMount() {
@@ -18,9 +18,9 @@ abstract class Game extends Lobby {
 		this.initLobby();
 	}
 
-	setSessionId() {
-		if (!sessionStorage.sessionId)
-			sessionStorage.sessionId = btoa(Math.random().toString());
+	setUserId() {
+		if (!localStorage.userId)
+			sessionStorage.userId = btoa(Math.random().toString());
 	}
 
 	render() {
