@@ -1,8 +1,8 @@
 import React from "react";
 
-import Game from "../../shared/Game";
+import Game from "../../shared/components/Game";
 
-import { LobbyType } from "../Lobby";
+import { LobbyType } from "./C_LobbyListener";
 
 export interface PropsType {
 	component: typeof Game;

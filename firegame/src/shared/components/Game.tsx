@@ -1,5 +1,5 @@
 import React from "react";
-import { LobbyType } from "../firegame/Lobby";
+import { LobbyType } from "../../firegame/wrapper/C_LobbyListener";
 
 abstract class Game<T> extends React.Component<{
 	sendGameState: (newState: T) => void;
@@ -8,12 +8,13 @@ abstract class Game<T> extends React.Component<{
 	userId: string;
 	lobby: LobbyType;
 }> {
-	abstract buildNewGame(): T;
+	abstract buildNewGame(): Promise<T> | T;
 
 	componentDidMount(): void {
 		if (!this.props.id) {
-			const newGame = this.buildNewGame();
-			this.props.sendGameState(newGame);
+			Promise.resolve()
+				.then(this.buildNewGame.bind(this))
+				.then(this.props.sendGameState.bind(this));
 		}
 	}
 }

@@ -1,12 +1,13 @@
 import Firebase from "../Firebase";
 
 import Base from "./D_Base";
-import { LobbyType } from "../Lobby";
 
 const PRESENT_EXPIRE = 5000;
 const HEARTBEAT_INTERVAL = 1000;
 
 var gameHasStarted: boolean = false;
+
+export type LobbyType = { [userId: string]: string };
 
 interface PersonType {
 	userId: string;

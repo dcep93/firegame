@@ -1,23 +1,23 @@
 import React, { FormEvent } from "react";
 
-export type LobbyType = { [userId: string]: string };
+import css from "../css/LoginPage.module.css";
+import styles from "../../shared/css/Styles.module.css";
 
-class Lobby extends React.Component<{
-	userId: string;
-	lobby: LobbyType;
+class LoginPage extends React.Component<{
+	name: string;
 	setUsername: (username: string) => void;
 }> {
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	render() {
-		if (this.props.lobby[this.props.userId] !== undefined) {
-			return <pre>{JSON.stringify(this.props.lobby, null, 2)}</pre>;
-		} else {
-			return (
+		return (
+			<div className={`${css.main} ${styles.bubble}`}>
+				<p>Welcome to {this.props.name}!</p>
+				<p>Enter your name to continue</p>
 				<form onSubmit={this.setUsername.bind(this)}>
 					<input type="text" ref={this.inputRef} />
 				</form>
-			);
-		}
+			</div>
+		);
 	}
 
 	setUsername(e: FormEvent<HTMLFormElement>): void {
@@ -27,4 +27,4 @@ class Lobby extends React.Component<{
 	}
 }
 
-export default Lobby;
+export default LoginPage;

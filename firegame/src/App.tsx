@@ -11,7 +11,7 @@ import Home from "./firegame/Home";
 import Wrapper from "./firegame/wrapper";
 import Firebase from "./firegame/Firebase";
 
-import Components from "./firegame/Components";
+import Games from "./firegame/Games";
 
 const VERSION: string = "v0.0.3";
 
@@ -20,7 +20,7 @@ function App() {
 	return (
 		<Router>
 			<div>
-				<Route exact path="/" component={Home} />
+				<Route exact path="/" render={Home} />
 				{getRoutes()}
 			</div>
 		</Router>
@@ -29,7 +29,7 @@ function App() {
 
 function getRoutes(): JSX.Element {
 	const routes: JSX.Element[] = [];
-	for (let [name, component] of Object.entries(Components)) {
+	for (let [name, component] of Object.entries(Games)) {
 		routes.push(
 			<Route
 				key={name}

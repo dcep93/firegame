@@ -1,24 +1,20 @@
 import React from "react";
 
-import Lobby from "../Lobby";
 import GameListener from "./B_GameListener";
+
+import LoadingPage from "../components/LoadingPage";
+import LoginPage from "../components/LoginPage";
 
 class Render<T> extends GameListener<T> {
 	render() {
-		if (this.state.lobby === undefined) return "Loading...";
-		return (
-			<div>
-				<Lobby
-					userId={this.props.userId}
-					lobby={this.state.lobby}
+		if (this.state.lobby === undefined) return <LoadingPage />;
+		if (this.state.lobby[this.props.userId] === undefined)
+			return (
+				<LoginPage
+					name={this.props.name}
 					setUsername={this.setUsername.bind(this)}
 				/>
-				{this.state.game && this.renderGame()}
-			</div>
-		);
-	}
-
-	renderGame(): JSX.Element {
+			);
 		return (
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}

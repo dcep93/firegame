@@ -1,6 +1,6 @@
 import React from "react";
 
-import Game from "../../../shared/Game";
+import Game from "../../../shared/components/Game";
 import Firebase from "../../../firegame/Firebase";
 
 type GameType = { dan: number };
