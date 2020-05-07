@@ -35,11 +35,11 @@ class Settings<T> extends React.Component<
 				<form>
 					<div>
 						<span>Hand Size</span>
-						<input type={"text"} />
+						<input type={"number"} />
 					</div>
 					<div>
 						<span>Board Starting Size Size</span>
-						<input type={"text"} />
+						<input type={"number"} />
 					</div>
 					<div>
 						<label>
@@ -133,13 +133,13 @@ class Settings<T> extends React.Component<
 	getParams(): Params {
 		return {
 			userId: this.props.userId,
-			quizlet: "415",
+			quizlet: "284065846",
 			handSize: 6,
 			boardStartingSize: 6,
 			swap: false,
 			reverse: false,
 			lobby: this.props.lobby,
-			useRank: true,
+			useRank: false,
 		};
 	}
 }

@@ -1,13 +1,22 @@
 import React from "react";
 
 import { Params } from "./NewGame";
+import Info from "./Info";
+import Hand from "./Hand";
+import Board from "./Board";
 
 export type TermType = {
-	term: string;
+	word: string;
 	definition: string;
+	image: string;
 };
 
-export type PlayerType = { username: string; userId: string; hand: number[] };
+export type PlayerType = {
+	index: number;
+	username: string;
+	userId: string;
+	hand: number[];
+};
 
 export type GameType = {
 	params: Params;
@@ -22,25 +31,17 @@ export type GameType = {
 
 class Render extends React.Component<{
 	sendGameState: (game: GameType) => void;
-	id: number;
 	game: GameType;
+	myIndex: number;
 }> {
 	render() {
 		return (
 			<div>
-				<p>
-					dan: {this.props.game.setId}
-					id: {this.props.id}
-				</p>
-				<pre>{JSON.stringify(this.props.game, null, 2)}</pre>
-				<button onClick={this.increment.bind(this)}>abc</button>
+				<Info game={this.props.game} />
+				<Hand game={this.props.game} myIndex={this.props.myIndex} />
+				<Board game={this.props.game} />
 			</div>
 		);
-	}
-
-	increment(): void {
-		this.props.game.setId++;
-		this.props.sendGameState(this.props.game);
 	}
 }
 

@@ -31,8 +31,16 @@ class Timeline extends Game<GameType> {
 						{this.props.game && (
 							<Render
 								sendGameState={this.props.sendGameState}
-								id={this.props.id}
 								game={this.props.game}
+								myIndex={
+									this.props.game.players
+										.filter(
+											(player) =>
+												player.userId ===
+												this.props.userId
+										)
+										.map((player) => player.index)[0]
+								}
 							/>
 						)}
 					</div>

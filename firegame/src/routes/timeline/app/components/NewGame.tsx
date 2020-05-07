@@ -57,7 +57,7 @@ function setDeck(data: DataType): DataType {
 	const terms = data.response.terms.map((term: any) => ({
 		definition: term.definition || null,
 		word: term.word || null,
-		image: term.image || null,
+		image: term._imageUrl || null,
 	}));
 	if (data.game.params.reverse) terms.reverse();
 	if (data.game.params.swap)
@@ -79,11 +79,14 @@ function setDeck(data: DataType): DataType {
 }
 
 function setPlayers(data: DataType): DataType {
-	const players = Object.keys(data.game.params.lobby).map((userId) => ({
-		username: data.game.params.lobby[userId],
-		userId,
-		hand: data.game.deck.splice(0, data.game.params.handSize),
-	}));
+	const players = Object.keys(data.game.params.lobby).map(
+		(userId, index: number) => ({
+			index,
+			username: data.game.params.lobby[userId],
+			userId,
+			hand: data.game.deck.splice(0, data.game.params.handSize),
+		})
+	);
 	data.game.currentPlayer = players
 		.map((player) => player.userId)
 		.indexOf(data.game.params.userId);
@@ -96,7 +99,7 @@ function setBoard(data: DataType): DataType {
 		0,
 		data.game.params.boardStartingSize
 	);
-	data.game.board.sort((a, b) => a - b);
+	data.game.board.sort((a, b) => b - a);
 	return data;
 }
 
