@@ -4,7 +4,7 @@ import styles from "../../../../shared/css/Styles.module.css";
 
 import Quizlet from "./Quizlet";
 
-import NewGame from "./NewGame";
+import NewGame, { Params } from "./NewGame";
 
 import { GameType } from "./Render";
 
@@ -19,7 +19,9 @@ class Settings<T> extends React.Component<
 	componentDidMount() {
 		if (pulledSets) return;
 		pulledSets = true;
-		Quizlet.fetch(Quizlet.FOLDER_URL).then(this.seedFromFolder.bind(this));
+		Quizlet.fetch(Quizlet.FOLDER_URL, "").then(
+			this.seedFromFolder.bind(this)
+		);
 	}
 
 	render() {
@@ -79,7 +81,7 @@ class Settings<T> extends React.Component<
 		const setsToTitles: SetsToTitlesType = {};
 		models.forEach((model) => {
 			const setId: number = model.setId;
-			Quizlet.fetch(`${Quizlet.SET_URL}${setId}`)
+			Quizlet.fetch(Quizlet.SET_URL, setId.toString())
 				.then((response) => {
 					setsToTitles[setId] = response.models.set[0].title;
 				})
@@ -93,8 +95,14 @@ class Settings<T> extends React.Component<
 	startGame(e: React.MouseEvent) {
 		e.preventDefault();
 		Promise.resolve()
+			.then(this.getParams.bind(this))
 			.then(NewGame)
 			.then(this.props.sendGameState.bind(this));
+	}
+
+	getParams(): Params {
+		// @ts-ignore
+		return {};
 	}
 }
 

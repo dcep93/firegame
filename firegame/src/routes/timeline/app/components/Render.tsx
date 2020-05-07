@@ -1,6 +1,8 @@
 import React from "react";
 
-export type GameType = { dan: number };
+import { Params } from "./NewGame";
+
+export type GameType = { params: Params; dan: number };
 
 class Render extends React.Component<{
 	sendGameState: (game: GameType) => void;
