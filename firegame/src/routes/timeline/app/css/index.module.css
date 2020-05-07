@@ -1,6 +1,9 @@
 .main {
 	display: flex;
 	flex-direction: row-reverse;
+	height: 100%;
+	width: 100%;
+	position: absolute;
 }
 
 .sidebar {
@@ -10,4 +13,7 @@
 
 .content {
 	flex-grow: 1;
+	min-width: 0;
+	display: flex;
+	overflow: scroll;
 }

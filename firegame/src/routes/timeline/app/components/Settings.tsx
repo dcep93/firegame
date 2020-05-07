@@ -16,7 +16,11 @@ var pulledSets = false;
 type SetsToTitlesType = { [setId: number]: string };
 
 class Settings<T> extends React.Component<
-	{ lobby: LobbyType; sendGameState: (newState: GameType) => void },
+	{
+		userId: string;
+		lobby: LobbyType;
+		sendGameState: (newState: GameType) => void;
+	},
 	{ setsToTitles: SetsToTitlesType }
 > {
 	componentDidMount() {
@@ -125,6 +129,7 @@ class Settings<T> extends React.Component<
 
 	getParams(): Params {
 		return {
+			userId: this.props.userId,
 			quizlet: "415",
 			handSize: 6,
 			boardStartingSize: 6,

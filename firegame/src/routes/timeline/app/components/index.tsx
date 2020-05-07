@@ -16,6 +16,7 @@ class Timeline extends Game<GameType> {
 			<div className={css.main}>
 				<div className={css.sidebar}>
 					<Settings
+						userId={this.props.userId}
 						lobby={this.props.lobby}
 						sendGameState={this.props.sendGameState}
 					/>
@@ -26,13 +27,15 @@ class Timeline extends Game<GameType> {
 					/>
 				</div>
 				<div className={css.content}>
-					{this.props.game && (
-						<Render
-							sendGameState={this.props.sendGameState}
-							id={this.props.id}
-							game={this.props.game}
-						/>
-					)}
+					<div>
+						{this.props.game && (
+							<Render
+								sendGameState={this.props.sendGameState}
+								id={this.props.id}
+								game={this.props.game}
+							/>
+						)}
+					</div>
 				</div>
 			</div>
 		);
