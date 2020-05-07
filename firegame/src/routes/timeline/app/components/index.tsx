@@ -1,13 +1,16 @@
 import React from "react";
 
-import Actions from "./Actions";
+import Game from "../../../../shared/components/Game";
+
 import Settings from "./Settings";
 import Players from "./Players";
 import Render from "./Render";
 
 import css from "../css/index.module.css";
 
-class Timeline extends Actions {
+import { GameType } from "./Render";
+
+class Timeline extends Game<GameType> {
 	render() {
 		return (
 			<div className={css.main}>
@@ -19,7 +22,13 @@ class Timeline extends Actions {
 						lobby={this.props.lobby}
 					/>
 				</div>
-				{this.props.game && <Render />}
+				{this.props.game && (
+					<Render
+						sendGameState={this.props.sendGameState}
+						id={this.props.id}
+						game={this.props.game}
+					/>
+				)}
 			</div>
 		);
 	}
