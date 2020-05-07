@@ -12,7 +12,7 @@ class Timeline extends Actions {
 		return (
 			<div className={css.main}>
 				<div className={css.sidebar}>
-					<Settings />
+					<Settings sendGameState={this.props.sendGameState} />
 					<Players
 						userId={this.props.userId}
 						host={this.props.host}

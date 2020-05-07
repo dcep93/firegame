@@ -4,11 +4,18 @@ import styles from "../../../../shared/css/Styles.module.css";
 
 import Quizlet from "./Quizlet";
 
+import NewGame from "./NewGame";
+
+import { GameType } from "./Render";
+
 var pulledSets = false;
 
 type SetsToTitlesType = { [setId: number]: string };
 
-class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
+class Settings<T> extends React.Component<
+	{ sendGameState: (newState: GameType) => void },
+	{ setsToTitles: SetsToTitlesType }
+> {
 	componentDidMount() {
 		if (pulledSets) return;
 		pulledSets = true;
@@ -46,7 +53,9 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 						<input type={"text"} />
 					</div>
 					<div>
-						<button>Start Game</button>
+						<button onClick={this.startGame.bind(this)}>
+							Start Game
+						</button>
 					</div>
 				</form>
 			</div>
@@ -79,6 +88,13 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 						this.setState({ setsToTitles });
 				});
 		});
+	}
+
+	startGame(e: React.MouseEvent) {
+		e.preventDefault();
+		Promise.resolve()
+			.then(NewGame)
+			.then(this.props.sendGameState.bind(this));
 	}
 }
 
