@@ -6,6 +6,11 @@ import LoadingPage from "../components/LoadingPage";
 import LoginPage from "../components/LoginPage";
 
 class Render<T> extends GameListener<T> {
+	componentDidMount() {
+		document.title = this.props.name.toLocaleUpperCase();
+		super.componentDidMount();
+	}
+
 	render() {
 		if (this.state.lobby === undefined) return <LoadingPage />;
 		if (this.state.lobby[this.props.userId] === undefined)
