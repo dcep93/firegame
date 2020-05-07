@@ -1,16 +1,15 @@
 import React from "react";
 
 import Actions from "./Actions";
+import Settings from "./Settings";
+import Render from "./Render";
 
 class Timeline extends Actions {
 	render() {
-		if (!this.props.game) return null;
 		return (
 			<div>
-				<p>{`timeline ${JSON.stringify(this.props.game)} ${
-					this.props.id
-				}`}</p>
-				<button onClick={this.increment.bind(this)}>abc</button>
+				<Settings />
+				{this.props.game && <Render />}
 			</div>
 		);
 	}

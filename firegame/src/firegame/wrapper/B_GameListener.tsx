@@ -24,16 +24,20 @@ class GameListener<T> extends LobbyListener<T> {
 			}
 		}
 		const game: GameStateType<T> = { timestamp: Firebase.now(), id: 0 };
-		return this.setState({ game });
+		this.sendGameStateHelper(game);
 	}
 
 	sendGameState(gameState: T): void {
-		const out = {
+		const game = {
 			game: gameState,
 			id: this.state.game!.id + 1,
 			timestamp: Firebase.now(),
 		};
-		Firebase.push(this.gamePath(), out);
+		this.sendGameStateHelper(game);
+	}
+
+	sendGameStateHelper(game: GameStateType<T>): void {
+		Firebase.push(this.gamePath(), game);
 	}
 
 	gamePath(): string {
