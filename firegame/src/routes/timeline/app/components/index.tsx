@@ -22,13 +22,15 @@ class Timeline extends Game<GameType> {
 						lobby={this.props.lobby}
 					/>
 				</div>
-				{this.props.game && (
-					<Render
-						sendGameState={this.props.sendGameState}
-						id={this.props.id}
-						game={this.props.game}
-					/>
-				)}
+				<div className={css.content}>
+					{this.props.game && (
+						<Render
+							sendGameState={this.props.sendGameState}
+							id={this.props.id}
+							game={this.props.game}
+						/>
+					)}
+				</div>
 			</div>
 		);
 	}
