@@ -23,6 +23,9 @@ class GameListener<T> extends LobbyListener<T> {
 				return;
 			}
 		}
+		// this happens when remote data is deleted
+		// ignore the update - our next push will update game state
+		if (this.state.game) return;
 		const game: GameStateType<T> = {
 			host: this.props.userId,
 			timestamp: Firebase.now(),
