@@ -11,7 +11,7 @@ export type PlayerType = { username: string; userId: string; hand: number[] };
 
 export type GameType = {
 	params: Params;
-	currentPlayer: string;
+	currentPlayer: number;
 	title: string;
 	setId: number;
 	terms: TermType[];
