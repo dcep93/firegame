@@ -15,7 +15,9 @@ class Render<T> extends GameListener<T> {
 					setUsername={this.setUsername.bind(this)}
 				/>
 			);
+		if (!this.state.game) return null;
 		return (
+			// @ts-ignore
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}
 				userId={this.props.userId}

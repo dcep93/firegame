@@ -11,6 +11,7 @@ class Timeline extends Game<GameType> {
 	}
 
 	render() {
+		if (!this.props.game) return null;
 		return (
 			<div>
 				<p>{`timeline ${JSON.stringify(this.props.game)} ${
