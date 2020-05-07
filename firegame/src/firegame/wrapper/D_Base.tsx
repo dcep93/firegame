@@ -17,7 +17,7 @@ interface StateType<T> {
 }
 
 export type GameStateType<T> = {
-	admin: string;
+	host: string;
 	timestamp: number;
 	id: number;
 	game?: T;

@@ -24,7 +24,7 @@ class GameListener<T> extends LobbyListener<T> {
 			}
 		}
 		const game: GameStateType<T> = {
-			admin: this.props.userId,
+			host: this.props.userId,
 			timestamp: Firebase.now(),
 			id: 0,
 		};
@@ -36,7 +36,7 @@ class GameListener<T> extends LobbyListener<T> {
 			game: gameState,
 			id: this.state.game!.id + 1,
 			timestamp: Firebase.now(),
-			admin: this.state.game!.admin,
+			host: this.state.game!.host,
 		};
 		this.sendGameStateHelper(game);
 	}

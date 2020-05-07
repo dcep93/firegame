@@ -17,13 +17,13 @@ class Render<T> extends GameListener<T> {
 			);
 		if (!this.state.game) return null;
 		return (
-			// @ts-ignore
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}
 				userId={this.props.userId}
+				lobby={this.state.lobby!}
 				game={this.state.game!.game!}
 				id={this.state.game!.id}
-				lobby={this.state.lobby!}
+				host={this.state.game!.host}
 			/>
 		);
 	}

@@ -5,7 +5,7 @@ abstract class Game<T> extends React.Component<{
 	sendGameState: (newState: T) => void;
 	game: T;
 	id: number;
-	admin: string;
+	host: string;
 	userId: string;
 	lobby: LobbyType;
 }> {}
