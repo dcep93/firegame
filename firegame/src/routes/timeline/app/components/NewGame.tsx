@@ -9,6 +9,7 @@ export type Params = {
 	boardStartingSize: number;
 	swap: boolean;
 	reverse: boolean;
+	useRank: boolean;
 	lobby: LobbyType;
 	userId: string;
 };
@@ -62,6 +63,10 @@ function setDeck(data: DataType): DataType {
 	if (data.game.params.swap)
 		terms.forEach((term: any) => {
 			[term.word, term.definition] = [term.definition, term.word];
+		});
+	if (data.game.params.useRank)
+		terms.forEach((term: any, index: number) => {
+			term.definition = index.toString();
 		});
 	const deck = terms.map((_: any, index: number) => index);
 	utils.shuffle(deck);

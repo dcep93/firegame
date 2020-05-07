@@ -48,6 +48,9 @@ class Settings<T> extends React.Component<
 						<label>
 							Reverse <input type={"checkbox"} />
 						</label>
+						<label>
+							Use Rank <input type={"checkbox"} />
+						</label>
 					</div>
 					<div>
 						<select>
@@ -136,6 +139,7 @@ class Settings<T> extends React.Component<
 			swap: false,
 			reverse: false,
 			lobby: this.props.lobby,
+			useRank: true,
 		};
 	}
 }
