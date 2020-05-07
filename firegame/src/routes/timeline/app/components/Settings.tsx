@@ -49,7 +49,7 @@ class Settings<T> extends React.Component<
 						</select>
 					</div>
 					<div>
-						<span>Set Id:</span>
+						<span>Quizlet:</span>
 						<input type={"text"} />
 					</div>
 					<div>
