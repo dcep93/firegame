@@ -16,7 +16,12 @@ interface StateType<T> {
 	game?: GameStateType<T>;
 }
 
-export type GameStateType<T> = { timestamp: number; id: number; game?: T };
+export type GameStateType<T> = {
+	admin: string;
+	timestamp: number;
+	id: number;
+	game?: T;
+};
 
 class WrapperBase<T> extends React.Component<PropsType, StateType<T>> {
 	constructor(props: PropsType) {
