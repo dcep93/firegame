@@ -13,7 +13,7 @@ import Firebase from "./firegame/Firebase";
 
 import Games from "./firegame/Games";
 
-const VERSION: string = "v0.0.3";
+export const VERSION: string = "v0.0.3";
 
 function App() {
 	init();

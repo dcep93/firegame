@@ -4,6 +4,8 @@ import styles from "../../../../shared/css/Styles.module.css";
 
 import Quizlet from "./Quizlet";
 
+import { VERSION } from "../../../../App";
+
 import NewGame, { Params } from "./NewGame";
 
 import { GameType } from "./Render";
@@ -20,9 +22,7 @@ class Settings<T> extends React.Component<
 	componentDidMount() {
 		if (pulledSets) return;
 		pulledSets = true;
-		Quizlet.fetch(Quizlet.FOLDER_URL, "").then(
-			this.seedFromFolder.bind(this)
-		);
+		this.fetchFromFolder();
 	}
 
 	render() {
@@ -77,20 +77,42 @@ class Settings<T> extends React.Component<
 		return sets;
 	}
 
+	fetchFromFolder(): void {
+		const base =
+			localStorage.version === VERSION && localStorage.fetchedFromFolder
+				? Promise.resolve(localStorage.fetchedFromFolder).then(
+						JSON.parse
+				  )
+				: Quizlet.fetch(Quizlet.FOLDER_URL, "")
+						.then(this.seedFromFolder.bind(this))
+						.then((fetchedFromFolder) => {
+							localStorage.fetchedFromFolder = JSON.stringify(
+								fetchedFromFolder
+							);
+							return fetchedFromFolder;
+						});
+		base.then((responses) =>
+			responses.map((response: any) => {
+				const set = response.models.set[0];
+				return { id: set.id, title: set.title };
+			})
+		)
+			.then((responses) => {
+				const setsToTitles: SetsToTitlesType = {};
+				responses.forEach(
+					(response: { id: number; title: string }) =>
+						(setsToTitles[response.id] = response.title)
+				);
+				return setsToTitles;
+			})
+			.then((setsToTitles) => this.setState({ setsToTitles }));
+	}
+
 	seedFromFolder(blob: any) {
-		const models: any[] = blob.models.folderSet;
-		const setsToTitles: SetsToTitlesType = {};
-		models.forEach((model) => {
-			const setId: number = model.setId;
-			Quizlet.fetch(Quizlet.SET_URL, setId.toString())
-				.then((response) => {
-					setsToTitles[setId] = response.models.set[0].title;
-				})
-				.then(() => {
-					if (Object.keys(setsToTitles).length === models.length)
-						this.setState({ setsToTitles });
-				});
-		});
+		const promises = blob.models.folderSet.map((model: { setId: number }) =>
+			Quizlet.fetch(Quizlet.SET_URL, model.setId.toString())
+		);
+		return Promise.all(promises);
 	}
 
 	startGame(e: React.MouseEvent) {
