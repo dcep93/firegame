@@ -5,11 +5,13 @@ import Settings from "./Settings";
 import Players from "./Players";
 import Render from "./Render";
 
+import css from "../css/index.module.css";
+
 class Timeline extends Actions {
 	render() {
 		return (
-			<div>
-				<div>
+			<div className={css.main}>
+				<div className={css.sidebar}>
 					<Settings />
 					<Players
 						userId={this.props.userId}

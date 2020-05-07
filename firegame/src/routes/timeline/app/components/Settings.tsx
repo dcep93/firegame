@@ -1,5 +1,7 @@
 import React from "react";
 
+import styles from "../../../../shared/css/Styles.module.css";
+
 import Quizlet from "./Quizlet";
 
 var pulledSets = false;
@@ -15,7 +17,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 
 	render() {
 		return (
-			<div>
+			<div className={styles.bubble}>
 				<form>
 					<div>
 						<span>Hand Size</span>

@@ -1,0 +1,9 @@
+.main {
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+}

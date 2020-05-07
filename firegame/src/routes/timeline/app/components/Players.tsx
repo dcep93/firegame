@@ -1,5 +1,7 @@
 import React from "react";
 
+import styles from "../../../../shared/css/Styles.module.css";
+
 class Players extends React.Component<{
 	lobby: { [userId: string]: string };
 	host: string;
@@ -7,7 +9,7 @@ class Players extends React.Component<{
 }> {
 	render() {
 		return (
-			<div>
+			<div className={styles.bubble}>
 				<h1>Players</h1>
 				{Object.keys(this.props.lobby).map(
 					this.renderPlayer.bind(this)

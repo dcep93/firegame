@@ -1,4 +1,4 @@
-import Game from "../../../shared/components/Game";
+import Game from "../../../../shared/components/Game";
 
 import { GameType } from "./Render";
 

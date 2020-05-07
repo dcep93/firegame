@@ -1,3 +1,3 @@
-import timeline from "../routes/timeline/app";
+import timeline from "../routes/timeline/app/components";
 
 export default { timeline };
