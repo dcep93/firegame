@@ -7,7 +7,6 @@ const FOLDER_URL =
 	_api_url + "folder-sets?filters[folderId]=49189251&filters[isDeleted]=0";
 
 function _fetch(base: string, path: string): Promise<any> {
-	return Promise.reject();
 	return fetch(base + path)
 		.then((response) => response.json())
 		.then((response) => response.responses[0]);

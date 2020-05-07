@@ -7,13 +7,14 @@ import Quizlet from "./Quizlet";
 import NewGame, { Params } from "./NewGame";
 
 import { GameType } from "./Render";
+import { LobbyType } from "../../../../firegame/wrapper/C_LobbyListener";
 
 var pulledSets = false;
 
 type SetsToTitlesType = { [setId: number]: string };
 
 class Settings<T> extends React.Component<
-	{ sendGameState: (newState: GameType) => void },
+	{ lobby: LobbyType; sendGameState: (newState: GameType) => void },
 	{ setsToTitles: SetsToTitlesType }
 > {
 	componentDidMount() {
@@ -101,8 +102,14 @@ class Settings<T> extends React.Component<
 	}
 
 	getParams(): Params {
-		// @ts-ignore
-		return {};
+		return {
+			quizlet: "415",
+			handSize: 6,
+			boardStartingSize: 6,
+			swap: false,
+			reverse: false,
+			lobby: this.props.lobby,
+		};
 	}
 }
 

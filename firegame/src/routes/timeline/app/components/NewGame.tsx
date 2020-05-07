@@ -44,6 +44,7 @@ function setDeck(data: DataType): DataType {
 }
 
 function setPlayers(data: DataType): DataType {
+	data.game.dan = Date.now();
 	return data;
 }
 

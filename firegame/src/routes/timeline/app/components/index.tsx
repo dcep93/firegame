@@ -15,7 +15,10 @@ class Timeline extends Game<GameType> {
 		return (
 			<div className={css.main}>
 				<div className={css.sidebar}>
-					<Settings sendGameState={this.props.sendGameState} />
+					<Settings
+						lobby={this.props.lobby}
+						sendGameState={this.props.sendGameState}
+					/>
 					<Players
 						userId={this.props.userId}
 						host={this.props.host}
