@@ -26,15 +26,7 @@ class Render<T> extends GameListener<T> {
 			userId: this.props.userId,
 			sendGameState: this.sendGameState.bind(this),
 		});
-		return (
-			<this.props.component<T>
-				sendGameState={this.sendGameState.bind(this)}
-				userId={this.props.userId}
-				lobby={this.state.lobby!}
-				game={this.state.gameWrapper!.game!}
-				info={this.state.gameWrapper!.info}
-			/>
-		);
+		return <this.props.component />;
 	}
 }
 

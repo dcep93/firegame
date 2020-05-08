@@ -1,11 +1,9 @@
 import React from "react";
 
-import GameElement from "../../shared/GameElement";
-
 import { LobbyType } from "./C_LobbyListener";
 
 export interface PropsType {
-	component: typeof GameElement;
+	component: typeof React.Component;
 	name: string;
 	roomId: number;
 	userId: string;
