@@ -100,6 +100,8 @@ function setBoard(data: DataType): DataType {
 		data.game.params.boardStartingSize
 	);
 	data.game.board.sort((a, b) => b - a);
+	if (data.game.board.length < 1)
+		throw Error(`too few terms in that set (${data.game.terms.length})`);
 	return data;
 }
 

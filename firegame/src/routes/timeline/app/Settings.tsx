@@ -168,7 +168,8 @@ class Settings<T> extends React.Component<
 		Promise.resolve()
 			.then(this.getParams.bind(this))
 			.then(NewGame)
-			.then(this.props.sendGameState.bind(this));
+			.then(this.props.sendGameState.bind(this))
+			.catch((e) => alert(e));
 	}
 
 	getParams(): Params {
