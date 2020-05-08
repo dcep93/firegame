@@ -1,6 +1,6 @@
 import React, { FormEvent } from "react";
 
-import css from "../css/LoginPage.module.css";
+import css from "./index.module.css";
 import styles from "../../shared/Styles.module.css";
 
 class LoginPage extends React.Component<{
@@ -10,7 +10,7 @@ class LoginPage extends React.Component<{
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	render() {
 		return (
-			<div className={`${css.main} ${styles.bubble}`}>
+			<div className={`${css.login} ${styles.bubble}`}>
 				<p>Welcome to {this.props.name}!</p>
 				<p>Enter your name to continue</p>
 				<form onSubmit={this.setUsername.bind(this)}>

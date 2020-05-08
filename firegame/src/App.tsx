@@ -7,7 +7,7 @@ import {
 	// @ts-ignore
 } from "react-router-dom";
 
-import Home from "./firegame/Home";
+import Home from "./firegame/components/Home";
 import Wrapper from "./firegame/wrapper";
 import Firebase from "./firegame/Firebase";
 
