@@ -31,7 +31,7 @@ class Board extends React.Component<{ game: GameType }> {
 		const term = this.props.game.terms[termIndex];
 		return (
 			<div key={`c${termIndex}`} className={styles.bubble}>
-				<div className={css.card_info}>
+				<div className={css.info}>
 					<p>{term.word}</p>
 					<p>{term.definition}</p>
 				</div>
