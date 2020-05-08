@@ -13,17 +13,17 @@ class Render<T> extends GameListener<T> {
 	}
 
 	render() {
-		if (this.state.lobby === undefined) return <LoadingPage />;
+		if (Store.getLobby() === undefined) return <LoadingPage />;
 		const userId = localStorage.userId;
 		Store.getMe().sendGameState = this.sendGameState.bind(this);
-		if (this.state.lobby[userId] === undefined)
+		if (Store.getLobby()[userId] === undefined)
 			return (
 				<LoginPage
 					name={this.props.name}
 					setUsername={this.setUsername.bind(this)}
 				/>
 			);
-		if (!this.state.gameWrapper) return null;
+		if (!Store.getGameW()) return null;
 		return <this.props.component />;
 	}
 }

@@ -26,13 +26,16 @@ class GameListener<T> extends LobbyListener<T> {
 				// todo maybe ignore the game if the host
 				// of the game isnt in the lobby?
 				Store.setGameW(gameWrapper);
-				this.setState({ gameWrapper });
+				// trigger rerender
+				this.setState({});
 				return;
 			}
 		}
 		// this happens when remote data is deleted
 		// ignore the update - our next push will update game state
-		if (this.state.gameWrapper) return;
+
+		// todo test
+		if (Store.getGameW()) return;
 		const gameWrapper: GameWrapperType<T> = {
 			info: {
 				player: Store.getMe().userId,
@@ -46,14 +49,15 @@ class GameListener<T> extends LobbyListener<T> {
 	}
 
 	sendGameState(message: string, game: T): void {
+		const lastInfo = Store.getGameW().info;
 		const gameWrapper = {
 			game,
 			info: {
-				id: this.state.gameWrapper!.info.id + 1,
+				id: lastInfo.id + 1,
 				timestamp: Firebase.now(),
-				host: this.state.gameWrapper!.info.host,
-				message,
+				host: lastInfo.host,
 				player: Store.getMe().userId,
+				message,
 			},
 		};
 		this.sendGameStateHelper(gameWrapper);

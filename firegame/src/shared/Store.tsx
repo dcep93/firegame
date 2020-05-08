@@ -20,6 +20,9 @@ store = {};
 function init() {
 	Firebase.init();
 	setUserId();
+	// @ts-ignore
+	store.me = {};
+	store.me.userId = localStorage.userId;
 }
 
 function setUserId(): void {

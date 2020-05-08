@@ -59,11 +59,11 @@ abstract class LobbyListener<T> extends Base<T> {
 	}
 
 	lobbyEquals(lobby: LobbyType): boolean {
-		if (!this.state.lobby) return false;
-		if (Object.keys(lobby).length !== Object.keys(this.state.lobby).length)
+		if (!Store.getLobby()) return false;
+		if (Object.keys(lobby).length !== Object.keys(Store.getLobby()).length)
 			return false;
 		for (let [userId, username] of Object.entries(lobby)) {
-			if (this.state.lobby[userId] !== username) return false;
+			if (Store.getLobby()[userId] !== username) return false;
 		}
 		return true;
 	}

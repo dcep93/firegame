@@ -1,16 +1,9 @@
 import React from "react";
 
-import { LobbyType } from "./C_LobbyListener";
-
 export interface PropsType {
 	component: typeof React.Component;
 	name: string;
 	roomId: number;
-}
-
-interface StateType<T> {
-	lobby?: LobbyType;
-	gameWrapper?: GameWrapperType<T>;
 }
 
 export type InfoType = {
@@ -26,7 +19,7 @@ export type GameWrapperType<T> = {
 	game?: T;
 };
 
-class WrapperBase<T> extends React.Component<PropsType, StateType<T>> {
+class WrapperBase<T> extends React.Component<PropsType> {
 	constructor(props: PropsType) {
 		super(props);
 		this.state = {};
