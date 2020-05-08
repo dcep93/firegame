@@ -11,6 +11,8 @@ import NewGame, { Params } from "./NewGame";
 import { GameType } from "./Render";
 import { LobbyType } from "../../../firegame/wrapper/C_LobbyListener";
 
+import css from "./index.module.css";
+
 var pulledSets = false;
 
 type SetsToTitlesType = { [setId: number]: string };
@@ -32,35 +34,46 @@ class Settings<T> extends React.Component<
 	render() {
 		return (
 			<div className={styles.bubble}>
-				<form>
+				<form className={css.settings_form}>
 					<div>
-						<span>Hand Size</span>
-						<input type={"number"} />
+						<span>Hand Size: </span>
+						<input
+							className={css.settings_input}
+							type={"text"}
+							defaultValue={"6"}
+							size={4}
+						/>
 					</div>
 					<div>
-						<span>Board Starting Size Size</span>
-						<input type={"number"} />
+						<span>Board Size: </span>
+						<input
+							className={css.settings_input}
+							type={"number"}
+							defaultValue={"6"}
+						/>
 					</div>
 					<div>
 						<label>
-							Swap <input type={"checkbox"} />
+							Swap: <input type={"checkbox"} />
 						</label>
+						<br />
 						<label>
-							Reverse <input type={"checkbox"} />
+							Reverse: <input type={"checkbox"} />
 						</label>
+						<br />
 						<label>
-							Use Rank <input type={"checkbox"} />
+							Use Rank: <input type={"checkbox"} />
 						</label>
 					</div>
-					<div>
-						<select>
+					<div className={styles.dont_grow}>
+						<select className={css.settings_select}>
 							<option value="select_set">Select Set</option>
 							{this.state && this.getSets()}
 						</select>
 					</div>
 					<div>
-						<span>Quizlet:</span>
-						<input type={"text"} />
+						<span>Quizlet: </span>
+						<input type={"text"} size={5} />
 					</div>
 					<div>
 						<button onClick={this.startGame.bind(this)}>

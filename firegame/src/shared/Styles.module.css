@@ -5,3 +5,12 @@
 	padding: 13px;
 	margin: 13px;
 }
+
+.flex {
+	display: flex;
+}
+
+.dont_grow {
+	width: 0;
+	min-width: 100%;
+}

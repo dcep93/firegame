@@ -26,3 +26,15 @@
 	max-width: 200px;
 	max-height: 200px;
 }
+
+.settings_form {
+	min-width: 15em;
+}
+
+.settings_input {
+	width: 2em;
+}
+
+.settings_select {
+	width: 100%;
+}
