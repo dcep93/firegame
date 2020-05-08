@@ -21,6 +21,8 @@ export type GameWrapperType<T> = {
 		host: string;
 		timestamp: number;
 		id: number;
+		message: string;
+		player: string;
 	};
 	game?: T;
 };

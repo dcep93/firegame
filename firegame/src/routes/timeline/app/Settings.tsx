@@ -23,7 +23,7 @@ class Settings<T> extends React.Component<
 	{
 		userId: string;
 		lobby: LobbyType;
-		sendGameState: (newState: GameType) => void;
+		sendGameState: (message: string, newState: GameType) => void;
 	},
 	{ setsToTitles: SetsToTitlesType }
 > {
@@ -168,7 +168,9 @@ class Settings<T> extends React.Component<
 		Promise.resolve()
 			.then(this.getParams.bind(this))
 			.then(NewGame)
-			.then(this.props.sendGameState.bind(this))
+			.then((game) =>
+				this.props.sendGameState("started a new game", game)
+			)
 			.catch((e) => alert(e));
 	}
 

@@ -30,18 +30,26 @@ class GameListener<T> extends LobbyListener<T> {
 		// ignore the update - our next push will update game state
 		if (this.state.gameWrapper) return;
 		const gameWrapper: GameWrapperType<T> = {
-			info: { host: this.props.userId, timestamp: Firebase.now(), id: 0 },
+			info: {
+				player: this.props.userId,
+				message: "opened a room",
+				host: this.props.userId,
+				timestamp: Firebase.now(),
+				id: 0,
+			},
 		};
 		this.sendGameStateHelper(gameWrapper);
 	}
 
-	sendGameState(game: T): void {
+	sendGameState(message: string, game: T): void {
 		const gameWrapper = {
 			game,
 			info: {
 				id: this.state.gameWrapper!.info.id + 1,
 				timestamp: Firebase.now(),
 				host: this.state.gameWrapper!.info.host,
+				message,
+				player: this.props.userId,
 			},
 		};
 		this.sendGameStateHelper(gameWrapper);

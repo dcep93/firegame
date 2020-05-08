@@ -30,7 +30,7 @@ export type GameType = {
 
 class Render extends React.Component<
 	{
-		sendGameState: (game: GameType) => void;
+		sendGameState: (message: string, game: GameType) => void;
 		game: GameType;
 		myIndex: number;
 	},
@@ -79,7 +79,7 @@ class Render extends React.Component<
 		);
 		this.sortBoard();
 		this.setState({ selectedIndex: -1 });
-		this.props.sendGameState(this.props.game);
+		this.props.sendGameState(message, this.props.game);
 	}
 
 	isBetween(
