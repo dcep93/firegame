@@ -4,7 +4,10 @@ import { GameType } from "./Render";
 import styles from "../../../shared/Styles.module.css";
 import css from "./index.module.css";
 
-class Hand extends React.Component<{ game: GameType; myIndex: number }> {
+class Hand extends React.Component<
+	{ game: GameType; myIndex: number },
+	{ selectedIndex: number }
+> {
 	render() {
 		return (
 			<div className={styles.bubble}>
@@ -20,10 +23,17 @@ class Hand extends React.Component<{ game: GameType; myIndex: number }> {
 		return me.hand.map(this.renderCard.bind(this));
 	}
 
-	renderCard(index: number) {
-		const term = this.props.game.terms[index];
+	renderCard(termIndex: number, handIndex: number) {
+		const term = this.props.game.terms[termIndex];
+		const classes = [styles.bubble];
+		if (this.state && this.state.selectedIndex === handIndex)
+			classes.push(css.selectedCard);
 		return (
-			<div key={index} className={styles.bubble}>
+			<div
+				key={handIndex}
+				className={classes.join(" ")}
+				onClick={(e: React.MouseEvent) => this.selectCard(handIndex, e)}
+			>
 				<div className={css.info}>
 					<div className={css.card}>
 						<p>{term.word}</p>
@@ -34,6 +44,13 @@ class Hand extends React.Component<{ game: GameType; myIndex: number }> {
 				</div>
 			</div>
 		);
+	}
+
+	selectCard(selectedIndex: number, e: React.MouseEvent): void {
+		e.stopPropagation();
+		if (this.state && this.state.selectedIndex === selectedIndex)
+			selectedIndex = -1;
+		this.setState({ selectedIndex });
 	}
 }
 
