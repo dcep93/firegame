@@ -1,4 +1,4 @@
-import React from "react";
+import React, { RefObject } from "react";
 
 import styles from "../../../shared/Styles.module.css";
 
@@ -13,6 +13,8 @@ import { LobbyType } from "../../../firegame/wrapper/C_LobbyListener";
 
 import css from "./index.module.css";
 
+const DEFAULT_SET_ID = "284065846";
+
 var pulledSets = false;
 
 type SetsToTitlesType = { [setId: number]: string };
@@ -25,6 +27,12 @@ class Settings<T> extends React.Component<
 	},
 	{ setsToTitles: SetsToTitlesType }
 > {
+	handSizeRef: RefObject<HTMLInputElement> = React.createRef();
+	boardSizeRef: RefObject<HTMLInputElement> = React.createRef();
+	swapRef: RefObject<HTMLInputElement> = React.createRef();
+	reverseRef: RefObject<HTMLInputElement> = React.createRef();
+	useRankRef: RefObject<HTMLInputElement> = React.createRef();
+	quizletRef: RefObject<HTMLInputElement> = React.createRef();
 	componentDidMount() {
 		if (pulledSets) return;
 		pulledSets = true;
@@ -42,6 +50,7 @@ class Settings<T> extends React.Component<
 							type={"text"}
 							defaultValue={"6"}
 							size={4}
+							ref={this.handSizeRef}
 						/>
 					</div>
 					<div>
@@ -50,30 +59,41 @@ class Settings<T> extends React.Component<
 							className={css.settings_input}
 							type={"number"}
 							defaultValue={"6"}
+							ref={this.boardSizeRef}
 						/>
 					</div>
 					<div>
 						<label>
-							Swap: <input type={"checkbox"} />
+							Swap: <input type={"checkbox"} ref={this.swapRef} />
 						</label>
 						<br />
 						<label>
-							Reverse: <input type={"checkbox"} />
+							Reverse:{" "}
+							<input type={"checkbox"} ref={this.reverseRef} />
 						</label>
 						<br />
 						<label>
-							Use Rank: <input type={"checkbox"} />
+							Use Rank:{" "}
+							<input type={"checkbox"} ref={this.useRankRef} />
 						</label>
 					</div>
 					<div className={styles.dont_grow}>
-						<select className={css.settings_select}>
-							<option value="select_set">Select Set</option>
+						<select
+							className={css.settings_select}
+							onChange={this.selectChange.bind(this)}
+						>
+							<option defaultChecked>Select Set</option>
 							{this.state && this.getSets()}
 						</select>
 					</div>
 					<div>
 						<span>Quizlet: </span>
-						<input type={"text"} size={5} />
+						<input
+							type={"text"}
+							size={DEFAULT_SET_ID.length + 2}
+							ref={this.quizletRef}
+							defaultValue={DEFAULT_SET_ID}
+						/>
 					</div>
 					<div>
 						<button onClick={this.startGame.bind(this)}>
@@ -95,6 +115,14 @@ class Settings<T> extends React.Component<
 			);
 		}
 		return sets;
+	}
+
+	selectChange(e: React.ChangeEvent<HTMLSelectElement>): void {
+		e.preventDefault();
+		const index = e.target.selectedIndex;
+		if (index === 0) return;
+		const option = e.target.options[index];
+		this.quizletRef.current!.value = option.value;
 	}
 
 	fetchFromFolder(): void {
@@ -146,13 +174,13 @@ class Settings<T> extends React.Component<
 	getParams(): Params {
 		return {
 			userId: this.props.userId,
-			quizlet: "284065846",
-			handSize: 6,
-			boardStartingSize: 6,
-			swap: false,
-			reverse: false,
 			lobby: this.props.lobby,
-			useRank: false,
+			quizlet: this.quizletRef.current!.value,
+			handSize: parseInt(this.handSizeRef.current!.value),
+			boardStartingSize: parseInt(this.boardSizeRef.current!.value),
+			swap: this.swapRef.current!.checked,
+			reverse: this.reverseRef.current!.checked,
+			useRank: this.useRankRef.current!.checked,
 		};
 	}
 }
