@@ -1,6 +1,7 @@
 import React from "react";
 
 import styles from "../../../shared/Styles.module.css";
+import css from "./index.module.css";
 import { GameType } from "./Render";
 
 class Board extends React.Component<{ game: GameType }> {
@@ -30,9 +31,13 @@ class Board extends React.Component<{ game: GameType }> {
 		const term = this.props.game.terms[termIndex];
 		return (
 			<div key={`c${termIndex}`} className={styles.bubble}>
-				<p>{term.word}</p>
-				<p>{term.definition}</p>
-				{term.image && <img src={term.image} alt="" />}
+				<div className={css.card_info}>
+					<p>{term.word}</p>
+					<p>{term.definition}</p>
+				</div>
+				{term.image && (
+					<img className={css.image} src={term.image} alt="" />
+				)}
 			</div>
 		);
 	}

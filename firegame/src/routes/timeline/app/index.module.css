@@ -17,3 +17,12 @@
 	display: flex;
 	overflow: scroll;
 }
+
+.card_info {
+	max-width: fit-content;
+}
+
+.image {
+	max-width: 200px;
+	max-height: 200px;
+}
