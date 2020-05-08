@@ -1,7 +1,7 @@
 import React from "react";
 import { GameType } from "./Render";
 
-import styles from "../../../../shared/css/Styles.module.css";
+import styles from "../../../shared/Styles.module.css";
 
 class Hand extends React.Component<{ game: GameType; myIndex: number }> {
 	render() {

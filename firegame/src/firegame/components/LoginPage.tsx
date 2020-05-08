@@ -1,7 +1,7 @@
 import React, { FormEvent } from "react";
 
 import css from "../css/LoginPage.module.css";
-import styles from "../../shared/css/Styles.module.css";
+import styles from "../../shared/Styles.module.css";
 
 class LoginPage extends React.Component<{
 	name: string;

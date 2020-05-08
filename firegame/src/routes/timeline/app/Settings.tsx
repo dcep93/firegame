@@ -1,15 +1,15 @@
 import React from "react";
 
-import styles from "../../../../shared/css/Styles.module.css";
+import styles from "../../../shared/Styles.module.css";
 
 import Quizlet from "./Quizlet";
 
-import { VERSION } from "../../../../App";
+import { VERSION } from "../../../App";
 
 import NewGame, { Params } from "./NewGame";
 
 import { GameType } from "./Render";
-import { LobbyType } from "../../../../firegame/wrapper/C_LobbyListener";
+import { LobbyType } from "../../../firegame/wrapper/C_LobbyListener";
 
 var pulledSets = false;
 

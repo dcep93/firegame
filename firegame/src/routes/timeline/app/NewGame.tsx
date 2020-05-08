@@ -1,7 +1,7 @@
 import { GameType } from "./Render";
 import Quizlet from "./Quizlet";
-import { LobbyType } from "../../../../firegame/wrapper/C_LobbyListener";
-import utils from "../../../../shared/components/utils";
+import { LobbyType } from "../../../firegame/wrapper/C_LobbyListener";
+import utils from "../../../shared/utils";
 
 export type Params = {
 	quizlet: string;

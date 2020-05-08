@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Params } from "./NewGame";
-import Info from "./Info";
 import Hand from "./Hand";
 import Board from "./Board";
 

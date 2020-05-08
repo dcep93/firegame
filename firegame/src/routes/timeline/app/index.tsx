@@ -1,12 +1,12 @@
 import React from "react";
 
-import GameElement from "../../../../shared/components/GameElement";
+import GameElement from "../../../shared/GameElement";
 
 import Settings from "./Settings";
 import Players from "./Players";
 import Render from "./Render";
 
-import css from "../css/index.module.css";
+import css from "./index.module.css";
 
 import { GameType } from "./Render";
 import Info from "./Info";

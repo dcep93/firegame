@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "../../../../shared/css/Styles.module.css";
+import styles from "../../../shared/Styles.module.css";
 
 class Players extends React.Component<{
 	lobby: { [userId: string]: string };

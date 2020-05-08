@@ -1,6 +1,6 @@
 import React from "react";
 
-import GameElement from "../../shared/components/GameElement";
+import GameElement from "../../shared/GameElement";
 
 import { LobbyType } from "./C_LobbyListener";
 
