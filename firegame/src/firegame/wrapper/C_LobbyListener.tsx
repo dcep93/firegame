@@ -24,7 +24,7 @@ abstract class LobbyListener<T> extends Base<T> {
 	}
 
 	setUsername(username: string): void {
-		const userId: string = this.props.userId;
+		const userId: string = Store.getMe().userId;
 		const now: number = Firebase.now();
 		const myUserObj: PersonType = {
 			userId,
@@ -49,7 +49,7 @@ abstract class LobbyListener<T> extends Base<T> {
 				if (Firebase.now() - person.timestamp > PRESENT_EXPIRE)
 					continue;
 				lobby[userId] = person.username;
-				if (userId === this.props.userId) this.signin();
+				if (userId === Store.getMe().userId) this.signin();
 			}
 		}
 		if (!this.lobbyEquals(lobby)) {
@@ -74,7 +74,7 @@ abstract class LobbyListener<T> extends Base<T> {
 
 	updateTimestamp(): void {
 		Firebase.set(
-			`${this.mePath(this.props.userId)}/timestamp`,
+			`${this.mePath(Store.getMe().userId)}/timestamp`,
 			Firebase.now()
 		);
 	}

@@ -4,8 +4,6 @@ import styles from "../../../shared/Styles.module.css";
 
 import Quizlet from "./Quizlet";
 
-import { VERSION } from "../../../App";
-
 import NewGame, { Params } from "./NewGame";
 
 import css from "./index.module.css";
@@ -118,7 +116,8 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 
 	fetchFromFolder(): void {
 		const base =
-			localStorage.version === VERSION && localStorage.fetchedFromFolder
+			localStorage.version === Store.VERSION &&
+			localStorage.fetchedFromFolder
 				? Promise.resolve(localStorage.fetchedFromFolder).then(
 						JSON.parse
 				  )

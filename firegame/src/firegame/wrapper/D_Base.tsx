@@ -6,7 +6,6 @@ export interface PropsType {
 	component: typeof React.Component;
 	name: string;
 	roomId: number;
-	userId: string;
 }
 
 interface StateType<T> {

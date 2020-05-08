@@ -35,9 +35,9 @@ class GameListener<T> extends LobbyListener<T> {
 		if (this.state.gameWrapper) return;
 		const gameWrapper: GameWrapperType<T> = {
 			info: {
-				player: this.props.userId,
+				player: Store.getMe().userId,
 				message: "opened a room",
-				host: this.props.userId,
+				host: Store.getMe().userId,
 				timestamp: Firebase.now(),
 				id: 0,
 			},
@@ -53,7 +53,7 @@ class GameListener<T> extends LobbyListener<T> {
 				timestamp: Firebase.now(),
 				host: this.state.gameWrapper!.info.host,
 				message,
-				player: this.props.userId,
+				player: Store.getMe().userId,
 			},
 		};
 		this.sendGameStateHelper(gameWrapper);

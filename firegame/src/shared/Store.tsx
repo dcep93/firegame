@@ -1,5 +1,8 @@
 import { LobbyType } from "../firegame/wrapper/C_LobbyListener";
 import { GameWrapperType } from "../firegame/wrapper/D_Base";
+import Firebase from "../firegame/Firebase";
+
+const VERSION: string = "v0.0.3";
 
 type MeType = {
 	userId: string;
@@ -13,6 +16,18 @@ var store: {
 };
 // @ts-ignore
 store = {};
+
+function init() {
+	Firebase.init();
+	setUserId();
+}
+
+function setUserId(): void {
+	if (localStorage.version !== VERSION) {
+		localStorage.version = VERSION;
+		localStorage.userId = `u_${Math.random().toString(16).substr(2)}`;
+	}
+}
 
 function getLobby(): LobbyType {
 	return store.lobby;
@@ -34,8 +49,12 @@ function getMe(): MeType {
 	return store.me;
 }
 
-function setMe(newMe: MeType): void {
-	store.me = newMe;
-}
-
-export default { getLobby, setLobby, getGameW, setGameW, getMe, setMe };
+export default {
+	VERSION,
+	init,
+	getLobby,
+	setLobby,
+	getGameW,
+	setGameW,
+	getMe,
+};

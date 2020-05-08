@@ -14,7 +14,9 @@ class Render<T> extends GameListener<T> {
 
 	render() {
 		if (this.state.lobby === undefined) return <LoadingPage />;
-		if (this.state.lobby[this.props.userId] === undefined)
+		const userId = localStorage.userId;
+		Store.getMe().sendGameState = this.sendGameState.bind(this);
+		if (this.state.lobby[userId] === undefined)
 			return (
 				<LoginPage
 					name={this.props.name}
@@ -22,10 +24,6 @@ class Render<T> extends GameListener<T> {
 				/>
 			);
 		if (!this.state.gameWrapper) return null;
-		Store.setMe({
-			userId: this.props.userId,
-			sendGameState: this.sendGameState.bind(this),
-		});
 		return <this.props.component />;
 	}
 }

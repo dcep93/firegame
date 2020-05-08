@@ -9,14 +9,12 @@ import {
 
 import Home from "./firegame/components/Home";
 import Wrapper from "./firegame/wrapper";
-import Firebase from "./firegame/Firebase";
 
 import Games from "./firegame/Games";
-
-export const VERSION: string = "v0.0.3";
+import Store from "./shared/Store";
 
 function App() {
-	init();
+	Store.init();
 	return (
 		<Router>
 			<div>
@@ -36,7 +34,6 @@ function getRoutes(): JSX.Element {
 				path={`/${name}/:roomId(\\d+)?`}
 				render={(props: RouteComponentProps) => (
 					<Wrapper
-						userId={localStorage.userId}
 						component={component}
 						name={name}
 						roomId={props.match.params.roomId || -1}
@@ -46,18 +43,6 @@ function getRoutes(): JSX.Element {
 		);
 	}
 	return <>{routes}</>;
-}
-
-function init() {
-	Firebase.init();
-	setUserId();
-}
-
-function setUserId(): void {
-	if (localStorage.version !== VERSION) {
-		localStorage.version = VERSION;
-		localStorage.userId = `u_${Math.random().toString(16).substr(2)}`;
-	}
 }
 
 export default App;
