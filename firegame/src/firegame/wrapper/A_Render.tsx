@@ -22,13 +22,12 @@ class Render<T> extends GameListener<T> {
 			);
 		if (!this.state.gameWrapper) return null;
 		return (
-			<this.props.component
+			<this.props.component<T>
 				sendGameState={this.sendGameState.bind(this)}
 				userId={this.props.userId}
 				lobby={this.state.lobby!}
 				game={this.state.gameWrapper!.game!}
-				id={this.state.gameWrapper!.info.id}
-				host={this.state.gameWrapper!.info.host}
+				info={this.state.gameWrapper!.info}
 			/>
 		);
 	}

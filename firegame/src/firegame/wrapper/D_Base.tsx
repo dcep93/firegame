@@ -16,14 +16,16 @@ interface StateType<T> {
 	gameWrapper?: GameWrapperType<T>;
 }
 
+export type InfoType = {
+	host: string;
+	timestamp: number;
+	id: number;
+	message: string;
+	player: string;
+};
+
 export type GameWrapperType<T> = {
-	info: {
-		host: string;
-		timestamp: number;
-		id: number;
-		message: string;
-		player: string;
-	};
+	info: InfoType;
 	game?: T;
 };
 
