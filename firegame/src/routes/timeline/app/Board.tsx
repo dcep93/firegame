@@ -4,7 +4,10 @@ import styles from "../../../shared/Styles.module.css";
 import css from "./index.module.css";
 import { GameType } from "./Render";
 
-class Board extends React.Component<{ game: GameType }> {
+class Board extends React.Component<{
+	game: GameType;
+	selectTarget: (index: number) => void;
+}> {
 	render() {
 		return (
 			<div className={styles.bubble}>
@@ -25,7 +28,11 @@ class Board extends React.Component<{ game: GameType }> {
 
 	renderTarget(index: number) {
 		return (
-			<div key={`t${index}`} className={styles.bubble}>
+			<div
+				key={`t${index}`}
+				className={styles.bubble}
+				onClick={(e: React.MouseEvent) => this.selectTarget(index, e)}
+			>
 				<div className={css.target}>{index}</div>
 			</div>
 		);
@@ -46,6 +53,11 @@ class Board extends React.Component<{ game: GameType }> {
 				</div>
 			</div>
 		);
+	}
+
+	selectTarget(index: number, e: React.MouseEvent) {
+		e.stopPropagation();
+		this.props.selectTarget(index);
 	}
 }
 
