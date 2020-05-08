@@ -20,15 +20,15 @@ class Render<T> extends GameListener<T> {
 					setUsername={this.setUsername.bind(this)}
 				/>
 			);
-		if (!this.state.game) return null;
+		if (!this.state.gameWrapper) return null;
 		return (
 			<this.props.component
 				sendGameState={this.sendGameState.bind(this)}
 				userId={this.props.userId}
 				lobby={this.state.lobby!}
-				game={this.state.game!.game!}
-				id={this.state.game!.id}
-				host={this.state.game!.host}
+				game={this.state.gameWrapper!.game!}
+				id={this.state.gameWrapper!.info.id}
+				host={this.state.gameWrapper!.info.host}
 			/>
 		);
 	}

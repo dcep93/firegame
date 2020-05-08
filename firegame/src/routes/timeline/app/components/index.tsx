@@ -1,6 +1,6 @@
 import React from "react";
 
-import Game from "../../../../shared/components/Game";
+import GameElement from "../../../../shared/components/GameElement";
 
 import Settings from "./Settings";
 import Players from "./Players";
@@ -9,8 +9,9 @@ import Render from "./Render";
 import css from "../css/index.module.css";
 
 import { GameType } from "./Render";
+import Info from "./Info";
 
-class Timeline extends Game<GameType> {
+class Timeline extends GameElement<GameType> {
 	render() {
 		return (
 			<div className={css.main}>
@@ -25,6 +26,7 @@ class Timeline extends Game<GameType> {
 						host={this.props.host}
 						lobby={this.props.lobby}
 					/>
+					{this.props.game && <Info game={this.props.game} />}
 				</div>
 				<div className={css.content}>
 					<div>

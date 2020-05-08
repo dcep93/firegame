@@ -1,7 +1,7 @@
 import React from "react";
 import { LobbyType } from "../../firegame/wrapper/C_LobbyListener";
 
-abstract class Game<T> extends React.Component<{
+abstract class GameElement<T> extends React.Component<{
 	sendGameState: (newState: T) => void;
 	game: T;
 	id: number;
@@ -10,4 +10,4 @@ abstract class Game<T> extends React.Component<{
 	lobby: LobbyType;
 }> {}
 
-export default Game;
+export default GameElement;

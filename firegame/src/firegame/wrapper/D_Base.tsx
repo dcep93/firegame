@@ -1,11 +1,11 @@
 import React from "react";
 
-import Game from "../../shared/components/Game";
+import GameElement from "../../shared/components/GameElement";
 
 import { LobbyType } from "./C_LobbyListener";
 
 export interface PropsType {
-	component: typeof Game;
+	component: typeof GameElement;
 	name: string;
 	roomId: number;
 	userId: string;
@@ -13,13 +13,15 @@ export interface PropsType {
 
 interface StateType<T> {
 	lobby?: LobbyType;
-	game?: GameStateType<T>;
+	gameWrapper?: GameWrapperType<T>;
 }
 
-export type GameStateType<T> = {
-	host: string;
-	timestamp: number;
-	id: number;
+export type GameWrapperType<T> = {
+	info: {
+		host: string;
+		timestamp: number;
+		id: number;
+	};
 	game?: T;
 };
 

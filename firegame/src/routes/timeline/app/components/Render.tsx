@@ -37,7 +37,6 @@ class Render extends React.Component<{
 	render() {
 		return (
 			<div>
-				<Info game={this.props.game} />
 				<Hand game={this.props.game} myIndex={this.props.myIndex} />
 				<Board game={this.props.game} />
 			</div>
