@@ -1,6 +1,7 @@
 import Firebase from "../Firebase";
 
 import Base from "./D_Base";
+import Store from "../../shared/StoreElement";
 
 const PRESENT_EXPIRE = 5000;
 const HEARTBEAT_INTERVAL = 1000;
@@ -51,7 +52,10 @@ abstract class LobbyListener<T> extends Base<T> {
 				if (userId === this.props.userId) this.signin();
 			}
 		}
-		if (!this.lobbyEquals(lobby)) this.setState({ lobby });
+		if (!this.lobbyEquals(lobby)) {
+			Store.setLobby(lobby);
+			this.setState({ lobby });
+		}
 	}
 
 	lobbyEquals(lobby: LobbyType): boolean {

@@ -22,13 +22,11 @@ class Sidebar extends React.Component<{
 			<div className={css.sidebar}>
 				<Settings
 					userId={this.props.userId}
-					lobby={this.props.lobby}
 					sendGameState={this.props.sendGameState}
 				/>
 				<Players
 					userId={this.props.userId}
 					host={this.props.info.host}
-					lobby={this.props.lobby}
 				/>
 				{this.props.game && <Info game={this.props.game} />}
 				<Log info={this.props.info} game={this.props.game} />

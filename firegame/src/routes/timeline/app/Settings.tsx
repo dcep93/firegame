@@ -12,6 +12,7 @@ import { GameType } from "./Render";
 import { LobbyType } from "../../../firegame/wrapper/C_LobbyListener";
 
 import css from "./index.module.css";
+import StoreElement from "../../../shared/StoreElement";
 
 const DEFAULT_SET_ID = "284065846";
 
@@ -19,12 +20,19 @@ var pulledSets = false;
 
 type SetsToTitlesType = { [setId: number]: string };
 
-class Settings<T> extends React.Component<
-	{
-		userId: string;
-		lobby: LobbyType;
-		sendGameState: (message: string, newState: GameType) => void;
-	},
+type PropsType = {
+	userId: string;
+	sendGameState: (message: string, newState: GameType) => void;
+};
+
+class SettingsWrapper extends React.Component<PropsType> {
+	render() {
+		return <Settings {...this.props} lobby={StoreElement.getLobby()} />;
+	}
+}
+
+class Settings extends React.Component<
+	PropsType & { lobby: LobbyType },
 	{ setsToTitles: SetsToTitlesType }
 > {
 	handSizeRef: RefObject<HTMLInputElement> = React.createRef();
@@ -188,4 +196,4 @@ class Settings<T> extends React.Component<
 	}
 }
 
-export default Settings;
+export default SettingsWrapper;
