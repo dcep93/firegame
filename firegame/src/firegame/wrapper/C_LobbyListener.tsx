@@ -1,7 +1,7 @@
 import Firebase from "../Firebase";
 
 import Base from "./D_Base";
-import Store from "../../shared/StoreElement";
+import Store from "../../shared/Store";
 
 const PRESENT_EXPIRE = 5000;
 const HEARTBEAT_INTERVAL = 1000;

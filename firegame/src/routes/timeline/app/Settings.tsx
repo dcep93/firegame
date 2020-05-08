@@ -8,11 +8,8 @@ import { VERSION } from "../../../App";
 
 import NewGame, { Params } from "./NewGame";
 
-import { GameType } from "./Render";
-import { LobbyType } from "../../../firegame/wrapper/C_LobbyListener";
-
 import css from "./index.module.css";
-import StoreElement from "../../../shared/StoreElement";
+import Store from "../../../shared/Store";
 
 const DEFAULT_SET_ID = "284065846";
 
@@ -20,21 +17,7 @@ var pulledSets = false;
 
 type SetsToTitlesType = { [setId: number]: string };
 
-type PropsType = {
-	userId: string;
-	sendGameState: (message: string, newState: GameType) => void;
-};
-
-class SettingsWrapper extends React.Component<PropsType> {
-	render() {
-		return <Settings {...this.props} lobby={StoreElement.getLobby()} />;
-	}
-}
-
-class Settings extends React.Component<
-	PropsType & { lobby: LobbyType },
-	{ setsToTitles: SetsToTitlesType }
-> {
+class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 	handSizeRef: RefObject<HTMLInputElement> = React.createRef();
 	boardSizeRef: RefObject<HTMLInputElement> = React.createRef();
 	swapRef: RefObject<HTMLInputElement> = React.createRef();
@@ -176,16 +159,16 @@ class Settings extends React.Component<
 		Promise.resolve()
 			.then(this.getParams.bind(this))
 			.then(NewGame)
+			.catch((e) => alert(e))
 			.then((game) =>
-				this.props.sendGameState("started a new game", game)
-			)
-			.catch((e) => alert(e));
+				Store.getMe().sendGameState("started a new game", game)
+			);
 	}
 
 	getParams(): Params {
 		return {
-			userId: this.props.userId,
-			lobby: this.props.lobby,
+			userId: Store.getMe().userId,
+			lobby: Store.getLobby(),
 			quizlet: this.quizletRef.current!.value,
 			handSize: parseInt(this.handSizeRef.current!.value),
 			boardStartingSize: parseInt(this.boardSizeRef.current!.value),
@@ -196,4 +179,4 @@ class Settings extends React.Component<
 	}
 }
 
-export default SettingsWrapper;
+export default Settings;

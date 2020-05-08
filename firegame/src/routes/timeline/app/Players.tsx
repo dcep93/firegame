@@ -1,29 +1,14 @@
 import React from "react";
 
 import styles from "../../../shared/Styles.module.css";
-import Store from "../../../shared/StoreElement";
+import Store from "../../../shared/Store";
 
-type PropsType = {
-	host: string;
-	userId: string;
-};
-
-class PlayersWrapper extends React.Component<PropsType> {
-	render() {
-		return <Players {...this.props} lobby={Store.getLobby()} />;
-	}
-}
-
-class Players extends React.Component<
-	PropsType & {
-		lobby: { [userId: string]: string };
-	}
-> {
+class Players extends React.Component {
 	render() {
 		return (
 			<div className={styles.bubble}>
 				<h1>Players</h1>
-				{Object.keys(this.props.lobby!).map(
+				{Object.keys(Store.getLobby()).map(
 					this.renderPlayer.bind(this)
 				)}
 			</div>
@@ -32,10 +17,10 @@ class Players extends React.Component<
 
 	renderPlayer(userId: string): JSX.Element {
 		var prefix = "";
-		if (this.props.host === userId) prefix += "(host) ";
-		if (this.props.userId === userId) prefix += "(you) ";
-		return <p key={userId}>{`${prefix}${this.props.lobby![userId]}`}</p>;
+		if (Store.getGameW().info.host === userId) prefix += "(host) ";
+		if (Store.getMe().userId === userId) prefix += "(you) ";
+		return <p key={userId}>{`${prefix}${Store.getLobby()[userId]}`}</p>;
 	}
 }
 
-export default PlayersWrapper;
+export default Players;

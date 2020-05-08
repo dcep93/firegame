@@ -4,6 +4,7 @@ import GameListener from "./B_GameListener";
 
 import LoadingPage from "../components/LoadingPage";
 import LoginPage from "../components/LoginPage";
+import Store from "../../shared/Store";
 
 class Render<T> extends GameListener<T> {
 	componentDidMount() {
@@ -21,6 +22,10 @@ class Render<T> extends GameListener<T> {
 				/>
 			);
 		if (!this.state.gameWrapper) return null;
+		Store.setMe({
+			userId: this.props.userId,
+			sendGameState: this.sendGameState.bind(this),
+		});
 		return (
 			<this.props.component<T>
 				sendGameState={this.sendGameState.bind(this)}

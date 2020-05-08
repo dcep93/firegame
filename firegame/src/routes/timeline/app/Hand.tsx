@@ -1,12 +1,11 @@
 import React from "react";
-import { GameType } from "./Render";
 
 import styles from "../../../shared/Styles.module.css";
 import css from "./index.module.css";
+import Store from "../../../shared/Store";
+import { GameType } from "./Render";
 
 class Hand extends React.Component<{
-	game: GameType;
-	myIndex: number;
 	selectedIndex: number;
 	selectCard: (index: number) => void;
 }> {
@@ -20,13 +19,19 @@ class Hand extends React.Component<{
 	}
 
 	getHand() {
-		const me = this.props.game.players[this.props.myIndex];
+		const userId = Store.getMe().userId;
+		const game: GameType = Store.getGameW().game!;
+		const myIndex = game.players
+			.filter((player) => player.userId === userId)
+			.map((player) => player.index)[0];
+		const me = game.players[myIndex];
 		if (!me) return null;
 		return me.hand.map(this.renderCard.bind(this));
 	}
 
 	renderCard(termIndex: number, handIndex: number) {
-		const term = this.props.game.terms[termIndex];
+		const game: GameType = Store.getGameW().game!;
+		const term = game.terms[termIndex];
 		const classes = [styles.bubble];
 		if (this.props.selectedIndex === handIndex)
 			classes.push(css.selectedCard);

@@ -2,6 +2,7 @@ import Firebase from "../Firebase";
 
 import LobbyListener from "./C_LobbyListener";
 import { GameWrapperType } from "./D_Base";
+import Store from "../../shared/Store";
 
 const GAME_EXPIRE_TIME = 2 * 60 * 60 * 1000;
 
@@ -22,6 +23,9 @@ class GameListener<T> extends LobbyListener<T> {
 				Firebase.now() - gameWrapper.info.timestamp <
 				GAME_EXPIRE_TIME
 			) {
+				// todo maybe ignore the game if the host
+				// of the game isnt in the lobby?
+				Store.setGameW(gameWrapper);
 				this.setState({ gameWrapper });
 				return;
 			}
