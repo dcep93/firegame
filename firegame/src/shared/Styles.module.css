@@ -1,9 +1,9 @@
 .bubble {
 	display: inline-block;
-	border-radius: 15px;
+	border-radius: 1em;
 	border: 2px solid black;
-	padding: 13px;
-	margin: 13px;
+	padding: 1em;
+	margin: 1em;
 }
 
 .flex {

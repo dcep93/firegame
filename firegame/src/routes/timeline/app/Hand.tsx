@@ -25,11 +25,13 @@ class Hand extends React.Component<{ game: GameType; myIndex: number }> {
 		return (
 			<div key={index} className={styles.bubble}>
 				<div className={css.info}>
-					<p>{term.word}</p>
+					<div className={css.card}>
+						<p>{term.word}</p>
+					</div>
+					{term.image && (
+						<img className={css.image} src={term.image} alt="" />
+					)}
 				</div>
-				{term.image && (
-					<img className={css.image} src={term.image} alt="" />
-				)}
 			</div>
 		);
 	}

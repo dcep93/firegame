@@ -24,7 +24,11 @@ class Board extends React.Component<{ game: GameType }> {
 	}
 
 	renderTarget(index: number) {
-		return <p key={`t${index}`}>{index}</p>;
+		return (
+			<div key={`t${index}`} className={styles.bubble}>
+				<div className={css.target}>{index}</div>
+			</div>
+		);
 	}
 
 	renderCard(termIndex: number) {
@@ -32,12 +36,14 @@ class Board extends React.Component<{ game: GameType }> {
 		return (
 			<div key={`c${termIndex}`} className={styles.bubble}>
 				<div className={css.info}>
-					<p>{term.word}</p>
-					<p>{term.definition}</p>
+					<div className={css.card}>
+						<p>{term.word}</p>
+						<p>{term.definition}</p>
+					</div>
+					{term.image && (
+						<img className={css.image} src={term.image} alt="" />
+					)}
 				</div>
-				{term.image && (
-					<img className={css.image} src={term.image} alt="" />
-				)}
 			</div>
 		);
 	}

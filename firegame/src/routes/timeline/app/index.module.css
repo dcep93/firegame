@@ -23,8 +23,8 @@
 }
 
 .image {
-	max-width: 200px;
-	max-height: 200px;
+	max-width: 12em;
+	max-height: 12em;
 }
 
 .settings_form {
@@ -37,4 +37,14 @@
 
 .settings_select {
 	width: 100%;
+}
+
+.card {
+	min-width: 6em;
+	text-align: center;
+}
+
+.target {
+	width: 1em;
+	height: 1em;
 }
