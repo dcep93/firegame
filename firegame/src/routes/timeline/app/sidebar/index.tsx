@@ -1,6 +1,6 @@
 import React from "react";
 
-import Store from "../../../../shared/store";
+import store from "../../../../shared/store";
 
 import Settings from "./Settings";
 import Players from "./Players";
@@ -16,7 +16,7 @@ class Sidebar extends React.Component {
 				<Log />
 				<Settings />
 				<Players />
-				{Store.gameW.game !== undefined && <Info />}
+				{store.gameW.game !== undefined && <Info />}
 			</div>
 		);
 	}

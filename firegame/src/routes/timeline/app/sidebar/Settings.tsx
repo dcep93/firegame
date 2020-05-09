@@ -1,17 +1,14 @@
 import React, { RefObject } from "react";
 
-import styles from "../../../../shared/styles.module.css";
+import store from "../../../../shared/store";
 
 import Quizlet from "../utils/Quizlet";
-
 import NewGame, { Params } from "../utils/NewGame";
 
+import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import Store from "../../../../shared/store";
 
 const DEFAULT_SET_ID = "284065846";
-
-var pulledSets = false;
 
 type SetsToTitlesType = { [setId: number]: string };
 
@@ -22,9 +19,9 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 	reverseRef: RefObject<HTMLInputElement> = React.createRef();
 	useRankRef: RefObject<HTMLInputElement> = React.createRef();
 	quizletRef: RefObject<HTMLInputElement> = React.createRef();
+
 	componentDidMount() {
-		if (pulledSets) return;
-		pulledSets = true;
+		if (this.state) return;
 		this.fetchFromFolder();
 	}
 
@@ -116,7 +113,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 
 	fetchFromFolder(): void {
 		const base =
-			localStorage.version === Store.me.VERSION &&
+			localStorage.version === store.me.VERSION &&
 			localStorage.fetchedFromFolder
 				? Promise.resolve(localStorage.fetchedFromFolder).then(
 						JSON.parse
@@ -131,7 +128,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 						});
 		base.then((responses) =>
 			responses.map((response: any) => {
-				const set = response.models.set[0];
+				const set = response.set[0];
 				return { id: set.id, title: set.title };
 			})
 		)
@@ -147,7 +144,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 	}
 
 	seedFromFolder(blob: any) {
-		const promises = blob.models.folderSet.map((model: { setId: number }) =>
+		const promises = blob.folderSet.map((model: { setId: number }) =>
 			Quizlet.fetch(Quizlet.SET_URL, model.setId.toString())
 		);
 		return Promise.all(promises);
@@ -159,13 +156,13 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 			.then(this.getParams.bind(this))
 			.then(NewGame)
 			.catch((e) => alert(e))
-			.then((game) => Store.update("started a new game", game));
+			.then((game) => game && store.update("started a new game", game));
 	}
 
 	getParams(): Params {
 		return {
-			userId: Store.me.userId,
-			lobby: Store.lobby,
+			userId: store.me.userId,
+			lobby: store.lobby,
 			quizlet: this.quizletRef.current!.value,
 			handSize: parseInt(this.handSizeRef.current!.value),
 			boardStartingSize: parseInt(this.boardSizeRef.current!.value),

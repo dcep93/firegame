@@ -1,5 +1,7 @@
 import React from "react";
+
 import store, { GameWrapperType } from "../../../../shared/store";
+
 import { GameType } from "../utils/NewGame";
 
 class LogEntry extends React.Component<{ wrapper: GameWrapperType<GameType> }> {
@@ -12,6 +14,7 @@ class LogEntry extends React.Component<{ wrapper: GameWrapperType<GameType> }> {
 		return `(${w.info.id}) ${w.info.timestamp} [${w.info.player}] ${w.info.message}`;
 	}
 
+	// todo
 	revert(): void {
 		const message = `restored to [${this.getMessage()}]`;
 		store.update(message, this.props.wrapper.game);

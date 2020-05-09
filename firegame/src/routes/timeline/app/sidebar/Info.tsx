@@ -1,14 +1,16 @@
 import React from "react";
 
-import Store from "../../../../shared/store";
+import store from "../../../../shared/store";
+
+import { GameType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { GameType } from "../utils/NewGame";
 
 class Info extends React.Component {
+	// todo
 	render() {
-		const game: GameType = Store.gameW.game;
+		const game: GameType = store.gameW.game;
 		return (
 			<div className={styles.bubble}>
 				<div className={css.info}>

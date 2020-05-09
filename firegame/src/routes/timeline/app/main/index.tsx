@@ -1,16 +1,19 @@
 import React from "react";
 
+import store from "../../../../shared/store";
+
+import { sortBoard } from "../utils";
+import { GameType } from "../utils/NewGame";
+
 import Hand from "./Hand";
 import Board from "./Board";
-import Store from "../../../../shared/store";
-import { GameType } from "../utils/NewGame";
 
 class Render extends React.Component<{}, { selectedIndex: number }> {
 	render() {
 		return (
 			<div>
 				<Hand
-					selectedIndex={this.state ? this.state.selectedIndex : -1}
+					selectedIndex={this.state?.selectedIndex}
 					selectCard={this.selectCard.bind(this)}
 				/>
 				<Board selectTarget={this.selectTarget.bind(this)} />
@@ -19,19 +22,19 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 	}
 
 	selectCard(selectedIndex: number) {
-		if (this.state && this.state.selectedIndex === selectedIndex)
-			selectedIndex = -1;
+		if (this.state?.selectedIndex === selectedIndex) selectedIndex = -1;
 		this.setState({ selectedIndex });
 	}
 
 	selectTarget(index: number) {
-		if (!this.state || this.state.selectedIndex === -1)
+		if (!(this.state?.selectedIndex > -1))
 			return alert("need to select a card from hand first");
-		const game: GameType = Store.gameW.game;
+		const game: GameType = store.gameW.game;
 		const leftBound = game.board[index - 1];
 		const rightBound = game.board[index];
 		const me = game.players[game.currentPlayer];
 		const cardIndex = me.hand[this.state.selectedIndex];
+		// todo
 		var message: string;
 		if (this.isBetween(cardIndex, leftBound, rightBound)) {
 			message = "CORRECT";
@@ -41,17 +44,18 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 			if (deck.length > 0) me.hand.push(deck.pop()!);
 		}
 		game.board.push(me.hand.splice(this.state.selectedIndex, 1)[0]);
-		this.sortBoard();
+		sortBoard(store.gameW.game);
 		this.setState({ selectedIndex: -1 });
-		Store.update(message, game);
+		store.update(message, game);
 	}
 
+	// todo
 	isBetween(
 		cardIndex: number,
 		leftBound: number,
 		rightBound: number
 	): boolean {
-		const game: GameType = Store.gameW.game;
+		const game: GameType = store.gameW.game;
 		const playDefinition = parseInt(game.terms[cardIndex].definition);
 		const leftCard = game.terms[leftBound];
 		const rightCard = game.terms[rightBound];
@@ -60,11 +64,6 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 		if (rightCard && parseInt(rightCard.definition) < playDefinition)
 			return false;
 		return true;
-	}
-
-	sortBoard(): void {
-		const game: GameType = Store.gameW.game;
-		game.board.sort((a, b) => b - a);
 	}
 }
 

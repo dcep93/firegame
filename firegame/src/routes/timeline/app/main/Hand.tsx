@@ -1,12 +1,14 @@
 import React from "react";
 
-import styles from "../../../../shared/styles.module.css";
-import css from "../index.module.css";
 import store from "../../../../shared/store";
+
 import { GameType } from "../utils/NewGame";
 
+import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
+
 class Hand extends React.Component<{
-	selectedIndex: number;
+	selectedIndex?: number;
 	selectCard: (index: number) => void;
 }> {
 	render() {
@@ -30,8 +32,7 @@ class Hand extends React.Component<{
 	}
 
 	renderCard(termIndex: number, handIndex: number) {
-		const game: GameType = store.gameW.game!;
-		const term = game.terms[termIndex];
+		const term = store.gameW.game!.terms[termIndex];
 		const classes = [styles.bubble];
 		if (this.props.selectedIndex === handIndex)
 			classes.push(css.selectedCard);

@@ -9,7 +9,7 @@ import css from "./index.module.css";
 
 class Timeline extends React.Component {
 	render() {
-		// css help
+		// todo css help
 		return (
 			<div>
 				<div className={css.main}>

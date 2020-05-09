@@ -1,7 +1,9 @@
-import utils from "../../../../shared/utils";
+// todo
+import shared from "../../../../shared/utils";
 
 import { LobbyType } from "../../../../shared/store";
 
+import { sortBoard } from "./";
 import Quizlet from "./Quizlet";
 
 export type GameType = {
@@ -93,7 +95,7 @@ function setDeck(data: DataType): DataType {
 		});
 
 	const deck = terms.map((_: any, index: number) => index);
-	utils.shuffle(deck);
+	shared.shuffle(deck);
 
 	data.game.title = data.response.set.title;
 	data.game.setId = data.response.set.id;
@@ -123,9 +125,9 @@ function setBoard(data: DataType): DataType {
 		0,
 		data.game.params.boardStartingSize
 	);
-	data.game.board.sort((a, b) => b - a);
 	if (data.game.board.length < 1)
 		throw Error(`too few terms in that set (${data.game.terms.length})`);
+	sortBoard(data.game);
 	return data;
 }
 
