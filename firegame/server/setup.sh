@@ -1,7 +1,5 @@
 #!/bin/bash
 
-APP=firegame
-
 if [ "$EUID" -ne 0 ]; then
   echo "must run as root"
   exit 1
@@ -13,6 +11,8 @@ set -o pipefail
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+APP=$(jq -r .name "$DIR/package.json")
+
 # install git submodules
 git submodule update --init
 
@@ -20,7 +20,7 @@ git submodule update --init
 which node || ( curl -sL https://deb.nodesource.com/setup_8.x | bash - && apt-get install -y nodejs )
 
 if [ ! -d $DIR/node_modules ]; then
-	npm install
+	npm install_all
 fi
 
 # if [ ! -d $DIR/public/words ]; then

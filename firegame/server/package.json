@@ -1,0 +1,14 @@
+{
+	"name": "firegame",
+	"scripts": {
+		"start": "concurrently \"npm run server\" \"npm run client\"",
+		"server": "cd app && npm start",
+		"client": "cd ../ && npm start",
+		"install_all": "npm install && concurrently \"cd app && npm install\" \"cd ../ && npm install\""
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"concurrently": "^5.2.0"
+	}
+}
