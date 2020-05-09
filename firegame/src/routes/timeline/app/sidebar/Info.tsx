@@ -19,12 +19,12 @@ class Info extends React.Component {
 					</p>
 					<p>
 						Current Player:{" "}
-						<span>{game.players[game.currentPlayer].username}</span>
+						<span>{game.players[game.currentPlayer].userName}</span>
 					</p>
 					<div>
 						{game.players.map((player) => (
 							<p key={player.index}>
-								{player.username} ({player.hand.length})
+								{player.userName} ({player.hand.length})
 							</p>
 						))}
 					</div>

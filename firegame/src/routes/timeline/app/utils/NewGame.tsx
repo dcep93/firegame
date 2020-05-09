@@ -34,9 +34,9 @@ type TermType = {
 
 export type PlayerType = {
 	index: number;
-	username: string;
 	userId: string;
 	hand: number[];
+	userName: string;
 };
 
 type DataType = { response: any; game: GameType };
@@ -106,7 +106,7 @@ function setPlayers(data: DataType): DataType {
 	const players = Object.keys(data.game.params.lobby).map(
 		(userId, index: number) => ({
 			index,
-			username: data.game.params.lobby[userId],
+			userName: data.game.params.lobby[userId],
 			userId,
 			hand: data.game.deck.splice(0, data.game.params.handSize),
 		})

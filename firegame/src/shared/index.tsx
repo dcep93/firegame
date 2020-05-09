@@ -9,6 +9,7 @@ interface TurnGame<T extends PlayerType> {
 
 interface PlayerType {
 	userId: string;
+	userName: string;
 }
 
 class Shared<T extends TurnGame<U>, U extends PlayerType> {
@@ -45,6 +46,11 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
 	getMe(game_: T | undefined = undefined): U {
 		const game: T = game_ || store.gameW.game!;
 		return game.players[this.myIndex(game)];
+	}
+
+	getCurrent(game_: T | undefined = undefined): U {
+		const game: T = game_ || store.gameW.game!;
+		return game.players[game.currentPlayer];
 	}
 
 	shuffle(arr: any[]): void {

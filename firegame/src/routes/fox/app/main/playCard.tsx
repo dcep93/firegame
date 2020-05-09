@@ -3,50 +3,51 @@ import { store, shared } from "../utils";
 function playCard(index: number): string | void {
 	// const me = shared.getMe();
 	// var card = me.hand[index];
-	// const fromStaging = store.gameW.game.staging !== null;
+	// const game = store.gameW.game;
+	// const fromStaging = game.staging !== null;
 	// if (fromStaging) {
 	// 	handlePre(card);
-	// 	card = store.gameW.game.staging!;
-	// 	store.gameW.game.staging = null;
-	// } else if (store.gameW.game.lead !== null) {
+	// 	card = game.staging!;
+	// 	game.staging = null;
+	// } else if (game.lead !== null) {
 	// 	if (cantPlay(card)) return alert("cant play that card");
 	// }
 	// me.hand.splice(index, 1);
 	// if (!fromStaging) {
 	// 	var duringMessage = handleDuring(card);
 	// 	if (duringMessage !== null) {
-	// 		store.gameW.game.staging = card;
+	// 		game.staging = card;
 	// 		return store.update(duringMessage);
 	// 	}
 	// }
 	// var text = getText(card);
-	// if (store.gameW.game.lead === null) {
-	// 	store.gameW.game.lead = card;
+	// if (game.lead === null) {
+	// 	game.lead = card;
 	// 	shared.incrementPlayerTurn();
 	// 	return store.update(`lead with ${text}`);
 	// } else {
 	// 	var winner;
 	// 	if (wins(card)) {
-	// 		winner = me();
+	// 		winner = me;
 	// 	} else {
-	// 		advanceTurn();
-	// 		winner = current();
+	// 		shared.incrementPlayerTurn();
+	// 		winner = shared.getCurrent();
 	// 	}
-	// 	winner.state.tricks++;
+	// 	winner.tricks++;
 	// 	handlePost(card, winner);
-	// 	state.previous = `${getText(state.lead)} vs ${text}`;
-	// 	state.lead = null;
+	// 	game.previous = `${getText(game.lead)} vs ${text}`;
+	// 	game.lead = null;
 	// 	var message = `played ${text}`;
-	// 	if (me().state.hand.length === 0) {
-	// 		var scores = state.players
-	// 			.map((player) => `${player.name}: ${player.state.tricks}`)
+	// 	if (me.hand.length === 0) {
+	// 		var scores = game.players
+	// 			.map((player) => `${player.userName}: ${player.tricks}`)
 	// 			.join(" / ");
 	// 		message = `${message} - new hand - ${scores}`;
-	// 		state.previous += `\n${scores}`;
+	// 		game.previous += `\n${scores}`;
 	// 		scoreFromTricks();
 	// 		deal();
 	// 	}
-	// 	sendState(message);
+	// 	store.update(message);
 	// }
 }
 

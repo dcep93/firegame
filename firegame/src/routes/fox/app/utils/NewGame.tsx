@@ -23,6 +23,7 @@ export type PlayerType = {
 	tricks: number;
 	score: number;
 	userId: string;
+	userName: string;
 };
 
 export type Card = { suit: string; value: number };
@@ -44,6 +45,7 @@ function createPlayers(game: GameType): GameType {
 			tricks: 0,
 			score: 0,
 			userId,
+			userName: game.params.lobby[userId],
 		})
 	);
 	return game;
