@@ -1,9 +1,4 @@
-import Store, {
-	LobbyType,
-	GameWrapperType,
-	setLobby,
-	setGameW,
-} from "../shared/Store";
+import Store, { LobbyType, GameWrapperType, MeType } from "../shared/Store";
 import Firebase from "./Firebase";
 
 export const VERSION: string = "v0.0.3";
@@ -71,7 +66,11 @@ function setLobbyFromRemote(remoteLobby: {
 			if (userId === Store.me.userId) signin();
 		}
 	}
-	if (!lobbyEquals(lobby)) setLobby(lobby);
+	if (!lobbyEquals(lobby)) {
+		// @ts-ignore
+		Store.lobby = lobby;
+		update();
+	}
 }
 
 function setUsername(username: string): void {
@@ -94,21 +93,27 @@ function signin(): void {
 	enterGame();
 }
 
-function init() {
-	// todo
-	// Firebase.init();
-	// setUserId();
-	// // @ts-ignore
-	// store.me = {};
-	// store.me.userId = localStorage.userId;
-	// Firebase.connect(lobbyPath(), setLobbyFromRemote);
+function init(roomId: number, gameName: string, update_: () => void) {
+	Firebase.init();
+	const userId = getUserId();
+	const me: MeType = {
+		roomId,
+		gameName,
+		VERSION,
+		userId,
+	};
+	// @ts-ignore
+	Store.me = me;
+	update = update_;
+	Firebase.connect(lobbyPath(), setLobbyFromRemote);
 }
 
-function setUserId(): void {
+function getUserId(): string {
 	if (localStorage.version !== VERSION) {
 		localStorage.version = VERSION;
 		localStorage.userId = `u_${Math.random().toString(16).substr(2)}`;
 	}
+	return localStorage.userId;
 }
 
 // game
@@ -142,7 +147,9 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
 		if (Firebase.now() - gameWrapper.info.timestamp < GAME_EXPIRE_TIME) {
 			// todo maybe ignore the game if the host
 			// of the game isnt in the lobby?
-			setGameW(gameWrapper);
+			// otherwise we'll likely see old games from that lobby
+			// @ts-ignore
+			Store.gameW = gameWrapper;
 			return;
 		}
 	}
@@ -163,6 +170,8 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
 	sendGameStateHelper(gameWrapper);
 }
 
-function update() {}
+var update = function (): void {
+	throw Error("this should be overwritten during init");
+};
 
 export default { init, update, setUsername, sendGameState };

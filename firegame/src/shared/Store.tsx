@@ -1,11 +1,11 @@
 import Writer from "../firegame/Writer";
 
-var Store: {
+var Store: Readonly<{
 	me: Readonly<MeType>;
 	lobby: Readonly<LobbyType>;
 	gameW: Readonly<GameWrapperType<any>>;
 	update: (message: string, newGame: any) => void;
-};
+}>;
 
 export type MeType = {
 	userId: string;
@@ -33,17 +33,7 @@ function update<T>(message: string, game: T): void {
 	Writer.sendGameState(message, game);
 }
 
-// setLobby and sertGameW should only be called from Writer
-function setLobby(newLobby: LobbyType): void {
-	Store.lobby = newLobby;
-}
-
-function setGameW<T>(newGameW: GameWrapperType<T>): void {
-	Store.gameW = newGameW;
-}
-
 // @ts-ignore
 Store = { update };
 
 export default Store;
-export { setLobby, setGameW };

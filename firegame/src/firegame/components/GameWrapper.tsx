@@ -13,7 +13,11 @@ type PropsType = {
 class GameWrapper extends React.Component<PropsType> {
 	componentDidMount() {
 		document.title = this.props.gameName.toLocaleUpperCase();
-		Writer.init();
+		Writer.init(
+			this.props.roomId,
+			this.props.gameName,
+			this.forceUpdate.bind(this)
+		);
 	}
 
 	render() {
