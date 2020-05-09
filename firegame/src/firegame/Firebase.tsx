@@ -10,47 +10,42 @@ type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
 var offset: number = 0;
-class Firebase {
-	static init(): void {
-		firebase.initializeApp(config);
-		database = firebase.database();
-		database
-			.ref(".info/serverTimeOffset")
-			.once("value")
-			.then((data: ResultType) => (offset = data.val()));
-	}
+function init(): void {
+	firebase.initializeApp(config);
+	database = firebase.database();
+	database
+		.ref(".info/serverTimeOffset")
+		.once("value")
+		.then((data: ResultType) => (offset = data.val()));
+}
 
-	static now(): number {
-		return offset + Date.now();
-	}
+function now(): number {
+	return offset + Date.now();
+}
 
-	static latestChild(
-		path: string,
-		callback: (value: BlobType) => void
-	): void {
-		database
-			.ref(path)
-			.limitToLast(1)
-			.on("value", (snapshot: ResultType) => {
-				var val = snapshot.val();
-				callback(val);
-			});
-	}
-
-	static push(path: string, obj: BlobType): void {
-		database.ref(path).push(obj);
-	}
-
-	static connect(path: string, callback: (value: BlobType) => void): void {
-		database.ref(path).on("value", (snapshot: ResultType) => {
+function latestChild(path: string, callback: (value: BlobType) => void): void {
+	database
+		.ref(path)
+		.limitToLast(1)
+		.on("value", (snapshot: ResultType) => {
 			var val = snapshot.val();
 			callback(val);
 		});
-	}
-
-	static set(path: string, obj: BlobType): void {
-		database.ref(path).set(obj);
-	}
 }
 
-export default Firebase;
+function push(path: string, obj: BlobType): void {
+	database.ref(path).push(obj);
+}
+
+function connect(path: string, callback: (value: BlobType) => void): void {
+	database.ref(path).on("value", (snapshot: ResultType) => {
+		var val = snapshot.val();
+		callback(val);
+	});
+}
+
+function set(path: string, obj: BlobType): void {
+	database.ref(path).set(obj);
+}
+
+export default { init, now, latestChild, push, connect, set };

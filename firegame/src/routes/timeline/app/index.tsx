@@ -14,7 +14,7 @@ class Timeline extends React.Component {
 				<div className={css.main}>
 					<Sidebar />
 					<div className={css.content}>
-						<div>{Store.getGameW().game && <Render />}</div>
+						<div>{Store.gameW.game && <Render />}</div>
 					</div>
 				</div>
 			</div>

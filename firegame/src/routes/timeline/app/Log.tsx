@@ -1,10 +1,13 @@
 import React from "react";
 
 import styles from "../../../shared/Styles.module.css";
-import { GameWrapperType } from "../../../firegame/wrapper/D_Base";
-import Store from "../../../shared/Store";
+import Store, { GameWrapperType } from "../../../shared/Store";
+import { GameType } from "./Render";
 
-class Log<T> extends React.Component<{}, { history: GameWrapperType<T>[] }> {
+class Log extends React.Component<
+	{},
+	{ history: GameWrapperType<GameType>[] }
+> {
 	constructor(props: {}) {
 		super(props);
 		this.state = { history: [] };
@@ -19,7 +22,7 @@ class Log<T> extends React.Component<{}, { history: GameWrapperType<T>[] }> {
 	}
 
 	updateHistory() {
-		const newState = Store.getGameW();
+		const newState = Store.gameW;
 		if (
 			!this.state.history[0] ||
 			newState.info.id !== this.state.history[0].info.id

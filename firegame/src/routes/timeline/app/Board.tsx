@@ -19,7 +19,7 @@ class Board extends React.Component<{
 
 	getCardsAndTargets() {
 		const cardsAndTargets: JSX.Element[] = [this.renderTarget(0)];
-		const game: GameType = Store.getGameW().game!;
+		const game: GameType = Store.gameW.game!;
 		game.board.forEach((termIndex: number, index: number) => {
 			cardsAndTargets.push(this.renderCard(termIndex));
 			cardsAndTargets.push(this.renderTarget(index + 1));
@@ -38,7 +38,7 @@ class Board extends React.Component<{
 	}
 
 	renderCard(termIndex: number) {
-		const game: GameType = Store.getGameW().game!;
+		const game: GameType = Store.gameW.game!;
 		const term = game.terms[termIndex];
 		return (
 			<div key={`c${termIndex}`} className={styles.bubble}>

@@ -7,7 +7,7 @@ import Store from "../../../shared/Store";
 
 class Info extends React.Component {
 	render() {
-		const game: GameType = Store.getGameW().game;
+		const game: GameType = Store.gameW.game;
 		return (
 			<div className={styles.bubble}>
 				<div className={css.info}>

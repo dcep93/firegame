@@ -116,7 +116,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 
 	fetchFromFolder(): void {
 		const base =
-			localStorage.version === Store.VERSION &&
+			localStorage.version === Store.me.VERSION &&
 			localStorage.fetchedFromFolder
 				? Promise.resolve(localStorage.fetchedFromFolder).then(
 						JSON.parse
@@ -159,15 +159,13 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 			.then(this.getParams.bind(this))
 			.then(NewGame)
 			.catch((e) => alert(e))
-			.then((game) =>
-				Store.getMe().sendGameState("started a new game", game)
-			);
+			.then((game) => Store.update("started a new game", game));
 	}
 
 	getParams(): Params {
 		return {
-			userId: Store.getMe().userId,
-			lobby: Store.getLobby(),
+			userId: Store.me.userId,
+			lobby: Store.lobby,
 			quizlet: this.quizletRef.current!.value,
 			handSize: parseInt(this.handSizeRef.current!.value),
 			boardStartingSize: parseInt(this.boardSizeRef.current!.value),

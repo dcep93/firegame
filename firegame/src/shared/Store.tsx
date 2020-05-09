@@ -1,63 +1,49 @@
-import { LobbyType } from "../firegame/wrapper/C_LobbyListener";
-import { GameWrapperType } from "../firegame/wrapper/D_Base";
-import Firebase from "../firegame/Firebase";
+import Writer from "../firegame/Writer";
 
-const VERSION: string = "v0.0.3";
+var Store: {
+	me: Readonly<MeType>;
+	lobby: Readonly<LobbyType>;
+	gameW: Readonly<GameWrapperType<any>>;
+	update: (message: string, newGame: any) => void;
+};
 
-type MeType = {
+export type MeType = {
 	userId: string;
-	sendGameState(message: string, gameState: any): void;
+	roomId: number;
+	gameName: string;
+	VERSION: string;
 };
 
-var store: {
-	me: MeType;
-	lobby: LobbyType;
-	gameW: GameWrapperType<any>;
+export type GameWrapperType<T> = {
+	info: InfoType;
+	game?: T;
 };
-// @ts-ignore
-store = {};
 
-function init() {
-	Firebase.init();
-	setUserId();
-	// @ts-ignore
-	store.me = {};
-	store.me.userId = localStorage.userId;
+export type LobbyType = { [userId: string]: string };
+
+export type InfoType = {
+	host: string;
+	timestamp: number;
+	id: number;
+	message: string;
+	player: string;
+};
+
+function update<T>(message: string, game: T): void {
+	Writer.sendGameState(message, game);
 }
 
-function setUserId(): void {
-	if (localStorage.version !== VERSION) {
-		localStorage.version = VERSION;
-		localStorage.userId = `u_${Math.random().toString(16).substr(2)}`;
-	}
-}
-
-function getLobby(): LobbyType {
-	return store.lobby;
-}
-
+// setLobby and sertGameW should only be called from Writer
 function setLobby(newLobby: LobbyType): void {
-	store.lobby = newLobby;
+	Store.lobby = newLobby;
 }
 
-function getGameW(): GameWrapperType<any> {
-	return store.gameW;
+function setGameW<T>(newGameW: GameWrapperType<T>): void {
+	Store.gameW = newGameW;
 }
 
-function setGameW(newGameW: GameWrapperType<any>): void {
-	store.gameW = newGameW;
-}
+// @ts-ignore
+Store = { update };
 
-function getMe(): MeType {
-	return store.me;
-}
-
-export default {
-	VERSION,
-	init,
-	getLobby,
-	setLobby,
-	getGameW,
-	setGameW,
-	getMe,
-};
+export default Store;
+export { setLobby, setGameW };

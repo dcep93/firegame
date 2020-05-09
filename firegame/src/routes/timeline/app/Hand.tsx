@@ -19,8 +19,8 @@ class Hand extends React.Component<{
 	}
 
 	getHand() {
-		const userId = Store.getMe().userId;
-		const game: GameType = Store.getGameW().game!;
+		const userId = Store.me.userId;
+		const game: GameType = Store.gameW.game!;
 		const myIndex = game.players
 			.filter((player) => player.userId === userId)
 			.map((player) => player.index)[0];
@@ -30,7 +30,7 @@ class Hand extends React.Component<{
 	}
 
 	renderCard(termIndex: number, handIndex: number) {
-		const game: GameType = Store.getGameW().game!;
+		const game: GameType = Store.gameW.game!;
 		const term = game.terms[termIndex];
 		const classes = [styles.bubble];
 		if (this.props.selectedIndex === handIndex)

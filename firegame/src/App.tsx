@@ -8,13 +8,12 @@ import {
 } from "react-router-dom";
 
 import Home from "./firegame/components/Home";
-import Wrapper from "./firegame/wrapper";
+import GameWrapper from "./firegame/components/GameWrapper";
 
 import Games from "./firegame/Games";
 import Store from "./shared/Store";
 
 function App() {
-	Store.init();
 	return (
 		<Router>
 			<div>
@@ -27,15 +26,15 @@ function App() {
 
 function getRoutes(): JSX.Element {
 	const routes: JSX.Element[] = [];
-	for (let [name, component] of Object.entries(Games)) {
+	for (let [gameName, component] of Object.entries(Games)) {
 		routes.push(
 			<Route
-				key={name}
-				path={`/${name}/:roomId(\\d+)?`}
+				key={gameName}
+				path={`/${gameName}/:roomId(\\d+)?`}
 				render={(props: RouteComponentProps) => (
-					<Wrapper
+					<GameWrapper
 						component={component}
-						name={name}
+						gameName={gameName}
 						roomId={props.match.params.roomId || -1}
 					/>
 				)}

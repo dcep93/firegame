@@ -14,7 +14,7 @@ class Sidebar extends React.Component {
 			<div className={css.sidebar}>
 				<Settings />
 				<Players />
-				{Store.getGameW().game !== undefined && <Info />}
+				{Store.gameW.game !== undefined && <Info />}
 				<Log />
 			</div>
 		);

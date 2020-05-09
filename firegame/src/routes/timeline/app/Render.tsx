@@ -51,7 +51,7 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 	selectTarget(index: number) {
 		if (!this.state || this.state.selectedIndex === -1)
 			return alert("need to select a card from hand first");
-		const game: GameType = Store.getGameW().game;
+		const game: GameType = Store.gameW.game;
 		const leftBound = game.board[index - 1];
 		const rightBound = game.board[index];
 		const me = game.players[game.currentPlayer];
@@ -67,7 +67,7 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 		game.board.push(me.hand.splice(this.state.selectedIndex, 1)[0]);
 		this.sortBoard();
 		this.setState({ selectedIndex: -1 });
-		Store.getMe().sendGameState(message, game);
+		Store.update(message, game);
 	}
 
 	isBetween(
@@ -75,7 +75,7 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 		leftBound: number,
 		rightBound: number
 	): boolean {
-		const game: GameType = Store.getGameW().game;
+		const game: GameType = Store.gameW.game;
 		const playDefinition = parseInt(game.terms[cardIndex].definition);
 		const leftCard = game.terms[leftBound];
 		const rightCard = game.terms[rightBound];
@@ -87,7 +87,7 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 	}
 
 	sortBoard(): void {
-		const game: GameType = Store.getGameW().game;
+		const game: GameType = Store.gameW.game;
 		game.board.sort((a, b) => b - a);
 	}
 }

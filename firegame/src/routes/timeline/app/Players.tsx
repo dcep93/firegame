@@ -8,18 +8,16 @@ class Players extends React.Component {
 		return (
 			<div className={styles.bubble}>
 				<h1>Players</h1>
-				{Object.keys(Store.getLobby()).map(
-					this.renderPlayer.bind(this)
-				)}
+				{Object.keys(Store.lobby).map(this.renderPlayer.bind(this))}
 			</div>
 		);
 	}
 
 	renderPlayer(userId: string): JSX.Element {
 		var prefix = "";
-		if (Store.getGameW().info.host === userId) prefix += "(host) ";
-		if (Store.getMe().userId === userId) prefix += "(you) ";
-		return <p key={userId}>{`${prefix}${Store.getLobby()[userId]}`}</p>;
+		if (Store.gameW.info.host === userId) prefix += "(host) ";
+		if (Store.me.userId === userId) prefix += "(you) ";
+		return <p key={userId}>{`${prefix}${Store.lobby[userId]}`}</p>;
 	}
 }
 
