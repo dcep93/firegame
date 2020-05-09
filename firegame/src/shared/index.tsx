@@ -4,7 +4,11 @@ export const VERSION: string = "v0.0.9";
 
 interface TurnGame {
 	currentPlayer: number;
-	players: { userId: string }[];
+	players: PlayerType[];
+}
+
+interface PlayerType {
+	userId: string;
 }
 
 function shuffle(arr: any[]) {
@@ -19,7 +23,21 @@ function isMyTurn(game: TurnGame) {
 }
 
 function incrementPlayerTurn(game: TurnGame): void {
-	game.currentPlayer = (game.currentPlayer + 1) % game.players.length;
+	game.currentPlayer = playerByIndex(game, game.currentPlayer + 1);
 }
 
-export default { shuffle, isMyTurn, incrementPlayerTurn };
+function playerByIndex(game: TurnGame, index: number): number {
+	return index % game.players.length;
+}
+
+function myIndex(game: TurnGame): number {
+	return game.players.map((player) => player.userId).indexOf(store.me.userId);
+}
+
+export default {
+	shuffle,
+	isMyTurn,
+	playerByIndex,
+	incrementPlayerTurn,
+	myIndex,
+};

@@ -113,10 +113,8 @@ function setPlayers(data: DataType): DataType {
 			hand: data.game.deck.splice(0, data.game.params.handSize),
 		})
 	);
-	data.game.currentPlayer = players
-		.map((player) => player.userId)
-		.indexOf(data.game.params.userId);
 	data.game.players = players;
+	data.game.currentPlayer = shared.myIndex(data.game);
 	return data;
 }
 
