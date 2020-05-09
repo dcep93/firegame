@@ -30,7 +30,7 @@ class Log extends React.Component<
 			!this.state.history[0] ||
 			newState.info.id !== this.state.history[0].info.id
 		) {
-			this.state.history.unshift(newState);
+			this.state.history.unshift(JSON.parse(JSON.stringify(newState)));
 			this.setState({ history: this.state.history });
 		}
 	}
