@@ -19,7 +19,7 @@ class Hand extends React.Component<{
 	}
 
 	getHand() {
-		const me = shared.getMe(store.gameW.game);
+		const me = shared.getMe();
 		if (!me) return null;
 		return me.hand.map(this.renderCard.bind(this));
 	}

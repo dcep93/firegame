@@ -45,7 +45,7 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		const message = `played [${term.word}]: [${term.definition}] - ${
 			correct ? "CORRECT" : "WRONG"
 		}`;
-		shared.incrementPlayerTurn(game);
+		shared.incrementPlayerTurn();
 		store.update(message, game);
 	}
 

@@ -12,32 +12,38 @@ interface PlayerType {
 }
 
 class Shared<T extends TurnGame<U>, U extends PlayerType> {
-	isMyTurn(game: T): boolean {
-		return (
-			game && game.players[game.currentPlayer].userId === store.me.userId
-		);
+	isMyTurn(game_: T | undefined = undefined): boolean {
+		const game: T = game_ || store.gameW.game!;
+		return game.players[game.currentPlayer].userId === store.me.userId;
 	}
 
-	incrementPlayerTurn(game: T): void {
+	incrementPlayerTurn(game_: T | undefined = undefined): void {
+		const game: T = game_ || store.gameW.game!;
 		game.currentPlayer = this.playerIndexByIndex(
-			game,
-			game.currentPlayer + 1
+			game.currentPlayer + 1,
+			game
 		);
 	}
 
-	playerIndexByIndex(game: T, index: number): number {
+	playerIndexByIndex(
+		index: number,
+		game_: T | undefined = undefined
+	): number {
+		const game: T = game_ || store.gameW.game!;
 		return index % game.players.length;
 	}
 
-	playerIndexById(game: T, userId: string): number {
+	playerIndexById(userId: string, game_: T | undefined = undefined): number {
+		const game: T = game_ || store.gameW.game!;
 		return game.players.map((player) => player.userId).indexOf(userId);
 	}
 
-	myIndex(game: T): number {
-		return this.playerIndexById(game, store.me.userId);
+	myIndex(game: T | undefined = undefined): number {
+		return this.playerIndexById(store.me.userId, game);
 	}
 
-	getMe(game: T): U {
+	getMe(game_: T | undefined = undefined): U {
+		const game: T = game_ || store.gameW.game!;
 		return game.players[this.myIndex(game)];
 	}
 

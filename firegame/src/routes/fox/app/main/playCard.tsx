@@ -1,56 +1,54 @@
-// function play() {
-// 	// in case it was opened earlier
-// 	$("#log_container").hide();
-// 	var index = $(this).attr("data-index");
-// 	var card = me().state.hand[index];
+import { store, shared } from "../utils";
 
-// 	var fromStaging = state.staging !== null;
-// 	if (fromStaging) {
-// 		handlePre(card);
-// 		card = state.staging;
-// 		state.staging = null;
-// 	} else if (state.lead !== null) {
-// 		if (cantPlay(card)) return alert("cant play that card");
-// 	}
-// 	me().state.hand.splice(index, 1)[0];
-// 	if (!fromStaging) {
-// 		var duringMessage = handleDuring(card);
-// 		if (duringMessage !== null) {
-// 			state.staging = card;
-// 			return sendState(duringMessage);
-// 		}
-// 	}
-
-// 	var text = getText(card);
-// 	if (state.lead === null) {
-// 		state.lead = card;
-// 		advanceTurn();
-// 		sendState(`lead with ${text}`);
-// 	} else {
-// 		var winner;
-// 		if (wins(card)) {
-// 			winner = me();
-// 		} else {
-// 			advanceTurn();
-// 			winner = current();
-// 		}
-// 		winner.state.tricks++;
-// 		handlePost(card, winner);
-// 		state.previous = `${getText(state.lead)} vs ${text}`;
-// 		state.lead = null;
-// 		var message = `played ${text}`;
-// 		if (me().state.hand.length === 0) {
-// 			var scores = state.players
-// 				.map((player) => `${player.name}: ${player.state.tricks}`)
-// 				.join(" / ");
-// 			message = `${message} - new hand - ${scores}`;
-// 			state.previous += `\n${scores}`;
-// 			scoreFromTricks();
-// 			deal();
-// 		}
-// 		sendState(message);
-// 	}
-// }
+function playCard(index: number): string | void {
+	// const me = shared.getMe(store.gameW.game);
+	// var card = me.hand[index];
+	// const fromStaging = store.gameW.game.staging !== null;
+	// if (fromStaging) {
+	// 	handlePre(card);
+	// 	card = store.gameW.game.staging!;
+	// 	store.gameW.game.staging = null;
+	// } else if (store.gameW.game.lead !== null) {
+	// 	if (cantPlay(card)) return alert("cant play that card");
+	// }
+	// me.hand.splice(index, 1);
+	// if (!fromStaging) {
+	// 	var duringMessage = handleDuring(card);
+	// 	if (duringMessage !== null) {
+	// 		store.gameW.game.staging = card;
+	// 		return store.update(duringMessage, store.gameW.game);
+	// 	}
+	// }
+	// var text = getText(card);
+	// if (store.gameW.game.lead === null) {
+	// 	store.gameW.game.lead = card;
+	// 	shared.incrementPlayerTurn();
+	// 	return store.update(`lead with ${text}`);
+	// } else {
+	// 	var winner;
+	// 	if (wins(card)) {
+	// 		winner = me();
+	// 	} else {
+	// 		advanceTurn();
+	// 		winner = current();
+	// 	}
+	// 	winner.state.tricks++;
+	// 	handlePost(card, winner);
+	// 	state.previous = `${getText(state.lead)} vs ${text}`;
+	// 	state.lead = null;
+	// 	var message = `played ${text}`;
+	// 	if (me().state.hand.length === 0) {
+	// 		var scores = state.players
+	// 			.map((player) => `${player.name}: ${player.state.tricks}`)
+	// 			.join(" / ");
+	// 		message = `${message} - new hand - ${scores}`;
+	// 		state.previous += `\n${scores}`;
+	// 		scoreFromTricks();
+	// 		deal();
+	// 	}
+	// 	sendState(message);
+	// }
+}
 
 // function cantPlay(card) {
 // 	if (card.suit === state.lead.suit) {
@@ -164,10 +162,5 @@
 // 		}
 // 	}
 // }
-
-function playCard(index: number): string | null {
-	alert("todo");
-	return null;
-}
 
 export default playCard;
