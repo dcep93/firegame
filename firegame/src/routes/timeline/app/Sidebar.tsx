@@ -12,10 +12,10 @@ class Sidebar extends React.Component {
 	render() {
 		return (
 			<div className={css.sidebar}>
+				<Log />
 				<Settings />
 				<Players />
 				{Store.gameW.game !== undefined && <Info />}
-				<Log />
 			</div>
 		);
 	}

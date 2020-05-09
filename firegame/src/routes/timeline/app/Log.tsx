@@ -3,6 +3,9 @@ import React from "react";
 import styles from "../../../shared/styles.module.css";
 import Store, { GameWrapperType } from "../../../shared/store";
 import { GameType } from "./Render";
+import LogEntry from "./LogEntry";
+
+const history: GameWrapperType<GameType>[] = [];
 
 class Log extends React.Component<
 	{},
@@ -10,7 +13,7 @@ class Log extends React.Component<
 > {
 	constructor(props: {}) {
 		super(props);
-		this.state = { history: [] };
+		this.state = { history };
 	}
 
 	componentDidMount() {
@@ -36,10 +39,17 @@ class Log extends React.Component<
 		return (
 			<div className={styles.bubble}>
 				<h2>Log</h2>
-				{this.state &&
-					this.state.history.map((wrapper) => (
-						<p key={wrapper.info.id}>{wrapper.info.message}</p>
-					))}
+				<div className={styles.dont_grow}>
+					<div>
+						{this.state &&
+							this.state.history.map((wrapper) => (
+								<LogEntry
+									key={wrapper.info.id}
+									wrapper={wrapper}
+								/>
+							))}
+					</div>
+				</div>
 			</div>
 		);
 	}
