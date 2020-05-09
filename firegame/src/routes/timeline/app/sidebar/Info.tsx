@@ -1,9 +1,10 @@
 import React from "react";
-import { GameType } from "./Render";
 
-import styles from "../../../shared/styles.module.css";
-import css from "./index.module.css";
-import Store from "../../../shared/store";
+import Store from "../../../../shared/store";
+
+import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
+import { GameType } from "../utils/NewGame";
 
 class Info extends React.Component {
 	render() {

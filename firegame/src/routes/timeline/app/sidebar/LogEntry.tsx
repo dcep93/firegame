@@ -1,6 +1,6 @@
 import React from "react";
-import store, { GameWrapperType } from "../../../shared/store";
-import { GameType } from "./Render";
+import store, { GameWrapperType } from "../../../../shared/store";
+import { GameType } from "../utils/NewGame";
 
 class LogEntry extends React.Component<{ wrapper: GameWrapperType<GameType> }> {
 	render() {

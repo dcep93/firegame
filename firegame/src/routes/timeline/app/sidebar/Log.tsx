@@ -1,9 +1,9 @@
 import React from "react";
 
-import styles from "../../../shared/styles.module.css";
-import Store, { GameWrapperType } from "../../../shared/store";
-import { GameType } from "./Render";
+import styles from "../../../../shared/styles.module.css";
+import Store, { GameWrapperType } from "../../../../shared/store";
 import LogEntry from "./LogEntry";
+import { GameType } from "../utils/NewGame";
 
 const history: GameWrapperType<GameType>[] = [];
 
@@ -36,6 +36,7 @@ class Log extends React.Component<
 	}
 
 	render() {
+		// css help
 		return (
 			<div className={styles.bubble}>
 				<h2>Log</h2>

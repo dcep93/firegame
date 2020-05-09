@@ -9,7 +9,7 @@ const FOLDER_URL =
 function _fetch(base: string, path: string): Promise<any> {
 	return fetch(base + path)
 		.then((response) => response.json())
-		.then((response) => response.responses[0]);
+		.then((response) => response.responses[0].models);
 }
 
 export default {

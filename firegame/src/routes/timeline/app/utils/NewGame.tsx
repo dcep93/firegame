@@ -1,7 +1,19 @@
-import { GameType } from "./Render";
+import utils from "../../../../shared/utils";
+
+import { LobbyType } from "../../../../shared/store";
+
 import Quizlet from "./Quizlet";
-import utils from "../../../shared/utils";
-import { LobbyType } from "../../../shared/store";
+
+export type GameType = {
+	params: Params;
+	currentPlayer: number;
+	title: string;
+	setId: number;
+	terms: TermType[];
+	deck: number[];
+	players: PlayerType[];
+	board: number[];
+};
 
 export type Params = {
 	quizlet: string;
@@ -14,16 +26,27 @@ export type Params = {
 	userId: string;
 };
 
+export type TermType = {
+	word: string;
+	definition: string;
+	image: string;
+};
+
+export type PlayerType = {
+	index: number;
+	username: string;
+	userId: string;
+	hand: number[];
+};
+
 type DataType = { response: any; game: GameType };
 
 function NewGame(params: Params): PromiseLike<GameType> {
-	const base = parseInt(params.quizlet)
-		? fetchBySetId(params.quizlet)
-		: fetchByQuery(params.quizlet);
+	const base = parseInt(params.quizlet) ? fetchBySetId : fetchByQuery;
 	// @ts-ignore
 	const game: GameType = {};
 	game.params = params;
-	return base
+	return base(params.quizlet)
 		.then((response) => ({
 			response,
 			game,
@@ -36,10 +59,10 @@ function NewGame(params: Params): PromiseLike<GameType> {
 
 function fetchBySetId(setId: string): Promise<any> {
 	const setPromise = Quizlet.fetch(Quizlet.SET_URL, setId).then(
-		(response) => response.models.set[0]
+		(response) => response.set[0]
 	);
 	const termsPromise = Quizlet.fetch(Quizlet.TERMS_URL, setId).then(
-		(response) => response.models.term
+		(response) => response.term
 	);
 	return Promise.all([setPromise, termsPromise]).then(([set, terms]) => ({
 		set,
@@ -49,7 +72,7 @@ function fetchBySetId(setId: string): Promise<any> {
 
 function fetchByQuery(queryString: string): Promise<any> {
 	return Quizlet.fetch(Quizlet.SEARCH_URL, queryString)
-		.then((response) => response.models.set[0].id)
+		.then((response) => response.set[0].id)
 		.then(fetchBySetId);
 }
 
@@ -68,6 +91,7 @@ function setDeck(data: DataType): DataType {
 		terms.forEach((term: any, index: number) => {
 			term.definition = index.toString();
 		});
+
 	const deck = terms.map((_: any, index: number) => index);
 	utils.shuffle(deck);
 

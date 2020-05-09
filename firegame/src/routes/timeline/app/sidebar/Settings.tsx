@@ -1,13 +1,13 @@
 import React, { RefObject } from "react";
 
-import styles from "../../../shared/styles.module.css";
+import styles from "../../../../shared/styles.module.css";
 
-import Quizlet from "./Quizlet";
+import Quizlet from "../utils/Quizlet";
 
-import NewGame, { Params } from "./NewGame";
+import NewGame, { Params } from "../utils/NewGame";
 
-import css from "./index.module.css";
-import Store from "../../../shared/store";
+import css from "../index.module.css";
+import Store from "../../../../shared/store";
 
 const DEFAULT_SET_ID = "284065846";
 

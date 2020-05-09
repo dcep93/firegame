@@ -1,33 +1,9 @@
 import React from "react";
 
-import { Params } from "./NewGame";
 import Hand from "./Hand";
 import Board from "./Board";
-import Store from "../../../shared/store";
-
-export type TermType = {
-	word: string;
-	definition: string;
-	image: string;
-};
-
-export type PlayerType = {
-	index: number;
-	username: string;
-	userId: string;
-	hand: number[];
-};
-
-export type GameType = {
-	params: Params;
-	currentPlayer: number;
-	title: string;
-	setId: number;
-	terms: TermType[];
-	deck: number[];
-	players: PlayerType[];
-	board: number[];
-};
+import Store from "../../../../shared/store";
+import { GameType } from "../utils/NewGame";
 
 class Render extends React.Component<{}, { selectedIndex: number }> {
 	render() {

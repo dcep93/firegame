@@ -1,12 +1,13 @@
 import React from "react";
 
-import css from "./index.module.css";
+import Store from "../../../../shared/store";
 
 import Settings from "./Settings";
 import Players from "./Players";
 import Info from "./Info";
 import Log from "./Log";
-import Store from "../../../shared/store";
+
+import css from "../index.module.css";
 
 class Sidebar extends React.Component {
 	render() {

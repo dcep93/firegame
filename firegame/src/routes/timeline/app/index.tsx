@@ -1,20 +1,21 @@
 import React from "react";
 
-import Render from "./Render";
+import store from "../../../shared/store";
+
+import Main from "./main";
+import Sidebar from "./sidebar";
 
 import css from "./index.module.css";
 
-import Sidebar from "./Sidebar";
-import Store from "../../../shared/store";
-
 class Timeline extends React.Component {
 	render() {
+		// css help
 		return (
 			<div>
 				<div className={css.main}>
 					<Sidebar />
 					<div className={css.content}>
-						<div>{Store.gameW.game && <Render />}</div>
+						<div>{store.gameW.game && <Main />}</div>
 					</div>
 				</div>
 			</div>
