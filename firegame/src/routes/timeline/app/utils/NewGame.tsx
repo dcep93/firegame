@@ -28,13 +28,13 @@ export type Params = {
 	userId: string;
 };
 
-export type TermType = {
+type TermType = {
 	word: string;
 	definition: string;
 	image: string;
 };
 
-export type PlayerType = {
+type PlayerType = {
 	index: number;
 	username: string;
 	userId: string;

@@ -1,3 +1,5 @@
+export const VERSION: string = "v0.0.8";
+
 interface TurnGame {
 	currentPlayer: number;
 	players: any[];
