@@ -17,7 +17,7 @@ function init(roomId: number, gameName: string, update_: () => void) {
 		VERSION,
 		userId,
 	};
-	// @ts-ignore
+	// @ts-ignore read only
 	store.me = me;
 	update = update_;
 	enterLobby();

@@ -29,7 +29,7 @@ export type PlayerType = {
 export type Card = { suit: string; value: number };
 
 function NewGame(params: Params): PromiseLike<GameType> {
-	// @ts-ignore
+	// @ts-ignore game being constructed
 	const game: GameType = {};
 	game.params = params;
 	return Promise.resolve(game)

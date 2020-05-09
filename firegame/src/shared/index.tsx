@@ -15,7 +15,9 @@ interface PlayerType {
 class Shared<T extends TurnGame<U>, U extends PlayerType> {
 	isMyTurn(game_: T | undefined = undefined): boolean {
 		const game: T = game_ || store.gameW.game!;
-		return game.players[game.currentPlayer].userId === store.me.userId;
+		return (
+			game && game.players[game.currentPlayer].userId === store.me.userId
+		);
 	}
 
 	incrementPlayerTurn(game_: T | undefined = undefined): void {

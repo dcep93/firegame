@@ -37,7 +37,7 @@ function update<T>(message: string, game_: T | undefined = undefined): void {
 	Writer.sendGameState(message, game);
 }
 
-// @ts-ignore
+// @ts-ignore store initialization
 store = { update };
 
 export default store;

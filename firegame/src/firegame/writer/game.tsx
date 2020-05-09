@@ -36,22 +36,23 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
 	if (record) {
 		const gameWrapper = Object.values(record)[0];
 		if (Firebase.now() - gameWrapper.info.timestamp < GAME_EXPIRE_TIME) {
-			// @ts-ignore
+			// @ts-ignore read only
 			store.gameW = gameWrapper;
 			update();
 			return;
 		}
 	}
 	if (store.gameW) return;
-	// @ts-ignore
-	const gameWrapper: GameWrapperType<T> = {};
-	gameWrapper.info = {
-		playerId: store.me.userId,
-		playerName: store.lobby[store.me.userId],
-		message: "opened a room",
-		host: store.me.userId,
-		timestamp: Firebase.now(),
-		id: 0,
+	const gameWrapper: GameWrapperType<T | null> = {
+		info: {
+			playerId: store.me.userId,
+			playerName: store.lobby[store.me.userId],
+			message: "opened a room",
+			host: store.me.userId,
+			timestamp: Firebase.now(),
+			id: 0,
+		},
+		game: null,
 	};
 	sendGameStateHelper(gameWrapper);
 }

@@ -45,7 +45,7 @@ function setLobbyFromRemote(remoteLobby: {
 		}
 	}
 	if (!lobbyEquals(lobby)) {
-		// @ts-ignore
+		// @ts-ignore read only
 		store.lobby = lobby;
 		update();
 	}

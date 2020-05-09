@@ -43,7 +43,7 @@ type DataType = { response: any; game: GameType };
 
 function NewGame(params: Params): PromiseLike<GameType> {
 	const base = parseInt(params.quizlet) ? fetchBySetId : fetchByQuery;
-	// @ts-ignore
+	// @ts-ignore game being constructed
 	const game: GameType = {};
 	game.params = params;
 	return base(params.quizlet)

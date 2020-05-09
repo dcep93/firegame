@@ -22,8 +22,8 @@ class GameWrapper extends React.Component<{
 	}
 
 	render() {
-		if (store.lobby === undefined) return <LoadingPage />;
-		if (store.lobby[store.me.userId] === undefined)
+		if (!store.lobby) return <LoadingPage />;
+		if (!store.lobby[store.me.userId])
 			return <LoginPage setUsername={Writer.setUsername} />;
 		if (!store.gameW) return null;
 		return <this.props.component />;
