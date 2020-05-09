@@ -2,8 +2,8 @@
 	display: inline-block;
 	border-radius: 1em;
 	border: 2px solid black;
-	padding: 1em;
-	margin: 1em;
+	padding: 0.7em;
+	margin: 0.5em;
 }
 
 .flex {
