@@ -1,7 +1,9 @@
 import React from "react";
 
+import shared from "../../../../shared";
+
 import { store } from "../utils";
-import { GameType } from "../utils/NewGame";
+import { PlayerType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -20,14 +22,12 @@ class Hand extends React.Component<{
 	}
 
 	getHand() {
-		const userId = store.me.userId;
-		const game: GameType = store.gameW.game!;
-		const myIndex = game.players
-			.filter((player) => player.userId === userId)
-			.map((player) => player.index)[0];
-		const me = game.players[myIndex];
+		const me = shared.getMe(store.gameW.game);
 		if (!me) return null;
-		return me.hand.map(this.renderCard.bind(this));
+		// todo local utils could override shared utils with proper GameType typing
+		// @ts-ignore
+		const hand: number[] = me.hand;
+		return hand.map(this.renderCard.bind(this));
 	}
 
 	renderCard(termIndex: number, handIndex: number) {

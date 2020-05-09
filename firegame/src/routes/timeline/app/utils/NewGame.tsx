@@ -34,7 +34,7 @@ type TermType = {
 	image: string;
 };
 
-type PlayerType = {
+export type PlayerType = {
 	index: number;
 	username: string;
 	userId: string;

@@ -34,10 +34,15 @@ function myIndex(game: TurnGame): number {
 	return game.players.map((player) => player.userId).indexOf(store.me.userId);
 }
 
+function getMe(game: TurnGame): PlayerType {
+	return game.players[myIndex(game)];
+}
+
 export default {
 	shuffle,
 	isMyTurn,
 	playerByIndex,
 	incrementPlayerTurn,
 	myIndex,
+	getMe,
 };
