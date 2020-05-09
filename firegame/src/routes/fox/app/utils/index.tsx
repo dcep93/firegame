@@ -1,9 +1,10 @@
-import shared from "../../../../shared";
+import Shared from "../../../../shared";
 import store, { StoreType } from "../../../../shared/store";
 
 import { GameType, Card, PlayerType } from "./NewGame";
 
 const store_: StoreType<GameType> = store;
+const shared: Shared<GameType, PlayerType> = new Shared();
 const NUM_RANKS = 11;
 const NUM_SUITS = 3;
 const TRICKS_PER_ROUND = 13;
@@ -49,4 +50,4 @@ function getSortPosition(card: Card) {
 	return card.suit.codePointAt(0)! * NUM_RANKS + card.value;
 }
 
-export { store_ as store, deal };
+export { store_ as store, deal, shared };

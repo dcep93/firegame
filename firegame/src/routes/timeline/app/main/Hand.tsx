@@ -1,8 +1,6 @@
 import React from "react";
 
-import shared from "../../../../shared";
-
-import { store } from "../utils";
+import { store, shared } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -23,10 +21,7 @@ class Hand extends React.Component<{
 	getHand() {
 		const me = shared.getMe(store.gameW.game);
 		if (!me) return null;
-		// todo local utils could override shared utils with proper GameType typing
-		// @ts-ignore
-		const hand: number[] = me.hand;
-		return hand.map(this.renderCard.bind(this));
+		return me.hand.map(this.renderCard.bind(this));
 	}
 
 	renderCard(termIndex: number, handIndex: number) {

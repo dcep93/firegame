@@ -1,8 +1,6 @@
-import shared from "../../../../shared";
-
 import { LobbyType } from "../../../../shared/store";
 
-import { sortBoard } from "./";
+import { sortBoard, shared } from "./";
 import Quizlet from "./Quizlet";
 
 export type GameType = {

@@ -1,7 +1,6 @@
-import shared from "../../../../shared";
 import { LobbyType } from "../../../../shared/store";
 
-import { deal } from "./";
+import { deal, shared } from "./";
 
 export type GameType = {
 	params: Params;
