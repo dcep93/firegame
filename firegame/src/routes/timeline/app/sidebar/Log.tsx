@@ -46,7 +46,11 @@ class Log extends React.Component<
 				<div className={styles.dont_grow}>
 					<div>
 						{this.state.history.map((wrapper) => (
-							<LogEntry key={wrapper.info.id} wrapper={wrapper} />
+							<LogEntry
+								key={wrapper.info.id}
+								wrapper={wrapper}
+								history={this.state.history}
+							/>
 						))}
 					</div>
 				</div>
