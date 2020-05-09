@@ -11,13 +11,16 @@ set -o pipefail
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# install jq
+which jq | apt-get install -y jq
+
 APP=$(jq -r .name "$DIR/package.json")
 
 # install git submodules
-git submodule update --init
+(cd "$DIR" && git submodule update --init)
 
 # install nodejs
-which node || ( curl -sL https://deb.nodesource.com/setup_8.x | bash - && apt-get install -y nodejs )
+which node || ( curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs )
 
 if [ ! -d $DIR/node_modules ]; then
 	npm install_all

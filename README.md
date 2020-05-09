@@ -8,7 +8,7 @@
 
 `git clone https://github.com/dcep93/firegame`
 
-[`./server/setup.sh`](server/setup.sh)
+[`sudo bash firegame/firegame/server/setup.sh`](firegame/server/setup.sh)
 
 ### update godaddy nameservers
 
