@@ -4,13 +4,11 @@ import LoadingPage from "./LoadingPage";
 import LoginPage from "./LoginPage";
 import Writer from "../Writer";
 
-type PropsType = {
+class GameWrapper extends React.Component<{
 	component: typeof React.Component;
 	gameName: string;
 	roomId: number;
-};
-
-class GameWrapper extends React.Component<PropsType> {
+}> {
 	componentDidMount() {
 		document.title = this.props.gameName.toLocaleUpperCase();
 		Writer.init(

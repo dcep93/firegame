@@ -150,6 +150,7 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
 			// otherwise we'll likely see old games from that lobby
 			// @ts-ignore
 			Store.gameW = gameWrapper;
+			update();
 			return;
 		}
 	}

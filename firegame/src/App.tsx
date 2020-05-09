@@ -11,7 +11,6 @@ import Home from "./firegame/components/Home";
 import GameWrapper from "./firegame/components/GameWrapper";
 
 import Games from "./firegame/Games";
-import Store from "./shared/Store";
 
 function App() {
 	return (
