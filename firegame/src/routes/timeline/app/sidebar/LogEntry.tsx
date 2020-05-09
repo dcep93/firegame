@@ -15,7 +15,9 @@ class LogEntry extends React.Component<{
 
 	getMessage() {
 		const w = this.props.wrapper;
-		return `(${w.info.id}) ${w.info.timestamp} [${w.info.player}] ${w.info.message}`;
+		const time = new Date(w.info.timestamp).toLocaleTimeString();
+		const player = w.game.params.lobby[w.info.player];
+		return `(${w.info.id}) ${time} [${player}] ${w.info.message}`;
 	}
 
 	revert(): void {

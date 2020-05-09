@@ -8,6 +8,7 @@ import { GameType } from "../utils/NewGame";
 import LogEntry from "./LogEntry";
 
 import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
 
 const history: GameWrapperType<GameType>[] = [];
 
@@ -46,14 +47,16 @@ class Log extends React.Component<
 			<div className={styles.bubble}>
 				<h2>Log</h2>
 				<div className={styles.dont_grow}>
-					<div>
-						{this.state.history.map((wrapper) => (
-							<LogEntry
-								key={wrapper.info.id}
-								wrapper={wrapper}
-								history={this.state.history}
-							/>
-						))}
+					<div className={css.log_entry_parent}>
+						<div className={css.log_entry_child}>
+							{this.state.history.map((wrapper) => (
+								<LogEntry
+									key={wrapper.info.id}
+									wrapper={wrapper}
+									history={this.state.history}
+								/>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>
