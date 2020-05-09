@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store } from "../utils";
+import { store, getText } from "../utils";
 import { Card } from "../utils/NewGame";
 
 import playCard from "./playCard";
@@ -11,7 +11,7 @@ class HandCard extends React.Component<{ card: Card; index: number }> {
 	render() {
 		return (
 			<div className={styles.bubble} onClick={this.play.bind(this)}>
-				{this.props.card.suit}/{this.props.card.value}
+				{getText(this.props.card)}
 			</div>
 		);
 	}

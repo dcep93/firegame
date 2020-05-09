@@ -1,26 +1,21 @@
 import React from "react";
 
-import { store } from "../utils";
+import { store, getText } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 
 class Field extends React.Component {
 	render() {
-		const t = store.gameW.game.trump;
-		const l = store.gameW.game.lead || { suit: "-", value: "-" };
+		const l = store.gameW.game.lead || { suit: "-", value: 0 };
 		return (
 			<div>
 				<div className={styles.bubble}>
 					<p>Trump</p>
-					<p>
-						{t.suit}/{t.value}
-					</p>
+					<p>{getText(store.gameW.game.trump)}</p>
 				</div>
 				<div className={styles.bubble}>
 					<p>Lead</p>
-					<p>
-						{l.suit}/{l.value}
-					</p>
+					<p>{getText(l)}</p>
 				</div>
 				<div className={styles.bubble}>
 					<p>Last</p>

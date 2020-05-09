@@ -1,4 +1,4 @@
-import { store, shared } from "../utils";
+import { store, shared, deal, getText } from "../utils";
 
 function playCard(index: number): string | void {
 	// const me = shared.getMe();
@@ -45,7 +45,7 @@ function playCard(index: number): string | void {
 	// 		message = `${message} - new hand - ${scores}`;
 	// 		game.previous += `\n${scores}`;
 	// 		scoreFromTricks();
-	// 		deal();
+	// 		deal(game);
 	// 	}
 	// 	store.update(message);
 	// }

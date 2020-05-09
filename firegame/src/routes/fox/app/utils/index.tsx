@@ -50,4 +50,8 @@ function getSortPosition(card: Card) {
 	return card.suit.codePointAt(0)! * NUM_RANKS + card.value;
 }
 
-export { store_ as store, deal, shared };
+function getText(card: Card) {
+	return `${card.suit}/${card.value || "-"}`;
+}
+
+export { store_ as store, deal, shared, getText };
