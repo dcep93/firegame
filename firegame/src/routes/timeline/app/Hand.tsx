@@ -1,8 +1,8 @@
 import React from "react";
 
-import styles from "../../../shared/Styles.module.css";
+import styles from "../../../shared/styles.module.css";
 import css from "./index.module.css";
-import Store from "../../../shared/Store";
+import Store from "../../../shared/store";
 import { GameType } from "./Render";
 
 class Hand extends React.Component<{

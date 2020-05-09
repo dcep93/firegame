@@ -3,7 +3,7 @@ import React from "react";
 import { Params } from "./NewGame";
 import Hand from "./Hand";
 import Board from "./Board";
-import Store from "../../../shared/Store";
+import Store from "../../../shared/store";
 
 export type TermType = {
 	word: string;

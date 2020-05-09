@@ -1,5 +1,5 @@
-import Store, { LobbyType, GameWrapperType, MeType } from "../shared/Store";
-import Firebase from "./Firebase";
+import Store, { LobbyType, GameWrapperType, MeType } from "../../shared/store";
+import Firebase from "../firebase";
 
 export const VERSION: string = "v0.0.3";
 

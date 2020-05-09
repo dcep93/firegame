@@ -1,8 +1,8 @@
 import React, { FormEvent } from "react";
 
 import css from "./index.module.css";
-import styles from "../../shared/Styles.module.css";
-import Store from "../../shared/Store";
+import styles from "../../shared/styles.module.css";
+import Store from "../../shared/store";
 
 class LoginPage extends React.Component<{
 	setUsername: (username: string) => void;

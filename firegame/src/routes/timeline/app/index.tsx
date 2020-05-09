@@ -5,7 +5,7 @@ import Render from "./Render";
 import css from "./index.module.css";
 
 import Sidebar from "./Sidebar";
-import Store from "../../../shared/Store";
+import Store from "../../../shared/store";
 
 class Timeline extends React.Component {
 	render() {

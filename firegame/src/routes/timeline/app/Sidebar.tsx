@@ -6,7 +6,7 @@ import Settings from "./Settings";
 import Players from "./Players";
 import Info from "./Info";
 import Log from "./Log";
-import Store from "../../../shared/Store";
+import Store from "../../../shared/store";
 
 class Sidebar extends React.Component {
 	render() {

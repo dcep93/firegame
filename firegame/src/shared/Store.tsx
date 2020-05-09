@@ -1,6 +1,6 @@
-import Writer from "../firegame/Writer";
+import Writer from "../firegame/writer";
 
-var Store: Readonly<{
+var store: Readonly<{
 	me: Readonly<MeType>;
 	lobby: Readonly<LobbyType>;
 	gameW: Readonly<GameWrapperType<any>>;
@@ -34,6 +34,6 @@ function update<T>(message: string, game: T): void {
 }
 
 // @ts-ignore
-Store = { update };
+store = { update };
 
-export default Store;
+export default store;

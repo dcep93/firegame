@@ -1,7 +1,7 @@
 import React from "react";
 
-import styles from "../../../shared/Styles.module.css";
-import Store, { GameWrapperType } from "../../../shared/Store";
+import styles from "../../../shared/styles.module.css";
+import Store, { GameWrapperType } from "../../../shared/store";
 import { GameType } from "./Render";
 
 class Log extends React.Component<

@@ -1,7 +1,7 @@
 import { GameType } from "./Render";
 import Quizlet from "./Quizlet";
 import utils from "../../../shared/utils";
-import { LobbyType } from "../../../shared/Store";
+import { LobbyType } from "../../../shared/store";
 
 export type Params = {
 	quizlet: string;

@@ -1,7 +1,7 @@
 import React from "react";
 
-import styles from "../../../shared/Styles.module.css";
-import Store from "../../../shared/Store";
+import styles from "../../../shared/styles.module.css";
+import Store from "../../../shared/store";
 
 class Players extends React.Component {
 	render() {

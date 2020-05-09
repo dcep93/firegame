@@ -1,8 +1,8 @@
 import React from "react";
-import Store from "../../shared/Store";
+import Store from "../../shared/store";
 import LoadingPage from "./LoadingPage";
 import LoginPage from "./LoginPage";
-import Writer from "../Writer";
+import Writer from "../writer";
 
 class GameWrapper extends React.Component<{
 	component: typeof React.Component;

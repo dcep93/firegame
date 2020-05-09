@@ -10,7 +10,7 @@ import {
 import Home from "./firegame/components/Home";
 import GameWrapper from "./firegame/components/GameWrapper";
 
-import Games from "./firegame/Games";
+import Games from "./firegame/games";
 
 function App() {
 	return (
