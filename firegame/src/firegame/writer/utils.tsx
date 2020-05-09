@@ -1,9 +1,15 @@
-import Store, { MeType } from "../../shared/store";
+import store, { MeType } from "../../shared/store";
+
 import Firebase from "../firebase";
-import { setLobbyFromRemote } from "./lobby";
+
+import { enterLobby } from "./lobby";
+
 export const VERSION: string = "v0.0.3";
 
+var initialized = false;
 function init(roomId: number, gameName: string, update_: () => void) {
+	if (initialized) return;
+	initialized = true;
 	Firebase.init();
 	const userId = getUserId();
 	const me: MeType = {
@@ -13,9 +19,9 @@ function init(roomId: number, gameName: string, update_: () => void) {
 		userId,
 	};
 	// @ts-ignore
-	Store.me = me;
+	store.me = me;
 	update = update_;
-	Firebase.connect(lobbyPath(), setLobbyFromRemote);
+	enterLobby();
 }
 
 function getUserId(): string {
@@ -35,11 +41,11 @@ function lobbyPath(): string {
 }
 
 function mePath(): string {
-	return `${lobbyPath()}/${Store.me.userId}`;
+	return `${lobbyPath()}/${store.me.userId}`;
 }
 
 function roomPath(): string {
-	return `${Store.me.gameName}/${Store.me.roomId}`;
+	return `${store.me.gameName}/${store.me.roomId}`;
 }
 
 function gamePath(): string {

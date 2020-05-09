@@ -1,6 +1,8 @@
-import Store, { LobbyType } from "../../shared/store";
+import store, { LobbyType } from "../../shared/store";
+
 import Firebase from "../firebase";
-import { mePath, update } from "./utils";
+
+import { lobbyPath, mePath, update } from "./utils";
 import { enterGame } from "./game";
 
 const PRESENT_EXPIRE = 3000;
@@ -22,11 +24,11 @@ function updateTimestamp(): void {
 }
 
 function lobbyEquals(lobby: LobbyType): boolean {
-	if (!Store.lobby) return false;
-	if (Object.keys(lobby).length !== Object.keys(Store.lobby).length)
+	if (!store.lobby) return false;
+	if (Object.keys(lobby).length !== Object.keys(store.lobby).length)
 		return false;
 	for (let [userId, username] of Object.entries(lobby)) {
-		if (Store.lobby[userId] !== username) return false;
+		if (store.lobby[userId] !== username) return false;
 	}
 	return true;
 }
@@ -39,7 +41,7 @@ function setLobbyFromRemote(remoteLobby: {
 		for (let [userId, person] of Object.entries(remoteLobby)) {
 			if (Firebase.now() - person.timestamp > PRESENT_EXPIRE) continue;
 			lobby[userId] = person.username;
-			if (userId === Store.me.userId) signin();
+			if (userId === store.me.userId) signin();
 		}
 	}
 	if (!lobbyEquals(lobby)) {
@@ -50,7 +52,7 @@ function setLobbyFromRemote(remoteLobby: {
 }
 
 function setUsername(username: string): void {
-	const userId: string = Store.me.userId;
+	const userId: string = store.me.userId;
 	const now: number = Firebase.now();
 	const myUserObj: RemotePersonType = {
 		userId,
@@ -69,4 +71,8 @@ function signin(): void {
 	enterGame();
 }
 
-export { setUsername, setLobbyFromRemote };
+function enterLobby() {
+	Firebase.connect(lobbyPath(), setLobbyFromRemote);
+}
+
+export { setUsername, enterLobby };

@@ -1,8 +1,11 @@
 import React from "react";
-import Store from "../../shared/store";
+
+import store from "../../shared/store";
+
+import Writer from "../writer";
+
 import LoadingPage from "./LoadingPage";
 import LoginPage from "./LoginPage";
-import Writer from "../writer";
 
 class GameWrapper extends React.Component<{
 	component: typeof React.Component;
@@ -19,10 +22,10 @@ class GameWrapper extends React.Component<{
 	}
 
 	render() {
-		if (Store.lobby === undefined) return <LoadingPage />;
-		if (Store.lobby[Store.me.userId] === undefined)
+		if (store.lobby === undefined) return <LoadingPage />;
+		if (store.lobby[store.me.userId] === undefined)
 			return <LoginPage setUsername={Writer.setUsername} />;
-		if (!Store.gameW) return null;
+		if (!store.gameW) return null;
 		return <this.props.component />;
 	}
 }

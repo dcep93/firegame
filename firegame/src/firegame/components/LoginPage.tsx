@@ -1,8 +1,10 @@
 import React, { FormEvent } from "react";
 
-import css from "./index.module.css";
 import styles from "../../shared/styles.module.css";
-import Store from "../../shared/store";
+
+import store from "../../shared/store";
+
+import css from "./index.module.css";
 
 class LoginPage extends React.Component<{
 	setUsername: (username: string) => void;
@@ -11,7 +13,7 @@ class LoginPage extends React.Component<{
 	render() {
 		return (
 			<div className={`${css.login} ${styles.bubble}`}>
-				<p>Welcome to {Store.me.gameName}!</p>
+				<p>Welcome to {store.me.gameName}!</p>
 				<p>Enter your name to continue</p>
 				<form onSubmit={this.setUsername.bind(this)}>
 					<input type="text" ref={this.inputRef} />
