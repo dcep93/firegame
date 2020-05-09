@@ -12,9 +12,11 @@ set -o pipefail
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # install jq
-which jq | apt-get install -y jq
+which jq || apt-get install -y jq
 
 APP=$(jq -r .name "$DIR/package.json")
+
+which yarn || apt install -y yarn
 
 # install git submodules
 (cd "$DIR" && git submodule update --init)
