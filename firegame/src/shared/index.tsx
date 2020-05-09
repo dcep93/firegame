@@ -19,17 +19,22 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
 	}
 
 	incrementPlayerTurn(game: T): void {
-		game.currentPlayer = this.playerByIndex(game, game.currentPlayer + 1);
+		game.currentPlayer = this.playerIndexByIndex(
+			game,
+			game.currentPlayer + 1
+		);
 	}
 
-	playerByIndex(game: T, index: number): number {
+	playerIndexByIndex(game: T, index: number): number {
 		return index % game.players.length;
 	}
 
+	playerIndexById(game: T, userId: string): number {
+		return game.players.map((player) => player.userId).indexOf(userId);
+	}
+
 	myIndex(game: T): number {
-		return game.players
-			.map((player) => player.userId)
-			.indexOf(store.me.userId);
+		return this.playerIndexById(game, store.me.userId);
 	}
 
 	getMe(game: T): U {

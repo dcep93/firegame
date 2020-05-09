@@ -11,7 +11,7 @@ const TRICKS_PER_ROUND = 13;
 
 function deal(game: GameType): GameType {
 	game.currentPlayer = game.dealer;
-	game.dealer = shared.playerByIndex(game, game.dealer + 1);
+	game.dealer = shared.playerIndexByIndex(game, game.dealer + 1);
 	game.lead = null;
 	game.deck = buildDeck();
 	game.players = dealPlayers(game);
