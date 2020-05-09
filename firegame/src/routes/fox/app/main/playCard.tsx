@@ -5,12 +5,12 @@ function playCard(index: number): string | void {
 	const me = shared.getMe();
 	var card = me.hand[index];
 	const game = store.gameW.game;
-	const fromStaging = game.staging !== null;
+	const fromStaging = Boolean(game.staging);
 	if (fromStaging) {
 		handlePre_3_5(card);
 		card = game.staging!;
 		game.staging = null;
-	} else if (game.lead !== null) {
+	} else if (game.lead) {
 		if (!canPlay(card, game.lead)) return alert("cant play that card");
 	}
 	me.hand.splice(index, 1);
@@ -22,7 +22,7 @@ function playCard(index: number): string | void {
 		}
 	}
 	var text = getText(card);
-	if (game.lead === null) {
+	if (!game.lead) {
 		game.lead = card;
 		shared.incrementPlayerTurn();
 		return store.update(`lead with ${text}`);
