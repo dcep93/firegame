@@ -9,8 +9,6 @@ import css from "./index.module.css";
 
 class Fox extends React.Component {
 	render() {
-		// todo css help
-		// sidebar and main should scroll on separate tracks
 		const classes = [css.main];
 		if (shared.isMyTurn(store.gameW.game)) classes.push(styles.my_turn);
 		return (
