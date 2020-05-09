@@ -42,8 +42,12 @@ function dealHand(game: GameType): Card[] {
 	for (let i = 0; i < TRICKS_PER_ROUND; i++) {
 		hand.push(game.deck.shift()!);
 	}
-	hand.sort((a, b) => getSortPosition(a) - getSortPosition(b));
+	sortHand(hand);
 	return hand;
+}
+
+function sortHand(hand: Card[]): void {
+	hand.sort((a, b) => getSortPosition(a) - getSortPosition(b));
 }
 
 function getSortPosition(card: Card) {
@@ -54,4 +58,4 @@ function getText(card: Card) {
 	return `${card.suit}/${card.value || "-"}`;
 }
 
-export { store_ as store, deal, shared, getText };
+export { store_ as store, deal, shared, getText, sortHand };
