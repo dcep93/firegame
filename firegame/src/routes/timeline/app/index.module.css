@@ -52,3 +52,11 @@
 .selectedCard {
 	background-color: grey;
 }
+
+.correct {
+	background-color: lightblue;
+}
+
+.incorrect {
+	background-color: lightpink;
+}

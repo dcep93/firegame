@@ -15,6 +15,7 @@ export type GameType = {
 	deck: number[];
 	players: PlayerType[];
 	board: number[];
+	last?: { termIndex: number; correct: boolean };
 };
 
 export type Params = {

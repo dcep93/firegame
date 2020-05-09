@@ -6,6 +6,7 @@ import { GameType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
+import classes from "../../../../shared/styles.module.css";
 
 class Board extends React.Component<{
 	selectTarget: (index: number) => void;
@@ -40,11 +41,14 @@ class Board extends React.Component<{
 	}
 
 	renderCard(termIndex: number) {
-		// todo last played border
-		// dcep93
 		const term = store.gameW.game!.terms[termIndex];
+		const classes = [styles.bubble];
+		const last = store.gameW.game!.last;
+		if (termIndex === last?.termIndex) {
+			classes.push(last!.correct ? css.correct : css.incorrect);
+		}
 		return (
-			<div key={`c${termIndex}`} className={styles.bubble}>
+			<div key={`c${termIndex}`} className={classes.join(" ")}>
 				<div className={css.info}>
 					<div className={css.card}>
 						<p>{term.word}</p>

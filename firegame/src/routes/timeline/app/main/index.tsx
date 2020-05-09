@@ -33,30 +33,31 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 		const leftBound = game.board[index - 1];
 		const rightBound = game.board[index];
 		const me = game.players[game.currentPlayer];
-		const cardIndex = me.hand[this.state.selectedIndex];
-		// todo dcep93
-		var message: string;
-		if (this.isBetween(cardIndex, leftBound, rightBound)) {
-			message = "CORRECT";
-		} else {
-			message = "WRONG";
+		const termIndex = me.hand[this.state.selectedIndex];
+		const term = store.gameW.game.terms[termIndex];
+		const correct = this.isBetween(term, leftBound, rightBound);
+		if (!correct) {
 			const deck = game.deck;
 			if (deck.length > 0) me.hand.push(deck.pop()!);
 		}
+		game.last = { correct, termIndex };
 		game.board.push(me.hand.splice(this.state.selectedIndex, 1)[0]);
 		sortBoard(store.gameW.game);
 		this.setState({ selectedIndex: -1 });
+		const message = `played [${term.word}]: [${term.definition}] - ${
+			correct ? "CORRECT" : "WRONG"
+		}`;
 		store.update(message, game);
 	}
 
 	// todo lets be safer here
 	isBetween(
-		cardIndex: number,
+		term: { definition: string },
 		leftBound: number,
 		rightBound: number
 	): boolean {
 		const game: GameType = store.gameW.game;
-		const playDefinition = parseInt(game.terms[cardIndex].definition);
+		const playDefinition = parseInt(term.definition);
 		const leftCard = game.terms[leftBound];
 		const rightCard = game.terms[rightBound];
 		if (leftCard && parseInt(leftCard.definition) > playDefinition)

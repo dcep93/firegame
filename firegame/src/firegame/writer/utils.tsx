@@ -5,7 +5,7 @@ import Firebase from "../firebase";
 import { enterLobby } from "./lobby";
 
 // todo where should this live
-export const VERSION: string = "v0.0.4";
+export const VERSION: string = "v0.0.8";
 
 var initialized = false;
 function init(roomId: number, gameName: string, update_: () => void) {

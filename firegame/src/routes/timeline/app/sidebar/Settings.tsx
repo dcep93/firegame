@@ -113,7 +113,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 
 	fetchFromFolder(): void {
 		const base =
-			localStorage.version === store.me.VERSION &&
+			localStorage.fetchedFromFolderVersion === store.me.VERSION &&
 			localStorage.fetchedFromFolder
 				? Promise.resolve(localStorage.fetchedFromFolder).then(
 						JSON.parse
@@ -124,6 +124,8 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 							localStorage.fetchedFromFolder = JSON.stringify(
 								fetchedFromFolder
 							);
+							localStorage.fetchedFromFolderVersion =
+								store.me.VERSION;
 							return fetchedFromFolder;
 						});
 		base.then((responses) =>
