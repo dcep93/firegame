@@ -1,12 +1,11 @@
 import React from "react";
 
-import store from "../../../../shared/store";
-
-import { sortBoard } from "../utils";
+import { store, sortBoard } from "../utils";
 import { GameType } from "../utils/NewGame";
 
 import Hand from "./Hand";
 import Board from "./Board";
+import shared from "../../../../shared";
 
 class Render extends React.Component<{}, { selectedIndex: number }> {
 	render() {
@@ -47,6 +46,7 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 		const message = `played [${term.word}]: [${term.definition}] - ${
 			correct ? "CORRECT" : "WRONG"
 		}`;
+		shared.incrementPlayerTurn(game);
 		store.update(message, game);
 	}
 

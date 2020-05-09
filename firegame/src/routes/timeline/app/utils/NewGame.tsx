@@ -1,5 +1,4 @@
-// todo dcep93 rename shared utils to just shared
-import shared from "../../../../shared/utils";
+import shared from "../../../../shared";
 
 import { LobbyType } from "../../../../shared/store";
 

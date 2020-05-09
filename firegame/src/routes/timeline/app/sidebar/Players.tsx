@@ -1,6 +1,6 @@
 import React from "react";
 
-import store from "../../../../shared/store";
+import { store } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 

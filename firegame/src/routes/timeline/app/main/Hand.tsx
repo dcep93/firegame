@@ -1,7 +1,6 @@
 import React from "react";
 
-import store from "../../../../shared/store";
-
+import { store } from "../utils";
 import { GameType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";

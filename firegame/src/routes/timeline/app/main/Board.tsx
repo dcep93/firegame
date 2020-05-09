@@ -1,12 +1,11 @@
 import React from "react";
 
-import store from "../../../../shared/store";
+import { store } from "../utils";
 
 import { GameType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import classes from "../../../../shared/styles.module.css";
 
 class Board extends React.Component<{
 	selectTarget: (index: number) => void;

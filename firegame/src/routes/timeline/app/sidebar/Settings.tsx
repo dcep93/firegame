@@ -1,7 +1,6 @@
 import React, { RefObject } from "react";
 
-import store from "../../../../shared/store";
-
+import { store } from "../utils";
 import Quizlet from "../utils/Quizlet";
 import NewGame, { Params } from "../utils/NewGame";
 

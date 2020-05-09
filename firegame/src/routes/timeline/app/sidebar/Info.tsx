@@ -1,7 +1,6 @@
 import React from "react";
 
-import store from "../../../../shared/store";
-
+import { store } from "../utils";
 import { GameType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
@@ -10,7 +9,7 @@ import css from "../index.module.css";
 class Info extends React.Component {
 	// todo should this be combined with players
 	render() {
-		const game: GameType = store.gameW.game;
+		const game: GameType = store.gameW.game!;
 		return (
 			<div className={styles.bubble}>
 				<div className={css.info}>

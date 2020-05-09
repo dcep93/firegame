@@ -42,14 +42,14 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
 		}
 	}
 	if (store.gameW) return;
-	const gameWrapper: GameWrapperType<T> = {
-		info: {
-			player: store.me.userId,
-			message: "opened a room",
-			host: store.me.userId,
-			timestamp: Firebase.now(),
-			id: 0,
-		},
+	// @ts-ignore
+	const gameWrapper: GameWrapperType<T> = {};
+	gameWrapper.info = {
+		player: store.me.userId,
+		message: "opened a room",
+		host: store.me.userId,
+		timestamp: Firebase.now(),
+		id: 0,
 	};
 	sendGameStateHelper(gameWrapper);
 }

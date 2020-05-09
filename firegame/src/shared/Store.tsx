@@ -1,10 +1,12 @@
 import Writer from "../firegame/writer";
 
-var store: Readonly<{
+var store: StoreType<any>;
+
+export type StoreType<T> = Readonly<{
 	me: Readonly<MeType>;
 	lobby: Readonly<LobbyType>;
-	gameW: Readonly<GameWrapperType<any>>;
-	update: (message: string, newGame: any) => void;
+	gameW: Readonly<GameWrapperType<T>>;
+	update: (message: string, newGame: T) => void;
 }>;
 
 export type MeType = {
@@ -16,7 +18,7 @@ export type MeType = {
 
 export type GameWrapperType<T> = {
 	info: InfoType;
-	game?: T;
+	game: T;
 };
 
 export type LobbyType = { [userId: string]: string };

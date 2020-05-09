@@ -1,7 +1,8 @@
 import React from "react";
 
-import store, { GameWrapperType } from "../../../../shared/store";
+import { GameWrapperType } from "../../../../shared/store";
 
+import { store } from "../utils";
 import { GameType } from "../utils/NewGame";
 
 import LogEntry from "./LogEntry";
