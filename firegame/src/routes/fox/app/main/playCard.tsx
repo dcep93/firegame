@@ -1,7 +1,7 @@
 import { store, shared } from "../utils";
 
 function playCard(index: number): string | void {
-	// const me = shared.getMe(store.gameW.game);
+	// const me = shared.getMe();
 	// var card = me.hand[index];
 	// const fromStaging = store.gameW.game.staging !== null;
 	// if (fromStaging) {
@@ -16,7 +16,7 @@ function playCard(index: number): string | void {
 	// 	var duringMessage = handleDuring(card);
 	// 	if (duringMessage !== null) {
 	// 		store.gameW.game.staging = card;
-	// 		return store.update(duringMessage, store.gameW.game);
+	// 		return store.update(duringMessage);
 	// 	}
 	// }
 	// var text = getText(card);

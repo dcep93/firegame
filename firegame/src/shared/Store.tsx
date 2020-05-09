@@ -6,7 +6,7 @@ export type StoreType<T> = Readonly<{
 	me: Readonly<MeType>;
 	lobby: Readonly<LobbyType>;
 	gameW: Readonly<GameWrapperType<T>>;
-	update: (message: string, newGame: T) => void;
+	update: (message: string, newGame?: T) => void;
 }>;
 
 export type MeType = {
@@ -32,7 +32,8 @@ export type InfoType = {
 	playerName: string;
 };
 
-function update<T>(message: string, game: T): void {
+function update<T>(message: string, game_: T | undefined = undefined): void {
+	const game = game_ || store.gameW.game;
 	Writer.sendGameState(message, game);
 }
 

@@ -18,7 +18,7 @@ class HandCard extends React.Component<{ card: Card; index: number }> {
 
 	play() {
 		const message = playCard(this.props.index);
-		if (message) store.update(message, store.gameW.game);
+		if (message) store.update(message);
 	}
 }
 

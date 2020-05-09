@@ -46,7 +46,7 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 			correct ? "CORRECT" : "WRONG"
 		}`;
 		shared.incrementPlayerTurn();
-		store.update(message, game);
+		store.update(message);
 	}
 
 	// todo lets be safer here
