@@ -20,7 +20,8 @@ function sendGameState<T>(message: string, game: T): void {
 			id: lastInfo.id + 1,
 			timestamp: Firebase.now(),
 			host: lastInfo.host,
-			player: store.me.userId,
+			playerId: store.me.userId,
+			playerName: store.lobby[store.me.userId],
 			message,
 		},
 	};
@@ -45,7 +46,8 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
 	// @ts-ignore
 	const gameWrapper: GameWrapperType<T> = {};
 	gameWrapper.info = {
-		player: store.me.userId,
+		playerId: store.me.userId,
+		playerName: store.lobby[store.me.userId],
 		message: "opened a room",
 		host: store.me.userId,
 		timestamp: Firebase.now(),

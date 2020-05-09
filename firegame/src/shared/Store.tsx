@@ -28,7 +28,8 @@ export type InfoType = {
 	timestamp: number;
 	id: number;
 	message: string;
-	player: string;
+	playerId: string;
+	playerName: string;
 };
 
 function update<T>(message: string, game: T): void {

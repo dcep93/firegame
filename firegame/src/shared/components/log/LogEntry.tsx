@@ -1,13 +1,10 @@
 import React from "react";
 
-import { GameWrapperType } from "../../../../shared/store";
+import store, { GameWrapperType } from "../../store";
 
-import { store } from "../utils";
-import { GameType } from "../utils/NewGame";
-
-class LogEntry extends React.Component<{
-	wrapper: GameWrapperType<GameType>;
-	history: GameWrapperType<GameType>[];
+class LogEntry<T> extends React.Component<{
+	wrapper: GameWrapperType<T>;
+	history: GameWrapperType<T>[];
 }> {
 	render() {
 		return <pre onClick={this.revert.bind(this)}>{this.getMessage()}</pre>;
@@ -16,8 +13,7 @@ class LogEntry extends React.Component<{
 	getMessage() {
 		const w = this.props.wrapper;
 		const time = new Date(w.info.timestamp).toLocaleTimeString();
-		const player = w.game.params.lobby[w.info.player];
-		return `(${w.info.id}) ${time} [${player}] ${w.info.message}`;
+		return `(${w.info.id}) ${time} [${w.info.playerName}] ${w.info.message}`;
 	}
 
 	revert(): void {
@@ -25,7 +21,7 @@ class LogEntry extends React.Component<{
 		if (store.gameW.info.host !== userId) {
 			for (let gameW of this.props.history) {
 				if (gameW.info.id === this.props.wrapper.info.id) break;
-				if (gameW.info.player !== userId) {
+				if (gameW.info.playerId !== userId) {
 					alert("only the host can revert");
 					return;
 				}

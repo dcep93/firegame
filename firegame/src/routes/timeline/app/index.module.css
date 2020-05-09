@@ -60,12 +60,3 @@
 .incorrect {
 	background-color: lightpink;
 }
-
-.log_entry_parent {
-	max-width: 100%;
-	overflow: auto;
-}
-
-.log_entry_child {
-	display: inline-block;
-}
