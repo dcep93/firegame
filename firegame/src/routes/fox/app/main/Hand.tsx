@@ -3,7 +3,7 @@ import React from "react";
 import shared from "../../../../shared";
 
 import { store } from "../utils";
-import { Card } from "../utils/NewGame";
+import { Card, PlayerType } from "../utils/NewGame";
 
 import HandCard from "./HandCard";
 
@@ -18,9 +18,10 @@ class Hand extends React.Component {
 		return (
 			<div className={styles.bubble}>
 				<h2>Hand</h2>
-				{me.hand.map((card: Card, index: number) => (
-					<HandCard key={index} card={card} index={index} />
-				))}
+				{me &&
+					me.hand.map((card: Card, index: number) => (
+						<HandCard key={index} card={card} index={index} />
+					))}
 			</div>
 		);
 	}

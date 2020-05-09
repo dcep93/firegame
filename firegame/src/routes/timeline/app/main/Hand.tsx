@@ -3,7 +3,6 @@ import React from "react";
 import shared from "../../../../shared";
 
 import { store } from "../utils";
-import { PlayerType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";

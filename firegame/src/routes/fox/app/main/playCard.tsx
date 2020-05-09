@@ -166,6 +166,7 @@
 // }
 
 function playCard(index: number): string | null {
+	alert("todo");
 	return null;
 }
 

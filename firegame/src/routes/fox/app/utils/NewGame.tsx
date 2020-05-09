@@ -9,9 +9,9 @@ export type GameType = {
 	players: PlayerType[];
 	dealer: number;
 	deck: Card[];
-	lead?: Card;
+	lead: Card | null;
 	trump: Card;
-	staging?: Card;
+	staging: Card | null;
 	previous: string;
 };
 

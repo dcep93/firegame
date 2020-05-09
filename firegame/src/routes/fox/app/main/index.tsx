@@ -9,7 +9,9 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		return (
 			<div>
 				<Hand />
+				<br />
 				<Field />
+				<br />
 				<Rules />
 			</div>
 		);
