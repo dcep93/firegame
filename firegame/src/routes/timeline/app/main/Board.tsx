@@ -41,6 +41,7 @@ class Board extends React.Component<{
 
 	renderCard(termIndex: number) {
 		// todo last played border
+		// dcep93
 		const term = store.gameW.game!.terms[termIndex];
 		return (
 			<div key={`c${termIndex}`} className={styles.bubble}>

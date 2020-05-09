@@ -10,6 +10,7 @@ import css from "./index.module.css";
 class Timeline extends React.Component {
 	render() {
 		// todo css help
+		// sidebar and main should scroll on separate tracks
 		return (
 			<div>
 				<div className={css.main}>

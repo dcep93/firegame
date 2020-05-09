@@ -14,7 +14,7 @@ class Players extends React.Component {
 		);
 	}
 
-	// todo
+	// todo should this be combined with info
 	renderPlayer(userId: string): JSX.Element {
 		var prefix = "";
 		if (store.gameW.info.host === userId) prefix += "(host) ";

@@ -34,7 +34,7 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 		const rightBound = game.board[index];
 		const me = game.players[game.currentPlayer];
 		const cardIndex = me.hand[this.state.selectedIndex];
-		// todo
+		// todo dcep93
 		var message: string;
 		if (this.isBetween(cardIndex, leftBound, rightBound)) {
 			message = "CORRECT";
@@ -49,7 +49,7 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 		store.update(message, game);
 	}
 
-	// todo
+	// todo lets be safer here
 	isBetween(
 		cardIndex: number,
 		leftBound: number,

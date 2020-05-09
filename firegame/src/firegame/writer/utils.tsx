@@ -4,7 +4,7 @@ import Firebase from "../firebase";
 
 import { enterLobby } from "./lobby";
 
-// todo
+// todo where should this live
 export const VERSION: string = "v0.0.4";
 
 var initialized = false;

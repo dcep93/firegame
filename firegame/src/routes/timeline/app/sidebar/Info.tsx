@@ -8,7 +8,7 @@ import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 
 class Info extends React.Component {
-	// todo
+	// todo should this be combined with players
 	render() {
 		const game: GameType = store.gameW.game;
 		return (
