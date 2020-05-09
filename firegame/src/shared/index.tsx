@@ -1,4 +1,4 @@
-export const VERSION: string = "v0.0.8";
+export const VERSION: string = "v0.0.9";
 
 interface TurnGame {
 	currentPlayer: number;

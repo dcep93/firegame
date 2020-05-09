@@ -111,44 +111,49 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 	}
 
 	fetchFromFolder(): void {
-		const base =
+		this.fetchFromFolderHelper().then((setsToTitles) =>
+			this.setState({ setsToTitles })
+		);
+	}
+
+	fetchFromFolderHelper(): Promise<SetsToTitlesType> {
+		if (
 			localStorage.fetchedFromFolderVersion === store.me.VERSION &&
 			localStorage.fetchedFromFolder
-				? Promise.resolve(localStorage.fetchedFromFolder).then(
-						JSON.parse
-				  )
-				: Quizlet.fetch(Quizlet.FOLDER_URL, "")
-						.then(this.seedFromFolder.bind(this))
-						.then((fetchedFromFolder) => {
-							localStorage.fetchedFromFolder = JSON.stringify(
-								fetchedFromFolder
-							);
-							localStorage.fetchedFromFolderVersion =
-								store.me.VERSION;
-							return fetchedFromFolder;
-						});
-		base.then((responses) =>
-			responses.map((response: any) => {
-				const set = response.set[0];
-				return { id: set.id, title: set.title };
-			})
 		)
-			.then((responses) => {
+			return Promise.resolve(localStorage.fetchedFromFolder).then(
+				JSON.parse
+			);
+		return Quizlet.fetch(Quizlet.FOLDER_URL, "")
+			.then(this.seedFromFolder.bind(this))
+			.then((fetchedFromFolder) => {
+				localStorage.fetchedFromFolder = JSON.stringify(
+					fetchedFromFolder
+				);
+				localStorage.fetchedFromFolderVersion = store.me.VERSION;
+				return fetchedFromFolder;
+			});
+	}
+
+	seedFromFolder(blob: any): Promise<SetsToTitlesType> {
+		const promises = blob.folderSet.map((model: { setId: number }) =>
+			Quizlet.fetch(Quizlet.SET_URL, model.setId.toString())
+		);
+		return Promise.all(promises)
+			.then((responses: any[]) =>
+				responses.map((response: any) => {
+					const set = response.set[0];
+					return { id: set.id, title: set.title };
+				})
+			)
+			.then((responses: any[]) => {
 				const setsToTitles: SetsToTitlesType = {};
 				responses.forEach(
 					(response: { id: number; title: string }) =>
 						(setsToTitles[response.id] = response.title)
 				);
 				return setsToTitles;
-			})
-			.then((setsToTitles) => this.setState({ setsToTitles }));
-	}
-
-	seedFromFolder(blob: any) {
-		const promises = blob.folderSet.map((model: { setId: number }) =>
-			Quizlet.fetch(Quizlet.SET_URL, model.setId.toString())
-		);
-		return Promise.all(promises);
+			});
 	}
 
 	startGame(e: React.MouseEvent) {
