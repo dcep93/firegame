@@ -23,7 +23,7 @@ APP=$(jq -r .name "$DIR/package.json")
 which node || ( curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs )
 
 if [ ! -d $DIR/node_modules ]; then
-	npm run install_all
+	(cd "$DIR" && npm run install_all)
 fi
 
 # if [ ! -d $DIR/public/words ]; then
