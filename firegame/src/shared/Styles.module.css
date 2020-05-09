@@ -23,3 +23,11 @@
 .log_entry_child {
 	display: inline-block;
 }
+
+.my_turn {
+	background-color: red;
+}
+
+.my_turn .bubble {
+	background-color: white;
+}

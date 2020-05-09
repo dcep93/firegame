@@ -1,6 +1,6 @@
 import React from "react";
 
-import store, { GameWrapperType, LobbyType } from "../../store";
+import store, { GameWrapperType } from "../../store";
 
 import LogEntry from "./LogEntry";
 

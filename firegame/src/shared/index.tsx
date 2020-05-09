@@ -1,8 +1,10 @@
+import store from "./store";
+
 export const VERSION: string = "v0.0.9";
 
 interface TurnGame {
 	currentPlayer: number;
-	players: any[];
+	players: { userId: string }[];
 }
 
 function shuffle(arr: any[]) {
@@ -12,8 +14,12 @@ function shuffle(arr: any[]) {
 	}
 }
 
+function isMyTurn(game: TurnGame) {
+	return game && game.players[game.currentPlayer].userId === store.me.userId;
+}
+
 function incrementPlayerTurn(game: TurnGame): void {
 	game.currentPlayer = (game.currentPlayer + 1) % game.players.length;
 }
 
-export default { shuffle, incrementPlayerTurn };
+export default { shuffle, isMyTurn, incrementPlayerTurn };

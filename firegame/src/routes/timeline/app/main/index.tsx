@@ -1,11 +1,12 @@
 import React from "react";
 
+import shared from "../../../../shared";
+
 import { store, sortBoard } from "../utils";
 import { GameType } from "../utils/NewGame";
 
 import Hand from "./Hand";
 import Board from "./Board";
-import shared from "../../../../shared";
 
 class Main extends React.Component<{}, { selectedIndex: number }> {
 	render() {

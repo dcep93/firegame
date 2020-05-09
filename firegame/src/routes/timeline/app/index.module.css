@@ -46,17 +46,17 @@
 .target {
 	width: 1em;
 	height: 1em;
-	background-color: grey;
+	background-color: grey !important;
 }
 
 .selectedCard {
-	background-color: grey;
+	background-color: grey !important;
 }
 
 .correct {
-	background-color: lightblue;
+	background-color: lightblue !important;
 }
 
 .incorrect {
-	background-color: lightpink;
+	background-color: lightpink !important;
 }
