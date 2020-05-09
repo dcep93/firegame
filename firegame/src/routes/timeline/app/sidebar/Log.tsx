@@ -41,8 +41,6 @@ class Log extends React.Component<
 	}
 
 	render() {
-		// todo css help
-		// scrolling should be easy
 		return (
 			<div className={styles.bubble}>
 				<h2>Log</h2>
