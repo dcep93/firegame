@@ -7,7 +7,7 @@ import Hand from "./Hand";
 import Board from "./Board";
 import shared from "../../../../shared";
 
-class Render extends React.Component<{}, { selectedIndex: number }> {
+class Main extends React.Component<{}, { selectedIndex: number }> {
 	render() {
 		return (
 			<div>
@@ -68,4 +68,4 @@ class Render extends React.Component<{}, { selectedIndex: number }> {
 	}
 }
 
-export default Render;
+export default Main;
