@@ -1,4 +1,4 @@
-import Writer from "../firegame/writer";
+import writer from "../firegame/writer";
 
 var store: StoreType<any>;
 
@@ -34,7 +34,7 @@ export type InfoType = {
 
 function update<T>(message: string, game_: T | undefined = undefined): void {
 	const game = game_ || store.gameW.game;
-	Writer.sendGameState(message, game);
+	writer.sendGameState(message, game);
 }
 
 // @ts-ignore store initialization

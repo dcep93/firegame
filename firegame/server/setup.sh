@@ -16,18 +16,18 @@ which jq || apt-get install -y jq
 
 APP=$(jq -r .name "$DIR/package.json")
 
-which yarn || apt install -y yarn
-(cd "$DIR/../" && yarn build)
-
 # install git submodules
 (cd "$DIR" && git submodule update --init)
 
 # install nodejs
 which node || ( curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs )
 
-if [ ! -d $DIR/app/node_modules ]; then
-	(cd "$DIR/app" && npm install)
+if [ ! -d $DIR/node_modules ]; then
+	(cd "$DIR" && npm install)
 fi
+
+which yarn || apt install -y yarn
+(cd "$DIR/../" && npm install && yarn build)
 
 # if [ ! -d $DIR/public/words ]; then
 # 	tar -zxvf $DIR/public/words.tar.gz -C $DIR/public

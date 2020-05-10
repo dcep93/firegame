@@ -52,7 +52,7 @@ function createPlayers(game: GameType): GameType {
 }
 
 function setDefault(game: GameType): GameType {
-	game.dealer = shared.myIndex();
+	game.dealer = shared.myIndex(game);
 	game.previous = "new game";
 	return game;
 }

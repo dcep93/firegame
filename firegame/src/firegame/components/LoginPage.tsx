@@ -1,14 +1,12 @@
 import React, { FormEvent } from "react";
 
-import styles from "../../shared/styles.module.css";
-
 import store from "../../shared/store";
+import writer from "../writer";
 
+import styles from "../../shared/styles.module.css";
 import css from "./index.module.css";
 
-class LoginPage extends React.Component<{
-	setUsername: (username: string) => void;
-}> {
+class LoginPage extends React.Component {
 	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	render() {
 		return (
@@ -25,7 +23,7 @@ class LoginPage extends React.Component<{
 	setUsername(e: FormEvent<HTMLFormElement>): void {
 		e.preventDefault();
 		const username: string = this.inputRef.current!.value;
-		this.props.setUsername(username);
+		writer.setUsername(username);
 	}
 }
 

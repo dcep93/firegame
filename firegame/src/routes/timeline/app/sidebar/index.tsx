@@ -5,7 +5,7 @@ import { store } from "../utils";
 import Settings from "./Settings";
 import Players from "./Players";
 import Info from "./Info";
-import Log from "./Log";
+import Log from "../../../../shared/components/log";
 
 import css from "../index.module.css";
 

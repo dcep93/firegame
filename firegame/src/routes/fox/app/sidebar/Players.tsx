@@ -21,7 +21,8 @@ class Players extends React.Component {
 		if (store.gameW.info.host === userId) prefix += "(host) ";
 		if (store.me.userId === userId) prefix += "(you) ";
 		const parts = [<p key={"name"}>{`${prefix}${store.lobby[userId]}`}</p>];
-		const player = store.gameW.game.players[shared.playerIndexById(userId)];
+		const player =
+			store.gameW.game?.players[shared.playerIndexById(userId)];
 		if (player) {
 			parts.push(<p key={"tricks"}>tricks: {player.tricks}</p>);
 			parts.push(<p key={"score"}>score: {player.score}</p>);

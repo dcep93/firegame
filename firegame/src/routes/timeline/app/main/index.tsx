@@ -27,7 +27,7 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 	selectTarget(index: number) {
 		if (!(this.state?.selectedIndex > -1))
 			return alert("need to select a card from hand first");
-		const game: GameType = store.gameW.game;
+		const game = store.gameW.game;
 		const leftBound = game.board[index - 1];
 		const rightBound = game.board[index];
 		const me = game.players[game.currentPlayer];
@@ -49,7 +49,6 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		store.update(message);
 	}
 
-	// todo lets be safer here
 	isBetween(
 		term: { definition: string },
 		leftBound: number,

@@ -1,14 +1,15 @@
 {
-	"name": "firegame",
-	"scripts": {
-		"start": "concurrently \"npm run server\" \"npm run client\"",
-		"server": "cd app && npm start",
-		"client": "cd ../ && npm start",
-		"install_all": "npm install && cd app && npm install && cd ../../ && npm install"
-	},
-	"author": "",
-	"license": "ISC",
-	"dependencies": {
-		"concurrently": "^5.2.0"
-	}
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-subdomain": "^1.0.5"
+  }
 }
