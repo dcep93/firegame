@@ -19,6 +19,11 @@ function run(name, res) {
 
 const app = express.Router();
 
+app.use(function (req, res, next) {
+	console.log(req.path);
+	next();
+});
+
 const scripts = fs.readdirSync(path.join(__dirname, "scripts"));
 for (let script of scripts) {
 	app.use(`/${script}`, (_, res) => run(script, res));
