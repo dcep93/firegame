@@ -24,4 +24,13 @@ for (var script of scripts) {
 	app.use(`/${script}`, (_, res) => run(script, res));
 }
 
+app.use(function (err, req, res, next) {
+	console.error(err.stack);
+	res.status(500).send(err.stack);
+});
+
+app.use(function (req, res, next) {
+	res.sendStatus(404);
+});
+
 module.exports = app;
