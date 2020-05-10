@@ -24,8 +24,8 @@ which yarn || apt install -y yarn
 # install nodejs
 which node || ( curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs )
 
-if [ ! -d $DIR/node_modules ]; then
-	(cd "$DIR" && npm run install_all)
+if [ ! -d $DIR/app/node_modules ]; then
+	(cd "$DIR/app" && npm install)
 fi
 
 # if [ ! -d $DIR/public/words ]; then
