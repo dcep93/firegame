@@ -8,7 +8,7 @@ const port = 8080;
 
 const app = express();
 
-const build = path.join(__dirname, "../", "../", "build");
+const build = path.join(__dirname, "../", "build");
 
 app.use(subdomain("api", run));
 
