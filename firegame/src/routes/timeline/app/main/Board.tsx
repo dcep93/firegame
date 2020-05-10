@@ -13,7 +13,7 @@ class Board extends React.Component<{
 	render() {
 		return (
 			<div className={styles.bubble}>
-				<h2>Board</h2>
+				<h2>Timeline</h2>
 				{this.getCardsAndTargets()}
 			</div>
 		);
