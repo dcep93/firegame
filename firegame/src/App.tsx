@@ -14,7 +14,7 @@ function App() {
 	return (
 		<Router>
 			<div>
-				<Route exact path="/" render={Home} />
+				<Route exact path="/" component={Home} />
 				{getRoutes()}
 			</div>
 		</Router>
