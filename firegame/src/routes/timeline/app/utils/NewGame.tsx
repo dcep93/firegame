@@ -30,6 +30,7 @@ type TermType = {
 	word: string;
 	definition: string;
 	image: string;
+	rank: number;
 };
 
 export type PlayerType = {
@@ -77,22 +78,24 @@ function fetchByQuery(queryString: string): Promise<any> {
 }
 
 function setDeck(data: DataType): DataType {
-	const terms = data.response.terms.map((term: any) => ({
+	const terms: TermType[] = data.response.terms.map((term: any) => ({
 		definition: term.definition || null,
 		word: term.word || null,
 		image: term._imageUrl || null,
+		rank: term.rank || 0,
 	}));
-	if (data.game.params.reverse) terms.reverse();
 	if (data.game.params.swap)
 		terms.forEach((term: any) => {
 			[term.word, term.definition] = [term.definition, term.word];
 		});
 	if (data.game.params.useRank)
-		terms.forEach((term: any, index: number) => {
-			term.definition = index.toString();
+		terms.forEach((term: any) => {
+			term.definition = term.rank;
 		});
+	terms.sort((a, b) => b.rank - a.rank);
+	if (data.game.params.reverse) terms.reverse();
 
-	const deck = terms.map((_: any, index: number) => index);
+	const deck = terms.map((term: TermType) => term.rank);
 	shared.shuffle(deck);
 
 	data.game.title = data.response.set.title;
