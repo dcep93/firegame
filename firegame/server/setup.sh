@@ -17,6 +17,7 @@ which jq || apt-get install -y jq
 APP=$(jq -r .name "$DIR/package.json")
 
 which yarn || apt install -y yarn
+(cd "$DIR/../" && yarn build)
 
 # install git submodules
 (cd "$DIR" && git submodule update --init)
