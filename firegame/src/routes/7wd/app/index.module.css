@@ -1,0 +1,18 @@
+.main {
+	display: flex;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+}
+
+.content {
+	flex-grow: 1;
+	min-width: 0;
+	display: flex;
+	overflow: scroll;
+}
