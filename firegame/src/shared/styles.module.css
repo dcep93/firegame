@@ -31,3 +31,7 @@
 .my_turn .bubble {
 	background-color: white;
 }
+
+.grey {
+	background-color: grey !important;
+}

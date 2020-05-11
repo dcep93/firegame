@@ -7,7 +7,9 @@ import StructureCard from "./StructureCard";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 
-class Structure extends React.Component {
+class Structure extends React.Component<{
+	selectCard: (x: number, y: number, offset: number) => void;
+}> {
 	render() {
 		return (
 			<div className={styles.bubble}>
@@ -22,6 +24,7 @@ class Structure extends React.Component {
 						{Object.entries(row).map(([offset, card], i2) => (
 							<StructureCard
 								key={i2}
+								selectCard={this.props.selectCard}
 								y={i1}
 								x={i2}
 								offset={offset}

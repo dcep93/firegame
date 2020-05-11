@@ -39,5 +39,7 @@ function update<T>(message: string, game_: T | undefined = undefined): void {
 
 // @ts-ignore store initialization
 store = { update };
+// @ts-ignore
+window.store = store;
 
 export default store;

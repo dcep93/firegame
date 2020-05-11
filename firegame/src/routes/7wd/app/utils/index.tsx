@@ -8,7 +8,9 @@ const store_: StoreType<GameType> = store;
 const shared: Shared<GameType, PlayerType> = new Shared();
 
 function deal(game: GameType) {
-	const indices = Array.from(Array(bank.bank[game.age]!.length).keys());
+	const indices: number[] = bank.bank
+		.map((card, index) => (card.age === game.age ? index : -1))
+		.filter((index) => index !== -1);
 	shared.shuffle(indices);
 	game.structure = bank.map[game.age]!.map((mapRow, rowIndex) =>
 		mapRow.map((offset) => ({

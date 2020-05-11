@@ -8,6 +8,8 @@ export type GameType = {
 	players: PlayerType[];
 	age: Age;
 	structure: StructureCardType[][];
+	military: number;
+	trash: number[];
 };
 
 export type Params = {
@@ -68,7 +70,16 @@ function NewGame(params: Params): PromiseLike<GameType> {
 	// @ts-ignore game being constructed
 	const game: GameType = {};
 	game.params = params;
-	return Promise.resolve(game).then(setPlayers).then(dealFirstAge);
+	return Promise.resolve(game)
+		.then(setBoard)
+		.then(setPlayers)
+		.then(dealFirstAge);
+}
+
+function setBoard(game: GameType): GameType {
+	game.military = 0;
+	game.trash = [];
+	return game;
 }
 
 function setPlayers(game: GameType): GameType {
