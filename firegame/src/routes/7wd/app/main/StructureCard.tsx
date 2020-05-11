@@ -24,9 +24,26 @@ class StructureCard extends React.Component<{
 					visibility: this.props.taken ? "hidden" : "visible",
 				}}
 			>
-				{JSON.stringify(this.props)}
+				{this.renderCard()}
 			</div>
 		);
+	}
+
+	renderCard() {
+		if (!this.props.revealed) return "?";
+		const card = bank.bank[store.gameW.game.age]![this.props.cardIndex];
+		return (
+			<div>
+				<div style={{ backgroundColor: card.color }}>_</div>
+				<div>{card.name}</div>
+				<pre>cost: {card.cost.join("")}</pre>
+				{card.upgradesFrom && (
+					<div>upgrades from: {card.upgradesFrom}</div>
+				)}
+				{card.upgradesTo && <div>upgrades to: {card.upgradesTo}</div>}
+			</div>
+		);
+		// return JSON.stringify(card);
 	}
 
 	getTransform() {

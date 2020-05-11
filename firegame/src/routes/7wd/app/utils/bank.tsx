@@ -30,7 +30,7 @@ const ly = {
 	name: "lumber yard",
 	age: Age.one,
 	color: Color.brown,
-	cost: {},
+	cost: [Resource.money, Resource.wood],
 	resource: [Resource.wood],
 };
 const bank: { [age in Age]?: CardType[] } = {

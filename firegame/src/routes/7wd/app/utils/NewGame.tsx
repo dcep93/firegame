@@ -33,7 +33,7 @@ export interface CardType {
 	name: string;
 	age: Age;
 	color: Color;
-	cost: { [resource in Resource]?: number };
+	cost: Resource[];
 	upgradesTo?: string;
 	upgradesFrom?: string;
 }
@@ -45,21 +45,21 @@ export enum Age {
 }
 
 export enum Resource {
-	money,
-	clay,
-	stone,
-	wood,
+	money = "$",
+	clay = "c",
+	stone = "s",
+	wood = "w",
 }
 
 export enum Color {
-	brown,
-	grey,
-	yellow,
-	red,
-	blue,
-	green,
-	purple,
-	guild,
+	brown = "brown",
+	grey = "grey",
+	yellow = "yellow",
+	red = "red",
+	blue = "blue",
+	green = "green",
+	purple = "purple",
+	guild = "guild",
 }
 
 export type WonderType = {};

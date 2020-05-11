@@ -24,8 +24,11 @@
 
 .structure_row {
 	display: flex;
-	margin-top: -2em;
+	margin-top: -5em;
 }
 
 .structure_card {
+	text-align: center;
+	width: 10em;
+	height: 10em;
 }
