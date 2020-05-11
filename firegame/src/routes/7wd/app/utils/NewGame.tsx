@@ -7,13 +7,15 @@ export type GameType = {
 	currentPlayer: number;
 	players: PlayerType[];
 	age: Age;
-	structure: {
-		[position: number]: { cardIndex: number; revealed: boolean };
-	}[];
+	structure: StructureRow[];
 };
 
 export type Params = {
 	lobby: LobbyType;
+};
+
+export type StructureRow = {
+	[position: string]: { cardIndex: number; revealed: boolean };
 };
 
 export type PlayerType = {

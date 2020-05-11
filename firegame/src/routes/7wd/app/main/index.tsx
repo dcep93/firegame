@@ -1,14 +1,19 @@
 import React from "react";
-import { store } from "../utils";
 
-import styles from "../../../../shared/styles.module.css";
+import Structure from "./Structure";
+import Player from "./Player";
+import Board from "./Board";
 
 class Main extends React.Component {
 	render() {
 		return (
-			<div className={styles.bubble}>
-				<h2>Main</h2>
-				<pre>{JSON.stringify(store.gameW.game, null, 2)}</pre>
+			<div>
+				<Structure />
+				<div>
+					<Player index={0} />
+					<Player index={1} />
+				</div>
+				<Board />
 			</div>
 		);
 	}
