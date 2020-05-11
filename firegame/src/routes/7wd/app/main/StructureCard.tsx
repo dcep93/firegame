@@ -4,10 +4,12 @@ import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 
 class StructureCard extends React.Component<{
-	rowIndex: number;
-	position: number;
 	cardIndex: number;
+	offset: number;
 	revealed: boolean;
+	taken: boolean;
+	x: number;
+	y: number;
 }> {
 	render() {
 		return (
@@ -22,7 +24,8 @@ class StructureCard extends React.Component<{
 	}
 
 	getTransform() {
-		return "translate(-20%, -80%)";
+		const p = this.props.offset * 50;
+		return `translate(${p}%, 0%)`;
 	}
 
 	select() {

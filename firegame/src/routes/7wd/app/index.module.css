@@ -17,3 +17,15 @@
 	display: flex;
 	overflow: scroll;
 }
+
+.structure_first_row {
+	margin-top: initial !important;
+}
+
+.structure_row {
+	display: flex;
+	margin-top: -2em;
+}
+
+.structure_card {
+}
