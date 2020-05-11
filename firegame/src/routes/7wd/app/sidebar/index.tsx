@@ -11,7 +11,7 @@ class Sidebar extends React.Component {
 			<div className={styles.bubble}>
 				<h2>Sidebar</h2>
 				<pre onClick={this.startNewGame.bind(this)}>
-					{JSON.stringify(store.gameW.info)}
+					{JSON.stringify(store.gameW.info, null, 2)}
 				</pre>
 			</div>
 		);

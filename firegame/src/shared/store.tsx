@@ -34,7 +34,6 @@ export type InfoType = {
 
 function update<T>(message: string, game_: T | undefined = undefined): void {
 	const game = game_ || store.gameW.game;
-	console.log(game);
 	writer.sendGameState(message, game);
 }
 

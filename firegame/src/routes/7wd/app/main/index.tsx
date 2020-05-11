@@ -8,7 +8,7 @@ class Main extends React.Component {
 		return (
 			<div className={styles.bubble}>
 				<h2>Main</h2>
-				<pre>{JSON.stringify(store.gameW.game)}</pre>
+				<pre>{JSON.stringify(store.gameW.game, null, 2)}</pre>
 			</div>
 		);
 	}
