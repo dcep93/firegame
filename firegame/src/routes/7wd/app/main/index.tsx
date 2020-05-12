@@ -51,7 +51,7 @@ class Main extends React.Component<
 	}
 
 	reset() {
-		this.setState({ selectedTarget: undefined });
+		this.setState({ selectedTarget: undefined, selectedWonder: undefined });
 	}
 
 	selectPlayer(selectedWonder: number) {
@@ -71,9 +71,12 @@ class Main extends React.Component<
 		if (!this.canTake(y, x, structureCard.offset))
 			return alert("cannot take that card");
 		const card = bank.cards[structureCard.cardIndex];
-		const cost = getCost(card);
-		if (cost > utils.getMe().money) return alert("cannot afford that card");
-		utils.getMe().money -= cost;
+		if (this.state.selectedWonder === -1) {
+			const cost = getCost(card);
+			if (cost > utils.getMe().money)
+				return alert("cannot afford that card");
+			utils.getMe().money -= cost;
+		}
 		structureCard.taken = true;
 		const rowAboveY = y - 1;
 		const rowAbove = store.gameW.game.structure[rowAboveY];
@@ -101,7 +104,7 @@ class Main extends React.Component<
 		} else {
 			message = `built wonder using ${card.name}`;
 		}
-		// shared.incrementPlayerTurn();
+		utils.incrementPlayerTurn();
 		store.update(message);
 	}
 
