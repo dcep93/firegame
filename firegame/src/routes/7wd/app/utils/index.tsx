@@ -24,7 +24,7 @@ function deal(game: GameType) {
 		.filter((ic) => ic.card.age === game.age);
 	const indices = indexedCards.map((ic) => ic.index);
 	utils.shuffle(indices);
-	const cardsToUse = indices.slice(20);
+	const cardsToUse = indices.splice(0, 20);
 	if (game.age === Age.three) {
 		const purples = bank.cards
 			.map((card, index) => ({ card, index }))
