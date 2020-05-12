@@ -1,4 +1,4 @@
-import { shared, store } from ".";
+import { utils, store } from ".";
 import { PlayerType } from "./NewGame";
 
 export interface CardType {
@@ -250,7 +250,7 @@ const cards: CardType[] = [
 		age: Age.one,
 		color: Color.yellow,
 		cost: [],
-		extra: { f: () => (shared.getMe().money += 4) },
+		extra: { f: () => (utils.getMe().money += 4) },
 		upgradesTo: Upgrade.vase,
 	},
 	{
@@ -426,7 +426,7 @@ const cards: CardType[] = [
 		age: Age.two,
 		color: Color.yellow,
 		cost: [],
-		extra: { f: () => (shared.getMe().money += 6) },
+		extra: { f: () => (utils.getMe().money += 6) },
 		upgradesTo: Upgrade.barrel,
 	},
 	{
@@ -579,7 +579,7 @@ const cards: CardType[] = [
 		extra: {
 			points: 3,
 			f: () =>
-				(shared.getMe().money += shared
+				(utils.getMe().money += utils
 					.getMe()
 					.cards.filter(
 						(cardIndex) => cards[cardIndex].color === Color.yellow
@@ -595,9 +595,9 @@ const cards: CardType[] = [
 		extra: {
 			points: 3,
 			f: () =>
-				(shared.getMe().money +=
+				(utils.getMe().money +=
 					2 *
-					shared.getMe().wonders.filter((wonder) => wonder.built)
+					utils.getMe().wonders.filter((wonder) => wonder.built)
 						.length),
 		},
 		upgradesFrom: Upgrade.barrel,
@@ -610,9 +610,9 @@ const cards: CardType[] = [
 		extra: {
 			points: 3,
 			f: () =>
-				(shared.getMe().money +=
+				(utils.getMe().money +=
 					2 *
-					shared
+					utils
 						.getMe()
 						.cards.filter(
 							(cardIndex) =>
@@ -628,7 +628,7 @@ const cards: CardType[] = [
 		extra: {
 			points: 3,
 			f: () =>
-				(shared.getMe().money += shared
+				(utils.getMe().money += utils
 					.getMe()
 					.cards.filter(
 						(cardIndex) => cards[cardIndex].color === Color.red
@@ -643,9 +643,9 @@ const cards: CardType[] = [
 		extra: {
 			points: 3,
 			f: () =>
-				(shared.getMe().money +=
+				(utils.getMe().money +=
 					3 *
-					shared
+					utils
 						.getMe()
 						.cards.filter(
 							(cardIndex) => cards[cardIndex].color === Color.grey
@@ -700,7 +700,7 @@ const cards: CardType[] = [
 					(cardIndex) => cards[cardIndex].color === Color.yellow
 				).length,
 			f: () =>
-				(shared.getMe().money += Math.max(
+				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
 							player.cards.filter(
@@ -724,7 +724,7 @@ const cards: CardType[] = [
 						cards[cardIndex].color === Color.grey
 				).length,
 			f: () =>
-				(shared.getMe().money += Math.max(
+				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
 							player.cards.filter(
@@ -747,7 +747,7 @@ const cards: CardType[] = [
 					(cardIndex) => cards[cardIndex].color === Color.red
 				).length,
 			f: () =>
-				(shared.getMe().money += Math.max(
+				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
 							player.cards.filter(
@@ -769,7 +769,7 @@ const cards: CardType[] = [
 					(cardIndex) => cards[cardIndex].color === Color.green
 				).length,
 			f: () =>
-				(shared.getMe().money += Math.max(
+				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
 							player.cards.filter(
@@ -791,7 +791,7 @@ const cards: CardType[] = [
 					(cardIndex) => cards[cardIndex].color === Color.blue
 				).length,
 			f: () =>
-				(shared.getMe().money += Math.max(
+				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
 							player.cards.filter(
@@ -897,7 +897,7 @@ const wonders: WonderType[] = [
 	{
 		name: "the temple of artemis",
 		cost: [Resource.paper, Resource.glass, Resource.stone, Resource.paper],
-		f: () => (shared.getMe().money += 12),
+		f: () => (utils.getMe().money += 12),
 		goAgain: true,
 	},
 	{
@@ -921,7 +921,7 @@ const wonders: WonderType[] = [
 	{
 		name: "the hanging gardens",
 		cost: [Resource.paper, Resource.glass, Resource.wood, Resource.wood],
-		f: () => (shared.getMe().money += 6),
+		f: () => (utils.getMe().money += 6),
 		goAgain: true,
 		points: 3,
 	},
@@ -966,7 +966,7 @@ const wonders: WonderType[] = [
 			Resource.stone,
 		],
 		f: () => {
-			const myIndex = shared.myIndex();
+			const myIndex = utils.myIndex();
 			store.gameW.game.players[myIndex].money += 3;
 			store.gameW.game.players[1 - myIndex].money = Math.max(
 				store.gameW.game.players[1 - myIndex].money - 3,

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { shared, store } from "../utils";
+import { utils, store, getCost } from "../utils";
 import bank, { Color } from "../utils/bank";
 
 import Structure from "./Structure";
@@ -24,7 +24,6 @@ class Main extends React.Component<
 	}
 
 	render() {
-		const myIndex = shared.myIndex();
 		return (
 			<div>
 				<Structure
@@ -33,7 +32,7 @@ class Main extends React.Component<
 				/>
 				<div>
 					<Player
-						index={myIndex}
+						player={utils.getMe()}
 						selected={
 							this.state.selectedTarget === selected.player
 								? this.state.selectedWonder
@@ -41,7 +40,7 @@ class Main extends React.Component<
 						}
 						select={this.selectPlayer.bind(this)}
 					/>
-					<Player index={1 - myIndex} />
+					<Player player={utils.getOpponent()} />
 				</div>
 				<Board
 					select={this.selectBoard.bind(this)}
@@ -68,10 +67,14 @@ class Main extends React.Component<
 	selectCard(x: number, y: number) {
 		if (this.state.selectedTarget === undefined)
 			return alert("need to select a target first");
-		const card = store.gameW.game.structure[y][x];
-		if (!this.canTake(y, x, card.offset))
+		const structureCard = store.gameW.game.structure[y][x];
+		if (!this.canTake(y, x, structureCard.offset))
 			return alert("cannot take that card");
-		card.taken = true;
+		const card = bank.cards[structureCard.cardIndex];
+		const cost = getCost(card);
+		if (cost > utils.getMe().money) return alert("cannot afford that card");
+		utils.getMe().money -= cost;
+		structureCard.taken = true;
 		const rowAboveY = y - 1;
 		const rowAbove = store.gameW.game.structure[rowAboveY];
 		if (rowAbove)
@@ -81,22 +84,21 @@ class Main extends React.Component<
 					(aboveCard.revealed = true)
 			);
 		this.reset();
-		const cardName = bank.cards[card.cardIndex].name;
-		const me = shared.getMe();
+		const me = utils.getMe();
 		var message;
 		if (this.state.selectedTarget === selected.board) {
-			message = `trashed ${cardName}`;
+			message = `trashed ${card.name}`;
 			me.money +=
 				BASE_TRASH +
 				(me.cards || [])
 					.map((cardIndex) => bank.cards[cardIndex])
 					.filter((card) => card.color === Color.yellow).length;
 		} else if (this.state.selectedWonder === -1) {
-			message = `built ${cardName}`;
+			message = `built ${card.name}`;
 			if (!me.cards) me.cards = [];
-			me.cards.push(card.cardIndex);
+			me.cards.push(structureCard.cardIndex);
 		} else {
-			message = `built wonder using ${cardName}`;
+			message = `built wonder using ${card.name}`;
 		}
 		// shared.incrementPlayerTurn();
 		store.update(message);
