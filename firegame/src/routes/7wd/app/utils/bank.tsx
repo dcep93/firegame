@@ -107,6 +107,7 @@ const sciences: { [token in ScienceToken]: string } = {
 	[ScienceToken.mathematics]: "3 points / science token",
 	[ScienceToken.urbanism]: "$6 + $4 when upgrading",
 	[ScienceToken.polioretics]: "siege $1 / military",
+	// todo
 	[ScienceToken.architecture]: "free wonders",
 	[ScienceToken.law]: "extra science symbol",
 	[ScienceToken.economy]: "opponents pay you when buying",
@@ -114,6 +115,7 @@ const sciences: { [token in ScienceToken]: string } = {
 	[ScienceToken.mysticism]: "2 points per god token",
 	[ScienceToken.engineering]: "upgrades cost $1",
 	[ScienceToken.philosophy]: "7 points",
+	// todo
 	[ScienceToken.theology]: "go again when building wonder",
 	[ScienceToken.strategy]: "military moves extra",
 };

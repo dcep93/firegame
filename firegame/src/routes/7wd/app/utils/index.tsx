@@ -2,7 +2,7 @@ import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
 
 import { GameType, PlayerType } from "./NewGame";
-import bank, { CardType, Resource } from "./bank";
+import bank, { CardType, Resource, ScienceToken, Color } from "./bank";
 
 const BASE_COST = 2;
 
@@ -40,6 +40,11 @@ function getCost(card: CardType): number {
 				card.upgradesFrom &&
 				bank.cards[cardIndex].upgradesTo === card.upgradesFrom
 		).length !== 0
+	)
+		return 0;
+	if (
+		(utils.getMe().sciences || []).includes(ScienceToken.masonry) &&
+		card.color === Color.blue
 	)
 		return 0;
 	const costs = countResources(card.cost);
@@ -91,6 +96,11 @@ function getCost(card: CardType): number {
 			picked.needed--;
 			price -= pricePer;
 		});
+	if (
+		(utils.getMe().sciences || []).includes(ScienceToken.engineering) &&
+		price > 0
+	)
+		return 1;
 	return price;
 }
 
@@ -115,8 +125,25 @@ function getScore(player: PlayerType): number {
 	const militaryDiff =
 		player.military - store.gameW.game.players[1 - player.index].military;
 	const militaryPoints = getMilitaryPoints(militaryDiff);
-	return cardPoints + moneyPoints + guildPoints + militaryPoints;
+	const sciencePoints = (player.sciences || [])
+		.map((token) => tokenToPoints[token])
+		.filter(Boolean)
+		.map((f) => f!(player))
+		.reduce((a: number, b: number) => a + b, 0)!;
+	return (
+		cardPoints + moneyPoints + guildPoints + militaryPoints + sciencePoints
+	);
 }
+
+const tokenToPoints: {
+	[token in ScienceToken]?: (player: PlayerType) => number;
+} = {
+	[ScienceToken.agriculture]: () => 4,
+	[ScienceToken.mathematics]: (player: PlayerType) => player.sciences.length,
+	// todo
+	[ScienceToken.mysticism]: () => 2,
+	[ScienceToken.philosophy]: () => 7,
+};
 
 function getMilitaryPoints(militaryDiff: number): number {
 	if (militaryDiff <= 0) return 0;

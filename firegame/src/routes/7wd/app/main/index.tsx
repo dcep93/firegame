@@ -1,7 +1,12 @@
 import React from "react";
 
 import { utils, store, getCost, stealMoney } from "../utils";
-import bank, { Color, CardType } from "../utils/bank";
+import bank, {
+	Color,
+	CardType,
+	ScienceToken,
+	ScienceEnum,
+} from "../utils/bank";
 import { CommercialEnum, commercials } from "../utils/NewGame";
 
 import Structure from "./Structure";
@@ -91,6 +96,12 @@ class Main extends React.Component<
 			if (cost > utils.getMe().money)
 				return alert("cannot afford that card");
 			utils.getMe().money -= cost;
+			if (
+				(utils.getOpponent().sciences || []).includes(
+					ScienceToken.economy
+				)
+			)
+				utils.getOpponent().money += cost;
 		}
 		structureCard.taken = true;
 		const rowAboveY = y - 1;
@@ -137,9 +148,27 @@ class Main extends React.Component<
 
 	handlePurchase(card: CardType) {
 		const me = utils.getMe();
+		const sciences = me.sciences || [];
 		if (card.extra.f) card.extra.f();
+		if (
+			card.upgradesFrom !== undefined &&
+			(me.sciences || []).includes(ScienceToken.urbanism)
+		) {
+			if (
+				me.cards.filter(
+					(cardIndex) =>
+						bank.cards[cardIndex].upgradesTo === card.upgradesFrom
+				).length > 0
+			)
+				me.money += 4;
+		}
 		if (card.extra.military) {
-			me.military += card.extra.military;
+			var military = card.extra.military;
+			if (sciences.includes(ScienceToken.strategy)) military++;
+			if (sciences.includes(ScienceToken.polioretics))
+				stealMoney(military);
+			me.military += military;
+
 			const militaryDiff = me.military - utils.getOpponent().military;
 			Object.entries(me.militaryBonuses).forEach(([needed, amount]) => {
 				const key = parseInt(needed);
@@ -151,12 +180,14 @@ class Main extends React.Component<
 			});
 		}
 		if (card.extra.science) {
-			const sciences = me.cards
+			const scienceCards = me.cards
 				.map((cardIndex) => bank.cards[cardIndex].extra.science)
 				.filter(Boolean);
-			if (new Set(sciences).size >= SCIENCE_TO_WIN) alert("you win");
+			if (sciences.includes(ScienceToken.law))
+				scienceCards.push(ScienceEnum.law);
+			if (new Set(scienceCards).size >= SCIENCE_TO_WIN) alert("you win");
 			if (
-				sciences.filter((science) => science === card.extra.science)
+				scienceCards.filter((science) => science === card.extra.science)
 					.length === 2
 			) {
 				store.gameW.game.commercial = CommercialEnum.science;

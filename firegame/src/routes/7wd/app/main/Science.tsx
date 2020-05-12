@@ -42,10 +42,22 @@ class Science extends React.Component {
 		)
 			return;
 		const selected = store.gameW.game.sciences.splice(index, 1)[0];
+		this.handleSelected(selected);
 		if (!utils.getMe().sciences) utils.getMe().sciences = [];
 		utils.getMe().sciences.push(selected);
 		delete store.gameW.game.commercial;
 		utils.incrementPlayerTurn();
+	}
+
+	handleSelected(selected: ScienceToken) {
+		switch (selected) {
+			case ScienceToken.agriculture:
+				utils.getMe().money += 6;
+				return;
+			case ScienceToken.urbanism:
+				utils.getMe().money += 6;
+				return;
+		}
 	}
 }
 
