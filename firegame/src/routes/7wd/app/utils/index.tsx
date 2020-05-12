@@ -112,7 +112,43 @@ function getScore(player: PlayerType): number {
 		.filter(Boolean)
 		.map((g) => Math.max(g!(utils.getMe()), g!(utils.getOpponent())))
 		.reduce((a, b) => a + b, 0);
-	return cardPoints + moneyPoints + guildPoints;
+	const militaryDiff =
+		player.military - store.gameW.game.players[1 - player.index].military;
+	const militaryPoints = getMilitaryPoints(militaryDiff);
+	return cardPoints + moneyPoints + guildPoints + militaryPoints;
 }
 
-export { store, utils, deal, getCost, getScore };
+function getMilitaryPoints(militaryDiff: number): number {
+	if (militaryDiff <= 0) return 0;
+	if (militaryDiff <= 2) return 2;
+	if (militaryDiff <= 5) return 5;
+	return 10;
+}
+
+function handleNextMilitary(): number {
+	switch (utils.getMe().nextMilitary) {
+		case 4:
+			stealMoney(2);
+			return 8;
+		case 8:
+			stealMoney(5);
+			return 13;
+		case 13:
+			alert("you win!");
+	}
+	return NaN;
+}
+
+function stealMoney(amount: number) {
+	utils.getOpponent().money = Math.max(0, utils.getOpponent().money - amount);
+}
+
+export {
+	store,
+	utils,
+	deal,
+	getCost,
+	getScore,
+	handleNextMilitary,
+	stealMoney,
+};

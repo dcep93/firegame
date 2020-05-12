@@ -9,7 +9,6 @@ export type GameType = {
 	players: PlayerType[];
 	age: Age;
 	structure: StructureCardType[][];
-	military: number;
 	trash: number[];
 };
 
@@ -30,6 +29,9 @@ export type PlayerType = {
 	cards: number[];
 	wonders: { built: boolean; wonderIndex: number }[];
 	money: number;
+	military: number;
+	index: number;
+	nextMilitary: number;
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -43,19 +45,23 @@ function NewGame(params: Params): PromiseLike<GameType> {
 }
 
 function setBoard(game: GameType): GameType {
-	game.military = 0;
 	game.trash = [];
 	return game;
 }
 
 function setPlayers(game: GameType): GameType {
-	game.players = Object.entries(store.lobby).map(([userId, userName]) => ({
-		userId,
-		userName,
-		cards: [],
-		wonders: [],
-		money: 7,
-	}));
+	game.players = Object.entries(store.lobby).map(
+		([userId, userName], index) => ({
+			userId,
+			userName,
+			cards: [],
+			wonders: [],
+			money: 7,
+			military: 0,
+			index,
+			nextMilitary: 4,
+		})
+	);
 	game.currentPlayer = utils.myIndex(game);
 	return game;
 }

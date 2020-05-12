@@ -1,4 +1,4 @@
-import { utils, store } from ".";
+import { utils, store, stealMoney } from ".";
 import { PlayerType } from "./NewGame";
 
 export interface CardType {
@@ -982,12 +982,8 @@ const wonders: WonderType[] = [
 			Resource.stone,
 		],
 		f: () => {
-			const myIndex = utils.myIndex();
-			store.gameW.game.players[myIndex].money += 3;
-			store.gameW.game.players[1 - myIndex].money = Math.max(
-				store.gameW.game.players[1 - myIndex].money - 3,
-				0
-			);
+			utils.getMe().money += 3;
+			stealMoney(3);
 		},
 		points: 3,
 		goAgain: true,

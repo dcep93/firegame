@@ -1,7 +1,7 @@
 import React from "react";
 
-import { utils, store, getCost } from "../utils";
-import bank, { Color } from "../utils/bank";
+import { utils, store, getCost, handleNextMilitary } from "../utils";
+import bank, { Color, CardType } from "../utils/bank";
 
 import Structure from "./Structure";
 import Player from "./Player";
@@ -100,7 +100,7 @@ class Main extends React.Component<
 			message = `built ${card.name}`;
 			if (!me.cards) me.cards = [];
 			me.cards.push(structureCard.cardIndex);
-			if (card.extra.f) card.extra.f();
+			this.handlePurchase(card);
 		} else {
 			message = `built wonder using ${card.name}`;
 		}
@@ -117,6 +117,18 @@ class Main extends React.Component<
 				!card.taken && Math.abs(card.offset + index * 2 - gridX) === 1
 		);
 		return cardsBelow.length === 0;
+	}
+
+	handlePurchase(card: CardType) {
+		if (card.extra.f) card.extra.f();
+		if (card.extra.military) {
+			utils.getMe().military += card.extra.military;
+			const militaryDiff =
+				utils.getMe().military - utils.getOpponent().military;
+			while (militaryDiff >= utils.getMe().nextMilitary) {
+				utils.getMe().nextMilitary = handleNextMilitary();
+			}
+		}
 	}
 }
 
