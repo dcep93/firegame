@@ -1,6 +1,6 @@
 import React from "react";
 
-import { shared, store } from "./utils";
+import { utils, store } from "./utils";
 import Main from "./main";
 import Sidebar from "./sidebar";
 
@@ -10,7 +10,7 @@ import css from "./index.module.css";
 class _7wd extends React.Component {
 	render() {
 		const classes = [css.main];
-		if (shared.isMyTurn()) classes.push(styles.my_turn);
+		if (utils.isMyTurn()) classes.push(styles.my_turn);
 		return (
 			<div>
 				<div className={classes.join(" ")}>

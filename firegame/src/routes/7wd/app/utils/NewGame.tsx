@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
 
-import { store, shared, deal } from ".";
+import { store, utils, deal } from ".";
 import { Age } from "./bank";
 
 export type GameType = {
@@ -56,7 +56,7 @@ function setPlayers(game: GameType): GameType {
 		wonders: [],
 		money: 7,
 	}));
-	game.currentPlayer = shared.myIndex(game);
+	game.currentPlayer = utils.myIndex(game);
 	return game;
 }
 

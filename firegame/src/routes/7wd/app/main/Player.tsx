@@ -1,5 +1,4 @@
 import React from "react";
-import { store } from "../utils";
 
 import bank from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";

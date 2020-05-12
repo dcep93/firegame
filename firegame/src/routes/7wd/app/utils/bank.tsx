@@ -58,7 +58,7 @@ enum Science {
 	law,
 }
 
-enum Upgrade {
+export enum Upgrade {
 	lamp,
 	target,
 	water,
