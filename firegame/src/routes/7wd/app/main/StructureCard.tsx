@@ -41,7 +41,7 @@ class StructureCard extends React.Component<{
 		if (!this.props.revealed) return "?";
 		const card = bank.cards[this.props.cardIndex];
 		return (
-			<div>
+			<div title={JSON.stringify(card, null, 2)}>
 				<div style={{ backgroundColor: card.color }}>_</div>
 				<div>{card.name}</div>
 				<div>

@@ -1,4 +1,4 @@
-// todo god wonder sidebar
+// todo god wonder
 
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";

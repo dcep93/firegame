@@ -65,7 +65,9 @@ class Player extends React.Component<{
 							`d: ${card.extra.discount.join("")}`,
 						card.extra.resourceOptions &&
 							`o: ${card.extra.resourceOptions.join("/")}`,
-					].join(" - ");
+					]
+						.filter(Boolean)
+						.join(" - ");
 				break;
 			case Color.red:
 				f = (card: CardType) => card.extra.military!.toLocaleString();
