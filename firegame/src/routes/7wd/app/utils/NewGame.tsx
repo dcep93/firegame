@@ -14,6 +14,7 @@ export type GameType = {
 	trash: number[];
 	commercial?: CommercialEnum;
 	sciences: ScienceToken[];
+	wentFirst: number;
 };
 
 export type Params = {
@@ -85,6 +86,7 @@ function setPlayers(game: GameType): GameType {
 }
 
 function dealFirstAge(game: GameType): GameType {
+	game.wentFirst = utils.getOpponent().index;
 	game.age = Age.one;
 	deal(game);
 	return game;

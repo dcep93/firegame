@@ -1,4 +1,4 @@
-// todo god wonder sidebar wentfirst
+// todo god wonder sidebar
 
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
@@ -43,6 +43,17 @@ function deal(game: GameType) {
 			taken: false,
 		}))
 	);
+	var wentFirst;
+	const militaryDiff = utils.getMe().military - utils.getOpponent().military;
+	if (militaryDiff > 0) {
+		wentFirst = utils.getOpponent().index;
+	} else if (militaryDiff < 0) {
+		wentFirst = utils.getMe().index;
+	} else {
+		wentFirst = 1 - game.wentFirst;
+	}
+	game.currentPlayer = wentFirst;
+	game.wentFirst = wentFirst;
 }
 
 function getCost(card: CardType): number {
