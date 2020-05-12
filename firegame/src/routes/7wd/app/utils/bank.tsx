@@ -44,7 +44,6 @@ export enum Color {
 	red = "red",
 	blue = "blue",
 	green = "green",
-	purple = "purple",
 	guild = "guild",
 	god = "god",
 }
