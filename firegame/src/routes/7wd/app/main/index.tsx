@@ -1,11 +1,12 @@
 import React from "react";
 
-import { utils, store, getCost, handleNextMilitary } from "../utils";
+import { utils, store, getCost, stealMoney } from "../utils";
 import bank, { Color, CardType } from "../utils/bank";
 
 import Structure from "./Structure";
 import Player from "./Player";
-import Board from "./Board";
+import Military from "./Military";
+import Trash from "./Trash";
 
 export enum selected {
 	player,
@@ -26,6 +27,9 @@ class Main extends React.Component<
 	render() {
 		return (
 			<div>
+				<div>
+					<Military />
+				</div>
 				<Structure
 					selectCard={this.selectCard.bind(this)}
 					{...this.props}
@@ -42,7 +46,7 @@ class Main extends React.Component<
 					/>
 					<Player player={utils.getOpponent()} />
 				</div>
-				<Board
+				<Trash
 					select={this.selectBoard.bind(this)}
 					selected={this.state.selectedTarget === selected.board}
 				/>
@@ -122,12 +126,17 @@ class Main extends React.Component<
 	handlePurchase(card: CardType) {
 		if (card.extra.f) card.extra.f();
 		if (card.extra.military) {
-			utils.getMe().military += card.extra.military;
-			const militaryDiff =
-				utils.getMe().military - utils.getOpponent().military;
-			while (militaryDiff >= utils.getMe().nextMilitary) {
-				utils.getMe().nextMilitary = handleNextMilitary();
-			}
+			const me = utils.getMe();
+			me.military += card.extra.military;
+			const militaryDiff = me.military - utils.getOpponent().military;
+			Object.entries(me.militaryBonuses).forEach(([needed, amount]) => {
+				const key = parseInt(needed);
+				if (militaryDiff >= key) {
+					if (!amount) return alert("you win");
+					stealMoney(amount);
+					delete me.militaryBonuses[key];
+				}
+			});
 		}
 	}
 }

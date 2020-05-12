@@ -1,5 +1,5 @@
 import React from "react";
-import { store, utils } from "../utils";
+import { store } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 
@@ -9,12 +9,7 @@ class Board extends React.Component<{ selected: boolean; select: () => void }> {
 		if (this.props.selected) classes.push(styles.grey);
 		return (
 			<div className={classes.join(" ")} onClick={this.props.select}>
-				<h2>Board</h2>
-				<div>
-					Military:{" "}
-					{utils.getMe().military - utils.getOpponent().military}
-				</div>
-				<div>Trash: {store.gameW.game.trash?.length || 0}</div>
+				<h2>Trash: {store.gameW.game.trash?.length || 0}</h2>
 			</div>
 		);
 	}

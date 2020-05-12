@@ -31,7 +31,7 @@ export type PlayerType = {
 	money: number;
 	military: number;
 	index: number;
-	nextMilitary: number;
+	militaryBonuses: { [x: number]: number };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -59,7 +59,7 @@ function setPlayers(game: GameType): GameType {
 			money: 7,
 			military: 0,
 			index,
-			nextMilitary: 4,
+			militaryBonuses: { 3: 2, 6: 5, 9: 0 },
 		})
 	);
 	game.currentPlayer = utils.myIndex(game);

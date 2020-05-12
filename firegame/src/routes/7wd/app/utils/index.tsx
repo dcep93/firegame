@@ -125,30 +125,8 @@ function getMilitaryPoints(militaryDiff: number): number {
 	return 10;
 }
 
-function handleNextMilitary(): number {
-	switch (utils.getMe().nextMilitary) {
-		case 4:
-			stealMoney(2);
-			return 8;
-		case 8:
-			stealMoney(5);
-			return 13;
-		case 13:
-			alert("you win!");
-	}
-	return NaN;
-}
-
 function stealMoney(amount: number) {
 	utils.getOpponent().money = Math.max(0, utils.getOpponent().money - amount);
 }
 
-export {
-	store,
-	utils,
-	deal,
-	getCost,
-	getScore,
-	handleNextMilitary,
-	stealMoney,
-};
+export { store, utils, deal, getCost, getScore, stealMoney, getMilitaryPoints };
