@@ -1,10 +1,10 @@
 import React from "react";
 
+import { getScore } from "../utils";
 import bank, { Color, CardType, ScienceEnum, Upgrade } from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
-import { getScore } from "../utils";
 
 class Player extends React.Component<{
 	player: PlayerType;

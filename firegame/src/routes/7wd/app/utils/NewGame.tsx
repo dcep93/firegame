@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
 
-import { store, utils, deal } from ".";
+import { store, utils } from ".";
 import bank, { Age, ScienceToken } from "./bank";
 
 const NUM_SCIENCES = 5;
@@ -15,6 +15,7 @@ export type GameType = {
 	commercial?: CommercialEnum;
 	sciences: ScienceToken[];
 	wentFirst: number;
+	extra: any;
 };
 
 export type Params = {
@@ -42,10 +43,12 @@ export type PlayerType = {
 
 export enum CommercialEnum {
 	science,
+	chooseWonder,
 }
 
 export const commercials: { [c in CommercialEnum]: string } = {
 	[CommercialEnum.science]: "select a science token",
+	[CommercialEnum.chooseWonder]: "choose a wonder",
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -55,7 +58,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
 	return Promise.resolve(game)
 		.then(setBoard)
 		.then(setPlayers)
-		.then(dealFirstAge);
+		.then(prepareToChooseWonders);
 }
 
 function setBoard(game: GameType): GameType {
@@ -81,15 +84,26 @@ function setPlayers(game: GameType): GameType {
 			sciences: [],
 		})
 	);
+	if (game.players.length !== 2) throw new Error("need 2 players");
 	game.currentPlayer = utils.myIndex(game);
 	return game;
 }
 
-function dealFirstAge(game: GameType): GameType {
-	game.wentFirst = utils.getOpponent().index;
-	game.age = Age.one;
-	deal(game);
+function prepareToChooseWonders(game: GameType): GameType {
+	game.commercial = CommercialEnum.chooseWonder;
+	game.extra = {
+		firstRound: true,
+		remaining: 4,
+		wonders: utils.shuffle(Object.keys(bank.wonders)),
+	};
 	return game;
 }
+
+// function dealFirstAge(game: GameType): GameType {
+// 	game.wentFirst = utils.myIndex()
+// 	game.age = Age.one;
+// 	deal(game);
+// 	return game;
+// }
 
 export default NewGame;
