@@ -97,6 +97,7 @@ class Main extends React.Component<
 			message = `built ${card.name}`;
 			if (!me.cards) me.cards = [];
 			me.cards.push(structureCard.cardIndex);
+			if (card.extra.f) card.extra.f();
 		} else {
 			message = `built wonder using ${card.name}`;
 		}

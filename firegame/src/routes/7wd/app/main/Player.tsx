@@ -4,6 +4,7 @@ import bank from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
+import { getScore } from "../utils";
 
 class Player extends React.Component<{
 	player: PlayerType;
@@ -22,13 +23,19 @@ class Player extends React.Component<{
 				>
 					<h2>
 						{this.props.player.userName} - $
-						{this.props.player.money}
+						{this.props.player.money} -{" "}
+						{getScore(this.props.player)}
 					</h2>
-					<pre>
-						{(this.props.player.cards || [])
-							.map((index) => bank.cards[index].name)
-							.join("\n")}
-					</pre>
+					{(this.props.player.cards || [])
+						.map((index) => bank.cards[index])
+						.map((card, index) => (
+							<pre
+								key={index}
+								title={JSON.stringify(card, null, 2)}
+							>
+								{card.name}
+							</pre>
+						))}
 				</div>
 			</div>
 		);

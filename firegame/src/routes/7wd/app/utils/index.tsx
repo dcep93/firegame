@@ -101,4 +101,17 @@ function countResources(pool: Resource[]): { [r in Resource]?: number } {
 	return resources;
 }
 
-export { store, utils, deal, getCost };
+function getScore(player: PlayerType): number {
+	const cardPoints = (player.cards || [])
+		.map((cardIndex) => bank.cards[cardIndex].extra.points || 0)
+		.reduce((a, b) => a + b, 0);
+	const moneyPoints = Math.floor(player.money / 3);
+	const guildPoints = (player.cards || [])
+		.map((cardIndex) => bank.cards[cardIndex].extra.guild)
+		.filter(Boolean)
+		.map((g) => Math.max(g!(utils.getMe()), g!(utils.getOpponent())))
+		.reduce((a, b) => a + b, 0);
+	return cardPoints + moneyPoints + guildPoints;
+}
+
+export { store, utils, deal, getCost, getScore };
