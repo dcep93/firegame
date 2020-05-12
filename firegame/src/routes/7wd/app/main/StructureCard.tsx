@@ -1,7 +1,7 @@
 import React from "react";
 
 import { getCost } from "../utils";
-import bank, { Upgrade } from "../utils/bank";
+import bank, { Upgrade, CardType, Science, God } from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -44,9 +44,10 @@ class StructureCard extends React.Component<{
 			<div>
 				<div style={{ backgroundColor: card.color }}>_</div>
 				<div>{card.name}</div>
-				<pre>
+				<div>
 					cost: {card.cost.join("")} (${getCost(card)})
-				</pre>
+				</div>
+				{this.renderExtra(card)}
 				{card.upgradesFrom && (
 					<div>from: {Upgrade[card.upgradesFrom]}</div>
 				)}
@@ -58,6 +59,29 @@ class StructureCard extends React.Component<{
 	getTransform() {
 		const p = this.props.offset * 50;
 		return `translate(${p}%, 0%)`;
+	}
+
+	renderExtra(card: CardType) {
+		return (
+			<>
+				{card.message && <div>{card.message}</div>}
+				{card.extra.resource && (
+					<div>({card.extra.resource!.join("")})</div>
+				)}
+				{card.extra.resourceOptions && (
+					<div>({card.extra.resourceOptions!.join("/")})</div>
+				)}
+				{card.extra.discount && (
+					<div>d: ({card.extra.discount!.join("")})</div>
+				)}
+				{card.extra.points && <div>{card.extra.points} points</div>}
+				{card.extra.military && <div>{card.extra.military}</div>}
+				{card.extra.science && <div>{Science[card.extra.science]}</div>}
+				{card.extra.godUpgrade && (
+					<div>{God[card.extra.godUpgrade]}</div>
+				)}
+			</>
+		);
 	}
 }
 

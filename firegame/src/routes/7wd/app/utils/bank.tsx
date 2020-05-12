@@ -19,6 +19,7 @@ export interface CardType {
 		guild?: (player: PlayerType) => number;
 		godUpgrade?: God;
 	};
+	message?: string;
 }
 
 export enum Age {
@@ -48,7 +49,7 @@ export enum Color {
 	god = "god",
 }
 
-enum Science {
+export enum Science {
 	wheel,
 	a,
 	writing,
@@ -78,7 +79,7 @@ export enum Upgrade {
 	harp,
 }
 
-enum God {
+export enum God {
 	egyptian,
 	mesopotamian,
 	greek,
@@ -251,6 +252,7 @@ const cards: CardType[] = [
 		color: Color.yellow,
 		cost: [],
 		extra: { f: () => (utils.getMe().money += 4) },
+		message: "$4",
 		upgradesTo: Upgrade.vase,
 	},
 	{
@@ -427,6 +429,7 @@ const cards: CardType[] = [
 		color: Color.yellow,
 		cost: [],
 		extra: { f: () => (utils.getMe().money += 6) },
+		message: "$6",
 		upgradesTo: Upgrade.barrel,
 	},
 	{
@@ -585,6 +588,7 @@ const cards: CardType[] = [
 						(cardIndex) => cards[cardIndex].color === Color.yellow
 					).length),
 		},
+		message: "$1 / yellow",
 		upgradesFrom: Upgrade.vase,
 	},
 	{
@@ -600,6 +604,7 @@ const cards: CardType[] = [
 					utils.getMe().wonders.filter((wonder) => wonder.built)
 						.length),
 		},
+		message: "$2 / wonder",
 		upgradesFrom: Upgrade.barrel,
 	},
 	{
@@ -619,6 +624,7 @@ const cards: CardType[] = [
 								cards[cardIndex].color === Color.brown
 						).length),
 		},
+		message: "$2 / brown",
 	},
 	{
 		name: "armory",
@@ -634,6 +640,7 @@ const cards: CardType[] = [
 						(cardIndex) => cards[cardIndex].color === Color.red
 					).length),
 		},
+		message: "$1 / red",
 	},
 	{
 		name: "chamber of commerce",
@@ -651,6 +658,7 @@ const cards: CardType[] = [
 							(cardIndex) => cards[cardIndex].color === Color.grey
 						).length),
 		},
+		message: "$3 / grey",
 	},
 	{
 		name: "observatory",
@@ -687,7 +695,10 @@ const cards: CardType[] = [
 		age: Age.three,
 		color: Color.guild,
 		cost: [Resource.stone, Resource.stone, Resource.wood, Resource.wood],
-		extra: { guild: (player: PlayerType) => Math.floor(player.money / 3) },
+		extra: {
+			guild: (player: PlayerType) => Math.floor(player.money / 3),
+		},
+		message: "1 point / $3",
 	},
 	{
 		name: "merchants guild",
@@ -710,6 +721,7 @@ const cards: CardType[] = [
 					).length
 				)),
 		},
+		message: "$1, 1 point / yellow (both)",
 	},
 	{
 		name: "shipowners guild",
@@ -735,6 +747,7 @@ const cards: CardType[] = [
 					).length
 				)),
 		},
+		message: "$1, 1 point / brown/grey (both)",
 	},
 	{
 		name: "tacticians guild",
@@ -757,6 +770,7 @@ const cards: CardType[] = [
 					).length
 				)),
 		},
+		message: "$1, 1 point / red (both)",
 	},
 	{
 		name: "scientists guild",
@@ -779,6 +793,7 @@ const cards: CardType[] = [
 					).length
 				)),
 		},
+		message: "$1, 1 point / green (both)",
 	},
 	{
 		name: "magistrates guild",
@@ -801,6 +816,7 @@ const cards: CardType[] = [
 					).length
 				)),
 		},
+		message: "$1, 1 point / blue (both)",
 	},
 	{
 		name: "builders guild",
@@ -817,6 +833,7 @@ const cards: CardType[] = [
 			guild: (player: PlayerType) =>
 				2 * player.wonders.filter((wonder) => wonder.built).length,
 		},
+		message: "2 points / wonder (both)",
 	},
 	{
 		name: "egyptian grand temple",
