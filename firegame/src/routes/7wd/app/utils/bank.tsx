@@ -27,7 +27,7 @@ export enum Age {
 	three,
 }
 
-enum Resource {
+export enum Resource {
 	money = "$",
 	clay = "c",
 	stone = "s",
