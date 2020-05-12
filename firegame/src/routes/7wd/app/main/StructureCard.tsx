@@ -1,5 +1,6 @@
 import React from "react";
 
+import { getCost } from "../utils";
 import bank from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
@@ -43,7 +44,9 @@ class StructureCard extends React.Component<{
 			<div>
 				<div style={{ backgroundColor: card.color }}>_</div>
 				<div>{card.name}</div>
-				<pre>cost: {card.cost.join("")}</pre>
+				<pre>
+					cost: {card.cost.join("")} (${getCost(card)})
+				</pre>
 				{card.upgradesFrom && (
 					<div>upgrades from: {card.upgradesFrom}</div>
 				)}

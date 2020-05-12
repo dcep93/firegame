@@ -1,7 +1,7 @@
 import Shared from "../../../../shared";
 import store, { StoreType } from "../../../../shared/store";
 
-import { GameType, PlayerType } from "./NewGame";
+import { GameType, PlayerType, CardType } from "./NewGame";
 import bank from "./bank";
 
 const store_: StoreType<GameType> = store;
@@ -22,4 +22,8 @@ function deal(game: GameType) {
 	);
 }
 
-export { store_ as store, shared, deal };
+function getCost(card: CardType) {
+	return 3 + card.cost.length - (shared.getMe().cards || []).length;
+}
+
+export { store_ as store, shared, deal, getCost };
