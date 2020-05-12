@@ -1,6 +1,7 @@
 import { LobbyType } from "../../../../shared/store";
 
 import { store, shared, deal } from ".";
+import { Age } from "./bank";
 
 export type GameType = {
 	params: Params;
@@ -27,44 +28,9 @@ export type PlayerType = {
 	userId: string;
 	userName: string;
 	cards: number[];
-	wonders: WonderType[];
+	wonders: { built: boolean; wonderIndex: number }[];
 	money: number;
 };
-
-export interface CardType {
-	name: string;
-	age: Age;
-	color: Color;
-	cost: Resource[];
-	upgradesTo?: string;
-	upgradesFrom?: string;
-}
-
-export enum Age {
-	one = 1,
-	two,
-	three,
-}
-
-export enum Resource {
-	money = "$",
-	clay = "c",
-	stone = "s",
-	wood = "w",
-}
-
-export enum Color {
-	brown = "brown",
-	grey = "grey",
-	yellow = "yellow",
-	red = "red",
-	blue = "blue",
-	green = "green",
-	purple = "purple",
-	guild = "guild",
-}
-
-export type WonderType = {};
 
 function NewGame(params: Params): PromiseLike<GameType> {
 	// @ts-ignore game being constructed

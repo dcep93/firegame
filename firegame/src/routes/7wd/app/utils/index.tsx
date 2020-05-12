@@ -1,18 +1,19 @@
 import Shared from "../../../../shared";
 import store, { StoreType } from "../../../../shared/store";
 
-import { GameType, PlayerType, CardType } from "./NewGame";
-import bank from "./bank";
+import { GameType, PlayerType } from "./NewGame";
+import bank, { CardType } from "./bank";
 
 const store_: StoreType<GameType> = store;
 const shared: Shared<GameType, PlayerType> = new Shared();
 
 function deal(game: GameType) {
-	const indices: number[] = bank.bank
-		.map((card, index) => (card.age === game.age ? index : -1))
-		.filter((index) => index !== -1);
+	const indexedCards = bank.cards
+		.map((card, index) => ({ card, index }))
+		.filter((ic) => ic.card.age === game.age);
+	const indices = indexedCards.map((ic) => ic.index);
 	shared.shuffle(indices);
-	game.structure = bank.map[game.age]!.map((mapRow, rowIndex) =>
+	game.structure = bank.structure[game.age]!.map((mapRow, rowIndex) =>
 		mapRow.map((offset) => ({
 			offset,
 			cardIndex: indices.pop()!,

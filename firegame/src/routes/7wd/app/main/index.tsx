@@ -1,11 +1,11 @@
 import React from "react";
 
+import { shared, store } from "../utils";
+import bank, { Color } from "../utils/bank";
+
 import Structure from "./Structure";
 import Player from "./Player";
 import Board from "./Board";
-import { shared, store } from "../utils";
-import bank from "../utils/bank";
-import { Color } from "../utils/NewGame";
 
 export enum selected {
 	player,
@@ -81,7 +81,7 @@ class Main extends React.Component<
 					(aboveCard.revealed = true)
 			);
 		this.reset();
-		const cardName = bank.bank[card.cardIndex].name;
+		const cardName = bank.cards[card.cardIndex].name;
 		const me = shared.getMe();
 		var message;
 		if (this.state.selectedTarget === selected.board) {
@@ -89,7 +89,7 @@ class Main extends React.Component<
 			me.money +=
 				BASE_TRASH +
 				(me.cards || [])
-					.map((cardIndex) => bank.bank[cardIndex])
+					.map((cardIndex) => bank.cards[cardIndex])
 					.filter((card) => card.color === Color.yellow).length;
 		} else if (this.state.selectedWonder === -1) {
 			message = `built ${cardName}`;

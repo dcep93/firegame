@@ -39,7 +39,7 @@ class StructureCard extends React.Component<{
 
 	renderCard() {
 		if (!this.props.revealed) return "?";
-		const card = bank.bank[this.props.cardIndex];
+		const card = bank.cards[this.props.cardIndex];
 		return (
 			<div>
 				<div style={{ backgroundColor: card.color }}>_</div>

@@ -11,6 +11,7 @@ class Player extends React.Component<{
 }> {
 	render() {
 		const player = store.gameW.game.players[this.props.index];
+		if (!player) return null;
 		const classes = [styles.bubble];
 		if (this.props.selected !== undefined) classes.push(styles.grey);
 		return (
@@ -24,7 +25,7 @@ class Player extends React.Component<{
 					</h2>
 					<pre>
 						{(player.cards || [])
-							.map((index) => bank.bank[index].name)
+							.map((index) => bank.cards[index].name)
 							.join("\n")}
 					</pre>
 				</div>
