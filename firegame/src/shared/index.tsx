@@ -13,6 +13,13 @@ interface PlayerType {
 }
 
 class Shared<T extends TurnGame<U>, U extends PlayerType> {
+	constructor() {
+		// @ts-ignore
+		window.store = store;
+		// @ts-ignore
+		window.utils = this;
+	}
+
 	isMyTurn(game_: T | undefined = undefined): boolean {
 		const game: T = game_ || store.gameW.game!;
 		return (
