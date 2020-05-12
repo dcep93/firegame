@@ -37,6 +37,7 @@ function getCost(card: CardType): number {
 	if (
 		cards.filter(
 			(cardIndex) =>
+				card.upgradesFrom &&
 				bank.cards[cardIndex].upgradesTo === card.upgradesFrom
 		).length !== 0
 	)

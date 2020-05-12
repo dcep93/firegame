@@ -75,8 +75,12 @@ class StructureCard extends React.Component<{
 					<div>d: ({card.extra.discount!.join("")})</div>
 				)}
 				{card.extra.points && <div>{card.extra.points} points</div>}
-				{card.extra.military && <div>{card.extra.military}</div>}
-				{card.extra.science && <div>{Science[card.extra.science]}</div>}
+				{card.extra.military && (
+					<div>military: {card.extra.military}</div>
+				)}
+				{card.extra.science !== undefined && (
+					<div>symbol: {Science[card.extra.science]}</div>
+				)}
 				{card.extra.godUpgrade && (
 					<div>{God[card.extra.godUpgrade]}</div>
 				)}
