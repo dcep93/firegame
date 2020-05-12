@@ -26,6 +26,8 @@ export enum Age {
 	one = 1,
 	two,
 	three,
+	guild,
+	god,
 }
 
 export enum Resource {
@@ -44,8 +46,7 @@ export enum Color {
 	red = "red",
 	blue = "blue",
 	green = "green",
-	guild = "guild",
-	god = "god",
+	purple = "purple",
 }
 
 export enum ScienceEnum {
@@ -725,8 +726,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "moneylenders guild",
-		age: Age.three,
-		color: Color.guild,
+		age: Age.guild,
+		color: Color.purple,
 		cost: [Resource.stone, Resource.stone, Resource.wood, Resource.wood],
 		extra: {
 			guild: (player: PlayerType) => Math.floor(player.money / 3),
@@ -735,8 +736,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "merchants guild",
-		age: Age.three,
-		color: Color.guild,
+		age: Age.guild,
+		color: Color.purple,
 		cost: [Resource.clay, Resource.wood, Resource.glass, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
@@ -758,8 +759,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "shipowners guild",
-		age: Age.three,
-		color: Color.guild,
+		age: Age.guild,
+		color: Color.purple,
 		cost: [Resource.clay, Resource.stone, Resource.glass, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
@@ -784,8 +785,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "tacticians guild",
-		age: Age.three,
-		color: Color.guild,
+		age: Age.guild,
+		color: Color.purple,
 		cost: [Resource.stone, Resource.stone, Resource.clay, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
@@ -807,8 +808,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "scientists guild",
-		age: Age.three,
-		color: Color.guild,
+		age: Age.guild,
+		color: Color.purple,
 		cost: [Resource.clay, Resource.clay, Resource.wood, Resource.wood],
 		extra: {
 			guild: (player: PlayerType) =>
@@ -830,8 +831,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "magistrates guild",
-		age: Age.three,
-		color: Color.guild,
+		age: Age.guild,
+		color: Color.purple,
 		cost: [Resource.wood, Resource.wood, Resource.clay, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
@@ -853,8 +854,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "builders guild",
-		age: Age.three,
-		color: Color.guild,
+		age: Age.guild,
+		color: Color.purple,
 		cost: [
 			Resource.stone,
 			Resource.stone,
@@ -870,8 +871,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "egyptian grand temple",
-		age: Age.three,
-		color: Color.god,
+		age: Age.god,
+		color: Color.purple,
 		cost: [
 			Resource.clay,
 			Resource.clay,
@@ -883,8 +884,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "phoenician grand temple",
-		age: Age.three,
-		color: Color.god,
+		age: Age.god,
+		color: Color.purple,
 		cost: [
 			Resource.wood,
 			Resource.stone,
@@ -896,8 +897,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "meopotamian grand temple",
-		age: Age.three,
-		color: Color.god,
+		age: Age.god,
+		color: Color.purple,
 		cost: [
 			Resource.wood,
 			Resource.wood,
@@ -909,8 +910,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "roman grand temple",
-		age: Age.three,
-		color: Color.god,
+		age: Age.god,
+		color: Color.purple,
 		cost: [
 			Resource.clay,
 			Resource.stone,
@@ -922,8 +923,8 @@ const cards: CardType[] = [
 	},
 	{
 		name: "greek grand temple",
-		age: Age.three,
-		color: Color.god,
+		age: Age.god,
+		color: Color.purple,
 		cost: [
 			Resource.stone,
 			Resource.stone,

@@ -1,10 +1,10 @@
-// todo god wonder sidebar deal
+// todo god wonder sidebar wentfirst
 
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
 
 import { GameType, PlayerType } from "./NewGame";
-import bank, { CardType, Resource, ScienceToken, Color } from "./bank";
+import bank, { CardType, Resource, ScienceToken, Color, Age } from "./bank";
 
 const BASE_COST = 2;
 
@@ -24,10 +24,21 @@ function deal(game: GameType) {
 		.filter((ic) => ic.card.age === game.age);
 	const indices = indexedCards.map((ic) => ic.index);
 	utils.shuffle(indices);
+	const cardsToUse = indices.slice(20);
+	if (game.age === Age.three) {
+		const purples = bank.cards
+			.map((card, index) => ({ card, index }))
+			.filter((ic) => ic.card.age === Age.guild)
+			.map((ic) => ic.index);
+		for (let i = 0; i < 3; i++) {
+			cardsToUse.splice(i, 1, purples.pop()!);
+		}
+		utils.shuffle(cardsToUse);
+	}
 	game.structure = bank.structure[game.age]!.map((mapRow, rowIndex) =>
 		mapRow.map((offset) => ({
 			offset,
-			cardIndex: indices.pop()!,
+			cardIndex: cardsToUse.pop()!,
 			revealed: rowIndex % 2 === 0,
 			taken: false,
 		}))

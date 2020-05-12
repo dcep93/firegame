@@ -1,11 +1,12 @@
 import React from "react";
 
-import { utils, store, getCost, stealMoney } from "../utils";
+import { utils, store, getCost, stealMoney, deal } from "../utils";
 import bank, {
 	Color,
 	CardType,
 	ScienceToken,
 	ScienceEnum,
+	Age,
 } from "../utils/bank";
 import { CommercialEnum, commercials } from "../utils/NewGame";
 
@@ -132,6 +133,24 @@ class Main extends React.Component<
 		}
 		if (store.gameW.game.commercial === undefined)
 			utils.incrementPlayerTurn();
+		if (
+			store.gameW.game.structure.flat().filter((sc) => !sc.taken)
+				.length === 0
+		) {
+			switch (store.gameW.game.age) {
+				case Age.one:
+					store.gameW.game.age = Age.two;
+					deal(store.gameW.game);
+					break;
+				case Age.two:
+					store.gameW.game.age = Age.three;
+					deal(store.gameW.game);
+					break;
+				case Age.three:
+					alert("game over");
+					break;
+			}
+		}
 		store.update(message);
 	}
 
