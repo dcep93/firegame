@@ -1,6 +1,6 @@
 import React from "react";
 
-import bank, { Color, CardType, Science, Upgrade } from "../utils/bank";
+import bank, { Color, CardType, ScienceEnum, Upgrade } from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
@@ -75,7 +75,7 @@ class Player extends React.Component<{
 				break;
 			case Color.green:
 				f = (card: CardType) =>
-					[Science[card.extra.science!], card.extra.points]
+					[ScienceEnum[card.extra.science!], card.extra.points]
 						.filter(Boolean)
 						.join(" + ");
 				break;

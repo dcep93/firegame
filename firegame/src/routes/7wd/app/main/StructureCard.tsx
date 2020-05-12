@@ -1,7 +1,7 @@
 import React from "react";
 
 import { getCost } from "../utils";
-import bank, { Upgrade, CardType, Science, God } from "../utils/bank";
+import bank, { Upgrade, CardType, ScienceEnum, God } from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -79,7 +79,7 @@ class StructureCard extends React.Component<{
 					<div>military: {card.extra.military}</div>
 				)}
 				{card.extra.science !== undefined && (
-					<div>symbol: {Science[card.extra.science]}</div>
+					<div>symbol: {ScienceEnum[card.extra.science]}</div>
 				)}
 				{card.extra.godUpgrade && (
 					<div>{God[card.extra.godUpgrade]}</div>

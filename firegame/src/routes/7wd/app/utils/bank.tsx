@@ -13,7 +13,7 @@ export interface CardType {
 		resourceOptions?: Resource[];
 		points?: number;
 		military?: number;
-		science?: Science;
+		science?: ScienceEnum;
 		discount?: Resource[];
 		f?: () => void;
 		guild?: (player: PlayerType) => number;
@@ -48,7 +48,7 @@ export enum Color {
 	god = "god",
 }
 
-export enum Science {
+export enum ScienceEnum {
 	wheel,
 	a,
 	writing,
@@ -85,6 +85,38 @@ export enum God {
 	roman,
 	phoenician,
 }
+
+export enum ScienceToken {
+	agriculture,
+	mathematics,
+	urbanism,
+	polioretics,
+	architecture,
+	law,
+	economy,
+	masonry,
+	mysticism,
+	engineering,
+	philosophy,
+	theology,
+	strategy,
+}
+
+const sciences: { [token in ScienceToken]: string } = {
+	[ScienceToken.agriculture]: "$6 + 4 points",
+	[ScienceToken.mathematics]: "3 points / science token",
+	[ScienceToken.urbanism]: "$6 + $4 when upgrading",
+	[ScienceToken.polioretics]: "siege $1 / military",
+	[ScienceToken.architecture]: "free wonders",
+	[ScienceToken.law]: "extra science symbol",
+	[ScienceToken.economy]: "opponents pay you when buying",
+	[ScienceToken.masonry]: "free blue cards",
+	[ScienceToken.mysticism]: "2 points per god token",
+	[ScienceToken.engineering]: "upgrades cost $1",
+	[ScienceToken.philosophy]: "7 points",
+	[ScienceToken.theology]: "go again when building wonder",
+	[ScienceToken.strategy]: "military moves extra",
+};
 
 const structure: { [age in Age]?: number[][] } = {
 	[Age.one]: [
@@ -259,21 +291,21 @@ const cards: CardType[] = [
 		age: Age.one,
 		color: Color.green,
 		cost: [Resource.glass],
-		extra: { points: 1, science: Science.wheel },
+		extra: { points: 1, science: ScienceEnum.wheel },
 	},
 	{
 		name: "workshop",
 		age: Age.one,
 		color: Color.green,
 		cost: [Resource.paper],
-		extra: { points: 1, science: Science.a },
+		extra: { points: 1, science: ScienceEnum.a },
 	},
 	{
 		name: "scriptorium",
 		age: Age.one,
 		color: Color.green,
 		cost: [Resource.money, Resource.money],
-		extra: { science: Science.writing },
+		extra: { science: ScienceEnum.writing },
 		upgradesTo: Upgrade.book,
 	},
 	{
@@ -281,7 +313,7 @@ const cards: CardType[] = [
 		age: Age.one,
 		color: Color.green,
 		cost: [Resource.money, Resource.money],
-		extra: { science: Science.bowl },
+		extra: { science: ScienceEnum.bowl },
 		upgradesTo: Upgrade.gear,
 	},
 	{
@@ -436,7 +468,7 @@ const cards: CardType[] = [
 		age: Age.two,
 		color: Color.green,
 		cost: [Resource.paper, Resource.paper, Resource.wood],
-		extra: { points: 1, science: Science.wheel },
+		extra: { points: 1, science: ScienceEnum.wheel },
 		upgradesTo: Upgrade.harp,
 	},
 	{
@@ -444,7 +476,7 @@ const cards: CardType[] = [
 		age: Age.two,
 		color: Color.green,
 		cost: [Resource.wood, Resource.glass, Resource.glass],
-		extra: { points: 1, science: Science.a },
+		extra: { points: 1, science: ScienceEnum.a },
 		upgradesTo: Upgrade.lamp,
 	},
 	{
@@ -452,7 +484,7 @@ const cards: CardType[] = [
 		age: Age.two,
 		color: Color.green,
 		cost: [Resource.stone, Resource.wood, Resource.glass],
-		extra: { points: 2, science: Science.writing },
+		extra: { points: 2, science: ScienceEnum.writing },
 		upgradesFrom: Upgrade.book,
 	},
 	{
@@ -460,7 +492,7 @@ const cards: CardType[] = [
 		age: Age.two,
 		color: Color.green,
 		cost: [Resource.clay, Resource.clay, Resource.stone],
-		extra: { points: 2, science: Science.bowl },
+		extra: { points: 2, science: ScienceEnum.bowl },
 		upgradesFrom: Upgrade.gear,
 	},
 	{
@@ -664,7 +696,7 @@ const cards: CardType[] = [
 		age: Age.three,
 		color: Color.green,
 		cost: [Resource.stone, Resource.paper, Resource.paper],
-		extra: { points: 2, science: Science.astrolabe },
+		extra: { points: 2, science: ScienceEnum.astrolabe },
 		upgradesFrom: Upgrade.lamp,
 	},
 	{
@@ -672,7 +704,7 @@ const cards: CardType[] = [
 		age: Age.three,
 		color: Color.green,
 		cost: [Resource.clay, Resource.glass, Resource.paper],
-		extra: { points: 2, science: Science.astrolabe },
+		extra: { points: 2, science: ScienceEnum.astrolabe },
 		upgradesFrom: Upgrade.harp,
 	},
 	{
@@ -680,14 +712,14 @@ const cards: CardType[] = [
 		age: Age.three,
 		color: Color.green,
 		cost: [Resource.wood, Resource.wood, Resource.glass, Resource.paper],
-		extra: { points: 3, science: Science.tablet },
+		extra: { points: 3, science: ScienceEnum.tablet },
 	},
 	{
 		name: "academy",
 		age: Age.three,
 		color: Color.green,
 		cost: [Resource.stone, Resource.wood, Resource.glass, Resource.glass],
-		extra: { points: 3, science: Science.tablet },
+		extra: { points: 3, science: ScienceEnum.tablet },
 	},
 	{
 		name: "moneylenders guild",
@@ -1027,4 +1059,4 @@ const wonders: WonderType[] = [
 	},
 ];
 
-export default { cards, structure, wonders };
+export default { cards, structure, wonders, sciences };

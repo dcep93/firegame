@@ -1,7 +1,9 @@
 import { LobbyType } from "../../../../shared/store";
 
 import { store, utils, deal } from ".";
-import { Age } from "./bank";
+import bank, { Age, ScienceToken } from "./bank";
+
+const NUM_SCIENCES = 5;
 
 export type GameType = {
 	params: Params;
@@ -10,6 +12,8 @@ export type GameType = {
 	age: Age;
 	structure: StructureCardType[][];
 	trash: number[];
+	commercial?: CommercialEnum;
+	sciences: ScienceToken[];
 };
 
 export type Params = {
@@ -32,6 +36,15 @@ export type PlayerType = {
 	military: number;
 	index: number;
 	militaryBonuses: { [x: number]: number };
+	sciences: ScienceToken[];
+};
+
+export enum CommercialEnum {
+	science,
+}
+
+export const commercials: { [c in CommercialEnum]: string } = {
+	[CommercialEnum.science]: "select a science token",
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -46,6 +59,10 @@ function NewGame(params: Params): PromiseLike<GameType> {
 
 function setBoard(game: GameType): GameType {
 	game.trash = [];
+	// @ts-ignore
+	game.sciences = utils
+		.shuffle(Object.keys(bank.sciences))
+		.slice(NUM_SCIENCES);
 	return game;
 }
 
@@ -60,6 +77,7 @@ function setPlayers(game: GameType): GameType {
 			military: 0,
 			index,
 			militaryBonuses: { 3: 2, 6: 5, 9: 0 },
+			sciences: [],
 		})
 	);
 	game.currentPlayer = utils.myIndex(game);

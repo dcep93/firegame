@@ -2,11 +2,14 @@ import React from "react";
 
 import { utils, store, getCost, stealMoney } from "../utils";
 import bank, { Color, CardType } from "../utils/bank";
+import { CommercialEnum, commercials } from "../utils/NewGame";
 
 import Structure from "./Structure";
 import Player from "./Player";
 import Military from "./Military";
 import Trash from "./Trash";
+import Commercial from "./Commercial";
+import Science from "./Science";
 
 export enum selected {
 	player,
@@ -14,6 +17,7 @@ export enum selected {
 }
 
 const BASE_TRASH = 2;
+const SCIENCE_TO_WIN = 6;
 
 class Main extends React.Component<
 	{},
@@ -27,8 +31,13 @@ class Main extends React.Component<
 	render() {
 		return (
 			<div>
+				{utils.isMyTurn() &&
+					store.gameW.game.commercial !== undefined && <Commercial />}
 				<div>
 					<Military />
+				</div>
+				<div>
+					<Science />
 				</div>
 				<Structure
 					selectCard={this.selectCard.bind(this)}
@@ -69,6 +78,8 @@ class Main extends React.Component<
 	}
 
 	selectCard(x: number, y: number) {
+		const commercial = commercials[store.gameW.game.commercial!];
+		if (commercial) return alert(commercial);
 		if (this.state.selectedTarget === undefined)
 			return alert("need to select a target first");
 		const structureCard = store.gameW.game.structure[y][x];
@@ -108,7 +119,8 @@ class Main extends React.Component<
 		} else {
 			message = `built wonder using ${card.name}`;
 		}
-		utils.incrementPlayerTurn();
+		if (store.gameW.game.commercial === undefined)
+			utils.incrementPlayerTurn();
 		store.update(message);
 	}
 
@@ -124,9 +136,9 @@ class Main extends React.Component<
 	}
 
 	handlePurchase(card: CardType) {
+		const me = utils.getMe();
 		if (card.extra.f) card.extra.f();
 		if (card.extra.military) {
-			const me = utils.getMe();
 			me.military += card.extra.military;
 			const militaryDiff = me.military - utils.getOpponent().military;
 			Object.entries(me.militaryBonuses).forEach(([needed, amount]) => {
@@ -137,6 +149,18 @@ class Main extends React.Component<
 					delete me.militaryBonuses[key];
 				}
 			});
+		}
+		if (card.extra.science) {
+			const sciences = me.cards
+				.map((cardIndex) => bank.cards[cardIndex].extra.science)
+				.filter(Boolean);
+			if (new Set(sciences).size >= SCIENCE_TO_WIN) alert("you win");
+			if (
+				sciences.filter((science) => science === card.extra.science)
+					.length === 2
+			) {
+				store.gameW.game.commercial = CommercialEnum.science;
+			}
 		}
 	}
 }
