@@ -131,7 +131,11 @@ class Main extends React.Component<
 			w.built = true;
 			const wonder = bank.wonders[w.wonderIndex];
 			wonder.f();
-			if (wonder.goAgain) utils.incrementPlayerTurn();
+			if (
+				wonder.goAgain ||
+				(me.sciences || []).includes(ScienceToken.theology)
+			)
+				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
 		}
 		if (store.gameW.game.commercial === undefined)

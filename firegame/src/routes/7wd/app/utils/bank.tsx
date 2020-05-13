@@ -115,7 +115,6 @@ const sciences: { [token in ScienceToken]: string } = {
 	[ScienceToken.mysticism]: "2 points per god token",
 	[ScienceToken.engineering]: "upgrades cost $1",
 	[ScienceToken.philosophy]: "7 points",
-	// todo
 	[ScienceToken.theology]: "go again when building wonder",
 	[ScienceToken.strategy]: "military moves extra",
 };
