@@ -167,6 +167,7 @@ class Main extends React.Component<
 			)
 				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
+			// todo opponent destroys wonder
 		}
 		if (store.gameW.game.commercial === undefined)
 			utils.incrementPlayerTurn();
