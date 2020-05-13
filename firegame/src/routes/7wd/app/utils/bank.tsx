@@ -1,4 +1,4 @@
-import { utils, store, stealMoney } from ".";
+import { utils, store, stealMoney, increaseMilitary } from ".";
 import { PlayerType } from "./NewGame";
 
 export interface CardType {
@@ -939,6 +939,7 @@ const cards: CardType[] = [
 export type WonderType = {
 	name: string;
 	cost: Resource[];
+	message: string;
 	f: () => void;
 	goAgain?: boolean;
 	points?: number;
@@ -947,18 +948,22 @@ export type WonderType = {
 const wonders: WonderType[] = [
 	{
 		name: "the temple of artemis",
+		message: "$12, go again",
 		cost: [Resource.paper, Resource.glass, Resource.stone, Resource.paper],
 		f: () => (utils.getMe().money += 12),
 		goAgain: true,
 	},
 	{
 		name: "circus maximus",
+		message: "military +1 and destroy a grey card",
 		cost: [Resource.glass, Resource.wood, Resource.stone, Resource.stone],
+		// todo
 		f: () => alert("increase military and destroy a grey card"),
 		points: 3,
 	},
 	{
 		name: "the statue of zeus",
+		message: "military +1 and destroy a brown card",
 		cost: [
 			Resource.paper,
 			Resource.paper,
@@ -966,11 +971,13 @@ const wonders: WonderType[] = [
 			Resource.wood,
 			Resource.stone,
 		],
+		// todo
 		f: () => alert("increase military and destroy a brown card"),
 		points: 3,
 	},
 	{
 		name: "the hanging gardens",
+		message: "$6, 3 points, go again",
 		cost: [Resource.paper, Resource.glass, Resource.wood, Resource.wood],
 		f: () => (utils.getMe().money += 6),
 		goAgain: true,
@@ -978,12 +985,14 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the great lighthouse",
+		message: `o: ${Resource.wood}/${Resource.clay}/${Resource.stone}`,
 		cost: [Resource.paper, Resource.paper, Resource.stone, Resource.wood],
 		f: () => alert("extra brown resource"),
 		points: 4,
 	},
 	{
 		name: "piraeus",
+		message: `o: ${Resource.paper}/${Resource.glass}`,
 		cost: [Resource.clay, Resource.stone, Resource.wood, Resource.wood],
 		f: () => alert("extra grey resource"),
 		goAgain: true,
@@ -991,12 +1000,15 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the sanctuary",
+		message: "$2 discount on gods, go again",
 		cost: [Resource.paper, Resource.glass, Resource.stone, Resource.stone],
+		// todo
 		f: () => alert("2 discount on gods"),
 		goAgain: true,
 	},
 	{
 		name: "the mausoleum",
+		message: "build from discard",
 		cost: [
 			Resource.paper,
 			Resource.glass,
@@ -1004,11 +1016,13 @@ const wonders: WonderType[] = [
 			Resource.clay,
 			Resource.clay,
 		],
+		// todo
 		f: () => alert("build from discard"),
 		points: 2,
 	},
 	{
 		name: "the appian way",
+		message: "steal $3, 3 points, go again",
 		cost: [
 			Resource.paper,
 			Resource.clay,
@@ -1025,12 +1039,14 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the pyramids",
+		message: "9 points",
 		cost: [Resource.paper, Resource.stone, Resource.stone, Resource.stone],
 		f: () => null,
 		points: 9,
 	},
 	{
 		name: "the sphinx",
+		message: "6 points, go again",
 		cost: [Resource.glass, Resource.glass, Resource.clay, Resource.stone],
 		f: () => null,
 		points: 6,
@@ -1038,18 +1054,22 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the great library",
+		message: "select 1/3 science tokens",
 		cost: [Resource.paper, Resource.glass, Resource.wood, Resource.wood],
+		// todo
 		f: () => alert("choose a science token"),
 		points: 4,
 	},
 	{
 		name: "the colossus",
+		message: "military +2, 3 points",
 		cost: [Resource.glass, Resource.clay, Resource.clay, Resource.clay],
-		f: () => alert("increase military by 2"),
+		f: () => increaseMilitary(2),
 		points: 3,
 	},
 	{
 		name: "the divine theater",
+		message: "pick a god",
 		cost: [
 			Resource.paper,
 			Resource.paper,
@@ -1057,6 +1077,7 @@ const wonders: WonderType[] = [
 			Resource.wood,
 			Resource.wood,
 		],
+		// todo
 		f: () => alert("pick a god"),
 		points: 2,
 	},

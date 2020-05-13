@@ -1,9 +1,10 @@
 import React from "react";
 
-import { store } from "../utils";
+import { store, getWonderCost } from "../utils";
 import { CommercialEnum } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
+import bank from "../utils/bank";
 
 class Commercial extends React.Component {
 	componentDidMount() {
@@ -44,7 +45,16 @@ class Commercial extends React.Component {
 	}
 
 	renderWonder(index: number, wonders: number[]) {
-		return <div>{wonders[index]}</div>;
+		const wonder = bank.wonders[wonders[index]];
+		return (
+			<div title={JSON.stringify(wonder, null, 2)}>
+				<p>{wonder.name}</p>
+				<p>{wonder.message}</p>
+				<div>
+					cost: {wonder.cost.join("")} (${getWonderCost(wonder)})
+				</div>
+			</div>
+		);
 	}
 }
 

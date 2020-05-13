@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getCost } from "../utils";
+import { getCardCost } from "../utils";
 import bank, { Upgrade, CardType, ScienceEnum, God } from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
@@ -45,7 +45,7 @@ class StructureCard extends React.Component<{
 				<div style={{ backgroundColor: card.color }}>_</div>
 				<div>{card.name}</div>
 				<div>
-					cost: {card.cost.join("")} (${getCost(card)})
+					cost: {card.cost.join("")} (${getCardCost(card)})
 				</div>
 				{this.renderExtra(card)}
 				{card.upgradesFrom && (

@@ -1,6 +1,13 @@
 import React from "react";
 
-import { utils, store, getCost, stealMoney, deal } from "../utils";
+import {
+	utils,
+	store,
+	getCardCost,
+	stealMoney,
+	deal,
+	increaseMilitary,
+} from "../utils";
 import bank, {
 	Color,
 	CardType,
@@ -93,7 +100,7 @@ class Main extends React.Component<
 			return alert("cannot take that card");
 		const card = bank.cards[structureCard.cardIndex];
 		if (this.state.selectedWonder === -1) {
-			const cost = getCost(card);
+			const cost = getCardCost(card);
 			if (cost > utils.getMe().money)
 				return alert("cannot afford that card");
 			utils.getMe().money -= cost;
@@ -184,19 +191,7 @@ class Main extends React.Component<
 		if (card.extra.military) {
 			var military = card.extra.military;
 			if (sciences.includes(ScienceToken.strategy)) military++;
-			if (sciences.includes(ScienceToken.polioretics))
-				stealMoney(military);
-			me.military += military;
-
-			const militaryDiff = me.military - utils.getOpponent().military;
-			Object.entries(me.militaryBonuses).forEach(([needed, amount]) => {
-				const key = parseInt(needed);
-				if (militaryDiff >= key) {
-					if (!amount) return alert("you win");
-					stealMoney(amount);
-					delete me.militaryBonuses[key];
-				}
-			});
+			increaseMilitary(military);
 		}
 		if (card.extra.science) {
 			const scienceCards = me.cards

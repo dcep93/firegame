@@ -4,7 +4,14 @@ import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
 
 import { GameType, PlayerType } from "./NewGame";
-import bank, { CardType, Resource, ScienceToken, Color, Age } from "./bank";
+import bank, {
+	CardType,
+	Resource,
+	ScienceToken,
+	Color,
+	Age,
+	WonderType,
+} from "./bank";
 
 const BASE_COST = 2;
 
@@ -56,22 +63,9 @@ function deal(game: GameType) {
 	game.wentFirst = wentFirst;
 }
 
-function getCost(card: CardType): number {
+function getCostCost(rawCosts: Resource[]): number {
 	const cards = utils.getMe().cards || [];
-	if (
-		cards.filter(
-			(cardIndex) =>
-				card.upgradesFrom &&
-				bank.cards[cardIndex].upgradesTo === card.upgradesFrom
-		).length !== 0
-	)
-		return 0;
-	if (
-		(utils.getMe().sciences || []).includes(ScienceToken.masonry) &&
-		card.color === Color.blue
-	)
-		return 0;
-	const costs = countResources(card.cost);
+	const costs = countResources(rawCosts);
 	const myResources = countResources(
 		cards.flatMap((cardIndex) => bank.cards[cardIndex].extra.resource || [])
 	);
@@ -120,6 +114,25 @@ function getCost(card: CardType): number {
 			picked.needed--;
 			price -= pricePer;
 		});
+	return price;
+}
+
+function getCardCost(card: CardType): number {
+	const cards = utils.getMe().cards || [];
+	if (
+		cards.filter(
+			(cardIndex) =>
+				card.upgradesFrom &&
+				bank.cards[cardIndex].upgradesTo === card.upgradesFrom
+		).length !== 0
+	)
+		return 0;
+	if (
+		(utils.getMe().sciences || []).includes(ScienceToken.masonry) &&
+		card.color === Color.blue
+	)
+		return 0;
+	const price = getCostCost(card.cost);
 	if (
 		(utils.getMe().sciences || []).includes(ScienceToken.engineering) &&
 		price > 0
@@ -154,8 +167,17 @@ function getScore(player: PlayerType): number {
 		.filter(Boolean)
 		.map((f) => f!(player))
 		.reduce((a: number, b: number) => a + b, 0)!;
+	const wonderPoints = player.wonders
+		.filter((wonder) => wonder.built)
+		.map((wonder) => bank.wonders[wonder.wonderIndex].points || 0)
+		.reduce((a, b) => a + b, 0);
 	return (
-		cardPoints + moneyPoints + guildPoints + militaryPoints + sciencePoints
+		cardPoints +
+		moneyPoints +
+		guildPoints +
+		militaryPoints +
+		sciencePoints +
+		wonderPoints
 	);
 }
 
@@ -180,4 +202,37 @@ function stealMoney(amount: number) {
 	utils.getOpponent().money = Math.max(0, utils.getOpponent().money - amount);
 }
 
-export { store, utils, deal, getCost, getScore, stealMoney, getMilitaryPoints };
+function getWonderCost(wonder: WonderType): number {
+	if ((utils.getMe().sciences || []).includes(ScienceToken.architecture))
+		return 0;
+	return getCostCost(wonder.cost);
+}
+
+function increaseMilitary(military: number) {
+	const me = utils.getMe();
+	const sciences = me.sciences || [];
+	if (sciences.includes(ScienceToken.polioretics)) stealMoney(military);
+	me.military += military;
+
+	const militaryDiff = me.military - utils.getOpponent().military;
+	Object.entries(me.militaryBonuses).forEach(([needed, amount]) => {
+		const key = parseInt(needed);
+		if (militaryDiff >= key) {
+			if (!amount) return alert("you win");
+			stealMoney(amount);
+			delete me.militaryBonuses[key];
+		}
+	});
+}
+
+export {
+	store,
+	utils,
+	deal,
+	getCardCost,
+	getScore,
+	stealMoney,
+	getMilitaryPoints,
+	getWonderCost,
+	increaseMilitary,
+};
