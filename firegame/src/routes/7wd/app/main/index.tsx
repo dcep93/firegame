@@ -37,6 +37,13 @@ class Main extends React.Component<
 	render() {
 		return (
 			<div>
+				{store.gameW.game.commercial !== undefined && <Commercial />}
+				<div>
+					<Structure
+						selectCard={this.selectCard.bind(this)}
+						{...this.props}
+					/>
+				</div>
 				<div>
 					<Player
 						player={utils.getMe()}
@@ -49,17 +56,12 @@ class Main extends React.Component<
 					/>
 					<Player player={utils.getOpponent()} />
 				</div>
-				{store.gameW.game.commercial !== undefined && <Commercial />}
 				<div>
 					<Military />
 				</div>
 				<div>
 					<Science />
 				</div>
-				<Structure
-					selectCard={this.selectCard.bind(this)}
-					{...this.props}
-				/>
 				<Trash
 					select={this.selectBoard.bind(this)}
 					selected={this.state.selectedTarget === selected.board}
@@ -107,11 +109,16 @@ class Main extends React.Component<
 		const rowAboveY = y - 1;
 		const rowAbove = store.gameW.game.structure[rowAboveY];
 		if (rowAbove)
-			rowAbove.forEach(
-				(aboveCard, index) =>
-					this.canTake(rowAboveY, index, aboveCard.offset) &&
-					(aboveCard.revealed = true)
-			);
+			rowAbove.forEach((aboveCard, index) => {
+				if (
+					!aboveCard.revealed &&
+					this.canTake(rowAboveY, index, aboveCard.offset)
+				) {
+					if (store.gameW.game.params.godExpansion)
+						this.handleToken(rowAboveY, index);
+					aboveCard.revealed = true;
+				}
+			});
 		const me = utils.getMe();
 		var message;
 		if (this.state.selectedTarget === selected.board) {
@@ -132,7 +139,7 @@ class Main extends React.Component<
 			const wonder = bank.wonders[w.wonderIndex];
 			wonder.f();
 			if (
-				wonder.goAgain ||
+				(store.gameW.game.commercial === undefined && wonder.goAgain) ||
 				(me.sciences || []).includes(ScienceToken.theology)
 			)
 				utils.incrementPlayerTurn();
@@ -160,6 +167,21 @@ class Main extends React.Component<
 		}
 		this.reset();
 		store.update(message);
+	}
+
+	handleToken(row: number, col: number) {
+		const game = store.gameW.game;
+		if (game.age === Age.one) {
+			if (col % 2 === 0) {
+				// todo multiple commercials
+				// game.commercial = CommercialEnum.pickGod;
+			}
+		} else if (game.age === Age.two) {
+			if (col % 2 === 0 && row === 1) {
+				// if (!utils.getMe().tokens) utils.getMe().tokens = [];
+				// utils.getMe().tokens.push(game.godExpansion.discounts.pop());
+			}
+		}
 	}
 
 	canTake(y: number, x: number, offset: number): boolean {

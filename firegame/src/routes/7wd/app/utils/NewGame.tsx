@@ -18,6 +18,7 @@ export type GameType = {
 
 export type Params = {
 	lobby: LobbyType;
+	godExpansion: boolean;
 };
 
 export type StructureCardType = {

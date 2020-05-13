@@ -33,9 +33,10 @@ function deal(game: GameType) {
 	utils.shuffle(indices);
 	const cardsToUse = indices.splice(0, 20);
 	if (game.age === Age.three) {
+		const matchAge = game.params.godExpansion ? Age.god : Age.guild;
 		const purples = bank.cards
 			.map((card, index) => ({ card, index }))
-			.filter((ic) => ic.card.age === Age.guild)
+			.filter((ic) => ic.card.age === matchAge)
 			.map((ic) => ic.index);
 		for (let i = 0; i < 3; i++) {
 			cardsToUse.splice(i, 1, purples.pop()!);
