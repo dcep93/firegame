@@ -167,7 +167,7 @@ function getScore(player: PlayerType): number {
 		.filter(Boolean)
 		.map((f) => f!(player))
 		.reduce((a: number, b: number) => a + b, 0)!;
-	const wonderPoints = player.wonders
+	const wonderPoints = (player.wonders || [])
 		.filter((wonder) => wonder.built)
 		.map((wonder) => bank.wonders[wonder.wonderIndex].points || 0)
 		.reduce((a, b) => a + b, 0);

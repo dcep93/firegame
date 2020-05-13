@@ -1,13 +1,6 @@
 import React from "react";
 
-import {
-	utils,
-	store,
-	getCardCost,
-	stealMoney,
-	deal,
-	increaseMilitary,
-} from "../utils";
+import { utils, store, getCardCost, deal, increaseMilitary } from "../utils";
 import bank, {
 	Color,
 	CardType,

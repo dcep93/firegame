@@ -1,10 +1,10 @@
 import React from "react";
 
-import { store, getWonderCost } from "../utils";
+import { store, getWonderCost, utils, deal } from "../utils";
 import { CommercialEnum } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
-import bank from "../utils/bank";
+import bank, { Age } from "../utils/bank";
 
 class Commercial extends React.Component {
 	componentDidMount() {
@@ -47,7 +47,10 @@ class Commercial extends React.Component {
 	renderWonder(index: number, wonders: number[]) {
 		const wonder = bank.wonders[wonders[index]];
 		return (
-			<div title={JSON.stringify(wonder, null, 2)}>
+			<div
+				title={JSON.stringify(wonder, null, 2)}
+				onClick={() => this.chooseWonder(index, wonders)}
+			>
 				<p>{wonder.name}</p>
 				<p>{wonder.message}</p>
 				<div>
@@ -55,6 +58,31 @@ class Commercial extends React.Component {
 				</div>
 			</div>
 		);
+	}
+
+	chooseWonder(index: number, wonders: number[]) {
+		const wonderIndex = wonders.splice(index, 1)[0];
+		if (!utils.getMe().wonders) utils.getMe().wonders = [];
+		utils.getMe().wonders.push({ built: false, wonderIndex });
+		const game = store.gameW.game;
+		const params = game.extra;
+		params.remaining--;
+		if (params.remaining !== 2) {
+			utils.incrementPlayerTurn();
+			if (params.remaining === 0) {
+				if (params.firstRound) {
+					params.firstRound = false;
+					params.remaining = 4;
+				} else {
+					delete store.gameW.game.extra;
+					delete store.gameW.game.commercial;
+					game.wentFirst = utils.myIndex();
+					game.age = Age.one;
+					deal(game);
+				}
+			}
+		}
+		store.update(`selected ${bank.wonders[wonderIndex].name}`);
 	}
 }
 

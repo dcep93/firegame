@@ -99,11 +99,4 @@ function prepareToChooseWonders(game: GameType): GameType {
 	return game;
 }
 
-// function dealFirstAge(game: GameType): GameType {
-// 	game.wentFirst = utils.myIndex()
-// 	game.age = Age.one;
-// 	deal(game);
-// 	return game;
-// }
-
 export default NewGame;
