@@ -37,18 +37,6 @@ class Main extends React.Component<
 	render() {
 		return (
 			<div>
-				{utils.isMyTurn() &&
-					store.gameW.game.commercial !== undefined && <Commercial />}
-				<div>
-					<Military />
-				</div>
-				<div>
-					<Science />
-				</div>
-				<Structure
-					selectCard={this.selectCard.bind(this)}
-					{...this.props}
-				/>
 				<div>
 					<Player
 						player={utils.getMe()}
@@ -61,6 +49,17 @@ class Main extends React.Component<
 					/>
 					<Player player={utils.getOpponent()} />
 				</div>
+				{store.gameW.game.commercial !== undefined && <Commercial />}
+				<div>
+					<Military />
+				</div>
+				<div>
+					<Science />
+				</div>
+				<Structure
+					selectCard={this.selectCard.bind(this)}
+					{...this.props}
+				/>
 				<Trash
 					select={this.selectBoard.bind(this)}
 					selected={this.state.selectedTarget === selected.board}
@@ -113,7 +112,6 @@ class Main extends React.Component<
 					this.canTake(rowAboveY, index, aboveCard.offset) &&
 					(aboveCard.revealed = true)
 			);
-		this.reset();
 		const me = utils.getMe();
 		var message;
 		if (this.state.selectedTarget === selected.board) {
@@ -129,7 +127,12 @@ class Main extends React.Component<
 			me.cards.push(structureCard.cardIndex);
 			this.handlePurchase(card);
 		} else {
-			message = `built wonder using ${card.name}`;
+			const w = utils.getMe().wonders[this.state.selectedWonder!];
+			w.built = true;
+			const wonder = bank.wonders[w.wonderIndex];
+			wonder.f();
+			if (wonder.goAgain) utils.incrementPlayerTurn();
+			message = `built ${wonder.name} using ${card.name}`;
 		}
 		if (store.gameW.game.commercial === undefined)
 			utils.incrementPlayerTurn();
@@ -151,6 +154,7 @@ class Main extends React.Component<
 					break;
 			}
 		}
+		this.reset();
 		store.update(message);
 	}
 

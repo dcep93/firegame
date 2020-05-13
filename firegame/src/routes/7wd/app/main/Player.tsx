@@ -4,6 +4,8 @@ import { getScore } from "../utils";
 import bank, { Color, CardType, ScienceEnum, Upgrade } from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 
+import Wonder from "./Wonder";
+
 import styles from "../../../../shared/styles.module.css";
 
 class Player extends React.Component<{
@@ -14,7 +16,7 @@ class Player extends React.Component<{
 	render() {
 		if (!this.props.player) return null;
 		const classes = [styles.bubble];
-		if (this.props.selected !== undefined) classes.push(styles.grey);
+		if (this.props.selected === -1) classes.push(styles.grey);
 		return (
 			<div>
 				<div
@@ -27,6 +29,7 @@ class Player extends React.Component<{
 						{getScore(this.props.player)}
 					</h2>
 					<div className={styles.flex}>
+						{this.props.player.wonders && this.renderWonders()}
 						{this.props.player.cards && this.renderCards()}
 					</div>
 				</div>
@@ -94,6 +97,32 @@ class Player extends React.Component<{
 					.join(" - ")}
 			</pre>
 		));
+	}
+
+	renderWonders() {
+		return (
+			<div>
+				{this.props.player.wonders.map((_, index) => (
+					<div
+						key={index}
+						title={JSON.stringify(
+							bank.wonders[
+								this.props.player.wonders[index].wonderIndex
+							],
+							null,
+							2
+						)}
+					>
+						<Wonder
+							index={index}
+							select={this.props.select}
+							selected={this.props.selected}
+							player={this.props.player}
+						/>
+					</div>
+				))}
+			</div>
+		);
 	}
 }
 

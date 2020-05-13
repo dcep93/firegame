@@ -61,6 +61,7 @@ class Commercial extends React.Component {
 	}
 
 	chooseWonder(index: number, wonders: number[]) {
+		if (!utils.isMyTurn()) return alert("not your turn");
 		const wonderIndex = wonders.splice(index, 1)[0];
 		if (!utils.getMe().wonders) utils.getMe().wonders = [];
 		utils.getMe().wonders.push({ built: false, wonderIndex });
