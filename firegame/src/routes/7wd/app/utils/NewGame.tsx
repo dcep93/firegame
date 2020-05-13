@@ -3,8 +3,6 @@ import { LobbyType } from "../../../../shared/store";
 import { store, utils } from ".";
 import bank, { Age, ScienceToken } from "./bank";
 
-const NUM_SCIENCES = 5;
-
 export type GameType = {
 	params: Params;
 	currentPlayer: number;
@@ -44,11 +42,19 @@ export type PlayerType = {
 export enum CommercialEnum {
 	science,
 	chooseWonder,
+	destroyGrey,
+	destroyBrown,
+	revive,
+	library,
 }
 
 export const commercials: { [c in CommercialEnum]: string } = {
 	[CommercialEnum.science]: "select a science token",
 	[CommercialEnum.chooseWonder]: "choose a wonder",
+	[CommercialEnum.destroyGrey]: "destroy a grey card",
+	[CommercialEnum.destroyBrown]: "destroy a brown card",
+	[CommercialEnum.revive]: "construct a card from discard",
+	[CommercialEnum.library]: "choose a science token",
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -64,9 +70,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
 function setBoard(game: GameType): GameType {
 	game.trash = [];
 	// @ts-ignore
-	game.sciences = utils
-		.shuffle(Object.keys(bank.sciences))
-		.slice(NUM_SCIENCES);
+	game.sciences = utils.shuffle(Object.keys(bank.sciences));
 	return game;
 }
 

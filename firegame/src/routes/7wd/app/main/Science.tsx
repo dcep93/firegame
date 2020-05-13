@@ -6,15 +6,17 @@ import bank, { ScienceToken } from "../utils/bank";
 import styles from "../../../../shared/styles.module.css";
 import { CommercialEnum } from "../utils/NewGame";
 
+export const NUM_SCIENCES = 5;
+
 class Science extends React.Component {
 	render() {
 		return (
 			<div className={styles.bubble}>
 				<h2>Sciences</h2>
 				<div className={styles.flex}>
-					{store.gameW.game.sciences.map(
-						this.renderScience.bind(this)
-					)}
+					{store.gameW.game.sciences
+						.slice(0, NUM_SCIENCES)
+						.map(this.renderScience.bind(this))}
 				</div>
 			</div>
 		);

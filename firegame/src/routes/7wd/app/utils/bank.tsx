@@ -1,5 +1,5 @@
 import { utils, store, stealMoney, increaseMilitary } from ".";
-import { PlayerType } from "./NewGame";
+import { PlayerType, CommercialEnum } from "./NewGame";
 
 export interface CardType {
 	name: string;
@@ -955,8 +955,14 @@ const wonders: WonderType[] = [
 		name: "circus maximus",
 		message: "military +1 and destroy a grey card",
 		cost: [Resource.glass, Resource.wood, Resource.stone, Resource.stone],
-		// todo
-		f: () => alert("increase military and destroy a grey card"),
+		f: () =>
+			Promise.resolve()
+				.then(() => increaseMilitary(1))
+				.then(
+					() =>
+						(store.gameW.game.commercial =
+							CommercialEnum.destroyGrey)
+				),
 		points: 3,
 	},
 	{
@@ -969,8 +975,14 @@ const wonders: WonderType[] = [
 			Resource.wood,
 			Resource.stone,
 		],
-		// todo
-		f: () => alert("increase military and destroy a brown card"),
+		f: () =>
+			Promise.resolve()
+				.then(() => increaseMilitary(1))
+				.then(
+					() =>
+						(store.gameW.game.commercial =
+							CommercialEnum.destroyBrown)
+				),
 		points: 3,
 	},
 	{
@@ -1014,8 +1026,7 @@ const wonders: WonderType[] = [
 			Resource.clay,
 			Resource.clay,
 		],
-		// todo
-		f: () => alert("build from discard"),
+		f: () => (store.gameW.game.commercial = CommercialEnum.revive),
 		points: 2,
 	},
 	{
@@ -1054,8 +1065,7 @@ const wonders: WonderType[] = [
 		name: "the great library",
 		message: "select 1/3 science tokens",
 		cost: [Resource.paper, Resource.glass, Resource.wood, Resource.wood],
-		// todo
-		f: () => alert("choose a science token"),
+		f: () => (store.gameW.game.commercial = CommercialEnum.library),
 		points: 4,
 	},
 	{
