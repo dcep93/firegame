@@ -1,7 +1,13 @@
 import React from "react";
 
 import { getScore } from "../utils";
-import bank, { Color, CardType, ScienceEnum, Upgrade } from "../utils/bank";
+import bank, {
+	Color,
+	CardType,
+	ScienceEnum,
+	Upgrade,
+	ScienceToken,
+} from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 
 import Wonder from "./Wonder";
@@ -30,6 +36,7 @@ class Player extends React.Component<{
 					</h2>
 					<div className={styles.flex}>
 						{this.props.player.wonders && this.renderWonders()}
+						{this.props.player.sciences && this.renderSciences()}
 						{this.props.player.cards && this.renderCards()}
 					</div>
 				</div>
@@ -119,6 +126,21 @@ class Player extends React.Component<{
 							selected={this.props.selected}
 							player={this.props.player}
 						/>
+					</div>
+				))}
+			</div>
+		);
+	}
+
+	renderSciences() {
+		return (
+			<div className={styles.bubble}>
+				{this.props.player.sciences.map((science) => (
+					<div
+						key={science}
+						title={JSON.stringify(bank.sciences[science], null, 2)}
+					>
+						{ScienceToken[science]}
 					</div>
 				))}
 			</div>

@@ -17,7 +17,7 @@ class Commercial extends React.Component {
 	}
 
 	alert() {
-		// if (utils.isMyTurn()) alert(commercials[store.gameW.game.commercial!]);
+		if (utils.isMyTurn()) alert(commercials[store.gameW.game.commercial!]);
 	}
 
 	render() {

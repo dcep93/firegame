@@ -1,6 +1,13 @@
 import React from "react";
 
-import { utils, store, getCardCost, deal, increaseMilitary } from "../utils";
+import {
+	utils,
+	store,
+	getCardCost,
+	deal,
+	increaseMilitary,
+	getWonderCost,
+} from "../utils";
 import bank, {
 	Color,
 	CardType,
@@ -95,6 +102,22 @@ class Main extends React.Component<
 		const card = bank.cards[structureCard.cardIndex];
 		if (this.state.selectedWonder === -1) {
 			const cost = getCardCost(card);
+			if (cost > utils.getMe().money)
+				return alert("cannot afford that card");
+			utils.getMe().money -= cost;
+			if (
+				(utils.getOpponent().sciences || []).includes(
+					ScienceToken.economy
+				)
+			)
+				utils.getOpponent().money += cost;
+		} else if (this.state.selectedWonder !== undefined) {
+			const cost = getWonderCost(
+				bank.wonders[
+					utils.getMe().wonders[this.state.selectedWonder!]
+						.wonderIndex
+				]
+			);
 			if (cost > utils.getMe().money)
 				return alert("cannot afford that card");
 			utils.getMe().money -= cost;
