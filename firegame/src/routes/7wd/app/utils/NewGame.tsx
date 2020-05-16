@@ -10,10 +10,9 @@ export type GameType = {
 	age: Age;
 	structure: StructureCardType[][];
 	trash: number[];
-	commercial?: CommercialEnum;
+	commercials?: CommercialType[];
 	sciences: ScienceToken[];
 	wentFirst: number;
-	extra: any;
 };
 
 export type Params = {
@@ -38,6 +37,12 @@ export type PlayerType = {
 	index: number;
 	militaryBonuses: { [x: number]: number };
 	sciences: ScienceToken[];
+};
+
+export type CommercialType = {
+	commercial: CommercialEnum;
+	playerIndex: number;
+	extra?: any;
 };
 
 export enum CommercialEnum {
@@ -90,17 +95,22 @@ function setPlayers(game: GameType): GameType {
 		})
 	);
 	if (game.players.length !== 2) throw new Error("need 2 players");
-	game.currentPlayer = utils.myIndex(game);
+	game.currentPlayer = game.wentFirst = utils.myIndex(game);
 	return game;
 }
 
 function prepareToChooseWonders(game: GameType): GameType {
-	game.commercial = CommercialEnum.chooseWonder;
-	game.extra = {
-		firstRound: true,
-		remaining: 4,
-		wonders: utils.shuffle(Object.keys(bank.wonders)),
-	};
+	game.commercials = [
+		{
+			commercial: CommercialEnum.chooseWonder,
+			playerIndex: utils.myIndex(game),
+			extra: {
+				firstRound: true,
+				remaining: 4,
+				wonders: utils.shuffle(Object.keys(bank.wonders)),
+			},
+		},
+	];
 	return game;
 }
 

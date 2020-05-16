@@ -1,13 +1,18 @@
 import React from "react";
 
 import { store, getWonderCost, utils, deal } from "../utils";
-import { CommercialEnum, commercials, PlayerType } from "../utils/NewGame";
+import {
+	CommercialEnum,
+	commercials,
+	PlayerType,
+	CommercialType,
+} from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import bank, { Age, Color, ScienceToken } from "../utils/bank";
 import { NUM_SCIENCES } from "./Science";
 
-class Commercial extends React.Component {
+class Commercial extends React.Component<{ commercial: CommercialType }> {
 	componentDidMount() {
 		this.alert();
 	}
@@ -17,13 +22,18 @@ class Commercial extends React.Component {
 	}
 
 	alert() {
-		if (utils.isMyTurn()) alert(commercials[store.gameW.game.commercial!]);
+		if (this.props.commercial.playerIndex === utils.myIndex())
+			alert(commercials[this.props.commercial.commercial]);
+	}
+
+	pop() {
+		store.gameW.game.commercials!.shift();
 	}
 
 	render() {
-		switch (store.gameW.game.commercial) {
+		switch (this.props.commercial.commercial) {
 			case CommercialEnum.chooseWonder:
-				const params = store.gameW.game.extra;
+				const params = this.props.commercial.extra;
 				return (
 					<div className={styles.bubble}>
 						<h2>Wonders</h2>
@@ -49,8 +59,7 @@ class Commercial extends React.Component {
 				const cards = store.gameW.game.trash || [];
 				if (!cards) {
 					if (!utils.isMyTurn()) return;
-					utils.incrementPlayerTurn();
-					delete store.gameW.game.commercial;
+					this.pop();
 					store.update("could not revive a card");
 					return;
 				}
@@ -100,16 +109,14 @@ class Commercial extends React.Component {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		if (!utils.getMe().sciences) utils.getMe().sciences = [];
 		utils.getMe().sciences.push(scienceName);
-		utils.incrementPlayerTurn();
-		delete store.gameW.game.commercial;
+		this.pop();
 		store.update(`built ${ScienceToken[scienceName]}`);
 	}
 
 	reviveCard(trashIndex: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const cardIndex = store.gameW.game.trash.splice(trashIndex, 1)[0];
-		utils.incrementPlayerTurn();
-		delete store.gameW.game.commercial;
+		this.pop();
 		if (!utils.getMe().cards) utils.getMe().cards = [];
 		utils.getMe().cards.push(cardIndex);
 		store.update(`revived ${bank.cards[cardIndex].name}`);
@@ -125,8 +132,7 @@ class Commercial extends React.Component {
 			.filter((card) => card.card.color === color);
 		if (!cards) {
 			if (!utils.isMyTurn()) return;
-			utils.incrementPlayerTurn();
-			delete store.gameW.game.commercial;
+			this.pop();
 			store.update(`could not destroy a ${Color[color]} card`);
 			return;
 		}
@@ -154,8 +160,7 @@ class Commercial extends React.Component {
 	destroyCard(handIndex: number, victim: PlayerType) {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const cardIndex = victim.cards.splice(handIndex, 1)[0];
-		utils.incrementPlayerTurn();
-		delete store.gameW.game.commercial;
+		this.pop();
 		if (!store.gameW.game.trash) store.gameW.game.trash = [];
 		store.gameW.game.trash.push(cardIndex);
 		store.update(`destroyed ${bank.cards[cardIndex].name}`);
@@ -182,8 +187,7 @@ class Commercial extends React.Component {
 		const wonderIndex = wonders.splice(index, 1)[0];
 		if (!utils.getMe().wonders) utils.getMe().wonders = [];
 		utils.getMe().wonders.push({ built: false, wonderIndex });
-		const game = store.gameW.game;
-		const params = game.extra;
+		const params = this.props.commercial.extra;
 		params.remaining--;
 		if (params.remaining !== 2) {
 			utils.incrementPlayerTurn();
@@ -192,9 +196,8 @@ class Commercial extends React.Component {
 					params.firstRound = false;
 					params.remaining = 4;
 				} else {
-					delete store.gameW.game.extra;
-					delete store.gameW.game.commercial;
-					game.wentFirst = utils.myIndex();
+					this.pop();
+					const game = store.gameW.game;
 					game.age = Age.one;
 					deal(game);
 				}

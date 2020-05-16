@@ -3,7 +3,7 @@
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
 
-import { GameType, PlayerType } from "./NewGame";
+import { GameType, PlayerType, CommercialType } from "./NewGame";
 import bank, {
 	CardType,
 	Resource,
@@ -226,6 +226,8 @@ function increaseMilitary(military: number) {
 	});
 }
 
+function addCommercial(commercial: CommercialType) {}
+
 export {
 	store,
 	utils,
@@ -236,4 +238,5 @@ export {
 	getMilitaryPoints,
 	getWonderCost,
 	increaseMilitary,
+	addCommercial,
 };

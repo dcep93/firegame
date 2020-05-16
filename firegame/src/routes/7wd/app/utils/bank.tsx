@@ -1,4 +1,4 @@
-import { utils, store, stealMoney, increaseMilitary } from ".";
+import { utils, store, stealMoney, increaseMilitary, addCommercial } from ".";
 import { PlayerType, CommercialEnum } from "./NewGame";
 
 export interface CardType {
@@ -958,10 +958,11 @@ const wonders: WonderType[] = [
 		f: () =>
 			Promise.resolve()
 				.then(() => increaseMilitary(1))
-				.then(
-					() =>
-						(store.gameW.game.commercial =
-							CommercialEnum.destroyGrey)
+				.then(() =>
+					addCommercial({
+						commercial: CommercialEnum.destroyGrey,
+						playerIndex: utils.myIndex(),
+					})
 				),
 		points: 3,
 	},
@@ -978,10 +979,11 @@ const wonders: WonderType[] = [
 		f: () =>
 			Promise.resolve()
 				.then(() => increaseMilitary(1))
-				.then(
-					() =>
-						(store.gameW.game.commercial =
-							CommercialEnum.destroyBrown)
+				.then(() =>
+					addCommercial({
+						commercial: CommercialEnum.destroyBrown,
+						playerIndex: utils.myIndex(),
+					})
 				),
 		points: 3,
 	},
@@ -1026,7 +1028,11 @@ const wonders: WonderType[] = [
 			Resource.clay,
 			Resource.clay,
 		],
-		f: () => (store.gameW.game.commercial = CommercialEnum.revive),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.revive,
+				playerIndex: utils.myIndex(),
+			}),
 		points: 2,
 	},
 	{
@@ -1065,7 +1071,11 @@ const wonders: WonderType[] = [
 		name: "the great library",
 		message: "select 1/3 science tokens",
 		cost: [Resource.paper, Resource.glass, Resource.wood, Resource.wood],
-		f: () => (store.gameW.game.commercial = CommercialEnum.library),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.library,
+				playerIndex: utils.myIndex(),
+			}),
 		points: 4,
 	},
 	{

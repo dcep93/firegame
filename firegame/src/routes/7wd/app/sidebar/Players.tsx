@@ -31,7 +31,10 @@ class Players extends React.Component {
 		Promise.resolve()
 			.then(this.getParams.bind(this))
 			.then(NewGame)
-			.catch((e) => alert(e))
+			.catch((e) => {
+				alert(e);
+				console.error(e);
+			})
 			.then((game) => game && store.update("started a new game", game));
 	}
 

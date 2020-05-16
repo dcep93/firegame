@@ -39,7 +39,8 @@ class Science extends React.Component {
 		if (
 			!(
 				utils.isMyTurn() &&
-				store.gameW.game.commercial === CommercialEnum.science
+				(store.gameW.game.commercials || [])[0]?.commercial ===
+					CommercialEnum.science
 			)
 		)
 			return;
@@ -47,7 +48,7 @@ class Science extends React.Component {
 		this.handleSelected(selected);
 		if (!utils.getMe().sciences) utils.getMe().sciences = [];
 		utils.getMe().sciences.push(selected);
-		delete store.gameW.game.commercial;
+		store.gameW.game.commercials!.shift();
 		utils.incrementPlayerTurn();
 	}
 

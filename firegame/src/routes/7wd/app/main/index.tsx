@@ -44,7 +44,9 @@ class Main extends React.Component<
 	render() {
 		return (
 			<div>
-				{store.gameW.game.commercial !== undefined && <Commercial />}
+				{store.gameW.game.commercials && (
+					<Commercial commercial={store.gameW.game.commercials[0]} />
+				)}
 				<div>
 					<Structure
 						selectCard={this.selectCard.bind(this)}
@@ -93,7 +95,8 @@ class Main extends React.Component<
 
 	selectCard(x: number, y: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
-		const commercial = commercials[store.gameW.game.commercial!];
+		const c = (store.gameW.game.commercials || [])[0]?.commercial;
+		const commercial = commercials[c];
 		if (commercial) return alert(commercial);
 		if (this.state.selectedTarget === undefined)
 			return alert("need to select a target first");
@@ -163,15 +166,14 @@ class Main extends React.Component<
 			const wonder = bank.wonders[w.wonderIndex];
 			wonder.f();
 			if (
-				(store.gameW.game.commercial === undefined && wonder.goAgain) ||
+				wonder.goAgain ||
 				(me.sciences || []).includes(ScienceToken.theology)
 			)
 				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
 			// todo opponent destroys wonder
 		}
-		if (store.gameW.game.commercial === undefined)
-			utils.incrementPlayerTurn();
+		utils.incrementPlayerTurn();
 		if (
 			store.gameW.game.structure.flat().filter((sc) => !sc.taken)
 				.length === 0
@@ -252,7 +254,13 @@ class Main extends React.Component<
 				scienceCards.filter((science) => science === card.extra.science)
 					.length === 2
 			) {
-				store.gameW.game.commercial = CommercialEnum.science;
+				if (!store.gameW.game.commercials)
+					store.gameW.game.commercials = [];
+				store.gameW.game.commercials.push({
+					commercial: CommercialEnum.science,
+					playerIndex: utils.myIndex(),
+					// todo sciences defined here
+				});
 			}
 		}
 	}
