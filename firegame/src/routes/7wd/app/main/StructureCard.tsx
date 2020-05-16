@@ -1,7 +1,7 @@
 import React from "react";
 
-import { getCardCost } from "../utils";
-import bank, { Upgrade, CardType, ScienceEnum, God } from "../utils/bank";
+import { getCardCost, store } from "../utils";
+import bank, { Upgrade, CardType, ScienceEnum, God, Age } from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -38,7 +38,20 @@ class StructureCard extends React.Component<{
 	}
 
 	renderCard() {
-		if (!this.props.revealed) return "?";
+		if (!this.props.revealed) {
+			if (store.gameW.game.params.godExpansion) {
+				if (store.gameW.game.age === Age.one) {
+					if (this.props.x % 2 === 0) {
+						return "token";
+					}
+				} else if (store.gameW.game.age) {
+					if (this.props.x % 2 === 0 && this.props.y === 1) {
+						return "token";
+					}
+				}
+			}
+			return "?";
+		}
 		const card = bank.cards[this.props.cardIndex];
 		return (
 			<div title={JSON.stringify(card, null, 2)}>

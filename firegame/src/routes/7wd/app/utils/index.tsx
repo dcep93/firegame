@@ -193,7 +193,8 @@ const tokenToPoints: {
 	[token in ScienceToken]?: (player: PlayerType) => number;
 } = {
 	[ScienceToken.agriculture]: () => 4,
-	[ScienceToken.mathematics]: (player: PlayerType) => player.sciences.length,
+	[ScienceToken.mathematics]: (player: PlayerType) =>
+		(player.sciences || []).length,
 	// todo
 	[ScienceToken.mysticism]: () => 2,
 	[ScienceToken.philosophy]: () => 7,

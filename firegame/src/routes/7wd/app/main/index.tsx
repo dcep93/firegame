@@ -7,6 +7,7 @@ import {
 	deal,
 	increaseMilitary,
 	getWonderCost,
+	addCommercial,
 } from "../utils";
 import bank, {
 	Color,
@@ -171,7 +172,11 @@ class Main extends React.Component<
 			)
 				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
-			// todo opponent destroys wonder
+			addCommercial({
+				// todo
+				commercial: CommercialEnum.destroyWonder,
+				playerIndex: 1 - me.index,
+			});
 		}
 		utils.incrementPlayerTurn();
 		if (
@@ -198,15 +203,21 @@ class Main extends React.Component<
 
 	handleToken(row: number, col: number) {
 		const game = store.gameW.game;
+		const me = utils.getMe();
+		if (!me.tokens) me.tokens = [];
 		if (game.age === Age.one) {
 			if (col % 2 === 0) {
-				// todo multiple commercials
-				// game.commercial = CommercialEnum.pickGod;
+				const token = game.godTokens.pop()!;
+				me.tokens.push(token);
+				addCommercial({
+					commercial: CommercialEnum.pickGod,
+					playerIndex: utils.myIndex(),
+					extra: token,
+				});
 			}
 		} else if (game.age === Age.two) {
 			if (col % 2 === 0 && row === 1) {
-				// if (!utils.getMe().tokens) utils.getMe().tokens = [];
-				// utils.getMe().tokens.push(game.godExpansion.discounts.pop());
+				me.tokens.push(game.discounts.pop()!);
 			}
 		}
 	}
@@ -231,7 +242,7 @@ class Main extends React.Component<
 			(me.sciences || []).includes(ScienceToken.urbanism)
 		) {
 			if (
-				me.cards.filter(
+				me.cards!.filter(
 					(cardIndex) =>
 						bank.cards[cardIndex].upgradesTo === card.upgradesFrom
 				).length > 0
@@ -244,8 +255,8 @@ class Main extends React.Component<
 			increaseMilitary(military);
 		}
 		if (card.extra.science) {
-			const scienceCards = me.cards
-				.map((cardIndex) => bank.cards[cardIndex].extra.science)
+			const scienceCards = me
+				.cards!.map((cardIndex) => bank.cards[cardIndex].extra.science)
 				.filter(Boolean);
 			if (sciences.includes(ScienceToken.law))
 				scienceCards.push(ScienceEnum.law);
@@ -259,7 +270,6 @@ class Main extends React.Component<
 				store.gameW.game.commercials.push({
 					commercial: CommercialEnum.science,
 					playerIndex: utils.myIndex(),
-					// todo sciences defined here
 				});
 			}
 		}

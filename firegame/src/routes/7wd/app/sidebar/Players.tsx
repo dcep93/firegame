@@ -41,7 +41,7 @@ class Players extends React.Component {
 	getParams() {
 		return {
 			// todo allow
-			godExpansion: false,
+			godExpansion: true,
 			lobby: store.lobby,
 		};
 	}

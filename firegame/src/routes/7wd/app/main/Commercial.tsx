@@ -22,6 +22,7 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 	}
 
 	alert() {
+		return;
 		if (this.props.commercial.playerIndex === utils.myIndex())
 			alert(commercials[this.props.commercial.commercial]);
 	}
@@ -107,18 +108,20 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 
 	buildScience(scienceName: ScienceToken) {
 		if (!utils.isMyTurn()) return alert("not your turn");
-		if (!utils.getMe().sciences) utils.getMe().sciences = [];
-		utils.getMe().sciences.push(scienceName);
+		const me = utils.getMe();
+		if (!me.sciences) me.sciences = [];
+		me.sciences.push(scienceName);
 		this.pop();
 		store.update(`built ${ScienceToken[scienceName]}`);
 	}
 
 	reviveCard(trashIndex: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
-		const cardIndex = store.gameW.game.trash.splice(trashIndex, 1)[0];
+		const cardIndex = store.gameW.game.trash!.splice(trashIndex, 1)[0];
 		this.pop();
-		if (!utils.getMe().cards) utils.getMe().cards = [];
-		utils.getMe().cards.push(cardIndex);
+		const me = utils.getMe();
+		if (!me.cards) me.cards = [];
+		me.cards.push(cardIndex);
 		store.update(`revived ${bank.cards[cardIndex].name}`);
 	}
 
@@ -159,7 +162,7 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 
 	destroyCard(handIndex: number, victim: PlayerType) {
 		if (!utils.isMyTurn()) return alert("not your turn");
-		const cardIndex = victim.cards.splice(handIndex, 1)[0];
+		const cardIndex = victim.cards!.splice(handIndex, 1)[0];
 		this.pop();
 		if (!store.gameW.game.trash) store.gameW.game.trash = [];
 		store.gameW.game.trash.push(cardIndex);

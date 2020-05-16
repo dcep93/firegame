@@ -46,8 +46,9 @@ class Science extends React.Component {
 			return;
 		const selected = store.gameW.game.sciences.splice(index, 1)[0];
 		this.handleSelected(selected);
-		if (!utils.getMe().sciences) utils.getMe().sciences = [];
-		utils.getMe().sciences.push(selected);
+		const me = utils.getMe();
+		if (!me.sciences) me.sciences = [];
+		me.sciences.push(selected);
 		store.gameW.game.commercials!.shift();
 	}
 

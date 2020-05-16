@@ -46,7 +46,7 @@ class Player extends React.Component<{
 
 	renderCards() {
 		const cardsByColor: { [color in Color]?: CardType[] } = {};
-		this.props.player.cards.forEach((cardIndex) => {
+		(this.props.player.cards || []).forEach((cardIndex) => {
 			const card = bank.cards[cardIndex];
 			if (!cardsByColor[card.color]) cardsByColor[card.color] = [];
 			cardsByColor[card.color]!.push(card);
@@ -135,7 +135,7 @@ class Player extends React.Component<{
 	renderSciences() {
 		return (
 			<div className={styles.bubble}>
-				{this.props.player.sciences.map((science) => (
+				{(this.props.player.sciences || []).map((science) => (
 					<div
 						key={science}
 						title={JSON.stringify(bank.sciences[science], null, 2)}

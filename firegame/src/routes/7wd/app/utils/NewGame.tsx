@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
 
-import { store, utils } from ".";
+import { store, utils, deal } from ".";
 import bank, { Age, ScienceToken } from "./bank";
 
 export type GameType = {
@@ -9,10 +9,12 @@ export type GameType = {
 	players: PlayerType[];
 	age: Age;
 	structure: StructureCardType[][];
-	trash: number[];
+	trash?: number[];
 	commercials?: CommercialType[];
 	sciences: ScienceToken[];
 	wentFirst: number;
+	discounts: TokenType[];
+	godTokens: TokenType[];
 };
 
 export type Params = {
@@ -30,13 +32,14 @@ export type StructureCardType = {
 export type PlayerType = {
 	userId: string;
 	userName: string;
-	cards: number[];
+	cards?: number[];
 	wonders: { built: boolean; wonderIndex: number }[];
 	money: number;
 	military: number;
 	index: number;
 	militaryBonuses: { [x: number]: number };
-	sciences: ScienceToken[];
+	sciences?: ScienceToken[];
+	tokens?: TokenType[];
 };
 
 export type CommercialType = {
@@ -45,6 +48,17 @@ export type CommercialType = {
 	extra?: any;
 };
 
+export enum TokenType {
+	egyptian,
+	mesopotamian,
+	greek,
+	roman,
+	phoenician,
+	two,
+	three,
+	four,
+}
+
 export enum CommercialEnum {
 	science,
 	chooseWonder,
@@ -52,6 +66,8 @@ export enum CommercialEnum {
 	destroyBrown,
 	revive,
 	library,
+	destroyWonder,
+	pickGod,
 }
 
 export const commercials: { [c in CommercialEnum]: string } = {
@@ -61,6 +77,8 @@ export const commercials: { [c in CommercialEnum]: string } = {
 	[CommercialEnum.destroyBrown]: "destroy a brown card",
 	[CommercialEnum.revive]: "construct a card from discard",
 	[CommercialEnum.library]: "choose a science token",
+	[CommercialEnum.destroyWonder]: "destroy one of your wonders",
+	[CommercialEnum.pickGod]: "choose a god to add to the pantheon",
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -70,7 +88,8 @@ function NewGame(params: Params): PromiseLike<GameType> {
 	return Promise.resolve(game)
 		.then(setBoard)
 		.then(setPlayers)
-		.then(prepareToChooseWonders);
+		.then(prepareToChooseWonders)
+		.then(maybePrepareExpansion);
 }
 
 function setBoard(game: GameType): GameType {
@@ -85,13 +104,11 @@ function setPlayers(game: GameType): GameType {
 		([userId, userName], index) => ({
 			userId,
 			userName,
-			cards: [],
 			wonders: [],
 			money: 7,
 			military: 0,
 			index,
 			militaryBonuses: { 3: 2, 6: 5, 9: 0 },
-			sciences: [],
 		})
 	);
 	if (game.players.length !== 2) throw new Error("need 2 players");
@@ -111,6 +128,29 @@ function prepareToChooseWonders(game: GameType): GameType {
 			},
 		},
 	];
+	return game;
+}
+
+function maybePrepareExpansion(game: GameType): GameType {
+	if (game.params.godExpansion) {
+		game.discounts = utils.shuffle([
+			TokenType.two,
+			TokenType.three,
+			TokenType.four,
+		]);
+		game.godTokens = utils.shuffle([
+			TokenType.egyptian,
+			TokenType.egyptian,
+			TokenType.mesopotamian,
+			TokenType.mesopotamian,
+			TokenType.greek,
+			TokenType.greek,
+			TokenType.phoenician,
+			TokenType.phoenician,
+			TokenType.roman,
+			TokenType.roman,
+		]);
+	}
 	return game;
 }
 

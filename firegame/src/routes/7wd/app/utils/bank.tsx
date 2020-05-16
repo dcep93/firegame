@@ -614,11 +614,9 @@ const cards: CardType[] = [
 		extra: {
 			points: 3,
 			f: () =>
-				(utils.getMe().money += utils
-					.getMe()
-					.cards.filter(
-						(cardIndex) => cards[cardIndex].color === Color.yellow
-					).length),
+				(utils.getMe().money += (utils.getMe().cards || []).filter(
+					(cardIndex) => cards[cardIndex].color === Color.yellow
+				).length),
 		},
 		message: "$1 / yellow",
 		upgradesFrom: Upgrade.vase,
@@ -649,12 +647,9 @@ const cards: CardType[] = [
 			f: () =>
 				(utils.getMe().money +=
 					2 *
-					utils
-						.getMe()
-						.cards.filter(
-							(cardIndex) =>
-								cards[cardIndex].color === Color.brown
-						).length),
+					(utils.getMe().cards || []).filter(
+						(cardIndex) => cards[cardIndex].color === Color.brown
+					).length),
 		},
 		message: "$2 / brown",
 	},
@@ -666,11 +661,9 @@ const cards: CardType[] = [
 		extra: {
 			points: 3,
 			f: () =>
-				(utils.getMe().money += utils
-					.getMe()
-					.cards.filter(
-						(cardIndex) => cards[cardIndex].color === Color.red
-					).length),
+				(utils.getMe().money += (utils.getMe().cards || []).filter(
+					(cardIndex) => cards[cardIndex].color === Color.red
+				).length),
 		},
 		message: "$1 / red",
 	},
@@ -684,11 +677,9 @@ const cards: CardType[] = [
 			f: () =>
 				(utils.getMe().money +=
 					3 *
-					utils
-						.getMe()
-						.cards.filter(
-							(cardIndex) => cards[cardIndex].color === Color.grey
-						).length),
+					(utils.getMe().cards || []).filter(
+						(cardIndex) => cards[cardIndex].color === Color.grey
+					).length),
 		},
 		message: "$3 / grey",
 	},
@@ -739,14 +730,14 @@ const cards: CardType[] = [
 		cost: [Resource.clay, Resource.wood, Resource.glass, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
-				player.cards.filter(
+				(player.cards || []).filter(
 					(cardIndex) => cards[cardIndex].color === Color.yellow
 				).length,
 			f: () =>
 				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
-							player.cards.filter(
+							(player.cards || []).filter(
 								(cardIndex) =>
 									cards[cardIndex].color === Color.yellow
 							).length
@@ -762,7 +753,7 @@ const cards: CardType[] = [
 		cost: [Resource.clay, Resource.stone, Resource.glass, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
-				player.cards.filter(
+				(player.cards || []).filter(
 					(cardIndex) =>
 						cards[cardIndex].color === Color.brown ||
 						cards[cardIndex].color === Color.grey
@@ -771,7 +762,7 @@ const cards: CardType[] = [
 				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
-							player.cards.filter(
+							(player.cards || []).filter(
 								(cardIndex) =>
 									cards[cardIndex].color === Color.brown ||
 									cards[cardIndex].color === Color.grey
@@ -788,14 +779,14 @@ const cards: CardType[] = [
 		cost: [Resource.stone, Resource.stone, Resource.clay, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
-				player.cards.filter(
+				(player.cards || []).filter(
 					(cardIndex) => cards[cardIndex].color === Color.red
 				).length,
 			f: () =>
 				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
-							player.cards.filter(
+							(player.cards || []).filter(
 								(cardIndex) =>
 									cards[cardIndex].color === Color.red
 							).length
@@ -811,14 +802,14 @@ const cards: CardType[] = [
 		cost: [Resource.clay, Resource.clay, Resource.wood, Resource.wood],
 		extra: {
 			guild: (player: PlayerType) =>
-				player.cards.filter(
+				(player.cards || []).filter(
 					(cardIndex) => cards[cardIndex].color === Color.green
 				).length,
 			f: () =>
 				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
-							player.cards.filter(
+							(player.cards || []).filter(
 								(cardIndex) =>
 									cards[cardIndex].color === Color.green
 							).length
@@ -834,14 +825,14 @@ const cards: CardType[] = [
 		cost: [Resource.wood, Resource.wood, Resource.clay, Resource.paper],
 		extra: {
 			guild: (player: PlayerType) =>
-				player.cards.filter(
+				(player.cards || []).filter(
 					(cardIndex) => cards[cardIndex].color === Color.blue
 				).length,
 			f: () =>
 				(utils.getMe().money += Math.max(
 					store.gameW.game.players.map(
 						(player) =>
-							player.cards.filter(
+							(player.cards || []).filter(
 								(cardIndex) =>
 									cards[cardIndex].color === Color.blue
 							).length
