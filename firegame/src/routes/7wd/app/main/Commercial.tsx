@@ -48,6 +48,7 @@ class Commercial extends React.Component {
 			case CommercialEnum.revive:
 				const cards = store.gameW.game.trash || [];
 				if (!cards) {
+					if (!utils.isMyTurn()) return;
 					utils.incrementPlayerTurn();
 					delete store.gameW.game.commercial;
 					store.update("could not revive a card");
@@ -96,6 +97,7 @@ class Commercial extends React.Component {
 	}
 
 	buildScience(scienceName: ScienceToken) {
+		if (!utils.isMyTurn()) return alert("not your turn");
 		if (!utils.getMe().sciences) utils.getMe().sciences = [];
 		utils.getMe().sciences.push(scienceName);
 		utils.incrementPlayerTurn();
@@ -104,6 +106,7 @@ class Commercial extends React.Component {
 	}
 
 	reviveCard(trashIndex: number) {
+		if (!utils.isMyTurn()) return alert("not your turn");
 		const cardIndex = store.gameW.game.trash.splice(trashIndex, 1)[0];
 		utils.incrementPlayerTurn();
 		delete store.gameW.game.commercial;
@@ -121,6 +124,7 @@ class Commercial extends React.Component {
 			}))
 			.filter((card) => card.card.color === color);
 		if (!cards) {
+			if (!utils.isMyTurn()) return;
 			utils.incrementPlayerTurn();
 			delete store.gameW.game.commercial;
 			store.update(`could not destroy a ${Color[color]} card`);
@@ -148,6 +152,7 @@ class Commercial extends React.Component {
 	}
 
 	destroyCard(handIndex: number, victim: PlayerType) {
+		if (!utils.isMyTurn()) return alert("not your turn");
 		const cardIndex = victim.cards.splice(handIndex, 1)[0];
 		utils.incrementPlayerTurn();
 		delete store.gameW.game.commercial;

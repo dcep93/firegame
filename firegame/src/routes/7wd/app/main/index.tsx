@@ -92,6 +92,7 @@ class Main extends React.Component<
 	}
 
 	selectCard(x: number, y: number) {
+		if (!utils.isMyTurn()) return alert("not your turn");
 		const commercial = commercials[store.gameW.game.commercial!];
 		if (commercial) return alert(commercial);
 		if (this.state.selectedTarget === undefined)
