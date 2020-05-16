@@ -187,14 +187,14 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 		const wonderIndex = wonders.splice(index, 1)[0];
 		if (!utils.getMe().wonders) utils.getMe().wonders = [];
 		utils.getMe().wonders.push({ built: false, wonderIndex });
-		const params = this.props.commercial.extra;
-		params.remaining--;
-		if (params.remaining !== 2) {
-			utils.incrementPlayerTurn();
-			if (params.remaining === 0) {
-				if (params.firstRound) {
-					params.firstRound = false;
-					params.remaining = 4;
+		const c = store.gameW.game.commercials![0];
+		c.extra.remaining--;
+		if (c.extra.remaining !== 2) {
+			c.playerIndex = utils.getOpponent().index;
+			if (c.extra.remaining === 0) {
+				if (c.extra.firstRound) {
+					c.extra.firstRound = false;
+					c.extra.remaining = 4;
 				} else {
 					this.pop();
 					const game = store.gameW.game;

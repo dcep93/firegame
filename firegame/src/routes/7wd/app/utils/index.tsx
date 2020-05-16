@@ -16,6 +16,13 @@ import bank, {
 const BASE_COST = 2;
 
 class Utils extends Shared<GameType, PlayerType> {
+	isMyTurn(game_: GameType | undefined = undefined): boolean {
+		const game: GameType = game_ || store.gameW.game!;
+		if (game.commercials)
+			return game.commercials[0].playerIndex === this.myIndex(game);
+		return super.isMyTurn(game_);
+	}
+
 	getOpponent(game_: GameType | undefined = undefined) {
 		const game = game_ || store.gameW.game!;
 		return game.players[1 - this.myIndex(game)];
@@ -226,7 +233,10 @@ function increaseMilitary(military: number) {
 	});
 }
 
-function addCommercial(commercial: CommercialType) {}
+function addCommercial(commercial: CommercialType) {
+	if (!store.gameW.game.commercials) store.gameW.game.commercials = [];
+	store.gameW.game.commercials.push(commercial);
+}
 
 export {
 	store,

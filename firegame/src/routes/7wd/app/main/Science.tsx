@@ -49,7 +49,6 @@ class Science extends React.Component {
 		if (!utils.getMe().sciences) utils.getMe().sciences = [];
 		utils.getMe().sciences.push(selected);
 		store.gameW.game.commercials!.shift();
-		utils.incrementPlayerTurn();
 	}
 
 	handleSelected(selected: ScienceToken) {

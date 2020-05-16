@@ -95,7 +95,7 @@ function setPlayers(game: GameType): GameType {
 		})
 	);
 	if (game.players.length !== 2) throw new Error("need 2 players");
-	game.currentPlayer = game.wentFirst = utils.myIndex(game);
+	game.wentFirst = 1 - utils.myIndex(game);
 	return game;
 }
 
