@@ -12,7 +12,11 @@ import styles from "../../../../shared/styles.module.css";
 import bank, { Age, Color, ScienceToken } from "../utils/bank";
 import { NUM_SCIENCES } from "./Science";
 
-class Commercial extends React.Component<{ commercial: CommercialType }> {
+class Commercial extends React.Component<{
+	commercial: CommercialType;
+	selectedPantheon?: number;
+	reset: () => void;
+}> {
 	componentDidMount() {
 		this.alert();
 	}
@@ -148,10 +152,12 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 								.slice(0, 2)
 								.map((godIndex, tokenIndex) => (
 									<div
+										key={tokenIndex}
 										onClick={() => {
-											// todo
-											const target: number | null = null;
-											if (!target)
+											if (
+												this.props.selectedPantheon ===
+												undefined
+											)
 												return alert(
 													"need to select a target first"
 												);
@@ -159,7 +165,7 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 												store.gameW.game.godTokens[0]
 											].splice(tokenIndex, 1)[0];
 											store.gameW.game.pantheon[
-												target
+												this.props.selectedPantheon
 											] = selected;
 											const me = utils.getMe();
 											if (!me.tokens) me.tokens = [];
@@ -167,11 +173,19 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 												value: store.gameW.game.godTokens.shift()!,
 												isGod: true,
 											});
+											this.pop();
+											store.update("placed a god");
+											this.props.reset();
 										}}
 										className={styles.bubble}
+										title={JSON.stringify(
+											bank.gods[godIndex],
+											null,
+											2
+										)}
 									>
-										{bank.gods[godIndex].name}
-										{bank.gods[godIndex].message}
+										<p>{bank.gods[godIndex].name}</p>
+										<p>{bank.gods[godIndex].message}</p>
 									</div>
 								))}
 						</div>

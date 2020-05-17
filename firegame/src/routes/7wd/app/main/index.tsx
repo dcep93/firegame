@@ -24,6 +24,7 @@ import Military from "./Military";
 import Trash from "./Trash";
 import Commercial from "./Commercial";
 import Science from "./Science";
+import Pantheon from "./Pantheon";
 
 export enum selected {
 	player,
@@ -35,18 +36,47 @@ const SCIENCE_TO_WIN = 6;
 
 class Main extends React.Component<
 	{},
-	{ selectedTarget?: selected; selectedWonder?: number }
+	{
+		selectedTarget?: selected;
+		selectedWonder?: number;
+		selectedPantheon?: number;
+	}
 > {
 	constructor(props: {}) {
 		super(props);
 		this.state = {};
 	}
 
+	selectPantheon(selectedPantheon: number) {
+		const godIndex = store.gameW.game.pantheon[selectedPantheon];
+		if (store.gameW.game.age === Age.one) {
+			if (godIndex !== -1) return;
+			if (this.state.selectedPantheon === selectedPantheon)
+				selectedPantheon = -1;
+			this.setState({ selectedPantheon });
+		} else {
+			const god = bank.gods[godIndex];
+			god.f();
+		}
+	}
+
 	render() {
 		return (
 			<div>
 				{store.gameW.game.commercials && (
-					<Commercial commercial={store.gameW.game.commercials[0]} />
+					<Commercial
+						commercial={store.gameW.game.commercials[0]}
+						selectedPantheon={this.state.selectedPantheon}
+						reset={this.reset.bind(this)}
+					/>
+				)}
+				{store.gameW.game.params.godExpansion && (
+					<div>
+						<Pantheon
+							selectPantheon={this.selectPantheon.bind(this)}
+							selectedPantheon={this.state.selectedPantheon}
+						/>
+					</div>
 				)}
 				<div>
 					<Structure
@@ -81,7 +111,11 @@ class Main extends React.Component<
 	}
 
 	reset() {
-		this.setState({ selectedTarget: undefined, selectedWonder: undefined });
+		this.setState({
+			selectedTarget: undefined,
+			selectedWonder: undefined,
+			selectedPantheon: undefined,
+		});
 	}
 
 	selectPlayer(selectedWonder: number) {
@@ -151,6 +185,8 @@ class Main extends React.Component<
 		var message;
 		if (this.state.selectedTarget === selected.board) {
 			message = `trashed ${card.name}`;
+			if (!store.gameW.game.trash) store.gameW.game.trash = [];
+			store.gameW.game.trash.push(structureCard.cardIndex);
 			me.money +=
 				BASE_TRASH +
 				(me.cards || [])

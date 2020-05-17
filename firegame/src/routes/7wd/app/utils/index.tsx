@@ -37,6 +37,9 @@ function deal(game: GameType) {
 	const indices = indexedCards.map((ic) => ic.index);
 	utils.shuffle(indices);
 	const cardsToUse = indices.splice(0, 20);
+	if (game.age === Age.two && game.params.godExpansion) {
+		assignGate(game);
+	}
 	if (game.age === Age.three) {
 		const matchAge = game.params.godExpansion ? Age.god : Age.guild;
 		const purples = bank.cards
@@ -67,6 +70,18 @@ function deal(game: GameType) {
 	}
 	game.currentPlayer = wentFirst;
 	game.wentFirst = wentFirst;
+}
+
+function assignGate(game: GameType) {
+	for (let index = 0; index < game.pantheon.length; index++) {
+		if (game.pantheon[index] === -1) {
+			game.pantheon[index] = bank.gods
+				.map((god, godIndex) => ({ god, godIndex }))
+				.filter((obj) => obj.god.source === undefined)
+				.map((obj) => obj.godIndex)[0];
+			return;
+		}
+	}
 }
 
 function getCostCost(rawCosts: Resource[]): number {

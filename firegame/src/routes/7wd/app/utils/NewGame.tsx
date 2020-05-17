@@ -16,7 +16,7 @@ export type GameType = {
 	discounts: number[];
 	godTokens: God[];
 	gods: { [g in God]: number[] };
-	pantheon: (number | null)[];
+	pantheon: number[];
 };
 
 export type Params = {
@@ -154,14 +154,14 @@ function maybePrepareExpansion(game: GameType): GameType {
 		]);
 		const gods: { [g in God]?: number[] } = {};
 		for (let source in God) {
-			const god: God = (God[source] as unknown) as God;
+			const god: God = God[source as God];
 			gods[god] = bank.gods
 				.map((g, index) => ({ g, index }))
 				.filter((obj) => obj.g.source === god)
 				.map((obj) => obj.index);
 		}
 		game.gods = gods as { [g in God]: number[] };
-		game.pantheon = Array.from(new Array(6)).map(() => null);
+		game.pantheon = Array.from(new Array(6)).map(() => -1);
 	}
 	return game;
 }

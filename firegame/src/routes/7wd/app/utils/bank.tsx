@@ -80,11 +80,11 @@ export enum Upgrade {
 }
 
 export enum God {
-	egyptian,
-	mesopotamian,
-	greek,
-	roman,
-	phoenician,
+	egyptian = "egyptian",
+	mesopotamian = "mesopotamian",
+	greek = "greek",
+	roman = "roman",
+	phoenician = "phoenician",
 }
 
 export enum ScienceToken {
