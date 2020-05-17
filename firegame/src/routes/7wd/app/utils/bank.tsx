@@ -935,6 +935,111 @@ export type WonderType = {
 	expansion?: boolean;
 };
 
+export type GodType = {
+	name: string;
+	source?: God;
+	message: string;
+	f: () => void;
+};
+
+const gods: GodType[] = [
+	{
+		name: "anubis",
+		source: God.egyptian,
+		message: "destroy a built wonder",
+		f: () => alert("todo"),
+	},
+	{
+		name: "ra",
+		source: God.egyptian,
+		message: "steal an unbuilt wonder",
+		f: () => alert("todo"),
+	},
+	{
+		name: "isis",
+		source: God.egyptian,
+		message: "trash -> wonder",
+		f: () => alert("todo"),
+	},
+	{
+		name: "aphrodite",
+		source: God.greek,
+		message: "9 points",
+		f: () => alert("todo"),
+	},
+	{
+		name: "zeus",
+		source: God.greek,
+		message: "destroy a structure card",
+		f: () => alert("todo"),
+	},
+	{
+		name: "hades",
+		source: God.greek,
+		message: "build a card from the trash",
+		f: () => alert("todo"),
+	},
+	{
+		name: "enki",
+		source: God.mesopotamian,
+		message: "select 1 / 2 science tokens",
+		f: () => alert("todo"),
+	},
+	{
+		name: "nisaba",
+		source: God.mesopotamian,
+		message: "copy a science from opponent",
+		f: () => alert("todo"),
+	},
+	{
+		name: "ishtar",
+		source: God.mesopotamian,
+		message: "gain law science token",
+		f: () => alert("todo"),
+	},
+	{
+		name: "baal",
+		source: God.phoenician,
+		message: "steal a brown/grey card",
+		f: () => alert("todo"),
+	},
+	{
+		name: "astarte",
+		source: God.phoenician,
+		message: "$7, 1 point per",
+		f: () => alert("todo"),
+	},
+	{
+		name: "tanit",
+		source: God.phoenician,
+		message: "$12",
+		f: () => alert("todo"),
+	},
+	{
+		name: "neptune",
+		source: God.roman,
+		message: "destroy/trigger military tokens",
+		f: () => alert("todo"),
+	},
+	{
+		name: "minerva",
+		source: God.roman,
+		message: "block military movement",
+		f: () => alert("todo"),
+	},
+	{
+		name: "mars",
+		source: God.roman,
+		message: "military 2",
+		f: () => alert("todo"),
+	},
+	{
+		name: "gate",
+		message: "cost x2: select 1 from top gods",
+		f: () => alert("todo"),
+	},
+];
+
 const wonders: WonderType[] = [
 	{
 		name: "the temple of artemis",
@@ -1094,4 +1199,4 @@ const wonders: WonderType[] = [
 	},
 ];
 
-export default { cards, structure, wonders, sciences };
+export default { cards, structure, wonders, sciences, gods };
