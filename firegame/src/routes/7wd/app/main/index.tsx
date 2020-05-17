@@ -173,7 +173,6 @@ class Main extends React.Component<
 				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
 			addCommercial({
-				// todo
 				commercial: CommercialEnum.destroyWonder,
 				playerIndex: 1 - me.index,
 			});

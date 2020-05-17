@@ -1,5 +1,3 @@
-// todo god
-
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
 
@@ -195,8 +193,8 @@ const tokenToPoints: {
 	[ScienceToken.agriculture]: () => 4,
 	[ScienceToken.mathematics]: (player: PlayerType) =>
 		(player.sciences || []).length,
-	// todo
-	[ScienceToken.mysticism]: () => 2,
+	[ScienceToken.mysticism]: (player: PlayerType) =>
+		2 * (player.tokens || []).length,
 	[ScienceToken.philosophy]: () => 7,
 };
 

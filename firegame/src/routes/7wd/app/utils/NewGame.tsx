@@ -96,6 +96,9 @@ function setBoard(game: GameType): GameType {
 	game.trash = [];
 	// @ts-ignore
 	game.sciences = utils.shuffle(Object.keys(bank.sciences));
+	game.sciences = game.sciences.filter(
+		(token) => game.params.godExpansion || token !== ScienceToken.mysticism
+	);
 	return game;
 }
 
@@ -124,7 +127,14 @@ function prepareToChooseWonders(game: GameType): GameType {
 			extra: {
 				firstRound: true,
 				remaining: 4,
-				wonders: utils.shuffle(Object.keys(bank.wonders)),
+				wonders: utils.shuffle(
+					Object.keys(
+						bank.wonders.filter(
+							(wonder) =>
+								game.params.godExpansion || !wonder.expansion
+						)
+					)
+				),
 			},
 		},
 	];

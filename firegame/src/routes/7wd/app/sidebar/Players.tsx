@@ -1,4 +1,4 @@
-import React from "react";
+import React, { RefObject } from "react";
 
 import { store } from "../utils";
 import NewGame from "../utils/NewGame";
@@ -6,11 +6,16 @@ import NewGame from "../utils/NewGame";
 import styles from "../../../../shared/styles.module.css";
 
 class Players extends React.Component {
+	expansionRef: RefObject<HTMLInputElement> = React.createRef();
 	render() {
 		return (
 			<div className={styles.bubble}>
 				<h1>Lobby</h1>
 				{Object.keys(store.lobby).map(this.renderPlayer.bind(this))}
+				<label>
+					God Expansion:{" "}
+					<input type={"checkbox"} ref={this.expansionRef} />
+				</label>
 				<button onClick={this.startNewGame.bind(this)}>New Game</button>
 			</div>
 		);
@@ -40,8 +45,7 @@ class Players extends React.Component {
 
 	getParams() {
 		return {
-			// todo allow
-			godExpansion: true,
+			godExpansion: this.expansionRef.current!.checked,
 			lobby: store.lobby,
 		};
 	}

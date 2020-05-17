@@ -932,6 +932,7 @@ export type WonderType = {
 	f: () => void;
 	goAgain?: boolean;
 	points?: number;
+	expansion?: boolean;
 };
 
 const wonders: WonderType[] = [
@@ -1089,6 +1090,7 @@ const wonders: WonderType[] = [
 		// todo
 		f: () => alert("pick a god"),
 		points: 2,
+		expansion: true,
 	},
 ];
 
