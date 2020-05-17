@@ -1,7 +1,7 @@
 import { LobbyType } from "../../../../shared/store";
 
-import { store, utils, deal } from ".";
-import bank, { Age, ScienceToken } from "./bank";
+import { store, utils } from ".";
+import bank, { Age, ScienceToken, God } from "./bank";
 
 export type GameType = {
 	params: Params;
@@ -13,8 +13,10 @@ export type GameType = {
 	commercials?: CommercialType[];
 	sciences: ScienceToken[];
 	wentFirst: number;
-	discounts: TokenType[];
-	godTokens: TokenType[];
+	discounts: number[];
+	godTokens: God[];
+	gods: { [g in God]: number[] };
+	pantheon: (number | null)[];
 };
 
 export type Params = {
@@ -42,22 +44,16 @@ export type PlayerType = {
 	tokens?: TokenType[];
 };
 
+export type TokenType = {
+	value: God | number;
+	isGod: boolean;
+};
+
 export type CommercialType = {
 	commercial: CommercialEnum;
 	playerIndex: number;
 	extra?: any;
 };
-
-export enum TokenType {
-	egyptian,
-	mesopotamian,
-	greek,
-	roman,
-	phoenician,
-	two,
-	three,
-	four,
-}
 
 export enum CommercialEnum {
 	science,
@@ -143,23 +139,29 @@ function prepareToChooseWonders(game: GameType): GameType {
 
 function maybePrepareExpansion(game: GameType): GameType {
 	if (game.params.godExpansion) {
-		game.discounts = utils.shuffle([
-			TokenType.two,
-			TokenType.three,
-			TokenType.four,
-		]);
+		game.discounts = utils.shuffle([2, 3, 4]);
 		game.godTokens = utils.shuffle([
-			TokenType.egyptian,
-			TokenType.egyptian,
-			TokenType.mesopotamian,
-			TokenType.mesopotamian,
-			TokenType.greek,
-			TokenType.greek,
-			TokenType.phoenician,
-			TokenType.phoenician,
-			TokenType.roman,
-			TokenType.roman,
+			God.egyptian,
+			God.egyptian,
+			God.mesopotamian,
+			God.mesopotamian,
+			God.greek,
+			God.greek,
+			God.phoenician,
+			God.phoenician,
+			God.roman,
+			God.roman,
 		]);
+		const gods: { [g in God]?: number[] } = {};
+		for (let source in God) {
+			const god: God = (God[source] as unknown) as God;
+			gods[god] = bank.gods
+				.map((g, index) => ({ g, index }))
+				.filter((obj) => obj.g.source === god)
+				.map((obj) => obj.index);
+		}
+		game.gods = gods as { [g in God]: number[] };
+		game.pantheon = Array.from(new Array(6)).map(() => null);
 	}
 	return game;
 }

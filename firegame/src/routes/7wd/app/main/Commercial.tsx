@@ -102,6 +102,81 @@ class Commercial extends React.Component<{ commercial: CommercialType }> {
 						</div>
 					</div>
 				);
+			case CommercialEnum.destroyWonder:
+				return (
+					<div className={styles.bubble}>
+						<h2>Destroy Wonder</h2>
+						<div className={styles.flex}>
+							{utils
+								.getMe()
+								.wonders.map((wonder, index) => ({
+									wonder,
+									index,
+								}))
+								.filter((obj) => !obj.wonder.built)
+								.map((obj) => (
+									<div
+										onClick={() => {
+											utils
+												.getMe()
+												.wonders.splice(obj.index, 1);
+											this.pop();
+											store.update(
+												`destroyed ${
+													bank.wonders[
+														obj.wonder.wonderIndex
+													].name
+												}`
+											);
+										}}
+									>
+										hi
+									</div>
+								))}
+							)}
+						</div>
+					</div>
+				);
+			case CommercialEnum.pickGod:
+				if (!utils.isMyTurn()) return null;
+				return (
+					<div className={styles.bubble}>
+						<div className={styles.flex}>
+							{store.gameW.game.gods[
+								store.gameW.game.godTokens[0]
+							]
+								.slice(0, 2)
+								.map((godIndex, tokenIndex) => (
+									<div
+										onClick={() => {
+											// todo
+											const target: number | null = null;
+											if (!target)
+												return alert(
+													"need to select a target first"
+												);
+											const selected = store.gameW.game.gods[
+												store.gameW.game.godTokens[0]
+											].splice(tokenIndex, 1)[0];
+											store.gameW.game.pantheon[
+												target
+											] = selected;
+											const me = utils.getMe();
+											if (!me.tokens) me.tokens = [];
+											me.tokens.push({
+												value: store.gameW.game.godTokens.shift()!,
+												isGod: true,
+											});
+										}}
+										className={styles.bubble}
+									>
+										{bank.gods[godIndex].name}
+										{bank.gods[godIndex].message}
+									</div>
+								))}
+						</div>
+					</div>
+				);
 		}
 		return null;
 	}

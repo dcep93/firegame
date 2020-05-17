@@ -16,7 +16,7 @@ const BASE_COST = 2;
 class Utils extends Shared<GameType, PlayerType> {
 	isMyTurn(game_: GameType | undefined = undefined): boolean {
 		const game: GameType = game_ || store.gameW.game!;
-		if (game.commercials)
+		if (game && game.commercials)
 			return game.commercials[0].playerIndex === this.myIndex(game);
 		return super.isMyTurn(game_);
 	}

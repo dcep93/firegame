@@ -172,10 +172,23 @@ class Main extends React.Component<
 			)
 				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
-			addCommercial({
-				commercial: CommercialEnum.destroyWonder,
-				playerIndex: 1 - me.index,
-			});
+			if (
+				utils.getMe().wonders.filter((wonder) => wonder.built).length +
+					utils.getOpponent().wonders.filter((wonder) => wonder.built)
+						.length ===
+				7
+			) {
+				var index;
+				if (utils.getMe().wonders.filter((wonder) => !wonder.built)) {
+					index = me.index;
+				} else {
+					index = 1 - me.index;
+				}
+				addCommercial({
+					commercial: CommercialEnum.destroyWonder,
+					playerIndex: index,
+				});
+			}
 		}
 		utils.incrementPlayerTurn();
 		if (
@@ -206,17 +219,14 @@ class Main extends React.Component<
 		if (!me.tokens) me.tokens = [];
 		if (game.age === Age.one) {
 			if (col % 2 === 0) {
-				const token = game.godTokens.pop()!;
-				me.tokens.push(token);
 				addCommercial({
 					commercial: CommercialEnum.pickGod,
 					playerIndex: utils.myIndex(),
-					extra: token,
 				});
 			}
 		} else if (game.age === Age.two) {
 			if (col % 2 === 0 && row === 1) {
-				me.tokens.push(game.discounts.pop()!);
+				me.tokens.push({ isGod: false, value: game.discounts.pop()! });
 			}
 		}
 	}

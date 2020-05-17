@@ -12,10 +12,12 @@ class Players extends React.Component {
 			<div className={styles.bubble}>
 				<h1>Lobby</h1>
 				{Object.keys(store.lobby).map(this.renderPlayer.bind(this))}
-				<label>
-					God Expansion:{" "}
-					<input type={"checkbox"} ref={this.expansionRef} />
-				</label>
+				<div>
+					<label>
+						God Expansion:{" "}
+						<input type={"checkbox"} ref={this.expansionRef} />
+					</label>
+				</div>
 				<button onClick={this.startNewGame.bind(this)}>New Game</button>
 			</div>
 		);
