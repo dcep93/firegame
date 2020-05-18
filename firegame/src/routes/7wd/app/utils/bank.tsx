@@ -56,6 +56,7 @@ export enum ScienceEnum {
 	bowl,
 	astrolabe,
 	tablet,
+	// todo alert you win
 	law,
 }
 
@@ -1050,7 +1051,24 @@ const gods: GodType[] = [
 		name: "neptune",
 		source: God.roman,
 		message: "destroy/trigger military tokens",
-		f: () => alert("todo"),
+		f: () => {
+			const myTokens = utils.getMe().militaryBonuses || {};
+			const oppTokens = utils.getOpponent().militaryBonuses;
+			utils.getMe().militaryBonuses = {};
+			if (myTokens[6] || oppTokens[6])
+				utils.getOpponent().money = Math.max(
+					utils.getOpponent().money - 5,
+					0
+				);
+			if (!myTokens[3]) {
+				if (myTokens[6] && oppTokens[3]) {
+					delete oppTokens[3];
+				} else {
+					utils.getOpponent().militaryBonuses = {};
+				}
+			}
+			store.update("used neptune");
+		},
 	},
 	{
 		name: "minerva",
