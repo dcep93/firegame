@@ -56,6 +56,9 @@ class Main extends React.Component<
 			this.setState({ selectedPantheon });
 		} else {
 			const god = bank.gods[godIndex];
+			const me = utils.getMe();
+			if (!me.gods) me.gods = [];
+			me.gods.push(godIndex);
 			god.f();
 			utils.incrementPlayerTurn();
 		}
@@ -132,10 +135,16 @@ class Main extends React.Component<
 	selectCard(x: number, y: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const commercial = (store.gameW.game.commercials || [])[0]?.commercial;
+		const structureCard = store.gameW.game.structure[y][x];
+		if (commercial === CommercialEnum.destroyFromStructure) {
+			structureCard.taken = true;
+			store.gameW.game.commercials!.shift();
+			store.update("destroyed a card");
+			return;
+		}
 		if (commercial) return alert(commercial);
 		if (this.state.selectedTarget === undefined)
 			return alert("need to select a target first");
-		const structureCard = store.gameW.game.structure[y][x];
 		if (!this.canTake(y, x, structureCard.offset))
 			return alert("cannot take that card");
 		const card = bank.cards[structureCard.cardIndex];

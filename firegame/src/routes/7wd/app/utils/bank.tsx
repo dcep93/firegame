@@ -940,6 +940,8 @@ export type GodType = {
 	source?: God;
 	message: string;
 	f: () => void;
+	points?: (player: PlayerType) => number;
+	extra?: any;
 };
 
 const gods: GodType[] = [
@@ -977,19 +979,28 @@ const gods: GodType[] = [
 		name: "aphrodite",
 		source: God.greek,
 		message: "9 points",
-		f: () => alert("todo"),
+		f: () => null,
+		points: () => 9,
 	},
 	{
 		name: "zeus",
 		source: God.greek,
 		message: "destroy a structure card",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.destroyFromStructure,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "hades",
 		source: God.greek,
 		message: "build a card from the trash",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.revive,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "enki",

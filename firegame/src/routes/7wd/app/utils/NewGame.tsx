@@ -42,6 +42,7 @@ export type PlayerType = {
 	militaryBonuses: { [x: number]: number };
 	sciences?: ScienceToken[];
 	tokens?: TokenType[];
+	gods?: number[];
 };
 
 export type TokenType = {
@@ -67,6 +68,7 @@ export enum CommercialEnum {
 	unbuild = "unbuild a wonder",
 	stealWonder = "steal an unbuilt wonder",
 	wonderFromTrash = "use a card from the trash to build a wonder",
+	destroyFromStructure = "destoy a card from the strucutre",
 }
 
 function NewGame(params: Params): PromiseLike<GameType> {

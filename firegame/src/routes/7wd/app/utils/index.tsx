@@ -192,13 +192,19 @@ function getScore(player: PlayerType): number {
 		.filter((wonder) => wonder.built)
 		.map((wonder) => bank.wonders[wonder.wonderIndex].points || 0)
 		.reduce((a, b) => a + b, 0);
+	const godPoints = (player.gods || [])
+		.map((godIndex) => bank.gods[godIndex])
+		.filter((god) => god.points)
+		.map((god) => god.points!(player))
+		.reduce((a, b) => a + b, 0);
 	return (
 		cardPoints +
 		moneyPoints +
 		guildPoints +
 		militaryPoints +
 		sciencePoints +
-		wonderPoints
+		wonderPoints +
+		godPoints
 	);
 }
 
