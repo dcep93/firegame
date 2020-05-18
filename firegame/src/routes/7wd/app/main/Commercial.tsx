@@ -1,16 +1,12 @@
 import React from "react";
 
 import { store, getWonderCost, utils, deal } from "../utils";
-import {
-	CommercialEnum,
-	commercials,
-	PlayerType,
-	CommercialType,
-} from "../utils/NewGame";
+import { CommercialEnum, PlayerType, CommercialType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import bank, { Age, Color, ScienceToken } from "../utils/bank";
 import { NUM_SCIENCES } from "./Science";
+import CommercialWonderFromTrash from "./CommercialWonderFromTrash";
 
 class Commercial extends React.Component<{
 	commercial: CommercialType;
@@ -26,16 +22,15 @@ class Commercial extends React.Component<{
 	}
 
 	alert() {
-		return;
 		if (this.props.commercial.playerIndex === utils.myIndex())
-			alert(commercials[this.props.commercial.commercial]);
+			alert(this.props.commercial.commercial);
 	}
 
 	pop() {
 		store.gameW.game.commercials!.shift();
 	}
 
-	render() {
+	render(): any {
 		switch (this.props.commercial.commercial) {
 			case CommercialEnum.chooseWonder:
 				const params = this.props.commercial.extra;
@@ -134,7 +129,10 @@ class Commercial extends React.Component<{
 											);
 										}}
 									>
-										hi
+										{
+											bank.wonders[obj.wonder.wonderIndex]
+												.name
+										}
 									</div>
 								))}
 							)}
@@ -191,6 +189,79 @@ class Commercial extends React.Component<{
 						</div>
 					</div>
 				);
+			case CommercialEnum.unbuild:
+				const wondersToUnbuild = utils
+					.getMe()
+					.wonders.concat(utils.getOpponent().wonders)
+					.filter((wonder) => wonder.built);
+				if (!wondersToUnbuild) {
+					if (!utils.isMyTurn()) return;
+					this.pop();
+					return alert("no wonders to destroy");
+				}
+				return (
+					<div className={styles.bubble}>
+						<h2>Unbuild Wonder</h2>
+						<div className={styles.flex}>
+							{wondersToUnbuild.map((wonder) => (
+								<div
+									onClick={() => {
+										wonder.built = false;
+										this.pop();
+										store.update(
+											`unbuilt ${
+												bank.wonders[wonder.wonderIndex]
+													.name
+											}`
+										);
+									}}
+								>
+									{bank.wonders[wonder.wonderIndex].name}
+								</div>
+							))}
+							)}
+						</div>
+					</div>
+				);
+			case CommercialEnum.stealWonder:
+				const wondersToSteal = utils
+					.getOpponent()
+					.wonders.map((wonder, index) => ({ wonder, index }))
+					.filter((obj) => !obj.wonder.built);
+				if (!wondersToSteal) {
+					if (!utils.isMyTurn()) return;
+					this.pop();
+					return alert("no wonders to steal");
+				}
+				return (
+					<div className={styles.bubble}>
+						<h2>Steal Wonder</h2>
+						<div className={styles.flex}>
+							{wondersToSteal.map((obj) => (
+								<div
+									onClick={() => {
+										const wonder = utils
+											.getOpponent()
+											.wonders.splice(obj.index, 1)[0];
+										utils.getMe().wonders.push(wonder);
+										this.pop();
+										store.update(
+											`stole ${
+												bank.wonders[wonder.wonderIndex]
+													.name
+											}`
+										);
+									}}
+								>
+									{bank.wonders[obj.wonder.wonderIndex].name}
+								</div>
+							))}
+							)}
+						</div>
+					</div>
+				);
+			case CommercialEnum.wonderFromTrash:
+				return <CommercialWonderFromTrash pop={this.pop.bind(this)} />;
 		}
 		return null;
 	}

@@ -16,7 +16,7 @@ import bank, {
 	ScienceEnum,
 	Age,
 } from "../utils/bank";
-import { CommercialEnum, commercials } from "../utils/NewGame";
+import { CommercialEnum } from "../utils/NewGame";
 
 import Structure from "./Structure";
 import Player from "./Player";
@@ -57,6 +57,7 @@ class Main extends React.Component<
 		} else {
 			const god = bank.gods[godIndex];
 			god.f();
+			utils.incrementPlayerTurn();
 		}
 	}
 
@@ -130,8 +131,7 @@ class Main extends React.Component<
 
 	selectCard(x: number, y: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
-		const c = (store.gameW.game.commercials || [])[0]?.commercial;
-		const commercial = commercials[c];
+		const commercial = (store.gameW.game.commercials || [])[0]?.commercial;
 		if (commercial) return alert(commercial);
 		if (this.state.selectedTarget === undefined)
 			return alert("need to select a target first");

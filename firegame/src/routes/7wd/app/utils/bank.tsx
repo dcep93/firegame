@@ -947,19 +947,31 @@ const gods: GodType[] = [
 		name: "anubis",
 		source: God.egyptian,
 		message: "destroy a built wonder",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.unbuild,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "ra",
 		source: God.egyptian,
 		message: "steal an unbuilt wonder",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.stealWonder,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "isis",
 		source: God.egyptian,
 		message: "trash -> wonder",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.wonderFromTrash,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "aphrodite",

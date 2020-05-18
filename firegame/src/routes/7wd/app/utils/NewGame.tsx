@@ -56,26 +56,18 @@ export type CommercialType = {
 };
 
 export enum CommercialEnum {
-	science,
-	chooseWonder,
-	destroyGrey,
-	destroyBrown,
-	revive,
-	library,
-	destroyWonder,
-	pickGod,
+	science = "select a science token",
+	chooseWonder = "choose a wonder",
+	destroyGrey = "destroy a grey card",
+	destroyBrown = "destroy a brown card",
+	revive = "construct a card from discard",
+	library = "choose a science token",
+	destroyWonder = "destroy one of your wonders",
+	pickGod = "choose a god to add to the pantheon",
+	unbuild = "unbuild a wonder",
+	stealWonder = "steal an unbuilt wonder",
+	wonderFromTrash = "use a card from the trash to build a wonder",
 }
-
-export const commercials: { [c in CommercialEnum]: string } = {
-	[CommercialEnum.science]: "select a science token",
-	[CommercialEnum.chooseWonder]: "choose a wonder",
-	[CommercialEnum.destroyGrey]: "destroy a grey card",
-	[CommercialEnum.destroyBrown]: "destroy a brown card",
-	[CommercialEnum.revive]: "construct a card from discard",
-	[CommercialEnum.library]: "choose a science token",
-	[CommercialEnum.destroyWonder]: "destroy one of your wonders",
-	[CommercialEnum.pickGod]: "choose a god to add to the pantheon",
-};
 
 function NewGame(params: Params): PromiseLike<GameType> {
 	// @ts-ignore game being constructed
