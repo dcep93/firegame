@@ -59,7 +59,7 @@ class Main extends React.Component<
 			const me = utils.getMe();
 			if (!me.gods) me.gods = [];
 			me.gods.push(godIndex);
-			god.f();
+			god.f(god);
 			utils.incrementPlayerTurn();
 		}
 	}

@@ -195,7 +195,7 @@ function getScore(player: PlayerType): number {
 	const godPoints = (player.gods || [])
 		.map((godIndex) => bank.gods[godIndex])
 		.filter((god) => god.points)
-		.map((god) => god.points!(player))
+		.map((god) => god.points!(god))
 		.reduce((a, b) => a + b, 0);
 	return (
 		cardPoints +

@@ -939,8 +939,8 @@ export type GodType = {
 	name: string;
 	source?: God;
 	message: string;
-	f: () => void;
-	points?: (player: PlayerType) => number;
+	f: (god: GodType) => void;
+	points?: (god: GodType) => number;
 	extra?: any;
 };
 
@@ -1018,7 +1018,14 @@ const gods: GodType[] = [
 		name: "ishtar",
 		source: God.mesopotamian,
 		message: "gain law science token",
-		f: () => alert("todo"),
+		f: () =>
+			utils
+				.getMe()
+				.sciences?.filter((token) => token === ScienceToken.law) &&
+			addCommercial({
+				commercial: CommercialEnum.science,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "baal",
@@ -1030,13 +1037,14 @@ const gods: GodType[] = [
 		name: "astarte",
 		source: God.phoenician,
 		message: "$7, 1 point per",
-		f: () => alert("todo"),
+		f: (god: GodType) => (god.extra = 7),
+		points: (god: GodType) => god.extra,
 	},
 	{
 		name: "tanit",
 		source: God.phoenician,
 		message: "$12",
-		f: () => alert("todo"),
+		f: () => (utils.getMe().money += 12),
 	},
 	{
 		name: "neptune",
@@ -1054,7 +1062,7 @@ const gods: GodType[] = [
 		name: "mars",
 		source: God.roman,
 		message: "military 2",
-		f: () => alert("todo"),
+		f: () => increaseMilitary(2),
 	},
 	{
 		name: "gate",
