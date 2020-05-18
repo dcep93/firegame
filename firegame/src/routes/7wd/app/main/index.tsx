@@ -57,6 +57,14 @@ class Main extends React.Component<
 		} else {
 			const god = bank.gods[godIndex];
 			const me = utils.getMe();
+			var cost =
+				3 +
+				(utils.myIndex() === 0
+					? 5 - selectedPantheon
+					: selectedPantheon);
+			if (god.source === undefined) cost *= 2;
+			if (me.money < cost) return alert("cannot afford");
+			me.money -= cost;
 			if (!me.gods) me.gods = [];
 			me.gods.push(godIndex);
 			god.f(god);
