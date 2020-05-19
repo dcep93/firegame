@@ -5,7 +5,6 @@ import { CommercialEnum, PlayerType, CommercialType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import bank, { Age, Color, ScienceToken } from "../utils/bank";
-import { NUM_SCIENCES } from "./Science";
 import CommercialWonderFromTrash from "./CommercialWonderFromTrash";
 
 class Commercial extends React.Component<{
@@ -85,9 +84,8 @@ class Commercial extends React.Component<{
 					<div className={styles.bubble}>
 						<h2>Library</h2>
 						<div className={styles.flex}>
-							{store.gameW.game.sciences
-								.slice(NUM_SCIENCES, NUM_SCIENCES + 3)
-								.map((scienceName) => (
+							{this.props.commercial.extra.map(
+								(scienceName: ScienceToken) => (
 									<div
 										onClick={() =>
 											this.buildScience(scienceName)
@@ -97,7 +95,8 @@ class Commercial extends React.Component<{
 										{ScienceToken[scienceName]} -{" "}
 										{bank.sciences[scienceName]}
 									</div>
-								))}
+								)
+							)}
 						</div>
 					</div>
 				);
@@ -262,10 +261,68 @@ class Commercial extends React.Component<{
 				);
 			case CommercialEnum.wonderFromTrash:
 				return <CommercialWonderFromTrash pop={this.pop.bind(this)} />;
+			case CommercialEnum.copyScience:
+				// todo make this work with a sciences dict
+				const sciences = utils
+					.getOpponent()
+					.cards?.filter(
+						(cardIndex) =>
+							bank.cards[cardIndex].color === Color.green
+					);
+				if (!sciences) {
+					if (utils.isMyTurn()) {
+						this.pop();
+						store.update("no sciences to copy");
+					}
+					return;
+				}
+				return (
+					<div className={styles.bubble}>
+						<h2>Copy Science</h2>
+						<div className={styles.flex}>
+							{sciences.map((index) => (
+								<div
+									key={index}
+									onClick={() => {
+										this.pop();
+										store.update(
+											`copied ${bank.cards[index].extra.science}`
+										);
+									}}
+								>
+									{bank.cards[index].extra.science}
+								</div>
+							))}
+							)}
+						</div>
+					</div>
+				);
+			case CommercialEnum.enki:
+				return (
+					<div className={styles.bubble}>
+						<h2>Choose a Science Token</h2>
+						<div className={styles.flex}>
+							{this.props.commercial.extra.map(
+								(scienceName: ScienceToken) => (
+									<div
+										onClick={() =>
+											this.buildScience(scienceName)
+										}
+										className={styles.bubble}
+									>
+										{ScienceToken[scienceName]} -{" "}
+										{bank.sciences[scienceName]}
+									</div>
+								)
+							)}
+						</div>
+					</div>
+				);
 		}
 		return null;
 	}
 
+	// todo cant build the same science
 	buildScience(scienceName: ScienceToken) {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const me = utils.getMe();

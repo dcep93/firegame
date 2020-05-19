@@ -69,6 +69,8 @@ export enum CommercialEnum {
 	stealWonder = "steal an unbuilt wonder",
 	wonderFromTrash = "use a card from the trash to build a wonder",
 	destroyFromStructure = "destoy a card from the strucutre",
+	copyScience = "copy a science card",
+	enki = "select 1 / 2 science tokens",
 }
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -87,7 +89,11 @@ function setBoard(game: GameType): GameType {
 	// @ts-ignore
 	game.sciences = utils.shuffle(Object.keys(bank.sciences));
 	game.sciences = game.sciences.filter(
-		(token) => game.params.godExpansion || token !== ScienceToken.mysticism
+		(token) =>
+			game.params.godExpansion ||
+			(token !== ScienceToken.mysticism &&
+				token !== ScienceToken.polioretics &&
+				token !== ScienceToken.engineering)
 	);
 	return game;
 }

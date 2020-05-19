@@ -1,5 +1,6 @@
 import { utils, store, stealMoney, increaseMilitary, addCommercial } from ".";
 import { PlayerType, CommercialEnum } from "./NewGame";
+import { NUM_SCIENCES } from "../main/Science";
 
 export interface CardType {
 	name: string;
@@ -1007,13 +1008,24 @@ const gods: GodType[] = [
 		name: "enki",
 		source: God.mesopotamian,
 		message: "select 1 / 2 science tokens",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.enki,
+				playerIndex: utils.myIndex(),
+				extra: utils
+					.shuffle(store.gameW.game.sciences.slice(NUM_SCIENCES))
+					.slice(0, 2),
+			}),
 	},
 	{
 		name: "nisaba",
 		source: God.mesopotamian,
 		message: "copy a science from opponent",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.copyScience,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "ishtar",
@@ -1163,6 +1175,7 @@ const wonders: WonderType[] = [
 		// todo
 		f: () => alert("2 discount on gods"),
 		goAgain: true,
+		expansion: true,
 	},
 	{
 		name: "the mausoleum",
@@ -1221,6 +1234,9 @@ const wonders: WonderType[] = [
 			addCommercial({
 				commercial: CommercialEnum.library,
 				playerIndex: utils.myIndex(),
+				extra: utils
+					.shuffle(store.gameW.game.sciences.slice(NUM_SCIENCES))
+					.slice(0, 3),
 			}),
 		points: 4,
 	},
