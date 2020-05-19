@@ -71,6 +71,7 @@ export enum CommercialEnum {
 	destroyFromStructure = "destoy a card from the strucutre",
 	copyScience = "copy a science card",
 	enki = "select 1 / 2 science tokens",
+	baal = "steal a brown/grey card",
 }
 
 function NewGame(params: Params): PromiseLike<GameType> {

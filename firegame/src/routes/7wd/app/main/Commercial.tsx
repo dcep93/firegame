@@ -318,6 +318,51 @@ class Commercial extends React.Component<{
 						</div>
 					</div>
 				);
+			case CommercialEnum.baal:
+				const cardsToSteal = utils
+					.getOpponent()
+					.cards?.map((cardIndex, handIndex) => ({
+						handIndex,
+						card: bank.cards[cardIndex],
+					}))
+					?.filter(
+						(obj) =>
+							obj.card.color === Color.brown ||
+							obj.card.color === Color.grey
+					);
+				if (!cardsToSteal) {
+					if (utils.isMyTurn()) {
+						this.pop();
+						store.update("no cards to steal");
+					}
+					return;
+				}
+				return (
+					<div className={styles.bubble}>
+						<h2>Steal a brown/grey card</h2>
+						<div className={styles.flex}>
+							{cardsToSteal.map((obj) => (
+								<div
+									onClick={() => {
+										const me = utils.getMe();
+										if (!me.cards) me.cards = [];
+										me.cards.push(
+											utils
+												.getOpponent()
+												.cards!.splice(
+													obj.handIndex,
+													1
+												)[0]
+										);
+									}}
+									className={styles.bubble}
+								>
+									{obj.card.name}
+								</div>
+							))}
+						</div>
+					</div>
+				);
 		}
 		return null;
 	}

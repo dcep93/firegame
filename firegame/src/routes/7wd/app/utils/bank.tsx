@@ -1044,7 +1044,11 @@ const gods: GodType[] = [
 		name: "baal",
 		source: God.phoenician,
 		message: "steal a brown/grey card",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.baal,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "astarte",
@@ -1172,8 +1176,7 @@ const wonders: WonderType[] = [
 		name: "the sanctuary",
 		message: "$2 discount on gods, go again",
 		cost: [Resource.paper, Resource.glass, Resource.stone, Resource.stone],
-		// todo
-		f: () => alert("2 discount on gods"),
+		f: () => null,
 		goAgain: true,
 		expansion: true,
 	},

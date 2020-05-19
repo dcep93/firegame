@@ -64,6 +64,12 @@ class Main extends React.Component<
 					? 5 - selectedPantheon
 					: selectedPantheon);
 			if (god.source === undefined) cost *= 2;
+			if (
+				(utils.getMe().gods || []).filter(
+					(godIndex) => bank.gods[godIndex].name === "the sanctuary"
+				).length > 0
+			)
+				cost -= 2;
 			if (me.money < cost) return alert("cannot afford");
 			me.money -= cost;
 			if (!me.gods) me.gods = [];
