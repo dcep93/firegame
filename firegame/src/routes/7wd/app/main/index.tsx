@@ -57,7 +57,6 @@ class Main extends React.Component<
 		} else {
 			const god = bank.gods[godIndex];
 			const me = utils.getMe();
-			// todo discount
 			var cost =
 				3 +
 				(utils.myIndex() === 0

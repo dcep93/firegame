@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getScore } from "../utils";
+import { getScore, store, utils } from "../utils";
 import bank, {
 	Color,
 	CardType,
@@ -39,6 +39,37 @@ class Player extends React.Component<{
 						{this.props.player.sciences && this.renderSciences()}
 						{this.props.player.cards && this.renderCards()}
 					</div>
+					{this.props.player.tokens && (
+						<div className={`${styles.flex} ${styles.bubble}`}>
+							<div>Tokens:</div>
+							{this.props.player.tokens!.map(
+								(token, tokenIndex) => (
+									<div
+										key={tokenIndex}
+										className={styles.bubble}
+										onClick={() => {
+											if (!utils.isMyTurn()) return;
+											if (store.gameW.game.commercials)
+												return;
+											if (token.isGod) return;
+											utils.getMe().money += token.value as number;
+											utils
+												.getMe()
+												.tokens?.splice(tokenIndex, 1);
+											alert(
+												"todo force only use on gods"
+											);
+											store.update(
+												`discounts ${token.value}`
+											);
+										}}
+									>
+										{token.value}
+									</div>
+								)
+							)}
+						</div>
+					)}
 				</div>
 			</div>
 		);
