@@ -72,6 +72,8 @@ export enum CommercialEnum {
 	copyScience = "copy a science card",
 	enki = "select 1 / 2 science tokens",
 	baal = "steal a brown/grey card",
+	theater = "pick a god",
+	gate = "pick a top god",
 }
 
 function NewGame(params: Params): PromiseLike<GameType> {

@@ -1101,7 +1101,11 @@ const gods: GodType[] = [
 	{
 		name: "gate",
 		message: "cost x2: select 1 from top gods",
-		f: () => alert("todo"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.gate,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 ];
 
@@ -1260,8 +1264,11 @@ const wonders: WonderType[] = [
 			Resource.wood,
 			Resource.wood,
 		],
-		// todo
-		f: () => alert("pick a god"),
+		f: () =>
+			addCommercial({
+				commercial: CommercialEnum.theater,
+				playerIndex: utils.myIndex(),
+			}),
 		points: 2,
 		expansion: true,
 	},
