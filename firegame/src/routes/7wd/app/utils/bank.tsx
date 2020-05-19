@@ -1090,7 +1090,7 @@ const gods: GodType[] = [
 		name: "minerva",
 		source: God.roman,
 		message: "block military movement",
-		f: () => alert("todo"),
+		f: () => (store.gameW.game.minerva = true),
 	},
 	{
 		name: "mars",

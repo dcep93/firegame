@@ -17,6 +17,7 @@ export type GameType = {
 	godTokens: God[];
 	gods: { [g in God]: number[] };
 	pantheon: number[];
+	minerva?: boolean;
 };
 
 export type Params = {

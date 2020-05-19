@@ -237,6 +237,10 @@ function getWonderCost(wonder: WonderType): number {
 }
 
 function increaseMilitary(military: number) {
+	if (store.gameW.game.minerva) {
+		delete store.gameW.game.minerva;
+		return;
+	}
 	const me = utils.getMe();
 	const sciences = me.sciences || [];
 	if (sciences.includes(ScienceToken.polioretics)) stealMoney(military);
