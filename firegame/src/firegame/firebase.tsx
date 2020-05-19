@@ -13,6 +13,8 @@ var offset: number = 0;
 function init(): void {
 	firebase.initializeApp(config);
 	database = firebase.database();
+	// @ts-ignore
+	window.database = database;
 	database
 		.ref(".info/serverTimeOffset")
 		.once("value")

@@ -1,5 +1,5 @@
 import React from "react";
-import { utils, getMilitaryPoints } from "../utils";
+import { utils, getMilitaryPoints, store } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -9,7 +9,7 @@ const NUM_POSITIONS = 9;
 class Military extends React.Component {
 	render() {
 		const militaryDiff =
-			utils.getMe().military - utils.getOpponent().military;
+			this.getMe().military - this.getOpponent().military;
 		return (
 			<div className={styles.bubble}>
 				<h2>Military</h2>
@@ -38,9 +38,21 @@ class Military extends React.Component {
 		);
 	}
 
+	myIndex() {
+		return Math.max(utils.myIndex(), 0);
+	}
+
+	getMe() {
+		return store.gameW.game.players[this.myIndex()];
+	}
+
+	getOpponent() {
+		return store.gameW.game.players[1 - this.myIndex()]!;
+	}
+
 	getFill(militaryDiff: number, index: number) {
 		if (index === militaryDiff) return "x";
-		const stars = (index > 0 ? utils.getMe() : utils.getOpponent())
+		const stars = (index > 0 ? this.getMe() : this.getOpponent())
 			.militaryBonuses[Math.abs(index)];
 		if (stars === 0) return "WIN";
 		return "*".repeat(stars);
