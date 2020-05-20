@@ -1,136 +1,20 @@
 import { NUM_SCIENCES } from "../main/Science";
 
 import { utils, store, stealMoney, increaseMilitary, addCommercial } from ".";
-import { PlayerType, CommercialEnum } from "./NewGame";
-
-export interface CardType {
-	name: string;
-	age: Age;
-	color: Color;
-	cost: Resource[];
-	upgradesTo?: Upgrade;
-	upgradesFrom?: Upgrade;
-	extra: {
-		resource?: Resource[];
-		resourceOptions?: Resource[];
-		points?: number;
-		military?: number;
-		science?: ScienceEnum;
-		discount?: Resource[];
-		f?: () => void;
-		guild?: (player: PlayerType) => number;
-		godUpgrade?: God;
-	};
-	message?: string;
-}
-
-export enum Age {
-	one = 1,
-	two,
-	three,
-	guild,
-	god,
-}
-
-export enum Resource {
-	money = "$",
-	clay = "c",
-	stone = "s",
-	wood = "w",
-	paper = "p",
-	glass = "g",
-}
-
-export enum Color {
-	brown,
-	grey,
-	yellow,
-	red,
-	blue,
-	green,
-	purple,
-}
-
-export enum ScienceEnum {
-	wheel,
-	a,
-	writing,
-	bowl,
-	astrolabe,
-	tablet,
-	// todo alert you win
-	law,
-}
-
-export enum Upgrade {
-	lamp,
-	target,
-	water,
-	crescent,
-	mask,
-	horseshoe,
-	vase,
-	barrel,
-	helmet,
-	sword,
-	pillar,
-	sun,
-	crown,
-	book,
-	gear,
-	capital,
-	harp,
-}
-
-export enum God {
-	egyptian,
-	mesopotamian,
-	greek,
-	roman,
-	phoenician,
-}
-
-export enum ScienceToken {
-	agriculture = "$6 + 4 points",
-	mathematics = "3 points / science token",
-	urbanism = "$6 + $4 when upgrading",
-	polioretics = "siege $1 / military",
-	architecture = "free wonders",
-	law = "extra science symbol",
-	economy = "opponents pay you when buying",
-	masonry = "free blue cards",
-	mysticism = "2 points per god token",
-	engineering = "upgrades cost $1",
-	philosophy = "7 points",
-	theology = "go again when building wonder",
-	strategy = "military moves extra",
-}
-
-const structure: { [age in Age]?: number[][] } = {
-	[Age.one]: [
-		[4, 4],
-		[3, 3, 3],
-		[2, 2, 2, 2],
-		[1, 1, 1, 1, 1],
-		[0, 0, 0, 0, 0, 0],
-	],
-	[Age.two]: [
-		[0, 0, 0, 0, 0, 0],
-		[1, 1, 1, 1, 1],
-		[2, 2, 2, 2],
-		[3, 3, 3],
-		[4, 4],
-	],
-	[Age.three]: [
-		[2, 2],
-		[1, 1, 1],
-		[0, 0, 0, 0],
-		[1, 3],
-		[0, 0, 0, 0],
-		[1, 1, 1],
-		[2, 2],
-	],
-};
+import {
+	CardType,
+	Age,
+	Color,
+	Resource,
+	Upgrade,
+	ScienceEnum,
+	PlayerType,
+	God,
+	GodType,
+	CommercialEnum,
+	ScienceToken,
+	WonderType,
+} from "./types";
 
 const cards: CardType[] = [
 	{
@@ -912,25 +796,6 @@ const cards: CardType[] = [
 	},
 ];
 
-export type WonderType = {
-	name: string;
-	cost: Resource[];
-	message: string;
-	f: () => void;
-	goAgain?: boolean;
-	points?: number;
-	expansion?: boolean;
-};
-
-export type GodType = {
-	name: string;
-	source?: God;
-	message: string;
-	f: (god: GodType) => void;
-	points?: (god: GodType) => number;
-	extra?: any;
-};
-
 const gods: GodType[] = [
 	{
 		name: "anubis",
@@ -1258,5 +1123,31 @@ const wonders: WonderType[] = [
 		expansion: true,
 	},
 ];
+
+const structure: { [age in Age]?: number[][] } = {
+	[Age.one]: [
+		[4, 4],
+		[3, 3, 3],
+		[2, 2, 2, 2],
+		[1, 1, 1, 1, 1],
+		[0, 0, 0, 0, 0, 0],
+	],
+	[Age.two]: [
+		[0, 0, 0, 0, 0, 0],
+		[1, 1, 1, 1, 1],
+		[2, 2, 2, 2],
+		[3, 3, 3],
+		[4, 4],
+	],
+	[Age.three]: [
+		[2, 2],
+		[1, 1, 1],
+		[0, 0, 0, 0],
+		[1, 3],
+		[0, 0, 0, 0],
+		[1, 1, 1],
+		[2, 2],
+	],
+};
 
 export default { cards, structure, wonders, gods };

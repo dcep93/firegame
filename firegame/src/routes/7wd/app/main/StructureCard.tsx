@@ -1,17 +1,18 @@
 import React from "react";
 
 import { getCardCost, store } from "../utils";
-import bank, {
+
+import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
+import {
+	Age,
+	Color,
 	Upgrade,
 	CardType,
 	ScienceEnum,
 	God,
-	Age,
-	Color,
-} from "../utils/bank";
-
-import styles from "../../../../shared/styles.module.css";
-import css from "../index.module.css";
+} from "../utils/types";
+import bank from "../utils/bank";
 
 class StructureCard extends React.Component<{
 	selectCard: (x: number, y: number, offset: number) => void;

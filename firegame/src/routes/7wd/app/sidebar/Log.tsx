@@ -1,6 +1,6 @@
 import SharedLog from "../../../../shared/components/log";
 
-import { GameType } from "../utils/NewGame";
+import { GameType } from "../utils/types";
 
 class Log extends SharedLog<GameType> {}
 

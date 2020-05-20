@@ -1,10 +1,10 @@
 import React from "react";
 import bank from "../utils/bank";
-import { PlayerType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 import { getWonderCost } from "../utils";
+import { PlayerType } from "../utils/types";
 
 class Wonder extends React.Component<{
 	index: number;

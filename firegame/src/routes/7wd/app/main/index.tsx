@@ -9,14 +9,6 @@ import {
 	getWonderCost,
 	addCommercial,
 } from "../utils";
-import bank, {
-	Color,
-	CardType,
-	ScienceToken,
-	ScienceEnum,
-	Age,
-} from "../utils/bank";
-import { CommercialEnum } from "../utils/NewGame";
 
 import Structure from "./Structure";
 import Player from "./Player";
@@ -25,6 +17,15 @@ import Trash from "./Trash";
 import Commercial from "./Commercial";
 import Science from "./Science";
 import Pantheon from "./Pantheon";
+import {
+	Age,
+	CommercialEnum,
+	ScienceToken,
+	Color,
+	CardType,
+	ScienceEnum,
+} from "../utils/types";
+import bank from "../utils/bank";
 
 export enum selected {
 	player,

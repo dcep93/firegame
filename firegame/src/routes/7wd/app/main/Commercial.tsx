@@ -1,11 +1,18 @@
 import React from "react";
 
 import { store, getWonderCost, utils, deal, getName } from "../utils";
-import { CommercialEnum, PlayerType, CommercialType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
-import bank, { Age, Color, ScienceToken } from "../utils/bank";
 import CommercialWonderFromTrash from "./CommercialWonderFromTrash";
+import {
+	CommercialType,
+	CommercialEnum,
+	Color,
+	ScienceToken,
+	PlayerType,
+	Age,
+} from "../utils/types";
+import bank from "../utils/bank";
 
 class Commercial extends React.Component<{
 	commercial: CommercialType;

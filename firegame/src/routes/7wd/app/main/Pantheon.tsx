@@ -1,9 +1,10 @@
 import React from "react";
 
 import { store, utils } from "../utils";
-import bank, { Age } from "../utils/bank";
+import bank from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
+import { Age } from "../utils/types";
 
 class Pantheon extends React.Component<{
 	selectPantheon: (index: number) => void;

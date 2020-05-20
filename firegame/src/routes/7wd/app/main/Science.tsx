@@ -1,10 +1,9 @@
 import React from "react";
 
 import { store, utils, getName } from "../utils";
-import bank, { ScienceToken } from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
-import { CommercialEnum } from "../utils/NewGame";
+import { ScienceToken, CommercialEnum } from "../utils/types";
 
 export const NUM_SCIENCES = 5;
 

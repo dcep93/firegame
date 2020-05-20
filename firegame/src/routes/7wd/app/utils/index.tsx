@@ -1,15 +1,17 @@
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
-
-import { GameType, PlayerType, CommercialType } from "./NewGame";
-import bank, {
-	CardType,
+import {
+	GameType,
+	PlayerType,
+	Age,
 	Resource,
+	CardType,
 	ScienceToken,
 	Color,
-	Age,
 	WonderType,
-} from "./bank";
+	CommercialType,
+} from "./types";
+import bank from "./bank";
 
 const BASE_COST = 2;
 
@@ -51,13 +53,14 @@ function deal(game: GameType) {
 		}
 		utils.shuffle(cardsToUse);
 	}
-	game.structure = bank.structure[game.age]!.map((mapRow, rowIndex) =>
-		mapRow.map((offset) => ({
-			offset,
-			cardIndex: cardsToUse.pop()!,
-			revealed: rowIndex % 2 === 0,
-			taken: false,
-		}))
+	game.structure = bank.structure[game.age]!.map(
+		(mapRow: number[], rowIndex: number) =>
+			mapRow.map((offset) => ({
+				offset,
+				cardIndex: cardsToUse.pop()!,
+				revealed: rowIndex % 2 === 0,
+				taken: false,
+			}))
 	);
 	var wentFirst;
 	const militaryDiff = utils.getMe().military - utils.getOpponent().military;
