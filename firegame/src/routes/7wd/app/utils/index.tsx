@@ -14,39 +14,56 @@ import {
 import bank from "./bank";
 
 const BASE_COST = 2;
+const CARDS_PER_AGE = 20;
+const NUM_PURPLES = 3;
 
 class Utils extends Shared<GameType, PlayerType> {
+	tokenToPoints: {
+		[token in ScienceToken]?: (player: PlayerType) => number;
+	} = {
+		[ScienceToken.agriculture]: () => 4,
+		[ScienceToken.mathematics]: (player: PlayerType) =>
+			(player.sciences || []).length,
+		[ScienceToken.mysticism]: (player: PlayerType) =>
+			2 * (player.tokens || []).length,
+		[ScienceToken.philosophy]: () => 7,
+	};
+
+	getMilitaryPoints(militaryDiff: number): number {
+		if (militaryDiff <= 0) return 0;
+		if (militaryDiff <= 2) return 2;
+		if (militaryDiff <= 5) return 5;
+		return 10;
+	}
 	isMyTurn(game_: GameType | undefined = undefined): boolean {
 		const game: GameType = game_ || store.gameW.game!;
 		if (game && game.commercials)
-			return game.commercials[0].playerIndex === this.myIndex(game);
-		return super.isMyTurn(game_);
+			return game.commercials[0].playerIndex === utils.myIndex(game);
+		return super.isMyTurn(game);
 	}
 
 	getOpponent(game_: GameType | undefined = undefined) {
 		const game = game_ || store.gameW.game!;
-		return game.players[1 - this.myIndex(game)];
+		return game.players[1 - utils.myIndex(game)];
 	}
 
 	deal(game: GameType) {
-		const indexedCards = bank.cards
-			.map((card, index) => ({ card, index }))
-			.filter((ic) => ic.card.age === game.age);
-		const indices = indexedCards.map((ic) => ic.index);
-		utils.shuffle(indices);
-		const cardsToUse = indices.splice(0, 20);
-		if (game.age === Age.two && game.params.godExpansion) {
+		const indices = utils.shuffle(
+			bank.cards
+				.map((card, index) => ({ card, index }))
+				.filter((ic) => ic.card.age === game.age)
+				.map((ic) => ic.index)
+		);
+		const cardsToUse = indices.splice(0, CARDS_PER_AGE);
+		if (game.age === Age.two && game.params.godExpansion)
 			utils.assignGate(game);
-		}
 		if (game.age === Age.three) {
 			const matchAge = game.params.godExpansion ? Age.god : Age.guild;
 			const purples = bank.cards
 				.map((card, index) => ({ card, index }))
 				.filter((ic) => ic.card.age === matchAge)
 				.map((ic) => ic.index);
-			for (let i = 0; i < 3; i++) {
-				cardsToUse.splice(i, 1, purples.pop()!);
-			}
+			cardsToUse.push(...purples.splice(0, NUM_PURPLES));
 			utils.shuffle(cardsToUse);
 		}
 		game.structure = bank.structure[game.age]!.map(
@@ -68,8 +85,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		} else {
 			wentFirst = 1 - game.wentFirst;
 		}
-		game.currentPlayer = wentFirst;
-		game.wentFirst = wentFirst;
+		game.currentPlayer = game.wentFirst = wentFirst;
 	}
 
 	assignGate(game: GameType) {
@@ -77,8 +93,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			if (game.pantheon[index] === -1) {
 				game.pantheon[index] = bank.gods
 					.map((god, godIndex) => ({ god, godIndex }))
-					.filter((obj) => obj.god.source === undefined)
-					.map((obj) => obj.godIndex)[0];
+					.find((obj) => obj.god.source === undefined)!.godIndex;
 				return;
 			}
 		}
@@ -107,9 +122,8 @@ class Utils extends Shared<GameType, PlayerType> {
 		const paid: {
 			[r in Resource]?: { pricePer: number; needed: number };
 		} = {};
-		Object.keys(costs).forEach((r: string) => {
-			// @ts-ignore
-			const resource: Resource = r;
+		Object.keys(costs).forEach((r) => {
+			const resource: Resource = r as Resource;
 			const needed = costs[resource]! - (myResources[resource] || 0);
 			if (needed <= 0) return;
 			const pricePer = discounts.includes(resource)
@@ -126,8 +140,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				var pricePer = 0;
 				var resource: Resource | null = null;
 				Object.entries(paid).forEach(([r_, o]) => {
-					// @ts-ignore
-					const r: Resource = r_;
+					const r: Resource = r_ as Resource;
 					if (o!.needed < 0 || !options?.includes(r)) return;
 					if (o!.pricePer > pricePer) {
 						pricePer = o!.pricePer;
@@ -135,7 +148,8 @@ class Utils extends Shared<GameType, PlayerType> {
 					}
 				});
 				if (resource === null) return;
-				const picked: any = paid[resource];
+				const picked: { pricePer: number; needed: number } =
+					paid[resource];
 				picked.needed--;
 				price -= pricePer;
 			});
@@ -143,13 +157,12 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	getCardCost(card: CardType): number {
-		const cards = utils.getMe().cards || [];
 		if (
-			cards.filter(
+			(utils.getMe().cards || []).find(
 				(cardIndex) =>
 					card.upgradesFrom &&
 					bank.cards[cardIndex].upgradesTo === card.upgradesFrom
-			).length !== 0
+			)
 		)
 			return 0;
 		if (
@@ -159,6 +172,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			return 0;
 		const price = utils.getCostCost(card.cost);
 		if (
+			card.upgradesFrom &&
 			(utils.getMe().sciences || []).includes(ScienceToken.engineering) &&
 			price > 0
 		)
@@ -184,10 +198,10 @@ class Utils extends Shared<GameType, PlayerType> {
 			.filter(Boolean)
 			.map((g) => Math.max(g!(utils.getMe()), g!(utils.getOpponent())))
 			.reduce((a, b) => a + b, 0);
-		const militaryDiff =
+		const militaryPoints = utils.getMilitaryPoints(
 			player.military -
-			store.gameW.game.players[1 - player.index].military;
-		const militaryPoints = utils.getMilitaryPoints(militaryDiff);
+				store.gameW.game.players[1 - player.index].military
+		);
 		const sciencePoints = (player.sciences || [])
 			.map((token) => utils.tokenToPoints[token])
 			.filter(Boolean)
@@ -211,24 +225,6 @@ class Utils extends Shared<GameType, PlayerType> {
 			wonderPoints +
 			godPoints
 		);
-	}
-
-	tokenToPoints: {
-		[token in ScienceToken]?: (player: PlayerType) => number;
-	} = {
-		[ScienceToken.agriculture]: () => 4,
-		[ScienceToken.mathematics]: (player: PlayerType) =>
-			(player.sciences || []).length,
-		[ScienceToken.mysticism]: (player: PlayerType) =>
-			2 * (player.tokens || []).length,
-		[ScienceToken.philosophy]: () => 7,
-	};
-
-	getMilitaryPoints(militaryDiff: number): number {
-		if (militaryDiff <= 0) return 0;
-		if (militaryDiff <= 2) return 2;
-		if (militaryDiff <= 5) return 5;
-		return 10;
 	}
 
 	stealMoney(amount: number) {
@@ -271,7 +267,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		store.gameW.game.commercials.push(commercial);
 	}
 
-	getName<T>(val: string, e: T): keyof T {
+	enumName<T>(val: string, e: T): keyof T {
 		return Object.entries(e).find(([k, v]) => v === val)![0] as keyof T;
 	}
 }

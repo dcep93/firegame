@@ -101,7 +101,7 @@ class Commercial extends React.Component<{
 									>
 										{
 											ScienceToken[
-												utils.getName(
+												utils.enumName(
 													scienceName,
 													ScienceToken
 												)
@@ -326,7 +326,7 @@ class Commercial extends React.Component<{
 									>
 										{
 											ScienceToken[
-												utils.getName(
+												utils.enumName(
 													scienceName,
 													ScienceToken
 												)
@@ -470,7 +470,7 @@ class Commercial extends React.Component<{
 		me.sciences.push(scienceName);
 		this.pop();
 		store.update(
-			`built ${ScienceToken[utils.getName(scienceName, ScienceToken)]}`
+			`built ${ScienceToken[utils.enumName(scienceName, ScienceToken)]}`
 		);
 	}
 

@@ -169,7 +169,7 @@ class Player extends React.Component<{
 			<div className={styles.bubble}>
 				{(this.props.player.sciences || []).map((science) => (
 					<div key={science} title={JSON.stringify(science, null, 2)}>
-						{ScienceToken[utils.getName(science, ScienceToken)]}
+						{ScienceToken[utils.enumName(science, ScienceToken)]}
 					</div>
 				))}
 			</div>

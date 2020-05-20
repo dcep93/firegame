@@ -29,7 +29,7 @@ class Science extends React.Component {
 				title={scienceToken}
 				onClick={() => this.select(index)}
 			>
-				{ScienceToken[utils.getName(scienceToken, ScienceToken)]}
+				{ScienceToken[utils.enumName(scienceToken, ScienceToken)]}
 			</div>
 		);
 	}
