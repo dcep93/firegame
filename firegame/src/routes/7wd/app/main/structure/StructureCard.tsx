@@ -1,9 +1,7 @@
 import React from "react";
 
-import utils, { store } from "../utils";
-
-import styles from "../../../../shared/styles.module.css";
-import css from "../index.module.css";
+import utils, { store } from "../../utils";
+import bank from "../../utils/bank";
 import {
 	Age,
 	Color,
@@ -11,17 +9,19 @@ import {
 	CardType,
 	ScienceEnum,
 	God,
-} from "../utils/types";
-import bank from "../utils/bank";
+} from "../../utils/types";
+
+import styles from "../../../../../shared/styles.module.css";
+import css from "../../index.module.css";
 
 class StructureCard extends React.Component<{
 	selectCard: (x: number, y: number, offset: number) => void;
 	cardIndex: number;
-	offset: number;
 	revealed: boolean;
 	taken: boolean;
 	x: number;
 	y: number;
+	offset: number;
 }> {
 	render() {
 		return (
@@ -35,7 +35,7 @@ class StructureCard extends React.Component<{
 					)
 				}
 				style={{
-					transform: this.getTransform(),
+					transform: `translate(${this.props.offset * 50}%, 0%)`,
 					visibility: this.props.taken ? "hidden" : "visible",
 					zIndex: this.props.y,
 				}}
@@ -50,11 +50,11 @@ class StructureCard extends React.Component<{
 			if (store.gameW.game.params.godExpansion) {
 				if (store.gameW.game.age === Age.one) {
 					if (this.props.x % 2 === 0) {
-						return "token";
+						return "god token";
 					}
 				} else if (store.gameW.game.age) {
 					if (this.props.x % 2 === 0 && this.props.y === 1) {
-						return "token";
+						return "discount token";
 					}
 				}
 			}
@@ -68,6 +68,7 @@ class StructureCard extends React.Component<{
 				<div>
 					cost: {card.cost.join("")} (${utils.getCardCost(card)})
 				</div>
+				{card.message && <div>{card.message}</div>}
 				{this.renderExtra(card)}
 				{card.upgradesFrom && (
 					<div>from: {Upgrade[card.upgradesFrom]}</div>
@@ -77,15 +78,9 @@ class StructureCard extends React.Component<{
 		);
 	}
 
-	getTransform() {
-		const p = this.props.offset * 50;
-		return `translate(${p}%, 0%)`;
-	}
-
 	renderExtra(card: CardType) {
 		return (
 			<>
-				{card.message && <div>{card.message}</div>}
 				{card.extra.resource && (
 					<div>({card.extra.resource!.join("")})</div>
 				)}

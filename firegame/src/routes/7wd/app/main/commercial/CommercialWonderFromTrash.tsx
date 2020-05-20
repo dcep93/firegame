@@ -1,8 +1,8 @@
 import React from "react";
-import utils, { store } from "../utils";
+import utils, { store } from "../../utils";
+import bank from "../../utils/bank";
 
-import styles from "../../../../shared/styles.module.css";
-import bank from "../utils/bank";
+import styles from "../../../../../shared/styles.module.css";
 
 class CommercialWonderFromTrash extends React.Component<
 	{ pop: () => void },

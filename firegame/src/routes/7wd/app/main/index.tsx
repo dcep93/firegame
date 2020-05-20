@@ -2,13 +2,14 @@ import React from "react";
 
 import utils, { store } from "../utils";
 
-import Structure from "./Structure";
-import Player from "./Player";
+import Structure from "./structure";
+import Player from "./player";
 import Military from "./Military";
 import Trash from "./Trash";
-import Commercial from "./Commercial";
+import Commercial from "./commercial";
 import Science from "./Science";
 import Pantheon from "./Pantheon";
+import bank from "../utils/bank";
 import {
 	Age,
 	CommercialEnum,
@@ -17,7 +18,6 @@ import {
 	CardType,
 	ScienceEnum,
 } from "../utils/types";
-import bank from "../utils/bank";
 
 export enum selected {
 	player,
@@ -105,7 +105,7 @@ class Main extends React.Component<
 						}
 						select={this.selectPlayer.bind(this)}
 					/>
-					<Player player={utils.getOpponent()} />
+					<Player player={utils.getOpponent()} select={() => null} />
 				</div>
 				<div>
 					<Military />

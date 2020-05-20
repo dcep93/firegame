@@ -1,10 +1,8 @@
 import React from "react";
 
-import utils, { store } from "../utils";
-
 import Wonder from "./Wonder";
-
-import styles from "../../../../shared/styles.module.css";
+import utils, { store } from "../../utils";
+import bank from "../../utils/bank";
 import {
 	PlayerType,
 	Color,
@@ -12,13 +10,15 @@ import {
 	ScienceEnum,
 	Upgrade,
 	ScienceToken,
-} from "../utils/types";
-import bank from "../utils/bank";
+} from "../../utils/types";
 
+import styles from "../../../../../shared/styles.module.css";
+
+// todo organize
 class Player extends React.Component<{
 	player: PlayerType;
 	selected?: number;
-	select?: (index: number) => void;
+	select: (index: number) => void;
 }> {
 	render() {
 		if (!this.props.player) return null;
@@ -28,7 +28,7 @@ class Player extends React.Component<{
 			<div>
 				<div
 					className={classes.join(" ")}
-					onClick={() => this.props.select && this.props.select(-1)}
+					onClick={() => this.props.select(-1)}
 				>
 					<h2>
 						{this.props.player.userName} - $
