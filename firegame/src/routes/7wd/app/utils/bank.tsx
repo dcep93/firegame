@@ -1,6 +1,7 @@
+import { NUM_SCIENCES } from "../main/Science";
+
 import { utils, store, stealMoney, increaseMilitary, addCommercial } from ".";
 import { PlayerType, CommercialEnum } from "./NewGame";
-import { NUM_SCIENCES } from "../main/Science";
 
 export interface CardType {
 	name: string;
@@ -41,13 +42,13 @@ export enum Resource {
 }
 
 export enum Color {
-	brown = "brown",
-	grey = "grey",
-	yellow = "yellow",
-	red = "red",
-	blue = "blue",
-	green = "green",
-	purple = "purple",
+	brown,
+	grey,
+	yellow,
+	red,
+	blue,
+	green,
+	purple,
 }
 
 export enum ScienceEnum {
@@ -82,44 +83,28 @@ export enum Upgrade {
 }
 
 export enum God {
-	egyptian = "egyptian",
-	mesopotamian = "mesopotamian",
-	greek = "greek",
-	roman = "roman",
-	phoenician = "phoenician",
+	egyptian,
+	mesopotamian,
+	greek,
+	roman,
+	phoenician,
 }
 
 export enum ScienceToken {
-	agriculture,
-	mathematics,
-	urbanism,
-	polioretics,
-	architecture,
-	law,
-	economy,
-	masonry,
-	mysticism,
-	engineering,
-	philosophy,
-	theology,
-	strategy,
+	agriculture = "$6 + 4 points",
+	mathematics = "3 points / science token",
+	urbanism = "$6 + $4 when upgrading",
+	polioretics = "siege $1 / military",
+	architecture = "free wonders",
+	law = "extra science symbol",
+	economy = "opponents pay you when buying",
+	masonry = "free blue cards",
+	mysticism = "2 points per god token",
+	engineering = "upgrades cost $1",
+	philosophy = "7 points",
+	theology = "go again when building wonder",
+	strategy = "military moves extra",
 }
-
-const sciences: { [token in ScienceToken]: string } = {
-	[ScienceToken.agriculture]: "$6 + 4 points",
-	[ScienceToken.mathematics]: "3 points / science token",
-	[ScienceToken.urbanism]: "$6 + $4 when upgrading",
-	[ScienceToken.polioretics]: "siege $1 / military",
-	[ScienceToken.architecture]: "free wonders",
-	[ScienceToken.law]: "extra science symbol",
-	[ScienceToken.economy]: "opponents pay you when buying",
-	[ScienceToken.masonry]: "free blue cards",
-	[ScienceToken.mysticism]: "2 points per god token",
-	[ScienceToken.engineering]: "upgrades cost $1",
-	[ScienceToken.philosophy]: "7 points",
-	[ScienceToken.theology]: "go again when building wonder",
-	[ScienceToken.strategy]: "military moves extra",
-};
 
 const structure: { [age in Age]?: number[][] } = {
 	[Age.one]: [
@@ -1274,4 +1259,4 @@ const wonders: WonderType[] = [
 	},
 ];
 
-export default { cards, structure, wonders, sciences, gods };
+export default { cards, structure, wonders, gods };

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store, getWonderCost, utils, deal } from "../utils";
+import { store, getWonderCost, utils, deal, getName } from "../utils";
 import { CommercialEnum, PlayerType, CommercialType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
@@ -92,8 +92,15 @@ class Commercial extends React.Component<{
 										}
 										className={styles.bubble}
 									>
-										{ScienceToken[scienceName]} -{" "}
-										{bank.sciences[scienceName]}
+										{
+											ScienceToken[
+												getName(
+													scienceName,
+													ScienceToken
+												)
+											]
+										}{" "}
+										- {scienceName}
 									</div>
 								)
 							)}
@@ -310,8 +317,15 @@ class Commercial extends React.Component<{
 										}
 										className={styles.bubble}
 									>
-										{ScienceToken[scienceName]} -{" "}
-										{bank.sciences[scienceName]}
+										{
+											ScienceToken[
+												getName(
+													scienceName,
+													ScienceToken
+												)
+											]
+										}{" "}
+										- {scienceName}
 									</div>
 								)
 							)}
@@ -448,7 +462,9 @@ class Commercial extends React.Component<{
 		if (!me.sciences) me.sciences = [];
 		me.sciences.push(scienceName);
 		this.pop();
-		store.update(`built ${ScienceToken[scienceName]}`);
+		store.update(
+			`built ${ScienceToken[getName(scienceName, ScienceToken)]}`
+		);
 	}
 
 	reviveCard(trashIndex: number) {

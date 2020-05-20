@@ -262,6 +262,10 @@ function addCommercial(commercial: CommercialType) {
 	store.gameW.game.commercials.push(commercial);
 }
 
+function getName<T>(val: string, e: T): keyof T {
+	return Object.entries(e).find(([k, v]) => v === val)![0] as keyof T;
+}
+
 export {
 	store,
 	utils,
@@ -273,4 +277,5 @@ export {
 	getWonderCost,
 	increaseMilitary,
 	addCommercial,
+	getName,
 };

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store, utils } from "../utils";
+import { store, utils, getName } from "../utils";
 import bank, { ScienceToken } from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
@@ -27,10 +27,10 @@ class Science extends React.Component {
 			<div
 				key={scienceToken}
 				className={styles.bubble}
-				title={bank.sciences[scienceToken]}
+				title={scienceToken}
 				onClick={() => this.select(index)}
 			>
-				{ScienceToken[scienceToken]}
+				{ScienceToken[getName(scienceToken, ScienceToken)]}
 			</div>
 		);
 	}

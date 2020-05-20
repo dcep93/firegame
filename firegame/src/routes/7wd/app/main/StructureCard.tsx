@@ -1,7 +1,14 @@
 import React from "react";
 
 import { getCardCost, store } from "../utils";
-import bank, { Upgrade, CardType, ScienceEnum, God, Age } from "../utils/bank";
+import bank, {
+	Upgrade,
+	CardType,
+	ScienceEnum,
+	God,
+	Age,
+	Color,
+} from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -55,7 +62,7 @@ class StructureCard extends React.Component<{
 		const card = bank.cards[this.props.cardIndex];
 		return (
 			<div title={JSON.stringify(card, null, 2)}>
-				<div style={{ backgroundColor: card.color }}>_</div>
+				<div style={{ backgroundColor: Color[card.color] }}>_</div>
 				<div>{card.name}</div>
 				<div>
 					cost: {card.cost.join("")} (${getCardCost(card)})

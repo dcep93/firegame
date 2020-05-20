@@ -144,26 +144,17 @@ function prepareToChooseWonders(game: GameType): GameType {
 function maybePrepareExpansion(game: GameType): GameType {
 	if (game.params.godExpansion) {
 		game.discounts = utils.shuffle([2, 3, 4]);
-		game.godTokens = utils.shuffle([
-			God.egyptian,
-			God.egyptian,
-			God.mesopotamian,
-			God.mesopotamian,
-			God.greek,
-			God.greek,
-			God.phoenician,
-			God.phoenician,
-			God.roman,
-			God.roman,
-		]);
+		game.godTokens = utils.shuffle(
+			Object.values(God).concat(Object.values(God)) as God[]
+		);
 		const gods: { [g in God]?: number[] } = {};
-		for (let source in God) {
-			const god: God = God[source as God];
-			gods[god] = bank.gods
-				.map((g, index) => ({ g, index }))
-				.filter((obj) => obj.g.source === god)
-				.map((obj) => obj.index);
-		}
+		Object.values(God).forEach(
+			(god: string | God) =>
+				(gods[god as God] = bank.gods
+					.map((g, index) => ({ g, index }))
+					.filter((obj) => obj.g.source === god)
+					.map((obj) => obj.index))
+		);
 		game.gods = gods as { [g in God]: number[] };
 		game.pantheon = Array.from(new Array(6)).map(() => -1);
 	}

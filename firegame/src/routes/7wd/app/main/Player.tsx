@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getScore, store, utils } from "../utils";
+import { getScore, store, utils, getName } from "../utils";
 import bank, {
 	Color,
 	CardType,
@@ -86,13 +86,13 @@ class Player extends React.Component<{
 			return (
 				<div key={color} className={styles.bubble}>
 					<div style={{ backgroundColor: color }}>_</div>
-					{this.renderColorCards(color, cards!)}
+					{this.renderColorCards((color as unknown) as Color, cards!)}
 				</div>
 			);
 		});
 	}
 
-	renderColorCards(color: string, cards: CardType[]) {
+	renderColorCards(color: Color, cards: CardType[]) {
 		var f: (card: CardType) => string = () => "";
 		switch (color) {
 			case Color.brown:
@@ -167,11 +167,8 @@ class Player extends React.Component<{
 		return (
 			<div className={styles.bubble}>
 				{(this.props.player.sciences || []).map((science) => (
-					<div
-						key={science}
-						title={JSON.stringify(bank.sciences[science], null, 2)}
-					>
-						{ScienceToken[science]}
+					<div key={science} title={JSON.stringify(science, null, 2)}>
+						{ScienceToken[getName(science, ScienceToken)]}
 					</div>
 				))}
 			</div>
