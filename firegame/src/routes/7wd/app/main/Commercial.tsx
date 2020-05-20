@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store, getWonderCost, utils, deal, getName } from "../utils";
+import utils, { store } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 import CommercialWonderFromTrash from "./CommercialWonderFromTrash";
@@ -101,7 +101,7 @@ class Commercial extends React.Component<{
 									>
 										{
 											ScienceToken[
-												getName(
+												utils.getName(
 													scienceName,
 													ScienceToken
 												)
@@ -326,7 +326,7 @@ class Commercial extends React.Component<{
 									>
 										{
 											ScienceToken[
-												getName(
+												utils.getName(
 													scienceName,
 													ScienceToken
 												)
@@ -470,7 +470,7 @@ class Commercial extends React.Component<{
 		me.sciences.push(scienceName);
 		this.pop();
 		store.update(
-			`built ${ScienceToken[getName(scienceName, ScienceToken)]}`
+			`built ${ScienceToken[utils.getName(scienceName, ScienceToken)]}`
 		);
 	}
 
@@ -538,7 +538,8 @@ class Commercial extends React.Component<{
 				<p>{wonder.name}</p>
 				<p>{wonder.message}</p>
 				<div>
-					cost: {wonder.cost.join("")} (${getWonderCost(wonder)})
+					cost: {wonder.cost.join("")} (${utils.getWonderCost(wonder)}
+					)
 				</div>
 			</div>
 		);
@@ -561,7 +562,7 @@ class Commercial extends React.Component<{
 					this.pop();
 					const game = store.gameW.game;
 					game.age = Age.one;
-					deal(game);
+					utils.deal(game);
 				}
 			}
 		}

@@ -1,14 +1,6 @@
 import React from "react";
 
-import {
-	utils,
-	store,
-	getCardCost,
-	deal,
-	increaseMilitary,
-	getWonderCost,
-	addCommercial,
-} from "../utils";
+import utils, { store } from "../utils";
 
 import Structure from "./Structure";
 import Player from "./Player";
@@ -164,7 +156,7 @@ class Main extends React.Component<
 			return alert("cannot take that card");
 		const card = bank.cards[structureCard.cardIndex];
 		if (this.state.selectedWonder === -1) {
-			const cost = getCardCost(card);
+			const cost = utils.getCardCost(card);
 			if (cost > utils.getMe().money)
 				return alert("cannot afford that card");
 			utils.getMe().money -= cost;
@@ -175,7 +167,7 @@ class Main extends React.Component<
 			)
 				utils.getOpponent().money += cost;
 		} else if (this.state.selectedWonder !== undefined) {
-			const cost = getWonderCost(
+			const cost = utils.getWonderCost(
 				bank.wonders[
 					utils.getMe().wonders[this.state.selectedWonder!]
 						.wonderIndex
@@ -244,7 +236,7 @@ class Main extends React.Component<
 				} else {
 					index = 1 - me.index;
 				}
-				addCommercial({
+				utils.addCommercial({
 					commercial: CommercialEnum.destroyWonder,
 					playerIndex: index,
 				});
@@ -258,11 +250,11 @@ class Main extends React.Component<
 			switch (store.gameW.game.age) {
 				case Age.one:
 					store.gameW.game.age = Age.two;
-					deal(store.gameW.game);
+					utils.deal(store.gameW.game);
 					break;
 				case Age.two:
 					store.gameW.game.age = Age.three;
-					deal(store.gameW.game);
+					utils.deal(store.gameW.game);
 					break;
 				case Age.three:
 					alert("game over");
@@ -279,7 +271,7 @@ class Main extends React.Component<
 		if (!me.tokens) me.tokens = [];
 		if (game.age === Age.one) {
 			if (col % 2 === 0) {
-				addCommercial({
+				utils.addCommercial({
 					commercial: CommercialEnum.pickGod,
 					playerIndex: utils.myIndex(),
 				});
@@ -321,7 +313,7 @@ class Main extends React.Component<
 		if (card.extra.military) {
 			var military = card.extra.military;
 			if (sciences.includes(ScienceToken.strategy)) military++;
-			increaseMilitary(military);
+			utils.increaseMilitary(military);
 		}
 		if (card.extra.science) {
 			const scienceCards = me

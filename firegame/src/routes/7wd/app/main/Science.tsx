@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store, utils, getName } from "../utils";
+import utils, { store } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 import { ScienceToken, CommercialEnum } from "../utils/types";
@@ -29,7 +29,7 @@ class Science extends React.Component {
 				title={scienceToken}
 				onClick={() => this.select(index)}
 			>
-				{ScienceToken[getName(scienceToken, ScienceToken)]}
+				{ScienceToken[utils.getName(scienceToken, ScienceToken)]}
 			</div>
 		);
 	}

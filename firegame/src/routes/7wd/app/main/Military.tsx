@@ -1,5 +1,5 @@
 import React from "react";
-import { utils, getMilitaryPoints, store } from "../utils";
+import utils, { store } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -26,7 +26,7 @@ class Military extends React.Component {
 										index - NUM_POSITIONS
 									)}
 									<br />
-									{getMilitaryPoints(
+									{utils.getMilitaryPoints(
 										Math.abs(index - NUM_POSITIONS)
 									)}
 								</div>

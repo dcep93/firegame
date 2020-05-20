@@ -1,6 +1,6 @@
 import { NUM_SCIENCES } from "../main/Science";
 
-import { utils, store, stealMoney, increaseMilitary, addCommercial } from ".";
+import utils, { store } from ".";
 import {
 	CardType,
 	Age,
@@ -802,7 +802,7 @@ const gods: GodType[] = [
 		source: God.egyptian,
 		message: "destroy a built wonder",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.unbuild,
 				playerIndex: utils.myIndex(),
 			}),
@@ -812,7 +812,7 @@ const gods: GodType[] = [
 		source: God.egyptian,
 		message: "steal an unbuilt wonder",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.stealWonder,
 				playerIndex: utils.myIndex(),
 			}),
@@ -822,7 +822,7 @@ const gods: GodType[] = [
 		source: God.egyptian,
 		message: "trash -> wonder",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.wonderFromTrash,
 				playerIndex: utils.myIndex(),
 			}),
@@ -839,7 +839,7 @@ const gods: GodType[] = [
 		source: God.greek,
 		message: "destroy a structure card",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.destroyFromStructure,
 				playerIndex: utils.myIndex(),
 			}),
@@ -849,7 +849,7 @@ const gods: GodType[] = [
 		source: God.greek,
 		message: "build a card from the trash",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.revive,
 				playerIndex: utils.myIndex(),
 			}),
@@ -859,7 +859,7 @@ const gods: GodType[] = [
 		source: God.mesopotamian,
 		message: "select 1 / 2 science tokens",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.enki,
 				playerIndex: utils.myIndex(),
 				extra: utils
@@ -872,7 +872,7 @@ const gods: GodType[] = [
 		source: God.mesopotamian,
 		message: "copy a science from opponent",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.copyScience,
 				playerIndex: utils.myIndex(),
 			}),
@@ -885,7 +885,7 @@ const gods: GodType[] = [
 			utils
 				.getMe()
 				.sciences?.filter((token) => token === ScienceToken.law) &&
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.science,
 				playerIndex: utils.myIndex(),
 			}),
@@ -895,7 +895,7 @@ const gods: GodType[] = [
 		source: God.phoenician,
 		message: "steal a brown/grey card",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.baal,
 				playerIndex: utils.myIndex(),
 			}),
@@ -946,13 +946,13 @@ const gods: GodType[] = [
 		name: "mars",
 		source: God.roman,
 		message: "military 2",
-		f: () => increaseMilitary(2),
+		f: () => utils.increaseMilitary(2),
 	},
 	{
 		name: "gate",
 		message: "cost x2: select 1 from top gods",
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.gate,
 				playerIndex: utils.myIndex(),
 			}),
@@ -973,9 +973,9 @@ const wonders: WonderType[] = [
 		cost: [Resource.glass, Resource.wood, Resource.stone, Resource.stone],
 		f: () =>
 			Promise.resolve()
-				.then(() => increaseMilitary(1))
+				.then(() => utils.increaseMilitary(1))
 				.then(() =>
-					addCommercial({
+					utils.addCommercial({
 						commercial: CommercialEnum.destroyGrey,
 						playerIndex: utils.myIndex(),
 					})
@@ -994,9 +994,9 @@ const wonders: WonderType[] = [
 		],
 		f: () =>
 			Promise.resolve()
-				.then(() => increaseMilitary(1))
+				.then(() => utils.increaseMilitary(1))
 				.then(() =>
-					addCommercial({
+					utils.addCommercial({
 						commercial: CommercialEnum.destroyBrown,
 						playerIndex: utils.myIndex(),
 					})
@@ -1045,7 +1045,7 @@ const wonders: WonderType[] = [
 			Resource.clay,
 		],
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.revive,
 				playerIndex: utils.myIndex(),
 			}),
@@ -1063,7 +1063,7 @@ const wonders: WonderType[] = [
 		],
 		f: () => {
 			utils.getMe().money += 3;
-			stealMoney(3);
+			utils.stealMoney(3);
 		},
 		points: 3,
 		goAgain: true,
@@ -1088,7 +1088,7 @@ const wonders: WonderType[] = [
 		message: "select 1/3 science tokens",
 		cost: [Resource.paper, Resource.glass, Resource.wood, Resource.wood],
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.library,
 				playerIndex: utils.myIndex(),
 				extra: utils
@@ -1101,7 +1101,7 @@ const wonders: WonderType[] = [
 		name: "the colossus",
 		message: "military +2, 3 points",
 		cost: [Resource.glass, Resource.clay, Resource.clay, Resource.clay],
-		f: () => increaseMilitary(2),
+		f: () => utils.increaseMilitary(2),
 		points: 3,
 	},
 	{
@@ -1115,7 +1115,7 @@ const wonders: WonderType[] = [
 			Resource.wood,
 		],
 		f: () =>
-			addCommercial({
+			utils.addCommercial({
 				commercial: CommercialEnum.theater,
 				playerIndex: utils.myIndex(),
 			}),

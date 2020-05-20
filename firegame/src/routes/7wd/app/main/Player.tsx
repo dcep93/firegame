@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getScore, store, utils, getName } from "../utils";
+import utils, { store } from "../utils";
 
 import Wonder from "./Wonder";
 
@@ -33,7 +33,7 @@ class Player extends React.Component<{
 					<h2>
 						{this.props.player.userName} - $
 						{this.props.player.money} -{" "}
-						{getScore(this.props.player)}
+						{utils.getScore(this.props.player)}
 					</h2>
 					<div className={styles.flex}>
 						{this.props.player.wonders && this.renderWonders()}
@@ -169,7 +169,7 @@ class Player extends React.Component<{
 			<div className={styles.bubble}>
 				{(this.props.player.sciences || []).map((science) => (
 					<div key={science} title={JSON.stringify(science, null, 2)}>
-						{ScienceToken[getName(science, ScienceToken)]}
+						{ScienceToken[utils.getName(science, ScienceToken)]}
 					</div>
 				))}
 			</div>

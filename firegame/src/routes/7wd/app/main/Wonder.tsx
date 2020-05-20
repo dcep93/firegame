@@ -3,7 +3,7 @@ import bank from "../utils/bank";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { getWonderCost } from "../utils";
+import utils from "../utils";
 import { PlayerType } from "../utils/types";
 
 class Wonder extends React.Component<{
@@ -46,7 +46,7 @@ class Wonder extends React.Component<{
 					this.props.select ? this.selectSelf.bind(this) : undefined
 				}
 			>
-				{wonder.name} - {wonder.cost} (${getWonderCost(wonder)})
+				{wonder.name} - {wonder.cost} (${utils.getWonderCost(wonder)})
 			</div>
 		);
 	}

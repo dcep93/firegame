@@ -1,6 +1,6 @@
 import React from "react";
 
-import { utils, store } from "./utils";
+import utils, { store } from "./utils";
 import Main from "./main";
 import Sidebar from "./sidebar";
 

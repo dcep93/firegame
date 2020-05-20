@@ -1,4 +1,4 @@
-import { store, utils } from ".";
+import utils, { store } from ".";
 import { Params, GameType, ScienceToken, CommercialEnum, God } from "./types";
 import bank from "./bank";
 
@@ -15,15 +15,15 @@ function NewGame(params: Params): PromiseLike<GameType> {
 
 function setBoard(game: GameType): GameType {
 	game.trash = [];
-	// @ts-ignore
-	game.sciences = utils.shuffle(Object.keys(bank.sciences));
-	game.sciences = game.sciences.filter(
-		(token) =>
-			game.params.godExpansion ||
-			(token !== ScienceToken.mysticism &&
-				token !== ScienceToken.polioretics &&
-				token !== ScienceToken.engineering)
-	);
+	game.sciences = utils
+		.shuffle(Object.values(ScienceToken))
+		.filter(
+			(token) =>
+				game.params.godExpansion ||
+				(token !== ScienceToken.mysticism &&
+					token !== ScienceToken.polioretics &&
+					token !== ScienceToken.engineering)
+		);
 	return game;
 }
 
