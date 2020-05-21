@@ -969,7 +969,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "circus maximus",
-		message: "military +1 and destroy a grey card",
+		message: "3 points military +1 and destroy a grey card",
 		cost: [Resource.glass, Resource.wood, Resource.stone, Resource.stone],
 		f: () =>
 			Promise.resolve()
@@ -984,7 +984,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the statue of zeus",
-		message: "military +1 and destroy a brown card",
+		message: "3 points military +1 and destroy a brown card",
 		cost: [
 			Resource.paper,
 			Resource.paper,
@@ -1013,7 +1013,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the great lighthouse",
-		message: `o: ${Resource.wood}/${Resource.clay}/${Resource.stone}`,
+		message: `4 points o: ${Resource.wood}/${Resource.clay}/${Resource.stone}`,
 		cost: [Resource.paper, Resource.paper, Resource.stone, Resource.wood],
 		f: () => null,
 		points: 4,
@@ -1021,7 +1021,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "piraeus",
-		message: `o: ${Resource.paper}/${Resource.glass}`,
+		message: `2 points o: ${Resource.paper}/${Resource.glass}`,
 		cost: [Resource.clay, Resource.stone, Resource.wood, Resource.wood],
 		f: () => null,
 		goAgain: true,
@@ -1038,7 +1038,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the mausoleum",
-		message: "build from discard",
+		message: "2 points build from discard",
 		cost: [
 			Resource.paper,
 			Resource.glass,
@@ -1087,7 +1087,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the great library",
-		message: "select 1/3 science tokens",
+		message: "4 points select 1/3 science tokens",
 		cost: [Resource.paper, Resource.glass, Resource.wood, Resource.wood],
 		f: () =>
 			utils.addCommercial({
@@ -1113,7 +1113,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "the divine theater",
-		message: "pick a god",
+		message: "2 points pick a god",
 		cost: [
 			Resource.paper,
 			Resource.paper,
