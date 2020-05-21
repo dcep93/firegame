@@ -1,12 +1,15 @@
 import React from "react";
 
 import utils from "../../utils";
+import bank from "../../utils/bank";
 import { PlayerType } from "../../utils/types";
 
 import Tokens from "./Tokens";
 import Wonders from "./Wonders";
 import Sciences from "./Sciences";
 import Cards from "./Cards";
+
+import Astarte from "./Astarte";
 
 import styles from "../../../../../shared/styles.module.css";
 
@@ -55,6 +58,13 @@ class Player extends React.Component<{
 							discount={this.props.discount}
 						/>
 					)}
+					{
+						<Astarte
+							god={(this.props.player.gods || [])
+								.map((godIndex) => bank.gods[godIndex])
+								.find((god) => god.name === "astarte")}
+						/>
+					}
 				</div>
 			</div>
 		);

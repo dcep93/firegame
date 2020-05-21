@@ -121,7 +121,6 @@ class Main extends React.Component<
 		return (
 			<div>
 				<Player
-					// todo make work for spectator
 					player={utils.getMe()}
 					selected={
 						this.state.selectedTarget === selected.player
