@@ -12,19 +12,18 @@ import Pantheon from "./Pantheon";
 import bank from "../utils/bank";
 import { Age, CommercialEnum, ScienceToken, Color } from "../utils/types";
 
-export enum selected {
-	player,
-	board,
-}
-
 const BASE_TRASH = 2;
 
-// todo organize
+enum SelectedEnum {
+	trash = -2,
+	build = -1,
+	// wonder = 0+
+}
+
 class Main extends React.Component<
 	{},
 	{
-		selectedTarget?: selected;
-		selectedWonder?: number;
+		selectedTarget?: SelectedEnum;
 		selectedPantheon?: number;
 		usedTokens?: { [tokenIndex: number]: boolean };
 	}
@@ -79,8 +78,8 @@ class Main extends React.Component<
 					<Science />
 				</div>
 				<Trash
-					select={this.selectBoard.bind(this)}
-					selected={this.state.selectedTarget === selected.board}
+					select={this.selectTrash.bind(this)}
+					selected={this.state.selectedTarget === SelectedEnum.trash}
 				/>
 			</div>
 		);
@@ -99,13 +98,9 @@ class Main extends React.Component<
 			<div>
 				<Player
 					player={players[0]}
-					selected={
-						this.state.selectedTarget === selected.player
-							? this.state.selectedWonder
-							: undefined
-					}
-					selectWonder={this.selectPlayer.bind(this)}
+					selected={this.state.selectedTarget}
 					usedTokens={this.state.usedTokens}
+					selectWonder={this.select.bind(this)}
 					discount={this.discountToken.bind(this)}
 				/>
 				<Player
@@ -132,21 +127,18 @@ class Main extends React.Component<
 		if (!utils.isMyTurn()) return;
 		this.setState({
 			selectedTarget: undefined,
-			selectedWonder: undefined,
 			selectedPantheon: undefined,
 		});
 	}
 
-	selectPlayer(selectedWonder: number) {
+	select(selectedTarget: SelectedEnum) {
 		if (!utils.isMyTurn()) return;
-		if (this.state.selectedTarget !== undefined) return this.reset();
-		this.setState({ selectedTarget: selected.player, selectedWonder });
+		if (this.state.selectedTarget === selectedTarget) return this.reset();
+		this.setState({ selectedTarget });
 	}
 
-	selectBoard() {
-		if (!utils.isMyTurn()) return;
-		if (this.state.selectedTarget !== undefined) return this.reset();
-		this.setState({ selectedTarget: selected.board });
+	selectTrash() {
+		this.select(SelectedEnum.trash);
 	}
 
 	selectCard(x: number, y: number) {
@@ -164,7 +156,7 @@ class Main extends React.Component<
 		if (!utils.canTakeCard(y, x, structureCard.offset))
 			return alert("cannot take that card");
 		const card = bank.cards[structureCard.cardIndex];
-		if (this.state.selectedWonder === -1) {
+		if (this.state.selectedTarget === SelectedEnum.build) {
 			const cost = utils.getCardCost(card);
 			if (cost > utils.getMe().money)
 				return alert("cannot afford that card");
@@ -175,10 +167,10 @@ class Main extends React.Component<
 				)
 			)
 				utils.getOpponent().money += cost;
-		} else if (this.state.selectedWonder !== undefined) {
+		} else if (this.state.selectedTarget >= 0) {
 			const cost = utils.getWonderCost(
 				bank.wonders[
-					utils.getMe().wonders[this.state.selectedWonder!]
+					utils.getMe().wonders[this.state.selectedTarget!]
 						.wonderIndex
 				]
 			);
@@ -208,7 +200,7 @@ class Main extends React.Component<
 			});
 		const me = utils.getMe();
 		var message;
-		if (this.state.selectedTarget === selected.board) {
+		if (this.state.selectedTarget === SelectedEnum.trash) {
 			message = `trashed ${card.name}`;
 			if (!store.gameW.game.trash) store.gameW.game.trash = [];
 			store.gameW.game.trash.push(structureCard.cardIndex);
@@ -217,13 +209,13 @@ class Main extends React.Component<
 				(me.cards || [])
 					.map((cardIndex) => bank.cards[cardIndex])
 					.filter((card) => card.color === Color.yellow).length;
-		} else if (this.state.selectedWonder === -1) {
+		} else if (this.state.selectedTarget === SelectedEnum.build) {
 			message = `built ${card.name}`;
 			if (!me.cards) me.cards = [];
 			me.cards.push(structureCard.cardIndex);
 			utils.handleCardPurchase(card);
 		} else {
-			const w = utils.getMe().wonders[this.state.selectedWonder!];
+			const w = utils.getMe().wonders[this.state.selectedTarget!];
 			w.built = true;
 			const wonder = bank.wonders[w.wonderIndex];
 			wonder.f();
