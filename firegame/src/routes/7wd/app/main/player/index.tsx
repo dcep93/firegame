@@ -13,7 +13,9 @@ import styles from "../../../../../shared/styles.module.css";
 class Player extends React.Component<{
 	player: PlayerType;
 	selected?: number;
-	select: (index: number) => void;
+	selectWonder: (index: number) => void;
+	usedTokens?: { [tokenIndex: number]: boolean };
+	discount: (tokenIndex: number) => void;
 }> {
 	render() {
 		return (
@@ -22,7 +24,7 @@ class Player extends React.Component<{
 					className={`${styles.bubble} ${
 						this.props.selected === -1 && styles.grey
 					}`}
-					onClick={() => this.props.select(-1)}
+					onClick={() => this.props.selectWonder(-1)}
 				>
 					<h2>
 						{this.props.player.userName} - $
@@ -33,7 +35,7 @@ class Player extends React.Component<{
 						{this.props.player.wonders && (
 							<Wonders
 								wonders={this.props.player.wonders}
-								select={this.props.select}
+								select={this.props.selectWonder}
 								selected={this.props.selected}
 							/>
 						)}
@@ -47,7 +49,11 @@ class Player extends React.Component<{
 						)}
 					</div>
 					{this.props.player.tokens && (
-						<Tokens tokens={this.props.player.tokens} />
+						<Tokens
+							tokens={this.props.player.tokens}
+							usedTokens={this.props.usedTokens}
+							discount={this.props.discount}
+						/>
 					)}
 				</div>
 			</div>

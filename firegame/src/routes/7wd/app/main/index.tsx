@@ -16,7 +16,6 @@ import {
 	ScienceToken,
 	Color,
 	CardType,
-	ScienceEnum,
 } from "../utils/types";
 
 export enum selected {
@@ -34,6 +33,7 @@ class Main extends React.Component<
 		selectedTarget?: selected;
 		selectedWonder?: number;
 		selectedPantheon?: number;
+		usedTokens?: { [tokenIndex: number]: boolean };
 	}
 > {
 	constructor(props: {}) {
@@ -98,15 +98,22 @@ class Main extends React.Component<
 				</div>
 				<div>
 					<Player
+						// todo make work for spectator
 						player={utils.getMe()}
 						selected={
 							this.state.selectedTarget === selected.player
 								? this.state.selectedWonder
 								: undefined
 						}
-						select={this.selectPlayer.bind(this)}
+						selectWonder={this.selectPlayer.bind(this)}
+						usedTokens={this.state.usedTokens}
+						discount={this.discountToken.bind(this)}
 					/>
-					<Player player={utils.getOpponent()} select={() => null} />
+					<Player
+						player={utils.getOpponent()}
+						selectWonder={() => null}
+						discount={() => null}
+					/>
 				</div>
 				<div>
 					<Military />
@@ -120,6 +127,16 @@ class Main extends React.Component<
 				/>
 			</div>
 		);
+	}
+
+	discountToken(tokenIndex: number) {
+		const usedTokens = this.state.usedTokens || {};
+		if (usedTokens[tokenIndex]) {
+			delete usedTokens[tokenIndex];
+		} else {
+			usedTokens[tokenIndex] = true;
+		}
+		this.setState({ usedTokens });
 	}
 
 	reset() {
