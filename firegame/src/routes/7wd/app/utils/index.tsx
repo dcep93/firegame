@@ -166,15 +166,15 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	getWonderOptions(): Resource[][] {
-		return utils
-			.getMe()
-			.wonders.filter((wonder) => wonder.built)
+		return (utils.getMe().wonders || [])
+			.filter((wonder) => wonder.built)
 			.map((wonder) => bank.wonders[wonder.wonderIndex])
 			.map((wonder) => wonder.resourceOptions)
 			.filter(Boolean) as Resource[][];
 	}
 
 	getCardCost(card: CardType): number {
+		if (!utils.getMe()) return 0;
 		if (
 			(utils.getMe().cards || []).find(
 				(cardIndex) =>
@@ -257,6 +257,7 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	getWonderCost(wonder: WonderType): number {
+		if (!utils.getMe()) return 0;
 		if (
 			(utils.getMe().scienceTokens || []).includes(
 				ScienceToken.architecture
@@ -277,14 +278,18 @@ class Utils extends Shared<GameType, PlayerType> {
 			diff < military;
 			diff++
 		) {
+			if (
+				utils.myIndex() === 0
+					? diff
+					: -diff === store.gameW.game.minerva
+			) {
+				delete store.gameW.game.minerva;
+				return;
+			}
 			const bonus = me.militaryBonuses[diff];
 			if (bonus !== undefined) {
 				delete me.militaryBonuses[diff];
 				if (bonus === 0) return alert("you win");
-				if (diff === store.gameW.game.minerva) {
-					me.military--;
-					return;
-				}
 				utils.stealMoney(bonus);
 			}
 		}

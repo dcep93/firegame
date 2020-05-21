@@ -10,15 +10,6 @@ class ChooseWonder extends React.Component {
 	render() {
 		const total = store.gameW.game.wondersToChoose?.length;
 		const remaining = total > 4 ? total - 4 : total;
-		if (!remaining) {
-			if (utils.isMyTurn()) {
-				const game = store.gameW.game;
-				game.age = Age.one;
-				utils.deal(game);
-				utils.endCommercial("started the game");
-			}
-			return null;
-		}
 
 		return (
 			<div className={styles.bubble}>
@@ -54,20 +45,26 @@ class ChooseWonder extends React.Component {
 
 	chooseWonder(index: number) {
 		if (!utils.isMyTurn()) return;
-		const wondersToChoose = store.gameW.game.wondersToChoose;
+		const game = store.gameW.game;
+		const wondersToChoose = game.wondersToChoose;
 		const wonderIndex = wondersToChoose.splice(index, 1)[0];
 		if (!utils.getMe().wonders) utils.getMe().wonders = [];
 		utils.getMe().wonders.push({ built: false, wonderIndex });
 		const remaining = wondersToChoose.length;
-		const playerIndex =
-			Math.abs(remaining - 4) === 2
-				? utils.currentIndex()
-				: 1 - utils.currentIndex();
 
-		utils.addCommercial({
-			commercial: store.gameW.game.commercials![0].commercial,
-			playerIndex,
-		});
+		if (!remaining) {
+			game.age = Age.one;
+			utils.deal(game);
+		} else {
+			const playerIndex =
+				Math.abs(remaining - 4) === 2
+					? utils.currentIndex()
+					: 1 - utils.currentIndex();
+			utils.addCommercial({
+				commercial: game.commercials![0].commercial,
+				playerIndex,
+			});
+		}
 		utils.endCommercial(`selected ${bank.wonders[wonderIndex].name}`);
 	}
 }

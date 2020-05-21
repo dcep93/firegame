@@ -1,17 +1,17 @@
 import React from "react";
 
 import utils, { store } from "../utils";
+import { CommercialEnum, PlayerType } from "../utils/types";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { CommercialEnum } from "../utils/types";
 
 const NUM_POSITIONS = 9;
 
-class Military extends React.Component {
+class Military extends React.Component<{ players: PlayerType[] }> {
 	render() {
 		const militaryDiff =
-			this.getMe().military - this.getOpponent().military;
+			this.props.players[0].military - this.props.players[1].military;
 		return (
 			<div className={styles.bubble}>
 				<h2>Military</h2>
@@ -43,31 +43,26 @@ class Military extends React.Component {
 		);
 	}
 
-	myIndex() {
-		return Math.max(utils.myIndex(), 0);
-	}
-
-	getMe() {
-		return store.gameW.game.players[this.myIndex()];
-	}
-
-	getOpponent() {
-		return store.gameW.game.players[1 - this.myIndex()]!;
-	}
-
-	// todo
 	minerva(index: number) {
 		if (!utils.isMyCommercial(CommercialEnum.minerva)) return;
-		store.gameW.game.minerva = index;
+		store.gameW.game.minerva =
+			this.props.players[0].index === 0 ? index : -index;
 		utils.endCommercial(`placed Minerva`);
 	}
 
 	getFill(militaryDiff: number, index: number) {
 		if (index === militaryDiff) return "x";
-		const stars = (index > 0 ? this.getMe() : this.getOpponent())
-			.militaryBonuses[Math.abs(index)];
+		const stars = this.props.players[index > 0 ? 0 : 1].militaryBonuses[
+			Math.abs(index)
+		];
 		if (stars === 0) return "WIN";
-		return "*".repeat(stars);
+		const s = "*".repeat(stars);
+		const m =
+			(this.props.players[0].index === 0 ? index : -index) ===
+			store.gameW.game.minerva
+				? " M"
+				: "";
+		return s + m;
 	}
 }
 

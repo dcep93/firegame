@@ -98,7 +98,7 @@ class Main extends React.Component<
 				</div>
 				{this.renderPlayers()}
 				<div>
-					<Military />
+					<Military players={this.getPlayers()} />
 				</div>
 				<div>
 					<Science />
@@ -111,11 +111,14 @@ class Main extends React.Component<
 		);
 	}
 
+	getPlayers() {
+		return utils.myIndex() >= 0
+			? [utils.getMe(), utils.getOpponent()]
+			: store.gameW.game.players;
+	}
+
 	renderPlayers() {
-		const players =
-			utils.myIndex() >= 0
-				? [utils.getMe(), utils.getOpponent()]
-				: store.gameW.game.players;
+		const players = this.getPlayers();
 
 		return (
 			<div>
