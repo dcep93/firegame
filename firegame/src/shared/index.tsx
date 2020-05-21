@@ -69,6 +69,16 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
 		}
 		return arr;
 	}
+
+	arrToDict<T>(arr: T[], f: (t: T) => string): { [key: string]: T[] } {
+		const dict: { [key: string]: T[] } = {};
+		arr.forEach((t) => {
+			const key = f(t);
+			if (!dict[key]) dict[key] = [];
+			dict[key].push(t);
+		});
+		return dict;
+	}
 }
 
 export default Shared;

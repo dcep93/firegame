@@ -136,7 +136,7 @@ export type PlayerType = {
 	userId: string;
 	userName: string;
 	cards?: number[];
-	wonders: { built: boolean; wonderIndex: number }[];
+	wonders: PlayerWonder[];
 	money: number;
 	military: number;
 	index: number;
@@ -145,6 +145,8 @@ export type PlayerType = {
 	tokens?: TokenType[];
 	gods?: number[];
 };
+
+export type PlayerWonder = { built: boolean; wonderIndex: number };
 
 export type TokenType = {
 	value: God | number;

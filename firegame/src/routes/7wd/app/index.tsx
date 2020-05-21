@@ -7,6 +7,7 @@ import Sidebar from "./sidebar";
 import styles from "../../../shared/styles.module.css";
 import css from "./index.module.css";
 
+// todo allow spectators
 class _7wd extends React.Component {
 	render() {
 		const classes = [css.main];
