@@ -18,6 +18,7 @@ import bank from "./bank";
 const BASE_COST = 2;
 const CARDS_PER_AGE = 20;
 const NUM_PURPLES = 3;
+const SCIENCE_TO_WIN = 6;
 
 class Utils extends Shared<GameType, PlayerType> {
 	tokenToPoints: {
@@ -297,7 +298,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				commercial: CommercialEnum.science,
 				playerIndex: utils.myIndex(),
 			});
-		} else if (Object.keys(me.scienceIcons).length === 6) {
+		} else if (Object.keys(me.scienceIcons).length === SCIENCE_TO_WIN) {
 			alert("you win!");
 		}
 	}

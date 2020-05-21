@@ -24,7 +24,6 @@ export enum selected {
 }
 
 const BASE_TRASH = 2;
-const SCIENCE_TO_WIN = 6;
 
 // todo organize
 class Main extends React.Component<

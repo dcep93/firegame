@@ -12,7 +12,6 @@ import {
 	God,
 	GodType,
 	CommercialEnum,
-	ScienceToken,
 	WonderType,
 } from "./types";
 
