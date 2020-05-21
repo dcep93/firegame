@@ -267,25 +267,27 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	increaseMilitary(military: number) {
-		if (store.gameW.game.minerva) {
-			delete store.gameW.game.minerva;
-			return;
-		}
 		const me = utils.getMe();
 		const sciences = me.scienceTokens || [];
 		if (sciences.includes(ScienceToken.polioretics))
 			utils.stealMoney(military);
-		me.military += military;
 
-		const militaryDiff = me.military - utils.getOpponent().military;
-		Object.entries(me.militaryBonuses).forEach(([needed, amount]) => {
-			const key = parseInt(needed);
-			if (militaryDiff >= key) {
-				if (!amount) return alert("you win");
-				utils.stealMoney(amount);
-				delete me.militaryBonuses[key];
+		for (
+			let diff = me.military - utils.getOpponent().military;
+			diff < military;
+			diff++
+		) {
+			const bonus = me.militaryBonuses[diff];
+			if (bonus !== undefined) {
+				delete me.militaryBonuses[diff];
+				if (bonus === 0) return alert("you win");
+				if (diff === store.gameW.game.minerva) {
+					me.military--;
+					return;
+				}
+				utils.stealMoney(bonus);
 			}
-		});
+		}
 	}
 
 	addCommercial(commercial: CommercialType) {
@@ -311,6 +313,14 @@ class Utils extends Shared<GameType, PlayerType> {
 		} else if (Object.keys(me.scienceIcons).length === SCIENCE_TO_WIN) {
 			alert("you win!");
 		}
+	}
+
+	isMyCommercial(commercial: CommercialEnum): boolean {
+		if (!store.gameW.game.commercials) return false;
+		return (
+			utils.isMyTurn() &&
+			store.gameW.game.commercials[0]?.commercial === commercial
+		);
 	}
 }
 

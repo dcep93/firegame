@@ -4,6 +4,7 @@ import utils, { store } from "../utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
+import { CommercialEnum } from "../utils/types";
 
 const NUM_POSITIONS = 9;
 
@@ -20,6 +21,9 @@ class Military extends React.Component {
 							<div
 								key={index}
 								className={`${css.military} ${styles.bubble}`}
+								onClick={() =>
+									this.minerva(index - NUM_POSITIONS)
+								}
 							>
 								<div>
 									{this.getFill(
@@ -49,6 +53,13 @@ class Military extends React.Component {
 
 	getOpponent() {
 		return store.gameW.game.players[1 - this.myIndex()]!;
+	}
+
+	// todo
+	minerva(index: number) {
+		if (!utils.isMyCommercial(CommercialEnum.minerva)) return;
+		store.gameW.game.minerva = index;
+		utils.endCommercial(`placed Minerva`);
 	}
 
 	getFill(militaryDiff: number, index: number) {

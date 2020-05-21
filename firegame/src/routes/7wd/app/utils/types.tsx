@@ -116,9 +116,8 @@ export type GameType = {
 	godTokens: God[];
 	gods: { [g in God]: number[] };
 	pantheon: number[];
-	// todo absorb into militaryBonuses
-	minerva?: boolean;
 	wondersToChoose: number[];
+	minerva?: number;
 };
 
 export type Params = {
@@ -179,6 +178,7 @@ export enum CommercialEnum {
 	baal = "steal a brown/grey card",
 	theater = "pick a god",
 	gate = "pick a top god",
+	minerva = "place Minerva",
 }
 
 export type WonderType = {

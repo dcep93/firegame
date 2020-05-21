@@ -936,7 +936,11 @@ const gods: GodType[] = [
 		name: "minerva",
 		source: God.roman,
 		message: "block military movement",
-		f: () => (store.gameW.game.minerva = true),
+		f: () =>
+			utils.addCommercial({
+				commercial: CommercialEnum.minerva,
+				playerIndex: utils.myIndex(),
+			}),
 	},
 	{
 		name: "mars",
