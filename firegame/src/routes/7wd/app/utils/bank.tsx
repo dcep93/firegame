@@ -932,7 +932,6 @@ const gods: GodType[] = [
 					utils.getOpponent().militaryBonuses = {};
 				}
 			}
-			store.update("used neptune");
 		},
 	},
 	{

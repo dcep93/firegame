@@ -69,6 +69,7 @@ class Main extends React.Component<
 			me.gods.push(godIndex);
 			god.f(god);
 			utils.incrementPlayerTurn();
+			store.update(`purchased ${god.name}`);
 		}
 	}
 
@@ -174,8 +175,7 @@ class Main extends React.Component<
 		const structureCard = store.gameW.game.structure[y][x];
 		if (commercial === CommercialEnum.zeus) {
 			structureCard.taken = true;
-			store.gameW.game.commercials!.shift();
-			store.update("destroyed a card");
+			utils.endCommercial("destroyed a card");
 			return;
 		}
 		if (commercial) return alert(commercial);
