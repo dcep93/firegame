@@ -1,24 +1,18 @@
 import React from "react";
 
-import utils, { store } from "../../utils";
+import utils from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Ra extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-}> {
+class Ra extends React.Component {
 	render() {
 		const wondersToSteal = utils
-			.getOpponent()
+			.getPlayer(1 - utils.currentIndex())
 			.wonders.map((wonder, index) => ({ wonder, index }))
 			.filter((obj) => !obj.wonder.built);
-		if (!wondersToSteal) {
-			if (!utils.isMyTurn()) return;
-			this.props.pop();
-			alert("no wonders to steal");
+		if (!wondersToSteal.length) {
+			utils.endCommercial("could not steal a wonder");
 			return;
 		}
 		return (
@@ -29,14 +23,14 @@ class Ra extends React.Component<{
 						<div
 							onClick={() => {
 								if (!utils.isMyTurn()) return;
-								const wonder = utils
+								utils
 									.getOpponent()
-									.wonders.splice(obj.index, 1)[0];
-								utils.getMe().wonders.push(wonder);
-								this.props.pop();
-								store.update(
+									.wonders.splice(obj.index, 1);
+								utils.getMe().wonders.push(obj.wonder);
+								utils.endCommercial(
 									`stole ${
-										bank.wonders[wonder.wonderIndex].name
+										bank.wonders[obj.wonder.wonderIndex]
+											.name
 									}`
 								);
 							}}

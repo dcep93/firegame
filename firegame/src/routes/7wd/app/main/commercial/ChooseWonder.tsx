@@ -2,16 +2,26 @@ import React from "react";
 
 import utils, { store } from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType, Age } from "../../utils/types";
+import { Age } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class ChooseWonder extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-}> {
+class ChooseWonder extends React.Component<{ extra: any }> {
 	render() {
-		const params = this.props.commercial.extra;
+		const params = this.props.extra as {
+			remaining: number;
+			wonders: number[];
+		};
+		if (params.remaining === 0) {
+			if (utils.isMyTurn()) {
+				const game = store.gameW.game;
+				game.age = Age.one;
+				utils.deal(game);
+				utils.endCommercial("started the game");
+			}
+			return;
+		}
+
 		return (
 			<div className={styles.bubble}>
 				<h2>Wonders</h2>
@@ -61,15 +71,11 @@ class ChooseWonder extends React.Component<{
 				if (c.extra.firstRound) {
 					c.extra.firstRound = false;
 					c.extra.remaining = 4;
-				} else {
-					this.props.pop();
-					const game = store.gameW.game;
-					game.age = Age.one;
-					utils.deal(game);
 				}
 			}
 		}
-		store.update(`selected ${bank.wonders[wonderIndex].name}`);
+		utils.addCommercial(c);
+		utils.endCommercial(`selected ${bank.wonders[wonderIndex].name}`);
 	}
 }
 

@@ -2,13 +2,12 @@ import React from "react";
 
 import utils, { store } from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
+const GODS_TO_DRAW = 2;
+
 class PickGod extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
 	reset: () => void;
 	selectedPantheon?: number;
 }> {
@@ -18,7 +17,7 @@ class PickGod extends React.Component<{
 			<div className={styles.bubble}>
 				<div className={styles.flex}>
 					{store.gameW.game.gods[store.gameW.game.godTokens[0]]
-						.slice(0, 2)
+						.slice(0, GODS_TO_DRAW)
 						.map((godIndex, tokenIndex) => (
 							<div
 								key={tokenIndex}
@@ -31,8 +30,9 @@ class PickGod extends React.Component<{
 										return alert(
 											"need to select a target first"
 										);
+									const value = store.gameW.game.godTokens.shift()!;
 									const selected = store.gameW.game.gods[
-										store.gameW.game.godTokens[0]
+										value
 									].splice(tokenIndex, 1)[0];
 									store.gameW.game.pantheon[
 										this.props.selectedPantheon
@@ -40,11 +40,10 @@ class PickGod extends React.Component<{
 									const me = utils.getMe();
 									if (!me.tokens) me.tokens = [];
 									me.tokens.push({
-										value: store.gameW.game.godTokens.shift()!,
+										value,
 										isGod: true,
 									});
-									this.props.pop();
-									store.update("placed a god");
+									utils.endCommercial("placed a god");
 									this.props.reset();
 								}}
 								className={styles.bubble}

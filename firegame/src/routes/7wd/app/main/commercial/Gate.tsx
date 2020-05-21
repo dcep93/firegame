@@ -2,14 +2,10 @@ import React from "react";
 
 import utils, { store } from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Gate extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-}> {
+class Gate extends React.Component {
 	render() {
 		return (
 			<div className={styles.bubble}>
@@ -17,25 +13,27 @@ class Gate extends React.Component<{
 				<div className={styles.flex}>
 					{Object.values(store.gameW.game.gods)
 						.map((gods) => gods[0])
-						.map((godIndex) => (
+						.filter(Boolean)
+						.map((godIndex) => ({
+							godIndex,
+							god: bank.gods[godIndex],
+						}))
+						.map((obj) => (
 							<div
 								onClick={() => {
-									const god = bank.gods[godIndex];
-									const gods =
-										store.gameW.game.gods[god.source!];
-									const index = gods.indexOf(godIndex);
+									if (!utils.isMyTurn()) return;
 									const me = utils.getMe();
 									if (!me.gods) me.gods = [];
-									me.gods.push(gods.splice(index, 1)[0]);
+									me.gods.push(
+										store.gameW.game.gods[
+											obj.god.source!
+										]!.shift()!
+									);
 								}}
 								className={styles.bubble}
-								title={JSON.stringify(
-									bank.gods[godIndex],
-									null,
-									2
-								)}
+								title={JSON.stringify(obj.god, null, 2)}
 							>
-								{bank.gods[godIndex].name}
+								{obj.god.name}
 							</div>
 						))}
 				</div>

@@ -6,16 +6,11 @@ import { CommercialType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Revive extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-}> {
+class Revive extends React.Component {
 	render() {
 		const cards = store.gameW.game.trash || [];
 		if (!cards) {
-			if (!utils.isMyTurn()) return;
-			this.props.pop();
-			store.update("could not revive a card");
+			utils.endCommercial("could not revive a card");
 			return;
 		}
 		return (
@@ -40,11 +35,10 @@ class Revive extends React.Component<{
 	reviveCard(trashIndex: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const cardIndex = store.gameW.game.trash!.splice(trashIndex, 1)[0];
-		this.props.pop();
 		const me = utils.getMe();
 		if (!me.cards) me.cards = [];
 		me.cards.push(cardIndex);
-		store.update(`revived ${bank.cards[cardIndex].name}`);
+		utils.endCommercial(`revived ${bank.cards[cardIndex].name}`);
 	}
 }
 

@@ -57,9 +57,9 @@ class Main extends React.Component<
 					: selectedPantheon);
 			if (god.source === undefined) cost *= 2;
 			if (
-				(utils.getMe().gods || []).filter(
+				(utils.getMe().gods || []).find(
 					(godIndex) => bank.gods[godIndex].name === "the sanctuary"
-				).length > 0
+				)
 			)
 				cost -= 2;
 			if (me.money < cost) return alert("cannot afford");
@@ -244,8 +244,7 @@ class Main extends React.Component<
 		}
 		utils.incrementPlayerTurn();
 		if (
-			store.gameW.game.structure.flat().filter((sc) => !sc.taken)
-				.length === 0
+			!store.gameW.game.structure.flat().filter((sc) => !sc.taken).length
 		) {
 			switch (store.gameW.game.age) {
 				case Age.one:
@@ -306,7 +305,7 @@ class Main extends React.Component<
 				me.cards!.filter(
 					(cardIndex) =>
 						bank.cards[cardIndex].upgradesTo === card.upgradesFrom
-				).length > 0
+				).length
 			)
 				me.money += 4;
 		}

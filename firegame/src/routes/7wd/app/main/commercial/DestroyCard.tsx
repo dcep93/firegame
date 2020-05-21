@@ -2,27 +2,23 @@ import React from "react";
 
 import utils, { store } from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType, Color, PlayerType } from "../../utils/types";
+import { Color, PlayerType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class DestroyCard extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-	color: Color;
-}> {
+class DestroyCard extends React.Component<{ color: Color }> {
 	render() {
-		const victim = store.gameW.game.players[1 - utils.getCurrent().index];
+		const victim = utils.getPlayer(1 - utils.currentIndex());
 		const cards = (victim.cards || [])
 			.map((cardIndex) => ({
 				cardIndex,
 				card: bank.cards[cardIndex],
 			}))
-			.filter((card) => card.card.color === this.props.color);
-		if (!cards) {
-			if (!utils.isMyTurn()) return;
-			this.props.pop();
-			store.update(`could not destroy a ${Color[this.props.color]} card`);
+			.filter((obj) => obj.card.color === this.props.color);
+		if (!cards.length) {
+			utils.endCommercial(
+				`could not destroy a ${Color[this.props.color]} card`
+			);
 			return;
 		}
 		return (
@@ -31,14 +27,14 @@ class DestroyCard extends React.Component<{
 					{victim.userName}'s {Color[this.props.color]} Cards
 				</h2>
 				<div className={styles.flex}>
-					{cards.map((card) => (
+					{cards.map((obj) => (
 						<div
 							onClick={() =>
-								this.destroyCard(card.cardIndex, victim)
+								this.destroyCard(obj.cardIndex, victim)
 							}
 							className={styles.bubble}
 						>
-							{card.card.name}
+							{obj.card.name}
 						</div>
 					))}
 				</div>
@@ -49,10 +45,9 @@ class DestroyCard extends React.Component<{
 	destroyCard(handIndex: number, victim: PlayerType) {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const cardIndex = victim.cards!.splice(handIndex, 1)[0];
-		this.props.pop();
 		if (!store.gameW.game.trash) store.gameW.game.trash = [];
 		store.gameW.game.trash.push(cardIndex);
-		store.update(`destroyed ${bank.cards[cardIndex].name}`);
+		utils.endCommercial(`destroyed ${bank.cards[cardIndex].name}`);
 	}
 }
 

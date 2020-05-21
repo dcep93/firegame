@@ -21,10 +21,7 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
 	}
 
 	isMyTurn(game_: T | undefined = undefined): boolean {
-		const game: T = game_ || store.gameW.game!;
-		return (
-			game && game.players[game.currentPlayer].userId === store.me.userId
-		);
+		return this.getCurrent(game_).userId === store.me.userId;
 	}
 
 	incrementPlayerTurn(game_: T | undefined = undefined): void {
@@ -52,14 +49,22 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
 		return this.playerIndexById(store.me.userId, game);
 	}
 
-	getMe(game_: T | undefined = undefined): U {
+	getPlayer(index: number, game_: T | undefined = undefined): U {
 		const game: T = game_ || store.gameW.game!;
-		return game.players[this.myIndex(game)];
+		return game.players[index];
+	}
+
+	getMe(game_: T | undefined = undefined): U {
+		return this.getPlayer(this.myIndex(game_));
 	}
 
 	getCurrent(game_: T | undefined = undefined): U {
+		return this.getPlayer(this.currentIndex(game_), game_);
+	}
+
+	currentIndex(game_: T | undefined = undefined): number {
 		const game: T = game_ || store.gameW.game!;
-		return game.players[game.currentPlayer];
+		return game.currentPlayer;
 	}
 
 	shuffle<T>(arr: T[]): T[] {

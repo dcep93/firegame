@@ -35,16 +35,21 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (militaryDiff <= 5) return 5;
 		return 10;
 	}
-	isMyTurn(game_: GameType | undefined = undefined): boolean {
+
+	currentIndex(game_: GameType | undefined = undefined): number {
 		const game: GameType = game_ || store.gameW.game!;
-		if (game && game.commercials)
-			return game.commercials[0].playerIndex === utils.myIndex(game);
-		return super.isMyTurn(game);
+		if (game && game.commercials) return game.commercials[0].playerIndex;
+		return super.currentIndex(game_);
+	}
+
+	endCommercial(message: string) {
+		if (!utils.isMyTurn()) return;
+		store.gameW.game.commercials!.shift();
+		store.update(message);
 	}
 
 	getOpponent(game_: GameType | undefined = undefined) {
-		const game = game_ || store.gameW.game!;
-		return game.players[1 - utils.myIndex(game)];
+		return this.getPlayer(1 - this.myIndex(game_));
 	}
 
 	deal(game: GameType) {

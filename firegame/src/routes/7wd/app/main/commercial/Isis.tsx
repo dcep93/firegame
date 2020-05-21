@@ -5,70 +5,75 @@ import bank from "../../utils/bank";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Isis extends React.Component<
-	{ pop: () => void },
-	{ trashIndex: number }
-> {
+class Isis extends React.Component<{}, { trashIndex: number }> {
 	render() {
 		if (!utils.isMyTurn()) return null;
 		const wonders = utils
 			.getOpponent()
 			.wonders.filter((wonder) => !wonder.built);
-		if (!wonders) {
-			this.props.pop();
-			alert("no wonders to build");
+		if (!wonders.length) {
+			utils.endCommercial("no wonders to build");
 			return null;
 		}
 		if (!store.gameW.game.trash) {
-			this.props.pop();
-			alert("no cards in trash");
-			return null;
+			utils.endCommercial("no cards in trash");
+			return;
 		}
 		return (
 			<div className={styles.bubble}>
 				<h2>Steal Wonder</h2>
 				<div className={styles.flex}>
-					{store.gameW.game.trash!.map((trashIndex) => (
-						<div
-							key={trashIndex}
-							title={JSON.stringify(
-								bank.cards[trashIndex],
-								null,
-								2
-							)}
-							className={
-								this.state?.trashIndex === trashIndex
-									? styles.grey
-									: ""
-							}
-							onClick={() => this.setState({ trashIndex })}
-						>
-							{bank.cards[trashIndex].name}
-						</div>
-					))}
-					{wonders.map((pWonder) => (
-						<div
-							key={pWonder.wonderIndex}
-							onClick={() => {
-								if (!this.state)
-									return alert(
-										"pick a card from trash first"
+					{store.gameW.game
+						.trash!.map((trashIndex) => ({
+							trashIndex,
+							card: bank.cards[trashIndex],
+						}))
+						.map((obj) => (
+							<div
+								key={obj.trashIndex}
+								title={JSON.stringify(obj.card, null, 2)}
+								className={
+									this.state?.trashIndex === obj.trashIndex
+										? styles.grey
+										: ""
+								}
+								onClick={() =>
+									this.setState({
+										trashIndex: obj.trashIndex,
+									})
+								}
+							>
+								{obj.card}
+							</div>
+						))}
+					{wonders
+						.map((pWonder) => ({
+							pWonder,
+							wonder: bank.wonders[pWonder.wonderIndex],
+						}))
+						.map((obj) => (
+							<div
+								key={obj.pWonder.wonderIndex}
+								onClick={() => {
+									if (!this.state)
+										return alert(
+											"pick a card from trash first"
+										);
+									store.gameW.game.trash!.splice(
+										this.state.trashIndex,
+										1
 									);
-								store.gameW.game.trash!.splice(
-									this.state.trashIndex,
-									1
-								);
-								pWonder.built = true;
-								const wonder =
-									bank.wonders[pWonder.wonderIndex];
-								if (wonder.goAgain) utils.incrementPlayerTurn();
-								this.props.pop();
-								store.update(`stole ${wonder.name}`);
-							}}
-						>
-							{bank.wonders[pWonder.wonderIndex].name}
-						</div>
-					))}
+									obj.pWonder.built = true;
+									if (obj.wonder.goAgain)
+										utils.incrementPlayerTurn();
+									utils.endCommercial(
+										`stole ${obj.wonder.name}`
+									);
+								}}
+							>
+								{obj.wonder.name}
+							</div>
+						))}
 					)}
 				</div>
 			</div>

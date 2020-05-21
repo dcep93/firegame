@@ -1,13 +1,12 @@
 import React from "react";
 
 import utils from "../../utils";
-import { CommercialType, ScienceToken } from "../../utils/types";
+import { ScienceToken } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
 class Enki extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
+	extra: any;
 	buildScience: (science: ScienceToken) => void;
 }> {
 	render() {
@@ -15,26 +14,19 @@ class Enki extends React.Component<{
 			<div className={styles.bubble}>
 				<h2>Choose a Science Token</h2>
 				<div className={styles.flex}>
-					{this.props.commercial.extra.map(
-						(scienceName: ScienceToken) => (
-							<div
-								onClick={() =>
-									this.props.buildScience(scienceName)
-								}
-								className={styles.bubble}
-							>
-								{
-									ScienceToken[
-										utils.enumName(
-											scienceName,
-											ScienceToken
-										)
-									]
-								}{" "}
-								- {scienceName}
-							</div>
-						)
-					)}
+					{this.props.extra.map((scienceName: ScienceToken) => (
+						<div
+							onClick={() => this.props.buildScience(scienceName)}
+							className={styles.bubble}
+						>
+							{
+								ScienceToken[
+									utils.enumName(scienceName, ScienceToken)
+								]
+							}{" "}
+							- {scienceName}
+						</div>
+					))}
 				</div>
 			</div>
 		);

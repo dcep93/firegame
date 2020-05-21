@@ -1,32 +1,27 @@
 import React from "react";
 
-import utils, { store } from "../../utils";
+import utils from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType, Color } from "../../utils/types";
+import { Color } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Baal extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-}> {
+class Baal extends React.Component {
 	render() {
-		const cardsToSteal = utils
-			.getOpponent()
-			.cards?.map((cardIndex, handIndex) => ({
+		const cardsToSteal = (
+			utils.getPlayer(1 - utils.currentIndex()).cards || []
+		)
+			.map((cardIndex, handIndex) => ({
 				handIndex,
 				card: bank.cards[cardIndex],
 			}))
-			?.filter(
+			.filter(
 				(obj) =>
 					obj.card.color === Color.brown ||
 					obj.card.color === Color.grey
 			);
-		if (!cardsToSteal) {
-			if (utils.isMyTurn()) {
-				this.props.pop();
-				store.update("no cards to steal");
-			}
+		if (!cardsToSteal.length) {
+			utils.endCommercial("no cards to steal");
 			return;
 		}
 		return (
@@ -36,13 +31,14 @@ class Baal extends React.Component<{
 					{cardsToSteal.map((obj) => (
 						<div
 							onClick={() => {
+								if (!utils.isMyTurn()) return;
 								const me = utils.getMe();
 								if (!me.cards) me.cards = [];
-								me.cards.push(
-									utils
-										.getOpponent()
-										.cards!.splice(obj.handIndex, 1)[0]
-								);
+								const cardIndex = utils
+									.getOpponent()
+									.cards!.splice(obj.handIndex, 1)[0];
+								me.cards.push(cardIndex);
+								utils.endCommercial(`stole ${obj.card.name}`);
 							}}
 							className={styles.bubble}
 						>

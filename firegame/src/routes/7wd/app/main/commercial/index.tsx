@@ -41,98 +41,53 @@ class Commercial extends React.Component<{
 			alert(this.props.commercial.commercial);
 	}
 
-	pop() {
-		store.gameW.game.commercials!.shift();
-	}
-
 	render(): any {
 		switch (this.props.commercial.commercial) {
 			case CommercialEnum.chooseWonder:
-				return (
-					<ChooseWonder
-						commercial={this.props.commercial}
-						pop={this.pop}
-					/>
-				);
+				return <ChooseWonder extra={this.props.commercial.extra} />;
 			case CommercialEnum.destroyGrey:
-				return (
-					<DestroyCard
-						commercial={this.props.commercial}
-						pop={this.pop}
-						color={Color.grey}
-					/>
-				);
+				return <DestroyCard color={Color.grey} />;
 			case CommercialEnum.destroyBrown:
-				return (
-					<DestroyCard
-						commercial={this.props.commercial}
-						pop={this.pop}
-						color={Color.brown}
-					/>
-				);
+				return <DestroyCard color={Color.brown} />;
 			case CommercialEnum.revive:
-				return (
-					<Revive commercial={this.props.commercial} pop={this.pop} />
-				);
+				return <Revive />;
 			case CommercialEnum.library:
 				return (
 					<Library
-						commercial={this.props.commercial}
-						pop={this.pop}
+						extra={this.props.commercial.extra}
 						buildScience={this.buildScience.bind(this)}
 					/>
 				);
 			case CommercialEnum.destroyWonder:
-				return (
-					<DestroyWonder
-						commercial={this.props.commercial}
-						pop={this.pop}
-					/>
-				);
+				return <DestroyWonder />;
 			case CommercialEnum.pickGod:
 				return (
 					<PickGod
-						commercial={this.props.commercial}
-						pop={this.pop}
 						reset={this.props.reset}
 						selectedPantheon={this.props.selectedPantheon}
 					/>
 				);
 			case CommercialEnum.anubis:
-				return (
-					<Anubis commercial={this.props.commercial} pop={this.pop} />
-				);
+				return <Anubis />;
 			case CommercialEnum.ra:
-				return <Ra commercial={this.props.commercial} pop={this.pop} />;
+				return <Ra />;
 			case CommercialEnum.isis:
-				return <Isis pop={this.pop.bind(this)} />;
+				return <Isis />;
 			case CommercialEnum.nisaba:
-				return (
-					<Nisaba commercial={this.props.commercial} pop={this.pop} />
-				);
+				return <Nisaba />;
 			case CommercialEnum.enki:
 				return (
 					<Enki
-						commercial={this.props.commercial}
-						pop={this.pop}
+						extra={this.props.commercial.extra}
 						buildScience={this.buildScience.bind(this)}
 					/>
 				);
 			case CommercialEnum.baal:
-				return (
-					<Baal commercial={this.props.commercial} pop={this.pop} />
-				);
+				return <Baal />;
 			case CommercialEnum.theater:
-				return (
-					<Theater
-						commercial={this.props.commercial}
-						pop={this.pop}
-					/>
-				);
+				return <Theater />;
 			case CommercialEnum.gate:
-				return (
-					<Gate commercial={this.props.commercial} pop={this.pop} />
-				);
+				return <Gate />;
 		}
 		return null;
 	}
@@ -143,8 +98,9 @@ class Commercial extends React.Component<{
 		const me = utils.getMe();
 		if (!me.sciences) me.sciences = [];
 		me.sciences.push(scienceName);
-		this.pop();
-		store.update(`built ${utils.enumName(scienceName, ScienceToken)}`);
+		utils.endCommercial(
+			`built ${utils.enumName(scienceName, ScienceToken)}`
+		);
 	}
 }
 

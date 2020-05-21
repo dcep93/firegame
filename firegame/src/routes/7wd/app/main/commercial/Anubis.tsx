@@ -1,46 +1,42 @@
 import React from "react";
 
-import utils, { store } from "../../utils";
+import utils from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Anubis extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-}> {
+class Anubis extends React.Component {
 	render() {
 		const wondersToUnbuild = utils
 			.getMe()
 			.wonders.concat(utils.getOpponent().wonders)
 			.filter((wonder) => wonder.built);
-		if (!wondersToUnbuild) {
-			if (!utils.isMyTurn()) return null;
-			this.props.pop();
-			alert("no wonders to destroy");
-			return null;
+		if (!wondersToUnbuild.length) {
+			utils.endCommercial("couldnt destroy a wonder");
+			return;
 		}
 		return (
 			<div className={styles.bubble}>
 				<h2>Unbuild Wonder</h2>
 				<div className={styles.flex}>
-					{wondersToUnbuild.map((wonder) => (
-						<div
-							onClick={() => {
-								if (!utils.isMyTurn()) return;
-								wonder.built = false;
-								this.props.pop();
-								store.update(
-									`unbuilt ${
-										bank.wonders[wonder.wonderIndex].name
-									}`
-								);
-							}}
-						>
-							{bank.wonders[wonder.wonderIndex].name}
-						</div>
-					))}
+					{wondersToUnbuild
+						.map((wonderObj) => ({
+							wonderObj,
+							wonder: bank.wonders[wonderObj.wonderIndex],
+						}))
+						.map((obj) => (
+							<div
+								onClick={() => {
+									if (!utils.isMyTurn()) return;
+									obj.wonderObj.built = false;
+									utils.endCommercial(
+										`unbuilt ${obj.wonder.name}`
+									);
+								}}
+							>
+								{obj.wonder.name}
+							</div>
+						))}
 					)}
 				</div>
 			</div>

@@ -2,46 +2,39 @@ import React from "react";
 
 import utils, { store } from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType, Color } from "../../utils/types";
+import { Color } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Nisaba extends React.Component<{
-	commercial: CommercialType;
-	pop: () => void;
-}> {
+class Nisaba extends React.Component {
 	render() {
 		// todo make this work with a sciences dict
-		const sciences = utils
-			.getOpponent()
-			.cards?.filter(
-				(cardIndex) => bank.cards[cardIndex].color === Color.green
-			);
-		if (!sciences) {
-			if (utils.isMyTurn()) {
-				this.props.pop();
-				store.update("no sciences to copy");
-			}
+		const sciences = (
+			utils.getPlayer(1 - utils.currentIndex()).cards || []
+		).filter((cardIndex) => bank.cards[cardIndex].color === Color.green);
+		if (!sciences.length) {
+			utils.endCommercial("no sciences to copy");
 			return;
 		}
 		return (
 			<div className={styles.bubble}>
 				<h2>Copy Science</h2>
 				<div className={styles.flex}>
-					{sciences.map((index) => (
-						<div
-							key={index}
-							onClick={() => {
-								if (!utils.isMyTurn()) return;
-								this.props.pop();
-								store.update(
-									`copied ${bank.cards[index].extra.science}`
-								);
-							}}
-						>
-							{bank.cards[index].extra.science}
-						</div>
-					))}
+					{sciences
+						.map((index) => ({ index, card: bank.cards[index] }))
+						.map((obj) => (
+							<div
+								key={obj.index}
+								onClick={() => {
+									if (!utils.isMyTurn()) return;
+									utils.endCommercial(
+										`copied ${obj.card.extra.science}`
+									);
+								}}
+							>
+								{obj.card.extra.science}
+							</div>
+						))}
 					)}
 				</div>
 			</div>
