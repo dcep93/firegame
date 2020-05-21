@@ -93,7 +93,7 @@ class Commercial extends React.Component<{
 	}
 
 	buildScience(scienceName: ScienceToken) {
-		if (!utils.isMyTurn()) return alert("not your turn");
+		if (!utils.isMyTurn()) return;
 		const me = utils.getMe();
 		if (!me.scienceTokens) me.scienceTokens = [];
 		me.scienceTokens.push(scienceName);

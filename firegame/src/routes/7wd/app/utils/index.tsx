@@ -143,6 +143,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
 		cards
 			.map((cardIndex) => bank.cards[cardIndex].extra.resourceOptions)
+			.concat(this.getWonderOptions())
 			.filter(Boolean)
 			.forEach((options) => {
 				var pricePer = 0;
@@ -162,6 +163,15 @@ class Utils extends Shared<GameType, PlayerType> {
 				price -= pricePer;
 			});
 		return price;
+	}
+
+	getWonderOptions(): Resource[][] {
+		return utils
+			.getMe()
+			.wonders.filter((wonder) => wonder.built)
+			.map((wonder) => bank.wonders[wonder.wonderIndex])
+			.map((wonder) => wonder.resourceOptions)
+			.filter(Boolean) as Resource[][];
 	}
 
 	getCardCost(card: CardType): number {

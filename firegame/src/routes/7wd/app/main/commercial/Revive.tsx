@@ -32,7 +32,7 @@ class Revive extends React.Component {
 	}
 
 	reviveCard(trashIndex: number) {
-		if (!utils.isMyTurn()) return alert("not your turn");
+		if (!utils.isMyTurn()) return;
 		const cardIndex = store.gameW.game.trash!.splice(trashIndex, 1)[0];
 		const me = utils.getMe();
 		if (!me.cards) me.cards = [];

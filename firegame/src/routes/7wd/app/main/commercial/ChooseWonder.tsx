@@ -53,7 +53,7 @@ class ChooseWonder extends React.Component {
 	}
 
 	chooseWonder(index: number) {
-		if (!utils.isMyTurn()) return alert("not your turn");
+		if (!utils.isMyTurn()) return;
 		const wondersToChoose = store.gameW.game.wondersToChoose;
 		const wonderIndex = wondersToChoose.splice(index, 1)[0];
 		if (!utils.getMe().wonders) utils.getMe().wonders = [];

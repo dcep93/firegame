@@ -120,7 +120,7 @@ class Main extends React.Component<
 		return (
 			<div>
 				<Player
-					player={utils.getMe()}
+					player={players[0]}
 					selected={
 						this.state.selectedTarget === selected.player
 							? this.state.selectedWonder
@@ -131,7 +131,7 @@ class Main extends React.Component<
 					discount={this.discountToken.bind(this)}
 				/>
 				<Player
-					player={utils.getOpponent()}
+					player={players[1]}
 					selectWonder={() => null}
 					discount={() => null}
 				/>
@@ -168,7 +168,7 @@ class Main extends React.Component<
 	}
 
 	selectCard(x: number, y: number) {
-		if (!utils.isMyTurn()) return alert("not your turn");
+		if (!utils.isMyTurn()) return;
 		const commercial = (store.gameW.game.commercials || [])[0]?.commercial;
 		const structureCard = store.gameW.game.structure[y][x];
 		if (commercial === CommercialEnum.zeus) {
@@ -201,7 +201,7 @@ class Main extends React.Component<
 				]
 			);
 			if (cost > utils.getMe().money)
-				return alert("cannot afford that card");
+				return alert("cannot afford that wonder");
 			utils.getMe().money -= cost;
 			if (
 				(utils.getOpponent().scienceTokens || []).includes(

@@ -189,6 +189,7 @@ export type WonderType = {
 	goAgain?: boolean;
 	points?: number;
 	expansion?: boolean;
+	resourceOptions?: Resource[];
 };
 
 export type GodType = {

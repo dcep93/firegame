@@ -43,7 +43,7 @@ class DestroyCard extends React.Component<{ color: Color }> {
 	}
 
 	destroyCard(handIndex: number, victim: PlayerType) {
-		if (!utils.isMyTurn()) return alert("not your turn");
+		if (!utils.isMyTurn()) return;
 		const cardIndex = victim.cards!.splice(handIndex, 1)[0];
 		if (!store.gameW.game.trash) store.gameW.game.trash = [];
 		store.gameW.game.trash.push(cardIndex);
