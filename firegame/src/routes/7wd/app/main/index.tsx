@@ -161,7 +161,7 @@ class Main extends React.Component<
 				return alert("cannot afford that card");
 			utils.getMe().money -= cost;
 			if (
-				(utils.getOpponent().sciences || []).includes(
+				(utils.getOpponent().scienceTokens || []).includes(
 					ScienceToken.economy
 				)
 			)
@@ -177,7 +177,7 @@ class Main extends React.Component<
 				return alert("cannot afford that card");
 			utils.getMe().money -= cost;
 			if (
-				(utils.getOpponent().sciences || []).includes(
+				(utils.getOpponent().scienceTokens || []).includes(
 					ScienceToken.economy
 				)
 			)
@@ -220,7 +220,7 @@ class Main extends React.Component<
 			wonder.f();
 			if (
 				wonder.goAgain ||
-				(me.sciences || []).includes(ScienceToken.theology)
+				(me.scienceTokens || []).includes(ScienceToken.theology)
 			)
 				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
@@ -295,11 +295,11 @@ class Main extends React.Component<
 
 	handlePurchase(card: CardType) {
 		const me = utils.getMe();
-		const sciences = me.sciences || [];
+		const sciences = me.scienceTokens || [];
 		if (card.extra.f) card.extra.f();
 		if (
 			card.upgradesFrom !== undefined &&
-			(me.sciences || []).includes(ScienceToken.urbanism)
+			(me.scienceTokens || []).includes(ScienceToken.urbanism)
 		) {
 			if (
 				me.cards!.filter(

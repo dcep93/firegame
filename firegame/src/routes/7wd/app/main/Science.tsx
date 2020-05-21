@@ -15,26 +15,28 @@ class Science extends React.Component {
 				<div className={styles.flex}>
 					{store.gameW.game.sciences
 						.slice(0, NUM_SCIENCES)
+						.filter((obj) => !obj.taken)
+						.map((obj) => obj.token)
 						.map(this.renderScience.bind(this))}
 				</div>
 			</div>
 		);
 	}
 
-	renderScience(scienceToken: ScienceToken, index: number) {
+	renderScience(scienceToken: ScienceToken) {
 		return (
 			<div
 				key={scienceToken}
 				className={styles.bubble}
 				title={scienceToken}
-				onClick={() => this.select(index)}
+				onClick={() => this.select(scienceToken)}
 			>
 				{utils.enumName(scienceToken, ScienceToken)}
 			</div>
 		);
 	}
 
-	select(index: number) {
+	select(token: ScienceToken) {
 		if (
 			!(
 				utils.isMyTurn() &&
@@ -43,14 +45,15 @@ class Science extends React.Component {
 			)
 		)
 			return;
-		// todo incorrectly this replaces a science
-		const selected = store.gameW.game.sciences.splice(index, 1)[0];
-		this.handleSelected(selected);
+		store.gameW.game.sciences.find(
+			(obj) => obj.token === token
+		)!.taken = true;
+		this.handleSelected(token);
 		const me = utils.getMe();
-		if (!me.sciences) me.sciences = [];
-		me.sciences.push(selected);
+		if (!me.scienceTokens) me.scienceTokens = [];
+		me.scienceTokens.push(token);
 		store.gameW.game.commercials!.shift();
-		store.update(`selected ${utils.enumName(selected, ScienceToken)}`);
+		store.update(`selected ${utils.enumName(token, ScienceToken)}`);
 	}
 
 	handleSelected(selected: ScienceToken) {

@@ -2,7 +2,6 @@ import React from "react";
 
 import utils, { store } from "../../utils";
 import bank from "../../utils/bank";
-import { CommercialType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 

@@ -2,6 +2,8 @@ import utils, { store } from ".";
 import { Params, GameType, ScienceToken, CommercialEnum, God } from "./types";
 import bank from "./bank";
 
+const NUM_WONDERS = 8;
+
 function NewGame(params: Params): PromiseLike<GameType> {
 	// @ts-ignore game being constructed
 	const game: GameType = {};
@@ -23,7 +25,8 @@ function setBoard(game: GameType): GameType {
 				(token !== ScienceToken.mysticism &&
 					token !== ScienceToken.polioretics &&
 					token !== ScienceToken.engineering)
-		);
+		)
+		.map((token) => ({ token }));
 	return game;
 }
 
@@ -49,20 +52,18 @@ function prepareToChooseWonders(game: GameType): GameType {
 		{
 			commercial: CommercialEnum.chooseWonder,
 			playerIndex: utils.myIndex(game),
-			extra: {
-				firstRound: true,
-				remaining: 4,
-				wonders: utils.shuffle(
-					Object.keys(
-						bank.wonders.filter(
-							(wonder) =>
-								game.params.godExpansion || !wonder.expansion
-						)
-					)
-				),
-			},
 		},
 	];
+	game.wondersToChoose = utils
+		.shuffle(
+			bank.wonders
+				.map((wonder, index) => ({ wonder, index }))
+				.filter(
+					(obj) => game.params.godExpansion || !obj.wonder.expansion
+				)
+				.map((obj) => obj.index)
+		)
+		.slice(0, NUM_WONDERS);
 	return game;
 }
 

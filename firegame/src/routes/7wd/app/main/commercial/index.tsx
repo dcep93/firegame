@@ -44,7 +44,7 @@ class Commercial extends React.Component<{
 	render(): any {
 		switch (this.props.commercial.commercial) {
 			case CommercialEnum.chooseWonder:
-				return <ChooseWonder extra={this.props.commercial.extra} />;
+				return <ChooseWonder />;
 			case CommercialEnum.destroyGrey:
 				return <DestroyCard color={Color.grey} />;
 			case CommercialEnum.destroyBrown:
@@ -54,7 +54,7 @@ class Commercial extends React.Component<{
 			case CommercialEnum.library:
 				return (
 					<Library
-						extra={this.props.commercial.extra}
+						sciences={this.props.commercial.sciences!}
 						buildScience={this.buildScience.bind(this)}
 					/>
 				);
@@ -78,7 +78,7 @@ class Commercial extends React.Component<{
 			case CommercialEnum.enki:
 				return (
 					<Enki
-						extra={this.props.commercial.extra}
+						sciences={this.props.commercial.sciences!}
 						buildScience={this.buildScience.bind(this)}
 					/>
 				);
@@ -92,12 +92,14 @@ class Commercial extends React.Component<{
 		return null;
 	}
 
-	// todo cant build the same science
 	buildScience(scienceName: ScienceToken) {
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const me = utils.getMe();
-		if (!me.sciences) me.sciences = [];
-		me.sciences.push(scienceName);
+		if (!me.scienceTokens) me.scienceTokens = [];
+		me.scienceTokens.push(scienceName);
+		store.gameW.game.sciences.find(
+			(obj) => obj.token === scienceName
+		)!.taken = true;
 		utils.endCommercial(
 			`built ${utils.enumName(scienceName, ScienceToken)}`
 		);

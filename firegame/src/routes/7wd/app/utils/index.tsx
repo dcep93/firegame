@@ -23,7 +23,7 @@ class Utils extends Shared<GameType, PlayerType> {
 	} = {
 		[ScienceToken.agriculture]: () => 4,
 		[ScienceToken.mathematics]: (player: PlayerType) =>
-			(player.sciences || []).length,
+			(player.scienceTokens || []).length,
 		[ScienceToken.mysticism]: (player: PlayerType) =>
 			2 * (player.tokens || []).length,
 		[ScienceToken.philosophy]: () => 7,
@@ -171,14 +171,18 @@ class Utils extends Shared<GameType, PlayerType> {
 		)
 			return 0;
 		if (
-			(utils.getMe().sciences || []).includes(ScienceToken.masonry) &&
+			(utils.getMe().scienceTokens || []).includes(
+				ScienceToken.masonry
+			) &&
 			card.color === Color.blue
 		)
 			return 0;
 		const price = utils.getCostCost(card.cost);
 		if (
 			card.upgradesFrom &&
-			(utils.getMe().sciences || []).includes(ScienceToken.engineering) &&
+			(utils.getMe().scienceTokens || []).includes(
+				ScienceToken.engineering
+			) &&
 			price > 0
 		)
 			return 1;
@@ -207,7 +211,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			player.military -
 				store.gameW.game.players[1 - player.index].military
 		);
-		const sciencePoints = (player.sciences || [])
+		const sciencePoints = (player.scienceTokens || [])
 			.map((token) => utils.tokenToPoints[token])
 			.filter(Boolean)
 			.map((f) => f!(player))
@@ -240,7 +244,11 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	getWonderCost(wonder: WonderType): number {
-		if ((utils.getMe().sciences || []).includes(ScienceToken.architecture))
+		if (
+			(utils.getMe().scienceTokens || []).includes(
+				ScienceToken.architecture
+			)
+		)
 			return 0;
 		return utils.getCostCost(wonder.cost);
 	}
@@ -251,7 +259,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			return;
 		}
 		const me = utils.getMe();
-		const sciences = me.sciences || [];
+		const sciences = me.scienceTokens || [];
 		if (sciences.includes(ScienceToken.polioretics))
 			utils.stealMoney(military);
 		me.military += military;

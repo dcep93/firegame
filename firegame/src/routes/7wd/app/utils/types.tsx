@@ -111,13 +111,15 @@ export type GameType = {
 	structure: StructureCardType[][];
 	trash?: number[];
 	commercials?: CommercialType[];
-	sciences: ScienceToken[];
+	sciences: { taken?: boolean; token: ScienceToken }[];
 	wentFirst: number;
 	discounts: number[];
 	godTokens: God[];
 	gods: { [g in God]: number[] };
 	pantheon: number[];
+	// todo absorb into militaryBonuses
 	minerva?: boolean;
+	wondersToChoose: number[];
 };
 
 export type Params = {
@@ -141,9 +143,11 @@ export type PlayerType = {
 	military: number;
 	index: number;
 	militaryBonuses: { [x: number]: number };
-	sciences?: ScienceToken[];
+	scienceTokens?: ScienceToken[];
 	tokens?: TokenType[];
 	gods?: number[];
+	// todo utilize
+	scienceIcons?: { [x in ScienceEnum]?: number };
 };
 
 export type PlayerWonder = { built: boolean; wonderIndex: number };
@@ -156,7 +160,7 @@ export type TokenType = {
 export type CommercialType = {
 	commercial: CommercialEnum;
 	playerIndex: number;
-	extra?: any;
+	sciences?: ScienceToken[];
 };
 
 export enum CommercialEnum {

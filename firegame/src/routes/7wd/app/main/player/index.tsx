@@ -37,8 +37,10 @@ class Player extends React.Component<{
 								selected={this.props.selected}
 							/>
 						)}
-						{this.props.player.sciences && (
-							<Sciences sciences={this.props.player.sciences} />
+						{this.props.player.scienceTokens && (
+							<Sciences
+								sciences={this.props.player.scienceTokens}
+							/>
 						)}
 						{this.props.player.cards && (
 							<Cards cards={this.props.player.cards} />

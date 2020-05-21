@@ -21,7 +21,9 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
 	}
 
 	isMyTurn(game_: T | undefined = undefined): boolean {
-		return this.getCurrent(game_).userId === store.me.userId;
+		const game: T = game_ || store.gameW.game!;
+		if (!game) return false;
+		return this.getCurrent(game).userId === store.me.userId;
 	}
 
 	incrementPlayerTurn(game_: T | undefined = undefined): void {

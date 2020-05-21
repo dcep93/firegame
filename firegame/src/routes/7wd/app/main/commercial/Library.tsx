@@ -6,7 +6,7 @@ import { ScienceToken } from "../../utils/types";
 import styles from "../../../../../shared/styles.module.css";
 
 class Library extends React.Component<{
-	extra: any;
+	sciences: ScienceToken[];
 	buildScience: (science: ScienceToken) => void;
 }> {
 	render() {
@@ -14,7 +14,7 @@ class Library extends React.Component<{
 			<div className={styles.bubble}>
 				<h2>Library</h2>
 				<div className={styles.flex}>
-					{this.props.extra.map((scienceName: ScienceToken) => (
+					{this.props.sciences.map((scienceName: ScienceToken) => (
 						<div
 							onClick={() => this.props.buildScience(scienceName)}
 							className={styles.bubble}

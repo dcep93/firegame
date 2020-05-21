@@ -862,9 +862,14 @@ const gods: GodType[] = [
 			utils.addCommercial({
 				commercial: CommercialEnum.enki,
 				playerIndex: utils.myIndex(),
-				extra: utils
-					.shuffle(store.gameW.game.sciences.slice(NUM_SCIENCES))
-					.slice(0, 2),
+				sciences: utils
+					.shuffle(
+						store.gameW.game.sciences
+							.slice(NUM_SCIENCES)
+							.filter((obj) => !obj.taken)
+					)
+					.slice(0, 2)
+					.map((obj) => obj.token),
 			}),
 	},
 	{
@@ -882,7 +887,7 @@ const gods: GodType[] = [
 		source: God.mesopotamian,
 		message: "gain law science token",
 		f: () =>
-			(utils.getMe().sciences || []).find(
+			(utils.getMe().scienceTokens || []).find(
 				(token) => token === ScienceToken.law
 			) &&
 			utils.addCommercial({
@@ -1092,9 +1097,14 @@ const wonders: WonderType[] = [
 			utils.addCommercial({
 				commercial: CommercialEnum.library,
 				playerIndex: utils.myIndex(),
-				extra: utils
-					.shuffle(store.gameW.game.sciences.slice(NUM_SCIENCES))
-					.slice(0, 3),
+				sciences: utils
+					.shuffle(
+						store.gameW.game.sciences
+							.slice(NUM_SCIENCES)
+							.filter((obj) => !obj.taken)
+					)
+					.slice(0, 3)
+					.map((obj) => obj.token),
 			}),
 		points: 4,
 	},

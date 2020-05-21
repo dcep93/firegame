@@ -6,47 +6,41 @@ import { Age } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class ChooseWonder extends React.Component<{ extra: any }> {
+class ChooseWonder extends React.Component {
 	render() {
-		const params = this.props.extra as {
-			remaining: number;
-			wonders: number[];
-		};
-		if (params.remaining === 0) {
+		const total = store.gameW.game.wondersToChoose?.length;
+		const remaining = total > 4 ? total - 4 : total;
+		if (!remaining) {
 			if (utils.isMyTurn()) {
 				const game = store.gameW.game;
 				game.age = Age.one;
 				utils.deal(game);
 				utils.endCommercial("started the game");
 			}
-			return;
+			return null;
 		}
 
 		return (
 			<div className={styles.bubble}>
 				<h2>Wonders</h2>
 				<div className={styles.flex}>
-					{Object.keys(Array.from(new Array(params.remaining))).map(
-						(index: string) => (
-							<div key={index} className={styles.bubble}>
-								{this.renderWonder(
-									parseInt(index),
-									params.wonders
-								)}
-							</div>
-						)
+					{Object.keys(Array.from(new Array(remaining))).map(
+						this.renderWonder.bind(this)
 					)}
 				</div>
 			</div>
 		);
 	}
 
-	renderWonder(index: number, wonders: number[]) {
-		const wonder = bank.wonders[wonders[index]];
+	renderWonder(indexS: string) {
+		const index = parseInt(indexS);
+		const wonder = bank.wonders[store.gameW.game.wondersToChoose[index]];
 		return (
 			<div
+				key={index}
+				className={styles.bubble}
 				title={JSON.stringify(wonder, null, 2)}
-				onClick={() => this.chooseWonder(index, wonders)}
+				onClick={() => this.chooseWonder(index)}
 			>
 				<p>{wonder.name}</p>
 				<p>{wonder.message}</p>
@@ -58,23 +52,24 @@ class ChooseWonder extends React.Component<{ extra: any }> {
 		);
 	}
 
-	chooseWonder(index: number, wonders: number[]) {
+	chooseWonder(index: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
-		const wonderIndex = wonders.splice(index, 1)[0];
+		const wonderIndex = store.gameW.game.wondersToChoose.splice(
+			index,
+			1
+		)[0];
 		if (!utils.getMe().wonders) utils.getMe().wonders = [];
 		utils.getMe().wonders.push({ built: false, wonderIndex });
-		const c = store.gameW.game.commercials![0];
-		c.extra.remaining--;
-		if (c.extra.remaining !== 2) {
-			c.playerIndex = utils.getOpponent().index;
-			if (c.extra.remaining === 0) {
-				if (c.extra.firstRound) {
-					c.extra.firstRound = false;
-					c.extra.remaining = 4;
-				}
-			}
-		}
-		utils.addCommercial(c);
+		// todo fix
+		const playerIndex =
+			store.gameW.game.wondersToChoose.length % 2
+				? 1 - utils.currentIndex()
+				: utils.currentIndex();
+
+		utils.addCommercial({
+			commercial: store.gameW.game.commercials![0].commercial,
+			playerIndex,
+		});
 		utils.endCommercial(`selected ${bank.wonders[wonderIndex].name}`);
 	}
 }
