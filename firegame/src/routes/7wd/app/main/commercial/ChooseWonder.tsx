@@ -54,17 +54,15 @@ class ChooseWonder extends React.Component {
 
 	chooseWonder(index: number) {
 		if (!utils.isMyTurn()) return alert("not your turn");
-		const wonderIndex = store.gameW.game.wondersToChoose.splice(
-			index,
-			1
-		)[0];
+		const wondersToChoose = store.gameW.game.wondersToChoose;
+		const wonderIndex = wondersToChoose.splice(index, 1)[0];
 		if (!utils.getMe().wonders) utils.getMe().wonders = [];
 		utils.getMe().wonders.push({ built: false, wonderIndex });
-		// todo fix
+		const remaining = wondersToChoose.length;
 		const playerIndex =
-			store.gameW.game.wondersToChoose.length % 2
-				? 1 - utils.currentIndex()
-				: utils.currentIndex();
+			Math.abs(remaining - 4) === 2
+				? utils.currentIndex()
+				: 1 - utils.currentIndex();
 
 		utils.addCommercial({
 			commercial: store.gameW.game.commercials![0].commercial,
