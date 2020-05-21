@@ -37,14 +37,7 @@ class Science extends React.Component {
 	}
 
 	select(token: ScienceToken) {
-		if (
-			!(
-				utils.isMyTurn() &&
-				(store.gameW.game.commercials || [])[0]?.commercial ===
-					CommercialEnum.science
-			)
-		)
-			return;
+		if (!utils.isMyCommercial(CommercialEnum.science)) return;
 		store.gameW.game.sciences.find(
 			(obj) => obj.token === token
 		)!.taken = true;

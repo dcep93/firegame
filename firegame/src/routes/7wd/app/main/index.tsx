@@ -41,6 +41,7 @@ class Main extends React.Component<
 	}
 
 	selectPantheon(selectedPantheon: number) {
+		if (!utils.isMyTurn()) return;
 		const godIndex = store.gameW.game.pantheon[selectedPantheon];
 		if (store.gameW.game.age === Age.one) {
 			if (godIndex !== -1) return;
@@ -143,6 +144,7 @@ class Main extends React.Component<
 	}
 
 	discountToken(tokenIndex: number) {
+		if (!utils.isMyTurn()) return;
 		const usedTokens = this.state.usedTokens || {};
 		if (usedTokens[tokenIndex]) {
 			delete usedTokens[tokenIndex];
@@ -153,6 +155,7 @@ class Main extends React.Component<
 	}
 
 	reset() {
+		if (!utils.isMyTurn()) return;
 		this.setState({
 			selectedTarget: undefined,
 			selectedWonder: undefined,
@@ -161,11 +164,13 @@ class Main extends React.Component<
 	}
 
 	selectPlayer(selectedWonder: number) {
+		if (!utils.isMyTurn()) return;
 		if (this.state.selectedTarget !== undefined) return this.reset();
 		this.setState({ selectedTarget: selected.player, selectedWonder });
 	}
 
 	selectBoard() {
+		if (!utils.isMyTurn()) return;
 		if (this.state.selectedTarget !== undefined) return this.reset();
 		this.setState({ selectedTarget: selected.board });
 	}

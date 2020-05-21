@@ -55,6 +55,7 @@ class Isis extends React.Component<{}, { trashIndex: number }> {
 							<div
 								key={obj.pWonder.wonderIndex}
 								onClick={() => {
+									if (!utils.isMyTurn()) return;
 									if (!this.state)
 										return alert(
 											"pick a card from trash first"
