@@ -9,8 +9,7 @@ import Trash from "./Trash";
 import Commercial from "./commercial";
 import Science from "./Science";
 import Pantheon from "./Pantheon";
-import bank from "../utils/bank";
-import { Age, CommercialEnum, ScienceToken, Color } from "../utils/types";
+import { Age } from "../utils/types";
 
 export enum SelectedEnum {
 	trash = -2,
