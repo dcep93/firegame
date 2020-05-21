@@ -170,7 +170,7 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	getWonderOptions(): Resource[][] {
-		return (utils.getMe().wonders || [])
+		return ((utils.getMe() || utils.getCurrent()).wonders || [])
 			.filter((wonder) => wonder.built)
 			.map((wonder) => bank.wonders[wonder.wonderIndex])
 			.map((wonder) => wonder.resourceOptions)
