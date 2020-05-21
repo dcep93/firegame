@@ -10,13 +10,7 @@ import Commercial from "./commercial";
 import Science from "./Science";
 import Pantheon from "./Pantheon";
 import bank from "../utils/bank";
-import {
-	Age,
-	CommercialEnum,
-	ScienceToken,
-	Color,
-	CardType,
-} from "../utils/types";
+import { Age, CommercialEnum, ScienceToken, Color } from "../utils/types";
 
 export enum selected {
 	player,
@@ -49,27 +43,7 @@ class Main extends React.Component<
 				selectedPantheon = -1;
 			this.setState({ selectedPantheon });
 		} else {
-			const god = bank.gods[godIndex];
-			const me = utils.getMe();
-			var cost =
-				3 +
-				(utils.myIndex() === 0
-					? 5 - selectedPantheon
-					: selectedPantheon);
-			if (god.source === undefined) cost *= 2;
-			if (
-				(utils.getMe().gods || []).find(
-					(godIndex) => bank.gods[godIndex].name === "the sanctuary"
-				)
-			)
-				cost -= 2;
-			if (me.money < cost) return alert("cannot afford");
-			me.money -= cost;
-			if (!me.gods) me.gods = [];
-			me.gods.push(godIndex);
-			god.f(god);
-			utils.incrementPlayerTurn();
-			store.update(`purchased ${god.name}`);
+			utils.buyGod(selectedPantheon);
 		}
 	}
 
@@ -187,7 +161,7 @@ class Main extends React.Component<
 		if (commercial) return alert(commercial);
 		if (this.state.selectedTarget === undefined)
 			return alert("need to select a target first");
-		if (!this.canTake(y, x, structureCard.offset))
+		if (!utils.canTakeCard(y, x, structureCard.offset))
 			return alert("cannot take that card");
 		const card = bank.cards[structureCard.cardIndex];
 		if (this.state.selectedWonder === -1) {
@@ -225,10 +199,10 @@ class Main extends React.Component<
 			rowAbove.forEach((aboveCard, index) => {
 				if (
 					!aboveCard.revealed &&
-					this.canTake(rowAboveY, index, aboveCard.offset)
+					utils.canTakeCard(rowAboveY, index, aboveCard.offset)
 				) {
 					if (store.gameW.game.params.godExpansion)
-						this.handleToken(rowAboveY, index);
+						utils.takeToken(rowAboveY, index);
 					aboveCard.revealed = true;
 				}
 			});
@@ -247,7 +221,7 @@ class Main extends React.Component<
 			message = `built ${card.name}`;
 			if (!me.cards) me.cards = [];
 			me.cards.push(structureCard.cardIndex);
-			this.handlePurchase(card);
+			utils.handleCardPurchase(card);
 		} else {
 			const w = utils.getMe().wonders[this.state.selectedWonder!];
 			w.built = true;
@@ -297,61 +271,6 @@ class Main extends React.Component<
 		}
 		this.reset();
 		store.update(message);
-	}
-
-	handleToken(row: number, col: number) {
-		const game = store.gameW.game;
-		const me = utils.getMe();
-		if (!me.tokens) me.tokens = [];
-		if (game.age === Age.one) {
-			if (col % 2 === 0) {
-				utils.addCommercial({
-					commercial: CommercialEnum.pickGod,
-					playerIndex: utils.myIndex(),
-				});
-			}
-		} else if (game.age === Age.two) {
-			if (col % 2 === 0 && row === 1) {
-				me.tokens.push({ isGod: false, value: game.discounts.pop()! });
-			}
-		}
-	}
-
-	canTake(y: number, x: number, offset: number): boolean {
-		const rowBelow = store.gameW.game.structure[y + 1];
-		if (!rowBelow) return true;
-		const gridX = x * 2 + offset;
-		const cardsBelow = rowBelow.filter(
-			(card, index) =>
-				!card.taken && Math.abs(card.offset + index * 2 - gridX) === 1
-		);
-		return cardsBelow.length === 0;
-	}
-
-	handlePurchase(card: CardType) {
-		const me = utils.getMe();
-		const sciences = me.scienceTokens || [];
-		if (card.extra.f) card.extra.f();
-		if (
-			card.upgradesFrom !== undefined &&
-			(me.scienceTokens || []).includes(ScienceToken.urbanism)
-		) {
-			if (
-				me.cards!.filter(
-					(cardIndex) =>
-						bank.cards[cardIndex].upgradesTo === card.upgradesFrom
-				).length
-			)
-				me.money += 4;
-		}
-		if (card.extra.military) {
-			var military = card.extra.military;
-			if (sciences.includes(ScienceToken.strategy)) military++;
-			utils.increaseMilitary(military);
-		}
-		if (card.extra.science) {
-			utils.gainScience(card.extra.science);
-		}
 	}
 }
 

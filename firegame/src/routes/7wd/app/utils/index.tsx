@@ -327,6 +327,84 @@ class Utils extends Shared<GameType, PlayerType> {
 			store.gameW.game.commercials[0]?.commercial === commercial
 		);
 	}
+
+	buyGod(selectedPantheon: number) {
+		const godIndex = store.gameW.game.pantheon[selectedPantheon];
+		const god = bank.gods[godIndex];
+		const me = utils.getMe();
+		var cost =
+			3 +
+			(utils.myIndex() === 0 ? 5 - selectedPantheon : selectedPantheon);
+		if (god.source === undefined) cost *= 2;
+		if (
+			(utils.getMe().gods || []).find(
+				(godIndex) => bank.gods[godIndex].name === "the sanctuary"
+			)
+		)
+			cost -= 2;
+		if (me.money < cost) return alert("cannot afford");
+		me.money -= cost;
+		if (!me.gods) me.gods = [];
+		me.gods.push(godIndex);
+		god.f(god);
+		utils.incrementPlayerTurn();
+		store.update(`purchased ${god.name}`);
+	}
+
+	takeToken(row: number, col: number) {
+		const game = store.gameW.game;
+		const me = utils.getMe();
+		if (!me.tokens) me.tokens = [];
+		if (game.age === Age.one) {
+			if (col % 2 === 0) {
+				utils.addCommercial({
+					commercial: CommercialEnum.pickGod,
+					playerIndex: utils.myIndex(),
+				});
+			}
+		} else if (game.age === Age.two) {
+			if (col % 2 === 0 && row === 1) {
+				me.tokens.push({ isGod: false, value: game.discounts.pop()! });
+			}
+		}
+	}
+
+	canTakeCard(y: number, x: number, offset: number): boolean {
+		const rowBelow = store.gameW.game.structure[y + 1];
+		if (!rowBelow) return true;
+		const gridX = x * 2 + offset;
+		const cardsBelow = rowBelow.filter(
+			(card, index) =>
+				!card.taken && Math.abs(card.offset + index * 2 - gridX) === 1
+		);
+		return cardsBelow.length === 0;
+	}
+
+	handleCardPurchase(card: CardType) {
+		const me = utils.getMe();
+		const sciences = me.scienceTokens || [];
+		if (card.extra.f) card.extra.f();
+		if (
+			card.upgradesFrom !== undefined &&
+			(me.scienceTokens || []).includes(ScienceToken.urbanism)
+		) {
+			if (
+				me.cards!.filter(
+					(cardIndex) =>
+						bank.cards[cardIndex].upgradesTo === card.upgradesFrom
+				).length
+			)
+				me.money += 4;
+		}
+		if (card.extra.military) {
+			var military = card.extra.military;
+			if (sciences.includes(ScienceToken.strategy)) military++;
+			utils.increaseMilitary(military);
+		}
+		if (card.extra.science) {
+			utils.gainScience(card.extra.science);
+		}
+	}
 }
 
 export const store: StoreType<GameType> = store_;
