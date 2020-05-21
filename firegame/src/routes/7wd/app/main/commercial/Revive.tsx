@@ -7,6 +7,7 @@ import styles from "../../../../../shared/styles.module.css";
 
 class Revive extends React.Component {
 	render() {
+		if (!utils.isMyTurn()) return null;
 		const cards = store.gameW.game.trash || [];
 		if (!cards) {
 			utils.endCommercial("could not revive a card");
