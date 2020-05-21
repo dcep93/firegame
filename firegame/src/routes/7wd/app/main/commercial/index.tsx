@@ -129,6 +129,7 @@ class Commercial extends React.Component<{
 								.map((obj) => (
 									<div
 										onClick={() => {
+											if (!utils.isMyTurn()) return;
 											utils
 												.getMe()
 												.wonders.splice(obj.index, 1);
@@ -165,6 +166,7 @@ class Commercial extends React.Component<{
 									<div
 										key={tokenIndex}
 										onClick={() => {
+											if (!utils.isMyTurn()) return;
 											if (
 												this.props.selectedPantheon ===
 												undefined
@@ -219,6 +221,7 @@ class Commercial extends React.Component<{
 							{wondersToUnbuild.map((wonder) => (
 								<div
 									onClick={() => {
+										if (!utils.isMyTurn()) return;
 										wonder.built = false;
 										this.pop();
 										store.update(
@@ -253,6 +256,7 @@ class Commercial extends React.Component<{
 							{wondersToSteal.map((obj) => (
 								<div
 									onClick={() => {
+										if (!utils.isMyTurn()) return;
 										const wonder = utils
 											.getOpponent()
 											.wonders.splice(obj.index, 1)[0];
@@ -298,6 +302,7 @@ class Commercial extends React.Component<{
 								<div
 									key={index}
 									onClick={() => {
+										if (!utils.isMyTurn()) return;
 										this.pop();
 										store.update(
 											`copied ${bank.cards[index].extra.science}`

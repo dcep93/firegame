@@ -904,6 +904,7 @@ const gods: GodType[] = [
 		name: "astarte",
 		source: God.phoenician,
 		message: "$7, 1 point per",
+		// todo clickable to add money
 		f: (god: GodType) => (god.extra = 7),
 		points: (god: GodType) => god.extra,
 	},
