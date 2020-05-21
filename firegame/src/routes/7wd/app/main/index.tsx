@@ -143,7 +143,7 @@ class Main extends React.Component<
 		if (!utils.isMyTurn()) return alert("not your turn");
 		const commercial = (store.gameW.game.commercials || [])[0]?.commercial;
 		const structureCard = store.gameW.game.structure[y][x];
-		if (commercial === CommercialEnum.destroyFromStructure) {
+		if (commercial === CommercialEnum.zeus) {
 			structureCard.taken = true;
 			store.gameW.game.commercials!.shift();
 			store.update("destroyed a card");

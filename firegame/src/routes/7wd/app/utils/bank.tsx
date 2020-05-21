@@ -803,7 +803,7 @@ const gods: GodType[] = [
 		message: "destroy a built wonder",
 		f: () =>
 			utils.addCommercial({
-				commercial: CommercialEnum.unbuild,
+				commercial: CommercialEnum.anubis,
 				playerIndex: utils.myIndex(),
 			}),
 	},
@@ -813,7 +813,7 @@ const gods: GodType[] = [
 		message: "steal an unbuilt wonder",
 		f: () =>
 			utils.addCommercial({
-				commercial: CommercialEnum.stealWonder,
+				commercial: CommercialEnum.ra,
 				playerIndex: utils.myIndex(),
 			}),
 	},
@@ -823,7 +823,7 @@ const gods: GodType[] = [
 		message: "trash -> wonder",
 		f: () =>
 			utils.addCommercial({
-				commercial: CommercialEnum.wonderFromTrash,
+				commercial: CommercialEnum.isis,
 				playerIndex: utils.myIndex(),
 			}),
 	},
@@ -840,7 +840,7 @@ const gods: GodType[] = [
 		message: "destroy a structure card",
 		f: () =>
 			utils.addCommercial({
-				commercial: CommercialEnum.destroyFromStructure,
+				commercial: CommercialEnum.zeus,
 				playerIndex: utils.myIndex(),
 			}),
 	},
@@ -873,7 +873,7 @@ const gods: GodType[] = [
 		message: "copy a science from opponent",
 		f: () =>
 			utils.addCommercial({
-				commercial: CommercialEnum.copyScience,
+				commercial: CommercialEnum.nisaba,
 				playerIndex: utils.myIndex(),
 			}),
 	},

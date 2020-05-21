@@ -1,10 +1,11 @@
 import React from "react";
+
 import utils, { store } from "../../utils";
 import bank from "../../utils/bank";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class CommercialWonderFromTrash extends React.Component<
+class Isis extends React.Component<
 	{ pop: () => void },
 	{ trashIndex: number }
 > {
@@ -75,4 +76,4 @@ class CommercialWonderFromTrash extends React.Component<
 	}
 }
 
-export default CommercialWonderFromTrash;
+export default Isis;
