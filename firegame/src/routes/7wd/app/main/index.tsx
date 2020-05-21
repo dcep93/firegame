@@ -96,25 +96,7 @@ class Main extends React.Component<
 						{...this.props}
 					/>
 				</div>
-				<div>
-					<Player
-						// todo make work for spectator
-						player={utils.getMe()}
-						selected={
-							this.state.selectedTarget === selected.player
-								? this.state.selectedWonder
-								: undefined
-						}
-						selectWonder={this.selectPlayer.bind(this)}
-						usedTokens={this.state.usedTokens}
-						discount={this.discountToken.bind(this)}
-					/>
-					<Player
-						player={utils.getOpponent()}
-						selectWonder={() => null}
-						discount={() => null}
-					/>
-				</div>
+				{this.renderPlayers()}
 				<div>
 					<Military />
 				</div>
@@ -124,6 +106,35 @@ class Main extends React.Component<
 				<Trash
 					select={this.selectBoard.bind(this)}
 					selected={this.state.selectedTarget === selected.board}
+				/>
+			</div>
+		);
+	}
+
+	renderPlayers() {
+		const players =
+			utils.myIndex() >= 0
+				? [utils.getMe(), utils.getOpponent()]
+				: store.gameW.game.players;
+
+		return (
+			<div>
+				<Player
+					// todo make work for spectator
+					player={utils.getMe()}
+					selected={
+						this.state.selectedTarget === selected.player
+							? this.state.selectedWonder
+							: undefined
+					}
+					selectWonder={this.selectPlayer.bind(this)}
+					usedTokens={this.state.usedTokens}
+					discount={this.discountToken.bind(this)}
+				/>
+				<Player
+					player={utils.getOpponent()}
+					selectWonder={() => null}
+					discount={() => null}
 				/>
 			</div>
 		);
