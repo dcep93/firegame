@@ -1,5 +1,8 @@
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
+
+import { SelectedEnum } from "../main";
+import bank from "./bank";
 import {
 	GameType,
 	PlayerType,
@@ -13,12 +16,12 @@ import {
 	ScienceEnum,
 	CommercialEnum,
 } from "./types";
-import bank from "./bank";
 
 const BASE_COST = 2;
 const CARDS_PER_AGE = 20;
 const NUM_PURPLES = 3;
 const SCIENCE_TO_WIN = 6;
+const BASE_TRASH = 2;
 
 class Utils extends Shared<GameType, PlayerType> {
 	tokenToPoints: {
@@ -404,6 +407,130 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (card.extra.science) {
 			utils.gainScience(card.extra.science);
 		}
+	}
+
+	selectCard(
+		x: number,
+		y: number,
+		selectedTarget: SelectedEnum | undefined
+	): string | void {
+		if (!utils.isMyTurn()) return;
+		const commercial = (store.gameW.game.commercials || [])[0]?.commercial;
+		const structureCard = store.gameW.game.structure[y][x];
+		if (commercial === CommercialEnum.zeus) {
+			structureCard.taken = true;
+			utils.endCommercial("destroyed a card");
+			return;
+		}
+		if (commercial) return alert(commercial);
+		if (selectedTarget === undefined)
+			return alert("need to select a target first");
+		if (!utils.canTakeCard(y, x, structureCard.offset))
+			return alert("cannot take that card");
+		const card = bank.cards[structureCard.cardIndex];
+		if (selectedTarget === SelectedEnum.build) {
+			const cost = utils.getCardCost(card);
+			if (cost > utils.getMe().money)
+				return alert("cannot afford that card");
+			utils.getMe().money -= cost;
+			if (
+				(utils.getOpponent().scienceTokens || []).includes(
+					ScienceToken.economy
+				)
+			)
+				utils.getOpponent().money += cost;
+		} else if (selectedTarget >= 0) {
+			const cost = utils.getWonderCost(
+				bank.wonders[utils.getMe().wonders[selectedTarget!].wonderIndex]
+			);
+			if (cost > utils.getMe().money)
+				return alert("cannot afford that wonder");
+			utils.getMe().money -= cost;
+			if (
+				(utils.getOpponent().scienceTokens || []).includes(
+					ScienceToken.economy
+				)
+			)
+				utils.getOpponent().money += cost;
+		}
+		structureCard.taken = true;
+		const rowAboveY = y - 1;
+		const rowAbove = store.gameW.game.structure[rowAboveY];
+		if (rowAbove)
+			rowAbove.forEach((aboveCard, index) => {
+				if (
+					!aboveCard.revealed &&
+					utils.canTakeCard(rowAboveY, index, aboveCard.offset)
+				) {
+					if (store.gameW.game.params.godExpansion)
+						utils.takeToken(rowAboveY, index);
+					aboveCard.revealed = true;
+				}
+			});
+		const me = utils.getMe();
+		var message;
+		if (selectedTarget === SelectedEnum.trash) {
+			message = `trashed ${card.name}`;
+			if (!store.gameW.game.trash) store.gameW.game.trash = [];
+			store.gameW.game.trash.push(structureCard.cardIndex);
+			me.money +=
+				BASE_TRASH +
+				(me.cards || [])
+					.map((cardIndex) => bank.cards[cardIndex])
+					.filter((card) => card.color === Color.yellow).length;
+		} else if (selectedTarget === SelectedEnum.build) {
+			message = `built ${card.name}`;
+			if (!me.cards) me.cards = [];
+			me.cards.push(structureCard.cardIndex);
+			utils.handleCardPurchase(card);
+		} else {
+			const w = utils.getMe().wonders[selectedTarget!];
+			w.built = true;
+			const wonder = bank.wonders[w.wonderIndex];
+			wonder.f();
+			if (
+				wonder.goAgain ||
+				(me.scienceTokens || []).includes(ScienceToken.theology)
+			)
+				utils.incrementPlayerTurn();
+			message = `built ${wonder.name} using ${card.name}`;
+			if (
+				utils.getMe().wonders.filter((wonder) => wonder.built).length +
+					utils.getOpponent().wonders.filter((wonder) => wonder.built)
+						.length ===
+				7
+			) {
+				var index;
+				if (utils.getMe().wonders.filter((wonder) => !wonder.built)) {
+					index = me.index;
+				} else {
+					index = 1 - me.index;
+				}
+				utils.addCommercial({
+					commercial: CommercialEnum.destroyWonder,
+					playerIndex: index,
+				});
+			}
+		}
+		utils.incrementPlayerTurn();
+		if (
+			!store.gameW.game.structure.flat().filter((sc) => !sc.taken).length
+		) {
+			switch (store.gameW.game.age) {
+				case Age.one:
+					store.gameW.game.age = Age.two;
+					utils.deal(store.gameW.game);
+					break;
+				case Age.two:
+					store.gameW.game.age = Age.three;
+					utils.deal(store.gameW.game);
+					break;
+				case Age.three:
+					alert("game over");
+					break;
+			}
+		}
+		return message;
 	}
 }
 
