@@ -10,6 +10,8 @@ import {
 	Color,
 	WonderType,
 	CommercialType,
+	ScienceEnum,
+	CommercialEnum,
 } from "./types";
 import bank from "./bank";
 
@@ -282,6 +284,22 @@ class Utils extends Shared<GameType, PlayerType> {
 
 	enumName<T>(val: string, e: T): keyof T {
 		return Object.entries(e).find(([k, v]) => v === val)![0] as keyof T;
+	}
+
+	gainScience(science: ScienceEnum) {
+		const me = utils.getMe();
+		if (!me.scienceIcons) me.scienceIcons = {};
+		if (!me.scienceIcons[science]) me.scienceIcons[science] = 0;
+		if (me.scienceIcons[science]!++ === 2) {
+			if (!store.gameW.game.commercials)
+				store.gameW.game.commercials = [];
+			store.gameW.game.commercials.push({
+				commercial: CommercialEnum.science,
+				playerIndex: utils.myIndex(),
+			});
+		} else if (Object.keys(me.scienceIcons).length === 6) {
+			alert("you win!");
+		}
 	}
 }
 

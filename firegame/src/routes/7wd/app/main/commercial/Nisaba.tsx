@@ -8,7 +8,6 @@ import styles from "../../../../../shared/styles.module.css";
 
 class Nisaba extends React.Component {
 	render() {
-		// todo make this work with a sciences dict
 		const sciences = (
 			utils.getPlayer(1 - utils.currentIndex()).cards || []
 		).filter((cardIndex) => bank.cards[cardIndex].color === Color.green);
@@ -27,9 +26,9 @@ class Nisaba extends React.Component {
 								key={obj.index}
 								onClick={() => {
 									if (!utils.isMyTurn()) return;
-									utils.endCommercial(
-										`copied ${obj.card.extra.science}`
-									);
+									const science = obj.card.extra.science!;
+									utils.gainScience(science);
+									utils.endCommercial(`copied ${science}`);
 								}}
 							>
 								{obj.card.extra.science}

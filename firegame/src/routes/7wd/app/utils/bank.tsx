@@ -886,14 +886,7 @@ const gods: GodType[] = [
 		name: "ishtar",
 		source: God.mesopotamian,
 		message: "gain law science token",
-		f: () =>
-			(utils.getMe().scienceTokens || []).find(
-				(token) => token === ScienceToken.law
-			) &&
-			utils.addCommercial({
-				commercial: CommercialEnum.science,
-				playerIndex: utils.myIndex(),
-			}),
+		f: () => utils.gainScience(ScienceEnum.law),
 	},
 	{
 		name: "baal",

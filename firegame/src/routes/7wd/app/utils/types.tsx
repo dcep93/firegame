@@ -55,7 +55,6 @@ export enum ScienceEnum {
 	bowl,
 	astrolabe,
 	tablet,
-	// todo alert you win
 	law,
 }
 
@@ -146,7 +145,6 @@ export type PlayerType = {
 	scienceTokens?: ScienceToken[];
 	tokens?: TokenType[];
 	gods?: number[];
-	// todo utilize
 	scienceIcons?: { [x in ScienceEnum]?: number };
 };
 

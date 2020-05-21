@@ -27,6 +27,7 @@ export enum selected {
 const BASE_TRASH = 2;
 const SCIENCE_TO_WIN = 6;
 
+// todo organize
 class Main extends React.Component<
 	{},
 	{
@@ -315,23 +316,7 @@ class Main extends React.Component<
 			utils.increaseMilitary(military);
 		}
 		if (card.extra.science) {
-			const scienceCards = me
-				.cards!.map((cardIndex) => bank.cards[cardIndex].extra.science)
-				.filter(Boolean);
-			if (sciences.includes(ScienceToken.law))
-				scienceCards.push(ScienceEnum.law);
-			if (new Set(scienceCards).size >= SCIENCE_TO_WIN) alert("you win");
-			if (
-				scienceCards.filter((science) => science === card.extra.science)
-					.length === 2
-			) {
-				if (!store.gameW.game.commercials)
-					store.gameW.game.commercials = [];
-				store.gameW.game.commercials.push({
-					commercial: CommercialEnum.science,
-					playerIndex: utils.myIndex(),
-				});
-			}
+			utils.gainScience(card.extra.science);
 		}
 	}
 }

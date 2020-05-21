@@ -1,7 +1,7 @@
 import React from "react";
 
 import utils, { store } from "../utils";
-import { ScienceToken, CommercialEnum } from "../utils/types";
+import { ScienceToken, CommercialEnum, ScienceEnum } from "../utils/types";
 
 import styles from "../../../../shared/styles.module.css";
 
@@ -52,8 +52,7 @@ class Science extends React.Component {
 		const me = utils.getMe();
 		if (!me.scienceTokens) me.scienceTokens = [];
 		me.scienceTokens.push(token);
-		store.gameW.game.commercials!.shift();
-		store.update(`selected ${utils.enumName(token, ScienceToken)}`);
+		utils.endCommercial(`selected ${utils.enumName(token, ScienceToken)}`);
 	}
 
 	handleSelected(selected: ScienceToken) {
@@ -61,6 +60,9 @@ class Science extends React.Component {
 			case ScienceToken.agriculture:
 			case ScienceToken.urbanism:
 				utils.getMe().money += 6;
+				return;
+			case ScienceToken.law:
+				utils.gainScience(ScienceEnum.law);
 				return;
 		}
 	}
