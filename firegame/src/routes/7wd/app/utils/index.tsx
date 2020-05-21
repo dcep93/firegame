@@ -110,8 +110,9 @@ class Utils extends Shared<GameType, PlayerType> {
 		}
 	}
 
-	getCostCost(rawCosts: Resource[]): number {
-		const cards = utils.getMe().cards || [];
+	getCostCost(rawCosts: Resource[], player?: PlayerType): number {
+		if (!player) player = utils.getMe() || utils.getCurrent();
+		const cards = player.cards || [];
 		const costs = utils.countResources(rawCosts);
 		const myResources = utils.countResources(
 			cards.flatMap(
@@ -119,7 +120,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			)
 		);
 		const oppResources = utils.countResources(
-			(utils.getOpponent().cards || []).flatMap(
+			(utils.getPlayer(1 - player.index).cards || []).flatMap(
 				(cardIndex) => bank.cards[cardIndex].extra.resource || []
 			)
 		);
@@ -177,9 +178,9 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	getCardCost(card: CardType): number {
-		if (!utils.getMe()) return 0;
+		const player = utils.getMe() || utils.getCurrent();
 		if (
-			(utils.getMe().cards || []).find(
+			(player.cards || []).find(
 				(cardIndex) =>
 					card.upgradesFrom &&
 					bank.cards[cardIndex].upgradesTo === card.upgradesFrom
@@ -187,18 +188,14 @@ class Utils extends Shared<GameType, PlayerType> {
 		)
 			return 0;
 		if (
-			(utils.getMe().scienceTokens || []).includes(
-				ScienceToken.masonry
-			) &&
+			(player.scienceTokens || []).includes(ScienceToken.masonry) &&
 			card.color === Color.blue
 		)
 			return 0;
-		const price = utils.getCostCost(card.cost);
+		const price = utils.getCostCost(card.cost, player);
 		if (
 			card.upgradesFrom &&
-			(utils.getMe().scienceTokens || []).includes(
-				ScienceToken.engineering
-			) &&
+			(player.scienceTokens || []).includes(ScienceToken.engineering) &&
 			price > 0
 		)
 			return 1;
@@ -221,7 +218,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		const guildPoints = (player.cards || [])
 			.map((cardIndex) => bank.cards[cardIndex].extra.guild)
 			.filter(Boolean)
-			.map((g) => Math.max(g!(utils.getMe()), g!(utils.getOpponent())))
+			.map((g) => Math.max(...store.gameW.game.players.map(g!)))
 			.reduce((a, b) => a + b, 0);
 		const militaryPoints = utils.getMilitaryPoints(
 			player.military -
@@ -259,15 +256,11 @@ class Utils extends Shared<GameType, PlayerType> {
 		);
 	}
 
-	getWonderCost(wonder: WonderType): number {
-		if (!utils.getMe()) return 0;
-		if (
-			(utils.getMe().scienceTokens || []).includes(
-				ScienceToken.architecture
-			)
-		)
+	getWonderCost(wonder: WonderType, player?: PlayerType): number {
+		if (!player) player = utils.getMe() || utils.getCurrent();
+		if ((player.scienceTokens || []).includes(ScienceToken.architecture))
 			return 0;
-		return utils.getCostCost(wonder.cost);
+		return utils.getCostCost(wonder.cost, player);
 	}
 
 	increaseMilitary(military: number) {

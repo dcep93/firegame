@@ -2,26 +2,28 @@ import React from "react";
 
 import utils from "../../utils";
 import bank from "../../utils/bank";
-import { WonderType, PlayerWonder } from "../../utils/types";
+import { WonderType, PlayerType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 import css from "../../index.module.css";
 
 class Wonders extends React.Component<{
-	wonders: PlayerWonder[];
+	player: PlayerType;
 	select: (index: number) => void;
 	selected?: number;
 }> {
 	render() {
 		return (
 			<div>
-				{this.props.wonders.map((_, index) => this.renderWonder(index))}
+				{this.props.player.wonders.map((_, index) =>
+					this.renderWonder(index)
+				)}
 			</div>
 		);
 	}
 
 	renderWonder(index: number) {
-		const playerWonder = this.props.wonders[index];
+		const playerWonder = this.props.player.wonders[index];
 		const wonder = bank.wonders[playerWonder.wonderIndex];
 		const contents = playerWonder.built
 			? this.renderBuilt(wonder)
@@ -45,7 +47,8 @@ class Wonders extends React.Component<{
 				}
 				onClick={(e: React.MouseEvent) => this.selectSelf(index, e)}
 			>
-				{wonder.name} - {wonder.cost} (${utils.getWonderCost(wonder)})
+				{wonder.name} - {wonder.cost} ($
+				{utils.getWonderCost(wonder, this.props.player)})
 			</div>
 		);
 	}

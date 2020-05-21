@@ -37,7 +37,7 @@ class Player extends React.Component<{
 					<div className={styles.flex}>
 						{this.props.player.wonders && (
 							<Wonders
-								wonders={this.props.player.wonders}
+								player={this.props.player}
 								select={this.props.selectWonder}
 								selected={this.props.selected}
 							/>
