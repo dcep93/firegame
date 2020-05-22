@@ -505,7 +505,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				});
 			}
 		}
-		// utils.incrementPlayerTurn();
+		utils.incrementPlayerTurn();
 		if (
 			!store.gameW.game.structure.flat().filter((sc) => !sc.taken).length
 		) {
