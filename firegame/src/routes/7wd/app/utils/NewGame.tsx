@@ -71,7 +71,10 @@ function maybePrepareExpansion(game: GameType): GameType {
 	if (game.params.godExpansion) {
 		game.discounts = utils.shuffle([2, 3, 4]);
 		game.godTokens = utils.shuffle(
-			Object.values(God).concat(Object.values(God)) as God[]
+			Object.keys(God)
+				.concat(Object.keys(God))
+				.map((i) => parseInt(i))
+				.filter((i) => !isNaN(i))
 		);
 		const gods: { [g in God]?: number[] } = {};
 		Object.values(God).forEach(
