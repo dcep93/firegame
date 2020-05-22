@@ -31,11 +31,11 @@ export enum Age {
 
 export enum Resource {
 	money = "$",
-	clay = "clay",
-	stone = "stone",
-	wood = "wood",
-	paper = "paper",
-	glass = "glass",
+	clay = "🧱",
+	stone = "⽯",
+	wood = "🌲",
+	paper = "🧻",
+	glass = "🔹",
 }
 
 export enum Color {
