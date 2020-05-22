@@ -30,19 +30,6 @@ class Main extends React.Component<
 		this.state = {};
 	}
 
-	selectPantheon(selectedPantheon: number) {
-		if (!utils.isMyTurn()) return;
-		const godIndex = store.gameW.game.pantheon[selectedPantheon];
-		if (store.gameW.game.age === Age.one) {
-			if (godIndex !== -1) return;
-			if (this.state.selectedPantheon === selectedPantheon)
-				selectedPantheon = -1;
-			this.setState({ selectedPantheon });
-		} else {
-			utils.buyGod(selectedPantheon);
-		}
-	}
-
 	render() {
 		return (
 			<div>
@@ -82,6 +69,13 @@ class Main extends React.Component<
 		);
 	}
 
+	reset() {
+		this.setState({
+			selectedTarget: undefined,
+			selectedPantheon: undefined,
+		});
+	}
+
 	getPlayers() {
 		return utils.myIndex() >= 0
 			? [utils.getMe(), utils.getOpponent()]
@@ -109,6 +103,20 @@ class Main extends React.Component<
 		);
 	}
 
+	selectPantheon(selectedPantheon: number) {
+		if (!utils.isMyTurn()) return;
+		const godIndex = store.gameW.game.pantheon[selectedPantheon];
+		if (store.gameW.game.age === Age.one) {
+			if (godIndex !== -1) return;
+			if (this.state.selectedPantheon === selectedPantheon)
+				selectedPantheon = -1;
+			this.setState({ selectedPantheon });
+		} else {
+			utils.buyGod(selectedPantheon);
+			this.reset();
+		}
+	}
+
 	discountToken(tokenIndex: number) {
 		if (!utils.isMyTurn()) return;
 		const usedTokens = this.state.usedTokens || {};
@@ -118,14 +126,6 @@ class Main extends React.Component<
 			usedTokens[tokenIndex] = true;
 		}
 		this.setState({ usedTokens });
-	}
-
-	reset() {
-		if (!utils.isMyTurn()) return;
-		this.setState({
-			selectedTarget: undefined,
-			selectedPantheon: undefined,
-		});
 	}
 
 	select(selectedTarget: SelectedEnum) {

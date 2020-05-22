@@ -70,10 +70,12 @@ class StructureCard extends React.Component<{
 				</div>
 				{card.message && <div>{card.message}</div>}
 				{this.renderExtra(card)}
-				{card.upgradesFrom && (
+				{card.upgradesFrom !== undefined && (
 					<div>from: {Upgrade[card.upgradesFrom]}</div>
 				)}
-				{card.upgradesTo && <div>to: {Upgrade[card.upgradesTo]}</div>}
+				{card.upgradesTo !== undefined && (
+					<div>to: {Upgrade[card.upgradesTo]}</div>
+				)}
 			</div>
 		);
 	}

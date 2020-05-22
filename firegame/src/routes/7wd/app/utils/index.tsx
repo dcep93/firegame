@@ -304,7 +304,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		const me = utils.getMe();
 		if (!me.scienceIcons) me.scienceIcons = {};
 		if (!me.scienceIcons[science]) me.scienceIcons[science] = 0;
-		if (me.scienceIcons[science]!++ === 2) {
+		if (++me.scienceIcons[science]! === 2) {
 			if (!store.gameW.game.commercials)
 				store.gameW.game.commercials = [];
 			store.gameW.game.commercials.push({

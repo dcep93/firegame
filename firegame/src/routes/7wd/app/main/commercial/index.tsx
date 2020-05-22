@@ -28,19 +28,6 @@ class Commercial extends React.Component<{
 	selectedPantheon?: number;
 	reset: () => void;
 }> {
-	componentDidMount() {
-		this.alert();
-	}
-
-	componentDidUpdate() {
-		this.alert();
-	}
-
-	alert() {
-		if (this.props.commercial.playerIndex === utils.myIndex())
-			alert(this.props.commercial.commercial);
-	}
-
 	render(): any {
 		switch (this.props.commercial.commercial) {
 			case CommercialEnum.chooseWonder:

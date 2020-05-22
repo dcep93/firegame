@@ -50,6 +50,7 @@ class Science extends React.Component {
 
 	handleSelected(selected: ScienceToken) {
 		switch (selected) {
+			// todo test
 			case ScienceToken.agriculture:
 			case ScienceToken.urbanism:
 				utils.getMe().money += 6;

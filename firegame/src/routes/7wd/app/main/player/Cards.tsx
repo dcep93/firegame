@@ -14,8 +14,10 @@ class Cards extends React.Component<{ cards: number[] }> {
 		);
 		return Object.entries(cardsByColor).map(([color, cards]) => {
 			return (
-				<div key={Color[parseInt(color)]} className={styles.bubble}>
-					<div style={{ backgroundColor: color }}>_</div>
+				<div key={color} className={styles.bubble}>
+					<div style={{ backgroundColor: Color[parseInt(color)] }}>
+						_
+					</div>
 					{this.renderColorCards(parseInt(color), cards!)}
 				</div>
 			);
@@ -59,7 +61,7 @@ class Cards extends React.Component<{ cards: number[] }> {
 					card.name,
 					f(card),
 					card.message,
-					card.upgradesTo && Upgrade[card.upgradesTo],
+					card.upgradesTo !== undefined && Upgrade[card.upgradesTo],
 				]
 					.filter(Boolean)
 					.join(" - ")}
