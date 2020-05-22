@@ -13,10 +13,10 @@ class Sidebar extends React.Component {
 	render() {
 		return (
 			<div className={css.sidebar}>
-				<Log />
 				<Settings />
 				<Players />
 				{store.gameW.game && <Info />}
+				<Log />
 			</div>
 		);
 	}
