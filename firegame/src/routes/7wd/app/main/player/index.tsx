@@ -56,6 +56,7 @@ class Player extends React.Component<{
 							tokens={this.props.player.tokens}
 							usedTokens={this.props.usedTokens}
 							discount={this.props.discount}
+							playerIndex={this.props.player.index}
 						/>
 					)}
 					{

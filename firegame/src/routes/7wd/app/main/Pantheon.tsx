@@ -2,7 +2,7 @@ import React from "react";
 
 import utils, { store } from "../utils";
 import bank from "../utils/bank";
-import { Age } from "../utils/types";
+import { Age, God } from "../utils/types";
 
 import styles from "../../../../shared/styles.module.css";
 
@@ -42,7 +42,7 @@ class Pantheon extends React.Component<{
 	godContent(godIndex: number) {
 		if (godIndex === -1) return null;
 		const god = bank.gods[godIndex];
-		if (store.gameW.game.age === Age.one) return god.source;
+		if (store.gameW.game.age === Age.one) return God[god.source!];
 		return (
 			<div>
 				<div>{god.name}</div>

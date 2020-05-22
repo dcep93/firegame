@@ -1,5 +1,5 @@
 import React from "react";
-import { TokenType } from "../../utils/types";
+import { TokenType, God } from "../../utils/types";
 
 import utils, { store } from "../../utils";
 
@@ -9,6 +9,7 @@ class Tokens extends React.Component<{
 	tokens: TokenType[];
 	usedTokens?: { [tokenIndex: number]: boolean };
 	discount: (tokenIndex: number) => void;
+	playerIndex: number;
 }> {
 	render() {
 		return (
@@ -29,7 +30,11 @@ class Tokens extends React.Component<{
 							this.props.discount(tokenIndex);
 						}}
 					>
-						{token.value}
+						{token.isGod
+							? God[token.value]
+							: this.props.playerIndex === utils.myIndex()
+							? token.value
+							: "$"}
 					</div>
 				))}
 			</div>

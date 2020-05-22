@@ -963,7 +963,7 @@ const wonders: WonderType[] = [
 	{
 		name: "the temple of artemis",
 		message: "$12, go again",
-		cost: [Resource.paper, Resource.glass, Resource.stone, Resource.paper],
+		cost: [Resource.paper, Resource.paper, Resource.glass, Resource.stone],
 		f: () => (utils.getMe().money += 12),
 		goAgain: true,
 	},
