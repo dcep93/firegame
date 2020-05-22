@@ -66,7 +66,7 @@ class StructureCard extends React.Component<{
 				<div style={{ backgroundColor: Color[card.color] }}>_</div>
 				<div>{card.name}</div>
 				<div>
-					cost: {card.cost.join("")} (${utils.getCardCost(card)})
+					cost: {card.cost.join(" ")} (${utils.getCardCost(card)})
 				</div>
 				{card.message && <div>{card.message}</div>}
 				{this.renderExtra(card)}
@@ -84,13 +84,13 @@ class StructureCard extends React.Component<{
 		return (
 			<>
 				{card.extra.resource && (
-					<div>({card.extra.resource!.join("")})</div>
+					<div>({card.extra.resource!.join(" ")})</div>
 				)}
 				{card.extra.resourceOptions && (
 					<div>({card.extra.resourceOptions!.join("/")})</div>
 				)}
 				{card.extra.discount && (
-					<div>d: ({card.extra.discount!.join("")})</div>
+					<div>d: ({card.extra.discount!.join(" ")})</div>
 				)}
 				{card.extra.points && <div>{card.extra.points} points</div>}
 				{card.extra.military && (

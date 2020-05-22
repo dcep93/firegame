@@ -20,6 +20,7 @@ class DestroyWonder extends React.Component {
 						.filter((obj) => !obj.wonder.built)
 						.map((obj) => (
 							<div
+								key={obj.index}
 								onClick={() => {
 									if (!utils.isMyTurn()) return;
 									utils.getMe().wonders.splice(obj.index, 1);
@@ -34,7 +35,6 @@ class DestroyWonder extends React.Component {
 								{bank.wonders[obj.wonder.wonderIndex].name}
 							</div>
 						))}
-					)}
 				</div>
 			</div>
 		);

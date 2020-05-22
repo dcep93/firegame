@@ -18,6 +18,7 @@ class Library extends React.Component<{
 						<div
 							onClick={() => this.props.buildScience(scienceName)}
 							className={styles.bubble}
+							key={scienceName}
 						>
 							{utils.enumName(scienceName, ScienceToken)} -{" "}
 							{scienceName}

@@ -14,7 +14,7 @@ class Wonders extends React.Component<{
 }> {
 	render() {
 		return (
-			<div>
+			<div className={`${styles.bubble} ${css.nowrap}`}>
 				{this.props.player.wonders.map((_, index) =>
 					this.renderWonder(index)
 				)}
@@ -47,7 +47,7 @@ class Wonders extends React.Component<{
 				}
 				onClick={(e: React.MouseEvent) => this.selectSelf(index, e)}
 			>
-				{wonder.name} - {wonder.cost} ($
+				{wonder.name} - {wonder.cost.join(" ")} ($
 				{utils.getWonderCost(wonder, this.props.player)})
 			</div>
 		);

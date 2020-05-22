@@ -36,3 +36,7 @@
 .built_wonder {
 	font-weight: bold;
 }
+
+.nowrap {
+	white-space: nowrap;
+}

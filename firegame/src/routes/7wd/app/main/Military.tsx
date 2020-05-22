@@ -55,7 +55,7 @@ class Military extends React.Component<{ players: PlayerType[] }> {
 		const stars = this.props.players[index > 0 ? 0 : 1].militaryBonuses[
 			Math.abs(index)
 		];
-		if (stars === 0) return "WIN";
+		if (stars === 0) return index > 0 ? "WIN" : "LOSE";
 		const s = "*".repeat(stars);
 		const m =
 			(this.props.players[0].index === 0 ? index : -index) ===

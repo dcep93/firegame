@@ -29,13 +29,13 @@ class Cards extends React.Component<{ cards: number[] }> {
 		switch (color) {
 			case Color.brown:
 			case Color.grey:
-				f = (card: CardType) => card.extra.resource!.join("");
+				f = (card: CardType) => card.extra.resource!.join(" ");
 				break;
 			case Color.yellow:
 				f = (card: CardType) =>
 					[
 						card.extra.discount &&
-							`d: ${card.extra.discount.join("")}`,
+							`d: ${card.extra.discount.join(" ")}`,
 						card.extra.resourceOptions &&
 							`o: ${card.extra.resourceOptions.join("/")}`,
 					]

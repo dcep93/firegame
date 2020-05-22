@@ -971,15 +971,13 @@ const wonders: WonderType[] = [
 		name: "circus maximus",
 		message: "3 points military +1 and destroy a grey card",
 		cost: [Resource.glass, Resource.wood, Resource.stone, Resource.stone],
-		f: () =>
-			Promise.resolve()
-				.then(() => utils.increaseMilitary(1))
-				.then(() =>
-					utils.addCommercial({
-						commercial: CommercialEnum.destroyGrey,
-						playerIndex: utils.myIndex(),
-					})
-				),
+		f: () => {
+			utils.increaseMilitary(1);
+			utils.addCommercial({
+				commercial: CommercialEnum.destroyGrey,
+				playerIndex: utils.myIndex(),
+			});
+		},
 		points: 3,
 	},
 	{
@@ -992,15 +990,13 @@ const wonders: WonderType[] = [
 			Resource.wood,
 			Resource.stone,
 		],
-		f: () =>
-			Promise.resolve()
-				.then(() => utils.increaseMilitary(1))
-				.then(() =>
-					utils.addCommercial({
-						commercial: CommercialEnum.destroyBrown,
-						playerIndex: utils.myIndex(),
-					})
-				),
+		f: () => {
+			utils.increaseMilitary(1);
+			utils.addCommercial({
+				commercial: CommercialEnum.destroyBrown,
+				playerIndex: utils.myIndex(),
+			});
+		},
 		points: 3,
 	},
 	{

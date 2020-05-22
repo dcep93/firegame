@@ -269,19 +269,16 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (sciences.includes(ScienceToken.polioretics))
 			utils.stealMoney(military);
 
-		for (
-			let diff = me.military - utils.getOpponent().military;
-			diff < military;
-			diff++
-		) {
+		const start = me.military - utils.getOpponent().military + 1;
+		for (let diff = start; diff < start + military; diff++) {
 			if (
-				utils.myIndex() === 0
-					? diff
-					: -diff === store.gameW.game.minerva
+				(utils.myIndex() === 0 ? diff : -diff) ===
+				store.gameW.game.minerva
 			) {
 				delete store.gameW.game.minerva;
 				return;
 			}
+			me.military++;
 			const bonus = me.militaryBonuses[diff];
 			if (bonus !== undefined) {
 				delete me.militaryBonuses[diff];
@@ -494,7 +491,10 @@ class Utils extends Shared<GameType, PlayerType> {
 				7
 			) {
 				var index;
-				if (utils.getMe().wonders.filter((wonder) => !wonder.built)) {
+				if (
+					utils.getMe().wonders.filter((wonder) => !wonder.built)
+						.length
+				) {
 					index = me.index;
 				} else {
 					index = 1 - me.index;
@@ -505,7 +505,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				});
 			}
 		}
-		utils.incrementPlayerTurn();
+		// utils.incrementPlayerTurn();
 		if (
 			!store.gameW.game.structure.flat().filter((sc) => !sc.taken).length
 		) {

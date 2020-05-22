@@ -11,7 +11,7 @@ class Sciences extends React.Component<{ sciences: ScienceToken[] }> {
 			<div className={styles.bubble}>
 				{this.props.sciences.map((science) => (
 					<div key={science} title={science}>
-						{ScienceToken[utils.enumName(science, ScienceToken)]}
+						{utils.enumName(science, ScienceToken)}
 					</div>
 				))}
 			</div>

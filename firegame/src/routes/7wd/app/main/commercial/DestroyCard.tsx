@@ -10,7 +10,8 @@ class DestroyCard extends React.Component<{ color: Color }> {
 	render() {
 		const victim = utils.getPlayer(1 - utils.currentIndex());
 		const cards = (victim.cards || [])
-			.map((cardIndex) => ({
+			.map((cardIndex, handIndex) => ({
+				handIndex,
 				cardIndex,
 				card: bank.cards[cardIndex],
 			}))
@@ -29,8 +30,9 @@ class DestroyCard extends React.Component<{ color: Color }> {
 				<div className={styles.flex}>
 					{cards.map((obj) => (
 						<div
+							key={obj.cardIndex}
 							onClick={() =>
-								this.destroyCard(obj.cardIndex, victim)
+								this.destroyCard(obj.handIndex, victim)
 							}
 							className={styles.bubble}
 						>
