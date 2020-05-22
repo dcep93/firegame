@@ -118,6 +118,7 @@ export type GameType = {
 	pantheon: number[];
 	wondersToChoose: number[];
 	minerva?: number;
+	alert?: string;
 };
 
 export type Params = {
