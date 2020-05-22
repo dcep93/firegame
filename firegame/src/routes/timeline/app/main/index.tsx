@@ -1,7 +1,7 @@
 import React from "react";
 
 import { shared, store, sortBoard } from "../utils";
-import { GameType } from "../utils/NewGame";
+import { GameType, TermType } from "../utils/NewGame";
 
 import Hand from "./Hand";
 import Board from "./Board";
@@ -20,11 +20,13 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 	}
 
 	selectCard(selectedIndex: number) {
+		if (!shared.isMyTurn()) return;
 		if (this.state?.selectedIndex === selectedIndex) selectedIndex = -1;
 		this.setState({ selectedIndex });
 	}
 
 	selectTarget(index: number) {
+		if (!shared.isMyTurn()) return;
 		if (!(this.state?.selectedIndex > -1))
 			return alert("need to select a card from hand first");
 		const game = store.gameW.game;
@@ -32,8 +34,7 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		const rightBound = game.board[index];
 		const me = game.players[game.currentPlayer];
 		const termIndex = me.hand[this.state.selectedIndex];
-		const term = store.gameW.game.terms[termIndex];
-		const correct = this.isBetween(term, leftBound, rightBound);
+		const correct = this.isBetween(termIndex, leftBound, rightBound);
 		if (!correct) {
 			const deck = game.deck;
 			if (deck.length > 0) me.hand.push(deck.pop()!);
@@ -42,6 +43,7 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		game.board.push(me.hand.splice(this.state.selectedIndex, 1)[0]);
 		sortBoard(store.gameW.game);
 		this.setState({ selectedIndex: -1 });
+		const term = store.gameW.game.terms[termIndex];
 		const message = `played [${term.word}]: [${term.definition}] - ${
 			correct ? "CORRECT" : "WRONG"
 		}`;
@@ -50,18 +52,18 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 	}
 
 	isBetween(
-		term: { definition: string },
+		termIndex: number,
 		leftBound: number,
 		rightBound: number
 	): boolean {
-		const game: GameType = store.gameW.game;
-		const playDefinition = parseInt(term.definition);
-		const leftCard = game.terms[leftBound];
-		const rightCard = game.terms[rightBound];
-		if (leftCard && parseInt(leftCard.definition) > playDefinition)
-			return false;
-		if (rightCard && parseInt(rightCard.definition) < playDefinition)
-			return false;
+		if (leftBound > termIndex || rightBound < termIndex) {
+			const game: GameType = store.gameW.game;
+			const definition = game.terms[termIndex].definition;
+			return (
+				game.terms[leftBound]?.definition === definition ||
+				game.terms[rightBound]?.definition === definition
+			);
+		}
 		return true;
 	}
 }

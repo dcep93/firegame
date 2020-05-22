@@ -7,7 +7,7 @@ const store_: StoreType<GameType> = store;
 const shared: Shared<GameType, PlayerType> = new Shared();
 
 function sortBoard(game: GameType) {
-	game.board.sort((a, b) => b - a);
+	game.board.sort((a, b) => a - b);
 }
 
 export { store_ as store, sortBoard, shared };

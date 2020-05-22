@@ -26,7 +26,7 @@ export type Params = {
 	userId: string;
 };
 
-type TermType = {
+export type TermType = {
 	word: string;
 	definition: string;
 	image: string;
@@ -89,19 +89,18 @@ function setDeck(data: DataType): DataType {
 			[term.word, term.definition] = [term.definition, term.word];
 		});
 	if (data.game.params.useRank)
-		terms.forEach((term: any) => {
-			term.definition = term.rank;
+		terms.forEach((term) => {
+			term.definition = (term.rank + 1).toString();
 		});
-	terms.sort((a, b) => b.rank - a.rank);
+	terms.sort((a, b) => a.rank - b.rank);
 	if (data.game.params.reverse) terms.reverse();
-
-	const deck = terms.map((term: TermType) => term.rank);
-	shared.shuffle(deck);
 
 	data.game.title = data.response.set.title;
 	data.game.setId = data.response.set.id;
 	data.game.terms = terms;
-	data.game.deck = deck;
+	data.game.deck = shared.shuffle(
+		Object.keys(terms).map((index) => parseInt(index))
+	);
 	return data;
 }
 
