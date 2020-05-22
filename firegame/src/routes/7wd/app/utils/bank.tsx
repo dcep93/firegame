@@ -1017,7 +1017,7 @@ const wonders: WonderType[] = [
 	},
 	{
 		name: "piraeus",
-		message: `2 points o: ${Resource.paper}/${Resource.glass}`,
+		message: `2 points, go again o: ${Resource.paper}/${Resource.glass}`,
 		cost: [Resource.clay, Resource.stone, Resource.wood, Resource.wood],
 		f: () => null,
 		goAgain: true,
