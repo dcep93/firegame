@@ -43,8 +43,15 @@ function mePath(): string {
 	return `${lobbyPath()}/${store.me.userId}`;
 }
 
+function namespace(): string {
+	return (
+		process.env.REACT_APP_NAMESPACE ||
+		window.location.hostname.replace("www", "").split(".")[0]
+	);
+}
+
 function roomPath(): string {
-	return `${store.me.gameName}/${store.me.roomId}`;
+	return `${namespace()}/${store.me.gameName}/${store.me.roomId}`;
 }
 
 function gamePath(): string {
