@@ -1,7 +1,7 @@
 import React from "react";
 
 import { shared, store, sortBoard } from "../utils";
-import { GameType, TermType } from "../utils/NewGame";
+import { GameType } from "../utils/NewGame";
 
 import Hand from "./Hand";
 import Board from "./Board";
@@ -25,21 +25,23 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		this.setState({ selectedIndex });
 	}
 
-	selectTarget(index: number) {
+	selectTarget(targetIndex: number) {
 		if (!shared.isMyTurn()) return;
 		if (!(this.state?.selectedIndex > -1))
 			return alert("need to select a card from hand first");
 		const game = store.gameW.game;
-		const leftBound = game.board[index - 1];
-		const rightBound = game.board[index];
+		const leftBound = game.board[targetIndex - 1];
+		const rightBound = game.board[targetIndex];
 		const me = game.players[game.currentPlayer];
 		const termIndex = me.hand[this.state.selectedIndex];
 		const correct = this.isBetween(termIndex, leftBound, rightBound);
+		game.last = { correct, termIndex };
 		if (!correct) {
 			const deck = game.deck;
 			if (deck.length > 0) me.hand.push(deck.pop()!);
+			game.last.wrongTarget =
+				leftBound > termIndex ? targetIndex + 1 : targetIndex;
 		}
-		game.last = { correct, termIndex };
 		game.board.push(me.hand.splice(this.state.selectedIndex, 1)[0]);
 		sortBoard(store.gameW.game);
 		this.setState({ selectedIndex: -1 });

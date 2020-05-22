@@ -33,7 +33,11 @@ class Board extends React.Component<{
 		return (
 			<div
 				key={`t${index}`}
-				className={`${styles.bubble} ${css.target}`}
+				className={`${styles.bubble} ${css.target} ${
+					store.gameW.game.last?.wrongTarget === index
+						? css.wrongTarget
+						: ""
+				}`}
 				onClick={(e: React.MouseEvent) => this.selectTarget(index, e)}
 			></div>
 		);
