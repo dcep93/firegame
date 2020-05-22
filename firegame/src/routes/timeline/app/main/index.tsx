@@ -33,16 +33,18 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		const leftBound = game.board[targetIndex - 1];
 		const rightBound = game.board[targetIndex];
 		const me = game.players[game.currentPlayer];
-		const termIndex = me.hand[this.state.selectedIndex];
+		const termIndex = me.hand![this.state.selectedIndex];
 		const correct = this.isBetween(termIndex, leftBound, rightBound);
 		game.last = { correct, termIndex };
 		if (!correct) {
 			const deck = game.deck;
-			if (deck.length > 0) me.hand.push(deck.pop()!);
+			if (deck) me.hand!.push(deck.pop()!);
 			game.last.wrongTarget =
 				leftBound > termIndex ? targetIndex + 1 : targetIndex;
+		} else if (me.hand!.length === 0) {
+			game.alert = `${me.userName} wins!`;
 		}
-		game.board.push(me.hand.splice(this.state.selectedIndex, 1)[0]);
+		game.board.push(me.hand!.splice(this.state.selectedIndex, 1)[0]);
 		sortBoard(store.gameW.game);
 		this.setState({ selectedIndex: -1 });
 		const term = store.gameW.game.terms[termIndex];

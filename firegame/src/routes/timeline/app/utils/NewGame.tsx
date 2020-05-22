@@ -9,10 +9,11 @@ export type GameType = {
 	title: string;
 	setId: number;
 	terms: TermType[];
-	deck: number[];
+	deck?: number[];
 	players: PlayerType[];
 	board: number[];
 	last?: { termIndex: number; correct: boolean; wrongTarget?: number };
+	alert?: string;
 };
 
 export type Params = {
@@ -36,7 +37,7 @@ export type TermType = {
 export type PlayerType = {
 	index: number;
 	userId: string;
-	hand: number[];
+	hand?: number[];
 	userName: string;
 };
 
@@ -110,7 +111,7 @@ function setPlayers(data: DataType): DataType {
 			index,
 			userName: data.game.params.lobby[userId],
 			userId,
-			hand: data.game.deck.splice(0, data.game.params.handSize),
+			hand: data.game.deck!.splice(0, data.game.params.handSize),
 		})
 	);
 	data.game.players = players;
@@ -119,7 +120,7 @@ function setPlayers(data: DataType): DataType {
 }
 
 function setBoard(data: DataType): DataType {
-	data.game.board = data.game.deck.splice(
+	data.game.board = data.game.deck!.splice(
 		0,
 		data.game.params.boardStartingSize
 	);

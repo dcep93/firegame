@@ -24,7 +24,7 @@ class Info extends React.Component {
 					<div>
 						{game.players.map((player) => (
 							<p key={player.index}>
-								{player.userName} ({player.hand.length})
+								{player.userName} ({(player.hand || []).length})
 							</p>
 						))}
 					</div>
