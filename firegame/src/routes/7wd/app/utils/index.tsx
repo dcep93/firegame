@@ -16,7 +16,6 @@ import {
 	ScienceEnum,
 	CommercialEnum,
 } from "./types";
-import { gamePath } from "../../../../firegame/writer/utils";
 
 const BASE_COST = 2;
 const CARDS_PER_AGE = 20;
