@@ -110,11 +110,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		}
 	}
 
-	getCostCost(
-		rawCosts: Resource[],
-		player: PlayerType,
-		log?: boolean
-	): number {
+	getCostCost(rawCosts: Resource[], player: PlayerType): number {
 		const cards = player.cards || [];
 		const costs = utils.countResources(rawCosts);
 		const myResources = utils.countResources(
@@ -153,7 +149,6 @@ class Utils extends Shared<GameType, PlayerType> {
 			.concat(this.getWonderOptions(player))
 			.filter(Boolean)
 			.forEach((options) => {
-				if (log) console.log(options);
 				var pricePer = 0;
 				var resource: Resource | null = null;
 				Object.entries(paid).forEach(([r_, o]) => {
@@ -292,8 +287,9 @@ class Utils extends Shared<GameType, PlayerType> {
 			const bonus = me.militaryBonuses[diff];
 			if (bonus !== undefined) {
 				delete me.militaryBonuses[diff];
-				if (bonus === 0) return alert("you win");
-				store.gameW.game.alert = `${me.userName} wins`;
+				if (bonus === 0) {
+					store.gameW.game.alert = `${me.userName} wins`;
+				}
 				utils.stealMoney(bonus);
 			}
 		}

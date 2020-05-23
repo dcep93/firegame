@@ -20,14 +20,17 @@ class Gate extends React.Component {
 						}))
 						.map((obj) => (
 							<div
+								key={obj.godIndex}
 								onClick={() => {
 									if (!utils.isMyTurn()) return;
 									const me = utils.getMe();
 									if (!me.gods) me.gods = [];
-									me.gods.push(
-										store.gameW.game.gods[
-											obj.god.source!
-										]!.shift()!
+									const godIndex = store.gameW.game.gods[
+										obj.god.source!
+									]!.shift()!;
+									me.gods.push(godIndex);
+									utils.endCommercial(
+										`built ${bank.gods[godIndex].name}`
 									);
 								}}
 								className={styles.bubble}

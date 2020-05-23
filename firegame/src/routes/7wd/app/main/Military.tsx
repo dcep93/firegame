@@ -52,9 +52,8 @@ class Military extends React.Component<{ players: PlayerType[] }> {
 
 	getFill(militaryDiff: number, index: number) {
 		if (index === militaryDiff) return "x";
-		const stars = this.props.players[index > 0 ? 0 : 1].militaryBonuses[
-			Math.abs(index)
-		];
+		const stars = (this.props.players[index > 0 ? 0 : 1].militaryBonuses ||
+			[])[Math.abs(index)];
 		if (stars === 0) return index > 0 ? "WIN" : "LOSE";
 		const s = "*".repeat(stars);
 		const m =

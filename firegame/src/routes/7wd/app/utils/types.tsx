@@ -112,14 +112,15 @@ export type GameType = {
 	commercials?: CommercialType[];
 	sciences: { taken?: boolean; token: ScienceToken }[];
 	wentFirst: number;
+	wondersToChoose: number[];
+	alert?: string;
+
 	discounts: number[];
 	godTokens: God[];
 	gods: { [g in God]: number[] };
 	pantheon: number[];
-	wondersToChoose: number[];
 	minerva?: number;
 	astarte?: number;
-	alert?: string;
 };
 
 export type Params = {
@@ -140,9 +141,10 @@ export type PlayerType = {
 	cards?: number[];
 	wonders: PlayerWonder[];
 	money: number;
+	// todo this should be attached to gametype
 	military: number;
-	index: number;
 	militaryBonuses: { [x: number]: number };
+	index: number;
 	scienceTokens?: ScienceToken[];
 	tokens?: TokenType[];
 	gods?: number[];
