@@ -356,6 +356,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (!me.gods) me.gods = [];
 		me.gods.push(godIndex);
 		god.f();
+		store.gameW.game.pantheon[selectedPantheon] = -1;
 		utils.incrementPlayerTurn();
 		store.update(`purchased ${god.name}`);
 	}

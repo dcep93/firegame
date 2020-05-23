@@ -855,6 +855,7 @@ const gods: GodType[] = [
 			}),
 	},
 	{
+		// todo should reveal tokens
 		name: "enki",
 		source: God.mesopotamian,
 		message: "select 1 / 2 science tokens",
