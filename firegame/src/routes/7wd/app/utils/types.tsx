@@ -113,6 +113,7 @@ export type GameType = {
 	sciences: { taken?: boolean; token: ScienceToken }[];
 	wentFirst: number;
 	wondersToChoose: number[];
+	military: number;
 	alert?: string;
 
 	discounts: number[];
@@ -141,8 +142,6 @@ export type PlayerType = {
 	cards?: number[];
 	wonders: PlayerWonder[];
 	money: number;
-	// todo this should be attached to gametype
-	military: number;
 	militaryBonuses: { [x: number]: number };
 	index: number;
 	scienceTokens?: ScienceToken[];

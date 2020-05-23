@@ -16,6 +16,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
 }
 
 function setBoard(game: GameType): GameType {
+	game.military = 0;
 	game.trash = [];
 	game.sciences = utils
 		.shuffle(Object.values(ScienceToken))

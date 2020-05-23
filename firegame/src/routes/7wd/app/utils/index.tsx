@@ -16,6 +16,7 @@ import {
 	ScienceEnum,
 	CommercialEnum,
 } from "./types";
+import { gamePath } from "../../../../firegame/writer/utils";
 
 const BASE_COST = 2;
 const CARDS_PER_AGE = 20;
@@ -69,6 +70,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (game.age === Age.two && game.params.godExpansion)
 			utils.assignGate(game);
 		if (game.age === Age.three) {
+			cardsToUse.splice(0, 3);
 			const matchAge = game.params.godExpansion ? Age.temple : Age.guild;
 			const purples = bank.cards
 				.map((card, index) => ({ card, index }))
@@ -87,12 +89,12 @@ class Utils extends Shared<GameType, PlayerType> {
 				}))
 		);
 		var wentFirst;
-		const militaryDiff =
-			utils.getMe().military - utils.getOpponent().military;
+		const me = utils.getMe();
+		const militaryDiff = utils.getMilitary(me);
 		if (militaryDiff > 0) {
 			wentFirst = utils.getOpponent().index;
 		} else if (militaryDiff < 0) {
-			wentFirst = utils.getMe().index;
+			wentFirst = me.index;
 		} else {
 			wentFirst = 1 - game.wentFirst;
 		}
@@ -216,6 +218,11 @@ class Utils extends Shared<GameType, PlayerType> {
 		return resources;
 	}
 
+	getMilitary(player: PlayerType) {
+		const militaryDiff = store.gameW.game.military;
+		return player.index === 0 ? militaryDiff : -militaryDiff;
+	}
+
 	getScore(player: PlayerType): number {
 		const cardPoints = (player.cards || [])
 			.map((cardIndex) => bank.cards[cardIndex].extra.points || 0)
@@ -227,8 +234,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			.map((g) => Math.max(...store.gameW.game.players.map(g!)))
 			.reduce((a, b) => a + b, 0);
 		const militaryPoints = utils.getMilitaryPoints(
-			player.military -
-				store.gameW.game.players[1 - player.index].military
+			utils.getMilitary(player)
 		);
 		const sciencePoints = (player.scienceTokens || [])
 			.map((token) => utils.tokenToPoints[token])
@@ -274,16 +280,16 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (sciences.includes(ScienceToken.polioretics))
 			utils.stealMoney(military);
 
-		const start = me.military - utils.getOpponent().military + 1;
-		for (let diff = start; diff < start + military; diff++) {
-			if (
-				(utils.myIndex() === 0 ? diff : -diff) ===
-				store.gameW.game.minerva
-			) {
-				delete store.gameW.game.minerva;
+		const direction = utils.myIndex() === 0 ? 1 : -1;
+		const game = store.gameW.game;
+		for (let i = 0; i < military; i++) {
+			game.military += direction;
+			if (game.military === game.minerva) {
+				game.military -= direction;
+				delete game.minerva;
 				return;
 			}
-			me.military++;
+			const diff = Math.abs(game.military);
 			const bonus = (me.militaryBonuses || {})[diff];
 			if (bonus !== undefined) {
 				delete me.militaryBonuses[diff];

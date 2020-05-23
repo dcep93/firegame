@@ -10,8 +10,6 @@ const NUM_POSITIONS = 9;
 
 class Military extends React.Component<{ players: PlayerType[] }> {
 	render() {
-		const militaryDiff =
-			this.props.players[0].military - this.props.players[1].military;
 		return (
 			<div className={styles.bubble}>
 				<h2>Military</h2>
@@ -27,7 +25,7 @@ class Military extends React.Component<{ players: PlayerType[] }> {
 							>
 								<div>
 									{this.getFill(
-										militaryDiff,
+										store.gameW.game.military,
 										index - NUM_POSITIONS
 									)}
 									<br />
@@ -45,22 +43,18 @@ class Military extends React.Component<{ players: PlayerType[] }> {
 
 	minerva(index: number) {
 		if (!utils.isMyCommercial(CommercialEnum.minerva)) return;
-		store.gameW.game.minerva =
-			this.props.players[0].index === 0 ? index : -index;
+		store.gameW.game.minerva = index;
 		utils.endCommercial(`placed Minerva`);
 	}
 
 	getFill(militaryDiff: number, index: number) {
 		if (index === militaryDiff) return "x";
-		const stars = (this.props.players[index > 0 ? 0 : 1].militaryBonuses ||
-			[])[Math.abs(index)];
-		if (stars === 0) return index > 0 ? "WIN" : "LOSE";
+		const stars = (store.gameW.game.players[index > 0 ? 0 : 1]
+			.militaryBonuses || [])[Math.abs(index)];
+		if (stars === 0)
+			return index > 0 === (utils.myIndex() === 0) ? "WIN" : "LOSE";
 		const s = "*".repeat(stars);
-		const m =
-			(this.props.players[0].index === 0 ? index : -index) ===
-			store.gameW.game.minerva
-				? " M"
-				: "";
+		const m = index === store.gameW.game.minerva ? " M" : "";
 		return s + m;
 	}
 }

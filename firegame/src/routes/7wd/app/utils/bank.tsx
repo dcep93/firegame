@@ -375,7 +375,6 @@ const cards: CardType[] = [
 		upgradesFrom: Upgrade.sun,
 	},
 	{
-		// todo name?
 		name: "obelisk",
 		age: Age.three,
 		color: Color.blue,
@@ -383,7 +382,7 @@ const cards: CardType[] = [
 		extra: { points: 5 },
 	},
 	{
-		name: "obelisk",
+		name: "senate",
 		age: Age.three,
 		color: Color.blue,
 		cost: [Resource.clay, Resource.clay, Resource.stone, Resource.paper],
