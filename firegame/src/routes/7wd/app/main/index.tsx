@@ -1,4 +1,5 @@
 import React from "react";
+import Hotkeys from "react-hot-keys";
 
 import utils, { store } from "../utils";
 
@@ -30,9 +31,29 @@ class Main extends React.Component<
 		this.state = {};
 	}
 
+	onKeyDown(keyName: string) {
+		switch (keyName) {
+			case "t":
+				this.select(SelectedEnum.trash);
+				break;
+			case "b":
+				this.select(SelectedEnum.build);
+				break;
+			default:
+				const wonderIndex = parseInt(keyName) - 1;
+				if (wonderIndex >= (utils.getMe()?.wonders || []).length)
+					return;
+				this.select(wonderIndex);
+		}
+	}
+
 	render() {
 		return (
 			<div>
+				<Hotkeys
+					keyName="t,b,1,2,3,4,5,6,7"
+					onKeyDown={this.onKeyDown.bind(this)}
+				></Hotkeys>
 				{store.gameW.game.commercials && (
 					<Commercial
 						commercial={store.gameW.game.commercials[0]}
