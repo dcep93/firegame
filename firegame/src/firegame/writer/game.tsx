@@ -12,9 +12,9 @@ function enterGame(): void {
 	Firebase.latestChild(gamePath(), receiveGameUpdate);
 }
 
-function sendGameState<T>(message: string, game: T): void {
+function sendGameState<T>(message: string, game: T, isNewGame?: boolean): void {
 	const lastInfo = store.gameW.info;
-	const gameWrapper = {
+	const gameWrapper: GameWrapperType<T> = {
 		game,
 		info: {
 			id: lastInfo.id + 1,
@@ -25,6 +25,7 @@ function sendGameState<T>(message: string, game: T): void {
 			message,
 		},
 	};
+	if (isNewGame) gameWrapper.info.isNewGame = isNewGame;
 	sendGameStateHelper(gameWrapper);
 }
 

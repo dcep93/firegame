@@ -30,11 +30,12 @@ export type InfoType = {
 	message: string;
 	playerId: string;
 	playerName: string;
+	isNewGame?: boolean;
 };
 
 function update<T>(message: string, game_: T | undefined = undefined): void {
 	const game = game_ || store.gameW.game;
-	writer.sendGameState(message, game);
+	writer.sendGameState(message, game, game_ !== undefined);
 }
 
 // @ts-ignore store initialization

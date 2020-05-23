@@ -7,6 +7,22 @@ import styles from "../../../../shared/styles.module.css";
 
 class Players extends React.Component {
 	expansionRef: RefObject<HTMLInputElement> = React.createRef();
+
+	componentDidMount() {
+		this.maybeSyncParams();
+	}
+
+	componentDidUpdate() {
+		this.maybeSyncParams();
+	}
+
+	maybeSyncParams() {
+		if (store.gameW.info.isNewGame) {
+			this.expansionRef.current!.checked =
+				store.gameW.game.params.godExpansion;
+		}
+	}
+
 	render() {
 		return (
 			<div className={styles.bubble}>
