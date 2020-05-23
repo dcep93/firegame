@@ -195,7 +195,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (
 			(player.cards || []).find(
 				(cardIndex) =>
-					card.upgradesFrom &&
+					card.upgradesFrom !== undefined &&
 					bank.cards[cardIndex].upgradesTo === card.upgradesFrom
 			)
 		)
@@ -214,7 +214,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			return 0;
 		const price = utils.getCostCost(card.cost, player);
 		if (
-			card.upgradesFrom &&
+			card.upgradesFrom !== undefined &&
 			(player.scienceTokens || []).includes(ScienceToken.engineering) &&
 			price > 0
 		)
