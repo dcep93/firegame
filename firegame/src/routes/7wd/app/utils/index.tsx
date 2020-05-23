@@ -1,6 +1,7 @@
 import Shared from "../../../../shared";
 import store_, { StoreType } from "../../../../shared/store";
 
+import { NUM_SCIENCES } from "../main/Science";
 import { SelectedEnum } from "../main";
 import bank from "./bank";
 import {
@@ -106,9 +107,21 @@ class Utils extends Shared<GameType, PlayerType> {
 				game.pantheon[index] = bank.gods
 					.map((god, godIndex) => ({ god, godIndex }))
 					.find((obj) => obj.god.source === undefined)!.godIndex;
-				return;
+			} else if (bank.gods[game.pantheon[index]]?.name === "enki") {
+				utils.assignEnki();
 			}
 		}
+	}
+
+	assignEnki() {
+		store.gameW.game.enki = utils
+			.shuffle(
+				store.gameW.game.sciences
+					.slice(NUM_SCIENCES)
+					.filter((obj) => !obj.taken)
+			)
+			.slice(0, 2)
+			.map((obj) => obj.token);
 	}
 
 	getCostCost(rawCosts: Resource[], player: PlayerType): number {
@@ -549,6 +562,19 @@ class Utils extends Shared<GameType, PlayerType> {
 			}
 		}
 		return message;
+	}
+
+	buildScienceToken(scienceName: ScienceToken) {
+		if (!utils.isMyTurn()) return;
+		const me = utils.getMe();
+		if (!me.scienceTokens) me.scienceTokens = [];
+		me.scienceTokens.push(scienceName);
+		store.gameW.game.sciences.find(
+			(obj) => obj.token === scienceName
+		)!.taken = true;
+		utils.endCommercial(
+			`built ${utils.enumName(scienceName, ScienceToken)}`
+		);
 	}
 }
 

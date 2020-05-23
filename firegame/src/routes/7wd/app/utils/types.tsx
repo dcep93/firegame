@@ -122,6 +122,7 @@ export type GameType = {
 	pantheon: number[];
 	minerva?: number;
 	astarte?: number;
+	enki?: ScienceToken[];
 };
 
 export type Params = {
@@ -160,7 +161,7 @@ export type TokenType = {
 export type CommercialType = {
 	commercial: CommercialEnum;
 	playerIndex: number;
-	sciences?: ScienceToken[];
+	library?: ScienceToken[];
 };
 
 export enum CommercialEnum {

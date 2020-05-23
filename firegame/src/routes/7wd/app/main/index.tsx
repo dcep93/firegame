@@ -56,7 +56,6 @@ class Main extends React.Component<
 				></Hotkeys>
 				{store.gameW.game.commercials && (
 					<Commercial
-						commercial={store.gameW.game.commercials[0]}
 						selectedPantheon={this.state.selectedPantheon}
 						reset={this.reset.bind(this)}
 					/>

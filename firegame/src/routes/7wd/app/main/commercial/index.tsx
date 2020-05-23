@@ -1,12 +1,7 @@
 import React from "react";
 
-import utils, { store } from "../../utils";
-import {
-	CommercialType,
-	CommercialEnum,
-	Color,
-	ScienceToken,
-} from "../../utils/types";
+import { CommercialEnum, Color } from "../../utils/types";
+import { store } from "../../utils";
 
 import Isis from "./Isis";
 import ChooseWonder from "./ChooseWonder";
@@ -24,12 +19,11 @@ import Theater from "./Theater";
 import Gate from "./Gate";
 
 class Commercial extends React.Component<{
-	commercial: CommercialType;
 	selectedPantheon?: number;
 	reset: () => void;
 }> {
 	render(): any {
-		switch (this.props.commercial.commercial) {
+		switch (store.gameW.game.commercials![0].commercial) {
 			case CommercialEnum.chooseWonder:
 				return <ChooseWonder />;
 			case CommercialEnum.destroyGrey:
@@ -39,12 +33,7 @@ class Commercial extends React.Component<{
 			case CommercialEnum.revive:
 				return <Revive />;
 			case CommercialEnum.library:
-				return (
-					<Library
-						sciences={this.props.commercial.sciences!}
-						buildScience={this.buildScience.bind(this)}
-					/>
-				);
+				return <Library />;
 			case CommercialEnum.destroyWonder:
 				return <DestroyWonder />;
 			case CommercialEnum.pickGod:
@@ -63,12 +52,7 @@ class Commercial extends React.Component<{
 			case CommercialEnum.nisaba:
 				return <Nisaba />;
 			case CommercialEnum.enki:
-				return (
-					<Enki
-						sciences={this.props.commercial.sciences!}
-						buildScience={this.buildScience.bind(this)}
-					/>
-				);
+				return <Enki />;
 			case CommercialEnum.baal:
 				return <Baal />;
 			case CommercialEnum.theater:
@@ -77,19 +61,6 @@ class Commercial extends React.Component<{
 				return <Gate />;
 		}
 		return null;
-	}
-
-	buildScience(scienceName: ScienceToken) {
-		if (!utils.isMyTurn()) return;
-		const me = utils.getMe();
-		if (!me.scienceTokens) me.scienceTokens = [];
-		me.scienceTokens.push(scienceName);
-		store.gameW.game.sciences.find(
-			(obj) => obj.token === scienceName
-		)!.taken = true;
-		utils.endCommercial(
-			`built ${utils.enumName(scienceName, ScienceToken)}`
-		);
 	}
 }
 

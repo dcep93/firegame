@@ -1,29 +1,30 @@
 import React from "react";
 
-import utils from "../../utils";
+import utils, { store } from "../../utils";
 import { ScienceToken } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Library extends React.Component<{
-	sciences: ScienceToken[];
-	buildScience: (science: ScienceToken) => void;
-}> {
+class Library extends React.Component<{}> {
 	render() {
 		return (
 			<div className={styles.bubble}>
 				<h2>Library</h2>
 				<div className={styles.flex}>
-					{this.props.sciences.map((scienceName: ScienceToken) => (
-						<div
-							onClick={() => this.props.buildScience(scienceName)}
-							className={styles.bubble}
-							key={scienceName}
-						>
-							{utils.enumName(scienceName, ScienceToken)} -{" "}
-							{scienceName}
-						</div>
-					))}
+					{store.gameW.game.commercials![0].library!.map(
+						(scienceName: ScienceToken) => (
+							<div
+								onClick={() =>
+									utils.buildScienceToken(scienceName)
+								}
+								className={styles.bubble}
+								key={scienceName}
+							>
+								{utils.enumName(scienceName, ScienceToken)} -{" "}
+								{scienceName}
+							</div>
+						)
+					)}
 				</div>
 			</div>
 		);

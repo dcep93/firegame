@@ -854,7 +854,6 @@ const gods: GodType[] = [
 			}),
 	},
 	{
-		// todo should reveal tokens
 		name: "enki",
 		source: God.mesopotamian,
 		message: "select 1 / 2 science tokens",
@@ -862,14 +861,6 @@ const gods: GodType[] = [
 			utils.addCommercial({
 				commercial: CommercialEnum.enki,
 				playerIndex: utils.myIndex(),
-				sciences: utils
-					.shuffle(
-						store.gameW.game.sciences
-							.slice(NUM_SCIENCES)
-							.filter((obj) => !obj.taken)
-					)
-					.slice(0, 2)
-					.map((obj) => obj.token),
 			}),
 	},
 	{
@@ -952,11 +943,14 @@ const gods: GodType[] = [
 	{
 		name: "gate",
 		message: "cost x2: select 1 from top gods",
-		f: () =>
+		f: () => {
 			utils.addCommercial({
 				commercial: CommercialEnum.gate,
 				playerIndex: utils.myIndex(),
-			}),
+			});
+			const m = store.gameW.game.gods[God.mesopotamian];
+			if (m && gods[m[0]].name === "enki") utils.assignEnki();
+		},
 	},
 ];
 
@@ -1090,7 +1084,7 @@ const wonders: WonderType[] = [
 			utils.addCommercial({
 				commercial: CommercialEnum.library,
 				playerIndex: utils.myIndex(),
-				sciences: utils
+				library: utils
 					.shuffle(
 						store.gameW.game.sciences
 							.slice(NUM_SCIENCES)
@@ -1118,11 +1112,18 @@ const wonders: WonderType[] = [
 			Resource.wood,
 			Resource.wood,
 		],
-		f: () =>
+		f: () => {
 			utils.addCommercial({
 				commercial: CommercialEnum.theater,
 				playerIndex: utils.myIndex(),
-			}),
+			});
+			if (
+				store.gameW.game.gods[God.mesopotamian].find(
+					(godIndex) => gods[godIndex].name === "enki"
+				)
+			)
+				utils.assignEnki();
+		},
 		points: 2,
 		expansion: true,
 	},
@@ -1154,4 +1155,6 @@ const structure: { [age in Age]?: number[][] } = {
 	],
 };
 
-export default { cards, structure, wonders, gods };
+const bank = { cards, structure, wonders, gods };
+
+export default bank;
