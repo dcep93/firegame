@@ -35,3 +35,13 @@
 .grey {
 	background-color: grey !important;
 }
+
+.sidebar {
+	min-width: 20%;
+	max-height: 100%;
+	overflow: scroll;
+}
+
+.sidebar > * {
+	width: 90%;
+}
