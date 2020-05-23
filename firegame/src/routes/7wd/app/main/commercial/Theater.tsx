@@ -20,6 +20,7 @@ class Theater extends React.Component {
 						}))
 						.map((obj) => (
 							<div
+								key={obj.godIndex}
 								onClick={() => {
 									if (!utils.isMyTurn()) return;
 									const gods =
@@ -35,7 +36,6 @@ class Theater extends React.Component {
 								className={styles.bubble}
 								title={JSON.stringify(obj.god, null, 2)}
 							>
-								{obj.god.name}
 								{obj.god.name}
 								{obj.god.name === "enki" &&
 									` - ${store.gameW.game

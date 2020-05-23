@@ -2,7 +2,7 @@ import React from "react";
 
 import utils, { store } from "../utils";
 import bank from "../utils/bank";
-import { Age, God } from "../utils/types";
+import { Age, God, ScienceToken } from "../utils/types";
 
 import styles from "../../../../shared/styles.module.css";
 
@@ -47,6 +47,15 @@ class Pantheon extends React.Component<{
 			<div>
 				<div>{god.name}</div>
 				<div>{god.message}</div>
+				{god.name === "enki" && (
+					<div>
+						{store.gameW.game
+							.enki!.map((token) =>
+								utils.enumName(token, ScienceToken)
+							)
+							.join(" ")}
+					</div>
+				)}
 			</div>
 		);
 	}
