@@ -375,6 +375,7 @@ const cards: CardType[] = [
 		upgradesFrom: Upgrade.sun,
 	},
 	{
+		// todo name?
 		name: "obelisk",
 		age: Age.three,
 		color: Color.blue,

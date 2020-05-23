@@ -29,9 +29,9 @@ class Gate extends React.Component {
 										obj.god.source!
 									]!.shift()!;
 									me.gods.push(godIndex);
-									utils.endCommercial(
-										`built ${bank.gods[godIndex].name}`
-									);
+									const god = bank.gods[godIndex];
+									god.f();
+									utils.endCommercial(`built ${god.name}`);
 								}}
 								className={styles.bubble}
 								title={JSON.stringify(obj.god, null, 2)}

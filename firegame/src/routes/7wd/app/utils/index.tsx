@@ -284,7 +284,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				return;
 			}
 			me.military++;
-			const bonus = me.militaryBonuses[diff];
+			const bonus = (me.militaryBonuses || {})[diff];
 			if (bonus !== undefined) {
 				delete me.militaryBonuses[diff];
 				if (bonus === 0) {
@@ -318,6 +318,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		} else if (Object.keys(me.scienceIcons).length === SCIENCE_TO_WIN) {
 			store.gameW.game.alert = `${me.userName} wins`;
 		}
+		console.log(science, me.scienceIcons[science]);
 	}
 
 	isMyCommercial(commercial: CommercialEnum): boolean {
@@ -409,7 +410,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			if (sciences.includes(ScienceToken.strategy)) military++;
 			utils.increaseMilitary(military);
 		}
-		if (card.extra.science) {
+		if (card.extra.science !== undefined) {
 			utils.gainScience(card.extra.science);
 		}
 	}
