@@ -35,10 +35,7 @@ class ChooseWonder extends React.Component {
 			>
 				<p>{wonder.name}</p>
 				<p>{wonder.message}</p>
-				<div>
-					cost: {wonder.cost.join(" ")} ($
-					{utils.getWonderCost(wonder)})
-				</div>
+				<div>cost: {wonder.cost.join("")}</div>
 			</div>
 		);
 	}

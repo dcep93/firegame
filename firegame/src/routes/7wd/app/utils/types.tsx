@@ -118,6 +118,7 @@ export type GameType = {
 	pantheon: number[];
 	wondersToChoose: number[];
 	minerva?: number;
+	astarte?: number;
 	alert?: string;
 };
 
@@ -197,7 +198,6 @@ export type GodType = {
 	name: string;
 	source?: God;
 	message: string;
-	f: (god: GodType) => void;
-	points?: (god: GodType) => number;
-	extra?: any;
+	f: () => void;
+	points?: () => number;
 };

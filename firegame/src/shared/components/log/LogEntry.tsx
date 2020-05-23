@@ -13,7 +13,7 @@ class LogEntry<T> extends React.Component<{
 	getMessage() {
 		const w = this.props.wrapper;
 		const time = new Date(w.info.timestamp).toLocaleTimeString();
-		return `(${w.info.id}) ${time} [${w.info.playerName}] ${w.info.message}`;
+		return `(${w.info.id}) [${w.info.playerName}] ${w.info.message} ${time}`;
 	}
 
 	revert(): void {

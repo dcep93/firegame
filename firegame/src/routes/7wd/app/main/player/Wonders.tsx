@@ -47,7 +47,7 @@ class Wonders extends React.Component<{
 				}
 				onClick={(e: React.MouseEvent) => this.selectSelf(index, e)}
 			>
-				{wonder.name} - {wonder.cost.join(" ")} ($
+				{wonder.name} - {wonder.cost.join("")} ($
 				{utils.getWonderCost(wonder, this.props.player)})
 			</div>
 		);

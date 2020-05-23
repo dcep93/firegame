@@ -73,6 +73,7 @@ class Main extends React.Component<
 		this.setState({
 			selectedTarget: undefined,
 			selectedPantheon: undefined,
+			usedTokens: undefined,
 		});
 	}
 
@@ -112,7 +113,7 @@ class Main extends React.Component<
 				selectedPantheon = -1;
 			this.setState({ selectedPantheon });
 		} else {
-			utils.buyGod(selectedPantheon);
+			utils.buyGod(selectedPantheon, this.state.usedTokens);
 			this.reset();
 		}
 	}

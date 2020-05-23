@@ -901,8 +901,8 @@ const gods: GodType[] = [
 		name: "astarte",
 		source: God.phoenician,
 		message: "$7, 1 point per",
-		f: (god: GodType) => (god.extra = 7),
-		points: (god: GodType) => god.extra,
+		f: () => (store.gameW.game.astarte = 7),
+		points: () => store.gameW.game.astarte || 0,
 	},
 	{
 		name: "tanit",

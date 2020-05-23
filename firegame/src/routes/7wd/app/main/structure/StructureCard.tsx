@@ -46,27 +46,34 @@ class StructureCard extends React.Component<{
 	}
 
 	renderCard() {
+		const card = bank.cards[this.props.cardIndex];
 		if (!this.props.revealed) {
 			if (store.gameW.game.params.godExpansion) {
 				if (store.gameW.game.age === Age.one) {
 					if (this.props.x % 2 === 0) {
 						return "god token";
 					}
-				} else if (store.gameW.game.age) {
+				} else if (store.gameW.game.age === Age.two) {
 					if (this.props.x % 2 === 0 && this.props.y === 1) {
 						return "discount token";
 					}
+				} else if (card.age === Age.god) {
+					return "temple";
 				}
 			}
 			return "?";
 		}
-		const card = bank.cards[this.props.cardIndex];
 		return (
 			<div title={JSON.stringify(card, null, 2)}>
 				<div style={{ backgroundColor: Color[card.color] }}>_</div>
 				<div>{card.name}</div>
 				<div>
-					cost: {card.cost.join(" ")} (${utils.getCardCost(card)})
+					cost: {card.cost.join("")} ($
+					{utils.getCardCost(
+						card,
+						utils.getMe() || utils.getCurrent()
+					)}
+					)
 				</div>
 				{card.message && <div>{card.message}</div>}
 				{this.renderExtra(card)}
@@ -84,13 +91,13 @@ class StructureCard extends React.Component<{
 		return (
 			<>
 				{card.extra.resource && (
-					<div>({card.extra.resource!.join(" ")})</div>
+					<div>({card.extra.resource!.join("")})</div>
 				)}
 				{card.extra.resourceOptions && (
 					<div>({card.extra.resourceOptions!.join("/")})</div>
 				)}
 				{card.extra.discount && (
-					<div>d: ({card.extra.discount!.join(" ")})</div>
+					<div>d: ({card.extra.discount!.join("")})</div>
 				)}
 				{card.extra.points && <div>{card.extra.points} points</div>}
 				{card.extra.military && (

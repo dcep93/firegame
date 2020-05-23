@@ -26,6 +26,8 @@ class Anubis extends React.Component {
 						}))
 						.map((obj) => (
 							<div
+								key={obj.wonderObj.wonderIndex}
+								className={styles.bubble}
 								onClick={() => {
 									if (!utils.isMyTurn()) return;
 									obj.wonderObj.built = false;
@@ -37,7 +39,6 @@ class Anubis extends React.Component {
 								{obj.wonder.name}
 							</div>
 						))}
-					)}
 				</div>
 			</div>
 		);

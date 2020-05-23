@@ -21,6 +21,8 @@ class Ra extends React.Component {
 				<div className={styles.flex}>
 					{wondersToSteal.map((obj) => (
 						<div
+							key={obj.index}
+							className={styles.bubble}
 							onClick={() => {
 								if (!utils.isMyTurn()) return;
 								utils
@@ -38,7 +40,6 @@ class Ra extends React.Component {
 							{bank.wonders[obj.wonder.wonderIndex].name}
 						</div>
 					))}
-					)}
 				</div>
 			</div>
 		);

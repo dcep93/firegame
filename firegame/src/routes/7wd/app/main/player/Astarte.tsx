@@ -1,26 +1,24 @@
 import React from "react";
 
 import utils, { store } from "../../utils";
-import { GodType } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
-class Astarte extends React.Component<{ god?: GodType }> {
+class Astarte extends React.Component {
 	render() {
-		if (!this.props.god) return null;
 		return (
-			<div className={styles.bubble} onClick={this.f}>
-				Astarte: {this.props.god.extra}
+			<div className={styles.bubble} onClick={this.f.bind(this)}>
+				Astarte: {store.gameW.game.astarte || 0}
 			</div>
 		);
 	}
 
 	f(e: React.MouseEvent) {
 		if (!utils.isMyTurn()) return;
-		if (!this.props.god!.extra) return;
-		this.props.god!.extra--;
+		if (!store.gameW.game.astarte) return;
+		store.gameW.game.astarte--;
 		utils.getMe().money++;
-		store.update(`used ${this.props.god!.name}`);
+		store.update("used Astarte");
 		e.stopPropagation();
 	}
 }

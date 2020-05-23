@@ -110,8 +110,11 @@ class Utils extends Shared<GameType, PlayerType> {
 		}
 	}
 
-	getCostCost(rawCosts: Resource[], player?: PlayerType): number {
-		if (!player) player = utils.getMe() || utils.getCurrent();
+	getCostCost(
+		rawCosts: Resource[],
+		player: PlayerType,
+		log?: boolean
+	): number {
 		const cards = player.cards || [];
 		const costs = utils.countResources(rawCosts);
 		const myResources = utils.countResources(
@@ -147,9 +150,10 @@ class Utils extends Shared<GameType, PlayerType> {
 
 		cards
 			.map((cardIndex) => bank.cards[cardIndex].extra.resourceOptions)
-			.concat(this.getWonderOptions())
+			.concat(this.getWonderOptions(player))
 			.filter(Boolean)
 			.forEach((options) => {
+				if (log) console.log(options);
 				var pricePer = 0;
 				var resource: Resource | null = null;
 				Object.entries(paid).forEach(([r_, o]) => {
@@ -163,22 +167,22 @@ class Utils extends Shared<GameType, PlayerType> {
 				if (resource === null) return;
 				const picked: { pricePer: number; needed: number } =
 					paid[resource];
+				if (!picked.needed) return;
 				picked.needed--;
 				price -= pricePer;
 			});
 		return price;
 	}
 
-	getWonderOptions(): Resource[][] {
-		return ((utils.getMe() || utils.getCurrent()).wonders || [])
+	getWonderOptions(player: PlayerType): Resource[][] {
+		return (player.wonders || [])
 			.filter((wonder) => wonder.built)
 			.map((wonder) => bank.wonders[wonder.wonderIndex])
 			.map((wonder) => wonder.resourceOptions)
 			.filter(Boolean) as Resource[][];
 	}
 
-	getCardCost(card: CardType): number {
-		const player = utils.getMe() || utils.getCurrent();
+	getCardCost(card: CardType, player: PlayerType): number {
 		if (
 			(player.cards || []).find(
 				(cardIndex) =>
@@ -190,6 +194,13 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (
 			(player.scienceTokens || []).includes(ScienceToken.masonry) &&
 			card.color === Color.blue
+		)
+			return 0;
+		if (
+			card.age === Age.god &&
+			(player.tokens || []).find(
+				(token) => token.isGod && token.value === card.extra!.godUpgrade
+			)
 		)
 			return 0;
 		const price = utils.getCostCost(card.cost, player);
@@ -236,7 +247,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		const godPoints = (player.gods || [])
 			.map((godIndex) => bank.gods[godIndex])
 			.filter((god) => god.points)
-			.map((god) => god.points!(god))
+			.map((god) => god.points!())
 			.reduce((a, b) => a + b, 0);
 		return (
 			cardPoints +
@@ -256,8 +267,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		);
 	}
 
-	getWonderCost(wonder: WonderType, player?: PlayerType): number {
-		if (!player) player = utils.getMe() || utils.getCurrent();
+	getWonderCost(wonder: WonderType, player: PlayerType): number {
 		if ((player.scienceTokens || []).includes(ScienceToken.architecture))
 			return 0;
 		return utils.getCostCost(wonder.cost, player);
@@ -322,7 +332,10 @@ class Utils extends Shared<GameType, PlayerType> {
 		);
 	}
 
-	buyGod(selectedPantheon: number) {
+	buyGod(
+		selectedPantheon: number,
+		usedTokens: { [tokenIndex: number]: boolean } | undefined
+	) {
 		const godIndex = store.gameW.game.pantheon[selectedPantheon];
 		const god = bank.gods[godIndex];
 		const me = utils.getMe();
@@ -336,11 +349,16 @@ class Utils extends Shared<GameType, PlayerType> {
 			)
 		)
 			cost -= 2;
+		Object.keys(usedTokens || {})
+			.map((index) => me.tokens!.splice(parseInt(index), 1)[0].value)
+			.forEach((discount) => {
+				cost = Math.max(0, cost - discount);
+			});
 		if (me.money < cost) return alert("cannot afford");
 		me.money -= cost;
 		if (!me.gods) me.gods = [];
 		me.gods.push(godIndex);
-		god.f(god);
+		god.f();
 		utils.incrementPlayerTurn();
 		store.update(`purchased ${god.name}`);
 	}
@@ -420,7 +438,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			return alert("cannot take that card");
 		const card = bank.cards[structureCard.cardIndex];
 		if (selectedTarget === SelectedEnum.build) {
-			const cost = utils.getCardCost(card);
+			const cost = utils.getCardCost(card, utils.getMe());
 			if (cost > utils.getMe().money)
 				return alert("cannot afford that card");
 			utils.getMe().money -= cost;
@@ -432,7 +450,10 @@ class Utils extends Shared<GameType, PlayerType> {
 				utils.getOpponent().money += cost;
 		} else if (selectedTarget >= 0) {
 			const cost = utils.getWonderCost(
-				bank.wonders[utils.getMe().wonders[selectedTarget!].wonderIndex]
+				bank.wonders[
+					utils.getMe().wonders[selectedTarget!].wonderIndex
+				],
+				utils.getMe()
 			);
 			if (cost > utils.getMe().money)
 				return alert("cannot afford that wonder");

@@ -59,13 +59,9 @@ class Player extends React.Component<{
 							playerIndex={this.props.player.index}
 						/>
 					)}
-					{
-						<Astarte
-							god={(this.props.player.gods || [])
-								.map((godIndex) => bank.gods[godIndex])
-								.find((god) => god.name === "astarte")}
-						/>
-					}
+					{(this.props.player.gods || [])
+						.map((godIndex) => bank.gods[godIndex])
+						.find((god) => god.name === "astarte") && <Astarte />}
 				</div>
 			</div>
 		);
