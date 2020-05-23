@@ -262,6 +262,17 @@ class Utils extends Shared<GameType, PlayerType> {
 			.filter((god) => god.points)
 			.map((god) => god.points!())
 			.reduce((a, b) => a + b, 0);
+		const numTemples = (player.cards || []).filter(
+			(cardIndex) => bank.cards[cardIndex].age === Age.temple
+		).length;
+		const templePoints =
+			numTemples === 0
+				? 0
+				: numTemples === 1
+				? 5
+				: numTemples === 2
+				? 11
+				: 21;
 		return (
 			cardPoints +
 			moneyPoints +
@@ -269,7 +280,8 @@ class Utils extends Shared<GameType, PlayerType> {
 			militaryPoints +
 			sciencePoints +
 			wonderPoints +
-			godPoints
+			godPoints +
+			templePoints
 		);
 	}
 
@@ -302,11 +314,12 @@ class Utils extends Shared<GameType, PlayerType> {
 				return;
 			}
 			const diff = Math.abs(game.military);
-			const bonus = (me.militaryBonuses || {})[diff];
+			const bonus = me.militaryBonuses[diff];
 			if (bonus !== undefined) {
-				delete me.militaryBonuses[diff];
 				if (bonus === 0) {
 					store.gameW.game.alert = `${me.userName} wins`;
+				} else {
+					delete me.militaryBonuses[diff];
 				}
 				utils.stealMoney(bonus);
 			}

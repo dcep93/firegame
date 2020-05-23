@@ -106,7 +106,7 @@ class StructureCard extends React.Component<{
 				{card.extra.science !== undefined && (
 					<div>symbol: {ScienceEnum[card.extra.science]}</div>
 				)}
-				{card.extra.godUpgrade && (
+				{card.extra.godUpgrade !== undefined && (
 					<div>{God[card.extra.godUpgrade]}</div>
 				)}
 			</>

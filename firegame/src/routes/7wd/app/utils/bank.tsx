@@ -907,20 +907,27 @@ const gods: GodType[] = [
 		source: God.roman,
 		message: "destroy/trigger military tokens",
 		f: () => {
-			const myTokens = utils.getMe().militaryBonuses || {};
+			const myTokens = utils.getMe().militaryBonuses;
 			const oppTokens = utils.getOpponent().militaryBonuses;
-			utils.getMe().militaryBonuses = {};
-			if (myTokens[6] || oppTokens[6])
-				utils.getOpponent().money = Math.max(
-					utils.getOpponent().money - 5,
-					0
-				);
-			if (!myTokens[3]) {
-				if (myTokens[6] && oppTokens[3]) {
+			if (myTokens[3]) {
+				utils.getOpponent().money -= myTokens[6];
+				delete myTokens[3];
+				delete myTokens[6];
+			} else if (myTokens[6]) {
+				utils.getOpponent().money -= myTokens[6];
+				delete myTokens[6];
+				if (oppTokens[3]) {
 					delete oppTokens[3];
-				} else {
-					utils.getOpponent().militaryBonuses = {};
+				} else if (oppTokens[6]) {
+					delete oppTokens[6];
 				}
+			} else if (oppTokens[3]) {
+				utils.getOpponent().money -= oppTokens[6];
+				delete oppTokens[3];
+				delete oppTokens[6];
+			} else if (oppTokens[6]) {
+				utils.getOpponent().money -= oppTokens[6];
+				delete oppTokens[6];
 			}
 		},
 	},
