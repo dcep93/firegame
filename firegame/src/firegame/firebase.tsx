@@ -15,6 +15,7 @@ function init(): void {
 	database = firebase.database();
 	// @ts-ignore
 	window.database = database;
+	// database.ref('/').set({})
 	database
 		.ref(".info/serverTimeOffset")
 		.once("value")
