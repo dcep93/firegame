@@ -16,15 +16,12 @@ class Enki extends React.Component<{
 				<div className={styles.flex}>
 					{this.props.sciences.map((scienceName: ScienceToken) => (
 						<div
+							key={scienceName}
 							onClick={() => this.props.buildScience(scienceName)}
 							className={styles.bubble}
 						>
-							{
-								ScienceToken[
-									utils.enumName(scienceName, ScienceToken)
-								]
-							}{" "}
-							- {scienceName}
+							{utils.enumName(scienceName, ScienceToken)} -{" "}
+							{scienceName}
 						</div>
 					))}
 				</div>

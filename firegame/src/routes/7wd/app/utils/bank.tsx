@@ -731,7 +731,7 @@ const cards: CardType[] = [
 	},
 	{
 		name: "egyptian grand temple",
-		age: Age.god,
+		age: Age.temple,
 		color: Color.purple,
 		cost: [
 			Resource.clay,
@@ -744,7 +744,7 @@ const cards: CardType[] = [
 	},
 	{
 		name: "phoenician grand temple",
-		age: Age.god,
+		age: Age.temple,
 		color: Color.purple,
 		cost: [
 			Resource.wood,
@@ -757,7 +757,7 @@ const cards: CardType[] = [
 	},
 	{
 		name: "meopotamian grand temple",
-		age: Age.god,
+		age: Age.temple,
 		color: Color.purple,
 		cost: [
 			Resource.wood,
@@ -770,7 +770,7 @@ const cards: CardType[] = [
 	},
 	{
 		name: "roman grand temple",
-		age: Age.god,
+		age: Age.temple,
 		color: Color.purple,
 		cost: [
 			Resource.clay,
@@ -783,7 +783,7 @@ const cards: CardType[] = [
 	},
 	{
 		name: "greek grand temple",
-		age: Age.god,
+		age: Age.temple,
 		color: Color.purple,
 		cost: [
 			Resource.stone,

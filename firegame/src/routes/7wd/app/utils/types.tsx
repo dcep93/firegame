@@ -26,7 +26,7 @@ export enum Age {
 	two,
 	three,
 	guild,
-	god,
+	temple,
 }
 
 export enum Resource {

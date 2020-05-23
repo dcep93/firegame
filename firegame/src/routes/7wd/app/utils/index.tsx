@@ -69,7 +69,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		if (game.age === Age.two && game.params.godExpansion)
 			utils.assignGate(game);
 		if (game.age === Age.three) {
-			const matchAge = game.params.godExpansion ? Age.god : Age.guild;
+			const matchAge = game.params.godExpansion ? Age.temple : Age.guild;
 			const purples = bank.cards
 				.map((card, index) => ({ card, index }))
 				.filter((ic) => ic.card.age === matchAge)
@@ -192,7 +192,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		)
 			return 0;
 		if (
-			card.age === Age.god &&
+			card.age === Age.temple &&
 			(player.tokens || []).find(
 				(token) => token.isGod && token.value === card.extra!.godUpgrade
 			)
