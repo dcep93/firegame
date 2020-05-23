@@ -1,6 +1,6 @@
 import React from "react";
 
-import utils from "../../utils";
+import utils from "../../utils/utils";
 import bank from "../../utils/bank";
 import { CardType, Color, ScienceEnum, Upgrade } from "../../utils/types";
 

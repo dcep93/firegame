@@ -1,4 +1,4 @@
-import writer from "../firegame/writer";
+import writer from "../firegame/writer/writer";
 
 var store: StoreType<any>;
 

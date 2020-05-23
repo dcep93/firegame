@@ -1,8 +1,8 @@
-import Shared from "../../../../shared";
+import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 
 import { NUM_SCIENCES } from "../main/Science";
-import { SelectedEnum } from "../main";
+import { SelectedEnum } from "../main/Main";
 import bank from "./bank";
 import {
 	GameType,

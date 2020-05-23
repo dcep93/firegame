@@ -1,7 +1,7 @@
 import React from "react";
 
 import { CommercialEnum, Color } from "../../utils/types";
-import { store } from "../../utils";
+import { store } from "../../utils/utils";
 
 import Isis from "./Isis";
 import ChooseWonder from "./ChooseWonder";

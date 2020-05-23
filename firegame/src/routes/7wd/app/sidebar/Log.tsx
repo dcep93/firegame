@@ -1,4 +1,4 @@
-import SharedLog from "../../../../shared/components/log";
+import SharedLog from "../../../../shared/components/log/Log";
 
 import { GameType } from "../utils/types";
 

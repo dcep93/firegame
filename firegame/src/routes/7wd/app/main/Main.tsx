@@ -1,13 +1,13 @@
 import React from "react";
 import Hotkeys from "react-hot-keys";
 
-import utils, { store } from "../utils";
+import utils, { store } from "../utils/utils";
 
-import Structure from "./structure";
-import Player from "./player";
+import Structure from "./structure/Structure";
+import Player from "./player/Player";
 import Military from "./Military";
 import Trash from "./Trash";
-import Commercial from "./commercial";
+import Commercial from "./commercial/Commercial";
 import Science from "./Science";
 import Pantheon from "./Pantheon";
 import { Age } from "../utils/types";

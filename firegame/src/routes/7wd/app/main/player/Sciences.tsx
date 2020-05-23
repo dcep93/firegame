@@ -1,6 +1,6 @@
 import React from "react";
 
-import utils from "../../utils";
+import utils from "../../utils/utils";
 import { ScienceToken } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";

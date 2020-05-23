@@ -1,6 +1,6 @@
 import React from "react";
 
-import { shared, store, sortBoard } from "../utils";
+import { shared, store, sortBoard } from "../utils/utils";
 import { GameType } from "../utils/NewGame";
 
 import Hand from "./Hand";

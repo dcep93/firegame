@@ -2,7 +2,7 @@ import React from "react";
 
 import store from "../../shared/store";
 
-import writer from "../writer";
+import writer from "../writer/writer";
 
 import LoadingPage from "./LoadingPage";
 import LoginPage from "./LoginPage";

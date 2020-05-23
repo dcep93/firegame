@@ -1,11 +1,11 @@
 import React from "react";
 
-import { store } from "../utils";
+import { store } from "../utils/utils";
 
 import Settings from "./Settings";
 import Players from "./Players";
 import Info from "./Info";
-import Log from "../../../../shared/components/log";
+import Log from "../../../../shared/components/log/Log";
 
 import styles from "../../../../shared/styles.module.css";
 

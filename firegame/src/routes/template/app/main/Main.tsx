@@ -1,5 +1,5 @@
 import React from "react";
-import { store } from "../utils";
+import { store } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
 

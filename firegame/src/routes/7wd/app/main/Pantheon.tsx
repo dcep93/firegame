@@ -1,6 +1,6 @@
 import React from "react";
 
-import utils, { store } from "../utils";
+import utils, { store } from "../utils/utils";
 import bank from "../utils/bank";
 import { Age, God, ScienceToken } from "../utils/types";
 

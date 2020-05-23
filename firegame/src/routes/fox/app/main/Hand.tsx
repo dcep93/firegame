@@ -1,6 +1,6 @@
 import React from "react";
 
-import { shared } from "../utils";
+import { shared } from "../utils/utils";
 import { Card } from "../utils/NewGame";
 
 import HandCard from "./HandCard";

@@ -1,4 +1,4 @@
-import { store, shared, deal, getText, sortHand } from "../utils";
+import { store, shared, deal, getText, sortHand } from "../utils/utils";
 import { Card, PlayerType } from "../utils/NewGame";
 
 function playCard(index: number): string | void {

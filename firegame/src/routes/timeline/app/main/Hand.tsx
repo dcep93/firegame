@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store, shared } from "../utils";
+import { store, shared } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";

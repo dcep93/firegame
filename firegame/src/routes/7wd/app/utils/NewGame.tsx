@@ -1,4 +1,4 @@
-import utils, { store } from ".";
+import utils, { store } from "./utils";
 import { Params, GameType, ScienceToken, CommercialEnum, God } from "./types";
 import bank from "./bank";
 

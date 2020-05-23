@@ -1,8 +1,8 @@
 import React from "react";
 
-import { shared, store } from "./utils";
-import Main from "./main";
-import Sidebar from "./sidebar";
+import { shared, store } from "./utils/utils";
+import Main from "./main/Main";
+import Sidebar from "./sidebar/Sidebar";
 
 import styles from "../../../shared/styles.module.css";
 import css from "./index.module.css";

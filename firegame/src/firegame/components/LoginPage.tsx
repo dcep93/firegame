@@ -1,7 +1,7 @@
 import React, { FormEvent } from "react";
 
 import store from "../../shared/store";
-import writer from "../writer";
+import writer from "../writer/writer";
 
 import styles from "../../shared/styles.module.css";
 import css from "./index.module.css";

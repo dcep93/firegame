@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store } from "../../utils";
+import { store } from "../../utils/utils";
 import StructureCard from "./StructureCard";
 
 import styles from "../../../../../shared/styles.module.css";

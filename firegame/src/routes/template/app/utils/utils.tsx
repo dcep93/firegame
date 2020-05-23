@@ -1,4 +1,4 @@
-import Shared from "../../../../shared";
+import Shared from "../../../../shared/shared";
 import store, { StoreType } from "../../../../shared/store";
 
 import { GameType, PlayerType } from "./NewGame";

@@ -1,7 +1,7 @@
 import React from "react";
 import { TokenType, God } from "../../utils/types";
 
-import utils, { store } from "../../utils";
+import utils, { store } from "../../utils/utils";
 
 import styles from "../../../../../shared/styles.module.css";
 

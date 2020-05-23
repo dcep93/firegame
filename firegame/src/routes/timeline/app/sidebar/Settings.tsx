@@ -1,6 +1,6 @@
 import React, { RefObject } from "react";
 
-import { store } from "../utils";
+import { store } from "../utils/utils";
 import Quizlet from "../utils/Quizlet";
 import NewGame, { Params } from "../utils/NewGame";
 

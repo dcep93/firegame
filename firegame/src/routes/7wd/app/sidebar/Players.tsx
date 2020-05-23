@@ -1,6 +1,6 @@
 import React, { RefObject } from "react";
 
-import { store } from "../utils";
+import { store } from "../utils/utils";
 import NewGame from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";

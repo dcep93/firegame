@@ -1,6 +1,6 @@
 import React from "react";
 
-import utils from "../../utils";
+import utils from "../../utils/utils";
 import bank from "../../utils/bank";
 import { Color } from "../../utils/types";
 

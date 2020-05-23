@@ -1,14 +1,16 @@
 import React from "react";
 
-import { shared, store } from "./utils";
-import Main from "./main";
-import Sidebar from "./sidebar";
+import { shared, store } from "./utils/utils";
+import Main from "./main/Main";
+import Sidebar from "./sidebar/Sidebar";
 
 import styles from "../../../shared/styles.module.css";
 import css from "./index.module.css";
 
-class Fox extends React.Component {
+class Timeline extends React.Component {
 	render() {
+		// todo css help
+		// sidebar and main should scroll on separate tracks
 		const classes = [css.main];
 		if (shared.isMyTurn()) classes.push(styles.my_turn);
 		return (
@@ -24,4 +26,4 @@ class Fox extends React.Component {
 	}
 }
 
-export default Fox;
+export default Timeline;

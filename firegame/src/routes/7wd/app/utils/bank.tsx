@@ -1,6 +1,6 @@
 import { NUM_SCIENCES } from "../main/Science";
 
-import utils, { store } from ".";
+import utils, { store } from "./utils";
 import {
 	CardType,
 	Age,

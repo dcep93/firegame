@@ -1,4 +1,4 @@
-import { VERSION } from "../../shared";
+import { VERSION } from "../../shared/shared";
 import store, { MeType } from "../../shared/store";
 
 import Firebase from "../firebase";

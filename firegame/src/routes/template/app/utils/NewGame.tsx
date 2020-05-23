@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
 
-import { store, shared } from ".";
+import { store, shared } from "./utils";
 
 export type GameType = {
 	params: Params;

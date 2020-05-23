@@ -1,16 +1,16 @@
 import React from "react";
 
-import utils, { store } from "./utils";
-import Main from "./main";
-import Sidebar from "./sidebar";
+import { shared, store } from "./utils/utils";
+import Main from "./main/Main";
+import Sidebar from "./sidebar/Sidebar";
 
 import styles from "../../../shared/styles.module.css";
 import css from "./index.module.css";
 
-class _7wd extends React.Component {
+class Fox extends React.Component {
 	render() {
 		const classes = [css.main];
-		if (utils.isMyTurn()) classes.push(styles.my_turn);
+		if (shared.isMyTurn()) classes.push(styles.my_turn);
 		return (
 			<div>
 				<div className={classes.join(" ")}>
@@ -24,4 +24,4 @@ class _7wd extends React.Component {
 	}
 }
 
-export default _7wd;
+export default Fox;

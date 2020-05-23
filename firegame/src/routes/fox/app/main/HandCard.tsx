@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store, getText } from "../utils";
+import { store, getText } from "../utils/utils";
 import { Card } from "../utils/NewGame";
 
 import playCard from "./playCard";
