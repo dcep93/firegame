@@ -21,6 +21,7 @@ class Revive extends React.Component {
 						.map((cardIndex) => bank.cards[cardIndex])
 						.map((card, index) => (
 							<div
+								title={JSON.stringify(card, null, 2)}
 								onClick={() => this.reviveCard(index)}
 								className={styles.bubble}
 							>

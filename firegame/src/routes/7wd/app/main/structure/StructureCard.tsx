@@ -57,9 +57,10 @@ class StructureCard extends React.Component<{
 					if (this.props.x % 2 === 0 && this.props.y === 1) {
 						return "discount token";
 					}
-				} else if (card.age !== Age.three) {
-					return Age[card.age];
 				}
+			}
+			if (store.gameW.game.age !== card.age) {
+				return Age[card.age];
 			}
 			return "?";
 		}
