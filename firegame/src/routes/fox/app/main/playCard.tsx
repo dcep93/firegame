@@ -3,7 +3,7 @@ import { Card, PlayerType } from "../utils/NewGame";
 
 function playCard(index: number): string | void {
 	const me = shared.getMe();
-	var card = me.hand[index];
+	var card = me.hand![index];
 	const game = store.gameW.game;
 	const fromStaging = Boolean(game.staging);
 	if (fromStaging) {
@@ -13,7 +13,7 @@ function playCard(index: number): string | void {
 	} else if (game.lead) {
 		if (!canPlay(card, game.lead)) return alert("cant play that card");
 	}
-	me.hand.splice(index, 1);
+	me.hand!.splice(index, 1);
 	if (!fromStaging) {
 		var duringMessage = handleDuring_3_5(card);
 		if (duringMessage !== null) {
@@ -39,7 +39,7 @@ function playCard(index: number): string | void {
 		game.previous = `${getText(game.lead)} vs ${text}`;
 		game.lead = null;
 		var message = `played ${text}`;
-		if (me.hand.length === 0) {
+		if (me.hand!.length === 0) {
 			var scores = game.players
 				.map((player) => `${player.userName}: ${player.tricks}`)
 				.join(" / ");
@@ -61,8 +61,8 @@ function canPlay(card: Card, lead: Card) {
 		}
 	}
 	var hand = shared.getMe().hand;
-	for (var i = 0; i < hand.length; i++) {
-		var handCard = hand[i];
+	for (var i = 0; i < hand!.length; i++) {
+		var handCard = hand![i];
 		if (handCard.suit === lead.suit) {
 			if (lead.value === 11) {
 				if (handCard.value > card.value) {
@@ -86,7 +86,7 @@ function handlePre_3_5(card: Card) {
 }
 
 function handleDuring_3_5(card: Card) {
-	const hand = shared.getMe().hand;
+	const hand = shared.getMe().hand!;
 	const game = store.gameW.game;
 	if (card.value === 5) {
 		var drawnCard = game.deck.shift()!;
@@ -153,21 +153,21 @@ function scoreFromTricks() {
 			case 2:
 			case 3:
 				playerState.score += 6;
-				return;
+				break;
 			case 4:
 				playerState.score += 1;
-				return;
+				break;
 			case 5:
 				playerState.score += 2;
-				return;
+				break;
 			case 6:
 				playerState.score += 3;
-				return;
+				break;
 			case 7:
 			case 8:
 			case 9:
 				playerState.score += 6;
-				return;
+				break;
 		}
 	}
 }

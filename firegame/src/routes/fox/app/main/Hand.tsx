@@ -14,6 +14,7 @@ class Hand extends React.Component {
 			<div className={styles.bubble}>
 				<h2>Hand</h2>
 				{me &&
+					me.hand &&
 					me.hand.map((card: Card, index: number) => (
 						<HandCard key={index} card={card} index={index} />
 					))}

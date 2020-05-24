@@ -19,7 +19,7 @@ export type Params = {
 };
 
 export type PlayerType = {
-	hand: Card[];
+	hand?: Card[];
 	tricks: number;
 	score: number;
 	userId: string;
