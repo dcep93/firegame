@@ -27,8 +27,10 @@ class Theater extends React.Component {
 										store.gameW.game.gods[obj.god.source!];
 									const index = gods.indexOf(obj.godIndex);
 									const me = utils.getMe();
+									const godIndex = gods.splice(index, 1)[0];
+									bank.gods[godIndex].f();
 									if (!me.gods) me.gods = [];
-									me.gods.push(gods.splice(index, 1)[0]);
+									me.gods.push(godIndex);
 									utils.endCommercial(
 										`built ${obj.god.name}`
 									);

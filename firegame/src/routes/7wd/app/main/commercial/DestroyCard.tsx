@@ -20,7 +20,7 @@ class DestroyCard extends React.Component<{ color: Color }> {
 			utils.endCommercial(
 				`could not destroy a ${Color[this.props.color]} card`
 			);
-			return;
+			return null;
 		}
 		return (
 			<div className={styles.bubble}>

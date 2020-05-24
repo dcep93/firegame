@@ -167,7 +167,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				var resource: Resource | null = null;
 				Object.entries(paid).forEach(([r_, o]) => {
 					const r: Resource = r_ as Resource;
-					if (o!.needed < 0 || !options?.includes(r)) return;
+					if (o!.needed === 0 || !options?.includes(r)) return;
 					if (o!.pricePer > pricePer) {
 						pricePer = o!.pricePer;
 						resource = r;
@@ -176,7 +176,6 @@ class Utils extends Shared<GameType, PlayerType> {
 				if (resource === null) return;
 				const picked: { pricePer: number; needed: number } =
 					paid[resource];
-				if (!picked.needed) return;
 				picked.needed--;
 				price -= pricePer;
 			});
@@ -349,7 +348,6 @@ class Utils extends Shared<GameType, PlayerType> {
 		} else if (Object.keys(me.scienceIcons).length === SCIENCE_TO_WIN) {
 			store.gameW.game.alert = `${me.userName} wins`;
 		}
-		console.log(science, me.scienceIcons[science]);
 	}
 
 	isMyCommercial(commercial: CommercialEnum): boolean {
@@ -378,7 +376,9 @@ class Utils extends Shared<GameType, PlayerType> {
 		)
 			cost -= 2;
 		Object.keys(usedTokens || {})
-			.map((index) => me.tokens!.splice(parseInt(index), 1)[0].value)
+			.map((i) => parseInt(i))
+			.sort((a, b) => b - a)
+			.map((index) => me.tokens!.splice(index, 1)[0].value)
 			.forEach((discount) => {
 				cost = Math.max(0, cost - discount);
 			});

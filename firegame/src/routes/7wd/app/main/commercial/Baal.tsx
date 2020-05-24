@@ -22,7 +22,7 @@ class Baal extends React.Component {
 			);
 		if (!cardsToSteal.length) {
 			utils.endCommercial("no cards to steal");
-			return;
+			return null;
 		}
 		return (
 			<div className={styles.bubble}>
