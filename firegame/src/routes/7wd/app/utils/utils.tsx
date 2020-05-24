@@ -421,11 +421,12 @@ class Utils extends Shared<GameType, PlayerType> {
 		return cardsBelow.length === 0;
 	}
 
-	handleCardPurchase(card: CardType) {
+	handleCardGain(card: CardType, isPurchase: boolean) {
 		const me = utils.getMe();
-		const sciences = me.scienceTokens || [];
 		if (card.extra.f) card.extra.f();
+		const sciences = me.scienceTokens || [];
 		if (
+			isPurchase &&
 			card.upgradesFrom !== undefined &&
 			(me.scienceTokens || []).includes(ScienceToken.urbanism)
 		) {
@@ -523,7 +524,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			message = `built ${card.name}`;
 			if (!me.cards) me.cards = [];
 			me.cards.push(structureCard.cardIndex);
-			utils.handleCardPurchase(card);
+			utils.handleCardGain(card, true);
 		} else {
 			const w = utils.getMe().wonders[selectedTarget!];
 			w.built = true;

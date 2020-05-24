@@ -39,7 +39,9 @@ class Revive extends React.Component {
 		const me = utils.getMe();
 		if (!me.cards) me.cards = [];
 		me.cards.push(cardIndex);
-		utils.endCommercial(`revived ${bank.cards[cardIndex].name}`);
+		const card = bank.cards[cardIndex];
+		utils.handleCardGain(card, false);
+		utils.endCommercial(`revived ${card.name}`);
 	}
 }
 
