@@ -46,7 +46,7 @@ function mePath(): string {
 function namespace(): string {
 	return (
 		process.env.REACT_APP_NAMESPACE ||
-		window.location.hostname.replace("www", "").split(".")[0]
+		window.location.hostname.replace("www.", "").split(".")[0]
 	);
 }
 
