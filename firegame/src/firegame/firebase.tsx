@@ -2,6 +2,7 @@
 
 import firebase from "firebase/app";
 import "firebase/database";
+import { gamePath } from "./writer/utils";
 
 const config = { databaseURL: "https://firegame-7eb05.firebaseio.com/" };
 
@@ -9,13 +10,16 @@ var database: { ref: (path: string) => any };
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
+var latest: string;
+
 var offset: number = 0;
 function init(): void {
 	firebase.initializeApp(config);
 	database = firebase.database();
 	// @ts-ignore
-	window.database = database;
-	// database.ref('/').set({})
+	window.clear = () => database.ref("/").set({});
+	// @ts-ignore
+	window.undo = () => database.ref(`${gamePath()}/${latest}`).set({});
 	database
 		.ref(".info/serverTimeOffset")
 		.once("value")
@@ -32,6 +36,7 @@ function latestChild(path: string, callback: (value: BlobType) => void): void {
 		.limitToLast(1)
 		.on("value", (snapshot: ResultType) => {
 			var val = snapshot.val();
+			if (val) latest = Object.keys(val)[0];
 			callback(val);
 		});
 }
