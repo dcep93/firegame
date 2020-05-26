@@ -1,6 +1,6 @@
 import store from "./store";
 
-export const VERSION: string = "v0.0.9";
+export const VERSION: string = "v0.1.0";
 
 interface TurnGame<T extends PlayerType> {
 	currentPlayer: number;
