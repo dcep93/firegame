@@ -5,6 +5,7 @@ import { GameType } from "../utils/NewGame";
 
 import Hand from "./Hand";
 import Board from "./Board";
+import utils from "../../../7wd/app/utils/utils";
 
 class Main extends React.Component<{}, { selectedIndex: number }> {
 	render() {
@@ -51,8 +52,15 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		const message = `played [${term.word}]: [${term.definition}] - ${
 			correct ? "CORRECT" : "WRONG"
 		}`;
-		shared.incrementPlayerTurn();
+		this.incrementPlayerTurn();
 		store.update(message);
+	}
+
+	incrementPlayerTurn() {
+		for (let i = 0; i < store.gameW.game.players.length; i++) {
+			shared.incrementPlayerTurn();
+			if ((utils.getCurrent().cards || []).length > 0) return;
+		}
 	}
 
 	isBetween(
