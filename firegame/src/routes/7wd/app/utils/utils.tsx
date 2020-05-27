@@ -370,8 +370,10 @@ class Utils extends Shared<GameType, PlayerType> {
 			(utils.myIndex() === 0 ? 5 - selectedPantheon : selectedPantheon);
 		if (god.source === undefined) cost *= 2;
 		if (
-			(utils.getMe().gods || []).find(
-				(godIndex) => bank.gods[godIndex].name === "the sanctuary"
+			(utils.getMe().wonders || []).find(
+				(obj) =>
+					obj.built &&
+					bank.wonders[obj.wonderIndex].name === "the sanctuary"
 			)
 		)
 			cost -= 2;
