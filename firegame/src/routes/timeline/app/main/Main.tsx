@@ -59,7 +59,8 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 	incrementPlayerTurn() {
 		for (let i = 0; i < store.gameW.game.players.length; i++) {
 			shared.incrementPlayerTurn();
-			if ((utils.getCurrent().cards || []).length > 0) return;
+			// @ts-ignore
+			if ((utils.getCurrent().hand || []).length > 0) return;
 		}
 	}
 
