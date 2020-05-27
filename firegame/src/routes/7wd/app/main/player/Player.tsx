@@ -57,6 +57,7 @@ class Player extends React.Component<{
 							playerIndex={this.props.player.index}
 						/>
 					)}
+					{/* todo show all gods */}
 					{(this.props.player.gods || [])
 						.map((godIndex) => bank.gods[godIndex])
 						.find((god) => god.name === "astarte") && <Astarte />}

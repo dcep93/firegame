@@ -31,10 +31,10 @@ class Nisaba extends React.Component {
 									utils.endCommercial(`copied ${science}`);
 								}}
 							>
+								{/* todo show science name */}
 								{obj.card.extra.science}
 							</div>
 						))}
-					)}
 				</div>
 			</div>
 		);
