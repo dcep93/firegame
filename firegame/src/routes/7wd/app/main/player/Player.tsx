@@ -9,9 +9,8 @@ import Wonders from "./Wonders";
 import Sciences from "./Sciences";
 import Cards from "./Cards";
 
-import Astarte from "./Astarte";
-
 import styles from "../../../../../shared/styles.module.css";
+import God from "./God";
 
 class Player extends React.Component<{
 	player: PlayerType;
@@ -57,10 +56,13 @@ class Player extends React.Component<{
 							playerIndex={this.props.player.index}
 						/>
 					)}
-					{/* todo show all gods */}
-					{(this.props.player.gods || [])
-						.map((godIndex) => bank.gods[godIndex])
-						.find((god) => god.name === "astarte") && <Astarte />}
+					<div>
+						{(this.props.player.gods || [])
+							.map((godIndex) => bank.gods[godIndex])
+							.map((god, index) => (
+								<God god={god} key={index} />
+							))}
+					</div>
 				</div>
 			</div>
 		);

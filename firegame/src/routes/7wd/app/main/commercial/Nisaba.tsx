@@ -2,7 +2,7 @@ import React from "react";
 
 import utils from "../../utils/utils";
 import bank from "../../utils/bank";
-import { Color } from "../../utils/types";
+import { Color, ScienceEnum } from "../../utils/types";
 
 import styles from "../../../../../shared/styles.module.css";
 
@@ -31,8 +31,7 @@ class Nisaba extends React.Component {
 									utils.endCommercial(`copied ${science}`);
 								}}
 							>
-								{/* todo show science name */}
-								{obj.card.extra.science}
+								{ScienceEnum[obj.card.extra.science!]}
 							</div>
 						))}
 				</div>
