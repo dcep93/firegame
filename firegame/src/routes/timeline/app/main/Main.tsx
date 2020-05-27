@@ -36,6 +36,7 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		const termIndex = me.hand![this.state.selectedIndex];
 		const correct = this.isBetween(termIndex, leftBound, rightBound);
 		game.last = { correct, termIndex };
+		game.board.push(me.hand!.splice(this.state.selectedIndex, 1)[0]);
 		if (!correct) {
 			const deck = game.deck;
 			if (deck) me.hand!.push(deck.pop()!);
@@ -44,7 +45,6 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 		} else if (me.hand!.length === 0) {
 			game.alert = `${me.userName} wins!`;
 		}
-		game.board.push(me.hand!.splice(this.state.selectedIndex, 1)[0]);
 		sortBoard(store.gameW.game);
 		this.setState({ selectedIndex: -1 });
 		const term = store.gameW.game.terms[termIndex];
