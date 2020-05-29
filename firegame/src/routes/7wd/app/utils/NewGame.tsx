@@ -32,8 +32,9 @@ function setBoard(game: GameType): GameType {
 }
 
 function setPlayers(game: GameType): GameType {
-	game.players = Object.entries(store.lobby).map(
-		([userId, userName], index) => ({
+	game.players = Object.entries(store.lobby)
+		.sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
+		.map(([userId, userName], index) => ({
 			userId,
 			userName,
 			wonders: [],
@@ -41,8 +42,7 @@ function setPlayers(game: GameType): GameType {
 			military: 0,
 			index,
 			militaryBonuses: { 3: 2, 6: 5, 9: 0 },
-		})
-	);
+		}));
 	if (game.players.length !== 2) throw new Error("need 2 players");
 	game.wentFirst = 1 - utils.myIndex(game);
 	return game;
