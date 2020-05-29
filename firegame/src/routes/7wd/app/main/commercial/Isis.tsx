@@ -6,6 +6,7 @@ import bank from "../../utils/bank";
 import styles from "../../../../../shared/styles.module.css";
 
 class Isis extends React.Component<{}, { trashIndex: number }> {
+	// todo isis
 	render() {
 		if (!utils.isMyTurn()) return null;
 		const wonders = utils
@@ -17,7 +18,7 @@ class Isis extends React.Component<{}, { trashIndex: number }> {
 		}
 		if (!store.gameW.game.trash) {
 			utils.endCommercial("no cards in trash");
-			return;
+			return null;
 		}
 		return (
 			<div className={styles.bubble}>
@@ -32,18 +33,18 @@ class Isis extends React.Component<{}, { trashIndex: number }> {
 							<div
 								key={obj.trashIndex}
 								title={JSON.stringify(obj.card, null, 2)}
-								className={
+								className={`${styles.bubble} ${
 									this.state?.trashIndex === obj.trashIndex
 										? styles.grey
 										: ""
-								}
+								}`}
 								onClick={() =>
 									this.setState({
 										trashIndex: obj.trashIndex,
 									})
 								}
 							>
-								{obj.card}
+								{obj.card.name}
 							</div>
 						))}
 					{wonders
@@ -75,7 +76,6 @@ class Isis extends React.Component<{}, { trashIndex: number }> {
 								{obj.wonder.name}
 							</div>
 						))}
-					)}
 				</div>
 			</div>
 		);
