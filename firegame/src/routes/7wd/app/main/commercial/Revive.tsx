@@ -4,6 +4,7 @@ import utils, { store } from "../../utils/utils";
 import bank from "../../utils/bank";
 
 import styles from "../../../../../shared/styles.module.css";
+import { Color } from "../../utils/types";
 
 class Revive extends React.Component {
 	render() {
@@ -25,6 +26,13 @@ class Revive extends React.Component {
 								onClick={() => this.reviveCard(index)}
 								className={styles.bubble}
 							>
+								<div
+									style={{
+										backgroundColor: Color[card.color],
+									}}
+								>
+									_
+								</div>
 								{card.name}
 							</div>
 						))}
