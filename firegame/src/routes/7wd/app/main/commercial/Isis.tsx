@@ -43,10 +43,13 @@ class Isis extends React.Component<{}, { trashIndex: number }> {
 											1
 										);
 										obj.pWonder.built = true;
+										bank.wonders[
+											obj.pWonder.wonderIndex
+										].f();
 										if (obj.wonder.goAgain)
 											utils.incrementPlayerTurn();
 										utils.endCommercial(
-											`stole ${obj.wonder.name}`
+											`built ${obj.wonder.name}`
 										);
 									}}
 									title={JSON.stringify(obj.wonder, null, 2)}
