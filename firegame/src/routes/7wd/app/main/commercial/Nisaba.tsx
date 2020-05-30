@@ -28,7 +28,9 @@ class Nisaba extends React.Component {
 									if (!utils.isMyTurn()) return;
 									const science = obj.card.extra.science!;
 									utils.gainScience(science);
-									utils.endCommercial(`copied ${science}`);
+									utils.endCommercial(
+										`copied ${ScienceEnum[science]}`
+									);
 								}}
 							>
 								{ScienceEnum[obj.card.extra.science!]}
