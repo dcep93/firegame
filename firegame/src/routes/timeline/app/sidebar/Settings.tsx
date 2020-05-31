@@ -92,7 +92,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 
 	refresh() {
 		localStorage.fetchedFromFolderVersion = null;
-		this.fetchFromFolder();
+		this.fetchFromFolder().then(() => alert("refreshed"));
 	}
 
 	getSets(): JSX.Element[] {
@@ -115,8 +115,8 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 		this.quizletRef.current!.value = option.value;
 	}
 
-	fetchFromFolder(): void {
-		this.fetchFromFolderHelper().then((setsToTitles) =>
+	fetchFromFolder(): Promise<void> {
+		return this.fetchFromFolderHelper().then((setsToTitles) =>
 			this.setState({ setsToTitles })
 		);
 	}
