@@ -50,9 +50,11 @@ class Pantheon extends React.Component<{
 				{god.name === "enki" && (
 					<div>
 						{store.gameW.game
-							.enki!.map((token) =>
-								utils.enumName(token, ScienceToken)
-							)
+							.enki!.map((token) => (
+								<div title={token}>
+									{utils.enumName(token, ScienceToken)}
+								</div>
+							))
 							.join(" ")}
 					</div>
 				)}
