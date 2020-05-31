@@ -460,6 +460,8 @@ class Utils extends Shared<GameType, PlayerType> {
 		const structureCard = store.gameW.game.structure[y][x];
 		if (commercial === CommercialEnum.zeus) {
 			structureCard.taken = true;
+			if (!store.gameW.game.trash) store.gameW.game.trash = [];
+			store.gameW.game.trash.push(structureCard.cardIndex);
 			utils.endCommercial("destroyed a card");
 			return;
 		}
