@@ -929,6 +929,7 @@ const gods: GodType[] = [
 				utils.getOpponent().money -= myTokens[6];
 				delete myTokens[6];
 			}
+			utils.getOpponent().money = Math.max(0, utils.getOpponent().money);
 		},
 	},
 	{
