@@ -72,7 +72,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 						</select>
 					</div>
 					<div>
-						<span>Quizlet: </span>
+						<span onClick={this.refresh.bind(this)}>Quizlet: </span>
 						<input
 							type={"text"}
 							size={DEFAULT_SET_ID.length + 2}
@@ -88,6 +88,11 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 				</form>
 			</div>
 		);
+	}
+
+	refresh() {
+		localStorage.fetchedFromFolderVersion = null;
+		this.fetchFromFolder();
 	}
 
 	getSets(): JSX.Element[] {
