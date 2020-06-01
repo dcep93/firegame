@@ -1,6 +1,6 @@
 import React from "react";
 
-import { shared, store } from "./utils/utils";
+import utils, { store } from "./utils/utils";
 import Main from "./main/Main";
 import Sidebar from "./sidebar/Sidebar";
 
@@ -13,7 +13,7 @@ import css from "./index.module.css";
 class Template extends React.Component {
 	render() {
 		const classes = [css.main];
-		if (shared.isMyTurn()) classes.push(styles.my_turn);
+		if (utils.isMyTurn()) classes.push(styles.my_turn);
 		return (
 			<div>
 				<div className={classes.join(" ")}>

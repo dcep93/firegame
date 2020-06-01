@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
 
-import { store, shared } from "./utils";
+import utils, { store } from "./utils";
 
 export type GameType = {
 	params: Params;
@@ -29,7 +29,7 @@ function setPlayers(game: GameType): GameType {
 		userId,
 		userName,
 	}));
-	game.currentPlayer = shared.myIndex(game);
+	game.currentPlayer = utils.myIndex(game);
 	return game;
 }
 

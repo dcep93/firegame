@@ -4,6 +4,8 @@ import store, { StoreType } from "../../../../shared/store";
 import { GameType, PlayerType } from "./NewGame";
 
 const store_: StoreType<GameType> = store;
-const shared: Shared<GameType, PlayerType> = new Shared();
+const utils: Shared<GameType, PlayerType> = new Shared();
 
-export { store_ as store, shared };
+export default utils;
+
+export { store_ as store };
