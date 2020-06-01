@@ -3,16 +3,21 @@ import React from "react";
 import { store } from "../utils/utils";
 import NewGame, { Params } from "../utils/NewGame";
 
+import Log from "./Log";
+
 import styles from "../../../../shared/styles.module.css";
 
 class Sidebar extends React.Component {
 	render() {
 		return (
-			<div className={styles.bubble}>
-				<h2>Sidebar</h2>
-				<pre onClick={this.startNewGame.bind(this)}>
-					{JSON.stringify(store.gameW.info)}
-				</pre>
+			<div className={styles.sidebar}>
+				<div className={styles.bubble}>
+					<h2>Love Letter</h2>
+					<button onClick={this.startNewGame.bind(this)}>
+						New Game
+					</button>
+				</div>
+				<Log />
 			</div>
 		);
 	}

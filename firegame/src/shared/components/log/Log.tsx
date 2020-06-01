@@ -32,11 +32,9 @@ abstract class Log<T> extends React.Component<
 			newState.info.id !== this.state.history[0].info.id
 		) {
 			this.state.history.unshift(JSON.parse(JSON.stringify(newState)));
-			if (newState?.game) {
-				const a = newState.game.alert;
-				delete newState.game.alert;
-				if (a) alert(a);
-			}
+			const a = newState.info.alert;
+			delete newState.info.alert;
+			if (a) alert(a);
 			// trigger rerender
 			this.setState({});
 		}

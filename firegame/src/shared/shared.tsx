@@ -93,6 +93,10 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
 		player.userId = store.me.userId;
 		store.update(`is masquerading as ${player.userName}`);
 	}
+
+	repeat<X>(value: X, count: number): X[] {
+		return Array.from(new Array(count).map(() => value));
+	}
 }
 
 export default Shared;

@@ -43,7 +43,7 @@ class Main extends React.Component<{}, { selectedIndex: number }> {
 			game.last.wrongTarget =
 				leftBound > termIndex ? targetIndex + 1 : targetIndex;
 		} else if (me.hand!.length === 0) {
-			game.alert = `${me.userName} wins!`;
+			store.gameW.info.alert = `${me.userName} wins!`;
 		}
 		sortBoard(store.gameW.game);
 		this.setState({ selectedIndex: -1 });

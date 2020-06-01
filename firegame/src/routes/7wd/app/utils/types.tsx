@@ -114,7 +114,6 @@ export type GameType = {
 	wentFirst: number;
 	wondersToChoose: number[];
 	military: number;
-	alert?: string;
 
 	discounts: number[];
 	godTokens: God[];

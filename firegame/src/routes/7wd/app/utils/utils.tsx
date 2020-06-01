@@ -316,7 +316,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			const bonus = me.militaryBonuses[diff];
 			if (bonus !== undefined) {
 				if (bonus === 0) {
-					store.gameW.game.alert = `${me.userName} wins`;
+					store.gameW.info.alert = `${me.userName} wins`;
 				} else {
 					delete me.militaryBonuses[diff];
 				}
@@ -346,7 +346,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				playerIndex: utils.myIndex(),
 			});
 		} else if (Object.keys(me.scienceIcons).length === SCIENCE_TO_WIN) {
-			store.gameW.game.alert = `${me.userName} wins`;
+			store.gameW.info.alert = `${me.userName} wins`;
 		}
 	}
 
@@ -575,7 +575,7 @@ class Utils extends Shared<GameType, PlayerType> {
 					utils.deal(store.gameW.game);
 					break;
 				case Age.three:
-					store.gameW.game.alert = "game over";
+					store.gameW.info.alert = "game over";
 					break;
 			}
 		}

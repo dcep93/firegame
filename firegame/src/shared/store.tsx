@@ -31,6 +31,7 @@ export type InfoType = {
 	playerId: string;
 	playerName: string;
 	isNewGame?: boolean;
+	alert?: string;
 };
 
 function update<T>(message: string, game_: T | undefined = undefined): void {
