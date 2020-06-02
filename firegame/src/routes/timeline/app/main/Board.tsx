@@ -45,7 +45,7 @@ class Board extends React.Component<{
 
 	renderCard(termIndex: number) {
 		const term = store.gameW.game!.terms[termIndex];
-		const classes = [styles.bubble];
+		const classes = [styles.bubble, css.board_card];
 		const last = store.gameW.game!.last;
 		if (termIndex === last?.termIndex) {
 			classes.push(last!.correct ? css.correct : css.incorrect);
