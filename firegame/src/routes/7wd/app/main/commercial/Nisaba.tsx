@@ -14,7 +14,7 @@ class Nisaba extends React.Component {
 		if (!sciences.length) {
 			if (!utils.isMyTurn()) return;
 			utils.endCommercial("no sciences to copy");
-			return;
+			return null;
 		}
 		return (
 			<div className={styles.bubble}>
