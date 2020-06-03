@@ -30,7 +30,7 @@ class Utils extends Shared<GameType, PlayerType> {
 	} = {
 		[ScienceToken.agriculture]: () => 4,
 		[ScienceToken.mathematics]: (player: PlayerType) =>
-			(player.scienceTokens || []).length,
+			3 * (player.scienceTokens || []).length,
 		[ScienceToken.mysticism]: (player: PlayerType) =>
 			2 * (player.tokens || []).length,
 		[ScienceToken.philosophy]: () => 7,
