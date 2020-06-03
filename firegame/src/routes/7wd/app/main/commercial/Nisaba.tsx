@@ -12,6 +12,7 @@ class Nisaba extends React.Component {
 			utils.getPlayer(1 - utils.currentIndex()).cards || []
 		).filter((cardIndex) => bank.cards[cardIndex].color === Color.green);
 		if (!sciences.length) {
+			if (!utils.isMyTurn()) return;
 			utils.endCommercial("no sciences to copy");
 			return;
 		}
