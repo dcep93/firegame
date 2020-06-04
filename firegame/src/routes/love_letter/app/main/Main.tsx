@@ -1,5 +1,5 @@
 import React from "react";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 import Me from "./Me";
 import Action from "./Action";
@@ -24,8 +24,11 @@ class Main extends React.Component {
 							className={`${styles.bubble} ${
 								p.hand === undefined && styles.grey
 							}`}
+							title={(p.played || [])
+								.map(utils.cardString)
+								.join("\n")}
 						>
-							{p.userName}
+							{p.userName} - ({p.score})
 						</div>
 					))}
 				</div>
