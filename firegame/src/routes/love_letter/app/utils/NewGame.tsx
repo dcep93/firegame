@@ -7,7 +7,7 @@ export type GameType = {
 	currentPlayer: number;
 	players: PlayerType[];
 	deck: Card[];
-	played?: Card | null;
+	played?: Card;
 	aside: Card;
 };
 

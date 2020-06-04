@@ -13,7 +13,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				utils.incrementPlayerTurn();
 				if (utils.getCurrent().hand) {
 					utils.getCurrent().hand!.push(card);
-					return true;
+					return;
 				}
 			}
 		}
@@ -21,8 +21,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			.map((player, index) => ({ index, value: getValue(player) }))
 			.sort((a, b) => b.value - a.value);
 		store.gameW.game.currentPlayer = orderedPlayers[0]!.index;
-		store.gameW.game.played = null;
-		return false;
+		store.gameW.game.played = -1;
 	}
 
 	cardString(card: Card): string {

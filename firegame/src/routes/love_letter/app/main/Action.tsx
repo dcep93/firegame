@@ -19,7 +19,7 @@ class Action extends React.Component {
 	action() {
 		if (!utils.isMyTurn() || actioning) return;
 		actioning = true;
-		if (store.gameW.game.played === null) {
+		if (store.gameW.game.played === -1) {
 			const msg = `${Card[utils.getMe().hand![0]]} ${prompt(
 				"What do you do on your date?"
 			)}`;
@@ -91,6 +91,7 @@ class Action extends React.Component {
 					player.hand = [draw];
 				}
 				this.finish(msg);
+				break;
 			case Card.king:
 				const me = utils.getMe();
 				[me.hand, player.hand] = [player.hand, me.hand];
@@ -111,7 +112,13 @@ class Action extends React.Component {
 		return targets
 			.map((index) => store.gameW.game.players[index])
 			.map((player, index) => (
-				<div key={index} className={styles.bubble}></div>
+				<div
+					key={index}
+					className={styles.bubble}
+					onClick={() => this.execute(index)}
+				>
+					{player.userName}
+				</div>
 			));
 	}
 }
