@@ -105,8 +105,8 @@ function setPlayers(game: GameType): GameType {
 			userName,
 			score: 0,
 		}));
-	if (game.players.length < 2 || game.players.length > 5)
-		throw new Error("need 2-5 players");
+	if (game.players.length < 2 || game.players.length > 8)
+		throw new Error("need 2-8 players");
 	game.currentPlayer = utils.myIndex(game);
 	return game;
 }
@@ -114,6 +114,10 @@ function setPlayers(game: GameType): GameType {
 export function deal(game: GameType): GameType {
 	game.deck = [];
 	Object.entries(COUNTS).forEach(([v, count]) => {
+		if (count < 0) {
+			if (game.players.length < 5) return;
+			count = -count;
+		}
 		for (let i = 0; i < count; i++) {
 			game.deck.push(parseInt(v));
 		}
