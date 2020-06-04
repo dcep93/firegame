@@ -5,6 +5,7 @@ import Me from "./Me";
 import Action from "./Action";
 
 import styles from "../../../../shared/styles.module.css";
+import TwoPlayerAside from "./TwoPlayerAside";
 
 class Main extends React.Component {
 	render() {
@@ -33,6 +34,7 @@ class Main extends React.Component {
 					))}
 				</div>
 				<h2>Deck: {store.gameW.game.deck.length}</h2>
+				<TwoPlayerAside />
 			</div>
 		);
 	}

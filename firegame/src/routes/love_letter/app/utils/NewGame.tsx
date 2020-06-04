@@ -9,6 +9,7 @@ export type GameType = {
 	deck: Card[];
 	played?: Card;
 	aside: Card;
+	two_p_aside?: Card[];
 };
 
 export type Params = {
@@ -89,6 +90,8 @@ export function deal(game: GameType): GameType {
 		p.hand = [game.deck.pop()!];
 		delete p.played;
 	});
+	if (game.players.length === 2)
+		game.two_p_aside = Array.from(new Array(3)).map(() => game.deck.pop()!);
 	delete game.played;
 	utils.getCurrent(game).hand!.push(game.deck.pop()!);
 	return game;
