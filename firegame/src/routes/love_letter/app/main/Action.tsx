@@ -1,7 +1,7 @@
 import React from "react";
 
 import utils, { store } from "../utils/utils";
-import { Card, deal, Ranks, PlayerType } from "../utils/NewGame";
+import { Card, deal, Ranks } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 
@@ -68,6 +68,8 @@ class Action extends React.Component {
 	execute(index: number) {
 		const player = store.gameW.game.players[index];
 		switch (store.gameW.game.played) {
+			case Card.guardX:
+			// @ts-ignore fallthrough
 			case Card.guard:
 				const card = player.hand![0];
 				if (card === Card.assassin) {
