@@ -81,12 +81,12 @@ class Action extends React.Component {
 				const diff =
 					Ranks[player.hand![0]] - Ranks[utils.getMe().hand![0]];
 				if (diff === 0) {
-					this.finish(`tied [${player.userName}]`);
+					this.finish(`baron tied [${player.userName}]`);
 				} else {
 					const loser = diff > 0 ? utils.getMe() : player;
 					const cardString = utils.cardString(loser.hand![0]);
 					utils.discard(loser);
-					this.finish(`[${loser.userName}] out (${cardString})`);
+					this.finish(`baron [${loser.userName}] (${cardString})`);
 				}
 				break;
 			case Card.prince:
