@@ -25,9 +25,10 @@ class Action extends React.Component {
 			return;
 		actioning = true;
 		if (store.gameW.game.played === -1) {
-			const msg = `${Card[utils.getMe().hand![0]]} ${prompt(
-				"What do you do on your date?"
-			)}`;
+			const rawMsg = prompt("What do you do on your date?");
+			const msg = `(${Card[utils.getMe().hand![0]]}) ${
+				rawMsg || "has a boring date"
+			}`;
 			deal(store.gameW.game);
 			store.gameW.info.alert = msg;
 			utils.getMe().score++;
