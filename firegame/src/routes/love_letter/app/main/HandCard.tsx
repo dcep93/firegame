@@ -47,7 +47,7 @@ class HandCard extends React.Component<{ index: number }> {
 			default:
 				store.gameW.game.played = played;
 		}
-		store.update(`played ${Card[played]}`);
+		store.update(`played ${utils.cardString(played)}`);
 	}
 }
 
