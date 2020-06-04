@@ -17,7 +17,12 @@ class Action extends React.Component {
 	}
 
 	action() {
-		if (!utils.isMyTurn() || actioning) return;
+		if (
+			!utils.isMyTurn() ||
+			store.gameW.game.played === undefined ||
+			actioning
+		)
+			return;
 		actioning = true;
 		if (store.gameW.game.played === -1) {
 			const msg = `${Card[utils.getMe().hand![0]]} ${prompt(
@@ -54,7 +59,11 @@ class Action extends React.Component {
 		const player = store.gameW.game.players[index];
 		switch (store.gameW.game.played) {
 			case Card.guard:
-				const choice = prompt(`Choose a rank for ${player.userName}`);
+				var choice;
+				while (true) {
+					choice = prompt(`Choose a rank for ${player.userName}`);
+					if (choice !== "1") break;
+				}
 				const correct = choice === Ranks[player.hand![0]].toString();
 				if (correct) utils.discard(player);
 				this.finish(
@@ -84,7 +93,7 @@ class Action extends React.Component {
 					player.userName
 				}] discard ${utils.cardString(player.hand![0])}`;
 				utils.discard(player);
-				if (player.played!.indexOf(Card.princess) !== -1) {
+				if (player.played!.indexOf(Card.princess) === -1) {
 					const draw = store.gameW.game.deck
 						? store.gameW.game.deck.pop()!
 						: store.gameW.game.aside;

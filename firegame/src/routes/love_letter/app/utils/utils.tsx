@@ -12,7 +12,14 @@ class Utils extends Shared<GameType, PlayerType> {
 			for (let i = 1; i < store_.gameW.game.players.length; i++) {
 				utils.incrementPlayerTurn();
 				if (utils.getCurrent().hand) {
-					utils.getCurrent().hand!.push(card);
+					if (
+						store.gameW.game.players.filter((p) => p.hand).length >
+						1
+					) {
+						utils.getCurrent().hand!.push(card);
+					} else {
+						store.gameW.game.played = -1;
+					}
 					return;
 				}
 			}
