@@ -81,7 +81,7 @@ class Action extends React.Component {
 				utils.discard(player);
 				if (player.played!.indexOf(Card.princess) !== -1) {
 					const draw = store.gameW.game.deck
-						? store.gameW.game.deck.pop()
+						? store.gameW.game.deck.pop()!
 						: store.gameW.game.aside;
 					player.hand = [draw];
 				}

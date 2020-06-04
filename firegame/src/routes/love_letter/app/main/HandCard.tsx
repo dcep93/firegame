@@ -21,6 +21,15 @@ class HandCard extends React.Component<{ index: number }> {
 
 	play() {
 		const me = utils.getMe();
+		if (me.hand![1 - this.props.index] === Card.countess) {
+			switch (me.hand![this.props.index]) {
+				case Card.prince:
+				// @ts-ignore fallthrough
+				case Card.king:
+					alert(`need to play ${Card[Card.countess]}`);
+					return;
+			}
+		}
 		const played = me.hand!.splice(this.props.index, 1)[0];
 		if (!me.played) me.played = [];
 		me.played.unshift(played);
@@ -29,6 +38,7 @@ class HandCard extends React.Component<{ index: number }> {
 				utils.discard(me);
 			// @ts-ignore fallthrough
 			case Card.handmaid:
+			// @ts-ignore fallthrough
 			case Card.countess:
 				utils.advanceTurn();
 				break;
