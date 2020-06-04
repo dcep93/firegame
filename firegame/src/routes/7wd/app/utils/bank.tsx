@@ -1097,6 +1097,12 @@ const wonders: WonderType[] = [
 						store.gameW.game.sciences
 							.slice(NUM_SCIENCES)
 							.filter((obj) => !obj.taken)
+							.filter(
+								(obj) =>
+									(store.gameW.game.enki || []).indexOf(
+										obj.token
+									) === -1
+							)
 					)
 					.slice(0, 3)
 					.map((obj) => obj.token),
