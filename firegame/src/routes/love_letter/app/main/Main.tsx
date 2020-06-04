@@ -8,8 +8,12 @@ import styles from "../../../../shared/styles.module.css";
 
 class Main extends React.Component {
 	render() {
+		const info = store.gameW.info;
 		return (
 			<div className={styles.bubble}>
+				<h2>
+					[{info.playerName}] {info.message}
+				</h2>
 				<Action />
 				<Me />
 				<div className={styles.flex}>

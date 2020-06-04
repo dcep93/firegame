@@ -4,7 +4,6 @@ import { store } from "../utils/utils";
 import NewGame, { Params } from "../utils/NewGame";
 
 import Log from "./Log";
-import Lobby from "./Lobby";
 
 import styles from "../../../../shared/styles.module.css";
 
@@ -18,7 +17,12 @@ class Sidebar extends React.Component {
 						New Game
 					</button>
 				</div>
-				<Lobby />
+				<div className={styles.bubble}>
+					<h2>Lobby</h2>
+					{Object.values(store.lobby).map((player, index) => (
+						<div key={index}>{player}</div>
+					))}
+				</div>
 				<Log />
 			</div>
 		);

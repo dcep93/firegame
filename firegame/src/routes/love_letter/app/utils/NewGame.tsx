@@ -6,8 +6,9 @@ export type GameType = {
 	params: Params;
 	currentPlayer: number;
 	players: PlayerType[];
-	deck: Rank[];
-	played?: Rank;
+	deck: Card[];
+	played?: Card | null;
+	aside: Card;
 };
 
 export type Params = {
@@ -17,11 +18,12 @@ export type Params = {
 export type PlayerType = {
 	userId: string;
 	userName: string;
-	hand?: Rank[];
+	hand?: Card[];
+	played?: Card[];
 };
 
-export enum Rank {
-	guard = 1,
+export enum Card {
+	guard,
 	priest,
 	baron,
 	handmaid,
@@ -32,14 +34,25 @@ export enum Rank {
 }
 
 const COUNTS = {
-	[Rank.guard]: 5,
-	[Rank.priest]: 2,
-	[Rank.baron]: 2,
-	[Rank.handmaid]: 2,
-	[Rank.prince]: 2,
-	[Rank.king]: 1,
-	[Rank.countess]: 1,
-	[Rank.princess]: 1,
+	[Card.guard]: 5,
+	[Card.priest]: 2,
+	[Card.baron]: 2,
+	[Card.handmaid]: 2,
+	[Card.prince]: 2,
+	[Card.king]: 1,
+	[Card.countess]: 1,
+	[Card.princess]: 1,
+};
+
+export const Ranks = {
+	[Card.guard]: 1,
+	[Card.priest]: 2,
+	[Card.baron]: 3,
+	[Card.handmaid]: 4,
+	[Card.prince]: 5,
+	[Card.king]: 6,
+	[Card.countess]: 7,
+	[Card.princess]: 8,
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -62,15 +75,18 @@ function setPlayers(game: GameType): GameType {
 	return game;
 }
 
-function deal(game: GameType): GameType {
+export function deal(game: GameType): GameType {
 	game.deck = [];
 	Object.entries(COUNTS).forEach(([v, count]) => {
 		for (let i = 0; i < count; i++) {
 			game.deck.push(parseInt(v));
 		}
 	});
-	utils.shuffle(game.deck).pop();
-	game.players.forEach((p) => (p.hand = [game.deck.pop()!]));
+	game.aside = utils.shuffle(game.deck).pop()!;
+	game.players.forEach((p) => {
+		p.hand = [game.deck.pop()!];
+		delete p.played;
+	});
 	utils.getCurrent(game).hand!.push(game.deck.pop()!);
 	return game;
 }

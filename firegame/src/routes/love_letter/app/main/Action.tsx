@@ -1,7 +1,9 @@
 import React from "react";
 
 import utils, { store } from "../utils/utils";
-import { Rank } from "../utils/NewGame";
+import { Card, deal, Ranks } from "../utils/NewGame";
+
+import styles from "../../../../shared/styles.module.css";
 
 class Action extends React.Component {
 	componentDidMount() {
@@ -14,27 +16,98 @@ class Action extends React.Component {
 
 	action() {
 		if (!utils.isMyTurn()) return;
-		switch (store.gameW.game.played) {
-			case Rank.guard:
-			case Rank.priest:
-			case Rank.baron:
-			case Rank.prince:
-			case Rank.king:
+		if (store.gameW.game.played === null) {
+			const msg = `${Card[utils.getMe().hand![0]]} ${prompt(
+				"What do you do on your date?"
+			)}`;
+			deal(store.gameW.game);
+			store.gameW.info.alert = msg;
+			store.update(msg);
+			return;
+		}
+		const targets = this.getTargets();
+		if (targets.length === 0) {
+			this.finish("no targets");
+		} else if (targets.length === 1) {
+			this.execute(targets[0]);
 		}
 	}
 
-	render() {
-		const info = store.gameW.info;
-		return (
-			<h2>
-				[{info.playerName}] {info.message}
-			</h2>
-		);
+	getTargets() {
+		return store.gameW.game.players
+			.map((player, index) => ({ player, index }))
+			.filter((o) => (o.player.played || [])[0] !== Card.handmaid)
+			.filter(
+				(o) =>
+					store.gameW.game.played === Card.prince ||
+					o.player.userId !== utils.getCurrent().userId
+			)
+			.map((o) => o.index);
 	}
 
-	finish(message: string) {
+	execute(index: number) {
+		const player = store.gameW.game.players[index];
+		switch (store.gameW.game.played) {
+			case Card.guard:
+				const choice = prompt("Choose a rank");
+				const correct = choice === Ranks[player.hand![0]].toString();
+				if (correct) utils.discard(player);
+				this.finish(
+					`guessed ${choice} for [${player.userName}] - ${
+						correct ? "correct" : "incorrect"
+					}`
+				);
+				break;
+			case Card.priest:
+				alert(utils.cardString(player.hand![0]));
+				this.finish(`looked at [${player.userName}]'s hand`);
+				break;
+			case Card.baron:
+				const diff =
+					Ranks[player.hand![0]] - Ranks[utils.getMe().hand![0]];
+				if (diff === 0) {
+					this.finish(`tied [${player.userName}]`);
+				} else {
+					const loser = diff > 0 ? utils.getMe() : player;
+					const cardString = utils.cardString(loser.hand![0]);
+					utils.discard(loser);
+					this.finish(`[${loser.userName}] out (${cardString})`);
+				}
+				break;
+			case Card.prince:
+				const msg = `made [${
+					player.userName
+				}] discard ${utils.cardString(player.hand![0])}`;
+				utils.discard(player);
+				if (player.played!.indexOf(Card.princess) !== -1) {
+					const draw = store.gameW.game.deck
+						? store.gameW.game.deck.pop()
+						: store.gameW.game.aside;
+					player.hand = [draw];
+				}
+				this.finish(msg);
+			case Card.king:
+				const me = utils.getMe();
+				[me.hand, player.hand] = [player.hand, me.hand];
+				this.finish(`swapped with [${player.userName}]`);
+				break;
+		}
+	}
+
+	finish(msg: string) {
 		delete store.gameW.game.played;
-		store.update(message);
+		utils.advanceTurn();
+		store.update(msg);
+	}
+
+	render() {
+		const targets = this.getTargets();
+		if (targets.length <= 1) return null;
+		return targets
+			.map((index) => store.gameW.game.players[index])
+			.map((player, index) => (
+				<div key={index} className={styles.bubble}></div>
+			));
 	}
 }
 
