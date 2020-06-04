@@ -270,7 +270,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				: numTemples === 1
 				? 5
 				: numTemples === 2
-				? 11
+				? 12
 				: 21;
 		return (
 			cardPoints +
