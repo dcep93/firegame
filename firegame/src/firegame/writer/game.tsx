@@ -25,6 +25,7 @@ function sendGameState<T>(message: string, game: T, isNewGame?: boolean): void {
 			message,
 		},
 	};
+	if (lastInfo.alert) gameWrapper.info.alert = lastInfo.alert;
 	if (isNewGame) gameWrapper.info.isNewGame = isNewGame;
 	sendGameStateHelper(gameWrapper);
 }
