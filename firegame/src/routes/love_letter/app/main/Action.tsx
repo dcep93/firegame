@@ -24,31 +24,42 @@ class Action extends React.Component {
 		)
 			return;
 		actioning = true;
-		if (store.gameW.game.played === -1) {
-			if (store.gameW.game.jester === utils.myIndex()) {
-				const p = store.gameW.game.players.find(
-					(p) => (p.played || []).indexOf(Card.jester) !== -1
-				)!;
-				delete store.gameW.game.jester;
-				p.score++;
-				store.update(`wins, [${p.userName}] scores a jester`);
-			} else {
-				const rawMsg = prompt("What do you do on your date?");
-				const msg = `(${Card[utils.getMe().hand![0]]}) ${
-					rawMsg || "has a boring date"
-				}`;
-				deal(store.gameW.game);
-				store.gameW.info.alert = msg;
-				utils.getMe().score++;
-				store.update(msg);
-			}
-		} else {
-			const targets = this.getTargets();
-			if (targets.length === 0) {
-				this.finish("no targets");
-			} else if (targets.length === 1) {
-				this.execute(targets[0]);
-			}
+		switch (store.gameW.game.played) {
+			case -1:
+				if (store.gameW.game.jester === utils.myIndex()) {
+					const p = store.gameW.game.players.find(
+						(p) => (p.played || []).indexOf(Card.jester) !== -1
+					)!;
+					delete store.gameW.game.jester;
+					p.score++;
+					store.update(`wins, [${p.userName}] scores a jester`);
+				} else {
+					const rawMsg = prompt("What do you do on your date?");
+					const msg = `(${Card[utils.getMe().hand![0]]}) ${
+						rawMsg || "has a boring date"
+					}`;
+					deal(store.gameW.game);
+					store.gameW.info.alert = msg;
+					utils.getMe().score++;
+					store.update(msg);
+				}
+				break;
+			case Card.cardinal:
+				const cTargets = this.getTargets();
+				if (cTargets.length < 2) {
+					this.finish("not enough targets");
+				} else if (cTargets.length === 2) {
+					this.executeCardinal(cTargets[0], cTargets[1]);
+				}
+				break;
+			default:
+				const targets = this.getTargets();
+				if (targets.length === 0) {
+					this.finish("no targets");
+				} else if (targets.length === 1) {
+					this.execute(targets[0]);
+				}
+				break;
 		}
 		actioning = false;
 	}
@@ -60,6 +71,7 @@ class Action extends React.Component {
 			.filter(
 				(o) =>
 					store.gameW.game.played === Card.prince ||
+					store.gameW.game.played === Card.cardinal ||
 					o.player.userId !== utils.getCurrent().userId
 			)
 			.map((o) => o.index);
@@ -145,6 +157,8 @@ class Action extends React.Component {
 	render() {
 		const targets = this.getTargets();
 		if (targets.length <= 1) return null;
+		if (store.gameW.game.played === Card.cardinal && targets.length === 2)
+			return null;
 		return targets
 			.map((index) => store.gameW.game.players[index])
 			.map((player, index) => (

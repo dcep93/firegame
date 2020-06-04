@@ -24,6 +24,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				}
 			}
 		}
+		// todo ties
 		const orderedPlayers = Array.from(store.gameW.game.players)
 			.map((player, index) => ({ index, value: getValue(player) }))
 			.sort((a, b) => b.value - a.value);
