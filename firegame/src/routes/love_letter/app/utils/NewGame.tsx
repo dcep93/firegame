@@ -33,6 +33,17 @@ export enum Card {
 	king,
 	countess,
 	princess,
+
+	bishop,
+	queen,
+	constable,
+	count,
+	sycophant,
+	baroness,
+	cardinal,
+	guardX,
+	jester,
+	assassin,
 }
 
 const COUNTS = {
@@ -44,6 +55,17 @@ const COUNTS = {
 	[Card.king]: 1,
 	[Card.countess]: 1,
 	[Card.princess]: 1,
+
+	[Card.bishop]: -1,
+	[Card.queen]: -1,
+	[Card.constable]: -1,
+	[Card.count]: -2,
+	[Card.sycophant]: -2,
+	[Card.baroness]: -2,
+	[Card.cardinal]: -2,
+	[Card.guardX]: -3,
+	[Card.jester]: -1,
+	[Card.assassin]: -1,
 };
 
 export const Ranks = {
@@ -55,6 +77,17 @@ export const Ranks = {
 	[Card.king]: 6,
 	[Card.countess]: 7,
 	[Card.princess]: 8,
+
+	[Card.bishop]: 9,
+	[Card.queen]: 7,
+	[Card.constable]: 6,
+	[Card.count]: 5,
+	[Card.sycophant]: 4,
+	[Card.baroness]: 3,
+	[Card.cardinal]: 2,
+	[Card.guardX]: 1,
+	[Card.jester]: 0,
+	[Card.assassin]: 0,
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
