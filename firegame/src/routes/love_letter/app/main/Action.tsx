@@ -60,18 +60,29 @@ class Action extends React.Component {
 		const player = store.gameW.game.players[index];
 		switch (store.gameW.game.played) {
 			case Card.guard:
-				var choice;
-				while (true) {
-					choice = prompt(`Choose a rank for ${player.userName}`);
-					if (choice !== "1") break;
+				const card = player.hand![0];
+				if (card === Card.assassin) {
+					utils.discard(player);
+					const draw = store.gameW.game.deck
+						? store.gameW.game.deck.pop()!
+						: store.gameW.game.aside;
+					player.hand = [draw];
+					utils.discard(utils.getMe());
+					this.finish(`was assassinated by ${player.userName}`);
+				} else {
+					var choice;
+					while (true) {
+						choice = prompt(`Choose a rank for ${player.userName}`);
+						if (choice !== "1") break;
+					}
+					const correct = choice === Ranks[card].toString();
+					if (correct) utils.discard(player);
+					this.finish(
+						`guessed ${choice} for [${player.userName}] - ${
+							correct ? "correct" : "incorrect"
+						}`
+					);
 				}
-				const correct = choice === Ranks[player.hand![0]].toString();
-				if (correct) utils.discard(player);
-				this.finish(
-					`guessed ${choice} for [${player.userName}] - ${
-						correct ? "correct" : "incorrect"
-					}`
-				);
 				break;
 			case Card.priest:
 				alert(utils.cardString(player.hand![0]));

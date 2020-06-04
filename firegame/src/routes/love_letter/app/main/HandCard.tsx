@@ -41,6 +41,8 @@ class HandCard extends React.Component<{ index: number }> {
 			// @ts-ignore fallthrough
 			case Card.handmaid:
 			// @ts-ignore fallthrough
+			case Card.assassin:
+			// @ts-ignore fallthrough
 			case Card.countess:
 				utils.advanceTurn();
 				break;
