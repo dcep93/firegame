@@ -118,6 +118,10 @@ class Action extends React.Component {
 				[me.hand, player.hand] = [player.hand, me.hand];
 				this.finish(`swapped with [${player.userName}]`);
 				break;
+			case Card.jester:
+				store.gameW.game.jester = index;
+				this.finish(`selected ${player.userName} to win`);
+				break;
 		}
 	}
 

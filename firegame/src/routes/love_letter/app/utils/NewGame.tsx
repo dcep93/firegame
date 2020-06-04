@@ -10,6 +10,7 @@ export type GameType = {
 	played?: Card;
 	aside: Card;
 	two_p_aside?: Card[];
+	jester?: number;
 };
 
 export type Params = {
@@ -129,6 +130,7 @@ export function deal(game: GameType): GameType {
 	});
 	if (game.players.length === 2)
 		game.two_p_aside = Array.from(new Array(3)).map(() => game.deck.pop()!);
+	delete game.jester;
 	delete game.played;
 	utils.getCurrent(game).hand!.push(game.deck.pop()!);
 	return game;
