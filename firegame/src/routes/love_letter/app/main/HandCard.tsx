@@ -20,6 +20,8 @@ class HandCard extends React.Component<{ index: number }> {
 	}
 
 	play() {
+		if (!utils.isMyTurn()) return;
+		if (store.gameW.game.played !== undefined) return;
 		const me = utils.getMe();
 		if (me.hand![1 - this.props.index] === Card.countess) {
 			switch (me.hand![this.props.index]) {

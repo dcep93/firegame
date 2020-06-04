@@ -89,6 +89,7 @@ export function deal(game: GameType): GameType {
 		p.hand = [game.deck.pop()!];
 		delete p.played;
 	});
+	delete game.played;
 	utils.getCurrent(game).hand!.push(game.deck.pop()!);
 	return game;
 }
