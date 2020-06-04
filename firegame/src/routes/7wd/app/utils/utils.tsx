@@ -541,10 +541,11 @@ class Utils extends Shared<GameType, PlayerType> {
 				utils.incrementPlayerTurn();
 			message = `built ${wonder.name} using ${card.name}`;
 			if (
-				utils.getMe().wonders.filter((wonder) => wonder.built).length +
-					utils.getOpponent().wonders.filter((wonder) => wonder.built)
-						.length ===
-				7
+				utils.getMe().wonders.filter((wonder) => !wonder.built).length +
+					utils
+						.getOpponent()
+						.wonders.filter((wonder) => !wonder.built).length ===
+				1
 			) {
 				var index;
 				if (
