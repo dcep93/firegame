@@ -7,7 +7,7 @@ export const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
 	advanceTurn() {
-		const card = store.gameW.game.deck.pop();
+		const card = (store.gameW.game.deck || []).pop();
 		if (card !== undefined) {
 			for (let i = 1; i < store_.gameW.game.players.length; i++) {
 				utils.incrementPlayerTurn();
