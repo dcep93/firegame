@@ -20,6 +20,7 @@ export type PlayerType = {
 	userName: string;
 	hand?: Card[];
 	played?: Card[];
+	score: number;
 };
 
 export enum Card {
@@ -68,6 +69,7 @@ function setPlayers(game: GameType): GameType {
 		.map(([userId, userName]) => ({
 			userId,
 			userName,
+			score: 0,
 		}));
 	if (game.players.length < 2 || game.players.length > 5)
 		throw new Error("need 2-5 players");

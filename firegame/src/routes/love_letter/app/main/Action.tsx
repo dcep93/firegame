@@ -5,6 +5,8 @@ import { Card, deal, Ranks } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 
+var actioning = false;
+
 class Action extends React.Component {
 	componentDidMount() {
 		this.action();
@@ -15,22 +17,25 @@ class Action extends React.Component {
 	}
 
 	action() {
-		if (!utils.isMyTurn()) return;
+		if (!utils.isMyTurn() || actioning) return;
+		actioning = true;
 		if (store.gameW.game.played === null) {
 			const msg = `${Card[utils.getMe().hand![0]]} ${prompt(
 				"What do you do on your date?"
 			)}`;
 			deal(store.gameW.game);
 			store.gameW.info.alert = msg;
+			utils.getMe().score++;
 			store.update(msg);
-			return;
+		} else {
+			const targets = this.getTargets();
+			if (targets.length === 0) {
+				this.finish("no targets");
+			} else if (targets.length === 1) {
+				this.execute(targets[0]);
+			}
 		}
-		const targets = this.getTargets();
-		if (targets.length === 0) {
-			this.finish("no targets");
-		} else if (targets.length === 1) {
-			this.execute(targets[0]);
-		}
+		actioning = false;
 	}
 
 	getTargets() {
@@ -49,7 +54,7 @@ class Action extends React.Component {
 		const player = store.gameW.game.players[index];
 		switch (store.gameW.game.played) {
 			case Card.guard:
-				const choice = prompt("Choose a rank");
+				const choice = prompt(`Choose a rank for ${player.userName}`);
 				const correct = choice === Ranks[player.hand![0]].toString();
 				if (correct) utils.discard(player);
 				this.finish(
