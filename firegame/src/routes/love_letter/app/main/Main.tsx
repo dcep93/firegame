@@ -33,7 +33,7 @@ class Main extends React.Component {
 						</div>
 					))}
 				</div>
-				<h2>Deck: {store.gameW.game.deck.length}</h2>
+				<h2>Deck: {store.gameW.game.deck?.length}</h2>
 				<TwoPlayerAside />
 			</div>
 		);
