@@ -1,7 +1,7 @@
 import React from "react";
 
 import utils, { store } from "../utils/utils";
-import { Card, deal, Ranks } from "../utils/NewGame";
+import { Card, deal, Ranks, PlayerType } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 
@@ -25,14 +25,23 @@ class Action extends React.Component {
 			return;
 		actioning = true;
 		if (store.gameW.game.played === -1) {
-			const rawMsg = prompt("What do you do on your date?");
-			const msg = `(${Card[utils.getMe().hand![0]]}) ${
-				rawMsg || "has a boring date"
-			}`;
-			deal(store.gameW.game);
-			store.gameW.info.alert = msg;
-			utils.getMe().score++;
-			store.update(msg);
+			if (store.gameW.game.jester === utils.myIndex()) {
+				const p = store.gameW.game.players.find(
+					(p) => (p.played || []).indexOf(Card.jester) !== -1
+				)!;
+				delete store.gameW.game.jester;
+				p.score++;
+				store.update(`wins, [${p.userName}] scores a jester`);
+			} else {
+				const rawMsg = prompt("What do you do on your date?");
+				const msg = `(${Card[utils.getMe().hand![0]]}) ${
+					rawMsg || "has a boring date"
+				}`;
+				deal(store.gameW.game);
+				store.gameW.info.alert = msg;
+				utils.getMe().score++;
+				store.update(msg);
+			}
 		} else {
 			const targets = this.getTargets();
 			if (targets.length === 0) {
