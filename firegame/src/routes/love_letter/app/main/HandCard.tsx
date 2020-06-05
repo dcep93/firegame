@@ -43,6 +43,8 @@ class HandCard extends React.Component<{ index: number }> {
 			// @ts-ignore fallthrough
 			case Card.assassin:
 			// @ts-ignore fallthrough
+			case Card.count:
+			// @ts-ignore fallthrough
 			case Card.countess:
 				delete store.gameW.game.sycophant;
 				utils.advanceTurn();

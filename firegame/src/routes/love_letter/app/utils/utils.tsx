@@ -47,7 +47,10 @@ class Utils extends Shared<GameType, PlayerType> {
 
 function getValue(player: PlayerType): number {
 	if (!player.hand) return -1;
-	return Ranks[player.hand[0]];
+	return (
+		Ranks[player.hand[0]] +
+		(player.played || []).filter((c) => c === Card.count).length
+	);
 }
 
 const utils = new Utils();
