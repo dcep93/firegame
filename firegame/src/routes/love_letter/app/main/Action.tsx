@@ -66,6 +66,7 @@ class Action extends React.Component {
 		actioning = false;
 	}
 
+	// todo sycophant
 	getTargets() {
 		return store.gameW.game.players
 			.map((player, index) => ({ player, index }))
@@ -73,6 +74,7 @@ class Action extends React.Component {
 			.filter(
 				(o) =>
 					store.gameW.game.played === Card.prince ||
+					store.gameW.game.played === Card.sycophant ||
 					store.gameW.game.played === Card.cardinal ||
 					o.player.userId !== utils.getCurrent().userId
 			)
@@ -80,6 +82,7 @@ class Action extends React.Component {
 	}
 
 	execute(index: number) {
+		delete store.gameW.game.sycophant;
 		const player = store.gameW.game.players[index];
 		switch (store.gameW.game.played) {
 			case Card.guardX:
@@ -146,6 +149,10 @@ class Action extends React.Component {
 			case Card.jester:
 				store.gameW.game.jester = index;
 				this.finish(`selected ${player.userName} to win`);
+				break;
+			case Card.sycophant:
+				store.gameW.game.sycophant = index;
+				this.finish(`sycophanted ${player.userName}`);
 				break;
 		}
 	}
