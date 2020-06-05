@@ -9,6 +9,7 @@ export const WINNER = -1;
 
 class Utils extends Shared<GameType, PlayerType> {
 	advanceTurn() {
+		delete store.gameW.game.sycophant;
 		const card = (store.gameW.game.deck || []).pop();
 		if (card !== undefined) {
 			for (let i = 1; i < store_.gameW.game.players.length; i++) {
@@ -31,7 +32,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			.map((player, index) => ({ index, value: getValue(player) }))
 			.sort((a, b) => b.value - a.value);
 		store.gameW.game.currentPlayer = orderedPlayers[0]!.index;
-		store.gameW.game.played = -1;
+		store.gameW.game.played = WINNER;
 	}
 
 	cardString(card: Card): string {

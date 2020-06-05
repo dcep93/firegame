@@ -48,7 +48,6 @@ class HandCard extends React.Component<{ index: number }> {
 			case Card.constable:
 			// @ts-ignore fallthrough
 			case Card.countess:
-				delete store.gameW.game.sycophant;
 				utils.advanceTurn();
 				break;
 			default:

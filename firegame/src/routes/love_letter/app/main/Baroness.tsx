@@ -2,8 +2,6 @@ import React from "react";
 
 import utils, { store } from "../utils/utils";
 
-import styles from "../../../../shared/styles.module.css";
-
 class Baroness extends React.Component<
 	{
 		targets: number[];

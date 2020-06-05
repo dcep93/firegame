@@ -32,14 +32,16 @@ class Action extends React.Component {
 		actioning = true;
 		switch (store.gameW.game.played) {
 			case WINNER:
-				if (store.gameW.game.jester === utils.myIndex()) {
+				const jester = store.gameW.game.jester;
+				delete store.gameW.game.jester;
+				if (jester === utils.myIndex()) {
 					const p = store.gameW.game.players.find(
 						(p) => (p.played || []).indexOf(Card.jester) !== -1
 					)!;
-					delete store.gameW.game.jester;
 					p.score++;
 					store.update(`wins, [${p.userName}] scores a jester`);
 				} else {
+					delete store.gameW.game.played;
 					const rawMsg = prompt("What do you do on your date?");
 					const msg = `(${Card[utils.getMe().hand![0]]}) ${
 						rawMsg || "has a boring date"
@@ -84,11 +86,18 @@ class Action extends React.Component {
 		actioning = false;
 	}
 
-	// todo sycophant
 	getTargets() {
 		return store.gameW.game.players
 			.map((player, index) => ({ player, index }))
+			.filter((o) => o.player.hand)
 			.filter((o) => (o.player.played || [])[0] !== Card.handmaid)
+			.filter(
+				(o) =>
+					store.gameW.game.sycophant === undefined ||
+					o.index === store.gameW.game.sycophant ||
+					store.gameW.game.played === Card.cardinal ||
+					store.gameW.game.played === Card.baroness
+			)
 			.filter(
 				(o) =>
 					store.gameW.game.played === Card.prince ||
@@ -100,7 +109,6 @@ class Action extends React.Component {
 	}
 
 	execute(index: number) {
-		delete store.gameW.game.sycophant;
 		const player = store.gameW.game.players[index];
 		switch (store.gameW.game.played) {
 			case Card.guardX:
