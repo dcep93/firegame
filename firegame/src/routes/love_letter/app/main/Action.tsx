@@ -54,6 +54,24 @@ class Action extends React.Component {
 			// @ts-ignore fallthrough
 			case Card.baroness:
 				break;
+			case Card.bishop:
+				if (store.gameW.game.bishop) {
+					const toDiscard = confirm(
+						"You were correctly guessed by the bishop. Would you like to discard your hand?"
+					);
+					const cardB = utils.getMe().hand![0];
+					if (toDiscard) utils.discard(utils.getMe(), false);
+					store.gameW.game.currentPlayer = store.gameW.game.bishop;
+					utils.advanceTurn();
+					delete store.gameW.game.bishop;
+					store.update(
+						toDiscard
+							? `discarded ${utils.cardString(cardB)}`
+							: "did not discard"
+					);
+					break;
+				}
+			// @ts-ignore fallthrough
 			default:
 				const targets = this.getTargets();
 				if (targets.length === 0) {
@@ -156,6 +174,20 @@ class Action extends React.Component {
 					this.finish(`queen [${player.userName}] (${cardString})`);
 				}
 				break;
+			case Card.bishop:
+				const choiceB = prompt(`Choose a rank for ${player.userName}`);
+				const correct = choiceB === Ranks[player.hand![0]].toString();
+				const msgB = `guessed ${choice} for [${player.userName}] - ${
+					correct ? "correct" : "incorrect"
+				}`;
+				if (correct) {
+					utils.getMe().score++;
+					store.gameW.game.bishop = utils.myIndex();
+					store.update(msgB);
+				} else {
+					this.finish(msgB);
+				}
+				break;
 		}
 	}
 
@@ -166,6 +198,7 @@ class Action extends React.Component {
 	}
 
 	render() {
+		if (store.gameW.game.bishop !== undefined) return null;
 		const targets = this.getTargets();
 		if (store.gameW.game.played === Card.cardinal)
 			return (

@@ -13,6 +13,7 @@ export type GameType = {
 	jester?: number;
 	cardinal?: { p1: number; p2: number };
 	sycophant?: number;
+	bishop?: number;
 };
 
 export type Params = {
