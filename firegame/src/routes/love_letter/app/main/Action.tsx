@@ -4,6 +4,7 @@ import utils, { store, WINNER } from "../utils/utils";
 import { Card, deal, Ranks } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
+import Cardinal from "./Cardinal";
 
 var actioning = false;
 
@@ -49,12 +50,6 @@ class Action extends React.Component {
 				}
 				break;
 			case Card.cardinal:
-				const cTargets = this.getTargets();
-				if (cTargets.length < 2) {
-					this.finish("not enough targets");
-				} else if (cTargets.length === 2) {
-					this.executeCardinal(cTargets[0], cTargets[1]);
-				}
 				break;
 			default:
 				const targets = this.getTargets();
@@ -160,9 +155,11 @@ class Action extends React.Component {
 
 	render() {
 		const targets = this.getTargets();
+		if (store.gameW.game.played === Card.cardinal)
+			return (
+				<Cardinal targets={targets} finish={this.finish.bind(this)} />
+			);
 		if (targets.length <= 1) return null;
-		if (store.gameW.game.played === Card.cardinal && targets.length === 2)
-			return null;
 		return targets
 			.map((index) => store.gameW.game.players[index])
 			.map((player, index) => (

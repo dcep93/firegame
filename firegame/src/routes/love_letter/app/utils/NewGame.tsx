@@ -11,6 +11,7 @@ export type GameType = {
 	aside: Card;
 	two_p_aside?: Card[];
 	jester?: number;
+	cardinal?: { p1: number; p2: number };
 };
 
 export type Params = {
