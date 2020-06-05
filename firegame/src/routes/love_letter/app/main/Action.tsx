@@ -56,7 +56,7 @@ class Action extends React.Component {
 				break;
 			case Card.bishop:
 				if (store.gameW.game.bishop) {
-					const toDiscard = confirm(
+					const toDiscard = window.confirm(
 						"You were correctly guessed by the bishop. Would you like to discard your hand?"
 					);
 					const cardB = utils.getMe().hand![0];
