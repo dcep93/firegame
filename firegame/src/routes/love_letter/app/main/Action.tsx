@@ -1,6 +1,6 @@
 import React from "react";
 
-import utils, { store } from "../utils/utils";
+import utils, { store, WINNER } from "../utils/utils";
 import { Card, deal, Ranks } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
@@ -17,6 +17,10 @@ class Action extends React.Component {
 	}
 
 	action() {
+		window.requestAnimationFrame(this.actionHelper.bind(this));
+	}
+
+	actionHelper() {
 		if (
 			!utils.isMyTurn() ||
 			store.gameW.game.played === undefined ||
@@ -25,7 +29,7 @@ class Action extends React.Component {
 			return;
 		actioning = true;
 		switch (store.gameW.game.played) {
-			case -1:
+			case WINNER:
 				if (store.gameW.game.jester === utils.myIndex()) {
 					const p = store.gameW.game.players.find(
 						(p) => (p.played || []).indexOf(Card.jester) !== -1

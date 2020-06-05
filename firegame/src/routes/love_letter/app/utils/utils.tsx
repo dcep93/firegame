@@ -5,6 +5,8 @@ import { GameType, PlayerType, Ranks, Card } from "./NewGame";
 
 export const store: StoreType<GameType> = store_;
 
+export const WINNER = -1;
+
 class Utils extends Shared<GameType, PlayerType> {
 	advanceTurn() {
 		const card = (store.gameW.game.deck || []).pop();
@@ -18,7 +20,7 @@ class Utils extends Shared<GameType, PlayerType> {
 					) {
 						utils.getCurrent().hand!.push(card);
 					} else {
-						store.gameW.game.played = -1;
+						store.gameW.game.played = WINNER;
 					}
 					return;
 				}
