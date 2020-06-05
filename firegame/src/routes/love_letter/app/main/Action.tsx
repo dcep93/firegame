@@ -5,6 +5,7 @@ import { Card, deal, Ranks } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import Cardinal from "./Cardinal";
+import Baroness from "./Baroness";
 
 var actioning = false;
 
@@ -50,6 +51,8 @@ class Action extends React.Component {
 				}
 				break;
 			case Card.cardinal:
+			// @ts-ignore fallthrough
+			case Card.baroness:
 				break;
 			default:
 				const targets = this.getTargets();
@@ -158,6 +161,10 @@ class Action extends React.Component {
 		if (store.gameW.game.played === Card.cardinal)
 			return (
 				<Cardinal targets={targets} finish={this.finish.bind(this)} />
+			);
+		if (store.gameW.game.played === Card.baroness)
+			return (
+				<Baroness targets={targets} finish={this.finish.bind(this)} />
 			);
 		if (targets.length <= 1) return null;
 		return targets

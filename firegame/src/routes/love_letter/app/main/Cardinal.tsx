@@ -39,7 +39,9 @@ class Cardinal extends React.Component<
 			players[p2].hand,
 			players[p1].hand,
 		];
-		store.update(`swapped ${players[p1].userName} and ${players[p2]}`);
+		store.update(
+			`swapped ${players[p1].userName} and ${players[p2].userName}`
+		);
 	}
 
 	render() {
@@ -76,6 +78,7 @@ class Cardinal extends React.Component<
 	}
 
 	view(index: number) {
+		delete store.gameW.game.cardinal;
 		if (index < 0) {
 			this.props.finish(`declined to peek`);
 		} else {
