@@ -37,13 +37,15 @@ class HandCard extends React.Component<{ index: number }> {
 		me.played.unshift(played);
 		switch (played) {
 			case Card.princess:
-				utils.discard(me);
+				utils.discard(me, true);
 			// @ts-ignore fallthrough
 			case Card.handmaid:
 			// @ts-ignore fallthrough
 			case Card.assassin:
 			// @ts-ignore fallthrough
 			case Card.count:
+			// @ts-ignore fallthrough
+			case Card.constable:
 			// @ts-ignore fallthrough
 			case Card.countess:
 				delete store.gameW.game.sycophant;

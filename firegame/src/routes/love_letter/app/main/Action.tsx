@@ -90,12 +90,8 @@ class Action extends React.Component {
 			case Card.guard:
 				const card = player.hand![0];
 				if (card === Card.assassin) {
-					utils.discard(player);
-					const draw = store.gameW.game.deck
-						? store.gameW.game.deck.pop()!
-						: store.gameW.game.aside;
-					player.hand = [draw];
-					utils.discard(utils.getMe());
+					utils.discard(player, false);
+					utils.discard(utils.getMe(), true);
 					this.finish(`was assassinated by ${player.userName}`);
 				} else {
 					var choice;
@@ -104,7 +100,7 @@ class Action extends React.Component {
 						if (choice !== "1") break;
 					}
 					const correct = choice === Ranks[card].toString();
-					if (correct) utils.discard(player);
+					if (correct) utils.discard(player, true);
 					this.finish(
 						`guessed ${choice} for [${player.userName}] - ${
 							correct ? "correct" : "incorrect"
@@ -124,7 +120,7 @@ class Action extends React.Component {
 				} else {
 					const loser = diff > 0 ? utils.getMe() : player;
 					const cardString = utils.cardString(loser.hand![0]);
-					utils.discard(loser);
+					utils.discard(loser, true);
 					this.finish(`baron [${loser.userName}] (${cardString})`);
 				}
 				break;
@@ -132,13 +128,7 @@ class Action extends React.Component {
 				const msg = `made [${
 					player.userName
 				}] discard ${utils.cardString(player.hand![0])}`;
-				utils.discard(player);
-				if (player.played!.indexOf(Card.princess) === -1) {
-					const draw = store.gameW.game.deck
-						? store.gameW.game.deck.pop()!
-						: store.gameW.game.aside;
-					player.hand = [draw];
-				}
+				utils.discard(player, false);
 				this.finish(msg);
 				break;
 			case Card.king:

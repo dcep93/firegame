@@ -38,10 +38,21 @@ class Utils extends Shared<GameType, PlayerType> {
 		return `${Card[card]} (${Ranks[card]})`;
 	}
 
-	discard(player: PlayerType) {
+	discard(player: PlayerType, knockedOut: boolean) {
+		const card = player.hand![0];
 		if (!player.played) player.played = [];
-		player.played.splice(0, 0, ...player.hand!);
-		delete player.hand;
+		if (knockedOut || card === Card.princess) {
+			delete player.hand;
+			player.score += player.played.filter(
+				(c) => c === Card.constable
+			).length;
+		} else {
+			const draw = store.gameW.game.deck
+				? store.gameW.game.deck.pop()!
+				: store.gameW.game.aside;
+			player.hand = [draw];
+		}
+		player.played.push(card);
 	}
 }
 
