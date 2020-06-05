@@ -121,7 +121,7 @@ class Action extends React.Component {
 					const loser = diff > 0 ? utils.getMe() : player;
 					const cardString = utils.cardString(loser.hand![0]);
 					utils.discard(loser, true);
-					this.finish(`baron [${loser.userName}] (${cardString})`);
+					this.finish(`baron [${player.userName}] (${cardString})`);
 				}
 				break;
 			case Card.prince:
@@ -143,6 +143,18 @@ class Action extends React.Component {
 			case Card.sycophant:
 				store.gameW.game.sycophant = index;
 				this.finish(`sycophanted ${player.userName}`);
+				break;
+			case Card.queen:
+				const diffQ =
+					Ranks[player.hand![0]] - Ranks[utils.getMe().hand![0]];
+				if (diffQ === 0) {
+					this.finish(`queen tied [${player.userName}]`);
+				} else {
+					const loser = diffQ < 0 ? utils.getMe() : player;
+					const cardString = utils.cardString(loser.hand![0]);
+					utils.discard(loser, true);
+					this.finish(`queen [${player.userName}] (${cardString})`);
+				}
 				break;
 		}
 	}
