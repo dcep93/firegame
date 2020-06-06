@@ -3,30 +3,22 @@ import React from "react";
 import { store } from "../utils/utils";
 import NewGame, { Params } from "../utils/NewGame";
 
-import styles from "../../../../shared/styles.module.css";
+import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 
-class Sidebar extends React.Component {
-	render() {
+class Sidebar extends SharedSidebar<Params> {
+	name = "Template";
+	NewGame = NewGame;
+
+	renderStartNewGame() {
 		return (
-			<div className={styles.bubble}>
-				<h2>Sidebar</h2>
-				<pre onClick={this.startNewGame.bind(this)}>
-					{JSON.stringify(store.gameW.info)}
-				</pre>
+			<div>
+				<button onClick={this.startNewGame.bind(this)}>New Game</button>
 			</div>
 		);
 	}
 
 	getParams(): Params {
 		return { lobby: store.lobby };
-	}
-
-	startNewGame() {
-		Promise.resolve()
-			.then(this.getParams.bind(this))
-			.then(NewGame)
-			.catch((e) => alert(e))
-			.then((game) => game && store.update("started a new game", game));
 	}
 }
 
