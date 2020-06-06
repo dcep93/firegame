@@ -39,8 +39,9 @@ function lobbyPath(): string {
 	return `${roomPath()}/lobby`;
 }
 
-function mePath(): string {
-	return `${lobbyPath()}/${store.me.userId}`;
+function mePath(userId?: string): string {
+	if (userId === undefined) userId = store.me.userId;
+	return `${lobbyPath()}/${userId}`;
 }
 
 function namespace(): string {

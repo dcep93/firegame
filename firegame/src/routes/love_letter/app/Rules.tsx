@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Card, Ranks, COUNTS } from "./utils/NewGame";
+import { Card, COUNTS } from "./utils/NewGame";
 import utils from "./utils/utils";
 
 import styles from "../../../shared/styles.module.css";

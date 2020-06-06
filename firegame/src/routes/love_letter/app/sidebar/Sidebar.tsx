@@ -7,6 +7,9 @@ import Log from "./Log";
 
 import styles from "../../../../shared/styles.module.css";
 
+import Firebase from "../../../../firegame/firebase";
+import { mePath } from "../../../../firegame/writer/utils";
+
 class Sidebar extends React.Component {
 	render() {
 		return (
@@ -18,10 +21,14 @@ class Sidebar extends React.Component {
 					</button>
 				</div>
 				<div className={styles.bubble}>
-					<h2>Lobby</h2>
-					{Object.values(store.lobby).map((player, index) => (
-						<div key={index}>{player}</div>
-					))}
+					<h2 onClick={becomeHost}>Lobby</h2>
+					{Object.entries(store.lobby).map(
+						([userId, player], index) => (
+							<div key={index} onClick={() => kick(userId)}>
+								{player}
+							</div>
+						)
+					)}
 				</div>
 				<Log />
 			</div>
@@ -39,6 +46,29 @@ class Sidebar extends React.Component {
 			.catch((e) => alert(e))
 			.then((game) => game && store.update("started a new game", game));
 	}
+}
+
+function kick(userId: string) {
+	if (store.gameW.info.host !== store.me.userId) return;
+	if (userId === store.me.userId) {
+		alert("Can't kick yourself.");
+		return;
+	}
+	Firebase.set(mePath(userId), {});
+}
+
+function becomeHost() {
+	if (store.gameW.info.host === store.me.userId) {
+		alert("You're already the host.");
+		return;
+	}
+	const response = window.prompt("Enter the password to become the host.");
+	if (response !== "danrules") {
+		window.open("https://www.youtube.com/watch?v=RfiQYRn7fBg");
+		return;
+	}
+	store.gameW.info.host = store.me.userId;
+	store.update("became the host");
 }
 
 export default Sidebar;

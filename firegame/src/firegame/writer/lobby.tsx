@@ -60,7 +60,7 @@ function setUsername(username: string): void {
 		timestamp: now,
 		signInTime: now,
 	};
-	Firebase.set(`${mePath()}`, myUserObj);
+	Firebase.set(mePath(), myUserObj);
 }
 
 var gameHasStarted: boolean = false;
