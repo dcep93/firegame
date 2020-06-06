@@ -14,6 +14,7 @@ export type GameType = {
 	cardinal?: { p1: number; p2: number };
 	sycophant?: number;
 	bishop?: number;
+	tiedPlayers?: number[];
 };
 
 export type Params = {

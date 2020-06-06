@@ -27,10 +27,21 @@ class Utils extends Shared<GameType, PlayerType> {
 				}
 			}
 		}
-		// todo ties and bishop
 		const orderedPlayers = Array.from(store.gameW.game.players)
-			.map((player, index) => ({ index, value: getValue(player) }))
+			.map((player, index) => ({
+				player,
+				index,
+				value: getValue(player),
+			}))
 			.sort((a, b) => b.value - a.value);
+		if (
+			orderedPlayers[0].player.hand![0] === Card.bishop &&
+			orderedPlayers
+				.map((o) => o.player.hand)
+				.filter(Boolean)
+				.find((h) => h![0] === Card.princess)
+		)
+			orderedPlayers.shift();
 		store.gameW.game.currentPlayer = orderedPlayers[0]!.index;
 		store.gameW.game.played = WINNER;
 	}

@@ -34,6 +34,16 @@ class Action extends React.Component {
 			case WINNER:
 				const jester = store.gameW.game.jester;
 				delete store.gameW.game.jester;
+				if (store.gameW.game.tiedPlayers) {
+					const tiedPlayers = store.gameW.game.tiedPlayers;
+					delete store.gameW.game.tiedPlayers;
+					deal(store.gameW.game);
+					store.update(
+						`no one wins because of a tie between ${tiedPlayers
+							.map((i) => store.gameW.game.players[i].userName)
+							.join(",")}`
+					);
+				}
 				if (jester === utils.myIndex()) {
 					const p = store.gameW.game.players.find(
 						(p) => (p.played || []).indexOf(Card.jester) !== -1
