@@ -166,6 +166,7 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 		};
 	}
 
+	// todo accept params as arg and assert isNewGame in callsite
 	maybeSyncParams() {
 		if (store.gameW.info.isNewGame) {
 			const params = store.gameW.game.params;
