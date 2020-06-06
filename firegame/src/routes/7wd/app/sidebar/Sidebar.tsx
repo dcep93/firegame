@@ -1,18 +1,41 @@
-import React from "react";
+import React, { RefObject } from "react";
 
-import Players from "./Players";
-import Log from "./Log";
+import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
+import NewGame from "../utils/NewGame";
+import { Params } from "../utils/types";
+import { store } from "../utils/utils";
 
-import styles from "../../../../shared/styles.module.css";
+class Sidebar extends SharedSidebar<Params> {
+	expansionRef: RefObject<HTMLInputElement> = React.createRef();
+	name = "7 Wonders Duel";
+	NewGame = NewGame;
 
-class Sidebar extends React.Component {
-	render() {
+	renderStartNewGame() {
 		return (
-			<div className={styles.sidebar}>
-				<Log />
-				<Players />
+			<div>
+				<div>
+					<label>
+						God Expansion:{" "}
+						<input type={"checkbox"} ref={this.expansionRef} />
+					</label>
+				</div>
+				<button onClick={this.startNewGame.bind(this)}>New Game</button>
 			</div>
 		);
+	}
+
+	getParams() {
+		return {
+			godExpansion: this.expansionRef.current!.checked,
+			lobby: store.lobby,
+		};
+	}
+
+	maybeSyncParams() {
+		if (store.gameW.info.isNewGame) {
+			this.expansionRef.current!.checked =
+				store.gameW.game.params.godExpansion;
+		}
 	}
 }
 
