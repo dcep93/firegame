@@ -64,6 +64,7 @@ function becomeHost() {
 		return;
 	}
 	const response = window.prompt("Enter the password to become the host.");
+	if (!response) return;
 	if (response !== "danrules") {
 		window.open("https://www.youtube.com/watch?v=RfiQYRn7fBg");
 		return;
