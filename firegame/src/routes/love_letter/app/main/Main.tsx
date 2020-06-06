@@ -25,9 +25,11 @@ class Main extends React.Component {
 							className={`${styles.bubble} ${
 								p.hand === undefined && styles.grey
 							}`}
-							title={(p.played || [])
-								.map(utils.cardString)
-								.join("\n")}
+							title={
+								p.played
+									? p.played.map(utils.cardString).join("\n")
+									: "NONE"
+							}
 						>
 							{p.userName} - ({p.score})
 						</div>
