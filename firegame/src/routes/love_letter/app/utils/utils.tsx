@@ -42,7 +42,13 @@ class Utils extends Shared<GameType, PlayerType> {
 				.find((h) => h![0] === Card.princess)
 		)
 			orderedPlayers.shift();
-		store.gameW.game.currentPlayer = orderedPlayers[0]!.index;
+		if (orderedPlayers[0].value === orderedPlayers[1]?.value) {
+			store.gameW.game.tiedPlayers = orderedPlayers
+				.filter((o) => o.value === orderedPlayers[0].value)
+				.map((o) => o.index);
+		} else {
+			store.gameW.game.currentPlayer = orderedPlayers[0]!.index;
+		}
 		store.gameW.game.played = WINNER;
 	}
 
