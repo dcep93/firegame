@@ -14,9 +14,11 @@ class LoveLetter extends React.Component {
 				<div className={styles.main}>
 					<Sidebar />
 					<div className={styles.content}>
-						<div>{store.gameW.game && <Main />}</div>
 						<div>
-							<Rules />
+							<div>{store.gameW.game && <Main />}</div>
+							<div>
+								<Rules />
+							</div>
 						</div>
 					</div>
 				</div>
