@@ -136,8 +136,12 @@ class Rules extends React.Component {
 	render() {
 		return (
 			<div className={styles.bubble}>
-				<h2>Rules</h2>
-				<div>
+				<h2>
+					<a href="http://alderac.com/wp-content/uploads/2017/11/Love-Letter-Premium_Rulebook.pdf">
+						Rules
+					</a>
+				</h2>
+				<div className={styles.bubble}>
 					<ol>
 						<li>Draw a card.</li>
 						<li>
