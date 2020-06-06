@@ -72,7 +72,9 @@ function getValue(player: PlayerType): number {
 	if (!player.hand) return -1;
 	return (
 		Ranks[player.hand[0]] +
-		(player.played || []).filter((c) => c === Card.count).length
+		(player.played || []).filter((c) => c === Card.count).length +
+		(player.played || []).map((c) => Ranks[c]).reduce((a, b) => a + b, 0) /
+			1000
 	);
 }
 
