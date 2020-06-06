@@ -11,12 +11,8 @@ class Timeline extends React.Component {
 		// todo css help
 		// sidebar and main should scroll on separate tracks
 		return (
-			<div>
-				<div
-					className={`${styles.main} ${
-						shared.isMyTurn() && styles.my_turn
-					}`}
-				>
+			<div className={`${shared.isMyTurn() && styles.my_turn}`}>
+				<div className={styles.main}>
 					<Sidebar />
 					<div className={styles.content}>
 						<div>{store.gameW.game && <Main />}</div>

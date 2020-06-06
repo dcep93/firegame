@@ -10,12 +10,8 @@ import styles from "../../../shared/styles.module.css";
 class LoveLetter extends React.Component {
 	render() {
 		return (
-			<div>
-				<div
-					className={`${styles.main} ${
-						utils.isMyTurn() && styles.my_turn
-					}`}
-				>
+			<div className={`${utils.isMyTurn() && styles.my_turn}`}>
+				<div className={styles.main}>
 					<Sidebar />
 					<div className={styles.content}>
 						<div>{store.gameW.game && <Main />}</div>

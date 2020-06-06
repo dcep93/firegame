@@ -24,7 +24,7 @@
 	display: inline-block;
 }
 
-.my_turn {
+.my_turn > * {
 	background-color: red;
 }
 
