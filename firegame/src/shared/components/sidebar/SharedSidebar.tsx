@@ -31,6 +31,11 @@ abstract class SharedSidebar<T> extends React.Component {
 					)}
 				</div>
 				<SharedLog />
+				<div className={styles.bubble}>
+					<h2>
+						<a href={".."}>Home</a>
+					</h2>
+				</div>
 			</div>
 		);
 	}
