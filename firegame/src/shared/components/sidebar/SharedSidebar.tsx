@@ -30,6 +30,7 @@ abstract class SharedSidebar<T> extends React.Component {
 						)
 					)}
 				</div>
+				{this.renderInfo()}
 				<SharedLog />
 				<div className={styles.bubble}>
 					<h2>
@@ -63,7 +64,11 @@ abstract class SharedSidebar<T> extends React.Component {
 		this.maybeSyncParams();
 	}
 
-	maybeSyncParams() {}
+	maybeSyncParams(): void {}
+
+	renderInfo(): JSX.Element | null {
+		return null;
+	}
 }
 
 function kick(userId: string) {

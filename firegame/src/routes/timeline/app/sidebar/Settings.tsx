@@ -2,7 +2,7 @@ import React, { RefObject } from "react";
 
 import { store } from "../utils/utils";
 import Quizlet from "../utils/Quizlet";
-import NewGame, { Params } from "../utils/NewGame";
+import { Params } from "../utils/NewGame";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -26,67 +26,60 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 
 	render() {
 		return (
-			<div className={styles.bubble}>
-				<form className={css.settings_form}>
-					<div>
-						<span>Hand Size: </span>
-						<input
-							className={css.settings_input}
-							type={"text"}
-							defaultValue={"6"}
-							size={4}
-							ref={this.handSizeRef}
-						/>
-					</div>
-					<div>
-						<span>Board Size: </span>
-						<input
-							className={css.settings_input}
-							type={"number"}
-							defaultValue={"6"}
-							ref={this.boardSizeRef}
-						/>
-					</div>
-					<div>
-						<label>
-							Swap: <input type={"checkbox"} ref={this.swapRef} />
-						</label>
-						<br />
-						<label>
-							Reverse:{" "}
-							<input type={"checkbox"} ref={this.reverseRef} />
-						</label>
-						<br />
-						<label>
-							Use Rank:{" "}
-							<input type={"checkbox"} ref={this.useRankRef} />
-						</label>
-					</div>
-					<div className={styles.dont_grow}>
-						<select
-							className={css.settings_select}
-							onChange={this.selectChange.bind(this)}
-						>
-							<option defaultChecked>Select Set</option>
-							{this.state && this.getSets()}
-						</select>
-					</div>
-					<div>
-						<span onClick={this.refresh.bind(this)}>Quizlet: </span>
-						<input
-							type={"text"}
-							size={DEFAULT_SET_ID.length + 2}
-							ref={this.quizletRef}
-							defaultValue={DEFAULT_SET_ID}
-						/>
-					</div>
-					<div>
-						<button onClick={this.startGame.bind(this)}>
-							Start Game
-						</button>
-					</div>
-				</form>
-			</div>
+			<form className={css.settings_form}>
+				<div>
+					<span>Hand Size: </span>
+					<input
+						className={css.settings_input}
+						type={"text"}
+						defaultValue={"6"}
+						size={4}
+						ref={this.handSizeRef}
+					/>
+				</div>
+				<div>
+					<span>Board Size: </span>
+					<input
+						className={css.settings_input}
+						type={"number"}
+						defaultValue={"6"}
+						ref={this.boardSizeRef}
+					/>
+				</div>
+				<div>
+					<label>
+						Swap: <input type={"checkbox"} ref={this.swapRef} />
+					</label>
+					<br />
+					<label>
+						Reverse:{" "}
+						<input type={"checkbox"} ref={this.reverseRef} />
+					</label>
+					<br />
+					<label>
+						Use Rank:{" "}
+						<input type={"checkbox"} ref={this.useRankRef} />
+					</label>
+				</div>
+				<div className={styles.dont_grow}>
+					<select
+						className={css.settings_select}
+						onChange={this.selectChange.bind(this)}
+					>
+						<option defaultChecked>Select Set</option>
+						{this.state && this.getSets()}
+					</select>
+				</div>
+				<div>
+					<span onClick={this.refresh.bind(this)}>Quizlet: </span>
+					<input
+						type={"text"}
+						size={DEFAULT_SET_ID.length + 2}
+						ref={this.quizletRef}
+						defaultValue={DEFAULT_SET_ID}
+					/>
+				</div>
+			</form>
 		);
 	}
 
@@ -161,18 +154,8 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 			});
 	}
 
-	startGame(e: React.MouseEvent) {
-		e.preventDefault();
-		Promise.resolve()
-			.then(this.getParams.bind(this))
-			.then(NewGame)
-			.catch((e) => alert(e))
-			.then((game) => game && store.update("started a new game", game));
-	}
-
 	getParams(): Params {
 		return {
-			userId: store.me.userId,
 			lobby: store.lobby,
 			quizlet: this.quizletRef.current!.value,
 			handSize: parseInt(this.handSizeRef.current!.value),
@@ -181,6 +164,19 @@ class Settings extends React.Component<{}, { setsToTitles: SetsToTitlesType }> {
 			reverse: this.reverseRef.current!.checked,
 			useRank: this.useRankRef.current!.checked,
 		};
+	}
+
+	maybeSyncParams() {
+		if (store.gameW.info.isNewGame) {
+			const params = store.gameW.game.params;
+			this.quizletRef.current!.value = params.quizlet;
+			// todo set quizlet dropdown too
+			this.handSizeRef.current!.value = params.handSize.toString();
+			this.boardSizeRef.current!.value = params.boardStartingSize.toString();
+			this.swapRef.current!.checked = params.swap;
+			this.reverseRef.current!.checked = params.reverse;
+			this.useRankRef.current!.checked = params.useRank;
+		}
 	}
 }
 

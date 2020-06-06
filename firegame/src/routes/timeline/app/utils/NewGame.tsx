@@ -23,7 +23,6 @@ export type Params = {
 	reverse: boolean;
 	useRank: boolean;
 	lobby: LobbyType;
-	userId: string;
 };
 
 export type TermType = {

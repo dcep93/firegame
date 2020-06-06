@@ -1,22 +1,57 @@
-import React from "react";
+import React, { RefObject } from "react";
 
+import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
+import NewGame, { Params, GameType } from "../utils/NewGame";
 import { store } from "../utils/utils";
 
-import Settings from "./Settings";
-import Players from "./Players";
-import Info from "./Info";
-import Log from "../../../../shared/components/sidebar/SharedLog";
-
 import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
+import Settings from "./Settings";
 
-class Sidebar extends React.Component {
-	render() {
+class Sidebar extends SharedSidebar<Params> {
+	settingsRef: RefObject<Settings> = React.createRef();
+	name = "Timeline";
+	NewGame = NewGame;
+
+	renderStartNewGame() {
 		return (
-			<div className={styles.sidebar}>
-				<Settings />
-				<Players />
-				{store.gameW.game && <Info />}
-				<Log />
+			<div>
+				<Settings ref={this.settingsRef} />
+				<button onClick={this.startNewGame.bind(this)}>New Game</button>
+			</div>
+		);
+	}
+
+	getParams() {
+		return this.settingsRef.current!.getParams();
+	}
+
+	maybeSyncParams() {
+		this.settingsRef.current?.maybeSyncParams();
+	}
+
+	renderInfo() {
+		const game: GameType = store.gameW.game;
+		if (!game) return null;
+		return (
+			<div className={styles.bubble}>
+				<div className={css.info}>
+					<p>{game.title}</p>
+					<p>
+						Set Id: <span>{game.setId}</span>
+					</p>
+					<p>
+						Current Player:{" "}
+						<span>{game.players[game.currentPlayer].userName}</span>
+					</p>
+					<div>
+						{game.players.map((player) => (
+							<p key={player.index}>
+								{player.userName} ({(player.hand || []).length})
+							</p>
+						))}
+					</div>
+				</div>
 			</div>
 		);
 	}
