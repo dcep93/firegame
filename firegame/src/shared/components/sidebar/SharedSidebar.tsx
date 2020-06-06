@@ -23,9 +23,9 @@ abstract class SharedSidebar<T> extends React.Component {
 				<div className={styles.bubble}>
 					<h2 onClick={becomeHost}>Lobby</h2>
 					{Object.entries(store.lobby).map(
-						([userId, player], index) => (
+						([userId, userName], index) => (
 							<div key={index} onClick={() => kick(userId)}>
-								{player}
+								{this.renderPlayer(userId, userName)}
 							</div>
 						)
 					)}
@@ -38,6 +38,10 @@ abstract class SharedSidebar<T> extends React.Component {
 				</div>
 			</div>
 		);
+	}
+
+	renderPlayer(userId: string, userName: string): JSX.Element {
+		return <>{userName}</>;
 	}
 
 	startNewGame() {
