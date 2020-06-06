@@ -3,9 +3,9 @@ import utils, { store } from "../utils/utils";
 
 import Me from "./Me";
 import Action from "./Action";
+import TwoPlayerAside from "./TwoPlayerAside";
 
 import styles from "../../../../shared/styles.module.css";
-import TwoPlayerAside from "./TwoPlayerAside";
 
 class Main extends React.Component {
 	render() {

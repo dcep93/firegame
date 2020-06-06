@@ -51,7 +51,7 @@ export enum Card {
 	assassin,
 }
 
-const COUNTS = {
+export const COUNTS = {
 	[Card.guard]: 5,
 	[Card.priest]: 2,
 	[Card.baron]: 2,

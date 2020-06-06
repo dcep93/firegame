@@ -15,4 +15,5 @@
 	min-width: 0;
 	display: flex;
 	overflow: scroll;
+	flex-direction: column;
 }
