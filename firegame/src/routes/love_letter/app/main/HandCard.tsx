@@ -4,12 +4,17 @@ import { Card } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
+import { FLAVOR } from "../Rules";
 
 class HandCard extends React.Component<{ index: number }> {
 	render() {
 		const card = this.getCard();
 		return (
-			<div className={styles.bubble} onClick={this.play.bind(this)}>
+			<div
+				className={styles.bubble}
+				onClick={this.play.bind(this)}
+				title={FLAVOR[card]}
+			>
 				{utils.cardString(card)}
 			</div>
 		);

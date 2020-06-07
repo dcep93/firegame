@@ -39,7 +39,7 @@ const RULES = {
 		"If attacked by a guard (regardless if successful), the guard is eliminiated, and you draw a new card, discarding the assassin.",
 };
 
-const FLAVOR = {
+export const FLAVOR = {
 	[Card.guard]: `
 1: Guard Odette
 Charged with seeing to the security of the royal family, Odette follows her orders with persistence and diligence… even though her mentor is said to have drowned while fleeing arrest for complicity in the Queen’s treason.
