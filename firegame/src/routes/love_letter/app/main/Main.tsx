@@ -38,6 +38,7 @@ class Main extends React.Component {
 									: "NONE"
 							}
 						>
+							{store.gameW.game.jester === index ? "(J) " : ""}
 							{p.userName} - ({p.score})
 						</div>
 					))}
