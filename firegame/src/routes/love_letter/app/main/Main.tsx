@@ -6,6 +6,7 @@ import Action from "./Action";
 import TwoPlayerAside from "./TwoPlayerAside";
 
 import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
 
 class Main extends React.Component {
 	render() {
@@ -24,6 +25,9 @@ class Main extends React.Component {
 							key={index}
 							className={`${styles.bubble} ${
 								p.hand === undefined && styles.grey
+							} ${
+								store.gameW.game.currentPlayer === index &&
+								css.blue
 							}`}
 							title={
 								p.played
