@@ -2,6 +2,8 @@ import React from "react";
 
 import utils, { store } from "../utils/utils";
 
+import styles from "../../../../shared/styles.module.css";
+
 class Baroness extends React.Component<
 	{
 		targets: number[];
@@ -45,10 +47,21 @@ class Baroness extends React.Component<
 
 	render() {
 		return this.props.targets
-			.map((index) => store.gameW.game.players[index]!)
-			.map((p, index) => (
-				<div key={index} onClick={() => this.choose(index)}>
-					{p.userName}
+			.map((index) => ({
+				index,
+				player: store.gameW.game.players[index]!,
+			}))
+			.map((o) => (
+				<div
+					key={o.index}
+					onClick={() => this.choose(o.index)}
+					className={`${styles.bubble} ${
+						this.state &&
+						this.state.targetIndex === o.index &&
+						styles.grey
+					}`}
+				>
+					{o.player.userName}
 				</div>
 			));
 	}
