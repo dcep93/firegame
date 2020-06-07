@@ -70,7 +70,7 @@ class Utils extends Shared<GameType, PlayerType> {
 				: store.gameW.game.aside;
 			player.hand = [draw];
 		}
-		player.played.push(card);
+		player.played.unshift(card);
 	}
 }
 
