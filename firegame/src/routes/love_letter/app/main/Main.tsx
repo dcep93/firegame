@@ -31,7 +31,10 @@ class Main extends React.Component {
 							}`}
 							title={
 								p.played
-									? p.played.map(utils.cardString).join("\n")
+									? Array.from(p.played)
+											.reverse()
+											.map(utils.cardString)
+											.join("\n")
 									: "NONE"
 							}
 						>
