@@ -47,5 +47,5 @@
 }
 
 .board_card {
-	white-space: initial;
+	white-space: break-spaces;
 }
