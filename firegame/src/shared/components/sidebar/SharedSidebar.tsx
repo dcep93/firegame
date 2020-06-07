@@ -16,7 +16,7 @@ abstract class SharedSidebar<T> extends React.Component {
 	abstract isMyTurn: () => boolean;
 
 	render() {
-		document.title = (this.isMyTurn() ? "(!) " : "") + this.name;
+		// document.title = (this.isMyTurn() ? "(!) " : "") + this.name;
 		return (
 			<div className={styles.sidebar}>
 				<div className={styles.bubble}>
