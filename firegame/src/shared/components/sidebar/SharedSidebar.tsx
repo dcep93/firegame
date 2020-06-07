@@ -31,12 +31,12 @@ abstract class SharedSidebar<T> extends React.Component {
 					)}
 				</div>
 				{this.renderInfo()}
-				<SharedLog />
 				<div className={styles.bubble}>
 					<h2>
 						<a href={".."}>Home</a>
 					</h2>
 				</div>
+				<SharedLog />
 			</div>
 		);
 	}
