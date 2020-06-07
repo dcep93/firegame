@@ -24,6 +24,7 @@ class Cardinal extends React.Component<
 	}
 
 	actionHelper() {
+		if (!utils.isMyTurn()) return;
 		if (store.gameW.game.cardinal) return;
 		if (this.props.targets.length < 2) {
 			this.props.finish("not enough targets");
@@ -33,6 +34,7 @@ class Cardinal extends React.Component<
 	}
 
 	execute(p1: number, p2: number) {
+		if (!utils.isMyTurn()) return;
 		const players = store.gameW.game.players;
 		store.gameW.game.cardinal = { p1, p2 };
 		[players[p1].hand, players[p2].hand] = [
@@ -45,6 +47,7 @@ class Cardinal extends React.Component<
 	}
 
 	render() {
+		if (!utils.isMyTurn()) return null;
 		if (store.gameW.game.cardinal) {
 			return this.renderView();
 		} else {
