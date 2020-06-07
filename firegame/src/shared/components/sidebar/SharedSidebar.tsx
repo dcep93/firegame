@@ -13,7 +13,10 @@ abstract class SharedSidebar<T> extends React.Component {
 	abstract NewGame: (params: T) => any;
 	abstract renderStartNewGame(): JSX.Element;
 	abstract getParams(): T;
+	abstract isMyTurn: () => boolean;
+
 	render() {
+		document.title = (this.isMyTurn() ? "(!) " : "") + this.name;
 		return (
 			<div className={styles.sidebar}>
 				<div className={styles.bubble}>

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 import NewGame, { Params } from "../utils/NewGame";
 
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
@@ -8,6 +8,7 @@ import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 class Sidebar extends SharedSidebar<Params> {
 	name = "Template";
 	NewGame = NewGame;
+	isMyTurn = utils.isMyTurn;
 
 	renderStartNewGame() {
 		return (

@@ -10,6 +10,7 @@ import styles from "../../../../shared/styles.module.css";
 class Sidebar extends SharedSidebar<Params> {
 	name = "Fox in the Forest";
 	NewGame = NewGame;
+	isMyTurn = shared.isMyTurn;
 
 	getParams(): Params {
 		return {

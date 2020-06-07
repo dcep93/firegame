@@ -3,12 +3,13 @@ import React, { RefObject } from "react";
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import NewGame from "../utils/NewGame";
 import { Params } from "../utils/types";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 class Sidebar extends SharedSidebar<Params> {
 	expansionRef: RefObject<HTMLInputElement> = React.createRef();
 	name = "7 Wonders Duel";
 	NewGame = NewGame;
+	isMyTurn = utils.isMyTurn;
 
 	renderStartNewGame() {
 		return (
@@ -32,6 +33,7 @@ class Sidebar extends SharedSidebar<Params> {
 	}
 
 	maybeSyncParams() {
+		super.maybeSyncParams();
 		if (store.gameW.info.isNewGame) {
 			this.expansionRef.current!.checked =
 				store.gameW.game.params.godExpansion;
