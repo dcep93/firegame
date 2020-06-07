@@ -18,15 +18,15 @@ class LogEntry<T> extends React.Component<{
 
 	revert(): void {
 		const userId = store.me.userId;
-		// if (store.gameW.info.host !== userId) {
-		for (let gameW of this.props.history) {
+		if (store.gameW.info.host !== userId) {
+			// for (let gameW of this.props.history) {
 			// if (gameW.info.id === this.props.wrapper.info.id) break;
-			if (gameW.info.playerId !== userId) {
-				alert("only the host can revert");
-				return;
-			}
+			// if (gameW.info.playerId !== userId) {
+			alert("only the host can revert");
+			return;
+			// }
+			// }
 		}
-		// }
 		const message = `restored to [${this.getMessage()}]`;
 		store.update(message, this.props.wrapper.game);
 	}
