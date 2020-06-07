@@ -133,7 +133,7 @@ class Action extends React.Component {
 					var choice;
 					while (true) {
 						choice = prompt(`Choose a rank for ${player.userName}`);
-						if (choice !== "1") break;
+						if (choice !== "1" && choice !== null) break;
 					}
 					const correct = choice === Ranks[card].toString();
 					if (correct) utils.discard(player, true);
