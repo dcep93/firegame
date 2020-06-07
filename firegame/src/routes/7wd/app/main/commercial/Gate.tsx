@@ -14,7 +14,7 @@ class Gate extends React.Component {
 				<div className={styles.flex}>
 					{Object.values(store.gameW.game.gods)
 						.map((gods) => gods[0])
-						.filter(Boolean)
+						.filter((godIndex) => godIndex !== undefined)
 						.map((godIndex) => ({
 							godIndex,
 							god: bank.gods[godIndex],
