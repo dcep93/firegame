@@ -90,10 +90,21 @@ class Cardinal extends React.Component<
 
 	renderChoose() {
 		return this.props.targets
-			.map((index) => store.gameW.game.players[index]!)
-			.map((p, index) => (
-				<div key={index} onClick={() => this.choose(index)}>
-					{p.userName}
+			.map((index) => ({
+				index,
+				player: store.gameW.game.players[index]!,
+			}))
+			.map((o) => (
+				<div
+					key={o.index}
+					onClick={() => this.choose(o.index)}
+					className={`${styles.bubble} ${
+						this.state &&
+						this.state.targetIndex === o.index &&
+						styles.grey
+					}`}
+				>
+					{o.player.userName}
 				</div>
 			));
 	}
