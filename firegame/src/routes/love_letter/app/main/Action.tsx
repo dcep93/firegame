@@ -216,7 +216,8 @@ class Action extends React.Component {
 	}
 
 	render() {
-		if (store.gameW.game.played === undefined) return null;
+		if (!utils.isMyTurn() || store.gameW.game.played === undefined)
+			return null;
 		if (store.gameW.game.bishop !== undefined) return null;
 		const targets = this.getTargets();
 		if (store.gameW.game.played === Card.cardinal)
