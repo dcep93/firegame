@@ -228,14 +228,17 @@ class Action extends React.Component {
 			);
 		if (targets.length <= 1) return null;
 		return targets
-			.map((index) => store.gameW.game.players[index])
-			.map((player, index) => (
+			.map((index) => ({
+				index,
+				player: store.gameW.game.players[index],
+			}))
+			.map((o, index) => (
 				<div
 					key={index}
 					className={styles.bubble}
-					onClick={() => this.execute(index)}
+					onClick={() => this.execute(o.index)}
 				>
-					{player.userName}
+					{o.player.userName}
 				</div>
 			));
 	}
