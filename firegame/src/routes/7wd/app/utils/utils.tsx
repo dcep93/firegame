@@ -481,7 +481,8 @@ class Utils extends Shared<GameType, PlayerType> {
 					ScienceToken.economy
 				)
 			)
-				utils.getOpponent().money += cost;
+				utils.getOpponent().money +=
+					cost - card.cost.filter((c) => c === Resource.money).length;
 		} else if (selectedTarget >= 0) {
 			const cost = utils.getWonderCost(
 				bank.wonders[
