@@ -27,6 +27,10 @@ class Utils extends Shared<GameType, PlayerType> {
 				}
 			}
 		}
+		utils.setWinner();
+	}
+
+	setWinner() {
 		const orderedPlayers = Array.from(store.gameW.game.players)
 			.map((player, index) => ({
 				player,
