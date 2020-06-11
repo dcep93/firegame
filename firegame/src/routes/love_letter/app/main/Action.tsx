@@ -177,8 +177,11 @@ class Action extends React.Component {
 				this.finish(`selected ${player.userName} to win`);
 				break;
 			case Card.sycophant:
+				// need to set sycophant before finishing::advancingTurn
+				// because advancingTurn resets sycophant
+				this.finish();
 				store.gameW.game.sycophant = index;
-				this.finish(`sycophanted ${player.userName}`);
+				store.update(`sycophanted ${player.userName}`);
 				break;
 			case Card.queen:
 				const diffQ =
@@ -209,10 +212,10 @@ class Action extends React.Component {
 		}
 	}
 
-	finish(msg: string) {
+	finish(msg?: string) {
 		delete store.gameW.game.played;
 		utils.advanceTurn();
-		store.update(msg);
+		if (msg !== undefined) store.update(msg);
 	}
 
 	render() {
