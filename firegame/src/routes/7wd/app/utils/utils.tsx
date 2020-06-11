@@ -480,9 +480,22 @@ class Utils extends Shared<GameType, PlayerType> {
 				(utils.getOpponent().scienceTokens || []).includes(
 					ScienceToken.economy
 				)
-			)
-				utils.getOpponent().money +=
-					cost - card.cost.filter((c) => c === Resource.money).length;
+			) {
+				if (
+					!(
+						(utils.getMe().scienceTokens || []).includes(
+							ScienceToken.urbanism
+						) && card.upgradesFrom !== undefined
+					)
+				) {
+					const resourceCost = Math.max(
+						0,
+						cost -
+							card.cost.filter((c) => c === Resource.money).length
+					);
+					utils.getOpponent().money += resourceCost;
+				}
+			}
 		} else if (selectedTarget >= 0) {
 			const cost = utils.getWonderCost(
 				bank.wonders[
