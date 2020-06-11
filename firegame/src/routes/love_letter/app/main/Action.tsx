@@ -72,16 +72,15 @@ class Action extends React.Component {
 			case Card.baroness:
 				break;
 			case Card.bishop:
-				if (store.gameW.game.bishop) {
+				if (store.gameW.game.bishop !== undefined) {
 					const toDiscard = window.confirm(
 						"You were correctly guessed by the bishop. Would you like to discard your hand?"
 					);
 					const cardB = utils.getMe().hand![0];
 					if (toDiscard) utils.discard(utils.getMe(), false);
 					store.gameW.game.currentPlayer = store.gameW.game.bishop;
-					utils.advanceTurn();
 					delete store.gameW.game.bishop;
-					store.update(
+					this.finish(
 						toDiscard
 							? `discarded ${utils.cardString(cardB)}`
 							: "did not discard"
@@ -136,7 +135,7 @@ class Action extends React.Component {
 					this.finish(`was assassinated by ${player.userName}`);
 				} else {
 					var choice;
-					while (true) {
+					for (let i = 0; i < 10; i++) {
 						choice = prompt(`Choose a rank for ${player.userName}`);
 						if (choice !== "1" && choice !== null) break;
 					}
@@ -201,14 +200,19 @@ class Action extends React.Component {
 				}
 				break;
 			case Card.bishop:
-				const choiceB = prompt(`Choose a rank for ${player.userName}`);
+				var choiceB;
+				for (let i = 0; i < 10; i++) {
+					choiceB = prompt(`Choose a rank for ${player.userName}`);
+					if (choiceB !== null) break;
+				}
 				const correct = choiceB === Ranks[player.hand![0]].toString();
-				const msgB = `guessed ${choice} for [${player.userName}] - ${
+				const msgB = `guessed ${choiceB} for [${player.userName}] - ${
 					correct ? "correct" : "incorrect"
 				}`;
 				if (correct) {
 					utils.getMe().score++;
 					store.gameW.game.bishop = utils.myIndex();
+					store.gameW.game.currentPlayer = index;
 					store.update(msgB);
 				} else {
 					this.finish(msgB);
