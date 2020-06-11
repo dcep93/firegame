@@ -53,9 +53,14 @@ class Action extends React.Component {
 				} else {
 					delete store.gameW.game.played;
 					const rawMsg = prompt("What do you do on your date?");
-					const msg = `(${Card[utils.getMe().hand![0]]}) ${
-						rawMsg || "has a boring date"
-					}`;
+					const ranks = store.gameW.game.players
+						.filter((p) => p.hand)
+						.map(
+							(p) =>
+								`${p.userName}: ${utils.cardString(p.hand![0])}`
+						)
+						.join(", ");
+					const msg = `{${ranks}} ${rawMsg || "has a boring date"}`;
 					deal(store.gameW.game);
 					store.gameW.info.alert = msg;
 					utils.getMe().score++;
