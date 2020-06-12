@@ -1,26 +1,38 @@
-import { Ranks } from "../utils/NewGame";
-import utils, { store } from "../utils/utils";
+import React from "react";
+
 import ActionComponent from "./ActionComponent";
+import utils, { store } from "../utils/utils";
+import { Ranks } from "../utils/NewGame";
+
+import styles from "../../../../shared/styles.module.css";
 
 class Bishop extends ActionComponent {
+	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	render() {
-		return null;
+		return (
+			<form className={styles.bubble} onSubmit={this.execute.bind(this)}>
+				Choose a rank for {this.props.player.userName}: <br />
+				<input ref={this.inputRef} />
+			</form>
+		);
 	}
 
-	execute() {
-		var choiceB;
-		for (let i = 0; i < 10; i++) {
-			choiceB = prompt(`Choose a rank for ${this.props.player.userName}`);
-			if (choiceB !== null) break;
-		}
+	execute(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		e.stopPropagation();
+		this.executeHelper();
+		return false;
+	}
+
+	executeHelper() {
+		const choice = this.inputRef.current!.value;
 		if (this.executed) return;
 		this.executed = true;
 		this.props.reset();
-		const correct =
-			choiceB === Ranks[this.props.player.hand![0]].toString();
-		const msgB = `guessed ${choiceB} for [${
-			this.props.player.userName
-		}] - ${correct ? "correct" : "incorrect"}`;
+		const correct = choice === Ranks[this.props.player.hand![0]].toString();
+		const msgB = `guessed ${choice} for [${this.props.player.userName}] - ${
+			correct ? "correct" : "incorrect"
+		}`;
 		if (correct) {
 			utils.getMe().score++;
 			store.gameW.game.bishop = utils.myIndex();
