@@ -1,14 +1,32 @@
-import utils, { store } from "../utils/utils";
-import { deal } from "../utils/NewGame";
+import React from "react";
+
 import ActionComponent from "./ActionComponent";
+import utils, { store } from "../utils/utils";
+
+import styles from "../../../../shared/styles.module.css";
+import { deal } from "../utils/NewGame";
 
 class Winner extends ActionComponent {
+	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	render() {
-		return null;
+		return (
+			<form className={styles.bubble} onSubmit={this.execute.bind(this)}>
+				What do you do on your date?
+				<br />
+				<input ref={this.inputRef} />
+			</form>
+		);
 	}
 
-	execute() {
-		const rawMsg = prompt("What do you do on your date?");
+	execute(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		e.stopPropagation();
+		this.executeHelper();
+		return false;
+	}
+
+	executeHelper() {
+		const rawMsg = this.inputRef.current!.value;
 		if (this.executed) return;
 		this.executed = true;
 		this.props.reset();
