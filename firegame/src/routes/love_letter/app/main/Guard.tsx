@@ -13,6 +13,8 @@ class Guard extends ActionComponent {
 			choice = prompt(`Choose a rank for ${this.props.player.userName}`);
 			if (choice !== "1" && choice !== null) break;
 		}
+		if (this.executed) return;
+		this.executed = true;
 		this.props.reset();
 		const correct = choice === Ranks[this.props.player.hand![0]].toString();
 		if (correct) utils.discard(this.props.player, true);

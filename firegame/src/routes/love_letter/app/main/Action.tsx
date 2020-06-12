@@ -38,7 +38,12 @@ type ActionComponentProps = {
 
 export abstract class ActionComponent extends React.Component<
 	ActionComponentProps
-> {}
+> {
+	executed = false;
+	componentDidMount() {
+		this.executed = false;
+	}
+}
 
 class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
 	constructor(props: {}) {

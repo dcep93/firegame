@@ -8,8 +8,11 @@ class Winner extends ActionComponent {
 	}
 
 	execute() {
-		delete store.gameW.game.played;
 		const rawMsg = prompt("What do you do on your date?");
+		if (this.executed) return;
+		this.executed = true;
+		this.props.reset();
+		delete store.gameW.game.played;
 		const ranks = store.gameW.game.players
 			.filter((p) => p.hand)
 			.map((p) => `${p.userName}: ${utils.cardString(p.hand![0])}`)

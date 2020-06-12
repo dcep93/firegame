@@ -13,6 +13,8 @@ class Bishop extends ActionComponent {
 			choiceB = prompt(`Choose a rank for ${this.props.player.userName}`);
 			if (choiceB !== null) break;
 		}
+		if (this.executed) return;
+		this.executed = true;
 		this.props.reset();
 		const correct =
 			choiceB === Ranks[this.props.player.hand![0]].toString();
