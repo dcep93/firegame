@@ -15,7 +15,7 @@ class BishopDiscard extends ActionComponent {
 				</div>
 				<div>
 					<button onClick={() => this.execute(true)}>Yes</button>
-					<button onClick={() => this.execute(true)}>No</button>
+					<button onClick={() => this.execute(false)}>No</button>
 				</div>
 			</div>
 		);

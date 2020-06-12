@@ -120,7 +120,7 @@ export function deal(game: GameType): GameType {
 	game.deck = [];
 	Object.entries(COUNTS).forEach(([v, count]) => {
 		if (count < 0) {
-			if (game.players.length < 5) return;
+			if (false && game.players.length < 5) return;
 			count = -count;
 		}
 		for (let i = 0; i < count; i++) {
