@@ -1,15 +1,27 @@
-import utils, { store } from "../utils/utils";
+import React from "react";
+
 import ActionComponent from "./ActionComponent";
+import utils, { store } from "../utils/utils";
+
+import styles from "../../../../shared/styles.module.css";
 
 class BishopDiscard extends ActionComponent {
 	render() {
-		return null;
+		return (
+			<div className={styles.bubble}>
+				<div>
+					You were correctly guessed by the bishop. Would you like to
+					discard your hand?
+				</div>
+				<div>
+					<button onClick={() => this.execute(true)}>Yes</button>
+					<button onClick={() => this.execute(true)}>No</button>
+				</div>
+			</div>
+		);
 	}
 
-	execute() {
-		const toDiscard = window.confirm(
-			"You were correctly guessed by the bishop. Would you like to discard your hand?"
-		);
+	execute(toDiscard: boolean) {
 		if (this.executed) return;
 		this.executed = true;
 		this.props.reset();
