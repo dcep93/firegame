@@ -1,5 +1,5 @@
-import { ActionComponent } from "./Action";
 import utils, { store } from "../utils/utils";
+import ActionComponent from "./ActionComponent";
 
 class BishopDiscard extends ActionComponent {
 	render() {

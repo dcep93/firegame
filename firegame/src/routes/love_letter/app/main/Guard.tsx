@@ -1,4 +1,4 @@
-import { ActionComponent } from "./Action";
+import ActionComponent from "./ActionComponent";
 import utils from "../utils/utils";
 import { Ranks } from "../utils/NewGame";
 

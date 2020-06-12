@@ -1,7 +1,7 @@
 import React from "react";
 
 import utils, { store, WINNER } from "../utils/utils";
-import { Card, deal, Ranks, PlayerType } from "../utils/NewGame";
+import { Card, deal, Ranks } from "../utils/NewGame";
 
 import Cardinal from "./Cardinal";
 import Baroness from "./Baroness";
@@ -12,6 +12,7 @@ import Guard from "./Guard";
 import Winner from "./Winner";
 
 import styles from "../../../../shared/styles.module.css";
+import ActionComponent from "./ActionComponent";
 
 var actioning = false;
 
@@ -28,22 +29,6 @@ const ComponentsM: { [c in ComponentsE]: typeof ActionComponent } = {
 	[ComponentsE.guard]: Guard,
 	[ComponentsE.winner]: Winner,
 };
-
-type ActionComponentProps = {
-	finish: (m: string) => void;
-	reset: () => void;
-	player: PlayerType;
-	index: number;
-};
-
-export abstract class ActionComponent extends React.Component<
-	ActionComponentProps
-> {
-	executed = false;
-	componentDidMount() {
-		this.executed = false;
-	}
-}
 
 class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
 	constructor(props: {}) {

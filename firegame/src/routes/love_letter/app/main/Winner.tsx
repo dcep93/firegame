@@ -1,6 +1,6 @@
 import utils, { store } from "../utils/utils";
 import { deal } from "../utils/NewGame";
-import { ActionComponent } from "./Action";
+import ActionComponent from "./ActionComponent";
 
 class Winner extends ActionComponent {
 	render() {

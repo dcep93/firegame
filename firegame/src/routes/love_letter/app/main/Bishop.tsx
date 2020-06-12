@@ -1,6 +1,6 @@
 import { Ranks } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
-import { ActionComponent } from "./Action";
+import ActionComponent from "./ActionComponent";
 
 class Bishop extends ActionComponent {
 	render() {
