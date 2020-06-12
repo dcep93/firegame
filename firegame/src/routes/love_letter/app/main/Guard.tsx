@@ -1,17 +1,34 @@
+import React from "react";
+
 import ActionComponent from "./ActionComponent";
 import utils from "../utils/utils";
 import { Ranks } from "../utils/NewGame";
 
+import styles from "../../../../shared/styles.module.css";
+
 class Guard extends ActionComponent {
+	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
 	render() {
-		return null;
+		return (
+			<form className={styles.bubble} onSubmit={this.execute.bind(this)}>
+				Choose a rank for {this.props.player.userName}: <br />
+				<input ref={this.inputRef} />
+			</form>
+		);
 	}
 
-	execute() {
-		var choice;
-		for (let i = 0; i < 10; i++) {
-			choice = prompt(`Choose a rank for ${this.props.player.userName}`);
-			if (choice !== "1" && choice !== null) break;
+	execute(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		e.stopPropagation();
+		this.executeHelper();
+		return false;
+	}
+
+	executeHelper() {
+		const choice = this.inputRef.current!.value;
+		if (choice === "1") {
+			alert("Cannot choose 1");
+			return;
 		}
 		if (this.executed) return;
 		this.executed = true;
