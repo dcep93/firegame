@@ -605,6 +605,15 @@ class Utils extends Shared<GameType, PlayerType> {
 		store.gameW.game.sciences.find(
 			(obj) => obj.token === scienceName
 		)!.taken = true;
+		switch (scienceName) {
+			case ScienceToken.agriculture:
+			case ScienceToken.urbanism:
+				utils.getMe().money += 6;
+				return;
+			case ScienceToken.law:
+				utils.gainScience(ScienceEnum.law);
+				return;
+		}
 		utils.endCommercial(
 			`built ${utils.enumName(scienceName, ScienceToken)}`
 		);

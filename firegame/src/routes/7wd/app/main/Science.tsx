@@ -38,26 +38,7 @@ class Science extends React.Component {
 
 	select(token: ScienceToken) {
 		if (!utils.isMyCommercial(CommercialEnum.science)) return;
-		store.gameW.game.sciences.find(
-			(obj) => obj.token === token
-		)!.taken = true;
-		this.handleSelected(token);
-		const me = utils.getMe();
-		if (!me.scienceTokens) me.scienceTokens = [];
-		me.scienceTokens.push(token);
-		utils.endCommercial(`selected ${utils.enumName(token, ScienceToken)}`);
-	}
-
-	handleSelected(selected: ScienceToken) {
-		switch (selected) {
-			case ScienceToken.agriculture:
-			case ScienceToken.urbanism:
-				utils.getMe().money += 6;
-				return;
-			case ScienceToken.law:
-				utils.gainScience(ScienceEnum.law);
-				return;
-		}
+		utils.buildScienceToken(token);
 	}
 }
 
