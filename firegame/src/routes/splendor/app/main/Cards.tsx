@@ -9,6 +9,7 @@ const NUM_BUYABLE = 4;
 class Cards extends React.Component<{
 	goldSelected: boolean;
 	buyCard: (level: Level, index: number) => void;
+	selectGold: () => void;
 }> {
 	render() {
 		return (
@@ -80,6 +81,7 @@ class Cards extends React.Component<{
 			alert(`Already have ${MAX_HAND_SIZE} cards`);
 			return;
 		}
+		this.props.selectGold();
 		utils.gainToken(Token.gold);
 		me.hand.push(store.gameW.game.cards[level]!.splice(index, 1)[0]);
 		utils.finishTurn(`reserved a ${msg}`);

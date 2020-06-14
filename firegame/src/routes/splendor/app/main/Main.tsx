@@ -31,6 +31,7 @@ class Main extends React.Component<
 				/>
 				<Players />
 				<Cards
+					selectGold={this.selectGold.bind(this)}
 					goldSelected={this.state.goldSelected}
 					buyCard={this.buyCard.bind(this)}
 				/>
@@ -149,7 +150,7 @@ class Main extends React.Component<
 		);
 	}
 
-	selectGold(allowSelect: boolean) {
+	selectGold(allowSelect: boolean = false) {
 		this.setState({
 			goldSelected: allowSelect && !this.state.goldSelected,
 		});
