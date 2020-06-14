@@ -19,6 +19,7 @@ export type Params = {
 export type PlayerType = {
 	userId: string;
 	userName: string;
+	tokens?: TokensGroup;
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

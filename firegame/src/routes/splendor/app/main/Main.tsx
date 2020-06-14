@@ -31,8 +31,10 @@ class Main extends React.Component<{}, { goldSelected?: boolean }> {
 		);
 	}
 
-	selectGold(force: boolean) {
-		this.setState({ goldSelected: !force && !this.state.goldSelected });
+	selectGold(allowSelect: boolean) {
+		this.setState({
+			goldSelected: allowSelect && !this.state.goldSelected,
+		});
 	}
 }
 
