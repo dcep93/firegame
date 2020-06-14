@@ -57,18 +57,7 @@ class Cards extends React.Component<{
 													}
 												}}
 											>
-												{Token[card.color]} - (
-												{card.points}) :{" "}
-												{Object.entries(card.price)
-													.map(
-														([t, n]) =>
-															`${
-																Token[
-																	parseInt(t)
-																]
-															} x${n}`
-													)
-													.join(" ")}
+												{utils.cardString(card)}
 											</div>
 										))}
 								</div>

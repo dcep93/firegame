@@ -11,8 +11,8 @@ class Nobles extends React.Component {
 		return (
 			<div className={styles.bubble}>
 				<h2>Nobles</h2>
-				{nobles.map((n) => (
-					<div>
+				{nobles.map((n, index) => (
+					<div key={index}>
 						{Object.entries(n)
 							.map(([token, count]) => ({
 								token: parseInt(token),

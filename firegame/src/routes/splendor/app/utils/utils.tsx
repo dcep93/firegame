@@ -2,7 +2,7 @@ import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 
 import { GameType, PlayerType } from "./NewGame";
-import { Token } from "./bank";
+import { Token, Card } from "./bank";
 
 const store: StoreType<GameType> = store_;
 
@@ -16,10 +16,18 @@ class Utils extends Shared<GameType, PlayerType> {
 		store.gameW.game.tokens[token] -= num;
 		const me = utils.getMe();
 		if (!me.tokens) me.tokens = [];
-		me.tokens.push(...Array.from(new Array(num)).map((_) => Token.gold));
+		me.tokens.push(...Array.from(new Array(num)).map((_) => token));
 		if (me.tokens.length > 10)
 			// todo tooManyTokens
 			store.gameW.game.tooManyTokens = true;
+	}
+
+	cardString(card: Card): string {
+		return `${Token[card.color]} - (${card.points}): ${Object.entries(
+			card.price
+		)
+			.map(([t, n]) => `${Token[parseInt(t)]} x${n}`)
+			.join(" ")}`;
 	}
 }
 

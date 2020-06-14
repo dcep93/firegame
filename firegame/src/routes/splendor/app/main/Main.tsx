@@ -20,7 +20,10 @@ class Main extends React.Component<
 	render() {
 		return (
 			<>
-				<Me />
+				<Me
+					selectedTokens={this.state.selectedTokens}
+					selectToken={this.selectToken.bind(this)}
+				/>
 				<br />
 				<Players />
 				<br />
@@ -37,6 +40,14 @@ class Main extends React.Component<
 				/>
 			</>
 		);
+	}
+
+	selectToken(index: number) {
+		if (!utils.isMyTurn()) return;
+		const selectedTokens = Object.assign(this.state.selectedTokens, {
+			[index]: !this.state.selectedTokens[index],
+		});
+		this.setState({ selectedTokens });
 	}
 
 	buyCard(level: Level, index: number) {
