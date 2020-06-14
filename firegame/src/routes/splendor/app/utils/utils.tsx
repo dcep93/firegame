@@ -27,7 +27,7 @@ class Utils extends Shared<GameType, PlayerType> {
 			card.price
 		)
 			.map(([t, n]) => `${Token[parseInt(t)]} x${n}`)
-			.join(" ")}`;
+			.join(" / ")}`;
 	}
 
 	getScore(player: PlayerType): number {
