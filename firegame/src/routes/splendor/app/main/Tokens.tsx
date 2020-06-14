@@ -5,7 +5,7 @@ import utils, { store } from "../utils/utils";
 import { Token } from "../utils/bank";
 
 type PropsType = {
-	goldSelected?: boolean;
+	goldSelected: boolean;
 	selectGold: (force: boolean) => void;
 };
 
@@ -119,12 +119,7 @@ class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
 			alert("Not allowed");
 			return;
 		}
-		const me = utils.getMe();
-		if (!me.tokens) me.tokens = {};
-		toTake.forEach((t) => {
-			store.gameW.game.tokens[t]! -= num;
-			me.tokens![t] = num + (me.tokens![t] || 0);
-		});
+		toTake.forEach((t) => utils.gainToken(t, num));
 		this.clearSelect();
 		utils.finishTurn(`took ${toTake.map((t) => Token[t]).join(", ")}`);
 	}

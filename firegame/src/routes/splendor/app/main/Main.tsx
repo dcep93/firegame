@@ -5,11 +5,16 @@ import Players from "./Players";
 import Cards from "./Cards";
 import Nobles from "./Nobles";
 import Tokens from "./Tokens";
+import { Level, Token } from "../utils/bank";
+import utils, { store } from "../utils/utils";
 
-class Main extends React.Component<{}, { goldSelected?: boolean }> {
+class Main extends React.Component<
+	{},
+	{ goldSelected: boolean; selectedTokens: { [n: number]: boolean } }
+> {
 	constructor(props: {}) {
 		super(props);
-		this.state = {};
+		this.state = { goldSelected: false, selectedTokens: {} };
 	}
 
 	render() {
@@ -19,7 +24,10 @@ class Main extends React.Component<{}, { goldSelected?: boolean }> {
 				<br />
 				<Players />
 				<br />
-				<Cards />
+				<Cards
+					goldSelected={this.state.goldSelected}
+					buyCard={this.buyCard.bind(this)}
+				/>
 				<br />
 				<Nobles />
 				<br />
@@ -29,6 +37,57 @@ class Main extends React.Component<{}, { goldSelected?: boolean }> {
 				/>
 			</>
 		);
+	}
+
+	buyCard(level: Level, index: number) {
+		const card = store.gameW.game.cards[level][index];
+		const price = Object.assign({}, card.price);
+		const me = utils.getMe();
+		(me.hand || []).forEach((c) => price[c.color] && price[c.color]!--);
+		var goldToPay = 0;
+		Object.entries(this.state.selectedTokens)
+			.map(([index, selected]) => ({
+				index: parseInt(index),
+				selected,
+			}))
+			.filter((obj) => obj.selected)
+			.map((obj) => obj.index)
+			.map((index) => me.tokens![index])
+			.forEach((t) => {
+				if (t === Token.gold) {
+					goldToPay++;
+					return;
+				}
+				price[t]!--;
+			});
+
+		var outstanding = 0;
+		Object.keys(price)
+			.map((t) => parseInt(t))
+			.forEach((t: Token) => {
+				let bill: number = price[t]!;
+				if (bill < 0) outstanding = NaN;
+				outstanding += bill;
+			});
+		if (outstanding !== goldToPay) {
+			alert("Incorrect payment");
+			return;
+		}
+		Object.entries(this.state.selectedTokens)
+			.map(([index, selected]) => ({
+				index: parseInt(index),
+				selected,
+			}))
+			.filter((obj) => obj.selected)
+			.map((obj) => obj.index)
+			.sort()
+			.forEach(
+				(index, time) =>
+					store.gameW.game.tokens[
+						me.tokens?.splice(index - time, 1)[0]!
+					]++
+			);
+		utils.finishTurn("bought a card");
 	}
 
 	selectGold(allowSelect: boolean) {

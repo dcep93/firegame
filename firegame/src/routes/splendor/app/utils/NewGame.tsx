@@ -7,9 +7,9 @@ export type GameType = {
 	params: Params;
 	currentPlayer: number;
 	players: PlayerType[];
-	cards: { [n: number]: Card[] };
-	nobles: TokensGroup[];
-	tokens: TokensGroup;
+	cards: { [l in Level]: Card[] };
+	nobles: { [t in Token]?: number }[];
+	tokens: { [t in Token]: number };
 	tooManyTokens?: boolean;
 };
 
@@ -20,7 +20,8 @@ export type Params = {
 export type PlayerType = {
 	userId: string;
 	userName: string;
-	tokens?: TokensGroup;
+	tokens?: Token[];
+	hand?: Card[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -46,15 +47,11 @@ function setPlayers(game: GameType): GameType {
 }
 
 function setCards(game: GameType): GameType {
+	// @ts-ignore initializing cards
 	game.cards = {};
-	utils
-		.enumArray(Level)
-		.forEach(
-			(l) =>
-				(game.cards[l] = utils.shuffle(
-					bank.cards.filter((c) => c.level === l)
-				))
-		);
+	utils.enumArray(Level).forEach((l: Level) => {
+		game.cards[l] = utils.shuffle(bank.cards.filter((c) => c.level === l));
+	});
 	return game;
 }
 
@@ -64,7 +61,8 @@ function setNobles(game: GameType): GameType {
 }
 
 function setTokens(game: GameType): GameType {
-	const tokens: { [t in Token]?: number } = {};
+	// @ts-ignore initializing tokens
+	game.tokens = {};
 	utils.enumArray(Token).forEach((t: Token) => {
 		var count;
 		if (t === Token.gold) {
@@ -76,9 +74,8 @@ function setTokens(game: GameType): GameType {
 		} else {
 			count = 7;
 		}
-		tokens[t] = count;
+		game.tokens[t] = count;
 	});
-	game.tokens = tokens;
 	return game;
 }
 

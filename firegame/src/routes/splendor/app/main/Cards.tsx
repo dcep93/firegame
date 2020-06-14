@@ -6,16 +6,28 @@ import { Level, Token } from "../utils/bank";
 
 const NUM_BUYABLE = 4;
 
-class Cards extends React.Component {
+class Cards extends React.Component<{
+	goldSelected: boolean;
+	buyCard: (level: Level, index: number) => void;
+}> {
 	render() {
 		return (
 			<div className={styles.bubble}>
-				{utils.enumArray(Level).map((l) => {
+				{utils.enumArray(Level).map((l: Level) => {
 					const deck = store.gameW.game.cards[l];
 					return (
 						<div key={l}>
 							<div className={styles.bubble}>
-								<div>
+								<div
+									onClick={() => {
+										if (!utils.isMyTurn()) return;
+										this.reserve(
+											l,
+											NUM_BUYABLE,
+											"face down card"
+										);
+									}}
+								>
 									Level {Level[l]}:{" "}
 									{deck.length - NUM_BUYABLE}
 								</div>
@@ -25,9 +37,21 @@ class Cards extends React.Component {
 									.map((card, index) => (
 										<div
 											key={index}
-											onClick={() =>
-												alert(`${l} ${index}`)
-											}
+											onClick={() => {
+												if (!utils.isMyTurn()) return;
+												if (this.props.goldSelected) {
+													this.reserve(
+														l,
+														index,
+														"card"
+													);
+												} else {
+													this.props.buyCard(
+														l,
+														index
+													);
+												}
+											}}
 										>
 											{Token[card.color]} - ({card.points}
 											) :{" "}
@@ -47,6 +71,16 @@ class Cards extends React.Component {
 				})}
 			</div>
 		);
+	}
+
+	reserve(level: Level, index: number, msg: string) {
+		if (store.gameW.game.tokens[Token.gold] > 0) {
+			utils.gainToken(Token.gold);
+		}
+		const me = utils.getMe();
+		if (!me.hand) me.hand = [];
+		me.hand.push(store.gameW.game.cards[level].splice(index, 1)[0]);
+		utils.finishTurn(`reserved a ${msg}`);
 	}
 }
 
