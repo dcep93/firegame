@@ -66,7 +66,7 @@ class Main extends React.Component<
 	buyCardHelper(card: Card): boolean {
 		const price = Object.assign({}, card.price);
 		const me = utils.getMe();
-		(me.hand || []).forEach((c) => price[c.color] && price[c.color]!--);
+		(me.cards || []).forEach((c) => price[c.color] && price[c.color]!--);
 		var goldToPay = 0;
 		Object.entries(this.state.selectedTokens)
 			.map(([index, selected]) => ({
@@ -83,7 +83,6 @@ class Main extends React.Component<
 				}
 				price[t]!--;
 			});
-
 		var outstanding = 0;
 		Object.keys(price)
 			.map((t) => parseInt(t))
