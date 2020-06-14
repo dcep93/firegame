@@ -1,15 +1,15 @@
 import { LobbyType } from "../../../../shared/store";
 
 import utils, { store } from "./utils";
-import bank, { Token, Card } from "./bank";
+import bank, { Token, Card, TokensGroup } from "./bank";
 
 export type GameType = {
 	params: Params;
 	currentPlayer: number;
 	players: PlayerType[];
 	cards: { [n: number]: Card[] };
-	nobles: { [t in Token]?: number }[];
-	tokens: { [t in Token]?: number };
+	nobles: TokensGroup[];
+	tokens: TokensGroup;
 };
 
 export type Params = {

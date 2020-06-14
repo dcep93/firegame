@@ -14,6 +14,8 @@ export type Card = {
 	price: { [t in Token]?: number };
 };
 
+export type TokensGroup = { [t in Token]?: number };
+
 const cards = [
 	{
 		level: 1,

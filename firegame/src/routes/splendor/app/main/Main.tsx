@@ -1,16 +1,38 @@
 import React from "react";
-import { store } from "../utils/utils";
 
-import styles from "../../../../shared/styles.module.css";
+import Hand from "./Hand";
+import Players from "./Players";
+import Cards from "./Cards";
+import Nobles from "./Nobles";
+import Tokens from "./Tokens";
 
-class Main extends React.Component {
+class Main extends React.Component<{}, { goldSelected?: boolean }> {
+	constructor(props: {}) {
+		super(props);
+		this.state = {};
+	}
+
 	render() {
 		return (
-			<div className={styles.bubble}>
-				<h2>Main</h2>
-				<pre>{JSON.stringify(store.gameW.game)}</pre>
-			</div>
+			<>
+				<Hand />
+				<br />
+				<Players />
+				<br />
+				<Cards />
+				<br />
+				<Nobles />
+				<br />
+				<Tokens
+					goldSelected={this.state.goldSelected}
+					selectGold={this.selectGold.bind(this)}
+				/>
+			</>
 		);
+	}
+
+	selectGold(force: boolean) {
+		this.setState({ goldSelected: !force && !this.state.goldSelected });
 	}
 }
 
