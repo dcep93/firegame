@@ -40,7 +40,7 @@ class Main extends React.Component<
 	}
 
 	buyCard(level: Level, index: number) {
-		const card = store.gameW.game.cards[level][index];
+		const card = store.gameW.game.cards[level]![index];
 		const price = Object.assign({}, card.price);
 		const me = utils.getMe();
 		(me.hand || []).forEach((c) => price[c.color] && price[c.color]!--);

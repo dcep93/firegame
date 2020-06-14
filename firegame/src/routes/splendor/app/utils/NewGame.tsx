@@ -7,8 +7,8 @@ export type GameType = {
 	params: Params;
 	currentPlayer: number;
 	players: PlayerType[];
-	cards: { [l in Level]: Card[] };
-	nobles: { [t in Token]?: number }[];
+	cards: { [l in Level]?: Card[] };
+	nobles?: { [t in Token]?: number }[];
 	tokens: { [t in Token]: number };
 	tooManyTokens?: boolean;
 };
