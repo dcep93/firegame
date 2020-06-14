@@ -1,6 +1,6 @@
 import React from "react";
 
-import Hand from "./Hand";
+import Me from "./Me";
 import Players from "./Players";
 import Cards from "./Cards";
 import Nobles from "./Nobles";
@@ -20,7 +20,7 @@ class Main extends React.Component<
 	render() {
 		return (
 			<>
-				<Hand />
+				<Me />
 				<br />
 				<Players />
 				<br />
