@@ -15,13 +15,14 @@ class Cards extends React.Component<{
 		return (
 			<div>
 				<div className={styles.bubble}>
+					<h2>Board</h2>
 					{utils.enumArray(Level).map((l: Level) => {
 						const deck = store.gameW.game.cards[l];
 						return (
 							deck && (
 								<div key={l}>
 									<div className={styles.bubble}>
-										<div
+										<h5
 											onClick={() => {
 												if (!utils.isMyTurn()) return;
 												this.reserve(
@@ -33,7 +34,7 @@ class Cards extends React.Component<{
 										>
 											Level {Level[l]}:{" "}
 											{deck.length - NUM_BUYABLE}
-										</div>
+										</h5>
 										{Array.from(new Array(NUM_BUYABLE))
 											.map((_, index) => deck[index])
 											.filter(Boolean)

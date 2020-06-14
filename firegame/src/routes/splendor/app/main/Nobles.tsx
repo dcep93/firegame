@@ -6,13 +6,11 @@ import { Token } from "../utils/bank";
 
 class Nobles extends React.Component {
 	render() {
-		const nobles = store.gameW.game.nobles;
-		if (!nobles) return null;
 		return (
 			<div>
 				<div className={styles.bubble}>
 					<h2>Nobles</h2>
-					{nobles.map((n, index) => (
+					{(store.gameW.game.nobles || []).map((n, index) => (
 						<div key={index}>
 							{Object.entries(n)
 								.map(([token, count]) => ({
