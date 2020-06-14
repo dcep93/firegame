@@ -1,7 +1,7 @@
 import React from "react";
 
 import styles from "../../../../shared/styles.module.css";
-import utils from "../utils/utils";
+import utils, { store } from "../utils/utils";
 import { Token } from "../utils/bank";
 
 class Me extends React.Component<{
@@ -16,10 +16,11 @@ class Me extends React.Component<{
 			<>
 				<div className={styles.bubble}>
 					<h2>Tokens</h2>
+					{this.mustDiscard() && <h2>Must Discard</h2>}
 					{(me.tokens || []).map((t, index) => (
 						<div
 							key={index}
-							onClick={() => this.props.selectToken(index)}
+							onClick={() => this.selectToken(index)}
 							className={`${
 								this.props.selectedTokens[index] && styles.grey
 							}`}
@@ -41,6 +42,19 @@ class Me extends React.Component<{
 				</div>
 			</>
 		);
+	}
+
+	selectToken(index: number) {
+		if (this.mustDiscard()) {
+			const token = utils.getMe().tokens!.splice(index, 1)[0]!;
+			store.update(`discarded ${Token[token]}`);
+			return;
+		}
+		this.props.selectToken(index);
+	}
+
+	mustDiscard() {
+		return utils.isMyTurn() && store.gameW.game.tooManyTokens;
 	}
 }
 

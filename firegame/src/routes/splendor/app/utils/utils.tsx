@@ -19,9 +19,7 @@ class Utils extends Shared<GameType, PlayerType> {
 		const me = utils.getMe();
 		if (!me.tokens) me.tokens = [];
 		me.tokens.push(...Array.from(new Array(num)).map((_) => token));
-		if (me.tokens.length > 10)
-			// todo tooManyTokens
-			store.gameW.game.tooManyTokens = true;
+		if (me.tokens.length > 10) store.gameW.game.tooManyTokens = true;
 	}
 
 	cardString(card: Card): string {
