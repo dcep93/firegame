@@ -126,7 +126,7 @@ class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
 			me.tokens![t] = num + (me.tokens![t] || 0);
 		});
 		this.clearSelect();
-		store.update(`took ${toTake.map((t) => Token[t]).join(", ")}`);
+		utils.finishTurn(`took ${toTake.map((t) => Token[t]).join(", ")}`);
 	}
 }
 

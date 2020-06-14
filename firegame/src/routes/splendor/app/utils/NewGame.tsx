@@ -10,6 +10,7 @@ export type GameType = {
 	cards: { [n: number]: Card[] };
 	nobles: TokensGroup[];
 	tokens: TokensGroup;
+	tooManyTokens?: boolean;
 };
 
 export type Params = {
