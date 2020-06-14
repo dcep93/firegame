@@ -7,6 +7,13 @@ export enum Token {
 	gold,
 }
 
+export type Card = {
+	level: number;
+	color: Token;
+	points: number;
+	price: { [t in Token]?: number };
+};
+
 const cards = [
 	{
 		level: 1,
