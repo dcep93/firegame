@@ -148,7 +148,7 @@ class Main extends React.Component<
 
 	handValue(c: Card) {
 		return parseInt(
-			`${c.level}${c.color}.${Array.from(JSON.stringify(c)).map((i) =>
+			`${c.color}${c.level}.${Array.from(JSON.stringify(c)).map((i) =>
 				i.codePointAt(0)
 			)}`
 		);
