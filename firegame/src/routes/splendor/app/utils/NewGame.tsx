@@ -1,7 +1,7 @@
 import { LobbyType } from "../../../../shared/store";
 
 import utils, { store } from "./utils";
-import bank, { Token, Card, TokensGroup, Level } from "./bank";
+import bank, { Token, Card, Level } from "./bank";
 
 export type GameType = {
 	params: Params;
