@@ -8,14 +8,7 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
 	finishTurn(message: string) {
-		const tokens = utils.getMe().tokens;
-		if (
-			tokens &&
-			Object.values(tokens).reduce((a, b) => (a || 0) + (b || 0), 0)! > 10
-		)
-			// todo tooManyTokens
-			store.gameW.game.tooManyTokens = true;
-		utils.incrementPlayerTurn();
+		if (!store.gameW.game.tooManyTokens) utils.incrementPlayerTurn();
 		store.update(message);
 	}
 
@@ -24,6 +17,9 @@ class Utils extends Shared<GameType, PlayerType> {
 		const me = utils.getMe();
 		if (!me.tokens) me.tokens = [];
 		me.tokens.push(...Array.from(new Array(num)).map((_) => Token.gold));
+		if (me.tokens.length > 10)
+			// todo tooManyTokens
+			store.gameW.game.tooManyTokens = true;
 	}
 }
 

@@ -74,9 +74,7 @@ class Cards extends React.Component<{
 	}
 
 	reserve(level: Level, index: number, msg: string) {
-		if (store.gameW.game.tokens[Token.gold] > 0) {
-			utils.gainToken(Token.gold);
-		}
+		utils.gainToken(Token.gold);
 		const me = utils.getMe();
 		if (!me.hand) me.hand = [];
 		me.hand.push(store.gameW.game.cards[level].splice(index, 1)[0]);

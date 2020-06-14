@@ -84,7 +84,7 @@ class Main extends React.Component<
 			.forEach(
 				(index, time) =>
 					store.gameW.game.tokens[
-						me.tokens?.splice(index - time, 1)[0]!
+						me.tokens!.splice(index - time, 1)[0]!
 					]++
 			);
 		utils.finishTurn("bought a card");

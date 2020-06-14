@@ -120,6 +120,7 @@ class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
 			return;
 		}
 		toTake.forEach((t) => utils.gainToken(t, num));
+		utils.getMe().tokens!.sort();
 		this.clearSelect();
 		utils.finishTurn(`took ${toTake.map((t) => Token[t]).join(", ")}`);
 	}
