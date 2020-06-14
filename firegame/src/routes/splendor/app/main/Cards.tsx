@@ -83,7 +83,9 @@ class Cards extends React.Component<{
 		}
 		this.props.selectGold();
 		utils.gainToken(Token.gold);
-		me.hand.push(store.gameW.game.cards[level]!.splice(index, 1)[0]);
+		const card = store.gameW.game.cards[level]!.splice(index, 1)[0];
+		if (!card) return;
+		me.hand.push(card);
 		utils.finishTurn(`reserved a ${msg}`);
 	}
 }

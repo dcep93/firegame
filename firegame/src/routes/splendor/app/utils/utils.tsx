@@ -6,6 +6,8 @@ import { Token, Card } from "./bank";
 
 const store: StoreType<GameType> = store_;
 
+export const MAX_HAND_TOKENS = 10;
+
 class Utils extends Shared<GameType, PlayerType> {
 	finishTurn(message: string) {
 		if (!store.gameW.game.tooManyTokens) utils.incrementPlayerTurn();
@@ -19,7 +21,8 @@ class Utils extends Shared<GameType, PlayerType> {
 		const me = utils.getMe();
 		if (!me.tokens) me.tokens = [];
 		me.tokens.push(...Array.from(new Array(num)).map((_) => token));
-		if (me.tokens.length > 10) store.gameW.game.tooManyTokens = true;
+		if (me.tokens.length > MAX_HAND_TOKENS)
+			store.gameW.game.tooManyTokens = true;
 	}
 
 	cardString(card: Card): string {
