@@ -17,32 +17,36 @@ class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
 
 	render() {
 		return (
-			<div className={styles.bubble}>
-				<h2>Bank</h2>
-				<div>
-					{Object.keys(store.gameW.game.tokens)
-						.map((t) => parseInt(t))
-						.map(
-							(token) =>
-								token !== Token.gold && (
-									<div
-										onClick={() => this.select(token)}
-										key={token}
-										className={`${
-											this.isSelected(token) &&
-											styles.grey
-										}`}
-									>
-										{this.renderToken(token)}
-									</div>
-								)
-						)}
-					<button onClick={this.take.bind(this)}>Take</button>
-					<div
-						onClick={() => this.selectGold(true)}
-						className={`${this.props.goldSelected && styles.grey}`}
-					>
-						{this.renderToken(Token.gold)}
+			<div>
+				<div className={styles.bubble}>
+					<h2>Bank</h2>
+					<div>
+						{Object.keys(store.gameW.game.tokens)
+							.map((t) => parseInt(t))
+							.map(
+								(token) =>
+									token !== Token.gold && (
+										<div
+											onClick={() => this.select(token)}
+											key={token}
+											className={`${
+												this.isSelected(token) &&
+												styles.grey
+											}`}
+										>
+											{this.renderToken(token)}
+										</div>
+									)
+							)}
+						<button onClick={this.take.bind(this)}>Take</button>
+						<div
+							onClick={() => this.selectGold(true)}
+							className={`${
+								this.props.goldSelected && styles.grey
+							}`}
+						>
+							{this.renderToken(Token.gold)}
+						</div>
 					</div>
 				</div>
 			</div>

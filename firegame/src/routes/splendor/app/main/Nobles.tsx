@@ -9,22 +9,24 @@ class Nobles extends React.Component {
 		const nobles = store.gameW.game.nobles;
 		if (!nobles) return null;
 		return (
-			<div className={styles.bubble}>
-				<h2>Nobles</h2>
-				{nobles.map((n, index) => (
-					<div key={index}>
-						{Object.entries(n)
-							.map(([token, count]) => ({
-								token: parseInt(token),
-								count,
-							}))
-							.map(
-								({ token, count }) =>
-									`${Token[token]}: ${count}`
-							)
-							.join(" ")}
-					</div>
-				))}
+			<div>
+				<div className={styles.bubble}>
+					<h2>Nobles</h2>
+					{nobles.map((n, index) => (
+						<div key={index}>
+							{Object.entries(n)
+								.map(([token, count]) => ({
+									token: parseInt(token),
+									count,
+								}))
+								.map(
+									({ token, count }) =>
+										`${Token[token]}: ${count}`
+								)
+								.join(" ")}
+						</div>
+					))}
+				</div>
 			</div>
 		);
 	}
