@@ -138,6 +138,10 @@ class Main extends React.Component<
 					me.nobles++;
 				});
 		}
+		if (!store.gameW.game.over && utils.getScore(me) >= 15) {
+			store.gameW.info.alert = "This is the last round.";
+			store.gameW.game.over = true;
+		}
 		this.setState({ selectedTokens: {}, goldSelected: false });
 		return true;
 	}

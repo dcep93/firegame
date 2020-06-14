@@ -11,6 +11,7 @@ export type GameType = {
 	nobles?: { [t in Token]?: number }[];
 	tokens: { [t in Token]: number };
 	tooManyTokens?: boolean;
+	over: boolean;
 };
 
 export type Params = {

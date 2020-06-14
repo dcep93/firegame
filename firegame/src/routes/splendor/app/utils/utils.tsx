@@ -9,6 +9,8 @@ const store: StoreType<GameType> = store_;
 class Utils extends Shared<GameType, PlayerType> {
 	finishTurn(message: string) {
 		if (!store.gameW.game.tooManyTokens) utils.incrementPlayerTurn();
+		if (store.gameW.game.over && store.gameW.game.currentPlayer === 0)
+			store.gameW.info.alert = "game over";
 		store.update(message);
 	}
 
