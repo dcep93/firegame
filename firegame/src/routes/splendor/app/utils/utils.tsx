@@ -29,6 +29,15 @@ class Utils extends Shared<GameType, PlayerType> {
 			.map(([t, n]) => `${Token[parseInt(t)]} x${n}`)
 			.join(" ")}`;
 	}
+
+	getScore(player: PlayerType): number {
+		return (
+			(player.cards || [])
+				.map((c) => c.points)
+				.reduce((a, b) => a + b, 0) +
+			player.nobles * 3
+		);
+	}
 }
 
 const utils = new Utils();
