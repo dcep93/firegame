@@ -23,6 +23,7 @@ class Main extends React.Component<
 				<Me
 					selectedTokens={this.state.selectedTokens}
 					selectToken={this.selectToken.bind(this)}
+					buyHandCard={this.buyHandCard.bind(this)}
 				/>
 				<Players />
 				<Cards
@@ -48,6 +49,21 @@ class Main extends React.Component<
 
 	buyCard(level: Level, index: number) {
 		const card = store.gameW.game.cards[level]![index];
+		if (!this.buyCardHelper(card)) return;
+		store.gameW.game.cards[level]!.splice(index, 1);
+		utils.finishTurn(`bought a card`);
+	}
+
+	buyHandCard(index: number) {
+		if (!utils.isMyTurn()) return;
+		const me = utils.getMe();
+		const card = me.hand![index];
+		if (!this.buyCardHelper(card)) return;
+		me.hand!.splice(index, 1);
+		utils.finishTurn(`bought a card from hand`);
+	}
+
+	buyCardHelper(card: Card): boolean {
 		const price = Object.assign({}, card.price);
 		const me = utils.getMe();
 		(me.hand || []).forEach((c) => price[c.color] && price[c.color]!--);
@@ -78,7 +94,7 @@ class Main extends React.Component<
 			});
 		if (outstanding !== goldToPay) {
 			alert("Incorrect payment");
-			return;
+			return false;
 		}
 		Object.entries(this.state.selectedTokens)
 			.map(([index, selected]) => ({
@@ -122,7 +138,7 @@ class Main extends React.Component<
 					me.nobles++;
 				});
 		}
-		utils.finishTurn("bought a card");
+		return true;
 	}
 
 	handValue(c: Card) {
