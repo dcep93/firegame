@@ -8,7 +8,7 @@ import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 class Sidebar extends SharedSidebar<Params> {
 	name = "Template";
 	NewGame = NewGame;
-	isMyTurn = utils.isMyTurn;
+	isMyTurn = utils.isMyTurn.bind(utils);
 
 	renderStartNewGame() {
 		return (

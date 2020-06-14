@@ -9,7 +9,7 @@ class Sidebar extends SharedSidebar<Params> {
 	expansionRef: RefObject<HTMLInputElement> = React.createRef();
 	name = "7 Wonders Duel";
 	NewGame = NewGame;
-	isMyTurn = utils.isMyTurn;
+	isMyTurn = utils.isMyTurn.bind(utils);
 
 	renderStartNewGame() {
 		return (

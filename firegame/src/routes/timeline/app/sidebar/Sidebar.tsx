@@ -2,7 +2,7 @@ import React, { RefObject } from "react";
 
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import NewGame, { Params, GameType } from "../utils/NewGame";
-import { store, shared } from "../utils/utils";
+import { store, shared as utils } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
@@ -12,7 +12,7 @@ class Sidebar extends SharedSidebar<Params> {
 	settingsRef: RefObject<Settings> = React.createRef();
 	name = "Timeline";
 	NewGame = NewGame;
-	isMyTurn = shared.isMyTurn;
+	isMyTurn = utils.isMyTurn.bind(utils);
 
 	renderStartNewGame() {
 		return (

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { store, shared } from "../utils/utils";
+import { store, shared as utils } from "../utils/utils";
 import NewGame, { Params } from "../utils/NewGame";
 
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
@@ -10,7 +10,7 @@ import styles from "../../../../shared/styles.module.css";
 class Sidebar extends SharedSidebar<Params> {
 	name = "Fox in the Forest";
 	NewGame = NewGame;
-	isMyTurn = shared.isMyTurn;
+	isMyTurn = utils.isMyTurn.bind(utils);
 
 	getParams(): Params {
 		return {
