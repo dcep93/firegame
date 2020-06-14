@@ -10,7 +10,7 @@ class Players extends React.Component {
 			<div>
 				<div className={styles.bubble}>
 					<h2>Players</h2>
-					<div className={styles.flex}>
+					<div>
 						{store.gameW.game.players.map((p, index) => (
 							<div key={index}>
 								<div className={styles.bubble}>

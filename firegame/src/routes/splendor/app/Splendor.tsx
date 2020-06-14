@@ -13,7 +13,7 @@ class Splendor extends React.Component {
 				<div className={styles.main}>
 					<Sidebar />
 					<div className={styles.content}>
-						<div>{store.gameW.game && <Main />}</div>
+						{store.gameW.game && <Main />}
 					</div>
 				</div>
 			</div>

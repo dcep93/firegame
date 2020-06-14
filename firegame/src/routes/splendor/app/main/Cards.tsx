@@ -13,63 +13,60 @@ class Cards extends React.Component<{
 }> {
 	render() {
 		return (
-			<div>
-				<div className={styles.bubble}>
-					<h2>Board</h2>
-					{utils.enumArray(Level).map((l: Level) => {
-						const deck = store.gameW.game.cards[l];
-						return (
-							deck && (
-								<div key={l}>
-									<div className={styles.bubble}>
-										<h5
-											onClick={() => {
-												if (!utils.isMyTurn()) return;
-												this.reserve(
-													l,
-													NUM_BUYABLE,
-													"face down card"
-												);
-											}}
-										>
-											Level {Level[l]}:{" "}
-											{deck.length - NUM_BUYABLE}
-										</h5>
-										{Array.from(new Array(NUM_BUYABLE))
-											.map((_, index) => deck[index])
-											.filter(Boolean)
-											.map((card, index) => (
-												<div
-													key={index}
-													onClick={() => {
-														if (!utils.isMyTurn())
-															return;
-														if (
-															this.props
-																.goldSelected
-														) {
-															this.reserve(
-																l,
-																index,
-																"card"
-															);
-														} else {
-															this.props.buyCard(
-																l,
-																index
-															);
-														}
-													}}
-												>
-													{utils.cardString(card)}
-												</div>
-											))}
-									</div>
+			<div className={styles.bubble}>
+				<h2>Board</h2>
+				{utils.enumArray(Level).map((l: Level) => {
+					const deck = store.gameW.game.cards[l];
+					return (
+						deck && (
+							<div key={l}>
+								<div className={styles.bubble}>
+									<h5
+										onClick={() => {
+											if (!utils.isMyTurn()) return;
+											this.reserve(
+												l,
+												NUM_BUYABLE,
+												"face down card"
+											);
+										}}
+									>
+										Level {Level[l]}:{" "}
+										{deck.length - NUM_BUYABLE}
+									</h5>
+									{Array.from(new Array(NUM_BUYABLE))
+										.map((_, index) => deck[index])
+										.filter(Boolean)
+										.map((card, index) => (
+											<div
+												key={index}
+												onClick={() => {
+													if (!utils.isMyTurn())
+														return;
+													if (
+														this.props.goldSelected
+													) {
+														this.reserve(
+															l,
+															index,
+															"card"
+														);
+													} else {
+														this.props.buyCard(
+															l,
+															index
+														);
+													}
+												}}
+											>
+												{utils.cardString(card)}
+											</div>
+										))}
 								</div>
-							)
-						);
-					})}
-				</div>
+							</div>
+						)
+					);
+				})}
 			</div>
 		);
 	}

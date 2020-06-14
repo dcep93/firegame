@@ -20,21 +20,25 @@ class Main extends React.Component<
 	render() {
 		return (
 			<>
-				<Tokens
-					goldSelected={this.state.goldSelected}
-					selectGold={this.selectGold.bind(this)}
-				/>
-				<Me
-					selectedTokens={this.state.selectedTokens}
-					selectToken={this.selectToken.bind(this)}
-					buyHandCard={this.buyHandCard.bind(this)}
-				/>
-				<Cards
-					selectGold={this.selectGold.bind(this)}
-					goldSelected={this.state.goldSelected}
-					buyCard={this.buyCard.bind(this)}
-				/>
-				<Players />
+				<div>
+					<Tokens
+						goldSelected={this.state.goldSelected}
+						selectGold={this.selectGold.bind(this)}
+					/>
+					<Me
+						selectedTokens={this.state.selectedTokens}
+						selectToken={this.selectToken.bind(this)}
+						buyHandCard={this.buyHandCard.bind(this)}
+					/>
+					<Players />
+				</div>
+				<div>
+					<Cards
+						selectGold={this.selectGold.bind(this)}
+						goldSelected={this.state.goldSelected}
+						buyCard={this.buyCard.bind(this)}
+					/>
+				</div>
 				<Nobles />
 			</>
 		);

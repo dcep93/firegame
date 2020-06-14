@@ -11,17 +11,19 @@ class Nobles extends React.Component {
 				<div className={styles.bubble}>
 					<h2>Nobles</h2>
 					{(store.gameW.game.nobles || []).map((n, index) => (
-						<div key={index} className={styles.bubble}>
-							{Object.entries(n)
-								.map(([token, count]) => ({
-									token: parseInt(token) as Token,
-									count,
-								}))
-								.map(
-									({ token, count }) =>
-										`${TokenToEmoji[token]}: ${count}`
-								)
-								.join(" ")}
+						<div key={index}>
+							<div className={styles.bubble}>
+								{Object.entries(n)
+									.map(([token, count]) => ({
+										token: parseInt(token) as Token,
+										count,
+									}))
+									.map(
+										({ token, count }) =>
+											`${TokenToEmoji[token]}: ${count}`
+									)
+									.join(" ")}
+							</div>
 						</div>
 					))}
 				</div>
