@@ -1,7 +1,7 @@
 import React from "react";
 
 import utils, { store } from "../utils/utils";
-import { ScienceToken, CommercialEnum, ScienceEnum } from "../utils/types";
+import { ScienceToken, CommercialEnum } from "../utils/types";
 
 import styles from "../../../../shared/styles.module.css";
 
