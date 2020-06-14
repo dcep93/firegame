@@ -23,6 +23,7 @@ export type PlayerType = {
 	tokens?: Token[];
 	hand?: Card[];
 	cards?: Card[];
+	nobles: number;
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -42,6 +43,7 @@ function setPlayers(game: GameType): GameType {
 		.map(([userId, userName]) => ({
 			userId,
 			userName,
+			nobles: 0,
 		}));
 	game.currentPlayer = utils.myIndex(game);
 	return game;

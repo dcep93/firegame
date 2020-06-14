@@ -90,6 +90,31 @@ class Main extends React.Component<
 		if (!me.cards) me.cards = [];
 		me.cards.push(card);
 		me.cards.sort((a, b) => this.handValue(a) - this.handValue(b));
+		const myColors: { [t in Token]?: number } = {};
+		me.cards.forEach((c) => {
+			myColors[c.color] = 1 + (myColors[c.color] || 0);
+		});
+		if (store.gameW.game.nobles) {
+			store.gameW.game.nobles
+				.map((noble, index) => ({ noble, index }))
+				.filter(
+					(obj) =>
+						Object.entries(obj.noble)
+							.map(([token, number]) => ({
+								token: parseInt(token) as Token,
+								number,
+							}))
+							.map(
+								(obj) =>
+									(myColors[obj.token] || 0) < obj.number!
+							)
+							.filter(Boolean).length === 0
+				)
+				.forEach((obj, time) => {
+					store.gameW.game.nobles!.splice(obj.index - time, 1)[0]!;
+					me.nobles++;
+				});
+		}
 		utils.finishTurn("bought a card");
 	}
 
