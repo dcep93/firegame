@@ -16,57 +16,64 @@ class Cards extends React.Component<{
 				{utils.enumArray(Level).map((l: Level) => {
 					const deck = store.gameW.game.cards[l];
 					return (
-						<div key={l}>
-							<div className={styles.bubble}>
-								<div
-									onClick={() => {
-										if (!utils.isMyTurn()) return;
-										this.reserve(
-											l,
-											NUM_BUYABLE,
-											"face down card"
-										);
-									}}
-								>
-									Level {Level[l]}:{" "}
-									{deck.length - NUM_BUYABLE}
+						deck && (
+							<div key={l}>
+								<div className={styles.bubble}>
+									<div
+										onClick={() => {
+											if (!utils.isMyTurn()) return;
+											this.reserve(
+												l,
+												NUM_BUYABLE,
+												"face down card"
+											);
+										}}
+									>
+										Level {Level[l]}:{" "}
+										{deck.length - NUM_BUYABLE}
+									</div>
+									{Array.from(new Array(NUM_BUYABLE))
+										.map((_, index) => deck[index])
+										.filter(Boolean)
+										.map((card, index) => (
+											<div
+												key={index}
+												onClick={() => {
+													if (!utils.isMyTurn())
+														return;
+													if (
+														this.props.goldSelected
+													) {
+														this.reserve(
+															l,
+															index,
+															"card"
+														);
+													} else {
+														this.props.buyCard(
+															l,
+															index
+														);
+													}
+												}}
+											>
+												{Token[card.color]} - (
+												{card.points}) :{" "}
+												{Object.entries(card.price)
+													.map(
+														([t, n]) =>
+															`${
+																Token[
+																	parseInt(t)
+																]
+															} x${n}`
+													)
+													.join(" ")}
+											</div>
+										))}
 								</div>
-								{Array.from(new Array(NUM_BUYABLE))
-									.map((_, index) => deck[index])
-									.filter(Boolean)
-									.map((card, index) => (
-										<div
-											key={index}
-											onClick={() => {
-												if (!utils.isMyTurn()) return;
-												if (this.props.goldSelected) {
-													this.reserve(
-														l,
-														index,
-														"card"
-													);
-												} else {
-													this.props.buyCard(
-														l,
-														index
-													);
-												}
-											}}
-										>
-											{Token[card.color]} - ({card.points}
-											) :{" "}
-											{Object.entries(card.price)
-												.map(
-													([t, n]) =>
-														`${
-															Token[parseInt(t)]
-														} x${n}`
-												)
-												.join(" ")}
-										</div>
-									))}
 							</div>
-						</div>
+						)
 					);
 				})}
 			</div>
@@ -82,7 +89,7 @@ class Cards extends React.Component<{
 			return;
 		}
 		utils.gainToken(Token.gold);
-		me.hand.push(store.gameW.game.cards[level].splice(index, 1)[0]);
+		me.hand.push(store.gameW.game.cards[level]!.splice(index, 1)[0]);
 		utils.finishTurn(`reserved a ${msg}`);
 	}
 }

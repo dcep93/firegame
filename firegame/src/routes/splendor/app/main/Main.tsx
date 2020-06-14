@@ -111,7 +111,7 @@ class Main extends React.Component<
 							.filter(Boolean).length === 0
 				)
 				.forEach((obj, time) => {
-					store.gameW.game.nobles!.splice(obj.index - time, 1)[0]!;
+					store.gameW.game.nobles!.splice(obj.index - time, 1);
 					me.nobles++;
 				});
 		}
