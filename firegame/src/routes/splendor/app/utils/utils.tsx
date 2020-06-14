@@ -2,7 +2,7 @@ import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 
 import { GameType, PlayerType } from "./NewGame";
-import { Token, Card } from "./bank";
+import { Token, Card, TokenToEmoji } from "./bank";
 
 const store: StoreType<GameType> = store_;
 
@@ -26,10 +26,10 @@ class Utils extends Shared<GameType, PlayerType> {
 	}
 
 	cardString(card: Card): string {
-		return `${Token[card.color]} - (${card.points}): ${Object.entries(
-			card.price
-		)
-			.map(([t, n]) => `${Token[parseInt(t)]} x${n}`)
+		return `${TokenToEmoji[card.color]} - (${
+			card.points
+		}): ${Object.entries(card.price)
+			.map(([t, n]) => `${TokenToEmoji[parseInt(t) as Token]} x${n}`)
 			.join(" / ")}`;
 	}
 

@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "../../../../shared/styles.module.css";
 import { store } from "../utils/utils";
-import { Token } from "../utils/bank";
+import { Token, TokenToEmoji } from "../utils/bank";
 
 class Nobles extends React.Component {
 	render() {
@@ -11,15 +11,15 @@ class Nobles extends React.Component {
 				<div className={styles.bubble}>
 					<h2>Nobles</h2>
 					{(store.gameW.game.nobles || []).map((n, index) => (
-						<div key={index}>
+						<div key={index} className={styles.bubble}>
 							{Object.entries(n)
 								.map(([token, count]) => ({
-									token: parseInt(token),
+									token: parseInt(token) as Token,
 									count,
 								}))
 								.map(
 									({ token, count }) =>
-										`${Token[token]}: ${count}`
+										`${TokenToEmoji[token]}: ${count}`
 								)
 								.join(" ")}
 						</div>

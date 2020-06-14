@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "../../../../shared/styles.module.css";
 import utils, { store, MAX_HAND_TOKENS } from "../utils/utils";
-import { Token } from "../utils/bank";
+import { TokenToEmoji } from "../utils/bank";
 
 class Me extends React.Component<{
 	selectedTokens: { [n: number]: boolean };
@@ -16,6 +16,11 @@ class Me extends React.Component<{
 			<>
 				<div className={styles.bubble}>
 					<h2>Tokens</h2>
+					{me.cards && (
+						<div className={styles.bubble}>
+							{me.cards.map((c) => TokenToEmoji[c.color]).sort()}
+						</div>
+					)}
 					{this.mustDiscard() && <h2>Must Discard</h2>}
 					{(me.tokens || []).map((t, index) => (
 						<div
@@ -25,7 +30,7 @@ class Me extends React.Component<{
 								this.props.selectedTokens[index] && styles.grey
 							}`}
 						>
-							{Token[t]}
+							{TokenToEmoji[t]}
 						</div>
 					))}
 				</div>
@@ -52,7 +57,7 @@ class Me extends React.Component<{
 				delete store.gameW.game.tooManyTokens;
 				utils.incrementPlayerTurn();
 			}
-			store.update(`discarded ${Token[token]}`);
+			store.update(`discarded ${TokenToEmoji[token]}`);
 			return;
 		}
 		this.props.selectToken(index);

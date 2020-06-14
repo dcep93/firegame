@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "../../../../shared/styles.module.css";
 import utils, { store } from "../utils/utils";
-import { Token } from "../utils/bank";
+import { Token, TokenToEmoji } from "../utils/bank";
 
 type PropsType = {
 	goldSelected: boolean;
@@ -50,7 +50,7 @@ class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
 	}
 
 	renderToken(token: Token) {
-		return `${Token[token!]}: ${store.gameW.game.tokens[token]}`;
+		return `${TokenToEmoji[token!]}: ${store.gameW.game.tokens[token]}`;
 	}
 
 	select(token: Token) {
@@ -122,7 +122,9 @@ class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
 		toTake.forEach((t) => utils.gainToken(t, num));
 		utils.getMe().tokens!.sort();
 		this.clearSelect();
-		utils.finishTurn(`took ${toTake.map((t) => Token[t]).join(", ")}`);
+		utils.finishTurn(
+			`took ${toTake.map((t) => TokenToEmoji[t]).join(", ")}`
+		);
 	}
 }
 

@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "../../../../shared/styles.module.css";
 import utils, { store } from "../utils/utils";
-import { Token, TokensGroup } from "../utils/bank";
+import { Token, TokensGroup, TokenToEmoji } from "../utils/bank";
 
 class Players extends React.Component {
 	render() {
@@ -27,7 +27,8 @@ class Players extends React.Component {
 									</h5>
 									{(p.cards || []).map((c, index) => (
 										<div key={index}>
-											{utils.cardString(c)}
+											{TokenToEmoji[c.color]} - (
+											{c.points})
 										</div>
 									))}
 								</div>
@@ -44,7 +45,7 @@ class Players extends React.Component {
 		tokens.forEach((t) => (count[t] = 1 + (count[t] || 0)));
 		return Object.keys(count)
 			.map((t) => parseInt(t))
-			.map((t: Token) => `${Token[t]} x${count[t]}`)
+			.map((t: Token) => `${TokenToEmoji[t]} x${count[t]}`)
 			.join(" / ");
 	}
 }

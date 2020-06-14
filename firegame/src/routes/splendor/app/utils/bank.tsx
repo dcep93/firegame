@@ -7,6 +7,15 @@ export enum Token {
 	gold,
 }
 
+export const TokenToEmoji = {
+	[Token.green]: "🟢",
+	[Token.blue]: "🔵",
+	[Token.red]: "🔴",
+	[Token.white]: "⚪",
+	[Token.black]: "⚫",
+	[Token.gold]: "⭐",
+};
+
 export enum Level {
 	one,
 	two,
