@@ -5,7 +5,7 @@ import Players from "./Players";
 import Cards from "./Cards";
 import Nobles from "./Nobles";
 import Tokens from "./Tokens";
-import { Level, Token } from "../utils/bank";
+import { Level, Token, Card } from "../utils/bank";
 import utils, { store } from "../utils/utils";
 
 class Main extends React.Component<
@@ -87,7 +87,18 @@ class Main extends React.Component<
 						me.tokens!.splice(index - time, 1)[0]!
 					]++
 			);
+		if (!me.cards) me.cards = [];
+		me.cards.push(card);
+		me.cards.sort((a, b) => this.handValue(a) - this.handValue(b));
 		utils.finishTurn("bought a card");
+	}
+
+	handValue(c: Card) {
+		return parseInt(
+			`${c.level}${c.color}.${Array.from(JSON.stringify(c)).map((i) =>
+				i.codePointAt(0)
+			)}`
+		);
 	}
 
 	selectGold(allowSelect: boolean) {

@@ -22,6 +22,7 @@ export type PlayerType = {
 	userName: string;
 	tokens?: Token[];
 	hand?: Card[];
+	cards?: Card[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

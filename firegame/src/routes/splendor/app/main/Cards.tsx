@@ -74,9 +74,14 @@ class Cards extends React.Component<{
 	}
 
 	reserve(level: Level, index: number, msg: string) {
-		utils.gainToken(Token.gold);
 		const me = utils.getMe();
 		if (!me.hand) me.hand = [];
+		const MAX_HAND_SIZE = 3;
+		if (me.hand.length === MAX_HAND_SIZE) {
+			alert(`Already have ${MAX_HAND_SIZE} cards`);
+			return;
+		}
+		utils.gainToken(Token.gold);
 		me.hand.push(store.gameW.game.cards[level].splice(index, 1)[0]);
 		utils.finishTurn(`reserved a ${msg}`);
 	}
