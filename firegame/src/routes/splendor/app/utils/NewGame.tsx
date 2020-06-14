@@ -1,7 +1,7 @@
 import { LobbyType } from "../../../../shared/store";
 
 import utils, { store } from "./utils";
-import bank, { Token, Card, TokensGroup } from "./bank";
+import bank, { Token, Card, TokensGroup, Level } from "./bank";
 
 export type GameType = {
 	params: Params;
@@ -47,9 +47,14 @@ function setPlayers(game: GameType): GameType {
 
 function setCards(game: GameType): GameType {
 	game.cards = {};
-	for (let i = 1; i <= 3; i++) {
-		game.cards[i] = utils.shuffle(bank.cards.filter((c) => c.level === i));
-	}
+	utils
+		.enumArray(Level)
+		.forEach(
+			(l) =>
+				(game.cards[l] = utils.shuffle(
+					bank.cards.filter((c) => c.level === l)
+				))
+		);
 	return game;
 }
 
