@@ -29,12 +29,12 @@ class Main extends React.Component<
 					selectToken={this.selectToken.bind(this)}
 					buyHandCard={this.buyHandCard.bind(this)}
 				/>
-				<Players />
 				<Cards
 					selectGold={this.selectGold.bind(this)}
 					goldSelected={this.state.goldSelected}
 					buyCard={this.buyCard.bind(this)}
 				/>
+				<Players />
 				<Nobles />
 			</>
 		);

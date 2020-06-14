@@ -10,21 +10,30 @@ class Players extends React.Component {
 			<div>
 				<div className={styles.bubble}>
 					<h2>Players</h2>
-					{store.gameW.game.players.map((p, index) => (
-						<div key={index}>
-							<div className={styles.bubble}>
-								<h5 title={this.tokensString(p.tokens || [])}>
-									{p.userName} - {utils.getScore(p)} points
-									{" / "}
-									{(p.hand || []).length} hand / {p.nobles}{" "}
-									nobles
-								</h5>
-								{(p.cards || []).map((c, index) => (
-									<div key={index}>{utils.cardString(c)}</div>
-								))}
+					<div className={styles.flex}>
+						{store.gameW.game.players.map((p, index) => (
+							<div key={index}>
+								<div className={styles.bubble}>
+									<h5
+										title={this.tokensString(
+											p.tokens || []
+										)}
+									>
+										{p.userName} - {utils.getScore(p)}{" "}
+										points
+										{" / "}
+										{(p.hand || []).length} hand /{" "}
+										{p.nobles} nobles
+									</h5>
+									{(p.cards || []).map((c, index) => (
+										<div key={index}>
+											{utils.cardString(c)}
+										</div>
+									))}
+								</div>
 							</div>
-						</div>
-					))}
+						))}
+					</div>
 				</div>
 			</div>
 		);
