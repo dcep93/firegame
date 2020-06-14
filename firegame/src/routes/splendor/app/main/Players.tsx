@@ -19,7 +19,7 @@ class Players extends React.Component {
 									{(p.hand || []).length} hand / {p.nobles}{" "}
 									nobles
 								</h5>
-								{(p.hand || []).map((c, index) => (
+								{(p.cards || []).map((c, index) => (
 									<div key={index}>{utils.cardString(c)}</div>
 								))}
 							</div>

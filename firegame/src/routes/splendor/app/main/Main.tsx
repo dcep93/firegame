@@ -20,6 +20,10 @@ class Main extends React.Component<
 	render() {
 		return (
 			<>
+				<Tokens
+					goldSelected={this.state.goldSelected}
+					selectGold={this.selectGold.bind(this)}
+				/>
 				<Me
 					selectedTokens={this.state.selectedTokens}
 					selectToken={this.selectToken.bind(this)}
@@ -31,10 +35,6 @@ class Main extends React.Component<
 					buyCard={this.buyCard.bind(this)}
 				/>
 				<Nobles />
-				<Tokens
-					goldSelected={this.state.goldSelected}
-					selectGold={this.selectGold.bind(this)}
-				/>
 			</>
 		);
 	}
@@ -138,6 +138,7 @@ class Main extends React.Component<
 					me.nobles++;
 				});
 		}
+		this.setState({ selectedTokens: {}, goldSelected: false });
 		return true;
 	}
 
