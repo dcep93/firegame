@@ -15,27 +15,24 @@ class Me extends React.Component<{
 		return (
 			<>
 				<div className={styles.bubble}>
-					<h2>Tokens</h2>
+					<h2>Tokens ({me.cards?.length || 0})</h2>
 					{me.cards && (
 						<div className={styles.bubble}>
 							{me.cards.map((c) => TokenToEmoji[c.color]).sort()}
 						</div>
 					)}
 					{this.mustDiscard() && <h2>Must Discard</h2>}
-					<ol>
-						{(me.tokens || []).map((t, index) => (
-							<li
-								key={index}
-								onClick={() => this.selectToken(index)}
-								className={`${
-									this.props.selectedTokens[index] &&
-									styles.grey
-								}`}
-							>
-								{TokenToEmoji[t]}
-							</li>
-						))}
-					</ol>
+					{(me.tokens || []).map((t, index) => (
+						<div
+							key={index}
+							onClick={() => this.selectToken(index)}
+							className={`${
+								this.props.selectedTokens[index] && styles.grey
+							}`}
+						>
+							{TokenToEmoji[t]}
+						</div>
+					))}
 				</div>
 				<div className={styles.bubble}>
 					<h2>Hand</h2>
