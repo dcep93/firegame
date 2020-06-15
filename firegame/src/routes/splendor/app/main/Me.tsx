@@ -15,7 +15,7 @@ class Me extends React.Component<{
 		return (
 			<>
 				<div className={styles.bubble}>
-					<h2>Tokens ({me.cards?.length || 0})</h2>
+					<h2>Tokens ({me.tokens?.length || 0})</h2>
 					{me.cards && (
 						<div className={styles.bubble}>
 							{me.cards.map((c) => TokenToEmoji[c.color]).sort()}
