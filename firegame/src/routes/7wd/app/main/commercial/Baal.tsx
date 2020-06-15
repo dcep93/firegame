@@ -28,8 +28,9 @@ class Baal extends React.Component {
 			<div className={styles.bubble}>
 				<h2>Steal a brown/grey card</h2>
 				<div className={styles.flex}>
-					{cardsToSteal.map((obj) => (
+					{cardsToSteal.map((obj, index) => (
 						<div
+							key={index}
 							onClick={() => {
 								if (!utils.isMyTurn()) return;
 								const me = utils.getMe();
