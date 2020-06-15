@@ -22,17 +22,20 @@ class Me extends React.Component<{
 						</div>
 					)}
 					{this.mustDiscard() && <h2>Must Discard</h2>}
-					{(me.tokens || []).map((t, index) => (
-						<div
-							key={index}
-							onClick={() => this.selectToken(index)}
-							className={`${
-								this.props.selectedTokens[index] && styles.grey
-							}`}
-						>
-							{TokenToEmoji[t]}
-						</div>
-					))}
+					<ol>
+						{(me.tokens || []).map((t, index) => (
+							<li
+								key={index}
+								onClick={() => this.selectToken(index)}
+								className={`${
+									this.props.selectedTokens[index] &&
+									styles.grey
+								}`}
+							>
+								{TokenToEmoji[t]}
+							</li>
+						))}
+					</ol>
 				</div>
 				<div className={styles.bubble}>
 					<h2>Hand</h2>
