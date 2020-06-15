@@ -65,7 +65,9 @@ class Main extends React.Component<
 		const card = store.gameW.game.cards[level]![index];
 		if (!this.buyCardHelper(card)) return;
 		store.gameW.game.cards[level]!.splice(index, 1);
-		utils.finishTurn(`bought a card`);
+		utils.finishTurn(
+			`bought a level ${Level[card.level]} card (number ${index + 1})`
+		);
 	}
 
 	buyHandCard(index: number) {
@@ -74,7 +76,7 @@ class Main extends React.Component<
 		const card = me.hand![index];
 		if (!this.buyCardHelper(card)) return;
 		me.hand!.splice(index, 1);
-		utils.finishTurn(`bought a card from hand`);
+		utils.finishTurn(`bought a level ${Level[card.level]} card from hand`);
 	}
 
 	buyCardHelper(card: Card): boolean {

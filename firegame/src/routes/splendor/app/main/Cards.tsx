@@ -24,11 +24,7 @@ class Cards extends React.Component<{
 									<h5
 										onClick={() => {
 											if (!utils.isMyTurn()) return;
-											this.reserve(
-												l,
-												NUM_BUYABLE,
-												"face down card"
-											);
+											this.reserve(l, NUM_BUYABLE);
 										}}
 									>
 										Level {Level[l]}:{" "}
@@ -46,11 +42,7 @@ class Cards extends React.Component<{
 													if (
 														this.props.goldSelected
 													) {
-														this.reserve(
-															l,
-															index,
-															"card"
-														);
+														this.reserve(l, index);
 													} else {
 														this.props.buyCard(
 															l,
@@ -71,7 +63,7 @@ class Cards extends React.Component<{
 		);
 	}
 
-	reserve(level: Level, index: number, msg: string) {
+	reserve(level: Level, index: number) {
 		const me = utils.getMe();
 		if (!me.hand) me.hand = [];
 		const MAX_HAND_SIZE = 3;
@@ -84,7 +76,10 @@ class Cards extends React.Component<{
 		const card = store.gameW.game.cards[level]!.splice(index, 1)[0];
 		if (!card) return;
 		me.hand.push(card);
-		utils.finishTurn(`reserved a ${msg}`);
+		const which =
+			index === NUM_BUYABLE ? "face down" : `number ${index + 1}`;
+		const msg = `reserved a level ${Level[level]} card (${which})`;
+		utils.finishTurn(msg);
 	}
 }
 

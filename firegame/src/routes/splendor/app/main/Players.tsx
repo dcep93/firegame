@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "../../../../shared/styles.module.css";
 import utils, { store } from "../utils/utils";
-import { Token, TokensGroup, TokenToEmoji } from "../utils/bank";
+import { Token, TokensGroup, TokenToEmoji, Level } from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 
 class Players extends React.Component {
@@ -47,9 +47,9 @@ class Players extends React.Component {
 		const cards = (p.cards || []).filter((c) => c.color === t);
 		if (cards.length === 0) return null;
 		return (
-			<div className={styles.bubble}>
+			<div className={styles.bubble} key={t}>
 				{cards.map((c, index) => (
-					<div key={index}>
+					<div key={index} title={`Level ${Level[c.level]}`}>
 						{TokenToEmoji[c.color]} - ({c.points})
 					</div>
 				))}
