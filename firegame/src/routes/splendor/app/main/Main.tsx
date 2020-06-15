@@ -5,7 +5,7 @@ import Players from "./Players";
 import Cards from "./Cards";
 import Nobles from "./Nobles";
 import TokenBank from "./TokenBank";
-import { Level, Token, Card } from "../utils/bank";
+import { Level, Token, Card, TokenToEmoji } from "../utils/bank";
 import utils, { store } from "../utils/utils";
 import Hand from "./Hand";
 
@@ -66,7 +66,9 @@ class Main extends React.Component<
 		if (!this.buyCardHelper(card)) return;
 		store.gameW.game.cards[level]!.splice(index, 1);
 		utils.finishTurn(
-			`bought a level ${Level[card.level]} card (number ${index + 1})`
+			`bought a ${TokenToEmoji[card.color]} level ${
+				Level[card.level]
+			} card (number ${index + 1})`
 		);
 	}
 
@@ -76,7 +78,11 @@ class Main extends React.Component<
 		const card = me.hand![index];
 		if (!this.buyCardHelper(card)) return;
 		me.hand!.splice(index, 1);
-		utils.finishTurn(`bought a level ${Level[card.level]} card from hand`);
+		utils.finishTurn(
+			`bought a ${TokenToEmoji[card.color]} level ${
+				Level[card.level]
+			} card from hand`
+		);
 	}
 
 	buyCardHelper(card: Card): boolean {
