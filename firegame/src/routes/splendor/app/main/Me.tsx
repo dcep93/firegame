@@ -53,7 +53,8 @@ class Me extends React.Component<{
 		if (this.mustDiscard()) {
 			const tokens = utils.getMe().tokens!;
 			const token = tokens.splice(index, 1)[0]!;
-			if (tokens.length < MAX_HAND_TOKENS) {
+			store.gameW.game.tokens[token]++;
+			if (tokens.length <= MAX_HAND_TOKENS) {
 				delete store.gameW.game.tooManyTokens;
 				utils.incrementPlayerTurn();
 			}
