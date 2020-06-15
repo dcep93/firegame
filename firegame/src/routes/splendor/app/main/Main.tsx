@@ -1,12 +1,13 @@
 import React from "react";
 
-import Me from "./Me";
+import MyTokens from "./MyTokens";
 import Players from "./Players";
 import Cards from "./Cards";
 import Nobles from "./Nobles";
-import Tokens from "./Tokens";
+import TokenBank from "./TokenBank";
 import { Level, Token, Card } from "../utils/bank";
 import utils, { store } from "../utils/utils";
+import Hand from "./Hand";
 
 class Main extends React.Component<
 	{},
@@ -21,16 +22,24 @@ class Main extends React.Component<
 		return (
 			<>
 				<div>
-					<Tokens
-						goldSelected={this.state.goldSelected}
-						selectGold={this.selectGold.bind(this)}
-					/>
-					<Me
-						selectedTokens={this.state.selectedTokens}
-						selectToken={this.selectToken.bind(this)}
-						buyHandCard={this.buyHandCard.bind(this)}
-					/>
-					<Players />
+					<div>
+						<div>
+							<TokenBank
+								goldSelected={this.state.goldSelected}
+								selectGold={this.selectGold.bind(this)}
+							/>
+							<MyTokens
+								selectedTokens={this.state.selectedTokens}
+								selectToken={this.selectToken.bind(this)}
+							/>
+						</div>
+						<div>
+							<Hand buyHandCard={this.buyHandCard.bind(this)} />
+						</div>
+					</div>
+					<div>
+						<Players />
+					</div>
 				</div>
 				<div>
 					<Cards

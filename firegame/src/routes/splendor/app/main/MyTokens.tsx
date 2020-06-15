@@ -7,7 +7,6 @@ import { TokenToEmoji } from "../utils/bank";
 class Me extends React.Component<{
 	selectedTokens: { [n: number]: boolean };
 	selectToken: (index: number) => void;
-	buyHandCard: (index: number) => void;
 }> {
 	render() {
 		const me = utils.getMe();
@@ -31,17 +30,6 @@ class Me extends React.Component<{
 							}`}
 						>
 							{TokenToEmoji[t]}
-						</div>
-					))}
-				</div>
-				<div className={styles.bubble}>
-					<h2>Hand</h2>
-					{(me.hand || []).map((c, index) => (
-						<div
-							key={index}
-							onClick={() => this.props.buyHandCard(index)}
-						>
-							{utils.cardString(c)}
 						</div>
 					))}
 				</div>

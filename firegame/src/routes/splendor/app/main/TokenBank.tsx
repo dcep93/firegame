@@ -9,7 +9,7 @@ type PropsType = {
 	selectGold: (force: boolean) => void;
 };
 
-class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
+class TokenBank extends React.Component<PropsType, { [t in Token]?: boolean }> {
 	constructor(props: PropsType) {
 		super(props);
 		this.state = {};
@@ -128,4 +128,4 @@ class Tokens extends React.Component<PropsType, { [t in Token]?: boolean }> {
 	}
 }
 
-export default Tokens;
+export default TokenBank;
