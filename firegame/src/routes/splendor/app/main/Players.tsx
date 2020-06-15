@@ -3,6 +3,7 @@ import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import utils, { store } from "../utils/utils";
 import { Token, TokensGroup, TokenToEmoji } from "../utils/bank";
+import { PlayerType } from "../utils/NewGame";
 
 class Players extends React.Component {
 	render() {
@@ -25,19 +26,33 @@ class Players extends React.Component {
 											`${(p.hand || []).length} hand`,
 											`${p.nobles} nobles`,
 											`${(p.cards || []).length} cards`,
+											`${(p.tokens || []).length} tokens`,
 										].join(" / ")}
 									</h5>
-									{(p.cards || []).map((c, index) => (
-										<div key={index}>
-											{TokenToEmoji[c.color]} - (
-											{c.points})
-										</div>
-									))}
+									<div className={styles.flex}>
+										{utils
+											.enumArray(Token)
+											.map((t) => this.renderCards(t, p))}
+									</div>
 								</div>
 							</div>
 						))}
 					</div>
 				</div>
+			</div>
+		);
+	}
+
+	renderCards(t: Token, p: PlayerType) {
+		const cards = (p.cards || []).filter((c) => c.color === t);
+		if (cards.length === 0) return null;
+		return (
+			<div className={styles.bubble}>
+				{cards.map((c, index) => (
+					<div key={index}>
+						{TokenToEmoji[c.color]} - ({c.points})
+					</div>
+				))}
 			</div>
 		);
 	}
