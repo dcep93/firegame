@@ -609,10 +609,10 @@ class Utils extends Shared<GameType, PlayerType> {
 			case ScienceToken.agriculture:
 			case ScienceToken.urbanism:
 				utils.getMe().money += 6;
-				return;
+				break;
 			case ScienceToken.law:
 				utils.gainScience(ScienceEnum.law);
-				return;
+				break;
 		}
 		utils.endCommercial(
 			`built ${utils.enumName(scienceName, ScienceToken)}`
