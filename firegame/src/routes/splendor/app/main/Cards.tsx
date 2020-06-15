@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from "../../../../shared/styles.module.css";
 import utils, { store } from "../utils/utils";
-import { Level, Token } from "../utils/bank";
+import { Level, Token, TokenToEmoji } from "../utils/bank";
 
 const NUM_BUYABLE = 4;
 
@@ -77,7 +77,9 @@ class Cards extends React.Component<{
 		if (!card) return;
 		me.hand.push(card);
 		const which =
-			index === NUM_BUYABLE ? "face down" : `number ${index + 1}`;
+			index === NUM_BUYABLE
+				? "face down"
+				: `${TokenToEmoji[card.color]} number ${index + 1}`;
 		const msg = `reserved a level ${Level[level]} card (${which})`;
 		utils.finishTurn(msg);
 	}
