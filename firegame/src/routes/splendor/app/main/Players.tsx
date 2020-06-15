@@ -19,11 +19,13 @@ class Players extends React.Component {
 											p.tokens || []
 										)}
 									>
-										{p.userName} - {utils.getScore(p)}{" "}
-										points
-										{" / "}
-										{(p.hand || []).length} hand /{" "}
-										{p.nobles} nobles
+										{p.userName} -{" "}
+										{[
+											`${utils.getScore(p)} points`,
+											`${(p.hand || []).length} hand`,
+											`${p.nobles} nobles`,
+											`${(p.cards || []).length} cards`,
+										].join(" / ")}
 									</h5>
 									{(p.cards || []).map((c, index) => (
 										<div key={index}>
