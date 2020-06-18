@@ -32,6 +32,7 @@ class Main extends React.Component<
 								selectedTokens={this.state.selectedTokens}
 								selectToken={this.selectToken.bind(this)}
 							/>
+							<Nobles />
 						</div>
 						<div>
 							<Hand buyHandCard={this.buyHandCard.bind(this)} />
@@ -48,7 +49,6 @@ class Main extends React.Component<
 						buyCard={this.buyCard.bind(this)}
 					/>
 				</div>
-				<Nobles />
 			</>
 		);
 	}
