@@ -64,17 +64,17 @@ class StructureCard extends React.Component<{
 			}
 			return "?";
 		}
+		const player = utils.getMe() || utils.getCurrent();
+		const oppIndex = utils.playerIndexByIndex(1 - player.index);
+		const opp = utils.getPlayer(oppIndex);
 		return (
 			<div title={JSON.stringify(card, null, 2)}>
 				<div style={{ backgroundColor: Color[card.color] }}>_</div>
 				<div>{card.name}</div>
 				<div>
 					cost: {card.cost.join("")} ($
-					{utils.getCardCost(
-						card,
-						utils.getMe() || utils.getCurrent()
-					)}
-					)
+					{utils.getCardCost(card, player)}/
+					{utils.getCardCost(card, opp)})
 				</div>
 				{card.message && <div>{card.message}</div>}
 				{this.renderExtra(card)}
