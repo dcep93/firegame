@@ -1132,7 +1132,7 @@ const wonders: WonderType[] = [
 				playerIndex: utils.myIndex(),
 			});
 			if (
-				store.gameW.game.gods[God.mesopotamian].find(
+				(store.gameW.game.gods[God.mesopotamian] || []).find(
 					(godIndex) => gods[godIndex].name === "enki"
 				)
 			)
