@@ -7,7 +7,7 @@ import { Token, TokenToEmoji } from "../utils/bank";
 class Nobles extends React.Component {
 	render() {
 		return (
-			<div className={styles.bubble}>
+			<div className={`${styles.bubble} ${styles.right}`}>
 				<h2>Nobles</h2>
 				{(store.gameW.game.nobles || []).map((n, index) => (
 					<div key={index}>
