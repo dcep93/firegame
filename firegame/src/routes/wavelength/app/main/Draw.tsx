@@ -2,6 +2,7 @@ import React from "react";
 import utils, { store } from "../utils/utils";
 
 import { Difficulty } from "../utils/NewGame";
+import bank from "./bank";
 
 class Draw extends React.Component {
 	render() {
@@ -20,9 +21,8 @@ class Draw extends React.Component {
 		const myIndex = utils.myIndex();
 		if (myIndex === -1) return;
 		store.gameW.game.currentPlayer = myIndex;
-		// todo real card and target
-		const card = { a: "a", b: "b" };
-		const target = 66;
+		const card = utils.shuffle(Array.from(bank[difficulty]))[0];
+		const target = Math.floor(Math.random() * 101);
 		store.gameW.game.cardW = { difficulty, card, target };
 		store.update(`drew [${Difficulty[difficulty]}]`);
 	}
