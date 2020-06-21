@@ -7,6 +7,7 @@ export type GameType = {
 	currentPlayer: number;
 	players: PlayerType[];
 	cardW: { target: number; difficulty: Difficulty; card: Card };
+	clue?: string;
 };
 
 export type Params = {
