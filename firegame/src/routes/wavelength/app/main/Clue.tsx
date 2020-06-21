@@ -4,7 +4,8 @@ import utils, { store } from "../utils/utils";
 import styles from "../../../../shared/styles.module.css";
 
 class Clue extends React.Component<{}, { visible: boolean }> {
-	inputRef: React.RefObject<HTMLInputElement> = React.createRef();
+	clueRef: React.RefObject<HTMLInputElement> = React.createRef();
+	answerRef: React.RefObject<HTMLInputElement> = React.createRef();
 	constructor(props: {}) {
 		super(props);
 		this.state = { visible: false };
@@ -18,7 +19,7 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 					<div className={styles.bubble}>Clue: {clue}</div>
 					<div className={styles.bubble}>
 						<form onSubmit={this.answerClue.bind(this)}>
-							Answer: <input type="number" ref={this.inputRef} />
+							Answer: <input type="number" ref={this.answerRef} />
 						</form>
 					</div>
 				</>
@@ -31,7 +32,7 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 					Target: {this.state.visible ? cardW.target : "?"}
 				</div>
 				<form onSubmit={this.giveClue.bind(this)}>
-					<input type="text" ref={this.inputRef} />
+					<input type="text" ref={this.clueRef} />
 				</form>
 			</div>
 		);
@@ -40,7 +41,7 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 	giveClue(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		e.stopPropagation();
-		const clue = this.inputRef.current!.value;
+		const clue = this.clueRef.current!.value;
 		store.gameW.game.clue = clue;
 		store.update(`gave a clue - ${clue}`);
 		return false;
@@ -49,9 +50,7 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 	answerClue(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		e.stopPropagation();
-		const clue = this.inputRef.current!.value;
-		store.gameW.game.clue = clue;
-		store.update(`gave a clue - ${clue}`);
+		const answer = this.answerRef.current!.value;
 		return false;
 	}
 
