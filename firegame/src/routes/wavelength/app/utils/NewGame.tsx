@@ -6,9 +6,19 @@ export type GameType = {
 	params: Params;
 	currentPlayer: number;
 	players: PlayerType[];
-	cardW: { target: number; difficulty: Difficulty; card: Card };
+	cardW?: CardW;
 	clue?: string;
+	lastRound?: {
+		cluer: string;
+		answerer: string;
+		answer: number;
+		target: number;
+		cardW: CardW;
+		clue: string;
+	};
 };
+
+export type CardW = { target: number; difficulty: Difficulty; card: Card };
 
 export type Params = {
 	lobby: LobbyType;
@@ -17,6 +27,8 @@ export type Params = {
 export type PlayerType = {
 	userId: string;
 	userName: string;
+	clues: number;
+	points: number;
 };
 
 export enum Difficulty {
@@ -42,6 +54,8 @@ function setPlayers(game: GameType): GameType {
 		.map(([userId, userName]) => ({
 			userId,
 			userName,
+			clues: 0,
+			points: 0,
 		}));
 	game.currentPlayer = utils.myIndex(game);
 	return game;

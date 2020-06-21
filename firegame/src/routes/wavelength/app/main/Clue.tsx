@@ -50,7 +50,30 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 	answerClue(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		e.stopPropagation();
-		const answer = this.answerRef.current!.value;
+		const answer = parseInt(this.answerRef.current!.value);
+		if (answer >= 0 && answer <= 100) {
+			const target = store.gameW.game.cardW!.target;
+			const distance = Math.abs(target - answer);
+			var points = Math.floor(-distance / 20);
+			points += 4;
+			const cluer = utils.getCurrent();
+			cluer.clues++;
+			cluer.points += points;
+			utils.incrementPlayerTurn();
+			store.gameW.game.lastRound = {
+				cluer: cluer.userName,
+				answerer: store.lobby[store.me.userId],
+				answer,
+				target,
+				cardW: store.gameW.game.cardW!,
+				clue: store.gameW.game.clue!,
+			};
+			delete store.gameW.game.cardW;
+			delete store.gameW.game.clue;
+			store.update(`answered: ${answer} (${target})`);
+		} else {
+			alert("Need to pick a target between 0 and 100");
+		}
 		return false;
 	}
 
