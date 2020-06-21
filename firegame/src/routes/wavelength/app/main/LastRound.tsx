@@ -20,6 +20,9 @@ class LastRound extends React.Component {
 					<div>
 						{lastRound.answerer} answered {lastRound.answer}
 					</div>
+					<div>
+						{lastRound.cluer} received {lastRound.points} points
+					</div>
 				</div>
 			</div>
 		);

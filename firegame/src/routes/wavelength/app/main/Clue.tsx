@@ -50,14 +50,15 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 	answerClue(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		e.stopPropagation();
-		const answer = parseInt(this.answerRef.current!.value);
+		const answer = parseFloat(this.answerRef.current!.value);
 		if (answer >= 0 && answer <= 100) {
 			const target = store.gameW.game.cardW!.target;
 			const distance = Math.abs(target - answer);
-			// todo real points
-			var points = Math.floor(-distance / 20);
-			points += 4;
 			const cluer = utils.getCurrent();
+			var points = -Math.floor(0.5 + distance / 6);
+			if (points === 0) cluer.bingos++;
+			points += 4;
+			if (points < 2) points = 0;
 			cluer.clues++;
 			cluer.points += points;
 			utils.incrementPlayerTurn();
@@ -68,6 +69,7 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 				target,
 				cardW: store.gameW.game.cardW!,
 				clue: store.gameW.game.clue!,
+				points,
 			};
 			delete store.gameW.game.cardW;
 			delete store.gameW.game.clue;

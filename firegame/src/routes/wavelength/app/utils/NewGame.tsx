@@ -15,6 +15,7 @@ export type GameType = {
 		target: number;
 		cardW: CardW;
 		clue: string;
+		points: number;
 	};
 };
 
@@ -29,6 +30,7 @@ export type PlayerType = {
 	userName: string;
 	clues: number;
 	points: number;
+	bingos: number;
 };
 
 export enum Difficulty {
@@ -56,6 +58,7 @@ function setPlayers(game: GameType): GameType {
 			userName,
 			clues: 0,
 			points: 0,
+			bingos: 0,
 		}));
 	game.currentPlayer = utils.myIndex(game);
 	return game;

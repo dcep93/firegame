@@ -1,7 +1,6 @@
 import React from "react";
 import utils, { store } from "../utils/utils";
 
-import styles from "../../../../shared/styles.module.css";
 import { Difficulty } from "../utils/NewGame";
 
 class Draw extends React.Component {

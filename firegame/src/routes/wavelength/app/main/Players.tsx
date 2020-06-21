@@ -18,6 +18,7 @@ class Players extends React.Component {
 						<h2>{p.userName}</h2>
 						<div>Points: {p.points}</div>
 						<div>Clues: {p.clues}</div>
+						<div>Bingos: {p.bingos}</div>
 					</div>
 				))}
 			</div>
