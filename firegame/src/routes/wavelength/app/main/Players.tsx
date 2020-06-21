@@ -16,6 +16,8 @@ class Players extends React.Component {
 						key={index}
 					>
 						<h2>{p.userName}</h2>
+						<div>Points: {p.points}</div>
+						<div>Clues: {p.clues}</div>
 					</div>
 				))}
 			</div>
