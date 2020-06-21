@@ -46,7 +46,7 @@ abstract class Log<T> extends React.Component<
 				<h2>Log</h2>
 				<div className={styles.dont_grow}>
 					<div className={styles.log_entry_parent}>
-						<div className={styles.log_entry_child}>
+						<div className={styles.inline}>
 							{this.state.history.map((wrapper, index) => (
 								<LogEntry
 									key={index}

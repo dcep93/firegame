@@ -6,6 +6,7 @@ export type GameType = {
 	params: Params;
 	currentPlayer: number;
 	players: PlayerType[];
+	cardW: { target: number; difficulty: Difficulty; card: Card };
 };
 
 export type Params = {
@@ -17,6 +18,16 @@ export type PlayerType = {
 	userName: string;
 };
 
+export enum Difficulty {
+	easy,
+	hard,
+}
+
+export type Card = {
+	a: string;
+	b: string;
+};
+
 function NewGame(params: Params): PromiseLike<GameType> {
 	// @ts-ignore game being constructed
 	const game: GameType = {};
@@ -25,11 +36,13 @@ function NewGame(params: Params): PromiseLike<GameType> {
 }
 
 function setPlayers(game: GameType): GameType {
-	game.players = Object.entries(store.lobby).map(([userId, userName]) => ({
-		userId,
-		userName,
-	}));
-	game.currentPlayer = -1;
+	game.players = Object.entries(store.lobby)
+		.sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
+		.map(([userId, userName]) => ({
+			userId,
+			userName,
+		}));
+	game.currentPlayer = utils.myIndex(game);
 	return game;
 }
 
