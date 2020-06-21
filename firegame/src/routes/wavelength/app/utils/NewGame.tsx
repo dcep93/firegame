@@ -25,13 +25,11 @@ function NewGame(params: Params): PromiseLike<GameType> {
 }
 
 function setPlayers(game: GameType): GameType {
-	game.players = Object.entries(store.lobby)
-		.sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
-		.map(([userId, userName]) => ({
-			userId,
-			userName,
-		}));
-	game.currentPlayer = utils.myIndex(game);
+	game.players = Object.entries(store.lobby).map(([userId, userName]) => ({
+		userId,
+		userName,
+	}));
+	game.currentPlayer = -1;
 	return game;
 }
 
