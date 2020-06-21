@@ -1,19 +1,17 @@
 import React from "react";
-import { store } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
-import { Difficulty } from "../utils/NewGame";
+import { Difficulty, CardW } from "../utils/NewGame";
 
-class Card extends React.Component {
+class Card extends React.Component<{ cardW?: CardW }> {
 	render() {
-		const cardW = store.gameW.game.cardW;
-		if (cardW === undefined) return null;
+		if (this.props.cardW === undefined) return null;
 		return (
 			<div>
 				<div className={styles.bubble}>
-					<div>Level: {Difficulty[cardW.difficulty]}</div>
+					<div>Level: {Difficulty[this.props.cardW.difficulty]}</div>
 					<div>
-						{cardW.card.a} -> {cardW.card.b}
+						{this.props.cardW.card.a} -> {this.props.cardW.card.b}
 					</div>
 				</div>
 			</div>

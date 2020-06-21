@@ -54,6 +54,7 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 		if (answer >= 0 && answer <= 100) {
 			const target = store.gameW.game.cardW!.target;
 			const distance = Math.abs(target - answer);
+			// todo real points
 			var points = Math.floor(-distance / 20);
 			points += 4;
 			const cluer = utils.getCurrent();

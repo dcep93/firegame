@@ -21,6 +21,7 @@ class Draw extends React.Component {
 		const myIndex = utils.myIndex();
 		if (myIndex === -1) return;
 		store.gameW.game.currentPlayer = myIndex;
+		// todo real card and target
 		const card = { a: "a", b: "b" };
 		const target = 66;
 		store.gameW.game.cardW = { difficulty, card, target };
