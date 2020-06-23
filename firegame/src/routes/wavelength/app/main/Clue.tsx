@@ -6,9 +6,9 @@ import styles from "../../../../shared/styles.module.css";
 class Clue extends React.Component<{}, { visible: boolean }> {
 	clueRef: React.RefObject<HTMLInputElement> = React.createRef();
 	answerRef: React.RefObject<HTMLInputElement> = React.createRef();
-	constructor(props: {}) {
-		super(props);
-		this.state = { visible: false };
+
+	componentDidMount() {
+		this.setState({ visible: false });
 	}
 
 	render() {
