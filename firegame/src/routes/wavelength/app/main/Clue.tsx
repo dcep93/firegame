@@ -43,6 +43,7 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 		e.stopPropagation();
 		const clue = this.clueRef.current!.value;
 		store.gameW.game.clue = clue;
+		this.setState({ visible: false });
 		store.update(`gave a clue - ${clue}`);
 		return false;
 	}
