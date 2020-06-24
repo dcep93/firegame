@@ -7,8 +7,9 @@ class Clue extends React.Component<{}, { visible: boolean }> {
 	clueRef: React.RefObject<HTMLInputElement> = React.createRef();
 	answerRef: React.RefObject<HTMLInputElement> = React.createRef();
 
-	componentDidMount() {
-		this.setState({ visible: false });
+	constructor(props: {}) {
+		super(props);
+		this.state = { visible: false };
 	}
 
 	render() {
