@@ -4,6 +4,7 @@ import utils, { store } from "../../utils/utils";
 import bank from "../../utils/bank";
 
 import styles from "../../../../../shared/styles.module.css";
+import { God } from "../../utils/types";
 
 const GODS_TO_DRAW = 2;
 
@@ -12,11 +13,13 @@ class PickGod extends React.Component<{
 	selectedPantheon?: number;
 }> {
 	render() {
-		if (!utils.isMyTurn()) return null;
+		const god = store.gameW.game.godTokens[0];
+		if (!utils.isMyTurn())
+			return <div className={styles.bubble}>{God[god]}</div>;
 		return (
 			<div className={styles.bubble}>
 				<div className={styles.flex}>
-					{store.gameW.game.gods[store.gameW.game.godTokens[0]]
+					{store.gameW.game.gods[god]
 						.slice(0, GODS_TO_DRAW)
 						.map((godIndex, tokenIndex) => (
 							<div
