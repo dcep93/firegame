@@ -21,7 +21,7 @@ function sendGameState<T>(message: string, game: T, isNewGame?: boolean): void {
 			timestamp: Firebase.now(),
 			host: lastInfo.host,
 			playerId: store.me.userId,
-			playerName: store.lobby[store.me.userId],
+			playerName: store.lobby[store.me.userId] || store.me.userId,
 			message,
 		},
 	};
