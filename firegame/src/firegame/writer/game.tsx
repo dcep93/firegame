@@ -50,7 +50,7 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
 	const gameWrapper: GameWrapperType<T | null> = {
 		info: {
 			playerId: store.me.userId,
-			playerName: store.lobby[store.me.userId],
+			playerName: store.lobby[store.me.userId] || store.me.userId,
 			message: "opened a room",
 			host: store.me.userId,
 			timestamp: Firebase.now(),
