@@ -54,7 +54,6 @@ class Main extends React.Component<
 	}
 
 	selectToken(index: number) {
-		if (!utils.isMyTurn()) return;
 		const selectedTokens = Object.assign(this.state.selectedTokens, {
 			[index]: !this.state.selectedTokens[index],
 		});
