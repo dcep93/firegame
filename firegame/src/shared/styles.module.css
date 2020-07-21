@@ -42,6 +42,7 @@
 	overflow: scroll;
 	display: flex;
 	flex-direction: column;
+	resize: both;
 }
 
 .sidebar > * {
