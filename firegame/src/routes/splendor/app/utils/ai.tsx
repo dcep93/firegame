@@ -1,5 +1,5 @@
+import minimax from "../../../../shared/minimax";
 import { Token } from "./bank";
-import minimax from "./minimax";
 import { GameType, PlayerType } from "./NewGame";
 import utils, { store } from "./utils";
 
@@ -22,13 +22,25 @@ function heuristic(s: GameType): number {
   const current = s.currentPlayer;
   const me = utils.getPlayer(current);
   const opp = utils.getPlayer(1 - current);
+  const oppScore = utils.getScore(opp);
+  if (oppScore >= 15) {
+    if (utils.getScore(me) === oppScore) {
+      return opp.cards!.length - me.cards!.length;
+    }
+  }
   const myH = playerHeuristic(me);
   const oppH = playerHeuristic(opp);
   return myH - oppH;
 }
 
 function state_to_children(s: GameType): { [move: string]: GameType } {
-  return {};
+  const children = {};
+  if (!(s.currentPlayer === 0 && s.over)) {
+    // take tokens
+    // reserve a card
+    // buy a card
+  }
+  return children;
 }
 
 function playerHeuristic(p: PlayerType): number {
