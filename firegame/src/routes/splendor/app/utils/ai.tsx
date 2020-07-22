@@ -3,6 +3,8 @@ import { Token } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
 import utils, { store } from "./utils";
 
+type ChildrenType = { [move: string]: GameType };
+
 function ai(depth: number, top: number): void {
   if (store.gameW.game.players.length !== 2) {
     console.log("need exactly 2 players");
@@ -11,7 +13,7 @@ function ai(depth: number, top: number): void {
   const results = minimax(
     store.gameW.game,
     heuristic,
-    state_to_children,
+    stateToChildren,
     depth,
     top
   );
@@ -33,15 +35,21 @@ function heuristic(s: GameType): number {
   return myH - oppH;
 }
 
-function state_to_children(s: GameType): { [move: string]: GameType } {
+function stateToChildren(s: GameType): ChildrenType {
   const children = {};
   if (!(s.currentPlayer === 0 && s.over)) {
-    // take tokens
-    // reserve a card
-    // buy a card
+    childrenTakeTokens(s, children);
+    childrenReserveCard(s, children);
+    childrenBuyCard(s, children);
   }
   return children;
 }
+
+function childrenTakeTokens(s: GameType, children: ChildrenType): void {}
+
+function childrenReserveCard(s: GameType, children: ChildrenType): void {}
+
+function childrenBuyCard(s: GameType, children: ChildrenType): void {}
 
 function playerHeuristic(p: PlayerType): number {
   const scoreFactor = 1;
