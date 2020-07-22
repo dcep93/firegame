@@ -4,6 +4,11 @@ import store_, { StoreType } from "../../../../shared/store";
 import { GameType, PlayerType } from "./NewGame";
 import { Token, Card, TokenToEmoji } from "./bank";
 
+import ai from "./ai";
+
+// @ts-ignore
+window.ai = ai;
+
 const store: StoreType<GameType> = store_;
 
 export const MAX_HAND_TOKENS = 10;
