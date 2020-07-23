@@ -28,12 +28,11 @@ function heuristic(s: GameType): number {
   const current = s.currentPlayer;
   const me = utils.getPlayer(current);
   const opp = utils.getPlayer(1 - current);
+  const myScore = utils.getScore(me);
   const oppScore = utils.getScore(opp);
-  if (oppScore >= 15) {
-    if (utils.getScore(me) === oppScore) {
-      return opp.cards!.length - me.cards!.length;
-    }
-  }
+  if (oppScore >= 15 && myScore === oppScore)
+    return opp.cards!.length - me.cards!.length;
+  if (myScore >= 15 || oppScore >= 15) return myScore - oppScore;
   const myH = playerHeuristic(me);
   const oppH = playerHeuristic(opp);
   return myH - oppH;
