@@ -1,5 +1,5 @@
 import minimax from "../../../../shared/minimax";
-import { Card, Level, Token } from "./bank";
+import { Card, Level, Token, TokensGroup } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
 import utils, { store } from "./utils";
 
@@ -154,7 +154,11 @@ function tokensAfterBuying(
 ): { [spent: string]: Token[] } {
   const price = Object.assign({}, card.price);
   (me.cards || []).forEach((c) => price[c.color] && price[c.color]!--);
-  const childTokens = (me.tokens || []).slice();
+  const childTokens: TokensGroup = {};
+  (me.tokens || []).forEach((t) => {
+    if (!childTokens[t]) childTokens[t] = 0;
+    childTokens[t]!++;
+  });
   const required = spendMinimalGold(price, childTokens);
   const afterBuying = {};
   if (required) recursivelySpendGolds(required, childTokens, afterBuying);
@@ -162,18 +166,31 @@ function tokensAfterBuying(
 }
 
 function spendMinimalGold(
-  price: { [t in Token]?: number },
-  childTokens: Token[]
-): Token[] | null {
-  // todo
-  return null;
+  price: TokensGroup,
+  childTokens: TokensGroup
+): TokensGroup | null {
+  const required: TokensGroup = { [Token.gold]: 0 };
+  Object.entries(price)
+    .map(([t, number]) => ({
+      t: parseInt(t) as Token,
+      number: number!,
+    }))
+    .forEach((obj) => {
+      let toPay = Math.min(obj.number, childTokens[obj.t] || 0);
+      required[Token.gold]! += obj.number - toPay;
+      required[obj.t] = toPay;
+    });
+  if ((childTokens[Token.gold] || 0) < required[Token.gold]!) return null;
+  return required;
 }
 
 function recursivelySpendGolds(
-  required: Token[],
-  childTokens: Token[],
+  required: TokensGroup,
+  childTokens: TokensGroup,
   afterBuying: { [spent: string]: Token[] }
-): void {}
+): void {
+  // todo
+}
 
 function playerHeuristic(p: PlayerType): number {
   const scoreFactor = 1;
