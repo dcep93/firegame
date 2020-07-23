@@ -117,13 +117,34 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
 }
 
 function childFromBuy(s: GameType, card: Card, childTokens: Token[]): GameType {
-  // todo nobles
   const child = copy(s);
   const childMe = utils.getCurrent(child);
   childMe.tokens = childTokens;
   if (!childMe.cards) childMe.cards = [];
   childMe.cards.push(card);
   child.currentPlayer = 1 - child.currentPlayer;
+
+  const myColors: { [t in Token]?: number } = {};
+  childMe.cards.forEach((c) => {
+    myColors[c.color] = 1 + (myColors[c.color] || 0);
+  });
+  (child.nobles || [])
+    .map((noble, index) => ({ noble, index }))
+    .filter(
+      (obj) =>
+        Object.entries(obj.noble)
+          .map(([token, number]) => ({
+            token: parseInt(token) as Token,
+            number,
+          }))
+          .map((obj) => (myColors[obj.token] || 0) < obj.number!)
+          .filter(Boolean).length === 0
+    )
+    .forEach((obj, time) => {
+      child.nobles!.splice(obj.index - time, 1);
+      childMe.nobles++;
+    });
+
   return child;
 }
 
