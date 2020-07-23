@@ -1,5 +1,5 @@
 import minimax from "../../../../shared/minimax";
-import { Token } from "./bank";
+import { Card, Level, Token } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
 import utils, { store } from "./utils";
 
@@ -45,11 +45,70 @@ function stateToChildren(s: GameType): ChildrenType {
   return children;
 }
 
-function childrenTakeTokens(s: GameType, children: ChildrenType): void {}
+function childrenTakeTokens(s: GameType, children: ChildrenType): void {
+  // todo
+}
 
-function childrenReserveCard(s: GameType, children: ChildrenType): void {}
+function childrenReserveCard(s: GameType, children: ChildrenType): void {
+  if ((utils.getCurrent(s).hand || []).length === 3) return;
+  Object.values(s.cards).forEach((cards) =>
+    cards!
+      .slice(0, 4)
+      .map((card, index) => ({
+        card,
+        index,
+      }))
+      .filter((obj) => obj.card.color !== Token.gold)
+      .forEach((obj) => {
+        const child = JSON.parse(JSON.stringify(s));
+        const me = utils.getCurrent(child);
+        if (child.tokens[Token.gold] > 0) {
+          if (!me.tokens) me.tokens = [];
+          me.tokens.push(Token.gold);
+          child.tokens[Token.gold]--;
+        }
+        if (!me.hand) me.hand = [];
+        me.hand.push(JSON.parse(JSON.stringify(obj.card)));
+        obj.card.color = Token.gold;
+        const message = `r:${Level[obj.card.level]}:${obj.index + 1}`;
+        children[message] = child;
+      })
+  );
+}
 
-function childrenBuyCard(s: GameType, children: ChildrenType): void {}
+function childrenBuyCard(s: GameType, children: ChildrenType): void {
+  const me = utils.getCurrent(s);
+  Object.values(s.cards).forEach((cards) =>
+    cards!
+      .slice(0, 4)
+      .map((card, index) => ({
+        card,
+        index,
+      }))
+      .filter((obj) => obj.card.color !== Token.gold)
+      .forEach((obj) => {
+        // todo
+        tokensAfterBuying(me, obj.card).forEach((childTokens) => {
+          const child = JSON.parse(JSON.stringify(s));
+          const childMe = utils.getCurrent(child);
+          childMe.tokens = childTokens;
+          if (!childMe.cards) childMe.cards = [];
+          childMe.cards.push(JSON.parse(JSON.stringify(obj.card)));
+          obj.card.color = Token.gold;
+          const message = `b:${Level[obj.card.level]}:${obj.index + 1}`;
+          children[message] = child;
+        });
+      })
+  );
+}
+
+function tokensAfterBuying(me: PlayerType, card: Card): Token[][] {
+  const price = Object.assign({}, card.price);
+  (me.cards || []).forEach((c) => price[c.color] && price[c.color]!--);
+  const childTokens = (me.tokens || []).slice();
+  // todo
+  return [];
+}
 
 function playerHeuristic(p: PlayerType): number {
   const scoreFactor = 1;
