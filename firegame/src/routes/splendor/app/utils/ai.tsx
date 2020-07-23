@@ -5,6 +5,10 @@ import utils, { store } from "./utils";
 
 type ChildrenType = { [move: string]: GameType };
 
+function copy<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 function ai(depth: number, top: number): void {
   if (store.gameW.game.players.length !== 2) {
     console.log("need exactly 2 players");
@@ -51,6 +55,7 @@ function childrenTakeTokens(s: GameType, children: ChildrenType): void {
 
 function childrenReserveCard(s: GameType, children: ChildrenType): void {
   if ((utils.getCurrent(s).hand || []).length === 3) return;
+  // todo reserve face down
   Object.values(s.cards).forEach((cards) =>
     cards!
       .slice(0, 4)
@@ -60,7 +65,7 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
       }))
       .filter((obj) => obj.card.color !== Token.gold)
       .forEach((obj) => {
-        const child = JSON.parse(JSON.stringify(s));
+        const child = copy(s);
         const me = utils.getCurrent(child);
         if (child.tokens[Token.gold] > 0) {
           if (!me.tokens) me.tokens = [];
@@ -68,8 +73,9 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
           child.tokens[Token.gold]--;
         }
         if (!me.hand) me.hand = [];
-        me.hand.push(JSON.parse(JSON.stringify(obj.card)));
+        me.hand.push(copy(obj.card));
         obj.card.color = Token.gold;
+        child.currentPlayer = 1 - child.currentPlayer;
         const message = `r:${Level[obj.card.level]}:${obj.index + 1}`;
         children[message] = child;
       })
@@ -87,27 +93,50 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
       }))
       .filter((obj) => obj.card.color !== Token.gold)
       .forEach((obj) => {
-        // todo
-        tokensAfterBuying(me, obj.card).forEach((childTokens) => {
-          const child = JSON.parse(JSON.stringify(s));
-          const childMe = utils.getCurrent(child);
-          childMe.tokens = childTokens;
-          if (!childMe.cards) childMe.cards = [];
-          childMe.cards.push(JSON.parse(JSON.stringify(obj.card)));
-          obj.card.color = Token.gold;
-          const message = `b:${Level[obj.card.level]}:${obj.index + 1}`;
+        const afterBuying = tokensAfterBuying(me, obj.card);
+        Object.entries(afterBuying).forEach(([spent, childTokens]) => {
+          const child = childFromBuy(s, obj.card, childTokens);
+          const dummy = copy(obj.card);
+          dummy.color = Token.gold;
+          child.cards[obj.card.level]![obj.index] = dummy;
+          const message = `b${spent}:${Level[obj.card.level]}:${obj.index + 1}`;
           children[message] = child;
         });
       })
   );
+  (me.hand || [])
+    .map((card, index) => ({ card, index }))
+    .forEach((obj) => {
+      const afterBuying = tokensAfterBuying(me, obj.card);
+      Object.entries(afterBuying).forEach(([spent, childTokens]) => {
+        const child = childFromBuy(s, obj.card, childTokens);
+        utils.getPlayer(s.currentPlayer, child).hand!.splice(obj.index, 1);
+        const message = `b${spent}:hand:${obj.index + 1}`;
+        children[message] = child;
+      });
+    });
 }
 
-function tokensAfterBuying(me: PlayerType, card: Card): Token[][] {
+function childFromBuy(s: GameType, card: Card, childTokens: Token[]): GameType {
+  // todo nobles
+  const child = copy(s);
+  const childMe = utils.getCurrent(child);
+  childMe.tokens = childTokens;
+  if (!childMe.cards) childMe.cards = [];
+  childMe.cards.push(card);
+  child.currentPlayer = 1 - child.currentPlayer;
+  return child;
+}
+
+function tokensAfterBuying(
+  me: PlayerType,
+  card: Card
+): { [spent: string]: Token[] } {
+  // todo
   const price = Object.assign({}, card.price);
   (me.cards || []).forEach((c) => price[c.color] && price[c.color]!--);
   const childTokens = (me.tokens || []).slice();
-  // todo
-  return [];
+  return {};
 }
 
 function playerHeuristic(p: PlayerType): number {
