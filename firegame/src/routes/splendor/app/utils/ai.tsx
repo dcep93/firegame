@@ -49,7 +49,30 @@ function stateToChildren(s: GameType): ChildrenType {
 }
 
 function childrenTakeTokens(s: GameType, children: ChildrenType): void {
-  // todo
+  const choices = Object.entries(s.tokens)
+    .map(([t, num]) => ({
+      t: parseInt(t) as Token,
+      num,
+    }))
+    .filter((obj) => obj.num)
+    .filter((obj) => obj.t !== Token.gold)
+    .map((obj) => obj.t);
+  choices
+    .flatMap((a, i) =>
+      choices
+        .slice(i + 1)
+        .flatMap((b, j) => choices.slice(i + j + 2).map((c) => [a, b, c]))
+    )
+    .forEach((triple) => {
+      const child = copy(s);
+      const me = utils.getCurrent(child);
+      if (!me.tokens) me.tokens = [];
+      me.tokens = me.tokens.concat(triple);
+      triple.forEach((t) => child.tokens[t]!--);
+      child.currentPlayer = 1 - child.currentPlayer;
+      const message = `t:${triple.join("")}`;
+      children[message] = child;
+    });
 }
 
 function childrenReserveCard(s: GameType, children: ChildrenType): void {
