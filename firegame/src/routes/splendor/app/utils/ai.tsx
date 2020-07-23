@@ -152,12 +152,28 @@ function tokensAfterBuying(
   me: PlayerType,
   card: Card
 ): { [spent: string]: Token[] } {
-  // todo
   const price = Object.assign({}, card.price);
   (me.cards || []).forEach((c) => price[c.color] && price[c.color]!--);
   const childTokens = (me.tokens || []).slice();
-  return {};
+  const required = spendMinimalGold(price, childTokens);
+  const afterBuying = {};
+  if (required) recursivelySpendGolds(required, childTokens, afterBuying);
+  return afterBuying;
 }
+
+function spendMinimalGold(
+  price: { [t in Token]?: number },
+  childTokens: Token[]
+): Token[] | null {
+  // todo
+  return null;
+}
+
+function recursivelySpendGolds(
+  required: Token[],
+  childTokens: Token[],
+  afterBuying: { [spent: string]: Token[] }
+): void {}
 
 function playerHeuristic(p: PlayerType): number {
   const scoreFactor = 1;
