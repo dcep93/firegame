@@ -185,11 +185,27 @@ function spendMinimalGold(
 }
 
 function recursivelySpendGolds(
-  required: TokensGroup,
+  spent: TokensGroup,
   childTokens: TokensGroup,
-  afterBuying: { [spent: string]: Token[] }
+  afterBuying: { [spentStr: string]: Token[] }
 ): void {
-  // todo
+  const spentStr = Object.entries(spent)
+    .map(([t, num]) => Token[parseInt(t)].repeat(num!))
+    .join("");
+  afterBuying[spentStr] = Object.entries(childTokens)
+    .map(([t, num]) => ({ t: parseInt(t) as Token, num }))
+    .flatMap((obj) => Array(obj.num! - spent[obj.t]!).fill(obj.t));
+  if ((childTokens[Token.gold] || 0) > spent[Token.gold]!) {
+    Object.keys(spent)
+      .map((t) => parseInt(t) as Token)
+      .filter((t) => t !== Token.gold)
+      .forEach((t) => {
+        const rSpent = copy(spent);
+        rSpent[t]!--;
+        rSpent[Token.gold]!++;
+        recursivelySpendGolds(spent, childTokens, afterBuying);
+      });
+  }
 }
 
 function playerHeuristic(p: PlayerType): number {
