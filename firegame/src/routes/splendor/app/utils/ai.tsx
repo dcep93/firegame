@@ -54,7 +54,7 @@ function childrenTakeTokens(s: GameType, children: ChildrenType): void {
 
 function childrenReserveCard(s: GameType, children: ChildrenType): void {
   if ((utils.getCurrent(s).hand || []).length === 3) return;
-  // todo reserve face down
+  reserveFaceDown(s, children);
   Object.values(s.cards).forEach((cards) =>
     cards!
       .slice(0, 4)
@@ -71,14 +71,31 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
           me.tokens.push(Token.gold);
           child.tokens[Token.gold]--;
         }
+        child.currentPlayer = 1 - child.currentPlayer;
         if (!me.hand) me.hand = [];
         me.hand.push(copy(obj.card));
         obj.card.color = Token.gold;
-        child.currentPlayer = 1 - child.currentPlayer;
         const message = `r:${Level[obj.card.level]}:${obj.index + 1}`;
         children[message] = child;
       })
   );
+}
+
+function reserveFaceDown(s: GameType, children: ChildrenType): void {
+  const child = copy(s);
+  const me = utils.getCurrent(child);
+  child.currentPlayer = 1 - child.currentPlayer;
+  if (!me.hand) me.hand = [];
+  me.hand.push({
+    level: Level.one,
+    color: Token.gold,
+    points: 0,
+    price: {
+      [Token.gold]: 100,
+    },
+  });
+  const message = `r:facedown:x`;
+  children[message] = child;
 }
 
 function childrenBuyCard(s: GameType, children: ChildrenType): void {
@@ -211,12 +228,15 @@ function recursivelySpendGolds(
 function playerHeuristic(p: PlayerType): number {
   const scoreFactor = 1;
   const handFactor = 0.1;
+  const facedownHandFactor = 0.1;
   const tokenFactor = 0.1;
   const starFactor = 0.1;
   const cardFactor = 0.1;
   return (
     scoreFactor * utils.getScore(p) +
     handFactor * (p.hand || []).length +
+    facedownHandFactor *
+      (p.hand || []).filter((c) => c.color === Token.gold).length +
     tokenFactor * (p.tokens || []).length +
     starFactor * (p.tokens || []).filter((t) => t === Token.gold).length +
     cardFactor * (p.cards || []).length
