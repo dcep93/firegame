@@ -273,7 +273,7 @@ function recursivelySpendGolds(
     .join("");
   afterBuying[spentStr] = Object.entries(childTokens)
     .map(([t, num]) => ({ t: parseInt(t) as Token, num }))
-    .flatMap((obj) => Array(obj.num! - spent[obj.t]!).fill(obj.t));
+    .flatMap((obj) => Array(obj.num! - (spent[obj.t] || 0)).fill(obj.t));
   if ((childTokens[Token.gold] || 0) > spent[Token.gold]!) {
     Object.keys(spent)
       .map((t) => parseInt(t) as Token)
