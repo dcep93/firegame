@@ -3,6 +3,11 @@ import { Card, Level, Token, TokensGroup } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
 import utils, { store } from "./utils";
 
+// @ts-ignore
+window.ai = ai;
+// @ts-ignore
+window.h = () => heuristic(store.gameW.game);
+
 type ChildrenType = { [move: string]: GameType };
 
 function copy<T>(obj: T): T {
@@ -21,17 +26,16 @@ function ai(depth: number): number | null {
 }
 
 function heuristic(s: GameType): number {
-  const current = s.currentPlayer;
-  const me = utils.getPlayer(current);
-  const opp = utils.getPlayer(1 - current);
-  const myScore = utils.getScore(me);
-  const oppScore = utils.getScore(opp);
-  if (oppScore >= 15 && myScore === oppScore)
-    return opp.cards!.length - me.cards!.length;
-  if (myScore >= 15 || oppScore >= 15) return myScore - oppScore;
-  const myH = playerHeuristic(me);
-  const oppH = playerHeuristic(opp);
-  return myH - oppH;
+  const p1 = utils.getPlayer(0);
+  const p2 = utils.getPlayer(1);
+  const p1Score = utils.getScore(p1);
+  const p2Score = utils.getScore(p2);
+  if (p2Score >= 15 && p1Score === p2Score)
+    return p2.cards!.length - p1.cards!.length;
+  if (p1Score >= 15 || p2Score >= 15) return p1Score - p2Score;
+  const p1H = playerHeuristic(p1);
+  const p2H = playerHeuristic(p2);
+  return p1H - p2H;
 }
 
 function stateToChildren(s: GameType): ChildrenType {
@@ -284,15 +288,15 @@ function playerHeuristic(p: PlayerType): number {
   const tokenFactor = 0.1;
   const starFactor = 0.1;
   const cardFactor = 0.1;
-  return (
+  const h =
     scoreFactor * utils.getScore(p) +
     handFactor * (p.hand || []).length +
     facedownHandFactor *
       (p.hand || []).filter((c) => c.color === Token.gold).length +
     tokenFactor * (p.tokens || []).length +
     starFactor * (p.tokens || []).filter((t) => t === Token.gold).length +
-    cardFactor * (p.cards || []).length
-  );
+    cardFactor * (p.cards || []).length;
+  return parseFloat(h.toFixed(5));
 }
 
 export default ai;
