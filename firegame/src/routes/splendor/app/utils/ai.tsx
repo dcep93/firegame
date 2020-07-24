@@ -9,18 +9,12 @@ function copy<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
-function ai(depth: number, top: number): void {
+function ai(depth: number): void {
   if (store.gameW.game.players.length !== 2) {
     console.log("need exactly 2 players");
     return;
   }
-  const results = minimax(
-    store.gameW.game,
-    heuristic,
-    stateToChildren,
-    depth,
-    top
-  );
+  const results = minimax(store.gameW.game, heuristic, stateToChildren, depth);
   console.log(results.map((r) => r.join(" ")).join("\n"));
 }
 
@@ -65,14 +59,47 @@ function childrenTakeTokens(s: GameType, children: ChildrenType): void {
     )
     .forEach((triple) => {
       const child = copy(s);
+      triple.forEach((t) => child.tokens[t]!--);
       const me = utils.getCurrent(child);
       if (!me.tokens) me.tokens = [];
       me.tokens = me.tokens.concat(triple);
-      triple.forEach((t) => child.tokens[t]!--);
       child.currentPlayer = 1 - child.currentPlayer;
-      const message = `t:${triple.join("")}`;
-      children[message] = child;
+      putBackTokens(child, s.currentPlayer, triple, children);
     });
+}
+
+function putBackTokens(
+  s: GameType,
+  myIndex: number,
+  triple: Token[],
+  children: ChildrenType
+): void {
+  const myTokens = s.players[myIndex]!.tokens!;
+  var tokensToPutBack: Token[][];
+  if (myTokens.length <= 10) {
+    tokensToPutBack = [[]];
+  } else {
+    tokensToPutBack = Array.from(
+      new Set(
+        myTokens.flatMap((a, i) =>
+          myTokens
+            .slice(i + 1)
+            .map((b) => [a, b])
+            .sort()
+            .map((ts) => JSON.stringify(ts))
+        )
+      )
+    ).map((ts) => JSON.parse(ts));
+  }
+  tokensToPutBack.forEach((ts) => {
+    const child = copy(s);
+    const myChildTokens = copy(child.players[myIndex]!.tokens!);
+    ts.forEach((t) => {
+      myChildTokens.splice(myChildTokens.indexOf(t), 1);
+    });
+    const message = `t:${triple.join("")}:${ts.map((t) => Token[t]).join("")}`;
+    children[message] = child;
+  });
 }
 
 function childrenReserveCard(s: GameType, children: ChildrenType): void {
