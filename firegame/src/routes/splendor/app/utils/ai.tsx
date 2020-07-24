@@ -8,10 +8,24 @@ window.ai = ai;
 // @ts-ignore
 window.h = () => heuristic(store.gameW.game);
 
+const check = true;
+
 type ChildrenType = { [move: string]: GameType };
 
 function copy<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
+}
+
+function objEqual<T>(a: T, b: T): boolean {
+  if (a && typeof a === "object") {
+    if (!b) return false;
+    for (let key in a) {
+      if (!objEqual(a[key], b[key])) return false;
+    }
+    return true;
+  } else {
+    return a === b;
+  }
 }
 
 function ai(depth: number): number | null {
@@ -19,7 +33,7 @@ function ai(depth: number): number | null {
     console.log("need exactly 2 players");
     return null;
   }
-  return minimax(store.gameW.game, depth, {
+  return minimax(copy(store.gameW.game), depth, {
     heuristic,
     stateToChildren,
   });
@@ -40,11 +54,13 @@ function heuristic(s: GameType): number {
 
 function stateToChildren(s: GameType): ChildrenType {
   const children = {};
+
   if (!(s.currentPlayer === 0 && s.over)) {
-    s = copy(s);
+    const c = check && copy(s);
     childrenTakeTokens(s, children);
     childrenReserveCard(s, children);
     childrenBuyCard(s, children);
+    if (check && !objEqual(c, s)) console.log("diff");
   }
   return children;
 }
@@ -131,7 +147,7 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
         child.currentPlayer = 1 - child.currentPlayer;
         if (!me.hand) me.hand = [];
         me.hand.push(copy(obj.card));
-        obj.card.color = Token.gold;
+        child.cards[obj.card.level]![obj.index].color = Token.gold;
         const message = `r:${Level[obj.card.level]}:${obj.index + 1}`;
         children[message] = child;
       })
