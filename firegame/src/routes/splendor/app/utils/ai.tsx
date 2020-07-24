@@ -105,10 +105,12 @@ function putBackTokens(
     ts.forEach((t) => {
       myChildTokens.splice(myChildTokens.indexOf(t), 1);
     });
-    const message = `t:${triple.map((t) => TokenToEmoji[t]).join("")}:${ts
-      .map((t) => Token[t])
-      .join("")}`;
-    children[message] = child;
+    const parts = [
+      "t",
+      triple.map((t) => TokenToEmoji[t]).join(""),
+      ts.map((t) => Token[t]).join(""),
+    ];
+    children[parts.join(":")] = child;
   });
 }
 
@@ -135,8 +137,8 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
         if (!me.hand) me.hand = [];
         me.hand.push(utils.copy(obj.card));
         child.cards[obj.card.level]![obj.index].color = Token.gold;
-        const message = `r:${Level[obj.card.level]}:${obj.index + 1}`;
-        children[message] = child;
+        const parts = ["r", Level[obj.card.level], obj.index + 1];
+        children[parts.join(":")] = child;
       })
   );
 }
@@ -154,8 +156,8 @@ function reserveFaceDown(s: GameType, children: ChildrenType): void {
       [Token.gold]: 100,
     },
   });
-  const message = `r:fd:x`;
-  children[message] = child;
+  const parts = ["r", "fd", "x"];
+  children[parts.join(":")] = child;
 }
 
 function childrenBuyCard(s: GameType, children: ChildrenType): void {
@@ -175,10 +177,8 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
           const dummy = utils.copy(obj.card);
           dummy.color = Token.gold;
           child.cards[obj.card.level]![obj.index] = dummy;
-          const message = `b:${spent}:${Level[obj.card.level]}:${
-            obj.index + 1
-          }`;
-          children[message] = child;
+          const parts = ["b", spent, Level[obj.card.level], obj.index + 1];
+          children[parts.join(":")] = child;
         });
       })
   );
@@ -189,8 +189,8 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
       Object.entries(afterBuying).forEach(([spent, childTokens]) => {
         const child = childFromBuy(s, obj.card, childTokens);
         utils.getPlayer(s.currentPlayer, child).hand!.splice(obj.index, 1);
-        const message = `b:${spent}:hand:${obj.index + 1}`;
-        children[message] = child;
+        const parts = ["b", spent, "hand", obj.index + 1];
+        children[parts.join(":")] = child;
       });
     });
 }
