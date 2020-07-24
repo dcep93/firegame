@@ -14,8 +14,10 @@ function ai(depth: number): void {
     console.log("need exactly 2 players");
     return;
   }
-  const results = minimax(store.gameW.game, heuristic, stateToChildren, depth);
-  console.log(results.map((r) => r.join(" ")).join("\n"));
+  minimax(store.gameW.game, depth, {
+    heuristic,
+    stateToChildren,
+  });
 }
 
 function heuristic(s: GameType): number {
