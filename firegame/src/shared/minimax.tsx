@@ -1,3 +1,5 @@
+const hash = require("object-hash");
+
 type ResultType = { score: number; moves: string[] };
 type Params<T> = {
   heuristic: (s: T) => number;
@@ -6,7 +8,9 @@ type Params<T> = {
 };
 
 function minimax<T>(state: T, depth: number, params: Params<T>): number {
+  const start = Date.now();
   const results = minimaxHelper(state, depth, params, {});
+  const end = Date.now();
   const rval = parseFloat(results[0]?.score?.toFixed(3));
   const resultsStr = results
     .map((r) =>
@@ -14,6 +18,7 @@ function minimax<T>(state: T, depth: number, params: Params<T>): number {
     )
     .join("\n");
   console.log(resultsStr);
+  console.log(end - start);
   return rval;
 }
 
@@ -26,7 +31,7 @@ function minimaxHelper<T>(
   const results = Object.entries(params.stateToChildren(state))
     .map(([move, child]) => {
       if (depth > 0) {
-        let str = stringify(child); //.substr(0, 4250);
+        let str = hash(child);
         var bestChild = seen[str];
         if (!bestChild) {
           bestChild = minimaxHelper(child, depth - 1, params, seen)[0];
@@ -49,20 +54,6 @@ function minimaxHelper<T>(
     .sort((a, b) => a.score - b.score);
   if (params.maximizing(state)) results.reverse();
   return results;
-}
-
-function stringify(obj: any): string {
-  if (obj && typeof obj === "object") {
-    if (Array.isArray(obj)) {
-      return `[${obj.map(stringify).join(",")}]`;
-    } else {
-      return `{${Object.entries(obj)
-        .map(([key, val]) => `${key}:${stringify(val)}`)
-        .sort()
-        .join(",")}}`;
-    }
-  }
-  return JSON.stringify(obj);
 }
 
 export default minimax;
