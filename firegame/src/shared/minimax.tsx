@@ -30,6 +30,8 @@ function minimaxHelper<T>(
   params: Params<T>,
   seen: { [str: string]: ResultType }
 ): ResultType[] {
+  const maximizing = params.maximizing(state);
+  const split = maximizing ? [] : ["/"];
   const results = Object.entries(params.stateToChildren(state))
     .map(([move, child]) => {
       if (depth > 0) {
@@ -42,7 +44,7 @@ function minimaxHelper<T>(
         if (bestChild) {
           return {
             score: bestChild.score,
-            moves: [move].concat(bestChild.moves),
+            moves: [move].concat(split, bestChild.moves),
           };
         }
       }
@@ -54,7 +56,7 @@ function minimaxHelper<T>(
       return result;
     })
     .sort((a, b) => a.score - b.score);
-  if (params.maximizing(state)) results.reverse();
+  if (maximizing) results.reverse();
   return results;
 }
 
