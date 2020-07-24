@@ -8,40 +8,23 @@ window.ai = ai;
 // @ts-ignore
 window.h = () => heuristic(store.gameW.game);
 
-const check = true;
-
 type ChildrenType = { [move: string]: GameType };
-
-function copy<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-function objEqual<T>(a: T, b: T): boolean {
-  if (a && typeof a === "object") {
-    if (!b) return false;
-    for (let key in a) {
-      if (!objEqual(a[key], b[key])) return false;
-    }
-    return true;
-  } else {
-    return a === b;
-  }
-}
 
 function ai(depth: number): number | null {
   if (store.gameW.game.players.length !== 2) {
     console.log("need exactly 2 players");
     return null;
   }
-  return minimax(copy(store.gameW.game), depth, {
+  return minimax(utils.copy(store.gameW.game), depth, {
     heuristic,
     stateToChildren,
+    maximizing,
   });
 }
 
 function heuristic(s: GameType): number {
-  const p1 = utils.getPlayer(0);
-  const p2 = utils.getPlayer(1);
+  const p1 = utils.getPlayer(0, s);
+  const p2 = utils.getPlayer(1, s);
   const p1Score = utils.getScore(p1);
   const p2Score = utils.getScore(p2);
   if (p2Score >= 15 && p1Score === p2Score)
@@ -56,13 +39,15 @@ function stateToChildren(s: GameType): ChildrenType {
   const children = {};
 
   if (!(s.currentPlayer === 0 && s.over)) {
-    const c = check && copy(s);
     childrenTakeTokens(s, children);
     childrenReserveCard(s, children);
     childrenBuyCard(s, children);
-    if (check && !objEqual(c, s)) console.log("diff");
   }
   return children;
+}
+
+function maximizing(s: GameType): boolean {
+  return s.currentPlayer === 0;
 }
 
 function childrenTakeTokens(s: GameType, children: ChildrenType): void {
@@ -81,7 +66,7 @@ function childrenTakeTokens(s: GameType, children: ChildrenType): void {
         .flatMap((b, j) => choices.slice(i + j + 2).map((c) => [a, b, c]))
     )
     .forEach((triple) => {
-      const child = copy(s);
+      const child = utils.copy(s);
       triple.forEach((t) => child.tokens[t]!--);
       const me = utils.getCurrent(child);
       if (!me.tokens) me.tokens = [];
@@ -115,7 +100,7 @@ function putBackTokens(
     ).map((ts) => JSON.parse(ts));
   }
   tokensToPutBack.forEach((ts) => {
-    const child = copy(s);
+    const child = utils.copy(s);
     const myChildTokens = child.players[myIndex]!.tokens!;
     ts.forEach((t) => {
       myChildTokens.splice(myChildTokens.indexOf(t), 1);
@@ -139,7 +124,7 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
       }))
       .filter((obj) => obj.card.color !== Token.gold)
       .forEach((obj) => {
-        const child = copy(s);
+        const child = utils.copy(s);
         const me = utils.getCurrent(child);
         if (child.tokens[Token.gold] > 0) {
           if (!me.tokens) me.tokens = [];
@@ -148,7 +133,7 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
         }
         child.currentPlayer = 1 - child.currentPlayer;
         if (!me.hand) me.hand = [];
-        me.hand.push(copy(obj.card));
+        me.hand.push(utils.copy(obj.card));
         child.cards[obj.card.level]![obj.index].color = Token.gold;
         const message = `r:${Level[obj.card.level]}:${obj.index + 1}`;
         children[message] = child;
@@ -157,7 +142,7 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
 }
 
 function reserveFaceDown(s: GameType, children: ChildrenType): void {
-  const child = copy(s);
+  const child = utils.copy(s);
   const me = utils.getCurrent(child);
   child.currentPlayer = 1 - child.currentPlayer;
   if (!me.hand) me.hand = [];
@@ -187,7 +172,7 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
         const afterBuying = tokensAfterBuying(me, obj.card);
         Object.entries(afterBuying).forEach(([spent, childTokens]) => {
           const child = childFromBuy(s, obj.card, childTokens);
-          const dummy = copy(obj.card);
+          const dummy = utils.copy(obj.card);
           dummy.color = Token.gold;
           child.cards[obj.card.level]![obj.index] = dummy;
           const message = `b${spent}:${Level[obj.card.level]}:${obj.index + 1}`;
@@ -209,7 +194,7 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
 }
 
 function childFromBuy(s: GameType, card: Card, childTokens: Token[]): GameType {
-  const child = copy(s);
+  const child = utils.copy(s);
   const childMe = utils.getCurrent(child);
   childMe.tokens = childTokens;
   if (!childMe.cards) childMe.cards = [];
@@ -292,7 +277,7 @@ function recursivelySpendGolds(
       .map((t) => parseInt(t) as Token)
       .filter((t) => t !== Token.gold)
       .forEach((t) => {
-        const rSpent = copy(spent);
+        const rSpent = utils.copy(spent);
         rSpent[t]!--;
         rSpent[Token.gold]!++;
         recursivelySpendGolds(spent, childTokens, afterBuying);

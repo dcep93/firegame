@@ -97,6 +97,22 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   enumArray<X>(enumType: X): number[] {
     return Object.values(enumType).filter((e) => typeof e === "number");
   }
+
+  copy<X>(obj: X): X {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  objEqual<X>(a: X, b: X): boolean {
+    if (a && typeof a === "object") {
+      if (!b) return false;
+      for (let key in a) {
+        if (!this.objEqual(a[key], b[key])) return false;
+      }
+      return true;
+    } else {
+      return a === b;
+    }
+  }
 }
 
 export default Shared;
