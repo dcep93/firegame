@@ -34,7 +34,10 @@ function minimaxHelper<T>(
         }
       }
       const result = { score: params.heuristic(child), moves: [move] };
-      if (depth > 0) result.score *= Infinity;
+      if (depth > 0) {
+        result.score *= Infinity;
+        result.moves.push(`(${depth})`);
+      }
       return result;
     })
     .sort((a, b) => a.score - b.score);
