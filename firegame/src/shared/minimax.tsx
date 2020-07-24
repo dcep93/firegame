@@ -4,13 +4,19 @@ type Params<T> = {
   stateToChildren: (s: T) => { [move: string]: T };
 };
 
-function minimax<T>(state: T, depth: number, params: Params<T>): void {
-  const results = minimaxHelper(state, depth, params)
-    .map((r) => ([] as (number | string)[]).concat(r.score, r.moves))
-    .sort();
+function minimax<T>(state: T, depth: number, params: Params<T>): number {
+  const results = minimaxHelper(state, depth, params).sort(
+    (a, b) => a.score - b.score
+  );
   if (true) results.reverse();
-  results.forEach((r) => (r[0] = `(${(r[0] as number).toFixed(3)})`));
-  console.log(results.map((r) => r.join(" ")).join("\n"));
+  const rval = results[0]?.score;
+  const resultsStr = results
+    .map((r) =>
+      ([] as string[]).concat(`(${r.score.toFixed(3)})`, r.moves).join(" ")
+    )
+    .join("\n");
+  console.log(resultsStr);
+  return rval;
 }
 
 function minimaxHelper<T>(

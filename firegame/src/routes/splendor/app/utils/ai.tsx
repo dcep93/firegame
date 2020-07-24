@@ -9,12 +9,12 @@ function copy<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }
 
-function ai(depth: number): void {
+function ai(depth: number): number | null {
   if (store.gameW.game.players.length !== 2) {
     console.log("need exactly 2 players");
-    return;
+    return null;
   }
-  minimax(store.gameW.game, depth, {
+  return minimax(store.gameW.game, depth, {
     heuristic,
     stateToChildren,
   });
@@ -146,7 +146,7 @@ function reserveFaceDown(s: GameType, children: ChildrenType): void {
       [Token.gold]: 100,
     },
   });
-  const message = `r:facedown:x`;
+  const message = `r:fd:x`;
   children[message] = child;
 }
 
