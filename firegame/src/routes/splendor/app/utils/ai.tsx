@@ -25,7 +25,9 @@ function ai(depth: number): number | null {
     console.log("need exactly 2 players");
     return null;
   }
-  const rval = minimax(utils.copy(store.gameW.game), depth, {
+  const state = utils.copy(store.gameW.game);
+  Object.values(state.cards).forEach((c) => c!.splice(4));
+  const rval = minimax(state, depth, {
     heuristic,
     stateToChildren,
     maximizing,
