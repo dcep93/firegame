@@ -29,8 +29,16 @@ function ai(depth: number): number | null {
     heuristic,
     stateToChildren,
     maximizing,
+    hash: (s: GameType) => s.players,
+    log,
   });
-  Object.entries(profile).forEach(([key, val]) => console.log(key, val));
+  Object.entries(profile)
+    .map(([key, val]) => ({
+      key,
+      val,
+    }))
+    .filter((obj) => obj.val > 500)
+    .forEach((obj) => console.log(obj.key, obj.val));
   return rval;
 }
 

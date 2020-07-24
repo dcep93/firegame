@@ -5,6 +5,8 @@ type Params<T> = {
   heuristic: (s: T) => number;
   stateToChildren: (s: T) => { [move: string]: T };
   maximizing: (s: T) => boolean;
+  hash: (s: T) => any;
+  log<U>(key: string, f: () => U): U;
 };
 
 function minimax<T>(state: T, depth: number, params: Params<T>): number {
@@ -31,7 +33,7 @@ function minimaxHelper<T>(
   const results = Object.entries(params.stateToChildren(state))
     .map(([move, child]) => {
       if (depth > 0) {
-        let str = hash(child);
+        let str = params.log("hash", () => hash(params.hash(child)));
         var bestChild = seen[str];
         if (!bestChild) {
           bestChild = minimaxHelper(child, depth - 1, params, seen)[0];
