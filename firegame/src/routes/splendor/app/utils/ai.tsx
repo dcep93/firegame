@@ -296,14 +296,16 @@ function playerHeuristic(p: PlayerType): number {
   const tokenFactor = 0.1;
   const starFactor = 0.1;
   const cardFactor = 0.1;
-  const h =
-    scoreFactor * utils.getScore(p) +
-    handFactor * (p.hand || []).length +
+  const parts = [
+    scoreFactor * utils.getScore(p),
+    handFactor * (p.hand || []).length,
     facedownHandFactor *
-      (p.hand || []).filter((c) => c.color === Token.gold).length +
-    tokenFactor * (p.tokens || []).length +
-    starFactor * (p.tokens || []).filter((t) => t === Token.gold).length +
-    cardFactor * (p.cards || []).length;
+      (p.hand || []).filter((c) => c.color === Token.gold).length,
+    tokenFactor * (p.tokens || []).length,
+    starFactor * (p.tokens || []).filter((t) => t === Token.gold).length,
+    cardFactor * (p.cards || []).length,
+  ];
+  const h = parts.reduce((a, b) => a + b, 0);
   return parseFloat(h.toFixed(5));
 }
 
