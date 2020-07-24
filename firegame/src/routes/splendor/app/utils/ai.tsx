@@ -70,7 +70,7 @@ function childrenTakeTokens(s: GameType, children: ChildrenType): void {
       triple.forEach((t) => child.tokens[t]!--);
       const me = utils.getCurrent(child);
       if (!me.tokens) me.tokens = [];
-      me.tokens = me.tokens.concat(triple);
+      me.tokens = me.tokens.concat(triple).sort();
       child.currentPlayer = 1 - child.currentPlayer;
       putBackTokens(child, s.currentPlayer, triple, children);
     });
@@ -136,6 +136,9 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
         child.currentPlayer = 1 - child.currentPlayer;
         if (!me.hand) me.hand = [];
         me.hand.push(utils.copy(obj.card));
+        me.hand.sort((a, b) =>
+          JSON.stringify(a) < JSON.stringify(b) ? 1 : -1
+        );
         child.cards[obj.card.level]![obj.index].color = Token.gold;
         const parts = ["r", Level[obj.card.level], obj.index + 1];
         children[parts.join(":")] = child;
@@ -156,6 +159,12 @@ function reserveFaceDown(s: GameType, children: ChildrenType): void {
       [Token.gold]: 100,
     },
   });
+  if (child.tokens[Token.gold] > 0) {
+    if (!me.tokens) me.tokens = [];
+    me.tokens.push(Token.gold);
+    child.tokens[Token.gold]--;
+  }
+  me.hand.sort((a, b) => (JSON.stringify(a) < JSON.stringify(b) ? 1 : -1));
   const parts = ["r", "fd", "x"];
   children[parts.join(":")] = child;
 }
@@ -201,6 +210,9 @@ function childFromBuy(s: GameType, card: Card, childTokens: Token[]): GameType {
   childMe.tokens = childTokens;
   if (!childMe.cards) childMe.cards = [];
   childMe.cards.push(card);
+  childMe.cards.sort((a, b) =>
+    JSON.stringify(a) < JSON.stringify(b) ? 1 : -1
+  );
   child.currentPlayer = 1 - child.currentPlayer;
 
   const myColors: { [t in Token]?: number } = {};

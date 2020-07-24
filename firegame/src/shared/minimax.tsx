@@ -6,7 +6,7 @@ type Params<T> = {
 };
 
 function minimax<T>(state: T, depth: number, params: Params<T>): number {
-  const results = minimaxHelper(state, depth, params);
+  const results = minimaxHelper(state, depth, params, {});
   const rval = parseFloat(results[0]?.score?.toFixed(3));
   const resultsStr = results
     .map((r) =>
@@ -20,12 +20,18 @@ function minimax<T>(state: T, depth: number, params: Params<T>): number {
 function minimaxHelper<T>(
   state: T,
   depth: number,
-  params: Params<T>
+  params: Params<T>,
+  seen: { [str: string]: ResultType }
 ): ResultType[] {
   const results = Object.entries(params.stateToChildren(state))
     .map(([move, child]) => {
       if (depth > 0) {
-        const bestChild = minimaxHelper(child, depth - 1, params)[0];
+        let str = stringify(child); //.substr(0, 4250);
+        var bestChild = seen[str];
+        if (!bestChild) {
+          bestChild = minimaxHelper(child, depth - 1, params, seen)[0];
+          seen[str] = bestChild;
+        }
         if (bestChild) {
           return {
             score: bestChild.score,
@@ -43,6 +49,20 @@ function minimaxHelper<T>(
     .sort((a, b) => a.score - b.score);
   if (params.maximizing(state)) results.reverse();
   return results;
+}
+
+function stringify(obj: any): string {
+  if (obj && typeof obj === "object") {
+    if (Array.isArray(obj)) {
+      return `[${obj.map(stringify).join(",")}]`;
+    } else {
+      return `{${Object.entries(obj)
+        .map(([key, val]) => `${key}:${stringify(val)}`)
+        .sort()
+        .join(",")}}`;
+    }
+  }
+  return JSON.stringify(obj);
 }
 
 export default minimax;
