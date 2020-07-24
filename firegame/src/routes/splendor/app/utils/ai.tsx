@@ -175,7 +175,9 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
           const dummy = utils.copy(obj.card);
           dummy.color = Token.gold;
           child.cards[obj.card.level]![obj.index] = dummy;
-          const message = `b${spent}:${Level[obj.card.level]}:${obj.index + 1}`;
+          const message = `b:${spent}:${Level[obj.card.level]}:${
+            obj.index + 1
+          }`;
           children[message] = child;
         });
       })
@@ -187,7 +189,7 @@ function childrenBuyCard(s: GameType, children: ChildrenType): void {
       Object.entries(afterBuying).forEach(([spent, childTokens]) => {
         const child = childFromBuy(s, obj.card, childTokens);
         utils.getPlayer(s.currentPlayer, child).hand!.splice(obj.index, 1);
-        const message = `b${spent}:hand:${obj.index + 1}`;
+        const message = `b:${spent}:hand:${obj.index + 1}`;
         children[message] = child;
       });
     });
@@ -267,20 +269,22 @@ function recursivelySpendGolds(
   afterBuying: { [spentStr: string]: Token[] }
 ): void {
   const spentStr = Object.entries(spent)
-    .map(([t, num]) => Token[parseInt(t)].repeat(num!))
+    .map(([t, num]) => TokenToEmoji[parseInt(t) as Token].repeat(num!))
     .join("");
   afterBuying[spentStr] = Object.entries(childTokens)
     .map(([t, num]) => ({ t: parseInt(t) as Token, num }))
-    .flatMap((obj) => Array(obj.num! - spent[obj.t]!).fill(obj.t));
+    .flatMap((obj) =>
+      Array(obj.num! - spent[obj.t]!).fill(TokenToEmoji[obj.t])
+    );
   if ((childTokens[Token.gold] || 0) > spent[Token.gold]!) {
     Object.keys(spent)
       .map((t) => parseInt(t) as Token)
-      .filter((t) => t !== Token.gold)
+      .filter((t) => t !== Token.gold && spent[t])
       .forEach((t) => {
         const rSpent = utils.copy(spent);
         rSpent[t]!--;
         rSpent[Token.gold]!++;
-        recursivelySpendGolds(spent, childTokens, afterBuying);
+        recursivelySpendGolds(rSpent, childTokens, afterBuying);
       });
   }
 }
