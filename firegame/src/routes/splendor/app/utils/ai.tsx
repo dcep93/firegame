@@ -41,6 +41,7 @@ function heuristic(s: GameType): number {
 function stateToChildren(s: GameType): ChildrenType {
   const children = {};
   if (!(s.currentPlayer === 0 && s.over)) {
+    s = copy(s);
     childrenTakeTokens(s, children);
     childrenReserveCard(s, children);
     childrenBuyCard(s, children);
@@ -99,7 +100,7 @@ function putBackTokens(
   }
   tokensToPutBack.forEach((ts) => {
     const child = copy(s);
-    const myChildTokens = copy(child.players[myIndex]!.tokens!);
+    const myChildTokens = child.players[myIndex]!.tokens!;
     ts.forEach((t) => {
       myChildTokens.splice(myChildTokens.indexOf(t), 1);
     });
