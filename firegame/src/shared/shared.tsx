@@ -99,7 +99,21 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   }
 
   copy<X>(obj: X): X {
-    return JSON.parse(JSON.stringify(obj));
+    if (obj && typeof obj === "object") {
+      if (Array.isArray(obj)) {
+        // @ts-ignore
+        return obj.map((val) => this.copy(val));
+      }
+      const rval: { [key: string]: any } = {};
+      Object.entries(obj).forEach(([key, val]) => (rval[key] = this.copy(val)));
+      // @ts-ignore
+      return rval;
+    }
+    return obj;
+  }
+
+  sCopy<X>(obj: X): X {
+    return Object.assign({}, obj);
   }
 
   objEqual<X>(a: X, b: X): boolean {

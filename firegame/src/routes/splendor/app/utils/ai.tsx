@@ -93,9 +93,12 @@ function childrenTakeTokens(s: GameType, children: ChildrenType): void {
           .flatMap((b, j) => choices.slice(i + j + 2).map((c) => [a, b, c]))
       )
       .forEach((triple) => {
-        const child = utils.copy(s);
+        const child = utils.sCopy(s);
+        child.tokens = utils.sCopy(child.tokens);
+        child.players = child.players.slice();
+        const me = utils.copy(utils.getCurrent(child));
+        child.players[child.currentPlayer] = me;
         triple.forEach((t) => child.tokens[t]!--);
-        const me = utils.getCurrent(child);
         if (!me.tokens) me.tokens = [];
         me.tokens = me.tokens.concat(triple).sort();
         child.currentPlayer = 1 - child.currentPlayer;
@@ -129,8 +132,11 @@ function putBackTokens(
       ).map((ts) => JSON.parse(ts));
     }
     tokensToPutBack.forEach((ts) => {
-      const child = utils.copy(s);
-      const myChildTokens = child.players[myIndex]!.tokens!;
+      const child = utils.sCopy(s);
+      child.players = child.players.slice();
+      const me = utils.copy(child.players[myIndex]!);
+      child.players[myIndex] = me;
+      const myChildTokens = me.tokens!;
       ts.forEach((t) => {
         myChildTokens.splice(myChildTokens.indexOf(t), 1);
       });
@@ -179,8 +185,11 @@ function childrenReserveCard(s: GameType, children: ChildrenType): void {
 }
 
 function reserveFaceDown(s: GameType, children: ChildrenType): void {
-  const child = utils.copy(s);
-  const me = utils.getCurrent(child);
+  const child = utils.sCopy(s);
+  child.tokens = utils.sCopy(child.tokens);
+  child.players = child.players.slice();
+  const me = utils.copy(utils.getCurrent(child));
+  child.players[child.currentPlayer] = me;
   child.currentPlayer = 1 - child.currentPlayer;
   if (!me.hand) me.hand = [];
   me.hand.push({
@@ -332,7 +341,7 @@ function recursivelySpendGolds(
         .map((t) => parseInt(t) as Token)
         .filter((t) => t !== Token.gold && spent[t])
         .forEach((t) => {
-          const rSpent = utils.copy(spent);
+          const rSpent = utils.sCopy(spent);
           rSpent[t]!--;
           rSpent[Token.gold]!++;
           recursivelySpendGolds(rSpent, childTokens, afterBuying);
