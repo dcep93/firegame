@@ -1,5 +1,5 @@
 import minimax from "../../../../shared/minimax";
-import { Card, Level, Token, TokensGroup } from "./bank";
+import { Card, Level, Token, TokensGroup, TokenToEmoji } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
 import utils, { store } from "./utils";
 
@@ -120,7 +120,9 @@ function putBackTokens(
     ts.forEach((t) => {
       myChildTokens.splice(myChildTokens.indexOf(t), 1);
     });
-    const message = `t:${triple.join("")}:${ts.map((t) => Token[t]).join("")}`;
+    const message = `t:${triple.map((t) => TokenToEmoji[t]).join("")}:${ts
+      .map((t) => Token[t])
+      .join("")}`;
     children[message] = child;
   });
 }
