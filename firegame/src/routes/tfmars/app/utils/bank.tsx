@@ -156,4 +156,52 @@ export const corporations: Card[] = [
     },
     tokenType: Token.floater,
   },
+  {
+    name: "helion",
+    text: `$42; 3 heat prod\nEffect: use heat as money`,
+    icons: [Icon.space],
+    effect: (e: Effect) => {
+      // todo
+    },
+  },
+  {
+    name: "Polyphemos",
+    text: `$50; $5 prod; 5 titanium\nEffect: When buying a card to hand, pay $5 instead of $3.`,
+    effect: (e: Effect) => {
+      // todo
+    },
+  },
+  {
+    name: "Tharsis Republic",
+    text: `$40; As first action, place a city\nEffect: When anyone places a city tile ON MARS, $1 prod. When you place a city tile, $3.`,
+    icons: [Icon.building],
+    effect: (e: Effect) => {
+      if (e.trigger === Trigger.getDiscount) {
+        const c = e.params as Card;
+        if ((c.icons || []).indexOf(Icon.building) !== -1) return 2;
+      }
+    },
+  },
+  {
+    name: "XXX",
+    text: `$44; $3 prod\nEffect: ${Icon.building}: $2 discount`,
+    icons: [Icon.building],
+    effect: (e: Effect) => {
+      if (e.trigger === Trigger.getDiscount) {
+        const c = e.params as Card;
+        if ((c.icons || []).indexOf(Icon.building) !== -1) return 2;
+      }
+    },
+  },
+  {
+    name: "XXX",
+    text: `$44; $3 prod\nEffect: ${Icon.building}: $2 discount`,
+    icons: [Icon.building],
+    effect: (e: Effect) => {
+      if (e.trigger === Trigger.getDiscount) {
+        const c = e.params as Card;
+        if ((c.icons || []).indexOf(Icon.building) !== -1) return 2;
+      }
+    },
+  },
 ];

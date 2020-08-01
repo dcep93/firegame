@@ -34,6 +34,7 @@ export enum Icon {
   building = "🏠",
   energy = "⚡",
   jovian = "🪐",
+  space = "⭐",
 }
 
 export enum Token {
