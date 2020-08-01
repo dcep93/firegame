@@ -1,10 +1,21 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { GameType, PlayerType } from "./NewGame";
+import { Action, Game, Player } from "./types";
 
-const store: StoreType<GameType> = store_;
+const store: StoreType<Game> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {}
+class Utils extends Shared<Game, Player> {
+  finishAction(): void {
+    // todo
+    alert("Need to implement");
+  }
+
+  addAction(action: Action): void {
+    const me = utils.getMe();
+    if (!me.actionQueue) me.actionQueue = [];
+    me.actionQueue.push(action);
+  }
+}
 
 const utils = new Utils();
 
