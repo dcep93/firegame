@@ -39,7 +39,9 @@ def getBonusesText():
     return getText(name, bonus_src, getBonusLines)
 
 def getCardLines(card):
+    habitats = "[" + ", ".join([f"types.habitat.{i.lower()}" for i in ["Forest", "Grassland", "Wetland"] if card[i]]) + "]"
     food = "{ " + ", ".join([f'[types.food.{i.replace(" (food)", "").lower()}]: {int(card[i])}' for i in ["Invertebrate", "Seed", "Fruit", "Fish", "Rodent", "Wild (food)"] if card[i]]) + " }"
+    bonuses = [i for i in ["Anatomist","Cartographer","Historian","Photographer","Backyard Birder","Bird Bander","Bird Counter","Bird Feeder","Citizen Scientist","Diet Specialist","Enclosure Builder","Falconer","Fishery Manager","Food Web Expert","Forester","Large Bird Specialist","Nest Box Builder","Omnivore Expert","Passerine Specialist","Platform Builder","Prairie Manager","Rodentologist","Viticulturalist","Wetland Scientist","Wildlife Gardener"] if card[i]]
     return [
         f'name: "{card["Common name"]}",',
         f'text: {json.dumps(card["Power text"])},',
@@ -50,10 +52,11 @@ def getCardLines(card):
         f'nest: types.nest.{card["Nest type"].lower()},',
         f'capacity: {card["Egg capacity"]},',
         f'wingspan: {card["Wingspan"]},',
-        f'habitats: [{", ".join([f"types.habitat.{i.lower()}" for i in ["Forest", "Grassland", "Wetland"] if card[i]])}],',
+        f'habitats: {habitats},',
         f'food: {food},',
         f'food_slash: {json.dumps(bool(card["/ (food cost)"]))},',
         f'food_star: {json.dumps(bool(card["* (food cost)"]))},',
+        f'bonuses: {bonuses}'
     ]
 
 def getBonusLines(bonus):
