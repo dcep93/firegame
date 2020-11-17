@@ -1,19 +1,9 @@
-export type BonusType = {
-  name: string;
-  to_skip: boolean;
-  expansion: ExpansionEnum;
-  automa: boolean;
-  automa_only: boolean;
-  condition: string;
-  extra: string;
-  vp_text: string;
-  vp_f: { [num: number]: number } | null;
-  percent: number | null;
-};
+import { PlayerType } from "./NewGame";
 
 export type CardType = {
   name: string;
   scientific_name: string;
+  color: ColorEnum;
   expansion: ExpansionEnum;
   text: string;
   predator: boolean;
@@ -28,6 +18,20 @@ export type CardType = {
   food_slash: boolean;
   food_star: boolean;
   bonuses: string[];
+  activation: (p: PlayerType) => void;
+};
+
+export type BonusType = {
+  name: string;
+  to_skip: boolean;
+  expansion: ExpansionEnum;
+  automa: boolean;
+  automa_only: boolean;
+  condition: string;
+  extra: string;
+  vp_text: string;
+  vp_f: { [num: number]: number } | null;
+  percent: number | null;
 };
 
 export enum ExpansionEnum {
@@ -59,4 +63,11 @@ export enum FoodEnum {
   fish,
   rodent,
   wild,
+}
+
+export enum ColorEnum {
+  pink,
+  teal,
+  brown,
+  white,
 }
