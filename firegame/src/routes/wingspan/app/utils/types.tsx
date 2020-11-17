@@ -18,7 +18,7 @@ export type CardType = {
   food_slash: boolean;
   food_star: boolean;
   bonuses: string[];
-  activation: (p: PlayerType) => void;
+  activation: null | ((p: PlayerType) => void);
 };
 
 export type BonusType = {

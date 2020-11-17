@@ -1,7 +1,3 @@
-import { PlayerType } from "./NewGame";
-
-class ABC {
-  activationNone(p: PlayerType) {}
-}
+class ABC {}
 
 export default new ABC();
