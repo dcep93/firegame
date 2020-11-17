@@ -1,31 +1,43 @@
-export type BonusType = any;
+export type BonusType = {
+  name: string;
+  to_skip: boolean;
+  expansion: ExpansionEnum;
+  automa: boolean;
+  automa_only: boolean;
+  condition: string;
+  extra: string;
+  vp_text: string;
+  vp_f: { [num: number]: number } | null;
+  percent: number | null;
+};
+
 export type CardType = {
   name: string;
   scientific_name: string;
-  expansion: expansion;
+  expansion: ExpansionEnum;
   text: string;
   predator: boolean;
   flocking: boolean;
   bonus: boolean;
   points: number;
-  nest: nest;
+  nest: NestEnum;
   capacity: number;
   wingspan: number;
-  habitats: habitat[];
-  food: { [f in food]?: number };
+  habitats: HabitatEnum[];
+  food: { [f in FoodEnum]?: number };
   food_slash: boolean;
   food_star: boolean;
   bonuses: string[];
 };
 
-enum expansion {
+export enum ExpansionEnum {
   core,
   european,
   swiftstart,
   chinesepromo,
 }
 
-enum nest {
+export enum NestEnum {
   cavity,
   ground,
   platform,
@@ -34,13 +46,13 @@ enum nest {
   none,
 }
 
-enum habitat {
+export enum HabitatEnum {
   forest,
   grassland,
   wetland,
 }
 
-enum food {
+export enum FoodEnum {
   invertebrate,
   seed,
   fruit,
@@ -48,5 +60,3 @@ enum food {
   rodent,
   wild,
 }
-
-export default { expansion, nest, habitat, food };

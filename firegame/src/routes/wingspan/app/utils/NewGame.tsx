@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
 import bank from "./bank";
-import types, { CardType } from "./types";
+import { BonusType, CardType, ExpansionEnum, FoodEnum } from "./types";
 import utils, { store } from "./utils";
 
 export type GameType = {
@@ -8,6 +8,9 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
   deck: number[];
+  bonuses: number[];
+  startingPlayer: number;
+  remainingRounds: number;
 };
 
 export type Params = {
@@ -18,6 +21,9 @@ export type Params = {
 export type PlayerType = {
   userId: string;
   userName: string;
+  hand?: number[];
+  bonuses: number[];
+  food?: { [f in FoodEnum]?: number };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -29,21 +35,32 @@ function NewGame(params: Params): PromiseLike<GameType> {
       .map((_, i) => i)
       .filter((index) => playWithCard(bank.cards[index], params))
   );
+  game.bonuses = utils.shuffle(
+    bank.bonuses
+      .map((_, i) => i)
+      .filter((index) => playWithBonus(bank.bonuses[index], params))
+  );
   return Promise.resolve(game).then(setPlayers);
 }
 
 function playWithCard(card: CardType, params: Params): boolean {
   if (card.food_star) return false; // todo
   switch (card.expansion) {
-    case types.expansion.core:
+    case ExpansionEnum.core:
       return true;
-    case types.expansion.chinesepromo:
+    case ExpansionEnum.chinesepromo:
       return false; // todo
-    case types.expansion.european:
+    case ExpansionEnum.european:
       return params.europeanExpansion;
-    case types.expansion.swiftstart:
+    case ExpansionEnum.swiftstart:
       return true;
   }
+}
+
+function playWithBonus(bonus: BonusType, params: Params): boolean {
+  if (bonus.automa_only) return false;
+  if (bonus.to_skip) return false;
+  return true;
 }
 
 function setPlayers(game: GameType): GameType {
@@ -52,8 +69,10 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName]) => ({
       userId,
       userName,
+      hand: game.deck.splice(0, 5),
+      bonuses: game.bonuses.splice(0, 2),
     }));
-  game.currentPlayer = utils.myIndex(game);
+  game.currentPlayer = game.startingPlayer = utils.myIndex(game);
   return game;
 }
 

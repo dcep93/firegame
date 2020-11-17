@@ -40,19 +40,19 @@ def getBonusesText():
 
 def getCardLines(card):
     expansion = ({"originalcore": "core", "european": "european", "swiftstart": "swiftstart", "chinesepromo": "chinesepromo"})[card[""]]
-    habitats = "[" + ", ".join([f"types.habitat.{i.lower()}" for i in ["Forest", "Grassland", "Wetland"] if card[i]]) + "]"
-    food = "{ " + ", ".join([f'[types.food.{i.replace(" (food)", "").lower()}]: {int(card[i])}' for i in ["Invertebrate", "Seed", "Fruit", "Fish", "Rodent", "Wild (food)"] if card[i]]) + " }"
+    habitats = "[" + ", ".join([f"HabitatEnum.{i.lower()}" for i in ["Forest", "Grassland", "Wetland"] if card[i]]) + "]"
+    food = "{ " + ", ".join([f'[FoodEnum.{i.replace(" (food)", "").lower()}]: {int(card[i])}' for i in ["Invertebrate", "Seed", "Fruit", "Fish", "Rodent", "Wild (food)"] if card[i]]) + " }"
     bonuses = [i for i in ["Anatomist","Cartographer","Historian","Photographer","Backyard Birder","Bird Bander","Bird Counter","Bird Feeder","Citizen Scientist","Diet Specialist","Enclosure Builder","Falconer","Fishery Manager","Food Web Expert","Forester","Large Bird Specialist","Nest Box Builder","Omnivore Expert","Passerine Specialist","Platform Builder","Prairie Manager","Rodentologist","Viticulturalist","Wetland Scientist","Wildlife Gardener"] if card[i]]
     return [
         f'name: "{card["Common name"]}",',
         f'scientific_name: "{card["Scientific name"]}",',
-        f'expansion: types.expansion.{expansion},',
+        f'expansion: ExpansionEnum.{expansion},',
         f'text: {json.dumps(card["Power text"])},',
         f'predator: {json.dumps(bool(card["Predator"]))},',
         f'flocking: {json.dumps(bool(card["Flocking"]))},',
         f'bonus: {json.dumps(bool(card["Bonus card"]))},',
         f'points: {card["Victory points"]},',
-        f'nest: types.nest.{card["Nest type"].lower()},',
+        f'nest: NestEnum.{card["Nest type"].lower()},',
         f'capacity: {card["Egg capacity"]},',
         f'wingspan: {card["Wingspan"]},',
         f'habitats: {habitats},',
@@ -66,14 +66,14 @@ def getBonusLines(bonus):
     return [
         f'name: "{bonus["Name"]}",',
         f'to_skip: {"true, // todo" if bonus["Name"] in bonuses_to_skip else "false,"}',
-        f'expansion: types.expansion.{bonus["Expansion"]},',
+        f'expansion: ExpansionEnum.{bonus["Expansion"]},',
         f'automa: {json.dumps(bool(bonus["Automa"]))},',
         f'automa_only: {json.dumps(bonus["VP"] == "-")},',
         f'condition: "{bonus["Condition"]}",',
         f'extra: "{bonus["Explanatory text"]}",',
         f'vp_text: "{bonus["VP"]}",',
         f'vp_f: {vpTextToF(bonus["VP"], bonus)},',
-        f'percent: "{bonus["%"]}",',
+        f'percent: {"null" if bonus["%"] == "-" else bonus["%"].replace("*", "")},',
     ]
 
 def vpTextToF(vp_text, raw):
@@ -95,7 +95,7 @@ def objToText(obj, objToLines):
     return "{" + lines + "\n},"
 
 def getBankText(cards_text, bonuses_text):
-    import_text = 'import types, { BonusType, CardType } from "./types";'
+    import_text = 'import { BonusType, CardType, ExpansionEnum, FoodEnum, HabitatEnum, NestEnum } from "./types";'
     module_text = "const bank = { cards, bonuses };\n\nexport default bank;"
     return f"{import_text}\n\n{cards_text}\n\n{bonuses_text}\n\n{module_text}\n"
 
