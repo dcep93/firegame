@@ -39,11 +39,14 @@ def getBonusesText():
     return getText(name, bonus_src, getBonusLines)
 
 def getCardLines(card):
+    expansion = ({"originalcore": "core", "european": "european", "swiftstart": "swiftstart", "chinesepromo": "chinesepromo"})[card[""]]
     habitats = "[" + ", ".join([f"types.habitat.{i.lower()}" for i in ["Forest", "Grassland", "Wetland"] if card[i]]) + "]"
     food = "{ " + ", ".join([f'[types.food.{i.replace(" (food)", "").lower()}]: {int(card[i])}' for i in ["Invertebrate", "Seed", "Fruit", "Fish", "Rodent", "Wild (food)"] if card[i]]) + " }"
     bonuses = [i for i in ["Anatomist","Cartographer","Historian","Photographer","Backyard Birder","Bird Bander","Bird Counter","Bird Feeder","Citizen Scientist","Diet Specialist","Enclosure Builder","Falconer","Fishery Manager","Food Web Expert","Forester","Large Bird Specialist","Nest Box Builder","Omnivore Expert","Passerine Specialist","Platform Builder","Prairie Manager","Rodentologist","Viticulturalist","Wetland Scientist","Wildlife Gardener"] if card[i]]
     return [
         f'name: "{card["Common name"]}",',
+        f'scientific_name: "{card["Scientific name"]}",',
+        f'expansion: types.expansion.{expansion},',
         f'text: {json.dumps(card["Power text"])},',
         f'predator: {json.dumps(bool(card["Predator"]))},',
         f'flocking: {json.dumps(bool(card["Flocking"]))},',
