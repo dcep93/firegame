@@ -81,7 +81,7 @@ def getActivation(text):
     if text == "When another player's predator succeeds, gain 1 [die] from the birdfeeder.":
         return 'null, // todo ActivationsBank.predatorGainFood'
     if text == '':
-        return 'null, // todo ActivationsBank.activationNone'
+        return 'ActivationsBank.activationNone'
     if text == 'All players draw 1 [card] from the deck.':
         return 'null, // todo ActivationsBank.allDraw'
     if text == 'All players gain 1 [fish] from the supply.':

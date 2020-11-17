@@ -3,7 +3,7 @@ import ActivationsBank from "./activations_bank";
 
 const cards: CardType[] = [
   {
-    activation: null, // todo ActivationsBank.activationNone,
+    activation: ActivationsBank.activationNone,
     name: "American Woodcock",
     scientific_name: "Scolopax minor",
     color: ColorEnum.white,
@@ -23,7 +23,7 @@ const cards: CardType[] = [
     bonuses: ['Cartographer', 'Bird Bander', 'Bird Feeder', 'Diet Specialist', 'Enclosure Builder'],
   },
   {
-    activation: null, // todo ActivationsBank.activationNone,
+    activation: ActivationsBank.activationNone,
     name: "Blue-Winged Warbler",
     scientific_name: "Vermivora cyanoptera",
     color: ColorEnum.white,
@@ -43,7 +43,7 @@ const cards: CardType[] = [
     bonuses: ['Anatomist', 'Photographer', 'Bird Bander', 'Food Web Expert', 'Passerine Specialist', 'Wildlife Gardener'],
   },
   {
-    activation: null, // todo ActivationsBank.activationNone,
+    activation: ActivationsBank.activationNone,
     name: "Hooded Warbler",
     scientific_name: "Setophaga citrina",
     color: ColorEnum.white,
@@ -63,7 +63,7 @@ const cards: CardType[] = [
     bonuses: ['Food Web Expert', 'Forester', 'Passerine Specialist', 'Wildlife Gardener'],
   },
   {
-    activation: null, // todo ActivationsBank.activationNone,
+    activation: ActivationsBank.activationNone,
     name: "Prothonotary Warbler",
     scientific_name: "Protonotaria citrea",
     color: ColorEnum.white,
@@ -83,7 +83,7 @@ const cards: CardType[] = [
     bonuses: ['Bird Bander', 'Bird Feeder', 'Diet Specialist', 'Nest Box Builder', 'Passerine Specialist'],
   },
   {
-    activation: null, // todo ActivationsBank.activationNone,
+    activation: ActivationsBank.activationNone,
     name: "Trumpeter Swan",
     scientific_name: "Cygnus buccinator",
     color: ColorEnum.white,
@@ -103,7 +103,7 @@ const cards: CardType[] = [
     bonuses: ['Bird Feeder', 'Diet Specialist', 'Enclosure Builder', 'Large Bird Specialist', 'Omnivore Expert', 'Wetland Scientist'],
   },
   {
-    activation: null, // todo ActivationsBank.activationNone,
+    activation: ActivationsBank.activationNone,
     name: "Wild Turkey",
     scientific_name: "Meleagris gallopavo",
     color: ColorEnum.white,
