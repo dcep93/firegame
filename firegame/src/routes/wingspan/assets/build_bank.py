@@ -54,15 +54,14 @@ def getBonusLines(bonus):
         f'percent: "{bonus["%"]}",',
     ]
 
-def vpTextToF(vp_text, raw=''):
+def vpTextToF(vp_text, raw):
     parts = [i.strip() for i in vp_text.split(';')]
     if len(parts) == 2:
-        f = {}
-        for part in parts:
-            f[int(part[0])] = int(part[-1])
+        f = {int(part[0]): int(part[-1]) for part in parts}
         return "{ " + ', '.join([f'{i}: {f[i]}' for i in f]) + " }"
-    print(raw)
-    return '{}'
+    if vp_text == "-":
+        return 'null'
+    return "{ 0: " + vp_text[0] + " }"
 
 def getText(name, src, objToLines):
     data = getCsv(src)

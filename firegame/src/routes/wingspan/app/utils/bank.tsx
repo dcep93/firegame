@@ -822,7 +822,7 @@ const bonuses: BonusType[] = [
       "For each column that contains birds with 3 different power colors:",
     extra: "Birds with no power count as white.",
     vp_text: "3 per column",
-    vp_f: {},
+    vp_f: { 0: 3 },
     percent: "-",
   },
   {
@@ -844,7 +844,7 @@ const bonuses: BonusType[] = [
     condition: "Birds with a [flocking] power",
     extra: "",
     vp_text: "2 per bird",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "15",
   },
   {
@@ -866,7 +866,7 @@ const bonuses: BonusType[] = [
     condition: "Birds that have at least 4 eggs laid on them",
     extra: "",
     vp_text: "1 per bird",
-    vp_f: {},
+    vp_f: { 0: 1 },
     percent: "28*",
   },
   {
@@ -911,7 +911,7 @@ const bonuses: BonusType[] = [
     condition: "Birds in your habitat with the fewest birds.",
     extra: "Ties count.",
     vp_text: "2 per bird",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "-",
   },
   {
@@ -933,7 +933,7 @@ const bonuses: BonusType[] = [
     condition: "In any one habitat:",
     extra: "Birds with no power count as white.",
     vp_text: "2 per power color",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "-",
   },
   {
@@ -944,7 +944,7 @@ const bonuses: BonusType[] = [
     condition: "Birds with a [predator] power",
     extra: "",
     vp_text: "2 per bird",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "13",
   },
   {
@@ -966,7 +966,7 @@ const bonuses: BonusType[] = [
     condition: "Birds that eat only [invertebrate]",
     extra: "",
     vp_text: "2 per bird",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "9",
   },
   {
@@ -988,7 +988,7 @@ const bonuses: BonusType[] = [
     condition: "Birds named after a person",
     extra: "Any bird with an 's in its name.",
     vp_text: "2 per bird",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "11",
   },
   {
@@ -1022,7 +1022,7 @@ const bonuses: BonusType[] = [
     extra:
       "Any bird that specifically has a [wild] symbol as part of its food cost.",
     vp_text: "2 per bird",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "16",
   },
   {
@@ -1089,7 +1089,7 @@ const bonuses: BonusType[] = [
     condition: "Birds that eat [rodent]",
     extra: "",
     vp_text: "2 per bird",
-    vp_f: {},
+    vp_f: { 0: 2 },
     percent: "15",
   },
   {
@@ -1144,7 +1144,7 @@ const bonuses: BonusType[] = [
     condition: "Birds that are worth 3 or 4 points",
     extra: "The automa keeps up to 2 of them (higher value first).",
     vp_text: "-",
-    vp_f: {},
+    vp_f: null,
     percent: "44",
   },
   {
@@ -1155,7 +1155,7 @@ const bonuses: BonusType[] = [
     condition: "Birds that are worth 5, 6, or 7 points",
     extra: "The automa keeps the highest valued one.",
     vp_text: "-",
-    vp_f: {},
+    vp_f: null,
     percent: "28",
   },
 ];
