@@ -1,0 +1,34 @@
+Name,Expansion,Automa,Condition,Explanatory text,VP,%
+Anatomist,core,X,Birds with body parts in their names,"Body parts include back, beak, belly, bill, breast, cap, chin, collar, crest, crown, eye, face, head, leg, neck, rump, shoulder, tail, throat, toe, wing",2 to 3 birds: 3; 4+ birds: 7,22
+Backyard Birder,core,,Birds worth less than 4 points,,5 to 6 birds: 3; 6+ birds: 6,42
+Behaviorist,european,,For each column that contains birds with 3 different power colors:,Birds with no power count as white.,3 per column,-
+Bird Bander,european,X,Birds that can live in multiple habitats,,4 to 5 birds: 4; 6+ birds: 7,31
+Bird Counter,core,X,Birds with a [flocking] power,,2 per bird,15
+Bird Feeder,core,X,Birds that eat [seed],,5 to 7 birds: 3; 8+ birds: 7,44
+Breeding Manager,core,,Birds that have at least 4 eggs laid on them,,1 per bird,28*
+Cartographer,core,X,Birds with geography terms in their name,"Terms include American, Atlantic, Baltimore, California, Canada, Carolina, Chihuahua, Corsican, Eastern, Eurasian, European, Inca, Mississippi, Moor, Mountain, Northern, Prairie, Sandhill, Savannah, Western",2 to 3 birds: 3; 4+ birds: 7,21
+Citizen Scientist,european,X,Birds with tucked cards,,4 to 6 birds: 3; 7+ birds: 6,21*
+Diet Specialist,european,X,Birds with a food cost of 3 food,,2 to 3 birds: 3; 4+ birds: 6,29
+Ecologist,core,,Birds in your habitat with the fewest birds.,Ties count.,2 per bird,-
+Enclosure Builder,core,X,Birds with [ground] nests,Birds must have a [ground] or [star] nest symbol.,4 to 5 birds: 4; 6+ birds: 7,31
+Ethologist,european,,In any one habitat:,Birds with no power count as white.,2 per power color,-
+Falconer,core,X,Birds with a [predator] power,,2 per bird,13
+Fishery Manager,core,X,Birds that eat [fish],,2 to 3 birds: 3; 4+ birds: 8,18
+Food Web Expert,core,X,Birds that eat only [invertebrate],,2 per bird,9
+Forester,core,X,Birds that can only live in [forest],,3 to 4 birds: 4; 5 birds: 5,24
+Historian,core,X,Birds named after a person,Any bird with an 's in its name.,2 per bird,11
+Large Bird Specialist,core,X,Birds with wingspans over 65 cm,,4 to 5 birds: 3; 6+ birds: 6,35
+Nest Box Builder,core,X,Birds with [cavity] nests,Birds must have a [cavity] or [star] nest symbol.,4 to 5 birds: 4; 6+ birds: 7,31
+Omnivore Specialist,core,X,Birds that eat [wild],Any bird that specifically has a [wild] symbol as part of its food cost.,2 per bird,16
+Oologist,core,,Birds that have at least 1 egg laid on them,,7 to 8 birds: 3; 9+ birds: 6,-
+Passerine Specialist,core,X,Birds with wingspans 30 cm or less,,4 to 5 birds: 3; 6+ birds: 6,35
+Photographer,core,X,Birds with colors in their names,"Colors include ash, black, blue, bronze, brown, cerulean, chestnut, coal, ferruginous, gold, gray, grey, green, honey, indigo, lazuli, purple, red, rose, roseate, ruby, ruddy, rufous, snowy, violet, white, yellow",4 to 5 brids: 3; 6+ birds: 7,34
+Platform Builder,core,X,Birds with [platform] nests,Birds must have a [platform] or [star] nest symbol.,4 to 5 birds: 4; 6+ birds: 7,31
+Prairie Manager,core,X,Birds that can only live in [grassland],,2 to 3 birds: 3; 4+ birds: 8,19
+Rodentologist,core,X,Birds that eat [rodent],,2 per bird,15
+Visionary Leader,core,,Bird cards in hand at end of game,,5 to 7 birds: 4; 8+ birds: 7,-
+Viticulturalist,core,X,Birds that eat [fruit],,2 to 3 birds: 3; 4+ birds: 7,22
+Wetland Scientist,core,X,Birds that can only live in [wetland],,3 to 4 birds: 3; 5 birds: 7,26
+Wildlife Gardener,core,X,Birds with [bowl] nests,Birds must have a [bowl] or [star] nest symbol.,4 to 5 birds: 4; 6+ birds: 7,31
+[automa] Autwitcher,european,X,Birds that are worth 3 or 4 points,The automa keeps up to 2 of them (higher value first).,-,44
+[automa] RASPB Life Fellow,european,X,"Birds that are worth 5, 6, or 7 points",The automa keeps the highest valued one.,-,28
