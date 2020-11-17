@@ -20,20 +20,20 @@ class Hand extends React.Component<{
             {(me.hand || []).map(this.renderHandCard.bind(this))}
           </div>
         </div>
-        <div>
+        <div className={styles.flex}>
           <div className={styles.bubble}>
             <h2>Bonuses</h2>
             {me.bonuses.map(this.renderBonusCard.bind(this))}
           </div>
-          <div className={`${styles.inline} ${styles.flex}`}>
-            <h1
-              className={`${styles.bubble} ${
-                this.props.trashSelected && styles.grey
-              }`}
-              onClick={this.props.selectTrash}
-            >
-              Trash
-            </h1>
+          <div className={wStyles.playerButtons}>
+            <div>
+              {this.toggler("trash")}
+              {this.toggler("lay_egg")}
+              {this.toggler("cache_food")}
+              <br />
+              {this.toggler("tuck_from_hand")}
+              {this.toggler("tuck_from_deck")}
+            </div>
             <button onClick={this.drawCard}>Draw Card</button>
             <button onClick={this.drawBonus}>Draw Bonus</button>
             <button onClick={this.shuffle}>Shuffle</button>
@@ -43,6 +43,19 @@ class Hand extends React.Component<{
           </div>
         </div>
       </>
+    );
+  }
+
+  toggler(key: string) {
+    return (
+      <h5
+        className={`${styles.bubble} ${
+          this.props.trashSelected && styles.grey
+        }`}
+        onClick={this.props.selectTrash}
+      >
+        {key.replace(/_/g, " ")}
+      </h5>
     );
   }
 
@@ -60,6 +73,7 @@ class Hand extends React.Component<{
 
   shuffle(): void {
     utils.shuffle(store.gameW.game.deck);
+    utils.shuffle(store.gameW.game.bonuses);
     store.update("shuffled");
   }
 
@@ -73,7 +87,7 @@ class Hand extends React.Component<{
     return (
       <div
         key={index}
-        className={styles.bubble}
+        className={`${styles.bubble} ${wStyles.bird}`}
         title={utils.cardTitle(card)}
         onClick={() => this.prioritize(index, utils.getMe().hand!, "card")}
       >
@@ -94,7 +108,9 @@ class Hand extends React.Component<{
         <h5>{bonus.name}</h5>
         <div>{bonus.condition}</div>
         <div>---</div>
-        <div>{bonus.vp_text}</div>
+        <div className={styles.prewrap}>
+          {bonus.vp_text.replace("; ", "\n")}
+        </div>
         <div>{bonus.percent}%</div>
       </div>
     );
