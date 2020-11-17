@@ -9,6 +9,8 @@ bonus_src = 'wingspan-card-lists-20200529.xlsx - Bonus cards.csv'
 
 bank_dest = os.path.join('../', 'app', 'utils', 'bank.tsx')
 
+bonuses_to_skip = ["Behaviorist", "Ethologist"]
+
 def main():
     cards_text = getCardsText()
     bonuses_text = getBonusesText()
@@ -37,16 +39,30 @@ def getBonusesText():
     return getText(name, bonus_src, getBonusLines)
 
 def getCardLines(card):
+    food = "{ " + ", ".join([f'[types.food.{i.replace(" (food)", "").lower()}]: {int(card[i])}' for i in ["Invertebrate", "Seed", "Fruit", "Fish", "Rodent", "Wild (food)"] if card[i]]) + " }"
     return [
         f'name: "{card["Common name"]}",',
+        f'text: {json.dumps(card["Power text"])},',
+        f'predator: {json.dumps(bool(card["Predator"]))},',
+        f'flocking: {json.dumps(bool(card["Flocking"]))},',
+        f'bonus: {json.dumps(bool(card["Bonus card"]))},',
+        f'points: {card["Victory points"]},',
+        f'nest: types.nest.{card["Nest type"].lower()},',
+        f'capacity: {card["Egg capacity"]},',
+        f'wingspan: {card["Wingspan"]},',
+        f'habitats: [{", ".join([f"types.habitat.{i.lower()}" for i in ["Forest", "Grassland", "Wetland"] if card[i]])}],',
+        f'food: {food},',
+        f'food_slash: {json.dumps(bool(card["/ (food cost)"]))},',
+        f'food_star: {json.dumps(bool(card["* (food cost)"]))},',
     ]
 
 def getBonusLines(bonus):
     return [
         f'name: "{bonus["Name"]}",',
-        f'expansion: types.expansions.{bonus["Expansion"]},',
-        f'automa: {"true" if bonus["Automa"] else "false"},',
-        f'automa_only: {"true" if bonus["VP"] == "-" else "false"},',
+        f'to_skip: {"true, // todo" if bonus["Name"] in bonuses_to_skip else "false,"}',
+        f'expansion: types.expansion.{bonus["Expansion"]},',
+        f'automa: {json.dumps(bool(bonus["Automa"]))},',
+        f'automa_only: {json.dumps(bonus["VP"] == "-")},',
         f'condition: "{bonus["Condition"]}",',
         f'extra: "{bonus["Explanatory text"]}",',
         f'vp_text: "{bonus["VP"]}",',
