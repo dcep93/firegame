@@ -1,10 +1,14 @@
 #!/usr/local/bin/python3
 
+import concurrent.futures
 import csv
 import json
 import os
+import urllib.request
 
 import get_activation
+
+CONCURRENT_THREADS = 32
 
 cards_src = 'wingspan-card-lists-20200529.xlsx - Master.csv'
 bonus_src = 'wingspan-card-lists-20200529.xlsx - Bonus cards.csv'
@@ -30,7 +34,7 @@ def getCsv(path):
     cols = raw[0]
     # print("\n".join(cols))
     # print()
-    return [{cols[i]:row[i].strip() for i in range(len(row))} for row in raw[1:] if ''.join(row[:1])]
+    return [{cols[i]:row[i].strip() for i in range(len(row))} for row in raw[1:160] if ''.join(row[:1])]
 
 def getCardsText():
     name = 'cards: CardType[]'
@@ -46,6 +50,7 @@ def getCardLines(card):
     food = "{ " + ", ".join([f'[FoodEnum.{i.replace(" (food)", "").lower()}]: {int(card[i])}' for i in ["Invertebrate", "Seed", "Fruit", "Fish", "Rodent", "Wild (food)"] if card[i]]) + " }"
     bonuses = [i for i in ["Anatomist","Cartographer","Historian","Photographer","Backyard Birder","Bird Bander","Bird Counter","Bird Feeder","Citizen Scientist","Diet Specialist","Enclosure Builder","Falconer","Fishery Manager","Food Web Expert","Forester","Large Bird Specialist","Nest Box Builder","Omnivore Expert","Passerine Specialist","Platform Builder","Prairie Manager","Rodentologist","Viticulturalist","Wetland Scientist","Wildlife Gardener"] if card[i]]
     activation = get_activation.getActivation(card["Power text"])
+    img = getImg(card["Scientific name"])
     return [
         f'activation: {activation},',
         f'name: "{card["Common name"]}",',
@@ -65,7 +70,19 @@ def getCardLines(card):
         f'food_slash: {json.dumps(bool(card["/ (food cost)"]))},',
         f'food_star: {json.dumps(bool(card["* (food cost)"]))},',
         f'bonuses: {bonuses},',
+        f'img: "{img}",',
     ]
+
+def getImg(name):
+    url = f'https://www.google.com/search?hl=jp&btnG=Google+Search&tbs=0&safe=off&tbm=isch&q={name.replace(" ", "%20")}'
+    headers = {"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:47.0) Gecko/20100101 Firefox/47.0",}
+    request = urllib.request.Request(url=url, headers=headers)
+    page = urllib.request.urlopen(request)
+    raw = page.read()
+    html = raw.decode('utf-8')
+    relevant = html.split('["https://encrypted-tbn0.gstatic.com')[1].split('["')[1].split('"')[0]
+    print(name, relevant)
+    return relevant
 
 def getBonusLines(bonus):
     return [
@@ -91,14 +108,29 @@ def vpTextToF(vp_text, raw):
     return "{ 0: " + vp_text[0] + " }"
 
 def getText(name, src, objToLines):
-    data = getCsv(src)
-    texts = [objToText(i, objToLines) for i in data]
+    data_in = getCsv(src)
+    getter = Getter(data_in, objToLines)
+    with concurrent.futures.ThreadPoolExecutor(CONCURRENT_THREADS) as executor:
+        executor.map(getter.fetch, range(len(data_in)))
+    for i in range(len(data_in)):
+        if i not in getter.data_out:
+            getter.data_out[i] = "wut"
+    texts = [linesToText(getter.data_out[i]) for i in range(len(data_in))]
     texts.sort()
     objText = '\n'.join([''] + texts).replace('\n', '\n  ')
     return f'const {name} = [{objText}\n];'
 
-def objToText(obj, objToLines):
-    lines = "\n".join([''] + objToLines(obj)).replace('\n', '\n  ')
+class Getter:
+    def __init__(self, data_in, objToLines):
+        self.data_in = data_in
+        self.data_out = {}
+        self.objToLines = objToLines
+
+    def fetch(self, index):
+        self.data_out[index] = self.objToLines(self.data_in[index])
+
+def linesToText(lines):
+    lines = "\n".join([''] + lines).replace('\n', '\n  ')
     return "{" + lines + "\n},"
 
 def getBankText(cards_text, bonuses_text):
