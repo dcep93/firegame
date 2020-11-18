@@ -4,18 +4,18 @@ import { store } from "../utils/utils";
 import Board from "./Board";
 import Player from "./Player";
 
-class Main extends React.Component<{}, { trashSelected: boolean }> {
+class Main extends React.Component<{}, { selected: string | null }> {
   constructor(props: {}) {
     super(props);
-    this.state = { trashSelected: false };
+    this.state = { selected: null };
   }
 
   render() {
     return (
       <div>
         <Player
-          trashSelected={this.state.trashSelected}
-          selectTrash={this.selectTrash.bind(this)}
+          selected={this.state.selected}
+          select={this.select.bind(this)}
         />
         {store.gameW.game.players.map((p: PlayerType, i: number) => (
           <Board key={i} player={p} />
@@ -24,8 +24,12 @@ class Main extends React.Component<{}, { trashSelected: boolean }> {
     );
   }
 
-  selectTrash() {
-    this.setState({ trashSelected: !this.state.trashSelected });
+  select(key: string) {
+    if (this.state.selected === key) {
+      this.setState({ selected: null });
+    } else {
+      this.setState({ selected: key });
+    }
   }
 }
 

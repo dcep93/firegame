@@ -6,8 +6,8 @@ import { BonusType, CardType } from "../utils/types";
 import utils, { store } from "../utils/utils";
 
 class Hand extends React.Component<{
-  trashSelected: boolean;
-  selectTrash: () => void;
+  selected: string | null;
+  select: (key: string) => void;
 }> {
   render() {
     const me = utils.getMe();
@@ -50,9 +50,9 @@ class Hand extends React.Component<{
     return (
       <h5
         className={`${styles.bubble} ${
-          this.props.trashSelected && styles.grey
+          this.props.selected === key && styles.grey
         }`}
-        onClick={this.props.selectTrash}
+        onClick={() => this.props.select(key)}
       >
         {key.replace(/_/g, " ")}
       </h5>
@@ -118,7 +118,7 @@ class Hand extends React.Component<{
 
   prioritize(index: number, obj: number[], name: string): void {
     const item = obj.splice(obj.indexOf(index), 1)[0];
-    if (this.props.trashSelected) {
+    if (this.props.selected === "trash") {
       store.update("trashed a bonus");
     } else {
       obj.unshift(item);
