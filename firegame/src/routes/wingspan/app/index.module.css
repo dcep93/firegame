@@ -10,3 +10,7 @@
   display: inline-flex;
   flex-direction: column;
 }
+
+.previewImg {
+  width: 100%;
+}

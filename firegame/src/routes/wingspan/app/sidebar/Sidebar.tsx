@@ -2,6 +2,7 @@ import React, { RefObject } from "react";
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import NewGame, { Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
+import Preview from "./Preview";
 
 class Sidebar extends SharedSidebar<Params> {
   expansionRef: RefObject<HTMLInputElement> = React.createRef();
@@ -36,6 +37,10 @@ class Sidebar extends SharedSidebar<Params> {
       this.expansionRef.current!.checked =
         store.gameW.game.params.europeanExpansion;
     }
+  }
+
+  renderInfo(): JSX.Element | null {
+    return <Preview />;
   }
 }
 

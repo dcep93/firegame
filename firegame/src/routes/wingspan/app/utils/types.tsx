@@ -19,6 +19,7 @@ export type CardType = {
   food_star: boolean;
   bonuses: string[];
   activation: null | ((p: PlayerType) => void);
+  img?: string;
 };
 
 export type BonusType = {

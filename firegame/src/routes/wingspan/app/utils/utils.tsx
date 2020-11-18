@@ -1,6 +1,7 @@
 import React from "react";
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
+import Preview from "../sidebar/Preview";
 import { GameType, PlayerType } from "./NewGame";
 import {
   BonusType,
@@ -19,7 +20,7 @@ class Utils extends Shared<GameType, PlayerType> {
     cache: number | null = null
   ) {
     return (
-      <>
+      <div onMouseEnter={() => Preview.setCard(card)}>
         <h5>{card.name}</h5>
         <div>{card.text}</div>
         <div>---</div>
@@ -32,7 +33,7 @@ class Utils extends Shared<GameType, PlayerType> {
         </div>
         {eggs && <div>eggs: {eggs}</div>}
         {cache && <div>cache: {cache}</div>}
-      </>
+      </div>
     );
   }
   cardTitle(card: CardType): string {
