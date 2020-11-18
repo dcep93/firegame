@@ -11,7 +11,7 @@ class Hand extends React.Component<{
 }> {
   render() {
     const me = utils.getMe();
-    if (!me) return;
+    if (!me) return null;
     return (
       <>
         <div>
