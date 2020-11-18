@@ -65,6 +65,10 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     return game.currentPlayer;
   }
 
+  randomFrom<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
   shuffle<T>(arr: T[]): T[] {
     for (let i = arr.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1));

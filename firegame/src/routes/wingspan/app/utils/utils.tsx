@@ -7,6 +7,7 @@ import {
   BonusType,
   CardType,
   ExpansionEnum,
+  FoodEnum,
   HabitatEnum,
   NestEnum,
 } from "./types";
@@ -44,6 +45,14 @@ class Utils extends Shared<GameType, PlayerType> {
     return [bonus.extra, ExpansionEnum[bonus.expansion]]
       .filter(Boolean)
       .join("\n\n");
+  }
+
+  reroll(game: GameType): void {
+    game.feeder = Array.from(new Array(5)).map((_) =>
+      utils.randomFrom(
+        utils.enumArray(FoodEnum).filter((i) => i !== FoodEnum.wild)
+      )
+    );
   }
 }
 

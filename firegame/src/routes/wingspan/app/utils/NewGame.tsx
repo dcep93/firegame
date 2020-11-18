@@ -11,6 +11,7 @@ export type GameType = {
   bonuses: number[];
   startingPlayer: number;
   remainingRounds: number;
+  feeder: FoodEnum[];
 };
 
 export type Params = {
@@ -40,6 +41,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
       .map((_, i) => i)
       .filter((index) => playWithBonus(bank.bonuses[index], params))
   );
+  utils.reroll(game);
   return Promise.resolve(game).then(setPlayers);
 }
 

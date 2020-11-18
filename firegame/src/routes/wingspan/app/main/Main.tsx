@@ -2,6 +2,8 @@ import React from "react";
 import { PlayerType } from "../utils/NewGame";
 import { store } from "../utils/utils";
 import Board from "./Board";
+import Feeder from "./Feeder";
+import Goals from "./Goals";
 import Player from "./Player";
 
 class Main extends React.Component<{}, { selected: string | null }> {
@@ -17,6 +19,10 @@ class Main extends React.Component<{}, { selected: string | null }> {
           selected={this.state.selected}
           select={this.select.bind(this)}
         />
+        <div>
+          <Feeder />
+          <Goals />
+        </div>
         {store.gameW.game.players.map((p: PlayerType, i: number) => (
           <Board key={i} player={p} />
         ))}

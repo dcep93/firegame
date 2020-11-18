@@ -37,6 +37,7 @@ class Hand extends React.Component<{
             <button onClick={this.drawCard}>Draw Card</button>
             <button onClick={this.drawBonus}>Draw Bonus</button>
             <button onClick={this.shuffle}>Shuffle</button>
+            <button onClick={this.reroll}>Reroll</button>
             {utils.isMyTurn() && (
               <button onClick={this.endTurn}>End Turn</button>
             )}
@@ -75,6 +76,11 @@ class Hand extends React.Component<{
     utils.shuffle(store.gameW.game.deck);
     utils.shuffle(store.gameW.game.bonuses);
     store.update("shuffled");
+  }
+
+  reroll(): void {
+    utils.reroll(store.gameW.game);
+    store.update("rerolled");
   }
 
   endTurn(): void {
