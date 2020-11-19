@@ -4715,7 +4715,7 @@ const cards: CardType[] = [
     ],
     img: "greater flamingo",
   },
-];
+].map((card, id) => ({ ...card, id }));
 
 const bonuses: BonusType[] = [
   {

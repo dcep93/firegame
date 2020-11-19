@@ -38,7 +38,8 @@ def getCsv(path):
 
 def getCardsText():
     name = 'cards: CardType[]'
-    return getText(name, cards_src, getCardLines)
+    text = getText(name, cards_src, getCardLines)
+    return f"{text[:-1]}.map((card, id) => ({{ ...card, id }}));"
 
 def getBonusesText():
     name = 'bonuses: BonusType[]'

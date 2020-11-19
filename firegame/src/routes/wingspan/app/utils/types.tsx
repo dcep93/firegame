@@ -20,6 +20,7 @@ export type CardType = {
   bonuses: string[];
   activation: null | ((p: PlayerType) => void);
   img?: string;
+  id: number;
 };
 
 export type BonusType = {

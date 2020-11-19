@@ -23,7 +23,7 @@ class Preview extends React.Component<{}, { card?: CardType }> {
         <h5>{this.state.card.name}</h5>
         <p>{this.state.card.scientific_name}</p>
         <img
-          key={this.state.card.scientific_name}
+          key={this.state.card.id}
           className={wStyles.previewImg}
           alt=""
           src={this.state.card.img}
