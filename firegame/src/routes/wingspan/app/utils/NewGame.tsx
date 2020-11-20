@@ -60,23 +60,16 @@ function NewGame(params: Params): PromiseLike<GameType> {
   );
   game.goals = utils
     .shuffle(utils.count(GoalsBank.length))
-    .splice(0, Object.keys(goalScoring).length)
+    .splice(0, Object.keys(utils.goalScoring).length)
     .map((index, i) => ({
       index,
       rankings: utils
-        .count(Object.keys(goalScoring[i]).length)
+        .count(Object.keys(utils.goalScoring[i]).length)
         .map((_) => ({ [-1]: false })),
     }));
   utils.reroll(game);
   return Promise.resolve(game).then(setPlayers);
 }
-
-const goalScoring = [
-  { 0: 4, 1: 1, 2: 0, 3: 0 },
-  { 0: 5, 1: 2, 2: 1, 3: 0 },
-  { 0: 6, 1: 3, 2: 2, 3: 0 },
-  { 0: 7, 1: 4, 2: 3, 3: 0 },
-];
 
 function playWithCard(card: CardType, params: Params): boolean {
   if (card.food_star) return false; // todo

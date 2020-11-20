@@ -15,6 +15,13 @@ import {
 const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
+  goalScoring = [
+    { 0: 4, 1: 1, 2: 0, 3: 0 },
+    { 0: 5, 1: 2, 2: 1, 3: 0 },
+    { 0: 6, 1: 3, 2: 2, 3: 0 },
+    { 0: 7, 1: 4, 2: 3, 3: 0 },
+  ];
+
   cardItems(
     card: CardType,
     eggs: number | null = null,

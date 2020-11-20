@@ -173,7 +173,8 @@ const cards: CardType[] = [
       "Platform Builder",
       "Prairie Manager",
     ],
-    img: "magpie",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Pica_pica_-_Compans_Caffarelli_-_2012-03-16.jpg/1200px-Pica_pica_-_Compans_Caffarelli_-_2012-03-16.jpg",
   },
   {
     activation: null, // todo ActivationsBank.cachePerPredator,
@@ -201,7 +202,8 @@ const cards: CardType[] = [
       "Omnivore Expert",
       "Platform Builder",
     ],
-    img: "cornix Corvus corone",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/a/a9/Corvus_corone_-near_Canford_Cliffs%2C_Poole%2C_England-8.jpg",
   },
   {
     activation: null, // todo ActivationsBank.cachePerPredator,
@@ -531,7 +533,8 @@ const cards: CardType[] = [
       "Viticulturalist",
       "Wildlife Gardener",
     ],
-    img: "drawing",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/a/a9/Common_Blackbird.jpg",
   },
   {
     activation: null, // todo ActivationsBank.cover2(HabitatEnum.grassland),
@@ -590,7 +593,8 @@ const cards: CardType[] = [
       "Platform Builder",
       "Wetland Scientist",
     ],
-    img: "male",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Graureiher_Grey_Heron.jpg/1200px-Graureiher_Grey_Heron.jpg",
   },
   {
     activation: null, // todo ActivationsBank.discardCardPlayForest,
@@ -833,7 +837,7 @@ const cards: CardType[] = [
       "Platform Builder",
       "Rodentologist",
     ],
-    img: "40k",
+    img: "https://media.sciencephoto.com/image/c0336471/800wm",
   },
   {
     activation: null, // todo ActivationsBank.discardFoodToTuck(FoodEnum.seed),
@@ -863,7 +867,8 @@ const cards: CardType[] = [
       "Prairie Manager",
       "Viticulturalist",
     ],
-    img: "female",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/6/6e/Passer_domesticus_male_%2815%29.jpg",
   },
   {
     activation: null, // todo ActivationsBank.discardFoodToTuck(FoodEnum.wild),
@@ -897,7 +902,8 @@ const cards: CardType[] = [
       "Nest Box Builder",
       "Viticulturalist",
     ],
-    img: "juvenile",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_3.jpg/1200px-Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_3.jpg",
   },
   {
     activation: null, // todo ActivationsBank.discardFoodToTuck(FoodEnum.wild),
@@ -957,7 +963,8 @@ const cards: CardType[] = [
       "Nest Box Builder",
       "Prairie Manager",
     ],
-    img: "bird",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Apus_apus_-Barcelona%2C_Spain-8_%281%29.jpg/1200px-Apus_apus_-Barcelona%2C_Spain-8_%281%29.jpg",
   },
   {
     activation: null, // todo ActivationsBank.discardTuck2(FoodEnum.fish),
@@ -1081,7 +1088,8 @@ const cards: CardType[] = [
       "Enclosure Builder",
       "Large Bird Specialist",
     ],
-    img: "jacket",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/4/40/Canada_goose_on_Seedskadee_NWR_%2827826185489%29.jpg",
   },
   {
     activation: null, // todo ActivationsBank.discardWildPlayWetland,
@@ -1297,7 +1305,8 @@ const cards: CardType[] = [
       "Wetland Scientist",
       "Wildlife Gardener",
     ],
-    img: "skeleton",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/a/aa/Papageitaucher_Fratercula_arctica.jpg",
   },
   {
     activation: null, // todo ActivationsBank.drawBonus(2),
@@ -1677,7 +1686,7 @@ const cards: CardType[] = [
       "Wetland Scientist",
       "Wildlife Gardener",
     ],
-    img: "nest",
+    img: "https://www.sdakotabirds.com/species/photos/forsters_tern_1.jpg",
   },
   {
     activation: null, // todo ActivationsBank.drawDiscard(2),
@@ -2044,7 +2053,7 @@ const cards: CardType[] = [
       "Rodentologist",
       "Wetland Scientist",
     ],
-    img: "eagle",
+    img: "https://www.globalraptors.org/grin/images/birds/Bald_Eagle.jpg",
   },
   {
     activation: null, // todo ActivationsBank.gainAll(FoodEnum.invertebrate),
@@ -2479,7 +2488,8 @@ const cards: CardType[] = [
       "Platform Builder",
       "Rodentologist",
     ],
-    img: "golden eagle",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/4/4b/%D0%91%D0%B5%D1%80%D0%BA%D1%83%D1%82_%28Aquila_chrysaetos%29.jpg",
   },
   {
     activation: null, // todo ActivationsBank.huntDraw(100),
@@ -2509,7 +2519,8 @@ const cards: CardType[] = [
       "Platform Builder",
       "Rodentologist",
     ],
-    img: "drawing",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/2/23/Bubo_virginianus_06.jpg",
   },
   {
     activation: null, // todo ActivationsBank.huntDraw(50),
@@ -2695,7 +2706,8 @@ const cards: CardType[] = [
       "Omnivore Expert",
       "Wetland Scientist",
     ],
-    img: "male",
+    img:
+      "https://nas-national-prod.s3.amazonaws.com/Common%20Merganser_KK_APA_2011_19477_156597_LynnCleveland.jpg",
   },
   {
     activation: null, // todo ActivationsBank.huntRoll(FoodEnum.rodent),
@@ -2723,7 +2735,8 @@ const cards: CardType[] = [
       "Prairie Manager",
       "Rodentologist",
     ],
-    img: "female",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/AmericanKestrel02.jpg/1200px-AmericanKestrel02.jpg",
   },
   {
     activation: null, // todo ActivationsBank.huntRoll(FoodEnum.rodent),
@@ -2751,7 +2764,8 @@ const cards: CardType[] = [
       "Nest Box Builder",
       "Rodentologist",
     ],
-    img: "owl",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/c/c6/Tyto_alba_-British_Wildlife_Centre%2C_Surrey%2C_England-8a_%281%29.jpg",
   },
   {
     activation: null, // todo ActivationsBank.huntRoll(FoodEnum.rodent),
@@ -2811,7 +2825,8 @@ const cards: CardType[] = [
       "Rodentologist",
       "Wildlife Gardener",
     ],
-    img: "floridana",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/5/5a/Brazilian_burrowing_owl_%28Athene_cunicularia_grallaria%29.jpg",
   },
   {
     activation: null, // todo ActivationsBank.huntRoll(FoodEnum.rodent),
@@ -3576,7 +3591,7 @@ const cards: CardType[] = [
       "Prairie Manager",
       "Viticulturalist",
     ],
-    img: "male",
+    img: "https://cdn.download.ams.birds.cornell.edu/api/v1/asset/63740061/320",
   },
   {
     activation: null, // todo ActivationsBank.playSecond([HabitatEnum.wetland]),
@@ -3603,7 +3618,7 @@ const cards: CardType[] = [
       "Platform Builder",
       "Wetland Scientist",
     ],
-    img: "range",
+    img: "https://cdn.download.ams.birds.cornell.edu/api/v1/asset/60314201/320",
   },
   {
     activation: null, // todo ActivationsBank.playSecond([HabitatEnum.wetland]),
@@ -3631,7 +3646,7 @@ const cards: CardType[] = [
       "Rodentologist",
       "Wetland Scientist",
     ],
-    img: "egretta",
+    img: "https://cdn.download.ams.birds.cornell.edu/api/v1/asset/70610211/900",
   },
   {
     activation: null, // todo ActivationsBank.predatorGainFood,
@@ -4083,7 +4098,8 @@ const cards: CardType[] = [
       "Wetland Scientist",
       "Wildlife Gardener",
     ],
-    img: "female",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/9/92/%E2%99%82_Common_Kingfisher_%28Alcedo_atthis%29_Photograph_By_Shantanu_Kuveskar%2C_Mangaon%2C_Maharashtra%2C_India.jpg",
   },
   {
     activation: null, // todo ActivationsBank.stealFood(FoodEnum.seed),
@@ -4116,7 +4132,7 @@ const cards: CardType[] = [
       "Omnivore Expert",
       "Wildlife Gardener",
     ],
-    img: "nest",
+    img: "https://www.first-nature.com/birds/images/garrulus-glandarius3.jpg",
   },
   {
     activation: null, // todo ActivationsBank.stealFood(FoodEnum.wild, true),
@@ -4266,7 +4282,8 @@ const cards: CardType[] = [
       "Viticulturalist",
       "Wildlife Gardener",
     ],
-    img: "juvenile",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/b/b8/Turdus-migratorius-002.jpg",
   },
   {
     activation: null, // todo ActivationsBank.tuckAndDraw,
@@ -4298,7 +4315,8 @@ const cards: CardType[] = [
       "Platform Builder",
       "Wildlife Gardener",
     ],
-    img: "female",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Landsvale.jpg/1200px-Landsvale.jpg",
   },
   {
     activation: null, // todo ActivationsBank.tuckAndDraw,
@@ -4650,7 +4668,8 @@ const cards: CardType[] = [
       "Viticulturalist",
       "Wildlife Gardener",
     ],
-    img: "caniceps",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Carduelis_carduelis_close_up.jpg/1200px-Carduelis_carduelis_close_up.jpg",
   },
   {
     activation: null, // todo ActivationsBank.tuckPer(HabitatEnum.grassland),
@@ -4713,7 +4732,8 @@ const cards: CardType[] = [
       "Large Bird Specialist",
       "Wetland Scientist",
     ],
-    img: "greater flamingo",
+    img:
+      "https://upload.wikimedia.org/wikipedia/commons/a/a9/Flamant_rose_Salines_de_Thyna.jpg",
   },
 ].map((card, id) => ({ ...card, id }));
 
