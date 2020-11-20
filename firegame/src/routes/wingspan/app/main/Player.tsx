@@ -27,14 +27,7 @@ class Hand extends React.Component<{
             {me.bonuses.map(this.renderBonusCard.bind(this))}
           </div>
           <div className={wStyles.playerButtons}>
-            <div>
-              {this.toggler("trash")}
-              {this.toggler("lay_egg")}
-              {this.toggler("cache_food")}
-              <br />
-              {this.toggler("tuck_from_hand")}
-              {this.toggler("tuck_from_deck")}
-            </div>
+            <div>{this.toggler("trash")}</div>
             <button onClick={this.drawCard}>Draw Card</button>
             <button onClick={this.drawBonus}>Draw Bonus</button>
             <button onClick={this.shuffle}>Shuffle</button>

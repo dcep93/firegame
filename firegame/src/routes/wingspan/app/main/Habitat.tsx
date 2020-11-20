@@ -96,7 +96,12 @@ class Habitat extends React.Component<{
     );
   }
 
+  notMe(): boolean {
+    return utils.getMe() !== this.props.player;
+  }
+
   handleEgg(item: BirdType, index: number, positive: boolean) {
+    if (this.notMe()) return;
     item.eggs += positive ? 1 : -1;
     store.update(
       `${positive ? "laid" : "paid"} an egg ${
@@ -106,6 +111,7 @@ class Habitat extends React.Component<{
   }
 
   handleCache(item: BirdType, index: number, positive: boolean) {
+    if (this.notMe()) return;
     item.cache += positive ? 1 : -1;
     store.update(
       `${positive ? "added to" : "removed from"} cache ${
@@ -115,6 +121,7 @@ class Habitat extends React.Component<{
   }
 
   handleTuck(item: BirdType, index: number, positive: boolean) {
+    if (this.notMe()) return;
     item.tucked++;
     (positive ? utils.getMe().hand! : store.gameW.game.deck).shift();
     store.update(
