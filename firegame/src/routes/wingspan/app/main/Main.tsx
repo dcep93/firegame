@@ -1,5 +1,4 @@
 import React from "react";
-import { PlayerType } from "../utils/NewGame";
 import { store } from "../utils/utils";
 import Board from "./Board";
 import Feeder from "./Feeder";
@@ -23,8 +22,8 @@ class Main extends React.Component<{}, { selected: string | null }> {
           <Goals />
           <Feeder />
         </div>
-        {store.gameW.game.players.map((p: PlayerType, i: number) => (
-          <Board key={i} player={p} />
+        {store.gameW.game.players.map((_, i: number) => (
+          <Board key={i} index={i} />
         ))}
       </div>
     );

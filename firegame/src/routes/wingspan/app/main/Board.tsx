@@ -1,14 +1,26 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
-import { PlayerType } from "../utils/NewGame";
-import { store } from "../utils/utils";
+import { HabitatEnum } from "../utils/types";
+import utils, { store } from "../utils/utils";
+import Habitat from "./Habitat";
 
-class Board extends React.Component<{ player: PlayerType }> {
+class Board extends React.Component<{ index: number }> {
   render() {
+    const isMe = utils.myIndex() === this.props.index;
+    const isTurn = store.gameW.game.currentPlayer === this.props.index;
+    const player = utils.getPlayer(this.props.index);
     return (
-      <div className={styles.bubble}>
-        <h2>Wingspan</h2>
-        <pre>{JSON.stringify(store.gameW.game)}</pre>
+      <div
+        className={[
+          styles.bubble,
+          isMe && styles.grey,
+          isTurn && styles.blue,
+        ].join(" ")}
+      >
+        <h2>{player.userName}</h2>
+        <Habitat habitat={HabitatEnum.forest} />
+        <Habitat habitat={HabitatEnum.grassland} />
+        <Habitat habitat={HabitatEnum.wetland} />
       </div>
     );
   }
