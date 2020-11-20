@@ -51,7 +51,6 @@ def getCardLines(card):
     food = "{ " + ", ".join([f'[FoodEnum.{i.replace(" (food)", "").lower()}]: {int(card[i])}' for i in ["Invertebrate", "Seed", "Fruit", "Fish", "Rodent", "Wild (food)"] if card[i]]) + " }"
     bonuses = [i for i in ["Anatomist","Cartographer","Historian","Photographer","Backyard Birder","Bird Bander","Bird Counter","Bird Feeder","Citizen Scientist","Diet Specialist","Enclosure Builder","Falconer","Fishery Manager","Food Web Expert","Forester","Large Bird Specialist","Nest Box Builder","Omnivore Expert","Passerine Specialist","Platform Builder","Prairie Manager","Rodentologist","Viticulturalist","Wetland Scientist","Wildlife Gardener"] if card[i]]
     activation = get_activation.getActivation(card["Power text"])
-    img = getImg(card["Scientific name"])
     return [
         f'activation: {activation},',
         f'name: "{card["Common name"]}",',
@@ -71,7 +70,6 @@ def getCardLines(card):
         f'food_slash: {json.dumps(bool(card["/ (food cost)"]))},',
         f'food_star: {json.dumps(bool(card["* (food cost)"]))},',
         f'bonuses: {bonuses},',
-        f'img: "{img}",',
     ]
 
 def getImg(name):
