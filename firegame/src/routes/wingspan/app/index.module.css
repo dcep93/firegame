@@ -1,9 +1,9 @@
 .bird {
-  max-width: 15em;
+  width: 15em;
 }
 
 .bonus {
-  max-width: 15em;
+  width: 15em;
 }
 
 .playerButtons {
@@ -17,4 +17,8 @@
 
 .habitat {
   width: 5em;
+}
+
+.habitatGain {
+  text-align: center;
 }

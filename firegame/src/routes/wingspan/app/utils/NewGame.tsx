@@ -7,6 +7,7 @@ import {
   ExpansionEnum,
   FoodEnum,
   GoalWrapperType,
+  HabitatEnum,
 } from "./types";
 import utils, { store } from "./utils";
 
@@ -39,9 +40,7 @@ export type PlayerType = {
   hand?: number[];
   bonuses: number[];
   food?: { [f in FoodEnum]?: number };
-  forest?: BirdType[];
-  grassland?: BirdType[];
-  wetland?: BirdType[];
+  habitats: { [h in HabitatEnum]?: BirdType[] };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -99,6 +98,10 @@ function setPlayers(game: GameType): GameType {
       userName,
       hand: game.deck.splice(0, 5),
       bonuses: game.bonuses.splice(0, 2),
+      habitats: utils
+        .enumArray(HabitatEnum)
+        .map((h) => ({ [h]: null }))
+        .reduce((a, b) => Object.assign(a, b), {}),
     }));
   game.currentPlayer = game.startingPlayer = utils.myIndex(game);
   return game;

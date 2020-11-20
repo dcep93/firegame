@@ -18,9 +18,9 @@ class Board extends React.Component<{ index: number }> {
         ].join(" ")}
       >
         <h2>{player.userName}</h2>
-        <Habitat habitat={HabitatEnum.forest} />
-        <Habitat habitat={HabitatEnum.grassland} />
-        <Habitat habitat={HabitatEnum.wetland} />
+        {utils.enumArray(HabitatEnum).map((h) => (
+          <Habitat key={h} habitat={h} player={player} />
+        ))}
       </div>
     );
   }

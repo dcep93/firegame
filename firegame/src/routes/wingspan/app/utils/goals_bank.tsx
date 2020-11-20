@@ -1,7 +1,7 @@
 import ActivationsBank from "./activations_bank";
 import bank from "./bank";
 import { BirdType, PlayerType } from "./NewGame";
-import { GoalType, NestEnum } from "./types";
+import { GoalType, HabitatEnum, NestEnum } from "./types";
 
 function getCount(b: BirdType): number {
   return bank.cards[b.index].activation === ActivationsBank.countDouble ? 2 : 1;
@@ -12,7 +12,7 @@ function eggsInHabitat(h: BirdType[] | undefined): number {
 }
 
 function eggsInNest(p: PlayerType, n: NestEnum): number {
-  return [p.forest, p.grassland, p.wetland]
+  return Object.values(p.habitats)
     .map((h) =>
       (h || [])
         .filter(
@@ -25,7 +25,7 @@ function eggsInNest(p: PlayerType, n: NestEnum): number {
 }
 
 function birdsWithEggs(p: PlayerType, n: NestEnum): number {
-  return [p.forest, p.grassland, p.wetland]
+  return Object.values(p.habitats)
     .map((h) =>
       (h || [])
         .filter(
@@ -41,20 +41,22 @@ const GoalsBank: GoalType[] = [
   {
     goal: "birds in [forest]",
     f: (p: PlayerType) =>
-      (p.forest || []).map(getCount).reduce((a, b) => a + b, 0),
+      (p.habitats[HabitatEnum.forest] || [])
+        .map(getCount)
+        .reduce((a, b) => a + b, 0),
   },
   {
     goal: "eggs in [grassland]",
-    f: (p: PlayerType) => eggsInHabitat(p.grassland),
+    f: (p: PlayerType) => eggsInHabitat(p.habitats[HabitatEnum.grassland]),
   },
   {
     goal: "eggs in [wetland]",
-    f: (p: PlayerType) => eggsInHabitat(p.wetland),
+    f: (p: PlayerType) => eggsInHabitat(p.habitats[HabitatEnum.wetland]),
   },
   {
     goal: "sets of eggs in habitats",
     f: (p: PlayerType) =>
-      Math.min(...[p.forest, p.grassland, p.wetland].map(eggsInHabitat)),
+      Math.min(...Object.values(p.habitats).map(eggsInHabitat)),
   },
   {
     goal: "birds with eggs in [cavity]",

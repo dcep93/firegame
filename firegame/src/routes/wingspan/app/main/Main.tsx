@@ -14,6 +14,9 @@ class Main extends React.Component<{}, { selected: string | null }> {
   render() {
     return (
       <div>
+        {store.gameW.game.players.map((_, i: number) => (
+          <Board key={i} index={i} />
+        ))}
         <Player
           selected={this.state.selected}
           select={this.select.bind(this)}
@@ -22,9 +25,6 @@ class Main extends React.Component<{}, { selected: string | null }> {
           <Goals />
           <Feeder />
         </div>
-        {store.gameW.game.players.map((_, i: number) => (
-          <Board key={i} index={i} />
-        ))}
       </div>
     );
   }
