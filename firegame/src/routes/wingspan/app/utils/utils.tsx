@@ -23,11 +23,7 @@ class Utils extends Shared<GameType, PlayerType> {
     { 0: 7, 1: 4, 2: 3, 3: 0 },
   ];
 
-  cardItems(
-    card: CardType,
-    eggs: number | null = null,
-    cache: number | null = null
-  ) {
+  cardItems(card: CardType) {
     return (
       <div className={wStyles.bird} onMouseEnter={() => Preview.setCard(card)}>
         <h5>{card.name}</h5>
@@ -40,8 +36,16 @@ class Utils extends Shared<GameType, PlayerType> {
         <div>
           habitats: {card.habitats.map((h) => HabitatEnum[h]).join(", ")}
         </div>
-        {eggs && <div>eggs: {eggs}</div>}
-        {cache && <div>cache: {cache}</div>}
+        <div>
+          food:{card.food_star ? " *" : " "}
+          {Object.entries(card.food)
+            .sort()
+            .map(
+              ([f, num]) =>
+                `(${FoodEnum[parseInt(f)]}${num! > 1 ? ` ${num}` : ""})`
+            )
+            .join(card.food_slash ? " / " : " ")}
+        </div>
       </div>
     );
   }

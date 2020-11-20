@@ -63,7 +63,6 @@ class Main extends React.Component<
     const habitat = parseInt(selectedBoard[0]);
     const me = utils.getMe();
     const index = me.hand!.splice(handIndex, 1)[0];
-    console.log(me.hand);
     utils.getHabitat(me, habitat).push({ index, eggs: 0, cache: 0, tucked: 0 });
     store.update(`played in ${HabitatEnum[habitat]}`);
     return true;
