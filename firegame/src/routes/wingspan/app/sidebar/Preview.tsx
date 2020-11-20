@@ -18,6 +18,10 @@ class Preview extends React.Component<{}, { card?: CardType }> {
 
   render() {
     if (this.state.card === undefined) return null;
+    const file_name = this.state.card.scientific_name
+      .toLowerCase()
+      .replace(" ", "_");
+    const src = `https://raw.githubusercontent.com/dcep93/firegame/master/firegame/src/routes/wingspan/assets/img/${file_name}.jpg`;
     return (
       <div className={styles.bubble}>
         <h5>{this.state.card.name}</h5>
@@ -26,7 +30,8 @@ class Preview extends React.Component<{}, { card?: CardType }> {
           key={this.state.card.id}
           className={wStyles.previewImg}
           alt=""
-          src={`${this.state.card.id}`}
+          // dont tell anyone I did this
+          src={src}
         ></img>
       </div>
     );
