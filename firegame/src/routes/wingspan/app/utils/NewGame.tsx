@@ -32,6 +32,7 @@ export type BirdType = {
   index: number;
   eggs: number;
   cache: number;
+  tucked: number;
 };
 
 export type PlayerType = {

@@ -53,25 +53,18 @@ class Board extends React.Component<{
   renderFood(food: FoodEnum): JSX.Element {
     return (
       <div key={food} className={styles.bubble}>
-        <span
-          onClick={() => {
-            utils.gainFood(food, -1);
-            store.update(`paid ${FoodEnum[food]}`);
-          }}
-        >
-          {FoodEnum[food]}
-        </span>
+        <span onClick={() => this.gainFood(food, false)}>{FoodEnum[food]}</span>
         :{" "}
-        <span
-          onClick={() => {
-            utils.gainFood(food, 1);
-            store.update(`gained ${FoodEnum[food]}`);
-          }}
-        >
+        <span onClick={() => this.gainFood(food, true)}>
           {(utils.getMe().food || {})[food] || 0}
         </span>
       </div>
     );
+  }
+
+  gainFood(food: FoodEnum, positive: boolean) {
+    utils.gainFood(food, positive ? 1 : -1);
+    store.update(`${positive ? "gained" : "paid"} ${FoodEnum[food]}`);
   }
 }
 

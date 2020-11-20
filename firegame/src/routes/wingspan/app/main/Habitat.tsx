@@ -1,11 +1,10 @@
 import React from "react";
-import store from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
 import wStyles from "../index.module.css";
 import bank from "../utils/bank";
-import { PlayerType } from "../utils/NewGame";
+import { BirdType, PlayerType } from "../utils/NewGame";
 import { HabitatEnum } from "../utils/types";
-import utils from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 class Habitat extends React.Component<{
   habitat: HabitatEnum;
@@ -46,10 +45,39 @@ class Habitat extends React.Component<{
 
   renderPlaceHelper(index: number): JSX.Element {
     const habitat = utils.getHabitat(this.props.player, this.props.habitat);
-    const item = habitat[index]?.index;
-    if (item !== undefined) {
-      const card = bank.cards[item];
-      return utils.cardItems(card);
+    const item = habitat[index];
+    if (item) {
+      const card = bank.cards[item.index];
+      return (
+        <div>
+          {utils.cardItems(card)}
+          <div>
+            <span onClick={() => this.handleEgg(item, index, false)}>Eggs</span>
+            :{" "}
+            <span onClick={() => this.handleEgg(item, index, true)}>
+              {item.eggs}
+            </span>
+          </div>
+          <div>
+            <span onClick={() => this.handleTuck(item, index, false)}>
+              Tucked
+            </span>
+            :{" "}
+            <span onClick={() => this.handleTuck(item, index, true)}>
+              {item.tucked}
+            </span>
+          </div>
+          <div>
+            <span onClick={() => this.handleCache(item, index, false)}>
+              Cache
+            </span>
+            :{" "}
+            <span onClick={() => this.handleCache(item, index, true)}>
+              {item.cache}
+            </span>
+          </div>
+        </div>
+      );
     }
     const hg = placeToBonus[this.props.habitat];
     return (
@@ -65,6 +93,34 @@ class Habitat extends React.Component<{
         {index % 2 === 1 && ` + [${hg.pay}]`}{" "}
         {utils.repeat("*", Math.floor((index + 1) / 2)).join("")}
       </div>
+    );
+  }
+
+  handleEgg(item: BirdType, index: number, positive: boolean) {
+    item.eggs += positive ? 1 : -1;
+    store.update(
+      `${positive ? "laid" : "paid"} an egg ${
+        HabitatEnum[this.props.habitat]
+      }:${index + 1}`
+    );
+  }
+
+  handleCache(item: BirdType, index: number, positive: boolean) {
+    item.cache += positive ? 1 : -1;
+    store.update(
+      `${positive ? "added to" : "removed from"} cache ${
+        HabitatEnum[this.props.habitat]
+      }:${index + 1}`
+    );
+  }
+
+  handleTuck(item: BirdType, index: number, positive: boolean) {
+    item.tucked++;
+    (positive ? utils.getMe().hand! : store.gameW.game.deck).shift();
+    store.update(
+      `tucked from ${positive ? "hand" : "deck"} ${
+        HabitatEnum[this.props.habitat]
+      }:${index + 1}`
     );
   }
 
