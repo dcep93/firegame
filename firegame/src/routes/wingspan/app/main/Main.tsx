@@ -27,8 +27,8 @@ class Main extends React.Component<
           <Board
             key={i}
             index={i}
-            selected={this.state.selectedBoard}
-            select={this.selectBoard.bind(this)}
+            selected={utils.myIndex() === i ? this.state.selectedBoard : null}
+            select={utils.myIndex() === i ? this.selectBoard.bind(this) : null}
           />
         ))}
         <Player

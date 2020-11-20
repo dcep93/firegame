@@ -10,7 +10,7 @@ import utils from "../utils/utils";
 class Habitat extends React.Component<{
   habitat: HabitatEnum;
   player: PlayerType;
-  select: (habitat: HabitatEnum, index: number) => void;
+  select: ((habitat: HabitatEnum, index: number) => void) | null;
   selected: number | undefined;
 }> {
   render() {
@@ -69,8 +69,7 @@ class Habitat extends React.Component<{
   }
 
   select(index: number) {
-    utils.getMe().userId === this.props.player.userId &&
-      this.props.select(this.props.habitat, index);
+    this.props.select && this.props.select(this.props.habitat, index);
   }
 }
 

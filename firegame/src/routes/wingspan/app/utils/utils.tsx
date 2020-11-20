@@ -68,6 +68,12 @@ class Utils extends Shared<GameType, PlayerType> {
       player.habitats = Object.assign({ [habitat]: [] }, player.habitats);
     return player.habitats[habitat]!;
   }
+
+  gainFood(food: FoodEnum, amount: number) {
+    const me = utils.getMe();
+    if (!(me.food || {})[food]) me.food = Object.assign({ [food]: 0 }, me.food);
+    me.food![food]! += amount;
+  }
 }
 
 const utils = new Utils();

@@ -103,7 +103,9 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   }
 
   enumArray<X>(enumType: X): number[] {
-    return Object.values(enumType).filter((e) => typeof e === "number");
+    return Object.values(enumType)
+      .filter((e) => typeof e === "number")
+      .sort();
   }
 
   copy<X>(obj: X): X {
