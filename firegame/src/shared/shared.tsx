@@ -98,6 +98,10 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     return Array.from(new Array(count).map(() => value));
   }
 
+  count(num: number): number[] {
+    return Array.from(new Array(num)).map((_, i) => i);
+  }
+
   enumArray<X>(enumType: X): number[] {
     return Object.values(enumType).filter((e) => typeof e === "number");
   }

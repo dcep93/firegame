@@ -37,7 +37,7 @@ function birdsWithEggs(p: PlayerType, n: NestEnum): number {
     .reduce((a, b) => a + b, 0);
 }
 
-const goals: GoalType[] = [
+const GoalsBank: GoalType[] = [
   {
     goal: "birds in [forest]",
     f: (p: PlayerType) =>
@@ -74,4 +74,4 @@ const goals: GoalType[] = [
   },
 ];
 
-export default goals;
+export default GoalsBank;

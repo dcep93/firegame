@@ -38,6 +38,11 @@ export type BonusType = {
 
 export type GoalType = { goal: string; f: (p: PlayerType) => number };
 
+export type GoalWrapperType = {
+  index: number;
+  rankings: { [n: number]: boolean }[];
+};
+
 export enum ExpansionEnum {
   core,
   european,

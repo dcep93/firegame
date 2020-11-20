@@ -1,6 +1,13 @@
 import { LobbyType } from "../../../../shared/store";
 import bank from "./bank";
-import { BonusType, CardType, ExpansionEnum, FoodEnum } from "./types";
+import GoalsBank from "./goals_bank";
+import {
+  BonusType,
+  CardType,
+  ExpansionEnum,
+  FoodEnum,
+  GoalWrapperType,
+} from "./types";
 import utils, { store } from "./utils";
 
 export type GameType = {
@@ -12,6 +19,7 @@ export type GameType = {
   startingPlayer: number;
   remainingRounds: number;
   feeder: FoodEnum[];
+  goals: GoalWrapperType[];
 };
 
 export type Params = {
@@ -50,9 +58,20 @@ function NewGame(params: Params): PromiseLike<GameType> {
       .map((_, i) => i)
       .filter((index) => playWithBonus(bank.bonuses[index], params))
   );
+  game.goals = utils
+    .shuffle(utils.count(GoalsBank.length))
+    .splice(0, 4)
+    .map((index, i) => ({
+      index,
+      rankings: utils
+        .count(Object.keys(goalScoring[i]).length)
+        .map((_) => ({ [-1]: false })),
+    }));
   utils.reroll(game);
   return Promise.resolve(game).then(setPlayers);
 }
+
+const goalScoring = [{ 0: 4, 1: 1, 2: 0, 3: 0 }];
 
 function playWithCard(card: CardType, params: Params): boolean {
   if (card.food_star) return false; // todo

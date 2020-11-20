@@ -48,7 +48,7 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   reroll(game: GameType): void {
-    game.feeder = Array.from(new Array(5)).map((_) =>
+    game.feeder = this.count(5).map((_) =>
       utils.randomFrom(
         utils.enumArray(FoodEnum).filter((i) => i !== FoodEnum.wild)
       )
