@@ -17,19 +17,17 @@ class Hand extends React.Component<{
       <>
         <div>
           <div className={styles.bubble}>
-            <h2>Hand</h2>
+            <h2 onClick={this.drawCard}>Hand</h2>
             {(me.hand || []).map(this.renderHandCard.bind(this))}
           </div>
         </div>
         <div className={styles.flex}>
           <div className={styles.bubble}>
-            <h2>Bonuses</h2>
+            <h2 onClick={this.drawBonus}>Bonuses</h2>
             {me.bonuses.map(this.renderBonusCard.bind(this))}
           </div>
           <div className={wStyles.playerButtons}>
             <div>{this.toggler("trash")}</div>
-            <button onClick={this.drawCard}>Draw Card</button>
-            <button onClick={this.drawBonus}>Draw Bonus</button>
             <button onClick={this.shuffle}>Shuffle</button>
             <button onClick={this.reroll}>Reroll</button>
             {utils.isMyTurn() && (
