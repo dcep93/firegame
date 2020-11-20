@@ -36,6 +36,8 @@ export type BonusType = {
   percent: number | null;
 };
 
+export type GoalType = { goal: string; f: (p: PlayerType) => number };
+
 export enum ExpansionEnum {
   core,
   european,

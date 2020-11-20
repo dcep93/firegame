@@ -417,7 +417,7 @@ const cards: CardType[] = [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Luscinia_megarhynchos_-_01.jpg/1200px-Luscinia_megarhynchos_-_01.jpg",
   },
   {
-    activation: null, // todo ActivationsBank.countDouble,
+    activation: ActivationsBank.countDouble,
     name: "Cetti's Warbler",
     scientific_name: "Cettia cetti",
     color: ColorEnum.teal,
@@ -446,7 +446,7 @@ const cards: CardType[] = [
       "https://upload.wikimedia.org/wikipedia/commons/7/73/37-090505-cettis-warbler-at-Kalloni-east-river.jpg",
   },
   {
-    activation: null, // todo ActivationsBank.countDouble,
+    activation: ActivationsBank.countDouble,
     name: "Eurasian Green Woodpecker",
     scientific_name: "Picus viridis",
     color: ColorEnum.teal,
@@ -476,7 +476,7 @@ const cards: CardType[] = [
       "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/European_green_woodpecker_%28Picus_viridis%29_female_Barnes.jpg/1200px-European_green_woodpecker_%28Picus_viridis%29_female_Barnes.jpg",
   },
   {
-    activation: null, // todo ActivationsBank.countDouble,
+    activation: ActivationsBank.countDouble,
     name: "Greylag Goose",
     scientific_name: "Anser anser",
     color: ColorEnum.teal,

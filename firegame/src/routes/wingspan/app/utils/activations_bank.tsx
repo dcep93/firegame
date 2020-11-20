@@ -2,6 +2,10 @@ import { PlayerType } from "./NewGame";
 
 class ABC {
   activationNone(p: PlayerType) {}
+
+  countDouble(p: PlayerType) {}
 }
 
-export default new ABC();
+const ActivationsBank = new ABC();
+
+export default ActivationsBank;

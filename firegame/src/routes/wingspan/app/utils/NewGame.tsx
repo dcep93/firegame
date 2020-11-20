@@ -19,12 +19,21 @@ export type Params = {
   europeanExpansion: boolean;
 };
 
+export type BirdType = {
+  index: number;
+  eggs: number;
+  cache: number;
+};
+
 export type PlayerType = {
   userId: string;
   userName: string;
   hand?: number[];
   bonuses: number[];
   food?: { [f in FoodEnum]?: number };
+  forest?: BirdType[];
+  grassland?: BirdType[];
+  wetland?: BirdType[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

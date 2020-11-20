@@ -224,7 +224,7 @@ def getActivation(text):
     if text == 'Roll all dice not in the birdfeeder. If any are [rodent], place 1 [egg] on this card.':
         return "null, // todo ActivationsBank.rerollRodentToLay"
     if text == 'This bird counts double toward the end-of-round goal, if it qualifies for the goal.':
-        return 'null, // todo ActivationsBank.countDouble'
+        return 'ActivationsBank.countDouble'
     if text == 'Trade 1 [wild] for any [wild] from the supply.':
         return "null, // todo ActivationsBank.tradeFood"
     if text == 'Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.':
