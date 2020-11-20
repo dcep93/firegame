@@ -72,6 +72,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
 }
 
 function playWithCard(card: CardType, params: Params): boolean {
+  if (card.food_slash) return false; // todo
   if (card.food_star) return false; // todo
   switch (card.expansion) {
     case ExpansionEnum.core:
