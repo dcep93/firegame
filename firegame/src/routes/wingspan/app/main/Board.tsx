@@ -20,6 +20,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
     const isMe = utils.myIndex() === this.props.index;
     const isTurn = store.gameW.game.currentPlayer === this.props.index;
     const player = utils.getPlayer(this.props.index);
+    const points = utils.getPoints(player);
     return (
       <div className={styles.bubble}>
         <h2
@@ -34,7 +35,9 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
         </h2>
         <div hidden={this.state.minimized}>
           <div className={styles.bubble}>
-            <div>Points: ?</div>
+            <div title={JSON.stringify(points, null, 2).replace(/"/g, "")}>
+              Points: {Object.values(points).reduce((a, b) => a + b, 0)}
+            </div>
             <div>Hand: {(player.hand || []).length}</div>
             <div>Bonuses: {player.bonuses.length}</div>
           </div>

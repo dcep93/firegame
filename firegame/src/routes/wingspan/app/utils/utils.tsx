@@ -3,6 +3,7 @@ import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import wStyles from "../index.module.css";
 import Preview from "../sidebar/Preview";
+import bank from "./bank";
 import { BirdType, GameType, PlayerType } from "./NewGame";
 import {
   BonusType,
@@ -75,6 +76,27 @@ class Utils extends Shared<GameType, PlayerType> {
     const me = utils.getMe();
     if (!(me.food || {})[food]) me.food = Object.assign({ [food]: 0 }, me.food);
     me.food![food]! += amount;
+  }
+
+  getPoints(p: PlayerType): { [s: string]: number } {
+    const pointsOnBirds = Object.values(p.habitats || {})
+      .flatMap((i) => i!.filter(Boolean))
+      .flatMap((i) => bank.cards[i!.index]!.points)
+      .reduce((a, b) => a + b, 0);
+    const tuckedCards = Object.values(p.habitats || {})
+      .flatMap((i) => i!.filter(Boolean))
+      .flatMap((i) => i.tucked)
+      .reduce((a, b) => a + b, 0);
+    const cachedFood = Object.values(p.habitats || {})
+      .flatMap((i) => i!.filter(Boolean))
+      .flatMap((i) => i.cache)
+      .reduce((a, b) => a + b, 0);
+    const eggs = Object.values(p.habitats || {})
+      .flatMap((i) => i!.filter(Boolean))
+      .flatMap((i) => i.eggs)
+      .reduce((a, b) => a + b, 0);
+    const goals = 0; // todo
+    return { pointsOnBirds, tuckedCards, cachedFood, eggs, goals };
   }
 }
 
