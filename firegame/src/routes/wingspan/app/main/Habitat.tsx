@@ -3,7 +3,7 @@ import store from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
 import wStyles from "../index.module.css";
 import bank from "../utils/bank";
-import { BirdType, PlayerType } from "../utils/NewGame";
+import { PlayerType } from "../utils/NewGame";
 import { HabitatEnum } from "../utils/types";
 import utils from "../utils/utils";
 
@@ -15,8 +15,16 @@ class Habitat extends React.Component<{
 }> {
   render() {
     return (
-      <div className={[styles.flex].join(" ")}>
-        <span className={wStyles.habitat} onClick={this.use.bind(this)}>
+      <div className={[wStyles.habitatRow].join(" ")}>
+        <span
+          className={[
+            styles.inline,
+            styles.bubble,
+            wStyles.habitatName,
+            wStyles.habitatWords,
+          ].join(" ")}
+          onClick={this.use.bind(this)}
+        >
           {HabitatEnum[this.props.habitat]}
         </span>
         {utils.count(5).map(this.renderPlace.bind(this))}
@@ -37,7 +45,7 @@ class Habitat extends React.Component<{
   }
 
   renderPlaceHelper(index: number): JSX.Element {
-    const habitat = this.getHabitat();
+    const habitat = utils.getHabitat(this.props.player, this.props.habitat);
     const item = habitat[index]?.index;
     if (item !== undefined) {
       const card = bank.cards[item];
@@ -48,7 +56,7 @@ class Habitat extends React.Component<{
       <div
         className={[
           wStyles.bird,
-          wStyles.habitatGain,
+          wStyles.habitatWords,
           this.props.selected === index && styles.blue,
         ].join(" ")}
         onClick={() => this.select(index)}
@@ -58,10 +66,6 @@ class Habitat extends React.Component<{
         {utils.repeat("*", Math.floor((index + 1) / 2)).join("")}
       </div>
     );
-  }
-
-  getHabitat(): BirdType[] {
-    return (this.props.player.habitats || {})[this.props.habitat] || [];
   }
 
   select(index: number) {

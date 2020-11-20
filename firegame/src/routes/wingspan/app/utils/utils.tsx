@@ -1,8 +1,9 @@
 import React from "react";
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
+import wStyles from "../index.module.css";
 import Preview from "../sidebar/Preview";
-import { GameType, PlayerType } from "./NewGame";
+import { BirdType, GameType, PlayerType } from "./NewGame";
 import {
   BonusType,
   CardType,
@@ -28,7 +29,7 @@ class Utils extends Shared<GameType, PlayerType> {
     cache: number | null = null
   ) {
     return (
-      <div onMouseEnter={() => Preview.setCard(card)}>
+      <div className={wStyles.bird} onMouseEnter={() => Preview.setCard(card)}>
         <h5>{card.name}</h5>
         <div>{card.text}</div>
         <div>---</div>
@@ -60,6 +61,12 @@ class Utils extends Shared<GameType, PlayerType> {
         utils.enumArray(FoodEnum).filter((i) => i !== FoodEnum.wild)
       )
     );
+  }
+
+  getHabitat(player: PlayerType, habitat: HabitatEnum): BirdType[] {
+    if (!(player.habitats || {})[habitat])
+      player.habitats = Object.assign({ [habitat]: [] }, player.habitats);
+    return player.habitats[habitat]!;
   }
 }
 

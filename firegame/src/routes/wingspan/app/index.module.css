@@ -1,5 +1,6 @@
 .bird {
   width: 15em;
+  white-space: initial;
 }
 
 .bonus {
@@ -15,10 +16,17 @@
   width: 15em;
 }
 
-.habitat {
-  width: 5em;
+.habitatName {
+  width: 7em;
 }
 
-.habitatGain {
+.habitatWords {
   text-align: center;
+}
+
+.habitatRow {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-grow: 0;
+  align-items: center;
 }

@@ -8,6 +8,7 @@ import utils, { store } from "../utils/utils";
 class Hand extends React.Component<{
   selected: string | null;
   select: (key: string) => void;
+  selectHand: (handIndex: number) => boolean;
 }> {
   render() {
     const me = utils.getMe();
@@ -88,22 +89,27 @@ class Hand extends React.Component<{
     store.update("finished turn");
   }
 
-  renderHandCard(index: number) {
-    const card: CardType = bank.cards[index];
+  renderHandCard(_: number, index: number) {
+    const card: CardType = bank.cards[utils.getMe().hand![index]];
     return (
       <div
         key={index}
-        className={`${styles.bubble} ${wStyles.bird}`}
+        className={styles.bubble}
         title={utils.cardTitle(card)}
-        onClick={() => this.prioritize(index, utils.getMe().hand!, "card")}
+        onClick={() => this.clickCard(index)}
       >
         {utils.cardItems(card)}
       </div>
     );
   }
 
-  renderBonusCard(index: number) {
-    const bonus: BonusType = bank.bonuses[index];
+  clickCard(index: number) {
+    if (this.props.selectHand(index)) return;
+    this.prioritize(index, utils.getMe().hand!, "card");
+  }
+
+  renderBonusCard(_: number, index: number) {
+    const bonus: BonusType = bank.bonuses[utils.getMe().bonuses[index]];
     return (
       <div
         key={index}
@@ -123,12 +129,12 @@ class Hand extends React.Component<{
   }
 
   prioritize(index: number, obj: number[], name: string): void {
-    const item = obj.splice(obj.indexOf(index), 1)[0];
+    const item = obj.splice(index, 1)[0];
     if (this.props.selected === "trash") {
       store.update("trashed a bonus");
     } else {
       obj.unshift(item);
-      store.update("prioritized a bonus");
+      store.update(`prioritized a ${name}`);
     }
   }
 }

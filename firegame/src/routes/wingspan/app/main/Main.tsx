@@ -1,10 +1,12 @@
 import React from "react";
 import { HabitatEnum } from "../utils/types";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 import Board from "./Board";
 import Feeder from "./Feeder";
 import Goals from "./Goals";
 import Player from "./Player";
+
+const defaultState = { selectedPlayer: "", selectedBoard: {} };
 
 class Main extends React.Component<
   {},
@@ -15,7 +17,7 @@ class Main extends React.Component<
 > {
   constructor(props: {}) {
     super(props);
-    this.state = { selectedPlayer: "", selectedBoard: {} };
+    this.state = defaultState;
   }
 
   render() {
@@ -32,6 +34,7 @@ class Main extends React.Component<
         <Player
           selected={this.state.selectedPlayer}
           select={this.selectPlayer.bind(this)}
+          selectHand={this.selectHand.bind(this)}
         />
         <div>
           <Goals />
@@ -42,16 +45,28 @@ class Main extends React.Component<
   }
 
   selectBoard(habitat: HabitatEnum, index: number) {
-    if (this.state.selectedBoard[habitat] === index) index = -1;
-    this.setState({ selectedBoard: { [habitat]: index } });
+    const obj =
+      this.state.selectedBoard[habitat] === index ? {} : { [habitat]: index };
+    this.setState(Object.assign({}, defaultState, { selectedBoard: obj }));
   }
 
   selectPlayer(key: string) {
-    if (this.state.selectedPlayer === key) {
-      this.setState({ selectedPlayer: "" });
-    } else {
-      this.setState({ selectedPlayer: key });
+    if (this.state.selectedPlayer === key) key = "";
+    this.setState(Object.assign({}, defaultState, { selectedPlayer: key }));
+  }
+
+  selectHand(handIndex: number): boolean {
+    const selectedBoard = Object.keys(this.state.selectedBoard);
+    if (selectedBoard.length === 0) {
+      return false;
     }
+    const habitat = parseInt(selectedBoard[0]);
+    const me = utils.getMe();
+    const index = me.hand!.splice(handIndex, 1)[0];
+    console.log(me.hand);
+    utils.getHabitat(me, habitat).push({ index, eggs: 0, cache: 0 });
+    store.update(`played in ${HabitatEnum[habitat]}`);
+    return true;
   }
 }
 
