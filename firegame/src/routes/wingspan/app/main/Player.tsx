@@ -29,7 +29,6 @@ class Hand extends React.Component<{
           <div className={wStyles.playerButtons}>
             <div>{this.toggler("trash")}</div>
             <button onClick={this.shuffle}>Shuffle</button>
-            <button onClick={this.reroll}>Reroll</button>
             {utils.isMyTurn() && (
               <button onClick={this.endTurn}>End Turn</button>
             )}
@@ -68,11 +67,6 @@ class Hand extends React.Component<{
     utils.shuffle(store.gameW.game.deck);
     utils.shuffle(store.gameW.game.bonuses);
     store.update("shuffled");
-  }
-
-  reroll(): void {
-    utils.reroll(store.gameW.game);
-    store.update("rerolled");
   }
 
   endTurn(): void {
@@ -122,7 +116,7 @@ class Hand extends React.Component<{
   prioritize(index: number, obj: number[], name: string): void {
     const item = obj.splice(index, 1)[0];
     if (this.props.selected === "trash") {
-      store.update("trashed a bonus");
+      store.update(`trashed a ${name}`);
     } else {
       obj.unshift(item);
       store.update(`prioritized a ${name}`);
