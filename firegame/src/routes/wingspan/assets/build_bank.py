@@ -15,7 +15,7 @@ bonus_src = 'wingspan-card-lists-20200529.xlsx - Bonus cards.csv'
 
 bank_dest = os.path.join('../', 'app', 'utils', 'bank.tsx')
 
-bonuses_to_skip = ["Behaviorist", "Ethologist"]
+bonuses_to_skip = ["Behaviorist", "Ethologist"] # todo
 
 def main():
     cards_text = getCardsText()

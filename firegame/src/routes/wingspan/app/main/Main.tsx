@@ -20,8 +20,8 @@ class Main extends React.Component<{}, { selected: string | null }> {
           select={this.select.bind(this)}
         />
         <div>
-          <Feeder />
           <Goals />
+          <Feeder />
         </div>
         {store.gameW.game.players.map((p: PlayerType, i: number) => (
           <Board key={i} player={p} />
