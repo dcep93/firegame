@@ -34,7 +34,7 @@ def getCsv(path):
     cols = raw[0]
     # print("\n".join(cols))
     # print()
-    return [{cols[i]:row[i].strip() for i in range(len(row))} for row in raw[1:160] if ''.join(row[:1])]
+    return [{cols[i]:row[i].strip() for i in range(len(row))} for row in raw[1:] if ''.join(row[:1])]
 
 def getCardsText():
     name = 'cards: CardType[]'
@@ -58,17 +58,17 @@ def getCardLines(card):
         f'color: ColorEnum.{card["Color"].lower() if card["Color"] else "white"},',
         f'expansion: ExpansionEnum.{expansion},',
         f'text: {json.dumps(card["Power text"])},',
-        f'predator: {json.dumps(bool(card["Predator"]))},',
-        f'flocking: {json.dumps(bool(card["Flocking"]))},',
-        f'bonus: {json.dumps(bool(card["Bonus card"]))},',
+        f'predator: {json.dumps(bool(card["Predator"]))},' if bool(card["Predator"]) else '',
+        f'flocking: {json.dumps(bool(card["Flocking"]))},' if bool(card["Flocking"]) else '',
+        f'bonus: {json.dumps(bool(card["Bonus card"]))},' if bool(card["Bonus card"]) else '',
         f'points: {card["Victory points"]},',
         f'nest: NestEnum.{card["Nest type"].lower()},',
         f'capacity: {card["Egg capacity"]},',
         f'wingspan: {card["Wingspan"]},',
         f'habitats: {habitats},',
         f'food: {food},',
-        f'food_slash: {json.dumps(bool(card["/ (food cost)"]))},',
-        f'food_star: {json.dumps(bool(card["* (food cost)"]))},',
+        f'food_slash: {json.dumps(bool(card["/ (food cost)"]))},' if bool(card["/ (food cost)"]) else '',
+        f'food_star: {json.dumps(bool(card["* (food cost)"]))},' if bool(card["* (food cost)"]) else '',
         f'bonuses: {bonuses},',
     ]
 
@@ -113,7 +113,7 @@ def getText(name, src, objToLines):
         executor.map(getter.fetch, range(len(data_in)))
     for i in range(len(data_in)):
         if i not in getter.data_out:
-            getter.data_out[i] = "wut"
+            getter.data_out[i] = f"missing - {i}"
     texts = [linesToText(getter.data_out[i]) for i in range(len(data_in))]
     texts.sort()
     objText = '\n'.join([''] + texts).replace('\n', '\n  ')
@@ -129,7 +129,7 @@ class Getter:
         self.data_out[index] = self.objToLines(self.data_in[index])
 
 def linesToText(lines):
-    lines = "\n".join([''] + lines).replace('\n', '\n  ')
+    lines = "\n".join([''] + [i for i in lines if i]).replace('\n', '\n  ')
     return "{" + lines + "\n},"
 
 def getBankText(cards_text, bonuses_text):
