@@ -70,6 +70,7 @@ def getCardLines(card):
         f'food_slash: {json.dumps(bool(card["/ (food cost)"]))},' if bool(card["/ (food cost)"]) else '',
         f'food_star: {json.dumps(bool(card["* (food cost)"]))},' if bool(card["* (food cost)"]) else '',
         f'bonuses: {bonuses},',
+        # f'img: "{getImg(card["Scientific name"])}",',
     ]
 
 def getImg(name):
