@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "../../../../shared/styles.module.css";
 import { HabitatEnum } from "../utils/types";
 import utils, { store } from "../utils/utils";
 import Board from "./Board";
@@ -37,9 +38,16 @@ class Main extends React.Component<
           select={this.selectPlayer.bind(this)}
           selectHand={this.selectHand.bind(this)}
         />
-        <div>
+        <div className={styles.flex}>
           <Goals />
-          <Feeder />
+          <div>
+            <h5 className={styles.bubble}>
+              Round: {store.gameW.game.roundNumber} Turn{" "}
+              {store.gameW.game.turnNumber}
+            </h5>
+            <br />
+            <Feeder />
+          </div>
         </div>
         <Cards />
       </div>
