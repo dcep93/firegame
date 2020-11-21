@@ -26,8 +26,8 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
         <h2
           className={[
             styles.bubble,
-            isMe && styles.grey,
-            isTurn && styles.blue,
+            isMe && styles.blue,
+            !isMe && isTurn && styles.grey,
           ].join(" ")}
           onClick={this.toggle.bind(this)}
         >
