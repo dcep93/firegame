@@ -75,8 +75,8 @@ class Hand extends React.Component<{
     if (utils.currentIndex() === game.startingPlayer) {
       game.turnNumber++;
       if (game.turnNumber + game.roundNumber === 10) {
-        store.gameW.game.turnNumber = 1;
-        store.gameW.game.roundNumber++;
+        game.turnNumber = 1;
+        game.roundNumber++;
         store.update("finished turn - new round");
       }
     }
