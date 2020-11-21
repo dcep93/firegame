@@ -8,6 +8,7 @@ import { BirdType, GameType, PlayerType } from "./NewGame";
 import {
   BonusType,
   CardType,
+  ColorEnum,
   ExpansionEnum,
   FoodEnum,
   HabitatEnum,
@@ -31,6 +32,7 @@ class Utils extends Shared<GameType, PlayerType> {
         <div>{card.text}</div>
         <div>---</div>
         <div>wingspan: {card.wingspan} cm</div>
+        <div>color: {ColorEnum[card.color]}</div>
         <div>points: {card.points}</div>
         <div>capacity: {card.capacity}</div>
         <div>nest: {NestEnum[card.nest]}</div>
