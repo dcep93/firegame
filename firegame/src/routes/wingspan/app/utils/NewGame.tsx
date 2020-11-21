@@ -18,7 +18,7 @@ export type GameType = {
   deck: number[];
   bonuses: number[];
   startingPlayer: number;
-  remainingRounds: number;
+  remainingRounds: number; // todo
   feeder: FoodEnum[];
   goals: GoalWrapperType[];
   publicCards: number[];
