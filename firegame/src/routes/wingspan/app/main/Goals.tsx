@@ -42,7 +42,7 @@ class Goals extends React.Component {
     const myIndex = utils.myIndex();
     if (myIndex < 0) return;
     rankings[myIndex] = !rankings[myIndex];
-    store.update(`toggled goal ${i} ${j}`);
+    store.update(`toggled goal ${i + 1} ${j + 1}`);
   }
 }
 
