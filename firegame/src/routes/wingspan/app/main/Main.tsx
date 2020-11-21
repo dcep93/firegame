@@ -42,7 +42,7 @@ class Main extends React.Component<
           <Goals />
           <div>
             <h5 className={styles.bubble}>
-              Round: {store.gameW.game.roundNumber} Turn{" "}
+              Round: {store.gameW.game.roundNumber} Turn:{" "}
               {store.gameW.game.turnNumber}
             </h5>
             <br />
