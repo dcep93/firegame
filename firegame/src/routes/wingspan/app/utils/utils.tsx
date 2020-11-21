@@ -95,7 +95,19 @@ class Utils extends Shared<GameType, PlayerType> {
       .flatMap((i) => i!.filter(Boolean))
       .flatMap((i) => i.eggs)
       .reduce((a, b) => a + b, 0);
-    const goals = 0; // todo
+    const goals = store.gameW.game.goals
+      .map((g) => g.rankings)
+      .map((r, i) =>
+        r
+          .map((c, j) =>
+            c[0]
+              ? utils.goalScoring[i][j] /
+                Object.values(c).filter(Boolean).length
+              : 0
+          )
+          .reduce((a, b) => a + b, 0)
+      )
+      .reduce((a, b) => a + b, 0);
     return { pointsOnBirds, tuckedCards, cachedFood, eggs, goals };
   }
 }
