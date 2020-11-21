@@ -36,7 +36,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
         <div hidden={this.state.minimized}>
           <div className={styles.bubble}>
             <div title={JSON.stringify(points, null, 2).replace(/"/g, "")}>
-              Points: {Object.values(points).reduce((a, b) => a + b, 0)}
+              Points**: {Object.values(points).reduce((a, b) => a + b, 0)}
             </div>
             <div>Hand: {(player.hand || []).length}</div>
             <div>Bonuses: {player.bonuses.length}</div>
