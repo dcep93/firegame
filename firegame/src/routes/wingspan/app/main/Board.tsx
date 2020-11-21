@@ -67,7 +67,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
         <span onClick={() => this.gainFood(food, false)}>{FoodEnum[food]}</span>
         :{" "}
         <span onClick={() => this.gainFood(food, true)}>
-          {(utils.getMe().food || {})[food] || 0}
+          {(utils.getPlayer(this.props.index).food || {})[food] || 0}
         </span>
       </div>
     );
