@@ -78,7 +78,7 @@ function playWithCard(card: CardType, params: Params): boolean {
     case ExpansionEnum.core:
       return true;
     case ExpansionEnum.chinesepromo:
-      return false; // todo
+      return true;
     case ExpansionEnum.european:
       return params.europeanExpansion;
     case ExpansionEnum.swiftstart:
