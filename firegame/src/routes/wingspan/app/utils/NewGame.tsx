@@ -21,6 +21,7 @@ export type GameType = {
   remainingRounds: number;
   feeder: FoodEnum[];
   goals: GoalWrapperType[];
+  publicCards: number[];
 };
 
 export type Params = {
@@ -68,6 +69,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
         .map((_) => ({ [-1]: false })),
     }));
   utils.reroll(game);
+  game.publicCards = [-1, -1, -1];
   return Promise.resolve(game).then(setPlayers);
 }
 

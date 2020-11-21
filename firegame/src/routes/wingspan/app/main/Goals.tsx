@@ -9,7 +9,7 @@ class Goals extends React.Component {
       <div className={styles.bubble}>
         <h2>Goals</h2>
         {store.gameW.game.goals.map((gw, i) => (
-          <div>
+          <div key={i}>
             {utils.goalScoring[i].map((val, j) => this.goalCell(val, i, j))}
             <span>{GoalsBank[gw.index].goal}</span>
           </div>
@@ -22,6 +22,7 @@ class Goals extends React.Component {
     const rankings = store.gameW.game.goals[i].rankings[j];
     return (
       <span
+        key={j}
         className={styles.bubble}
         onClick={() => this.toggleGoalCell(rankings, i, j)}
       >

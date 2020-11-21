@@ -2,6 +2,7 @@ import React from "react";
 import { HabitatEnum } from "../utils/types";
 import utils, { store } from "../utils/utils";
 import Board from "./Board";
+import Cards from "./Cards";
 import Feeder from "./Feeder";
 import Goals from "./Goals";
 import Player from "./Player";
@@ -40,6 +41,7 @@ class Main extends React.Component<
           <Goals />
           <Feeder />
         </div>
+        <Cards />
       </div>
     );
   }
