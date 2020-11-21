@@ -50,7 +50,9 @@ class Habitat extends React.Component<{
       const card = bank.cards[item.index];
       return (
         <div>
-          {utils.cardItems(card)}
+          <div onClick={() => this.activate(index)}>
+            {utils.cardItems(card)}
+          </div>
           <div>
             <span onClick={() => this.handleEgg(item, index, false)}>Eggs</span>
             :{" "}
@@ -100,13 +102,20 @@ class Habitat extends React.Component<{
     return utils.getMe() !== this.props.player;
   }
 
+  activation(index: number): string {
+    return `${HabitatEnum[this.props.habitat]}:${index + 1}`;
+  }
+
+  activate(index: number) {
+    if (this.notMe()) return;
+    store.update(`activated ${this.activation(index)}`);
+  }
+
   handleEgg(item: BirdType, index: number, positive: boolean) {
     if (this.notMe()) return;
     item.eggs += positive ? 1 : -1;
     store.update(
-      `${positive ? "laid" : "paid"} an egg ${
-        HabitatEnum[this.props.habitat]
-      }:${index + 1}`
+      `${positive ? "laid" : "paid"} an egg ${this.activation(index)}`
     );
   }
 
@@ -114,9 +123,9 @@ class Habitat extends React.Component<{
     if (this.notMe()) return;
     item.cache += positive ? 1 : -1;
     store.update(
-      `${positive ? "added to" : "removed from"} cache ${
-        HabitatEnum[this.props.habitat]
-      }:${index + 1}`
+      `${positive ? "added to" : "removed from"} cache ${this.activation(
+        index
+      )}`
     );
   }
 
@@ -125,9 +134,7 @@ class Habitat extends React.Component<{
     item.tucked++;
     (positive ? utils.getMe().hand! : store.gameW.game.deck).shift();
     store.update(
-      `tucked from ${positive ? "hand" : "deck"} ${
-        HabitatEnum[this.props.habitat]
-      }:${index + 1}`
+      `tucked from ${positive ? "hand" : "deck"} ${this.activation(index)}`
     );
   }
 
