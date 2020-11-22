@@ -9,6 +9,7 @@ import utils, { store } from "../utils/utils";
 class Habitat extends React.Component<{
   habitat: HabitatEnum;
   player: PlayerType;
+  migrate: ((habitat: HabitatEnum, index: number) => boolean) | null;
   select: ((habitat: HabitatEnum, index: number) => void) | null;
   selected: number | undefined;
 }> {
@@ -108,6 +109,8 @@ class Habitat extends React.Component<{
 
   activate(index: number) {
     if (this.notMe()) return;
+    if (this.props.migrate && this.props.migrate(this.props.habitat, index))
+      return;
     store.update(`activated ${this.activation(index)}`);
   }
 

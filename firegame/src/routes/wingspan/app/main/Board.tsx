@@ -6,8 +6,9 @@ import Habitat from "./Habitat";
 
 type PropsType = {
   index: number;
-  selected: { [habitat in HabitatEnum]?: number } | null;
+  migrate: ((habitat: HabitatEnum, index: number) => boolean) | null;
   select: ((habitat: HabitatEnum, index: number) => void) | null;
+  selected: { [habitat in HabitatEnum]?: number } | null;
 };
 
 class Board extends React.Component<PropsType, { minimized: boolean }> {
@@ -52,6 +53,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
               key={h}
               habitat={h}
               player={player}
+              migrate={this.props.migrate}
               select={this.props.select}
               selected={(this.props.selected || {})[h]}
             />

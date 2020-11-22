@@ -29,8 +29,11 @@ class Main extends React.Component<
           <Board
             key={i}
             index={i}
-            selected={utils.myIndex() === i ? this.state.selectedBoard : null}
+            migrate={
+              utils.myIndex() === i ? this.selectMigrator.bind(this) : null
+            }
             select={utils.myIndex() === i ? this.selectBoard.bind(this) : null}
+            selected={utils.myIndex() === i ? this.state.selectedBoard : null}
           />
         ))}
         <Player
@@ -65,17 +68,35 @@ class Main extends React.Component<
     this.setState(Object.assign({}, defaultState, { selectedPlayer: key }));
   }
 
+  selectMigrator(mHabitat: HabitatEnum, mIndex: number): boolean {
+    const habitat = this.getSelectHabitat();
+    if (habitat === null) return false;
+    const me = utils.getMe();
+    const bird = me.habitats[mHabitat]!.splice(mIndex, 1)[0];
+    utils.getHabitat(me, habitat).push(bird);
+    store.update(
+      `migrated ${HabitatEnum[mHabitat]} -> ${HabitatEnum[habitat]}`
+    );
+    return true;
+  }
+
   selectHand(handIndex: number): boolean {
-    const selectedBoard = Object.keys(this.state.selectedBoard);
-    if (selectedBoard.length === 0) {
-      return false;
-    }
-    const habitat = parseInt(selectedBoard!.pop()!);
+    const habitat = this.getSelectHabitat();
+    if (habitat === null) return false;
     const me = utils.getMe();
     const index = me.hand!.splice(handIndex, 1)[0];
     utils.getHabitat(me, habitat).push({ index, eggs: 0, cache: 0, tucked: 0 });
     store.update(`played in ${HabitatEnum[habitat]}`);
     return true;
+  }
+
+  getSelectHabitat(): HabitatEnum | null {
+    const selectedBoard = Object.keys(this.state.selectedBoard);
+    if (selectedBoard.length === 0) {
+      return null;
+    }
+    this.setState(defaultState);
+    return parseInt(selectedBoard!.pop()!);
   }
 }
 
