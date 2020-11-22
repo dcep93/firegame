@@ -54,7 +54,7 @@ class Hand extends React.Component<{
   drawCard(): void {
     const me = utils.getMe();
     if (!me.hand) me.hand = [];
-    me.hand.push(store.gameW.game.deck.shift()!);
+    me.hand.unshift(store.gameW.game.deck.shift()!);
     store.update("drew a card");
   }
 
@@ -77,6 +77,8 @@ class Hand extends React.Component<{
       if (game.turnNumber + game.roundNumber === 10) {
         game.turnNumber = 1;
         game.roundNumber++;
+        utils.incrementPlayerTurn();
+        game.startingPlayer = game.currentPlayer;
         store.update("finished turn - new round");
       }
     }

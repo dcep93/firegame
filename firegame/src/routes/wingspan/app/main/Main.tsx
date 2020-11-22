@@ -70,7 +70,7 @@ class Main extends React.Component<
     if (selectedBoard.length === 0) {
       return false;
     }
-    const habitat = parseInt(selectedBoard[0]);
+    const habitat = parseInt(selectedBoard!.pop()!);
     const me = utils.getMe();
     const index = me.hand!.splice(handIndex, 1)[0];
     utils.getHabitat(me, habitat).push({ index, eggs: 0, cache: 0, tucked: 0 });
