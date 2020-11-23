@@ -1,5 +1,5 @@
-import { BonusType, CardType, ColorEnum, ExpansionEnum, FoodEnum, HabitatEnum, NestEnum } from "./types";
 import ActivationsBank from "./activations_bank";
+import { BonusType, CardType, ColorEnum, ExpansionEnum, FoodEnum, HabitatEnum, NestEnum } from "./types";
 
 const cards: CardType[] = [
   {

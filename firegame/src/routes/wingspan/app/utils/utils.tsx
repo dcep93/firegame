@@ -110,7 +110,51 @@ class Utils extends Shared<GameType, PlayerType> {
           .reduce((a, b) => a + b, 0)
       )
       .reduce((a, b) => a + b, 0);
-    return { pointsOnBirds, tuckedCards, cachedFood, eggs, goals };
+    const points: { [s: string]: number } = {
+      pointsOnBirds,
+      tuckedCards,
+      cachedFood,
+      eggs,
+      goals,
+    };
+    if (store.gameW.game.roundNumber >= 5)
+      points["bonuses"] = p.bonuses
+        .map((i) => bank.bonuses[i])
+        .map((b) => utils.getBonusPoints(b, p))
+        .reduce((a, b) => a + b, 0);
+    return points;
+  }
+
+  getBonusPoints(b: BonusType, p: PlayerType): number {
+    var num: number;
+    if (b.name === "Ecologist") {
+      num = Math.min(...Object.values(p.habitats || {}).map((i) => i!.length));
+    } else if (b.name === "Visionary Leader") {
+      num = (p.hand || []).length;
+    } else {
+      const birds = Object.values(p.habitats || {})
+        .flatMap((i) => i)
+        .flatMap((i) => i);
+      if (b.name === "Breeding Manager") {
+        num = birds.filter((bt) => bt!.eggs >= 4).length;
+      } else if (b.name === "Citizen Scientist") {
+        num = birds.filter((bt) => bt!.tucked >= 1).length;
+      } else if (b.name === "Oologist") {
+        num = birds.filter((bt) => bt!.eggs >= 1).length;
+      } else {
+        num = birds.filter(
+          (bt) => bank.cards[bt!.index].bonuses.indexOf(b.name) !== -1
+        ).length;
+      }
+    }
+    if (b.vp_f![0]) return b.vp_f![0] * num;
+    const key = Math.max(
+      ...Object.keys(b.vp_f!)
+        .map((i) => parseInt(i))
+        .filter((i) => num >= i)
+    );
+    if (!key) return 0;
+    return b.vp_f![key];
   }
 }
 
