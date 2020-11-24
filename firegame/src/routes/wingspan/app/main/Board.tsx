@@ -41,6 +41,10 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
             </div>
             <div>Hand: {(player.hand || []).length}</div>
             <div>Bonuses: {player.bonuses.length}</div>
+            <div>
+              Food:{" "}
+              {Object.values(player.food || {}).reduce((a, b) => a! + b!, 0)}
+            </div>
           </div>
           <div>
             {utils
