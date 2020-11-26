@@ -153,7 +153,7 @@ class Utils extends Shared<GameType, PlayerType> {
         .map((i) => parseInt(i))
         .filter((i) => num >= i)
     );
-    if (!key) return 0;
+    if (key === -Infinity) return 0;
     return b.vp_f![key];
   }
 }
