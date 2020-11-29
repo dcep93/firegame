@@ -76,8 +76,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
   gainFood(food: FoodEnum, amount: number) {
     const me = utils.getMe();
-    if (!(me.food || {})[food]) me.food = Object.assign({ [food]: 0 }, me.food);
-    me.food![food]! += amount;
+    me.food[food] += amount;
   }
 
   getPoints(p: PlayerType): { [s: string]: number } {
@@ -155,6 +154,16 @@ class Utils extends Shared<GameType, PlayerType> {
     );
     if (key === -Infinity) return 0;
     return b.vp_f![key];
+  }
+
+  draw(p: PlayerType) {
+    if (!p.hand) p.hand = [];
+    p.hand.unshift(store.gameW.game.deck.shift()!);
+  }
+
+  layEggs(bt: BirdType, num: number): void {
+    const capacity = bank.cards[bt.index].capacity;
+    bt.eggs = Math.min(bt.eggs + num, capacity);
   }
 }
 

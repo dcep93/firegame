@@ -42,7 +42,7 @@ export type PlayerType = {
   userName: string;
   hand?: number[];
   bonuses: number[];
-  food?: { [f in FoodEnum]?: number };
+  food: { [f in FoodEnum]: number };
   habitats: { [h in HabitatEnum]?: BirdType[] };
 };
 
@@ -96,6 +96,10 @@ function playWithBonus(bonus: BonusType, params: Params): boolean {
 }
 
 function setPlayers(game: GameType): GameType {
+  // @ts-ignore
+  const food: { [f in FoodEnum]: number } = Object.fromEntries(
+    utils.enumArray(FoodEnum).map((i) => [i, 0])
+  );
   game.players = Object.entries(store.lobby)
     .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
     .map(([userId, userName]) => ({
@@ -107,6 +111,7 @@ function setPlayers(game: GameType): GameType {
         .enumArray(HabitatEnum)
         .map((h) => ({ [h]: null }))
         .reduce((a, b) => Object.assign(a, b), {}),
+      food: Object.assign({}, food),
     }));
   game.currentPlayer = game.startingPlayer = utils.myIndex(game);
   return game;

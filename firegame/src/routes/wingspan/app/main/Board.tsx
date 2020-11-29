@@ -42,8 +42,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
             <div>Hand: {(player.hand || []).length}</div>
             <div>Bonuses: {player.bonuses.length}</div>
             <div>
-              Food:{" "}
-              {Object.values(player.food || {}).reduce((a, b) => a! + b!, 0)}
+              Food: {Object.values(player.food).reduce((a, b) => a + b, 0)}
             </div>
           </div>
           <div>
@@ -73,7 +72,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
         <span onClick={() => this.gainFood(food, false)}>{FoodEnum[food]}</span>
         :{" "}
         <span onClick={() => this.gainFood(food, true)}>
-          {(utils.getPlayer(this.props.index).food || {})[food] || 0}
+          {utils.getPlayer(this.props.index).food[food]}
         </span>
       </div>
     );

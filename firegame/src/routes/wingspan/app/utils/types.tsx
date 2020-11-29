@@ -1,4 +1,4 @@
-import { PlayerType } from "./NewGame";
+import { BirdType, PlayerType } from "./NewGame";
 
 export type CardType = {
   name: string;
@@ -18,7 +18,7 @@ export type CardType = {
   food_slash?: boolean;
   food_star?: boolean;
   bonuses: string[];
-  activation: null | ((p: PlayerType) => void);
+  activation: null | ((b: BirdType) => void);
   id: number;
 };
 

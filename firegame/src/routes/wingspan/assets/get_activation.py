@@ -22,7 +22,7 @@ def getActivation(text):
     if text == 'All players gain 1 [fruit] from the supply.':
         return "ActivationsBank.everyoneGains(FoodEnum.fruit)"
     if text == 'All players gain 1 [invertebrate] from the supply.':
-        return "todo ActivationsBank.everyoneGains(FoodEnum.invertebrate)"
+        return "ActivationsBank.everyoneGains(FoodEnum.invertebrate)"
     if text == 'All players gain 1 [seed] from the supply.':
         return "ActivationsBank.everyoneGains(FoodEnum.seed)"
     if text == 'All players gain a [fruit] from the supply.':
@@ -120,7 +120,7 @@ def getActivation(text):
     if text == 'Gain 1 [fruit] from the supply.':
         return "ActivationsBank.gainFood(FoodEnum.fruit)"
     if text == 'Gain 1 [invertebrate] from the birdfeeder, if there is one.':
-        return "ActivationsBank.gainFromFeeder([FoodEnum.invertebrate])"
+        return "null, // todo ActivationsBank.gainInvertebrateFromFeeder"
     if text == 'Gain 1 [invertebrate] from the supply.':
         return "ActivationsBank.gainFood(FoodEnum.invertebrate)"
     if text == 'Gain 1 [invertebrate] or [fruit] from the birdfeeder, if there is one.':

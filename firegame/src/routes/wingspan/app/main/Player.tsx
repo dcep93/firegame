@@ -52,9 +52,7 @@ class Hand extends React.Component<{
   }
 
   drawCard(): void {
-    const me = utils.getMe();
-    if (!me.hand) me.hand = [];
-    me.hand.unshift(store.gameW.game.deck.shift()!);
+    utils.draw(utils.getMe());
     store.update("drew a card");
   }
 

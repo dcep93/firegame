@@ -111,14 +111,12 @@ class Habitat extends React.Component<{
     if (this.notMe()) return;
     if (this.props.migrate && this.props.migrate(this.props.habitat, index))
       return;
-    const bird =
-      bank.cards[
-        utils.getHabitat(utils.getMe(), this.props.habitat)[index].index
-      ];
+    const bt = utils.getHabitat(utils.getMe(), this.props.habitat)[index];
+    const bird = bank.cards[bt.index];
     var action: string;
     if (bird.activation !== null) {
       action = "activated";
-      bird.activation(utils.getMe());
+      bird.activation(bt);
     } else {
       action = "manually activated";
     }
@@ -127,7 +125,7 @@ class Habitat extends React.Component<{
 
   handleEgg(item: BirdType, index: number, positive: boolean) {
     if (this.notMe()) return;
-    item.eggs += positive ? 1 : -1;
+    utils.layEggs(item, positive ? 1 : -1);
     store.update(
       `${positive ? "laid" : "paid"} an egg ${this.activation(index)}`
     );
