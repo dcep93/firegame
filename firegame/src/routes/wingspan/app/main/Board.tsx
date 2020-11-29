@@ -24,43 +24,48 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
     const points = utils.getPoints(player);
     return (
       <div className={styles.bubble}>
-        <h2
-          className={[
-            styles.bubble,
-            isMe && styles.blue,
-            !isMe && isTurn && styles.grey,
-          ].join(" ")}
-          onClick={this.toggle.bind(this)}
-        >
-          {player.userName}
-        </h2>
-        <div hidden={this.state.minimized}>
-          <div className={styles.bubble}>
-            <div title={JSON.stringify(points, null, 2).replace(/"/g, "")}>
-              Points*: {Object.values(points).reduce((a, b) => a + b, 0)}
+        <div>
+          <h2
+            className={[
+              styles.inline,
+              styles.bubble,
+              isMe && styles.blue,
+              !isMe && isTurn && styles.grey,
+            ].join(" ")}
+            onClick={this.toggle.bind(this)}
+          >
+            {player.userName}
+          </h2>
+          <div className={styles.inline} hidden={this.state.minimized}>
+            <div className={[styles.inline, styles.bubble].join(" ")}>
+              <div title={JSON.stringify(points, null, 2).replace(/"/g, "")}>
+                Points*: {Object.values(points).reduce((a, b) => a + b, 0)}
+              </div>
+              <div>Hand: {(player.hand || []).length}</div>
+              <div>Bonuses: {player.bonuses.length}</div>
+              <div>
+                Food: {Object.values(player.food).reduce((a, b) => a + b, 0)}
+              </div>
             </div>
-            <div>Hand: {(player.hand || []).length}</div>
-            <div>Bonuses: {player.bonuses.length}</div>
-            <div>
-              Food: {Object.values(player.food).reduce((a, b) => a + b, 0)}
+            <div className={styles.inline}>
+              {utils
+                .enumArray(FoodEnum)
+                .filter((food) => food !== FoodEnum.wild)
+                .map(this.renderFood.bind(this))}
             </div>
           </div>
-          <div>
-            {utils
-              .enumArray(FoodEnum)
-              .filter((food) => food !== FoodEnum.wild)
-              .map(this.renderFood.bind(this))}
+          <div hidden={this.state.minimized}>
+            {utils.enumArray(HabitatEnum).map((h: HabitatEnum) => (
+              <Habitat
+                key={h}
+                habitat={h}
+                player={player}
+                migrate={this.props.migrate}
+                select={this.props.select}
+                selected={(this.props.selected || {})[h]}
+              />
+            ))}
           </div>
-          {utils.enumArray(HabitatEnum).map((h: HabitatEnum) => (
-            <Habitat
-              key={h}
-              habitat={h}
-              player={player}
-              migrate={this.props.migrate}
-              select={this.props.select}
-              selected={(this.props.selected || {})[h]}
-            />
-          ))}
         </div>
       </div>
     );
