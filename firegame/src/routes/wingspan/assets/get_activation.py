@@ -16,17 +16,17 @@ def getActivation(text):
     if text == '':
         return 'ActivationsBank.activationNone'
     if text == 'All players draw 1 [card] from the deck.':
-        return 'null, // todo ActivationsBank.allDraw'
+        return 'ActivationsBank.allDraw'
     if text == 'All players gain 1 [fish] from the supply.':
-        return "null, // todo ActivationsBank.everyoneGains(FoodEnum.fish)"
+        return "ActivationsBank.everyoneGains(FoodEnum.fish)"
     if text == 'All players gain 1 [fruit] from the supply.':
-        return "null, // todo ActivationsBank.everyoneGains(FoodEnum.fruit)"
+        return "ActivationsBank.everyoneGains(FoodEnum.fruit)"
     if text == 'All players gain 1 [invertebrate] from the supply.':
-        return "null, // todo ActivationsBank.everyoneGains(FoodEnum.invertebrate)"
+        return "todo ActivationsBank.everyoneGains(FoodEnum.invertebrate)"
     if text == 'All players gain 1 [seed] from the supply.':
-        return "null, // todo ActivationsBank.everyoneGains(FoodEnum.seed)"
+        return "ActivationsBank.everyoneGains(FoodEnum.seed)"
     if text == 'All players gain a [fruit] from the supply.':
-        return "null, // todo ActivationsBank.everyoneGains(FoodEnum.fruit)"
+        return "ActivationsBank.everyoneGains(FoodEnum.fruit)"
     if text == 'All players lay 1 [egg] on any 1 [bowl] bird. You may lay 1 [egg] on 1 additional [bowl] bird.':
         return "null, // todo ActivationsBank.allLay(NestEnum.bowl)"
     if text == 'All players lay 1 [egg] on any 1 [cavity] bird. You may lay 1 [egg] on 1 additional [cavity] bird.':
@@ -64,15 +64,15 @@ def getActivation(text):
     if text == 'Discard 1 [egg] to draw 2 [card].':
         return "null, // todo ActivationsBank.discardEggDraw2"
     if text == 'Discard 1 [seed] from your supply. If you do, lay 2 [egg] on this bird.':
-        return "null, // todo ActivationsBank.discardSeedLay2"
+        return "ActivationsBank.discardSeedLay2"
     if text == 'Discard 1 [seed] to tuck 2 [card] from the deck behind this bird.':
-        return "null, // todo ActivationsBank.discardTuck2(FoodEnum.seed)"
+        return "ActivationsBank.discardTuck2(FoodEnum.seed)"
     if text == 'Discard 1 [wild] from your supply. If you do, play another bird in your [wetland]. Pay its normal food and egg cost.':
         return "null, // todo ActivationsBank.discardWildPlayWetland"
     if text == 'Discard [fish] to tuck 2 [card] from the deck behind this bird.':
-        return "null, // todo ActivationsBank.discardTuck2(FoodEnum.fish)"
+        return "ActivationsBank.discardTuck2(FoodEnum.fish)"
     if text == 'Discard a [fish] to tuck 2 [card] from the deck behind this bird.':
-        return "null, // todo ActivationsBank.discardTuck2(FoodEnum.fish)"
+        return "ActivationsBank.discardTuck2(FoodEnum.fish)"
     if text == 'Discard all remaining face-up [card] and refill the tray. If you do, draw 1 of the new face-up [card].':
         return "null, // todo ActivationsBank.trashTrayDraw1"
     if text == 'Discard up to 5 [invertebrate] from your supply. For each, tuck 1 [card] from the deck behind this bird.':
@@ -86,7 +86,7 @@ def getActivation(text):
     if text == 'Draw 1 [card]. If you do, discard 1 [card] from your hand at the end of your turn.':
         return 'null, // todo ActivationsBank.drawDiscard(1)'
     if text == 'Draw 1 [card].':
-        return "null, // todo ActivationsBank.draw"
+        return "ActivationsBank.draw"
     if text == 'Draw 1 new bonus card. Then draw 3 [card] and keep 1 of them.':
         return "null, // todo ActivationsBank.drawBonusdraw3Keep1"
     if text == 'Draw 1 new bonus card. Then gain 1 [card] or lay 1 [egg] on any bird.':
@@ -98,11 +98,11 @@ def getActivation(text):
     if text == 'Draw 2 [card] from the deck. Tuck 1 behind this bird and keep the other.':
         return "null, // todo ActivationsBank.draw2Tuck1"
     if text == 'Draw 2 [card]. All other players draw 1 [card] from the deck.':
-        return "null, // todo ActivationsBank.draw2OthersDraw"
+        return "ActivationsBank.draw2OthersDraw"
     if text == 'Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.':
         return 'null, // todo ActivationsBank.drawDiscard(2)'
     if text == 'Draw 2 [card].':
-        return "null, // todo ActivationsBank.draw2"
+        return "ActivationsBank.draw2"
     if text == 'Draw 2 new bonus cards and keep 1.':
         return 'null, // todo ActivationsBank.drawBonus(2)'
     if text == 'Draw 3 new bonus cards and keep 1.':
@@ -110,7 +110,7 @@ def getActivation(text):
     if text == 'Draw [card] equal to the number of players +1. Starting with you and proceeding clockwise, each player selects 1 of those cards and places it in their hand. You keep the extra card.':
         return "null, // todo ActivationsBank.draftNPlusOne"
     if text == 'Draw the 3 face-up [card] in the bird tray.':
-        return "null, // todo ActivationsBank.drawAllFaceup"
+        return "ActivationsBank.drawAllFaceup"
     if text == 'Each player gains 1 [die] from the birdfeeder, starting with the player of your choice.':
         return "null, // todo ActivationsBank.everyoneGainsFromFeeder"
     if text == 'From the supply, gain 1 food of a type you already gained this turn.':
@@ -118,21 +118,21 @@ def getActivation(text):
     if text == 'Gain 1 [die] from the birdfeeder.':
         return "null, // todo ActivationsBank.gainDie"
     if text == 'Gain 1 [fruit] from the supply.':
-        return "null, // todo ActivationsBank.gainFood(FoodEnum.fruit)"
+        return "ActivationsBank.gainFood(FoodEnum.fruit)"
     if text == 'Gain 1 [invertebrate] from the birdfeeder, if there is one.':
-        return "null, // todo ActivationsBank.gainFromFeeder([FoodEnum.invertebrate])"
+        return "ActivationsBank.gainFromFeeder([FoodEnum.invertebrate])"
     if text == 'Gain 1 [invertebrate] from the supply.':
-        return "null, // todo ActivationsBank.gainFood(FoodEnum.invertebrate)"
+        return "ActivationsBank.gainFood(FoodEnum.invertebrate)"
     if text == 'Gain 1 [invertebrate] or [fruit] from the birdfeeder, if there is one.':
         return "null, // todo ActivationsBank.gainFromFeeder([FoodEnum.invertebrate, FoodEnum.fruit])"
     if text == 'Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.':
         return 'null, // todo ActivationsBank.gainFeederSeedOptionalCache'
     if text == 'Gain 1 [seed] from the supply and cache it on this card. At any time, you may spend [seed] cached on this card.':
-        return 'null, // todo ActivationsBank.cacheSeed'
+        return 'ActivationsBank.cacheSeed'
     if text == 'Gain 1 [seed] from the supply and cache it on this card.':
-        return 'null, // todo ActivationsBank.cacheSeed'
+        return 'ActivationsBank.cacheSeed'
     if text == 'Gain 1 [seed] from the supply.':
-        return "null, // todo ActivationsBank.gainFood(FoodEnum.seed)"
+        return "ActivationsBank.gainFood(FoodEnum.seed)"
     if text == 'Gain 1 [seed] or [fruit] from the birdfeeder, if there is one.':
         return "null, // todo ActivationsBank.gainFromFeeder([FoodEnum.seed, FoodEnum.fruit])"
     if text == 'Gain 1 [wild] from the birdfeeder.':
@@ -142,13 +142,13 @@ def getActivation(text):
     if text == 'Gain 1 face-up [card] that can live in [wetland].':
         return "null, // todo ActivationsBank.gainFaceup(HabitatEnum.wetland)"
     if text == 'Gain 3 [fish] from the supply.':
-        return "null, // todo ActivationsBank.gainFood(FoodEnum.fish, 3)"
+        return "ActivationsBank.gainFood(FoodEnum.fish, 3)"
     if text == 'Gain 3 [seed] from the supply.':
-        return "null, // todo ActivationsBank.gainFood(FoodEnum.seed, 3)"
+        return "ActivationsBank.gainFood(FoodEnum.seed, 3)"
     if text == 'Gain all [fish] that are in the birdfeeder.':
-        return "null, // todo ActivationsBank.gainAll(FoodEnum.fish)"
+        return "ActivationsBank.gainAll(FoodEnum.fish)"
     if text == 'Gain all [invertebrate] that are in the birdfeeder.':
-        return "null, // todo ActivationsBank.gainAll(FoodEnum.invertebrate)"
+        return "ActivationsBank.gainAll(FoodEnum.invertebrate)"
     if text == 'If this bird is to the right of all other birds in its habitat, move it to another habitat.':
         return 'null, // todo ActivationsBank.migrate'
     if text == 'If you used all 4 types of actions this round, play another bird. Pay its normal food and egg cost.':
@@ -158,27 +158,27 @@ def getActivation(text):
     if text == 'Lay 1 [egg] on any bird.':
         return 'null, // todo ActivationsBank.layAny'
     if text == 'Lay 1 [egg] on each bird in this column, including this one.':
-        return "null, // todo ActivationsBank.layOnColumn"
+        return "ActivationsBank.layOnColumn"
     if text == 'Lay 1 [egg] on each of your birds with a [bowl] nest.':
-        return "null, // todo ActivationsBank.layOnAll(NestEnum.bowl)"
+        return "ActivationsBank.layOnAll(NestEnum.bowl)"
     if text == 'Lay 1 [egg] on each of your birds with a [cavity] nest.':
-        return "null, // todo ActivationsBank.layOnAll(NestEnum.cavity)"
+        return "ActivationsBank.layOnAll(NestEnum.cavity)"
     if text == 'Lay 1 [egg] on each of your birds with a [ground] nest.':
-        return "null, // todo ActivationsBank.layOnAll(NestEnum.ground)"
+        return "ActivationsBank.layOnAll(NestEnum.ground)"
     if text == 'Lay 1 [egg] on each of your birds with a [platform] nest.':
-        return "null, // todo ActivationsBank.layOnAll(NestEnum.platform)"
+        return "ActivationsBank.layOnAll(NestEnum.platform)"
     if text == 'Lay 1 [egg] on this bird for each other bird with a [cavity] nest that you have.':
-        return "null, // todo ActivationsBank.layForEachCavity"
+        return "ActivationsBank.layForEachCavity"
     if text == 'Lay 1 [egg] on this bird.':
-        return 'null, // todo ActivationsBank.layThis'
+        return 'ActivationsBank.layThis'
     if text == 'Look at a [card] from the deck. If <100cm, tuck it behind this bird. If not, discard it.':
-        return 'null, // todo ActivationsBank.huntDraw(100)'
+        return 'ActivationsBank.huntDraw(100)'
     if text == 'Look at a [card] from the deck. If <50cm, tuck it behind this bird. If not, discard it.':
-        return 'null, // todo ActivationsBank.huntDraw(50)'
+        return 'ActivationsBank.huntDraw(50)'
     if text == 'Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.':
-        return 'null, // todo ActivationsBank.huntDraw(75)'
+        return 'ActivationsBank.huntDraw(75)'
     if text == 'Look at a [card] from the deck. If <75cm, tuck it under this bird. If not, discard it.':
-        return 'null, // todo ActivationsBank.huntDraw(75)'
+        return 'ActivationsBank.huntDraw(75)'
     if text == 'Place this bird sideways, so that it covers 2 [forest] spaces. Pay the lower egg cost.':
         return "null, // todo ActivationsBank.cover2(HabitatEnum.forest)"
     if text == 'Place this bird sideways, so that it covers 2 [grassland] spaces. Pay the lower egg cost.':
@@ -196,7 +196,7 @@ def getActivation(text):
     if text == 'Player(s) with fewest [forest] birds gain 1 [die] from birdfeeder.':
         return "null, // todo ActivationsBank.fewestForestGainDie"
     if text == 'Player(s) with the fewest [wetland] birds: draw 1 [card].':
-        return "null, // todo ActivationsBank.fewestWetlandDraw"
+        return "ActivationsBank.fewestWetlandDraw"
     if text == 'Remove any 1 [die] from the birdfeeder, then gain 1 [seed] from the supply.':
         return "null, // todo ActivationsBank.removeDieGainSeed"
     if text == 'Repeat 1 [predator] power in this habitat.':
@@ -214,15 +214,15 @@ def getActivation(text):
     if text == 'Reset the birdfeeder. If you do, gain all [invertebrate] in the birdfeeder after resetting.':
         return "null, // todo ActivationsBank.resetFeederGainAll(FoodEnum.invertebrate)"
     if text == 'Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.':
-        return 'null, // todo ActivationsBank.huntRoll(FoodEnum.fish)'
+        return 'ActivationsBank.huntRoll(FoodEnum.fish)'
     if text == 'Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.':
-        return 'null, // todo ActivationsBank.huntRoll(FoodEnum.rodent)'
+        return 'ActivationsBank.huntRoll(FoodEnum.rodent)'
     if text == 'Roll all dice not in birdfeeder. If any are a [fish], gain that many [fish] from the supply and cache them on this bird.':
-        return 'null, // todo ActivationsBank.huntRoll(FoodEnum.fish)'
+        return 'ActivationsBank.huntRollAll(FoodEnum.fish)'
     if text == 'Roll all dice not in birdfeeder. If any are a [rodent], gain 1 [rodent] and cache it on this card.':
-        return 'null, // todo ActivationsBank.huntRoll(FoodEnum.rodent)'
+        return 'ActivationsBank.huntRoll(FoodEnum.rodent)'
     if text == 'Roll all dice not in the birdfeeder. If any are [rodent], place 1 [egg] on this card.':
-        return "null, // todo ActivationsBank.rerollRodentToLay"
+        return "ActivationsBank.rerollRodentToLay"
     if text == 'This bird counts double toward the end-of-round goal, if it qualifies for the goal.':
         return 'ActivationsBank.countDouble'
     if text == 'Trade 1 [wild] for any [wild] from the supply.':
