@@ -36,18 +36,22 @@
   background-color: grey !important;
 }
 
-.sidebar_parent {
+.resizeable {
   display: table;
+  height: 100%;
+}
+
+.resizeable > * {
+  overflow: scroll;
+  resize: both;
+  display: inline-block;
   height: 100%;
 }
 
 .sidebar {
   width: 25em;
-  overflow: scroll;
-  resize: both;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .sidebar > * {
@@ -78,4 +82,8 @@
 
 .prewrap {
   white-space: pre-wrap;
+}
+
+.nowrap {
+  white-space: nowrap;
 }

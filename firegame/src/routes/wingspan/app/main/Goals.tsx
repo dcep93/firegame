@@ -6,7 +6,7 @@ import utils, { store } from "../utils/utils";
 class Goals extends React.Component {
   render() {
     return (
-      <div className={styles.bubble}>
+      <div className={[styles.bubble, styles.nowrap].join(" ")}>
         <h2>Goals</h2>
         {store.gameW.game.goals.map((gw, i) => (
           <div key={i}>

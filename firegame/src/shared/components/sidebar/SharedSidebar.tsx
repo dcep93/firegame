@@ -14,7 +14,7 @@ abstract class SharedSidebar<T> extends React.Component {
 
   render() {
     return (
-      <div className={styles.sidebar_parent}>
+      <div className={styles.resizeable}>
         <div className={styles.sidebar}>
           <div className={styles.bubble}>
             <h2>{this.name}</h2>

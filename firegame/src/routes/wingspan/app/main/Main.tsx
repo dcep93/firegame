@@ -24,35 +24,47 @@ class Main extends React.Component<
 
   render() {
     return (
-      <div>
-        {store.gameW.game.players.map((_, i: number) => (
-          <Board
-            key={i}
-            index={i}
-            migrate={
-              utils.myIndex() === i ? this.selectMigrator.bind(this) : null
-            }
-            select={utils.myIndex() === i ? this.selectBoard.bind(this) : null}
-            selected={utils.myIndex() === i ? this.state.selectedBoard : null}
-          />
-        ))}
-        <Player
-          selected={this.state.selectedPlayer}
-          select={this.selectPlayer.bind(this)}
-          selectHand={this.selectHand.bind(this)}
-        />
-        <div className={styles.flex}>
-          <Goals />
-          <div>
-            <h5 className={styles.bubble}>
-              Round: {store.gameW.game.roundNumber} Turn:{" "}
-              {store.gameW.game.turnNumber}
-            </h5>
-            <br />
-            <Feeder />
+      <div style={{ display: "contents" }}>
+        <div className={styles.resizeable}>
+          <div style={{ width: "50em" }}>
+            {store.gameW.game.players.map((_, i: number) => (
+              <Board
+                key={i}
+                index={i}
+                migrate={
+                  utils.myIndex() === i ? this.selectMigrator.bind(this) : null
+                }
+                select={
+                  utils.myIndex() === i ? this.selectBoard.bind(this) : null
+                }
+                selected={
+                  utils.myIndex() === i ? this.state.selectedBoard : null
+                }
+              />
+            ))}
           </div>
         </div>
-        <Cards />
+        <div className={styles.resizeable}>
+          <div style={{ width: "50em" }}>
+            <Player
+              selected={this.state.selectedPlayer}
+              select={this.selectPlayer.bind(this)}
+              selectHand={this.selectHand.bind(this)}
+            />
+            <div className={styles.flex}>
+              <Goals />
+              <div>
+                <h5 className={styles.bubble}>
+                  Round: {store.gameW.game.roundNumber} Turn:{" "}
+                  {store.gameW.game.turnNumber}
+                </h5>
+                <br />
+                <Feeder />
+              </div>
+            </div>
+            <Cards />
+          </div>
+        </div>
       </div>
     );
   }
