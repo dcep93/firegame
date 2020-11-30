@@ -29,7 +29,9 @@ function birdsWithEggs(p: PlayerType, n: NestEnum): number {
     .map((h) =>
       (h || [])
         .filter(
-          (b) => [n, NestEnum.wild].indexOf(bank.cards[b.index].nest) !== -1
+          (b) =>
+            b.eggs > 0 &&
+            [n, NestEnum.wild].indexOf(bank.cards[b.index].nest) !== -1
         )
         .map(getCount)
         .reduce((a, b) => a + b, 0)

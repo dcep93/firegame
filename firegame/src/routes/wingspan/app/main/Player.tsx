@@ -1,7 +1,9 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
+import { shared } from "../../../timeline/app/utils/utils";
 import wStyles from "../index.module.css";
 import bank from "../utils/bank";
+import GoalsBank from "../utils/goals_bank";
 import { BonusType, CardType } from "../utils/types";
 import utils, { store } from "../utils/utils";
 
@@ -30,7 +32,7 @@ class Hand extends React.Component<{
             <div>{this.toggler("trash")}</div>
             <button onClick={this.shuffle}>Shuffle</button>
             {utils.isMyTurn() && (
-              <button onClick={this.endTurn}>End Turn</button>
+              <button onClick={this.endTurn.bind(this)}>End Turn</button>
             )}
           </div>
         </div>
@@ -76,14 +78,38 @@ class Hand extends React.Component<{
     if (utils.currentIndex() === game.startingPlayer) {
       game.turnNumber++;
       if (game.turnNumber + game.roundNumber === 10) {
+        this.assignGoals();
         game.turnNumber = 1;
         game.roundNumber++;
         utils.incrementPlayerTurn();
         game.startingPlayer = game.currentPlayer;
         store.update("finished turn - new round");
       }
+    } else {
+      store.update("finished turn");
     }
-    store.update("finished turn");
+  }
+
+  assignGoals(): void {
+    const game = store.gameW.game;
+    const g = game.goals[game.roundNumber - 1];
+    const goal = GoalsBank[g.index];
+    const scoresA = game.players
+      .map((p, i) => ({ p, i, s: goal.f(p) }))
+      .sort((i) => i.s);
+    const scoresD = utils.arrToDict(scoresA, (o) => o.s.toString());
+    var offset = 0;
+    Object.keys(scoresD)
+      .map((i) => parseInt(i))
+      .sort()
+      .reverse()
+      .forEach((key) => {
+        const players = scoresD[key];
+        shared.count(players.length).forEach((_) => {
+          players.forEach((p) => (g.rankings[offset][p.i] = true));
+          offset++;
+        });
+      });
   }
 
   renderHandCard(_: number, index: number) {
