@@ -23,10 +23,11 @@ class Main extends React.Component<
   }
 
   render() {
+    const height = window.innerHeight;
     return (
-      <div style={{ display: "contents" }}>
+      <div style={{ display: "contents", height }}>
         <div className={styles.resizeable}>
-          <div style={{ width: "50em" }}>
+          <div style={{ width: "50em", height }}>
             {store.gameW.game.players.map((_, i: number) => (
               <Board
                 key={i}
@@ -45,7 +46,7 @@ class Main extends React.Component<
           </div>
         </div>
         <div className={styles.resizeable}>
-          <div style={{ width: "50em" }}>
+          <div style={{ width: "50em", height }}>
             <Player
               selected={this.state.selectedPlayer}
               select={this.selectPlayer.bind(this)}
