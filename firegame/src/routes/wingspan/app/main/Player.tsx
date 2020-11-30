@@ -79,6 +79,7 @@ class Hand extends React.Component<{
       game.turnNumber++;
       if (game.turnNumber + game.roundNumber === 10) {
         this.assignGoals();
+        game.publicCards = game.deck.splice(0, game.publicCards.length);
         game.turnNumber = 1;
         game.roundNumber++;
         utils.incrementPlayerTurn();
