@@ -13,7 +13,7 @@ class Preview extends React.Component<{}, { card?: CardType }> {
   }
 
   static setCard(card: CardType) {
-    preview.setState({ card });
+    preview && preview.setState({ card });
   }
 
   render() {

@@ -36,13 +36,18 @@
   background-color: grey !important;
 }
 
+.sidebar_parent {
+  display: table;
+  height: 100%;
+}
+
 .sidebar {
-  min-width: 20%;
-  max-height: 100%;
+  width: 25em;
   overflow: scroll;
+  resize: both;
   display: flex;
   flex-direction: column;
-  resize: both;
+  height: 100%;
 }
 
 .sidebar > * {

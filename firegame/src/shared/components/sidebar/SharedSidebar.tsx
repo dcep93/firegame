@@ -14,26 +14,28 @@ abstract class SharedSidebar<T> extends React.Component {
 
   render() {
     return (
-      <div className={styles.sidebar}>
-        <div className={styles.bubble}>
-          <h2>{this.name}</h2>
-          <div>{this.renderStartNewGame()}</div>
+      <div className={styles.sidebar_parent}>
+        <div className={styles.sidebar}>
+          <div className={styles.bubble}>
+            <h2>{this.name}</h2>
+            <div>{this.renderStartNewGame()}</div>
+          </div>
+          <div className={styles.bubble}>
+            <h2 onClick={becomeHost}>Lobby</h2>
+            {Object.entries(store.lobby).map(([userId, userName], index) => (
+              <div key={index} onClick={() => kick(userId)}>
+                {this.renderPlayer(userId, userName)}
+              </div>
+            ))}
+          </div>
+          {this.renderInfo()}
+          <div className={styles.bubble}>
+            <h2>
+              <a href={".."}>Home</a>
+            </h2>
+          </div>
+          <SharedLog />
         </div>
-        <div className={styles.bubble}>
-          <h2 onClick={becomeHost}>Lobby</h2>
-          {Object.entries(store.lobby).map(([userId, userName], index) => (
-            <div key={index} onClick={() => kick(userId)}>
-              {this.renderPlayer(userId, userName)}
-            </div>
-          ))}
-        </div>
-        {this.renderInfo()}
-        <div className={styles.bubble}>
-          <h2>
-            <a href={".."}>Home</a>
-          </h2>
-        </div>
-        <SharedLog />
       </div>
     );
   }
