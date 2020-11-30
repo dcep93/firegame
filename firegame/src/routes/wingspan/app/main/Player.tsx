@@ -72,9 +72,9 @@ class Hand extends React.Component<{
   endTurn(): void {
     const game = store.gameW.game;
     utils.incrementPlayerTurn();
-    // game.publicCards = game.publicCards.map((i) =>
-    //   i === -1 ? game.deck.shift()! : i
-    // );
+    game.publicCards = game.publicCards.map((i) =>
+      i === -1 ? game.deck.shift()! : i
+    );
     if (utils.currentIndex() === game.startingPlayer) {
       game.turnNumber++;
       if (game.turnNumber + game.roundNumber === 10) {
@@ -84,10 +84,10 @@ class Hand extends React.Component<{
         utils.incrementPlayerTurn();
         game.startingPlayer = game.currentPlayer;
         store.update("finished turn - new round");
+        return;
       }
-    } else {
-      store.update("finished turn");
     }
+    store.update("finished turn");
   }
 
   assignGoals(): void {
