@@ -11,11 +11,22 @@ class Goals extends React.Component {
         {store.gameW.game.goals.map((gw, i) => (
           <div key={i}>
             {utils.goalScoring[i].map((val, j) => this.goalCell(val, i, j))}
-            <span>{GoalsBank[gw.index].goal}</span>
+            <span title={this.goalTitle(gw.index)}>
+              {GoalsBank[gw.index].goal}
+            </span>
           </div>
         ))}
       </div>
     );
+  }
+
+  goalTitle(index: number): string {
+    const goal = GoalsBank[index];
+    return store.gameW.game.players
+      .map((p, i) => ({ p, i, s: goal.f(p) }))
+      .sort((i) => i.s)
+      .map((obj) => `p${obj.i + 1}: ${obj.s}`)
+      .join(" ");
   }
 
   goalCell(val: number, i: number, j: number) {

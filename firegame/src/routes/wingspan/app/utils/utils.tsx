@@ -57,7 +57,9 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   bonusTitle(bonus: BonusType): string {
-    return [bonus.extra, ExpansionEnum[bonus.expansion]]
+    const num = utils.getBonusNum(bonus, utils.getMe());
+    const points = utils.getBonusPoints(bonus, utils.getMe());
+    return [bonus.extra, ExpansionEnum[bonus.expansion], `${num} -> ${points}`]
       .filter(Boolean)
       .join("\n\n");
   }
@@ -124,28 +126,31 @@ class Utils extends Shared<GameType, PlayerType> {
     return points;
   }
 
-  getBonusPoints(b: BonusType, p: PlayerType): number {
-    var num: number;
+  getBonusNum(b: BonusType, p: PlayerType): number {
     if (b.name === "Ecologist") {
-      num = Math.min(...Object.values(p.habitats || {}).map((i) => i!.length));
+      return Math.min(...Object.values(p.habitats || {}).map((i) => i!.length));
     } else if (b.name === "Visionary Leader") {
-      num = (p.hand || []).length;
+      return (p.hand || []).length;
     } else {
       const birds = Object.values(p.habitats || {})
         .flatMap((i) => i)
         .flatMap((i) => i);
       if (b.name === "Breeding Manager") {
-        num = birds.filter((bt) => bt!.eggs >= 4).length;
+        return birds.filter((bt) => bt!.eggs >= 4).length;
       } else if (b.name === "Citizen Scientist") {
-        num = birds.filter((bt) => bt!.tucked >= 1).length;
+        return birds.filter((bt) => bt!.tucked >= 1).length;
       } else if (b.name === "Oologist") {
-        num = birds.filter((bt) => bt!.eggs >= 1).length;
+        return birds.filter((bt) => bt!.eggs >= 1).length;
       } else {
-        num = birds.filter(
+        return birds.filter(
           (bt) => bank.cards[bt!.index].bonuses.indexOf(b.name) !== -1
         ).length;
       }
     }
+  }
+
+  getBonusPoints(b: BonusType, p: PlayerType): number {
+    const num = utils.getBonusNum(b, p);
     if (b.vp_f![0]) return b.vp_f![0] * num;
     const key = Math.max(
       ...Object.keys(b.vp_f!)
