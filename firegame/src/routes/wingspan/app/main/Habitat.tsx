@@ -26,6 +26,9 @@ class Habitat extends React.Component<{
           onClick={this.use.bind(this)}
         >
           {HabitatEnum[this.props.habitat]}
+          {utils
+            .repeat("*", this.props.player.actions[this.props.habitat])
+            .join("")}
         </span>
         {utils.count(5).map(this.renderPlace.bind(this))}
       </div>
@@ -33,6 +36,7 @@ class Habitat extends React.Component<{
   }
 
   use(): void {
+    utils.getMe().actions[this.props.habitat]++;
     store.update(`activated ${HabitatEnum[this.props.habitat]}`);
   }
 

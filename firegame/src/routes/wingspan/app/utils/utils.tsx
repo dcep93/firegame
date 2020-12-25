@@ -170,6 +170,14 @@ class Utils extends Shared<GameType, PlayerType> {
     const capacity = bank.cards[bt.index].capacity;
     bt.eggs = Math.min(bt.eggs + num, capacity);
   }
+
+  newActions(): { [h in HabitatEnum]: number } {
+    // @ts-ignore
+    return utils
+      .enumArray(HabitatEnum)
+      .map((h) => ({ [h]: 0 }))
+      .reduce((a, b) => Object.assign(a, b), {});
+  }
 }
 
 const utils = new Utils();

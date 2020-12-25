@@ -84,6 +84,7 @@ class Hand extends React.Component<{
         game.roundNumber++;
         utils.incrementPlayerTurn();
         game.startingPlayer = game.currentPlayer;
+        game.players.forEach((p) => (p.actions = utils.newActions()));
         store.update("finished turn - new round");
         return;
       }

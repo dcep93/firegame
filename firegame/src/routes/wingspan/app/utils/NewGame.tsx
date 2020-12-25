@@ -44,6 +44,7 @@ export type PlayerType = {
   bonuses: number[];
   food: { [f in FoodEnum]: number };
   habitats: { [h in HabitatEnum]?: BirdType[] };
+  actions: { [h in HabitatEnum]: number };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -112,6 +113,7 @@ function setPlayers(game: GameType): GameType {
         .map((h) => ({ [h]: null }))
         .reduce((a, b) => Object.assign(a, b), {}),
       food: Object.assign({}, food),
+      actions: utils.newActions(),
     }));
   game.currentPlayer = game.startingPlayer = utils.myIndex(game);
   return game;
