@@ -44,7 +44,7 @@ export type PlayerType = {
   bonuses: number[];
   food: { [f in FoodEnum]: number };
   habitats: { [h in HabitatEnum]?: BirdType[] };
-  actions: { [h in HabitatEnum]: number };
+  actions?: { [h in HabitatEnum]?: number };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

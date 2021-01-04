@@ -39,7 +39,9 @@ class Habitat extends React.Component<{
   }
 
   use(): void {
-    utils.getMe().actions[this.props.habitat]++;
+    const me = utils.getMe();
+    if (!me.actions) me.actions = { [this.props.habitat]: 0 };
+    me.actions[this.props.habitat]!++;
     store.update(`activated ${HabitatEnum[this.props.habitat]}`);
   }
 
