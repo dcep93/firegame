@@ -2,6 +2,7 @@ import ActivationsBank from "./activations_bank";
 import bank from "./bank";
 import { BirdType, PlayerType } from "./NewGame";
 import { GoalType, HabitatEnum, NestEnum } from "./types";
+import utils from "./utils";
 
 function getCount(b: BirdType): number {
   return bank.cards[b.index].activation === ActivationsBank.countDouble ? 2 : 1;
@@ -40,42 +41,38 @@ function birdsWithEggs(p: PlayerType, n: NestEnum): number {
 }
 
 const GoalsBank: GoalType[] = [
-  {
-    goal: "birds in [forest]",
+  [
+    {
+      goal: "birds",
+      f: (p: PlayerType) =>
+        Object.values(p.habitats)
+          .flatMap((i) => i!)
+          .map(getCount)
+          .reduce((a, b) => a + b, 0),
+    },
+    {
+      goal: "sets of eggs in habitats",
+      f: (p: PlayerType) =>
+        Math.min(...Object.values(p.habitats).map(eggsInHabitat)),
+    },
+  ],
+  utils.enumArray(HabitatEnum).map((i: HabitatEnum) => ({
+    goal: `birds in [${HabitatEnum[i]}]`,
     f: (p: PlayerType) =>
-      (p.habitats[HabitatEnum.forest] || [])
-        .map(getCount)
-        .reduce((a, b) => a + b, 0),
-  },
-  {
-    goal: "eggs in [grassland]",
-    f: (p: PlayerType) => eggsInHabitat(p.habitats[HabitatEnum.grassland]),
-  },
-  {
-    goal: "eggs in [wetland]",
-    f: (p: PlayerType) => eggsInHabitat(p.habitats[HabitatEnum.wetland]),
-  },
-  {
-    goal: "sets of eggs in habitats",
-    f: (p: PlayerType) =>
-      Math.min(...Object.values(p.habitats).map(eggsInHabitat)),
-  },
-  {
-    goal: "birds with eggs in [cavity]",
-    f: (p: PlayerType) => birdsWithEggs(p, NestEnum.cavity),
-  },
-  {
-    goal: "birds with eggs in [bowl]",
-    f: (p: PlayerType) => birdsWithEggs(p, NestEnum.bowl),
-  },
-  {
-    goal: "eggs in [ground]",
-    f: (p: PlayerType) => eggsInNest(p, NestEnum.ground),
-  },
-  {
-    goal: "eggs in [platform]",
-    f: (p: PlayerType) => eggsInNest(p, NestEnum.platform),
-  },
-];
+      (p.habitats[i] || []).map(getCount).reduce((a, b) => a + b, 0),
+  })),
+  utils.enumArray(HabitatEnum).map((h: HabitatEnum) => ({
+    goal: `eggs in [${HabitatEnum[h]}]`,
+    f: (p: PlayerType) => eggsInHabitat(p.habitats[h]),
+  })),
+  utils.enumArray(NestEnum).map((n: NestEnum) => ({
+    goal: `birds with eggs in [${NestEnum[n]}]`,
+    f: (p: PlayerType) => birdsWithEggs(p, n),
+  })),
+  utils.enumArray(NestEnum).map((n: NestEnum) => ({
+    goal: `eggs in [${NestEnum[n]}]`,
+    f: (p: PlayerType) => eggsInNest(p, n),
+  })),
+].flatMap((i) => i);
 
 export default GoalsBank;
