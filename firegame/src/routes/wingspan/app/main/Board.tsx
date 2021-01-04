@@ -21,7 +21,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
     const isMe = utils.myIndex() === this.props.index;
     const isTurn = store.gameW.game.currentPlayer === this.props.index;
     const player = utils.getPlayer(this.props.index);
-    const points = utils.getPoints(player);
+    const points = utils.getPoints(player, this.props.index);
     return (
       <div className={styles.bubble}>
         <div>

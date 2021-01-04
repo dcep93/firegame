@@ -27,7 +27,10 @@ class Habitat extends React.Component<{
         >
           {HabitatEnum[this.props.habitat]}
           {utils
-            .repeat("*", this.props.player.actions[this.props.habitat])
+            .repeat(
+              "*",
+              (this.props.player.actions || {})[this.props.habitat] || 0
+            )
             .join("")}
         </span>
         {utils.count(5).map(this.renderPlace.bind(this))}

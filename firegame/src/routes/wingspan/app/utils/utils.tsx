@@ -81,7 +81,7 @@ class Utils extends Shared<GameType, PlayerType> {
     me.food[food] += amount;
   }
 
-  getPoints(p: PlayerType): { [s: string]: number } {
+  getPoints(p: PlayerType, index: number): { [s: string]: number } {
     const pointsOnBirds = Object.values(p.habitats || {})
       .flatMap((i) => i!.filter(Boolean))
       .flatMap((i) => bank.cards[i!.index]!.points)
@@ -98,12 +98,13 @@ class Utils extends Shared<GameType, PlayerType> {
       .flatMap((i) => i!.filter(Boolean))
       .flatMap((i) => i.eggs)
       .reduce((a, b) => a + b, 0);
+    const playerIndex = index;
     const goals = store.gameW.game.goals
       .map((g) => g.rankings)
       .map((r, i) =>
         r
           .map((c, j) =>
-            c[0]
+            c && c[playerIndex]
               ? utils.goalScoring[i][j] /
                 Object.values(c).filter(Boolean).length
               : 0
