@@ -49,6 +49,7 @@ class Utils extends Shared<GameType, PlayerType> {
             )
             .join(card.food_slash ? " / " : " ")}
         </div>
+        {card.predator && <div>predator</div>}
       </div>
     );
   }
