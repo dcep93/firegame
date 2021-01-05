@@ -72,10 +72,13 @@ const GoalsBank: GoalType[] = [
       goal: `birds with eggs in [${NestEnum[n]}]`,
       f: (p: PlayerType) => birdsWithEggs(p, n),
     })),
-  utils.enumArray(NestEnum).map((n: NestEnum) => ({
-    goal: `eggs in [${NestEnum[n]}]`,
-    f: (p: PlayerType) => eggsInNest(p, n),
-  })),
+  utils
+    .enumArray(NestEnum)
+    .filter((i: NestEnum) => i !== NestEnum.none && i !== NestEnum.wild)
+    .map((n: NestEnum) => ({
+      goal: `eggs in [${NestEnum[n]}]`,
+      f: (p: PlayerType) => eggsInNest(p, n),
+    })),
 ].flatMap((i) => i);
 
 export default GoalsBank;
