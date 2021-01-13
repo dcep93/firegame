@@ -12,6 +12,18 @@ interface PlayerType {
   userName: string;
 }
 
+declare global {
+  interface Array<T> {
+    // @ts-ignore
+    sum(): number;
+  }
+}
+
+// eslint-disable-next-line no-extend-native
+Array.prototype.sum = function (this: number[]): number {
+  return this.reduce((a, b) => a + b, 0);
+};
+
 class Shared<T extends TurnGame<U>, U extends PlayerType> {
   constructor() {
     // @ts-ignore
