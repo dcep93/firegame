@@ -41,6 +41,7 @@ class Main extends React.Component<
                 selected={
                   utils.myIndex() === i ? this.state.selectedBoard : null
                 }
+                trashSelected={this.state.selectedPlayer === "trash"}
               />
             ))}
           </div>

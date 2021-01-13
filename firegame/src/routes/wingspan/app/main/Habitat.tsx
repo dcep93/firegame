@@ -12,6 +12,7 @@ class Habitat extends React.Component<{
   migrate: ((habitat: HabitatEnum, index: number) => boolean) | null;
   select: ((habitat: HabitatEnum, index: number) => void) | null;
   selected: number | undefined;
+  trashSelected: boolean;
 }> {
   render() {
     return (
@@ -121,13 +122,21 @@ class Habitat extends React.Component<{
     if (this.props.migrate && this.props.migrate(this.props.habitat, index))
       return;
     const bt = utils.getHabitat(utils.getMe(), this.props.habitat)[index];
-    const bird = bank.cards[bt.index];
     var action: string;
-    if (bird.activation !== null) {
-      action = "activated";
-      bird.activation(bt);
+    if (this.props.trashSelected) {
+      action = "evolved";
+      bt.index = utils.getMe().hand!.shift()!;
+      bt.cache = 0;
+      bt.eggs = 0;
+      bt.tucked++;
     } else {
-      action = "manually activated";
+      const bird = bank.cards[bt.index];
+      if (bird.activation !== null) {
+        action = "activated";
+        bird.activation(bt);
+      } else {
+        action = "manually activated";
+      }
     }
     store.update(`${action} ${this.activation(index)}`);
   }

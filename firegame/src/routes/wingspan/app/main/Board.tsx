@@ -9,6 +9,7 @@ type PropsType = {
   migrate: ((habitat: HabitatEnum, index: number) => boolean) | null;
   select: ((habitat: HabitatEnum, index: number) => void) | null;
   selected: { [habitat in HabitatEnum]?: number } | null;
+  trashSelected: boolean;
 };
 
 class Board extends React.Component<PropsType, { minimized: boolean }> {
@@ -63,6 +64,7 @@ class Board extends React.Component<PropsType, { minimized: boolean }> {
                 migrate={this.props.migrate}
                 select={this.props.select}
                 selected={(this.props.selected || {})[h]}
+                trashSelected={this.props.trashSelected}
               />
             ))}
           </div>
