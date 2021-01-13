@@ -1,6 +1,5 @@
 import React from "react";
-import Firebase from "../../../firegame/firebase";
-import { mePath } from "../../../firegame/writer/utils";
+import utils from "../../../routes/tfmars/app/utils/utils";
 import styles from "../../../shared/styles.module.css";
 import store from "../../store";
 import SharedLog from "./SharedLog";
@@ -23,7 +22,7 @@ abstract class SharedSidebar<T> extends React.Component {
           <div className={styles.bubble}>
             <h2 onClick={becomeHost}>Lobby</h2>
             {Object.entries(store.lobby).map(([userId, userName], index) => (
-              <div key={index} onClick={() => kick(userId)}>
+              <div key={index} onClick={() => become(userId)}>
                 {this.renderPlayer(userId, userName)}
               </div>
             ))}
@@ -72,13 +71,18 @@ abstract class SharedSidebar<T> extends React.Component {
   }
 }
 
-function kick(userId: string) {
+function become(userId: string) {
   if (store.gameW.info.host !== store.me.userId) return;
-  if (userId === store.me.userId) {
-    alert("Can't kick yourself.");
-    return;
+  const p = store.gameW.game.players;
+  for (let index = 0; index < p.length; index++) {
+    const uId = p[index].userId;
+    if (uId === userId) {
+      console.log(index);
+      utils.m(index);
+      return;
+    }
   }
-  Firebase.set(mePath(userId), {});
+  alert("that player isnt in the game");
 }
 
 function becomeHost() {
