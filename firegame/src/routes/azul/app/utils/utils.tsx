@@ -33,7 +33,7 @@ class Utils extends Shared<GameType, PlayerType> {
     if (this.default((me.lines[destination] || [])[0], tile) !== tile) {
       destination = -1;
     }
-    if ((me.wall || [])[destination]?.indexOf(tile) !== undefined) {
+    if (((me.wall || [])[destination] || []).indexOf(tile) !== undefined) {
       alert("already have tile in wall");
       return;
     }
