@@ -23,7 +23,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
   takeTile(factoryIndex: number, tile: Tile, popDestination: () => number) {
     if (!utils.isMyTurn()) return;
-    const destination = popDestination();
+    var destination = popDestination();
     if (destination === -1) {
       alert("need to select a line");
       return;
@@ -31,8 +31,7 @@ class Utils extends Shared<GameType, PlayerType> {
     const me = utils.getMe();
     if (!me.lines) me.lines = [];
     if (this.default((me.lines[destination] || [])[0], tile) !== tile) {
-      alert("must match tile to line");
-      return;
+      destination = -1;
     }
     if ((me.wall || [])[destination]?.indexOf(tile) !== undefined) {
       alert("already have tile in wall");
@@ -52,7 +51,6 @@ class Utils extends Shared<GameType, PlayerType> {
     const newLine = (me.lines[destination] || []).concat(removed);
     me.lines[destination] = newLine;
     if (!me.floor) me.floor = [];
-    me.floor.splice(0, 0, ...newLine.splice(destination + 1));
     if (!isTable) {
       store.gameW.game.table = (store.gameW.game.table || [])
         .concat(source.splice(0))
@@ -63,6 +61,17 @@ class Utils extends Shared<GameType, PlayerType> {
         .filter((t) => t === this.FIRST_PLAYER_TILE).length === 0
     ) {
       me.floor.push(this.FIRST_PLAYER_TILE);
+    }
+    me.floor = me.floor.concat(...newLine.splice(destination + 1));
+    store.gameW.game.lid = (store.gameW.game.lid || []).concat(
+      me.floor.splice(this.FLOOR_SCORING.length)
+    );
+    if (
+      isTable &&
+      source.length === 0 &&
+      store.gameW.game.factories === undefined
+    ) {
+      alert("round over");
     }
     store.update(`${Tile[tile]} ${sourceName} -> ${destination + 1}`);
   }
