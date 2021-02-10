@@ -149,6 +149,10 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
       return a === b;
     }
   }
+
+  default(value: any, default_: any): any {
+    return value === undefined ? default_ : value;
+  }
 }
 
 export default Shared;

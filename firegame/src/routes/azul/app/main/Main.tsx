@@ -1,7 +1,9 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
+import { Tile } from "../utils/NewGame";
 import { store } from "../utils/utils";
 import Factory from "./Factory";
+import Player from "./Player";
 
 class Main extends React.Component {
   render() {
@@ -19,7 +21,13 @@ class Main extends React.Component {
   }
 
   renderLeft() {
-    return <>a</>;
+    return (
+      <div>
+        {store.gameW.game.players.map((p) => (
+          <Player key={p.userId} p={p} />
+        ))}
+      </div>
+    );
   }
 
   renderRight() {
@@ -32,7 +40,13 @@ class Main extends React.Component {
         </div>
         <div className={styles.bubble}>
           <div>Table</div>
-          {store.gameW.game.table}
+          {(store.gameW.game.table || []).map((tile, index) => (
+            <div
+              className={styles.bubble}
+              key={index}
+              style={{ backgroundColor: Tile[tile] }}
+            ></div>
+          ))}
         </div>
       </div>
     );

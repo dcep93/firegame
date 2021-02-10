@@ -8,7 +8,13 @@ class Factory extends React.Component<{ index: number; tiles: Tile[] }> {
       <div>
         <div className={styles.bubble}>
           <div>Factory {this.props.index + 1}</div>
-          {this.props.tiles}
+          {this.props.tiles.map((tile, index) => (
+            <div
+              className={styles.bubble}
+              key={index}
+              style={{ backgroundColor: Tile[tile] }}
+            ></div>
+          ))}
         </div>
       </div>
     );

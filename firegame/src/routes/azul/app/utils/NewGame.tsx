@@ -6,7 +6,7 @@ const NUM_TILES_OF_EACH_TYPE_IN_BAG = 20;
 export enum Tile {
   red,
   blue,
-  white,
+  grey,
   black,
   yellow,
 }
@@ -19,6 +19,7 @@ export type GameType = {
   bag: Tile[];
   factories: arr<arr<Tile>>;
   table: arr<Tile>;
+  lid: arr<Tile>;
 };
 
 export type Params = {
@@ -29,6 +30,9 @@ export type PlayerType = {
   userId: string;
   userName: string;
   score: number;
+  lines: arr<arr<Tile>>;
+  wall: arr<arr<Tile>>;
+  floor: arr<Tile>;
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -45,6 +49,9 @@ function setPlayers(game: GameType): GameType {
       userId,
       userName,
       score: 0,
+      lines: undefined,
+      wall: undefined,
+      floor: undefined,
     }));
   game.currentPlayer = utils.myIndex(game);
   return game;
@@ -52,6 +59,7 @@ function setPlayers(game: GameType): GameType {
 
 function setProps(game: GameType): GameType {
   game.table = [];
+  game.lid = [];
   game.numFactories = 5 + 2 * (game.players.length - 2);
   game.bag = utils
     .enumArray(Tile)

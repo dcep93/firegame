@@ -9,9 +9,13 @@ const store: StoreType<GameType> = store_;
 class Utils extends Shared<GameType, PlayerType> {
   newRound(game: GameType) {
     this.shuffle(game.bag);
-    game.factories = utils
-      .repeat(null, game.numFactories)
-      .map((_) => game.bag.splice(0, TILES_PER_FACTORY));
+    game.factories = utils.repeat(null, game.numFactories).map((_) => {
+      if (game.bag.length < TILES_PER_FACTORY) {
+        game.bag.push(...(game.lid || []));
+        game.lid = [];
+      }
+      return game.bag.splice(0, TILES_PER_FACTORY);
+    });
   }
 }
 

@@ -94,3 +94,8 @@
 .nowrap {
   white-space: nowrap;
 }
+
+.right {
+  float: right;
+  clear: both;
+}
