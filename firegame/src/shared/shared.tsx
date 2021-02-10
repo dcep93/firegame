@@ -160,6 +160,15 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
       .reverse()
       .map((i) => arr.splice(i, 1)[0]);
   }
+
+  idx(original_obj: any[], keys: any[]): any {
+    var obj = original_obj;
+    for (let i = 0; i < keys.length; i++) {
+      obj = obj[keys[i]];
+      if (obj === undefined) break;
+    }
+    return obj;
+  }
 }
 
 export default Shared;

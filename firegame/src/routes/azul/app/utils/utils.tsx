@@ -94,12 +94,48 @@ class Utils extends Shared<GameType, PlayerType> {
         if (!p.wall[i]) p.wall[i] = [];
         const wallIndex = (tile! + i) % numTiles;
         p.wall![i]![wallIndex] = tile;
+        p.score += this.countWall(p, i, wallIndex);
         store.gameW.game.lid!.push(...row.splice(0));
       }
     });
     if (!p.floor) p.floor = [];
+    p.score += p.floor.map((_, i) => this.FLOOR_SCORING[i]).sum();
+    p.score = Math.max(p.score, 0);
     this.removeAll(p.floor, (t) => t === this.FIRST_PLAYER_TILE);
     store.gameW.game.lid!.push(...p.floor.splice(0));
+  }
+
+  countWall(p: PlayerType, rowI: number, columnI: number): number {
+    const numTiles = this.enumArray(Tile).length;
+    const wall = p.wall!;
+    const columnChain = this.countChain(
+      this.enumArray(Tile).map((i) => this.idx(wall, [i, columnI])),
+      rowI
+    );
+    const rowChain = this.countChain(
+      this.enumArray(Tile).map((i) => this.idx(wall, [rowI, i])),
+      columnI
+    );
+    var score = columnChain + rowChain;
+    if (columnChain === 1) score--;
+    if (rowChain === 1) score--;
+    if (score === 0) return 1;
+    if (columnChain === numTiles) score += 7;
+    if (rowChain === numTiles) score += 2;
+    return score;
+  }
+
+  countChain(arr: (number | undefined)[], index: number): number {
+    var chain = 0;
+    for (let i = index; i < arr.length; i++) {
+      if (arr[i] === undefined) break;
+      chain++;
+    }
+    for (let i = index - 1; i >= 0; i--) {
+      if (arr[i] === undefined) break;
+      chain++;
+    }
+    return chain;
   }
 }
 
