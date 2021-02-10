@@ -7,7 +7,6 @@ import SharedLog from "./SharedLog";
 abstract class SharedSidebar<T> extends React.Component {
   abstract name: string;
   abstract NewGame: (params: T) => any;
-  abstract renderStartNewGame(): JSX.Element;
   abstract getParams(): T;
   abstract isMyTurn: () => boolean;
 
@@ -35,6 +34,14 @@ abstract class SharedSidebar<T> extends React.Component {
           </div>
           <SharedLog />
         </div>
+      </div>
+    );
+  }
+
+  renderStartNewGame() {
+    return (
+      <div>
+        <button onClick={this.startNewGame.bind(this)}>New Game</button>
       </div>
     );
   }
