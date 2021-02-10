@@ -44,7 +44,7 @@ class Player extends React.Component<{
             className={styles.bubble}
             style={{
               backgroundColor: utils.default(
-                ((this.props.p.lines || [])[index] || [])[i],
+                Tile[((this.props.p.lines || [])[index] || [])[index - i]],
                 "white"
               ),
             }}

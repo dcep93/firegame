@@ -20,6 +20,7 @@ export type GameType = {
   factories: arr<arr<Tile>>;
   table: arr<Tile>;
   lid: arr<Tile>;
+  floor: arr<number>;
 };
 
 export type Params = {

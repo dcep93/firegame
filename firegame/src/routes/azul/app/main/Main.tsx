@@ -54,11 +54,11 @@ class Main extends React.Component<{}, { destination: number }> {
     return (
       <div className={[styles.bubble, styles.inline_flex].join(" ")}>
         <div>
-          {(store.gameW.game.factories || []).map((tiles, index) => (
+          {utils.count(store.gameW.game.numFactories).map((index) => (
             <Factory
               key={index}
               index={index}
-              tiles={tiles || []}
+              tiles={(store.gameW.game.factories || [])[index] || []}
               popDestination={this.popDestination.bind(this)}
             />
           ))}
@@ -71,12 +71,7 @@ class Main extends React.Component<{}, { destination: number }> {
               key={index}
               style={{ backgroundColor: Tile[tile] }}
               onClick={() =>
-                utils.takeTile(
-                  "table",
-                  tile,
-                  true,
-                  this.popDestination.bind(this)
-                )
+                utils.takeTile(-1, tile, this.popDestination.bind(this))
               }
             ></div>
           ))}

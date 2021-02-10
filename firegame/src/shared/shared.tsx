@@ -153,6 +153,13 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   default(value: any, default_: any): any {
     return value === undefined ? default_ : value;
   }
+
+  removeAll<T>(arr: T[], checker: (t: T) => boolean): T[] {
+    return this.count(arr.length)
+      .filter((i) => checker(arr[i]))
+      .reverse()
+      .map((i) => arr.splice(i, 1)[0]);
+  }
 }
 
 export default Shared;

@@ -9,11 +9,10 @@ class Factory extends React.Component<{
   popDestination: () => number;
 }> {
   render() {
-    const factoryName = `Factory ${this.props.index + 1}`;
     return (
       <div>
         <div className={styles.bubble}>
-          <div>{factoryName}</div>
+          <div>Factory {this.props.index + 1}</div>
           {this.props.tiles.map((tile, index) => (
             <div
               className={styles.bubble}
@@ -21,9 +20,8 @@ class Factory extends React.Component<{
               style={{ backgroundColor: Tile[tile] }}
               onClick={() =>
                 utils.takeTile(
-                  factoryName,
+                  this.props.index,
                   tile,
-                  false,
                   this.props.popDestination
                 )
               }
