@@ -4,11 +4,11 @@ import utils, { store } from "./utils";
 const NUM_TILES_OF_EACH_TYPE_IN_BAG = 20;
 
 export enum Tile {
-  red,
   blue,
-  grey,
-  black,
   yellow,
+  red,
+  black,
+  grey,
 }
 
 export type GameType = {
@@ -49,9 +49,9 @@ function setPlayers(game: GameType): GameType {
       userId,
       userName,
       score: 0,
-      lines: undefined,
-      wall: undefined,
-      floor: undefined,
+      lines: [],
+      wall: [],
+      floor: [],
     }));
   game.currentPlayer = utils.myIndex(game);
   return game;
