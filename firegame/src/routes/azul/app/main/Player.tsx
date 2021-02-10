@@ -92,7 +92,7 @@ class Player extends React.Component<{
               className={styles.bubble}
               style={{
                 backgroundColor: utils.default(
-                  Tile[((this.props.p.wall || [])[index] || [])[i]],
+                  Tile[((this.props.p.wall || {})[index] || [])[i]],
                   "white"
                 ),
               }}

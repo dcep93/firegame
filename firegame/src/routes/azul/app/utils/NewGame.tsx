@@ -17,10 +17,10 @@ export type GameType = {
   players: PlayerType[];
   numFactories: number;
   bag: Tile[];
-  factories: arr<arr<Tile>>;
   table: arr<Tile>;
   lid: arr<Tile>;
   floor: arr<number>;
+  factories: { [index: number]: arr<Tile> };
 };
 
 export type Params = {
@@ -32,8 +32,8 @@ export type PlayerType = {
   userName: string;
   score: number;
   lines: arr<arr<Tile>>;
-  wall: arr<arr<Tile>>;
   floor: arr<Tile>;
+  wall: { [index: number]: arr<Tile> };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

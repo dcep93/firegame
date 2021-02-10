@@ -33,7 +33,7 @@ class Utils extends Shared<GameType, PlayerType> {
     if (this.default((me.lines[destination] || [])[0], tile) !== tile) {
       destination = -1;
     }
-    if (((me.wall || [])[destination] || []).indexOf(tile) !== undefined) {
+    if (((me.wall || {})[destination] || []).indexOf(tile) !== -1) {
       alert("already have tile in wall");
       return;
     }
@@ -75,8 +75,7 @@ class Utils extends Shared<GameType, PlayerType> {
       store.gameW.game.currentPlayer = store.gameW.game.players
         .map((p, index) => ({ p, index }))
         .filter(
-          (obj) =>
-            (obj.p.floor || []).indexOf(this.FIRST_PLAYER_TILE) !== undefined
+          (obj) => (obj.p.floor || []).indexOf(this.FIRST_PLAYER_TILE) !== -1
         )[0].index;
       store.gameW.game.players.forEach(this.tileWalls.bind(this));
       this.newRound(store.gameW.game);
@@ -90,12 +89,12 @@ class Utils extends Shared<GameType, PlayerType> {
       const row = (p.lines || [])[i];
       if (row && row.length === i + 1) {
         const tile = row.pop()!;
-        if (!p.wall) p.wall = [];
+        if (!p.wall) p.wall = {};
         if (!p.wall[i]) p.wall[i] = [];
         const wallIndex = (tile! + i) % numTiles;
         p.wall![i]![wallIndex] = tile;
         p.score += this.countWall(p, i, wallIndex);
-        const matchingTiles = p.wall
+        const matchingTiles = Object.values(p.wall)
           .flatMap((i) => i)
           .filter((i) => i === tile);
         if (matchingTiles.length === numTiles) p.score += 10;
@@ -111,7 +110,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
   countWall(p: PlayerType, rowI: number, columnI: number): number {
     const numTiles = this.enumArray(Tile).length;
-    const wall = p.wall!;
+    const wall = this.objToArr(p.wall!);
     const columnChain = this.countChain(
       this.enumArray(Tile).map((i) => this.idx(wall, [i, columnI])),
       rowI

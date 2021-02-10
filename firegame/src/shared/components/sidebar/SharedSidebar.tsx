@@ -84,7 +84,6 @@ function become(userId: string) {
   for (let index = 0; index < p.length; index++) {
     const uId = p[index].userId;
     if (uId === userId) {
-      console.log(index);
       Shared.m(index);
       return;
     }

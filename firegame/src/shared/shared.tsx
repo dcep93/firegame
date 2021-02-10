@@ -169,6 +169,14 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     }
     return obj;
   }
+
+  objToArr<T>(obj: { [key: number]: T }): T[] {
+    const out: T[] = [];
+    Object.keys(obj)
+      .map((key) => parseInt(key))
+      .forEach((key) => (out[key] = obj[key]));
+    return out;
+  }
 }
 
 export default Shared;
