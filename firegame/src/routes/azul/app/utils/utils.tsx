@@ -1,6 +1,6 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { GameType, PlayerType } from "./NewGame";
+import { GameType, PlayerType, Tile } from "./NewGame";
 
 const TILES_PER_FACTORY = 4;
 
@@ -16,6 +16,21 @@ class Utils extends Shared<GameType, PlayerType> {
       }
       return game.bag.splice(0, TILES_PER_FACTORY);
     });
+  }
+
+  takeTile(
+    source: string,
+    tile: Tile,
+    isTable: boolean,
+    popDestination: () => number
+  ) {
+    if (!utils.isMyTurn()) return;
+    const destination = popDestination();
+    if (destination === -1) {
+      alert("need to select a line");
+      return;
+    }
+    store.update(`${Tile[tile]} ${source} -> ${destination + 1}`);
   }
 }
 

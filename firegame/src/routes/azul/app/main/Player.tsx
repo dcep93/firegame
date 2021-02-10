@@ -1,9 +1,13 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
-import utils from "../../../7wd/app/utils/utils";
 import { PlayerType, Tile } from "../utils/NewGame";
+import utils from "../utils/utils";
 
-class Player extends React.Component<{ p: PlayerType }> {
+class Player extends React.Component<{
+  p: PlayerType;
+  destination: number;
+  setDestination: (d: number) => void;
+}> {
   render() {
     return (
       <div className={styles.bubble}>
@@ -18,9 +22,22 @@ class Player extends React.Component<{ p: PlayerType }> {
     );
   }
 
+  meOnMyTurn(): boolean {
+    return utils.isMyTurn() && utils.getMe().userId === this.props.p.userId;
+  }
+
   renderLine(_: Tile, index: number) {
     return (
-      <div key={index} className={styles.right}>
+      <div
+        key={index}
+        className={styles.right}
+        onClick={() => this.meOnMyTurn() && this.props.setDestination(index)}
+        style={
+          this.meOnMyTurn() && index === this.props.destination
+            ? { backgroundColor: "green" }
+            : {}
+        }
+      >
         {utils.count(index + 1).map((i) => (
           <div
             key={i}

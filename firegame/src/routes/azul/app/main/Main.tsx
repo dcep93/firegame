@@ -1,11 +1,16 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import { Tile } from "../utils/NewGame";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 import Factory from "./Factory";
 import Player from "./Player";
 
-class Main extends React.Component {
+class Main extends React.Component<{}, { destination: number }> {
+  constructor(props: {}) {
+    super(props);
+    this.state = { destination: -1 };
+  }
+
   render() {
     const height = window.innerHeight;
     return (
@@ -20,11 +25,26 @@ class Main extends React.Component {
     );
   }
 
+  popDestination(): number {
+    const destination = this.state.destination;
+    this.setState({ destination: -1 });
+    return destination;
+  }
+
+  setDestination(destination: number) {
+    this.setState({ destination });
+  }
+
   renderLeft() {
     return (
       <div>
         {store.gameW.game.players.map((p) => (
-          <Player key={p.userId} p={p} />
+          <Player
+            key={p.userId}
+            p={p}
+            destination={this.state.destination}
+            setDestination={this.setDestination.bind(this)}
+          />
         ))}
       </div>
     );
@@ -35,7 +55,12 @@ class Main extends React.Component {
       <div className={[styles.bubble, styles.inline_flex].join(" ")}>
         <div>
           {(store.gameW.game.factories || []).map((tiles, index) => (
-            <Factory key={index} index={index} tiles={tiles || []} />
+            <Factory
+              key={index}
+              index={index}
+              tiles={tiles || []}
+              popDestination={this.popDestination.bind(this)}
+            />
           ))}
         </div>
         <div className={styles.bubble}>
@@ -45,6 +70,14 @@ class Main extends React.Component {
               className={styles.bubble}
               key={index}
               style={{ backgroundColor: Tile[tile] }}
+              onClick={() =>
+                utils.takeTile(
+                  "table",
+                  tile,
+                  true,
+                  this.popDestination.bind(this)
+                )
+              }
             ></div>
           ))}
         </div>
