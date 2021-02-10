@@ -1,6 +1,6 @@
 import React from "react";
-import utils from "../../../routes/tfmars/app/utils/utils";
 import styles from "../../../shared/styles.module.css";
+import Shared from "../../shared";
 import store from "../../store";
 import SharedLog from "./SharedLog";
 
@@ -78,7 +78,7 @@ function become(userId: string) {
     const uId = p[index].userId;
     if (uId === userId) {
       console.log(index);
-      utils.m(index);
+      Shared.m(index);
       return;
     }
   }
