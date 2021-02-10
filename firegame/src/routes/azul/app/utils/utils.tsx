@@ -94,11 +94,12 @@ class Utils extends Shared<GameType, PlayerType> {
         if (!p.wall[i]) p.wall[i] = [];
         const wallIndex = (tile! + i) % numTiles;
         p.wall![i]![wallIndex] = tile;
-        store.gameW.game.lid = (store.gameW.game.lid || []).concat(
-          row.splice(0)
-        );
+        store.gameW.game.lid!.push(...row.splice(0));
       }
     });
+    if (!p.floor) p.floor = [];
+    this.removeAll(p.floor, (t) => t === this.FIRST_PLAYER_TILE);
+    store.gameW.game.lid!.push(...p.floor.splice(0));
   }
 }
 
