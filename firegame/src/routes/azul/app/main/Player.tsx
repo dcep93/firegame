@@ -18,8 +18,31 @@ class Player extends React.Component<{
           <div style={{ width: "30px" }}></div>
           <div>{utils.enumArray(Tile).map(this.renderWall.bind(this))}</div>
         </div>
+        <div
+          className={[styles.flex, styles.bubble].join(" ")}
+          style={{ justifyContent: "space-between" }}
+        >
+          {utils.FLOOR_SCORING.map((value, index) => (
+            <div key={index}>
+              <div>{value}</div>
+              <div
+                className={styles.bubble}
+                style={{
+                  backgroundColor: this.getFloorBackground(index),
+                }}
+              ></div>
+            </div>
+          ))}
+        </div>
       </div>
     );
+  }
+
+  getFloorBackground(index: number): string {
+    const tile = (this.props.p.floor || [])[index];
+    if (tile === undefined) return "white";
+    if (tile < 0) return "green";
+    return Tile[tile];
   }
 
   meOnMyTurn(): boolean {

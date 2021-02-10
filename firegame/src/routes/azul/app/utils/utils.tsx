@@ -8,6 +8,8 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
   FIRST_PLAYER_TILE = -1;
+  FLOOR_SCORING = [-1, -1, -2, -2, -2, -3, -3];
+
   newRound(game: GameType) {
     this.shuffle(game.bag);
     game.factories = utils.repeat(null, game.numFactories).map((_) => {
@@ -50,7 +52,6 @@ class Utils extends Shared<GameType, PlayerType> {
     const newLine = (me.lines[destination] || []).concat(removed);
     me.lines[destination] = newLine;
     if (!me.floor) me.floor = [];
-    console.log(newLine, destination);
     me.floor.splice(0, 0, ...newLine.splice(destination + 1));
     if (!isTable) {
       store.gameW.game.table = (store.gameW.game.table || [])
@@ -59,7 +60,7 @@ class Utils extends Shared<GameType, PlayerType> {
     } else if (
       store.gameW.game.players
         .flatMap((p) => p.floor || [])
-        .filter((t) => t === this.FIRST_PLAYER_TILE).length > 0
+        .filter((t) => t === this.FIRST_PLAYER_TILE).length === 0
     ) {
       me.floor.push(this.FIRST_PLAYER_TILE);
     }
