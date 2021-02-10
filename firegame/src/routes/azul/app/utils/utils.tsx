@@ -71,6 +71,7 @@ class Utils extends Shared<GameType, PlayerType> {
       source.length === 0 &&
       store.gameW.game.factories === undefined
     ) {
+      // TODO
       alert("round over");
     }
     store.update(`${Tile[tile]} ${sourceName} -> ${destination + 1}`);
