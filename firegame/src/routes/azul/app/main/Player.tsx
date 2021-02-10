@@ -82,21 +82,22 @@ class Player extends React.Component<{
     return (
       <div key={index} className={styles.right}>
         {utils.count(numTiles).map((i) => (
-          <div
+          <span
             key={i}
-            className={styles.inline}
-            style={{ backgroundColor: Tile[(numTiles + i - index) % numTiles] }}
+            style={{
+              backgroundColor: Tile[(numTiles + i - index) % numTiles],
+            }}
           >
             <div
               className={styles.bubble}
               style={{
                 backgroundColor: utils.default(
-                  ((this.props.p.wall || [])[index] || [])[i],
+                  Tile[((this.props.p.wall || [])[index] || [])[i]],
                   "white"
                 ),
               }}
             ></div>
-          </div>
+          </span>
         ))}
       </div>
     );

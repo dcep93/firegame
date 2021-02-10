@@ -37,6 +37,7 @@ class Utils extends Shared<GameType, PlayerType> {
       alert("already have tile in wall");
       return;
     }
+    this.incrementPlayerTurn();
     var sourceName: string;
     var source: Tile[];
     const isTable = factoryIndex < 0;
@@ -71,10 +72,33 @@ class Utils extends Shared<GameType, PlayerType> {
       source.length === 0 &&
       store.gameW.game.factories === undefined
     ) {
-      // TODO
-      alert("round over");
+      store.gameW.game.currentPlayer = store.gameW.game.players
+        .map((p, index) => ({ p, index }))
+        .filter(
+          (obj) =>
+            (obj.p.floor || []).indexOf(this.FIRST_PLAYER_TILE) !== undefined
+        )[0].index;
+      store.gameW.game.players.forEach(this.tileWalls.bind(this));
+      this.newRound(store.gameW.game);
     }
     store.update(`${Tile[tile]} ${sourceName} -> ${destination + 1}`);
+  }
+
+  tileWalls(p: PlayerType) {
+    const numTiles = this.enumArray(Tile).length;
+    this.enumArray(Tile).forEach((i) => {
+      const row = (p.lines || [])[i];
+      if (row && row.length === i + 1) {
+        const tile = row.pop()!;
+        if (!p.wall) p.wall = [];
+        if (!p.wall[i]) p.wall[i] = [];
+        const wallIndex = (tile! + i) % numTiles;
+        p.wall![i]![wallIndex] = tile;
+        store.gameW.game.lid = (store.gameW.game.lid || []).concat(
+          row.splice(0)
+        );
+      }
+    });
   }
 }
 
