@@ -95,6 +95,10 @@ class Utils extends Shared<GameType, PlayerType> {
         const wallIndex = (tile! + i) % numTiles;
         p.wall![i]![wallIndex] = tile;
         p.score += this.countWall(p, i, wallIndex);
+        const matchingTiles = p.wall
+          .flatMap((i) => i)
+          .filter((i) => i === tile);
+        if (matchingTiles.length === numTiles) p.score += 10;
         store.gameW.game.lid!.push(...row.splice(0));
       }
     });
