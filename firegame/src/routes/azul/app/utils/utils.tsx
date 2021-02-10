@@ -1,11 +1,19 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-
 import { GameType, PlayerType } from "./NewGame";
+
+const TILES_PER_FACTORY = 4;
 
 const store: StoreType<GameType> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {}
+class Utils extends Shared<GameType, PlayerType> {
+  newRound(game: GameType) {
+    this.shuffle(game.bag);
+    game.factories = utils
+      .repeat(null, game.numFactories)
+      .map((_) => game.bag.splice(0, TILES_PER_FACTORY));
+  }
+}
 
 const utils = new Utils();
 
