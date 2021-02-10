@@ -27,47 +27,49 @@ class Main extends React.Component<
     return (
       <div style={{ display: "contents", height }}>
         <div className={styles.resizeable}>
-          <div style={{ width: "50em", height }}>
-            {store.gameW.game.players.map((_, i: number) => (
-              <Board
-                key={i}
-                index={i}
-                migrate={
-                  utils.myIndex() === i ? this.selectMigrator.bind(this) : null
-                }
-                select={
-                  utils.myIndex() === i ? this.selectBoard.bind(this) : null
-                }
-                selected={
-                  utils.myIndex() === i ? this.state.selectedBoard : null
-                }
-                trashSelected={this.state.selectedPlayer === "trash"}
-              />
-            ))}
-          </div>
+          <div style={{ width: "50em", height }}>{this.renderPlayers()}</div>
         </div>
         <div className={styles.resizeable}>
-          <div style={{ width: "50em", height }}>
-            <Player
-              selected={this.state.selectedPlayer}
-              select={this.selectPlayer.bind(this)}
-              selectHand={this.selectHand.bind(this)}
-            />
-            <div className={styles.flex}>
-              <Goals />
-              <div>
-                <h5 className={styles.bubble}>
-                  Round: {store.gameW.game.roundNumber} Turn:{" "}
-                  {store.gameW.game.turnNumber}
-                </h5>
-                <br />
-                <Feeder />
-              </div>
-            </div>
-            <Cards />
-          </div>
+          <div style={{ width: "50em", height }}>{this.renderSelf()}</div>
         </div>
       </div>
+    );
+  }
+
+  renderPlayers() {
+    return store.gameW.game.players.map((_, i: number) => (
+      <Board
+        key={i}
+        index={i}
+        migrate={utils.myIndex() === i ? this.selectMigrator.bind(this) : null}
+        select={utils.myIndex() === i ? this.selectBoard.bind(this) : null}
+        selected={utils.myIndex() === i ? this.state.selectedBoard : null}
+        trashSelected={this.state.selectedPlayer === "trash"}
+      />
+    ));
+  }
+
+  renderSelf() {
+    return (
+      <>
+        <Player
+          selected={this.state.selectedPlayer}
+          select={this.selectPlayer.bind(this)}
+          selectHand={this.selectHand.bind(this)}
+        />
+        <div className={styles.flex}>
+          <Goals />
+          <div>
+            <h5 className={styles.bubble}>
+              Round: {store.gameW.game.roundNumber} Turn:{" "}
+              {store.gameW.game.turnNumber}
+            </h5>
+            <br />
+            <Feeder />
+          </div>
+        </div>
+        <Cards />
+      </>
     );
   }
 
