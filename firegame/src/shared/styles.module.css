@@ -10,6 +10,12 @@
   display: flex;
 }
 
+.inline_flex {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
 .dont_grow {
   width: 0;
   min-width: 100%;
@@ -39,6 +45,7 @@
 .resizeable {
   display: table;
   height: 100%;
+  border: 2px solid black;
 }
 
 .resizeable > * {

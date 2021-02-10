@@ -1,4 +1,4 @@
-import { LobbyType } from "../../../../shared/store";
+import { arr, LobbyType } from "../../../../shared/store";
 import utils, { store } from "./utils";
 
 const NUM_TILES_OF_EACH_TYPE_IN_BAG = 20;
@@ -17,7 +17,8 @@ export type GameType = {
   players: PlayerType[];
   numFactories: number;
   bag: Tile[];
-  factories?: Tile[][];
+  factories: arr<arr<Tile>>;
+  table: arr<Tile>;
 };
 
 export type Params = {
@@ -50,6 +51,7 @@ function setPlayers(game: GameType): GameType {
 }
 
 function setProps(game: GameType): GameType {
+  game.table = [];
   game.numFactories = 5 + 2 * (game.players.length - 2);
   game.bag = utils
     .enumArray(Tile)

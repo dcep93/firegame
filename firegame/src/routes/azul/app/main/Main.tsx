@@ -1,5 +1,7 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
+import { store } from "../utils/utils";
+import Factory from "./Factory";
 
 class Main extends React.Component {
   render() {
@@ -21,7 +23,19 @@ class Main extends React.Component {
   }
 
   renderRight() {
-    return <>b</>;
+    return (
+      <div className={[styles.bubble, styles.inline_flex].join(" ")}>
+        <div>
+          {(store.gameW.game.factories || []).map((tiles, index) => (
+            <Factory key={index} index={index} tiles={tiles || []} />
+          ))}
+        </div>
+        <div className={styles.bubble}>
+          <div>Table</div>
+          {store.gameW.game.table}
+        </div>
+      </div>
+    );
   }
 }
 

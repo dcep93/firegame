@@ -21,6 +21,8 @@ export type GameWrapperType<T> = {
   game: T;
 };
 
+export type arr<T> = T[] | undefined;
+
 export type LobbyType = { [userId: string]: string };
 
 export type InfoType = {
