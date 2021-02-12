@@ -58,10 +58,28 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
   }
 
   canSkip(): boolean {
-    return true;
+    return utils.isMyTurn() && !store.gameW.game.skippedPlacing;
   }
 
-  skip() {}
+  skip() {
+    if (!utils.isMyTurn()) return;
+    const me = utils.getMe();
+    if (me.isPlacingNeutralAtEndOfTurn) {
+      me.isPlacingNeutralAtEndOfTurn = false;
+      store.gameW.game.skippedPlacing = false;
+      utils.incrementPlayerTurn();
+      store.update("did not place a neutral tile");
+    } else if (!store.gameW.game.isSliding) {
+      store.gameW.game.isSliding = true;
+      store.update("skipped playing a tile");
+    } else if (store.gameW.game.skippedPlacing) {
+      alert("cannot skip placing and sliding");
+    } else {
+      store.gameW.game.skippedPlacing = false;
+      if (!me.canPlaceNeutral) utils.incrementPlayerTurn();
+      store.update("skipped sliding");
+    }
+  }
 
   key(row: number, column: number): string {
     return `${(row + 10).toString(36).toUpperCase()}${column + 1}`;
@@ -88,7 +106,12 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
               directionStrings[this.key(direction[0], direction[1])];
             this.setState({});
             store.gameW.game.isSliding = false;
-            if (!utils.getMe().canPlaceNeutral) utils.incrementPlayerTurn();
+            if (utils.getMe().canPlaceNeutral) {
+              utils.getMe().isPlacingNeutralAtEndOfTurn = true;
+            } else {
+              store.gameW.game.skippedPlacing = false;
+              utils.incrementPlayerTurn();
+            }
             store.update(
               `slid ${num} ${directionString} ${this.key(column, row)}`
             );
