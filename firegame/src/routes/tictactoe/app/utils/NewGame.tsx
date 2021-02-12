@@ -15,6 +15,7 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
   board: Tile[][];
+  isSliding: boolean;
 };
 
 export type Params = {
@@ -32,6 +33,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
   const game: GameType = {};
   game.params = params;
   game.board = utils.repeat(utils.repeat(Tile.white, SIZE), SIZE);
+  game.isSliding = false;
   return Promise.resolve(game).then(setPlayers);
 }
 
