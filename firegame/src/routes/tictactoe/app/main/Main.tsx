@@ -107,9 +107,9 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
   }
 
   unkey(key: string): [number, number] {
-    const row = key[0].toLowerCase().charCodeAt(0) - 97;
-    const column = parseInt(key[1]);
-    return [row, column - 1];
+    const column = key[0].toLowerCase().charCodeAt(0) - 97;
+    const row = parseInt(key[1]);
+    return [row - 1, column];
   }
 
   click(row: number, column: number) {
@@ -170,8 +170,8 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
       const slid = this.unkey(closest);
       board[row][column] = board[slid[0]][slid[1]];
       board[slid[0]][slid[1]] = Tile.white;
-      row += direction[0];
-      column += direction[1];
+      row -= direction[0];
+      column -= direction[1];
     }
     return num;
   }
