@@ -17,6 +17,7 @@ export type GameType = {
   board: Tile[][];
   isSliding: boolean;
   skippedPlacing: boolean;
+  isPlacingNeutralAtEndOfTurn: boolean;
 };
 
 export type Params = {
@@ -27,7 +28,6 @@ export type PlayerType = {
   userId: string;
   userName: string;
   canPlaceNeutral: boolean;
-  isPlacingNeutralAtEndOfTurn: boolean;
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -37,6 +37,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
   game.board = utils.repeat(utils.repeat(Tile.white, SIZE), SIZE);
   game.isSliding = false;
   game.skippedPlacing = false;
+  game.isPlacingNeutralAtEndOfTurn = false;
   return Promise.resolve(game).then(setPlayers);
 }
 
@@ -47,7 +48,6 @@ function setPlayers(game: GameType): GameType {
       userId,
       userName,
       canPlaceNeutral: index === 1,
-      isPlacingNeutralAtEndOfTurn: false,
     }))
     .slice(0, 2);
   if (game.players.length !== 2) {

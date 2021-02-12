@@ -11,6 +11,7 @@ const directionStrings: { [key: string]: string } = {
 };
 
 class Main extends React.Component<{}, { selected: Set<string> }> {
+  checkboxRef: React.RefObject<HTMLInputElement> = React.createRef();
   constructor(props: {}) {
     super(props);
     this.state = { selected: new Set() };
@@ -33,7 +34,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
                     className={styles.flex}
                     style={{
                       backgroundColor: this.state.selected.has(this.key(i, j))
-                        ? "grey"
+                        ? "lightgrey"
                         : "white",
                     }}
                   >
@@ -49,9 +50,16 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
           </div>
         </div>
         <div className={styles.bubble}>
-          <button disabled={!this.canSkip()} onClick={this.skip.bind(this)}>
-            Skip
-          </button>
+          <div>
+            <label>
+              Place Neutral: <input type={"checkbox"} ref={this.checkboxRef} />
+            </label>
+          </div>
+          <div>
+            <button disabled={!this.canSkip()} onClick={this.skip.bind(this)}>
+              Skip
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -62,20 +70,16 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
   }
 
   skip() {
-    if (!utils.isMyTurn()) return;
+    if (!this.canSkip()) return;
     const me = utils.getMe();
-    if (me.isPlacingNeutralAtEndOfTurn) {
-      me.isPlacingNeutralAtEndOfTurn = false;
-      store.gameW.game.skippedPlacing = false;
+    if (store.gameW.game.isPlacingNeutralAtEndOfTurn) {
       utils.incrementPlayerTurn();
-      store.update("did not place a neutral tile");
+      store.update("skipped placing a neutral tile");
     } else if (!store.gameW.game.isSliding) {
       store.gameW.game.isSliding = true;
+      store.gameW.game.skippedPlacing = true;
       store.update("skipped playing a tile");
-    } else if (store.gameW.game.skippedPlacing) {
-      alert("cannot skip placing and sliding");
     } else {
-      store.gameW.game.skippedPlacing = false;
       if (!me.canPlaceNeutral) utils.incrementPlayerTurn();
       store.update("skipped sliding");
     }
@@ -94,7 +98,16 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
   click(row: number, column: number) {
     if (!utils.isMyTurn()) return;
     const board = store.gameW.game.board;
-    if (store.gameW.game.isSliding) {
+    if (this.checkboxRef.current!.checked) {
+      const me = utils.getMe();
+      if (!me.canPlaceNeutral) return;
+      if (board[row][column] !== Tile.white) return;
+      board[row][column] = Tile.grey;
+      me.canPlaceNeutral = false;
+      if (store.gameW.game.isPlacingNeutralAtEndOfTurn)
+        utils.incrementPlayerTurn();
+      store.update(`played neutral at ${this.key(row, column)}`);
+    } else if (store.gameW.game.isSliding) {
       if (this.state.selected.has(this.key(row, column))) {
         this.state.selected.delete(this.key(row, column));
       } else {
@@ -107,9 +120,8 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
             this.setState({});
             store.gameW.game.isSliding = false;
             if (utils.getMe().canPlaceNeutral) {
-              utils.getMe().isPlacingNeutralAtEndOfTurn = true;
+              store.gameW.game.isPlacingNeutralAtEndOfTurn = true;
             } else {
-              store.gameW.game.skippedPlacing = false;
               utils.incrementPlayerTurn();
             }
             store.update(
