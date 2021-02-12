@@ -3,7 +3,7 @@ import NewGame, { Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 class Sidebar extends SharedSidebar<Params> {
-  name = "Template";
+  name = "TicTacToe";
   NewGame = NewGame;
   isMyTurn = utils.isMyTurn.bind(utils);
 
