@@ -71,7 +71,8 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
           const direction = this.getSlideDirection(row, column);
           if (direction !== null) {
             const num = this.slide(row, column, direction);
-            const directionString = directionStrings[this.key(...direction)];
+            const directionString =
+              directionStrings[this.key(direction[0], direction[1])];
             this.setState({});
             store.gameW.game.isSliding = false;
             utils.incrementPlayerTurn();
@@ -96,7 +97,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     }
   }
 
-  slide(_row: number, _column: number, direction: [number, number]): number {
+  slide(_row: number, _column: number, direction: number[]): number {
     var row = _row;
     var column = _column;
     var num = 0;
@@ -116,22 +117,30 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     return num;
   }
 
-  getSlideDirection(row: number, column: number): [number, number] | null {
-    return null;
-  }
-
-  isContiguous(row: number, column: number): boolean {
+  getSlide(row: number, column: number): number[] | null {
     const sorted = Array.from(this.state.selected.keys()).sort();
-    if (sorted.length === 0) return true;
     if (this.key(row, column) > sorted[0]) sorted.reverse();
     const mapped = sorted.map(this.unkey);
     const closest = mapped[0];
     const farthest = mapped[mapped.length - 1];
     const added = [row, column];
     const key = closest[0] === row ? 0 : 1;
-    if (closest[key] !== farthest[key]) return false;
-    if (farthest[key] !== added[key]) return false;
-    return Math.abs(closest[1 - key] - added[1 - key]) === 1;
+    if (closest[key] !== farthest[key]) return null;
+    if (farthest[key] !== added[key]) return null;
+    return closest.map((val, index) => val - added[index]);
+  }
+
+  getSlideDirection(row: number, column: number): number[] | null {
+    const slide = this.getSlide(row, column);
+    if (slide === null) return null;
+    return slide.map((i) => (i === 0 ? i : i > 0 ? 1 : -1));
+  }
+
+  isContiguous(row: number, column: number): boolean {
+    if (this.state.selected.size === 0) return true;
+    const slide = this.getSlide(row, column);
+    if (slide === null) return false;
+    return directionStrings[this.key(slide[0], slide[1])] !== undefined;
   }
 }
 
