@@ -135,6 +135,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
           const num = this.slide(row, column, direction);
           const directionString = directionStrings[`${direction.join(",")}`];
           if (utils.getMe().canPlaceNeutral) {
+            store.gameW.game.skippedPlacing = false;
             store.gameW.game.isPlacingNeutralAtEndOfTurn = true;
           } else {
             utils.incrementPlayerTurn();
