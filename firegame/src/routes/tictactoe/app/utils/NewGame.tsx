@@ -4,10 +4,10 @@ import utils, { store } from "./utils";
 const SIZE = 6;
 
 export enum Tile {
-  p1,
-  p2,
-  neutral,
-  empty,
+  red,
+  blue,
+  grey,
+  white,
 }
 
 export type GameType = {
@@ -31,7 +31,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
   // @ts-ignore game being constructed
   const game: GameType = {};
   game.params = params;
-  game.board = utils.repeat(utils.repeat(Tile.empty, SIZE), SIZE);
+  game.board = utils.repeat(utils.repeat(Tile.white, SIZE), SIZE);
   return Promise.resolve(game).then(setPlayers);
 }
 
