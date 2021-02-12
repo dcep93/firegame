@@ -133,7 +133,32 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
   getSlideDirection(row: number, column: number): number[] | null {
     const slide = this.getSlide(row, column);
     if (slide === null) return null;
-    return slide.map((i) => (i === 0 ? i : i > 0 ? 1 : -1));
+    const board = store.gameW.game.board;
+    if (slide[0] === 0) {
+      if (slide[1] > 0) {
+        for (let i = 1; i < slide[1]; i++) {
+          if (board[row][column - i] !== Tile.white) return null;
+        }
+        return [0, 1];
+      } else {
+        for (let i = -1; i > slide[1]; i--) {
+          if (board[row][column - i] !== Tile.white) return null;
+        }
+        return [0, -1];
+      }
+    } else {
+      if (slide[0] > 0) {
+        for (let i = 1; i < slide[1]; i++) {
+          if (board[row - i][column] !== Tile.white) return null;
+        }
+        return [1, 0];
+      } else {
+        for (let i = -1; i > slide[1]; i--) {
+          if (board[row - i][column] !== Tile.white) return null;
+        }
+        return [-1, 0];
+      }
+    }
   }
 
   isContiguous(row: number, column: number): boolean {
