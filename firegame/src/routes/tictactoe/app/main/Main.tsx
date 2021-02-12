@@ -135,6 +135,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
       if (board[row][column] !== Tile.white) return;
       board[row][column] = utils.myIndex();
       store.gameW.game.isSliding = true;
+      utils.checkIfFourOrLessEmpty();
       store.update(`played at ${this.key(column, row)}`);
     }
   }
