@@ -14,6 +14,7 @@ class Utils extends Shared<GameType, PlayerType> {
       store.gameW.game.isSliding = false;
       store.gameW.game.skippedPlacing = false;
     }
+    if (this.gameOver()) store.gameW.info.alert = "game over";
     super.incrementPlayerTurn();
   }
 
@@ -27,6 +28,29 @@ class Utils extends Shared<GameType, PlayerType> {
     } else {
       return false;
     }
+  }
+
+  gameOver(): boolean {
+    const board = store.gameW.game.board;
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[0].length; j++) {
+        if (this.winningOn(i, j, 0, 1)) return true;
+        if (this.winningOn(i, j, 1, 0)) return true;
+        if (this.winningOn(i, j, 1, 1)) return true;
+        if (this.winningOn(i, j, -1, -1)) return true;
+      }
+    }
+    return false;
+  }
+
+  winningOn(row: number, column: number, x: number, y: number): boolean {
+    const board = store.gameW.game.board;
+    const myIndex = this.myIndex();
+    for (let i = 0; i < 5; i++) {
+      if (this.idx(board, [row + x * i, column + y * i]) !== myIndex)
+        return false;
+    }
+    return true;
   }
 }
 
