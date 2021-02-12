@@ -31,7 +31,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
               style={{ justifyContent: "space-around" }}
             >
               {utils.count(6).map((i) => (
-                <div key={i}>{this.rowToLetter(i)}</div>
+                <div key={i}>{this.indexToLetter(i)}</div>
               ))}
             </div>
             {board.map((row, i) => (
@@ -64,12 +64,9 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
         </div>
         <div className={styles.bubble}>
           <div>
-            {utils.isMyTurn() && utils.getMe().canPlaceNeutral && (
-              <label>
-                Place Neutral:{" "}
-                <input type={"checkbox"} ref={this.checkboxRef} />
-              </label>
-            )}
+            <label hidden={!utils.isMyTurn() || !utils.getMe().canPlaceNeutral}>
+              Place Neutral: <input type={"checkbox"} ref={this.checkboxRef} />
+            </label>
           </div>
           <div>
             <button disabled={!this.canSkip()} onClick={this.skip.bind(this)}>
@@ -101,12 +98,12 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     }
   }
 
-  rowToLetter(row: number): string {
+  indexToLetter(row: number): string {
     return (row + 10).toString(36).toUpperCase();
   }
 
   key(row: number, column: number): string {
-    return `${this.rowToLetter(row)}${column + 1}`;
+    return `${this.indexToLetter(column)}${row + 1}`;
   }
 
   unkey(key: string): [number, number] {
@@ -143,7 +140,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
             utils.incrementPlayerTurn();
           }
           store.update(
-            `slid ${num} ${directionString} ${this.key(column, row)}`
+            `slid ${num} ${directionString} ${this.key(row, column)}`
           );
         } else {
           if (!this.isContiguous(row, column)) this.state.selected.clear();
@@ -156,7 +153,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
       board[row][column] = utils.myIndex();
       store.gameW.game.isSliding = true;
       utils.checkIfFourOrLessEmpty();
-      store.update(`played at ${this.key(column, row)}`);
+      store.update(`played at ${this.key(row, column)}`);
     }
   }
 
