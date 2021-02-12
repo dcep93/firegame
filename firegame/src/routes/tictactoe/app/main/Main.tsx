@@ -121,7 +121,17 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
   }
 
   isContiguous(row: number, column: number): boolean {
-    return true;
+    const sorted = Array.from(this.state.selected.keys()).sort();
+    if (sorted.length === 0) return true;
+    if (this.key(row, column) > sorted[0]) sorted.reverse();
+    const mapped = sorted.map(this.unkey);
+    const closest = mapped[0];
+    const farthest = mapped[mapped.length - 1];
+    const added = [row, column];
+    const key = closest[0] === row ? 0 : 1;
+    if (closest[key] !== farthest[key]) return false;
+    if (farthest[key] !== added[key]) return false;
+    return Math.abs(closest[1 - key] - added[1 - key]) === 1;
   }
 }
 
