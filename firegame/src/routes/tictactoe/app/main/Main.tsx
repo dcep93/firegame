@@ -6,8 +6,8 @@ import utils, { store } from "../utils/utils";
 const directionStrings: { [key: string]: string } = {
   "0,1": "→",
   "0,-1": "←",
-  "1,0": "↑",
-  "-1,0": "↓",
+  "1,0": "↓",
+  "-1,0": "↑",
 };
 
 class Main extends React.Component<{}, { selected: Set<string> }> {
@@ -106,6 +106,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
       me.canPlaceNeutral = false;
       if (store.gameW.game.isPlacingNeutralAtEndOfTurn)
         utils.incrementPlayerTurn();
+      this.checkboxRef.current!.checked = false;
       store.update(`played neutral at ${this.key(row, column)}`);
     } else if (store.gameW.game.isSliding) {
       if (this.state.selected.has(this.key(row, column))) {
@@ -113,26 +114,19 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
       } else {
         if (board[row][column] === Tile.white) {
           const direction = this.getSlideDirection(row, column);
-          if (direction !== null) {
-            const num = this.slide(row, column, direction);
-            const directionString =
-              directionStrings[this.key(direction[0], direction[1])];
-            this.setState({});
-            store.gameW.game.isSliding = false;
-            if (utils.getMe().canPlaceNeutral) {
-              store.gameW.game.isPlacingNeutralAtEndOfTurn = true;
-            } else {
-              utils.incrementPlayerTurn();
-            }
-            store.update(
-              `slid ${num} ${directionString} ${this.key(column, row)}`
-            );
+          if (direction === null) return;
+          const num = this.slide(row, column, direction);
+          const directionString = directionStrings[`${direction.join(",")}`];
+          if (utils.getMe().canPlaceNeutral) {
+            store.gameW.game.isPlacingNeutralAtEndOfTurn = true;
+          } else {
+            utils.incrementPlayerTurn();
           }
-          return;
+          store.update(
+            `slid ${num} ${directionString} ${this.key(column, row)}`
+          );
         } else {
-          if (!this.isContiguous(row, column)) {
-            this.state.selected.clear();
-          }
+          if (!this.isContiguous(row, column)) this.state.selected.clear();
           this.state.selected.add(this.key(row, column));
         }
       }
@@ -148,10 +142,9 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
   slide(_row: number, _column: number, direction: [number, number]): number {
     var row = _row;
     var column = _column;
-    var num = 0;
+    const num = this.state.selected.size;
     const board = store.gameW.game.board;
     while (this.state.selected.size > 0) {
-      num++;
       const sorted = Array.from(this.state.selected.keys()).sort();
       if (this.key(row, column) > sorted[0]) sorted.reverse();
       const closest = sorted[0];
@@ -215,7 +208,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     if (this.state.selected.size === 0) return true;
     const slide = this.getSlide(row, column);
     if (slide === null) return false;
-    return directionStrings[this.key(slide[0], slide[1])] !== undefined;
+    return directionStrings[`${slide.join(",")}`] !== undefined;
   }
 }
 
