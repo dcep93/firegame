@@ -3,6 +3,13 @@ import styles from "../../../../shared/styles.module.css";
 import { Tile } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
+const directionStrings: { [key: string]: string } = {
+  "0,1": "→",
+  "0,-1": "←",
+  "1,0": "↑",
+  "-1,0": "↓",
+};
+
 class Main extends React.Component<{}, { selected: Set<string> }> {
   constructor(props: {}) {
     super(props);
@@ -49,6 +56,10 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     return `${row},${column}`;
   }
 
+  unkey(key: string): number[] {
+    return key.split(",").map((i) => parseInt(i));
+  }
+
   click(row: number, column: number) {
     if (!utils.isMyTurn()) return;
     const board = store.gameW.game.board;
@@ -59,12 +70,14 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
         if (board[row][column] === Tile.white) {
           const direction = this.getSlideDirection(row, column);
           if (direction !== null) {
-            const num = this.state.selected.size;
-            this.state.selected.clear();
+            const num = this.slide(row, column, direction);
+            const directionString = directionStrings[this.key(...direction)];
             this.setState({});
             store.gameW.game.isSliding = false;
             utils.incrementPlayerTurn();
-            store.update(`slid ${num} ${direction} ${this.key(column, row)}`);
+            store.update(
+              `slid ${num} ${directionString} ${this.key(column, row)}`
+            );
           }
           return;
         } else {
@@ -83,7 +96,27 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     }
   }
 
-  getSlideDirection(row: number, column: number): string | null {
+  slide(_row: number, _column: number, direction: [number, number]): number {
+    var row = _row;
+    var column = _column;
+    var num = 0;
+    const board = store.gameW.game.board;
+    while (this.state.selected.size > 0) {
+      num++;
+      const sorted = Array.from(this.state.selected.keys()).sort();
+      if (this.key(row, column) > sorted[0]) sorted.reverse();
+      const closest = sorted[0];
+      this.state.selected.delete(closest);
+      const slid = this.unkey(closest);
+      board[row][column] = board[slid[0]][slid[1]];
+      board[slid[0]][slid[1]] = Tile.white;
+      row += direction[0];
+      column += direction[1];
+    }
+    return num;
+  }
+
+  getSlideDirection(row: number, column: number): [number, number] | null {
     return null;
   }
 
