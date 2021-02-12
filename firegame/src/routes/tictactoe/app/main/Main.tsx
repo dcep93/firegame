@@ -26,8 +26,21 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
         </h3>
         <div>
           <div className={[styles.bubble, styles.inline].join(" ")}>
+            <div
+              className={styles.flex}
+              style={{ justifyContent: "space-around" }}
+            >
+              {utils.count(6).map((i) => (
+                <div key={i}>{this.rowToLetter(i)}</div>
+              ))}
+            </div>
             {board.map((row, i) => (
-              <div key={i} className={styles.flex}>
+              <div
+                key={i}
+                className={styles.flex}
+                style={{ alignItems: "center" }}
+              >
+                <span>{i + 1}</span>
                 {row.map((tile, j) => (
                   <div
                     key={j}
@@ -51,9 +64,12 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
         </div>
         <div className={styles.bubble}>
           <div>
-            <label>
-              Place Neutral: <input type={"checkbox"} ref={this.checkboxRef} />
-            </label>
+            {utils.isMyTurn() && utils.getMe().canPlaceNeutral && (
+              <label>
+                Place Neutral:{" "}
+                <input type={"checkbox"} ref={this.checkboxRef} />
+              </label>
+            )}
           </div>
           <div>
             <button disabled={!this.canSkip()} onClick={this.skip.bind(this)}>
@@ -85,8 +101,12 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     }
   }
 
+  rowToLetter(row: number): string {
+    return (row + 10).toString(36).toUpperCase();
+  }
+
   key(row: number, column: number): string {
-    return `${(row + 10).toString(36).toUpperCase()}${column + 1}`;
+    return `${this.rowToLetter(row)}${column + 1}`;
   }
 
   unkey(key: string): [number, number] {
