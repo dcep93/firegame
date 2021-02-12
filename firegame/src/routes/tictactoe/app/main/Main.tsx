@@ -48,16 +48,29 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
             ))}
           </div>
         </div>
+        <div className={styles.bubble}>
+          <button disabled={!this.canSkip()} onClick={this.skip.bind(this)}>
+            Skip
+          </button>
+        </div>
       </div>
     );
   }
 
-  key(row: number, column: number): string {
-    return `${row},${column}`;
+  canSkip(): boolean {
+    return true;
   }
 
-  unkey(key: string): number[] {
-    return key.split(",").map((i) => parseInt(i));
+  skip() {}
+
+  key(row: number, column: number): string {
+    return `${(row + 10).toString(36).toUpperCase()}${column + 1}`;
+  }
+
+  unkey(key: string): [number, number] {
+    const row = key[0].toLowerCase().charCodeAt(0) - 97;
+    const column = parseInt(key[1]);
+    return [row, column - 1];
   }
 
   click(row: number, column: number) {
@@ -75,7 +88,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
               directionStrings[this.key(direction[0], direction[1])];
             this.setState({});
             store.gameW.game.isSliding = false;
-            utils.incrementPlayerTurn();
+            if (!utils.getMe().canPlaceNeutral) utils.incrementPlayerTurn();
             store.update(
               `slid ${num} ${directionString} ${this.key(column, row)}`
             );
@@ -97,7 +110,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     }
   }
 
-  slide(_row: number, _column: number, direction: number[]): number {
+  slide(_row: number, _column: number, direction: [number, number]): number {
     var row = _row;
     var column = _column;
     var num = 0;
@@ -117,8 +130,9 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     return num;
   }
 
-  getSlide(row: number, column: number): number[] | null {
+  getSlide(row: number, column: number): [number, number] | null {
     const sorted = Array.from(this.state.selected.keys()).sort();
+    if (sorted.length === 0) return null;
     if (this.key(row, column) > sorted[0]) sorted.reverse();
     const mapped = sorted.map(this.unkey);
     const closest = mapped[0];
@@ -127,10 +141,11 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     const key = closest[0] === row ? 0 : 1;
     if (closest[key] !== farthest[key]) return null;
     if (farthest[key] !== added[key]) return null;
-    return closest.map((val, index) => val - added[index]);
+    const rval = closest.map((val, index) => added[index] - val);
+    return [rval[0], rval[1]];
   }
 
-  getSlideDirection(row: number, column: number): number[] | null {
+  getSlideDirection(row: number, column: number): [number, number] | null {
     const slide = this.getSlide(row, column);
     if (slide === null) return null;
     const board = store.gameW.game.board;
