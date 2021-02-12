@@ -13,6 +13,9 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
     const board = store.gameW.game.board;
     return (
       <div>
+        <h3 className={styles.bubble}>
+          {store.gameW.game.players.map((p) => p.userName).join(" vs ")}
+        </h3>
         <div>
           <div className={[styles.bubble, styles.inline].join(" ")}>
             {board.map((row, i) => (
