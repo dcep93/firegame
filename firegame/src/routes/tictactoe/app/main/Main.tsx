@@ -93,7 +93,11 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
       store.gameW.game.skippedPlacing = true;
       store.update("skipped playing a tile");
     } else {
-      if (!me.canPlaceNeutral) utils.incrementPlayerTurn();
+      if (me.canPlaceNeutral) {
+        store.gameW.game.isPlacingNeutralAtEndOfTurn = true;
+      } else {
+        utils.incrementPlayerTurn();
+      }
       store.update("skipped sliding");
     }
   }
