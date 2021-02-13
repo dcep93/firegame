@@ -38,6 +38,8 @@ class Utils extends Shared<GameType, PlayerType> {
         if (this.winningOn(i, j, 1, 0)) return true;
         if (this.winningOn(i, j, 1, 1)) return true;
         if (this.winningOn(i, j, -1, -1)) return true;
+        if (this.winningOn(i, j, 1, -1)) return true;
+        if (this.winningOn(i, j, -1, 1)) return true;
       }
     }
     return false;
