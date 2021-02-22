@@ -50,15 +50,17 @@ class Player extends React.Component<{
   }
 
   renderLine(_: Tile, index: number) {
+    const isDestination = index === this.props.destination;
     return (
       <div
         key={index}
         className={styles.right}
-        onClick={() => this.meOnMyTurn() && this.props.setDestination(index)}
+        onClick={() =>
+          this.meOnMyTurn() &&
+          this.props.setDestination(isDestination ? -1 : index)
+        }
         style={
-          this.meOnMyTurn() && index === this.props.destination
-            ? { backgroundColor: "green" }
-            : {}
+          this.meOnMyTurn() && isDestination ? { backgroundColor: "green" } : {}
         }
       >
         {utils.count(index + 1).map((i) => (
