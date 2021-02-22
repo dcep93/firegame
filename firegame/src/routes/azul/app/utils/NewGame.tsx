@@ -33,7 +33,7 @@ export type PlayerType = {
   score: number;
   lines: arr<arr<Tile>>;
   floor: arr<Tile>;
-  wall: { [index: number]: arr<Tile> };
+  wall: { [index: number]: { [index: number]: Tile } };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

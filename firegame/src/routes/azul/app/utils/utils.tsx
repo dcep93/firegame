@@ -33,7 +33,8 @@ class Utils extends Shared<GameType, PlayerType> {
     if (this.default((me.lines[destination] || [])[0], tile) !== tile) {
       destination = -1;
     }
-    if (((me.wall || {})[destination] || []).indexOf(tile) !== -1) {
+    const wallRow = (me.wall || {})[destination] || {};
+    if (Object.values(wallRow).indexOf(tile) !== -1) {
       alert("already have tile in wall");
       return;
     }
@@ -95,7 +96,7 @@ class Utils extends Shared<GameType, PlayerType> {
         p.wall![i]![wallIndex] = tile;
         p.score += this.countWall(p, i, wallIndex);
         const matchingTiles = Object.values(p.wall)
-          .flatMap((i) => i)
+          .flatMap((i) => Object.values(i))
           .filter((i) => i === tile);
         if (matchingTiles.length === numTiles) p.score += 10;
         store.gameW.game.lid!.push(...row.splice(0));
