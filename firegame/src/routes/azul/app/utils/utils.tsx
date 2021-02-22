@@ -11,7 +11,8 @@ class Utils extends Shared<GameType, PlayerType> {
   FLOOR_SCORING = [-1, -1, -2, -2, -2, -3, -3];
 
   newRound(game: GameType) {
-    if (game.bag !== undefined) this.shuffle(game.bag);
+    if (game.bag === undefined) game.bag = [];
+    this.shuffle(game.bag);
     game.factories = utils.repeat(null, game.numFactories).map((_) => {
       if (game.bag.length < TILES_PER_FACTORY) {
         game.bag.push(...(game.lid || []));
