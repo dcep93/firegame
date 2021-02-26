@@ -9,7 +9,7 @@ set -e
 set -x
 set -o pipefail
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # install jq
 which jq || apt-get install -y jq
@@ -20,10 +20,10 @@ APP=$(jq -r .name "$DIR/package.json")
 (cd "$DIR" && git submodule update --init)
 
 # install nodejs
-which node || ( curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs )
+which node || (curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs)
 
 if [ ! -d $DIR/node_modules ]; then
-	(cd "$DIR" && npm install)
+  (cd "$DIR" && npm install)
 fi
 
 which yarn || apt install -y yarn
@@ -36,7 +36,7 @@ which yarn || apt install -y yarn
 SERVICE_SCRIPT=$DIR/service_script.sh
 
 # server service
-cat <<END > /etc/systemd/system/$APP.service
+cat << END > /etc/systemd/system/$APP.service
 [Unit]
 Description=starts $APP server
 After=local-fs.target
@@ -50,6 +50,9 @@ Type=simple
 WantedBy=multi-user.target
 
 END
+
+sudo apt install screen
+
 systemctl daemon-reload
 systemctl enable $APP
 systemctl start $APP
