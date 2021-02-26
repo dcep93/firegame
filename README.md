@@ -1,4 +1,4 @@
-# Socket Games
+# Firegame
 
 ### install git
 
