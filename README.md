@@ -23,12 +23,6 @@ nameservers `carlos.ns.cloudflare.com` and `naya.ns.cloudflare.com`
 
 `https://dash.cloudflare.com/a1bc7ea0fb518f09ae19091140583131/somuchcinnamon.com/dns`
 
-### set up subdomains
-
-A type record
-name is subdomain
-content is static ip
-
 ### always use https
 
 `https://dash.cloudflare.com/a1bc7ea0fb518f09ae19091140583131/somuchcinnamon.com/ssl-tls/edge-certificates`
