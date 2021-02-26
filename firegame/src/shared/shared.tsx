@@ -99,11 +99,15 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     return dict;
   }
 
-  static m(index: number) {
+  static M(index: number) {
     const game: TurnGame<PlayerType> = store.gameW.game;
     const player = game.players[index];
     player.userId = store.me.userId;
     store.update(`is masquerading as ${player.userName}`);
+  }
+
+  m(index: number) {
+    Shared.M(index);
   }
 
   repeat<X>(value: X, count: number): X[] {
