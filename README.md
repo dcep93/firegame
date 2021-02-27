@@ -10,6 +10,11 @@
 
 [`sudo bash firegame/firegame/server/setup.sh`](firegame/server/setup.sh)
 
+###
+
+entire command:
+sudo apt install -y git-all; git clone https://github.com/dcep93/firegame; sudo bash firegame/firegame/server/setup.sh
+
 ### update godaddy nameservers
 
 url like this https://dns.godaddy.com/somuchcinnamon.com/nameservers
