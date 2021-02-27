@@ -27,7 +27,7 @@ if [ ! -d $DIR/node_modules ]; then
 fi
 
 which yarn || apt install -y yarn
-(cd "$DIR/../" && npm install && npm run build)
+(cd "$DIR/../" && npm install)
 
 # if [ ! -d $DIR/public/words ]; then
 # 	tar -zxvf $DIR/public/words.tar.gz -C $DIR/public
