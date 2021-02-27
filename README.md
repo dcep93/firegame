@@ -17,7 +17,7 @@ nameservers `carlos.ns.cloudflare.com` and `naya.ns.cloudflare.com`
 
 ### setup static external ip
 
-(persistent is 34.72.6.138)
+(persistent is 34.121.39.159)
 `https://console.cloud.google.com/networking/addresses/list`
 
 ### use static ip for A type content field
