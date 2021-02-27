@@ -51,7 +51,7 @@ WantedBy=multi-user.target
 
 END
 
-sudo apt install screen
+sudo apt install -y screen
 
 systemctl daemon-reload
 systemctl enable $APP
