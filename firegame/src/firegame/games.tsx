@@ -5,6 +5,7 @@ import loveletter from "../routes/love_letter/app/LoveLetter";
 import splendor from "../routes/splendor/app/Splendor";
 import tictactoe from "../routes/tictactoe/app/TicTacToe";
 import timeline from "../routes/timeline/app/Timeline";
+import war from "../routes/war/app/War";
 import wavelength from "../routes/wavelength/app/Wavelength";
 import wingspan from "../routes/wingspan/app/Wingspan";
 
@@ -16,6 +17,7 @@ export default {
   loveletter,
   splendor,
   tictactoe,
+  war,
   wavelength,
   wingspan,
 };

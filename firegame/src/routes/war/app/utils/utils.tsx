@@ -6,7 +6,7 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
   getDeck(): number[] {
-    return [];
+    return this.shuffle(this.count(52));
   }
 
   dealToPlayers(deck: number[], players: PlayerType[]): void {
@@ -18,6 +18,10 @@ class Utils extends Shared<GameType, PlayerType> {
         nextPlayer = 0;
       }
     }
+  }
+
+  flip(): void {
+    alert("flip");
   }
 }
 
