@@ -16,6 +16,7 @@ export type PlayerType = {
   userName: string;
   deck?: number[];
   discard?: number[];
+  previousCards?: number[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

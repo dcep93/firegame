@@ -10,8 +10,13 @@ class Main extends React.Component {
           <div key={i}>
             <div className={styles.bubble}>
               <h2>{p.userName}</h2>
-              <div>cards in deck: {(p.deck || []).length}</div>
-              <div>cards in discard: {(p.discard || []).length}</div>
+              <div className={styles.flex}>
+                <div>
+                  <div>cards in deck: {(p.deck || []).length}</div>
+                  <div>cards in discard: {(p.discard || []).length}</div>
+                </div>
+                <div>{p.previousCards}</div>
+              </div>
             </div>
           </div>
         ))}
