@@ -5,6 +5,7 @@ export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
+  isWar: boolean;
 };
 
 export type Params = {
@@ -16,13 +17,15 @@ export type PlayerType = {
   userName: string;
   deck?: number[];
   discard?: number[];
-  previousCards?: number[];
+  flippedCard?: number;
+  warCards?: number[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
   // @ts-ignore game being constructed
   const game: GameType = {};
   game.params = params;
+  game.isWar = false;
   return Promise.resolve(game).then(setPlayers);
 }
 
