@@ -75,7 +75,7 @@ function flipWar() {
       // your card is bigger
       utils.takeWarCards();
       store.update(`won with ${utils.cardName(flippedCardId)}`);
-    } else if (opponentCardNumber < myCardNumber) {
+    } else if (opponentCardNumber > myCardNumber) {
       utils.incrementPlayerTurn();
       // your opponent's card is bigger
       utils.giveWarCards();
