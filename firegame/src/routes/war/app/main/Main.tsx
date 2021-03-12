@@ -42,6 +42,7 @@ class Main extends React.Component {
 
 function ensureReady(p: PlayerType) {
   if (!p.discard) p.discard = [];
+  if (!p.deck) p.deck = [];
 }
 
 function flipHelper() {

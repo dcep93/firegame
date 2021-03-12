@@ -92,7 +92,10 @@ class Utils extends Shared<GameType, PlayerType> {
 
   maybeShuffle(p: PlayerType) {
     delete p.flippedCard;
-    if (p.deck!.length === 0) p.deck = this.shuffle(p.discard || []);
+    if (p.deck!.length === 0) {
+      p.deck = this.shuffle(p.discard || []);
+      p.discard = [];
+    }
     if (p.deck!.length === 0) {
       store.gameW.game.currentPlayer = -1;
       store.gameW.info.alert = "game over";
