@@ -80,6 +80,15 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   collectCards(p: PlayerType) {
+    if (store.gameW.game.isWar) {
+      store.gameW.game.isWar = false;
+      p.discard!.push(
+        ...utils.getMe().warCards!,
+        ...utils.getOpponent().warCards!
+      );
+      delete utils.getMe().warCards;
+      delete utils.getOpponent().warCards;
+    }
     const cards = [
       utils.getMe().flippedCard!,
       utils.getOpponent().flippedCard!,
@@ -112,6 +121,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
   canHaveWar(): boolean {
     return (
+      !store.gameW.game.isWar &&
       this.playerCanHaveWar(utils.getMe()) &&
       this.playerCanHaveWar(utils.getOpponent())
     );
@@ -122,47 +132,25 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   cancelWar() {
+    store.gameW.game.isWar = false;
     this.cancelPlayerWar(utils.getMe());
     this.cancelPlayerWar(utils.getOpponent());
   }
 
   cancelPlayerWar(p: PlayerType) {
+    p.discard!.push(...(p.warCards || []));
+    delete p.warCards;
     p.discard!.push(p.flippedCard!);
     delete p.flippedCard;
     this.maybeShuffle(p);
   }
 
-  collectWarCards(p: PlayerType) {
-    store.gameW.game.isWar = false;
-    p.discard!.push(
-      ...utils.getMe().warCards!,
-      ...utils.getOpponent().warCards!
-    );
-    delete utils.getMe().warCards;
-    delete utils.getOpponent().warCards;
-    this.collectCards(p);
-    this.maybeShuffle(utils.getMe());
-    this.maybeShuffle(utils.getOpponent());
-  }
-
-  takeWarCards() {
-    this.collectWarCards(utils.getMe());
-  }
-
-  giveWarCards() {
-    this.collectWarCards(utils.getOpponent());
-  }
-
-  cancelPlayerDoubleWar(p: PlayerType) {
-    p.discard!.push(...p.warCards!);
-    delete p.warCards;
-  }
-
-  cancelDoubleWar() {
-    store.gameW.game.isWar = false;
-    this.cancelPlayerDoubleWar(utils.getMe());
-    this.cancelPlayerDoubleWar(utils.getOpponent());
-    this.cancelWar();
+  setMessage(msg: string) {
+    var full_message = `${this.getMe().userName}: ${msg}`;
+    if (store.gameW.game.isWar || this.getMe().flippedCard === undefined) {
+      full_message = `${store.gameW.game.message} / ${full_message}`;
+    }
+    store.gameW.game.message = full_message;
   }
 }
 

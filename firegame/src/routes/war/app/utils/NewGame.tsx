@@ -6,6 +6,7 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
   isWar: boolean;
+  message: string;
 };
 
 export type Params = {

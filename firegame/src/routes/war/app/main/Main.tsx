@@ -35,6 +35,11 @@ class Main extends React.Component {
             Flip
           </button>
         </div>
+        <div>
+          <div className={styles.bubble}>
+            <p>{store.gameW.game.message}</p>
+          </div>
+        </div>
       </div>
     );
   }
