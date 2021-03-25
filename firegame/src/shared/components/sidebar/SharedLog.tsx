@@ -1,65 +1,62 @@
 import React from "react";
-
 import store, { GameWrapperType } from "../../store";
-
-import LogEntry from "./LogEntry";
-
 import styles from "../../styles.module.css";
+import LogEntry from "./LogEntry";
 
 const history: GameWrapperType<any>[] = [];
 
 abstract class Log<T> extends React.Component<
-	{},
-	{ history: GameWrapperType<T>[] }
+  {},
+  { history: GameWrapperType<T>[] }
 > {
-	constructor(props: {}) {
-		super(props);
-		this.state = { history };
-	}
+  constructor(props: {}) {
+    super(props);
+    this.state = { history };
+  }
 
-	componentDidMount() {
-		this.updateHistory();
-	}
+  componentDidMount() {
+    this.updateHistory();
+  }
 
-	componentDidUpdate() {
-		this.updateHistory();
-	}
+  componentDidUpdate() {
+    this.updateHistory();
+  }
 
-	updateHistory() {
-		const newState = store.gameW;
-		if (
-			!this.state.history[0] ||
-			newState.info.id !== this.state.history[0].info.id
-		) {
-			this.state.history.unshift(JSON.parse(JSON.stringify(newState)));
-			const a = newState.info.alert;
-			delete newState.info.alert;
-			if (a) alert(a);
-			// trigger rerender
-			this.setState({});
-		}
-	}
+  updateHistory() {
+    const newState = store.gameW;
+    if (
+      !this.state.history[0] ||
+      newState.info.id !== this.state.history[0].info.id
+    ) {
+      this.state.history.unshift(JSON.parse(JSON.stringify(newState)));
+      const a = newState.info.alert;
+      delete newState.info.alert;
+      if (a) alert(a);
+      // trigger rerender
+      this.setState({});
+    }
+  }
 
-	render() {
-		return (
-			<div className={styles.bubble}>
-				<h2>Log</h2>
-				<div className={styles.dont_grow}>
-					<div className={styles.log_entry_parent}>
-						<div className={styles.inline}>
-							{this.state.history.map((wrapper, index) => (
-								<LogEntry
-									key={index}
-									wrapper={wrapper}
-									history={this.state.history}
-								/>
-							))}
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	}
+  render() {
+    return (
+      <div className={styles.bubble}>
+        <h2>Log</h2>
+        <div className={styles.dont_grow}>
+          <div className={styles.log_entry_parent}>
+            <div className={styles.inline}>
+              {this.state.history.map((wrapper, index) => (
+                <LogEntry
+                  key={index}
+                  wrapper={wrapper}
+                  history={this.state.history}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Log;

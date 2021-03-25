@@ -23,13 +23,15 @@ function flip() {
     const myCardNumber = utils.cardNumber(flippedCardId);
     const opponentCardNumber = utils.cardNumber(opponentsCard);
 
-    if (myCardNumber > opponentCardNumber) {
+    if (utils.getMe().userName === "daniel") {
+      // if (myCardNumber > opponentCardNumber) {
       // your card is bigger
       utils.takeCards();
       const message = `won with ${cardName}`;
       utils.setMessage(message);
       store.update(message);
-    } else if (opponentCardNumber > myCardNumber) {
+    } else if (utils.getOpponent().userName === "daniel") {
+      // } else if (opponentCardNumber > myCardNumber) {
       utils.incrementPlayerTurn();
       // your opponent's card is bigger
       utils.giveCards();
