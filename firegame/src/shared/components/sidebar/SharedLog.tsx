@@ -32,8 +32,6 @@ abstract class Log<T> extends React.Component<
       const a = newState.info.alert;
       delete newState.info.alert;
       if (a) alert(a);
-      window.location.href =
-        "https://github.com/dcep93/firegame/blob/master/firegame/src/routes/war/app/utils/flip.tsx#L1";
       // trigger rerender
       this.setState({});
     }
