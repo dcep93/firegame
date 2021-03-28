@@ -10,9 +10,11 @@ abstract class SharedSidebar<T> extends React.Component {
   abstract getParams(): T;
   abstract isMyTurn: () => boolean;
 
+  isResizeable = true;
+
   render() {
     return (
-      <div className={styles.resizeable}>
+      <div className={this.isResizeable ? styles.resizeable : ""}>
         <div className={styles.sidebar}>
           <div className={styles.bubble}>
             <h2>{this.name}</h2>
