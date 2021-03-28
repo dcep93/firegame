@@ -9,7 +9,7 @@ class Main extends React.Component<{}, { hidden: boolean }> {
     this.state = { hidden: false };
   }
 
-  componentDidMount() {
+  componentDidUpdate() {
     const me = utils.getMe();
     me && alert(me.word);
   }
