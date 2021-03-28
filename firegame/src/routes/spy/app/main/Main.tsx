@@ -3,19 +3,20 @@ import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 import utils, { store } from "../utils/utils";
 
+var alerted: string | null = null;
+
 class Main extends React.Component<{}, { hidden: boolean }> {
   constructor(props: {}) {
     super(props);
     this.state = { hidden: false };
   }
 
-  componentDidUpdate() {
-    const me = utils.getMe();
-    me && alert(me.word);
-  }
-
   render() {
     const me = utils.getMe();
+    if (me && alerted !== me.word) {
+      alerted = me.word;
+      alert(me.word);
+    }
     return (
       <div className={styles.bubble}>
         <div>
