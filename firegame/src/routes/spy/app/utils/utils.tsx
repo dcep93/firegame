@@ -9,7 +9,7 @@ class Utils extends Shared<GameType, PlayerType> {
     game.bank = this.shuffle(wordList.slice()).slice(0, game.params.numWords);
     this.shuffle(this.count(game.players.length)).forEach(
       (pIndex, rIndex) =>
-        (game.players[pIndex].word = game.bank[rIndex % game.bank.length])
+        (game.players[pIndex].word = game.bank[rIndex % game.params.numTeams])
     );
     this.shuffle(game.bank);
     return game;
