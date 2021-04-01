@@ -10,14 +10,14 @@ function flip() {
     utils.setMessage(message);
     store.update(message);
   } else {
-    // const myCardNumber = utils.cardNumber(flippedCardId);
-    // const opponentCardNumber = utils.cardNumber(opponentsCard);
-    if (utils.getMe().userName === "daniel") {
+    const myCardNumber = utils.cardNumber(flippedCardId);
+    const opponentCardNumber = utils.cardNumber(opponentsCard);
+    if (myCardNumber > opponentCardNumber) {
       utils.takeCards();
       const message = `won with ${cardName}`;
       utils.setMessage(message);
       store.update(message);
-    } else if (utils.getOpponent().userName === "daniel") {
+    } else if (opponentCardNumber > myCardNumber) {
       utils.incrementPlayerTurn();
       utils.giveCards();
       const message = `lost with ${cardName}`;
