@@ -39,7 +39,8 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName]) => ({
       userId,
       userName,
-    }));
+    }))
+    .splice(0, 2);
   if (game.players.length !== 2) throw new Error("need 2 players");
   game.currentPlayer = utils.myIndex(game);
   return game;
