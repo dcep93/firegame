@@ -42,7 +42,8 @@ function NewGame(params: Params): PromiseLike<GameType> {
 }
 
 function setPlayers(game: GameType): GameType {
-  game.players = Object.entries(store.lobby)
+  game.players = utils
+    .shuffle(Object.entries(store.lobby))
     .sort((a, b) => (b[0] === store.me.userId ? 1 : -1 * Math.random()))
     .map(([userId, userName], index) => ({
       userId,
