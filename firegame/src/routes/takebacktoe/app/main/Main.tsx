@@ -76,7 +76,8 @@ class Main extends React.Component<{}, { clicked: number[] | null }> {
         return;
       }
       if (
-        store.gameW.game.previous === this.state.clicked.concat([i, j, roll])
+        store.gameW.game.previous.toString() ===
+        this.state.clicked.concat([i, j, roll]).toString()
       ) {
         alert("no take backs");
         return;
