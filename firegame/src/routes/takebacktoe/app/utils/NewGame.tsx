@@ -26,8 +26,8 @@ function NewGame(params: Params): PromiseLike<GameType> {
   game.roll = 0;
   game.grid = [
     [0, 0, 0, 0],
-    [10, 10, 10, 10],
-    [0, 0, 0, 0],
+    [8, 10, 10, 10],
+    [2, 0, 0, 0],
   ];
   game.previous = [];
   return Promise.resolve(game).then(setPlayers);
