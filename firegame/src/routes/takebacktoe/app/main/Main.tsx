@@ -16,23 +16,33 @@ class Main extends React.Component<{}, { clicked: number[] | null }> {
           <div>
             <div>roll: {store.gameW.game.roll || "?"}</div>
             <h4>{store.gameW.game.players[0].userName}</h4>
-            {store.gameW.game.grid.map((row, i) => (
-              <div key={i}>
-                {row.map((cell, j) => (
-                  <div
-                    key={j}
-                    className={[
-                      styles.bubble,
-                      this.isClicked(i, j) && styles.grey,
-                    ].join(" ")}
-                    style={{ width: "3em" }}
-                    onClick={() => this.click(i, j)}
-                  >
-                    {cell}
-                  </div>
-                ))}
-              </div>
-            ))}
+            <div
+              className={styles.grid}
+              style={{ gridTemplateColumns: "repeat(5, auto)" }}
+            >
+              <div></div>
+              {utils.count(4).map((i) => (
+                <div>{String.fromCharCode(65 + i)}</div>
+              ))}
+              {store.gameW.game.grid.map((row, i) => (
+                <React.Fragment key={i}>
+                  <div>{i + 1}</div>
+                  {row.map((cell, j) => (
+                    <div
+                      key={j}
+                      className={[
+                        styles.bubble,
+                        this.isClicked(i, j) && styles.grey,
+                      ].join(" ")}
+                      style={{ width: "3em" }}
+                      onClick={() => this.click(i, j)}
+                    >
+                      {cell}
+                    </div>
+                  ))}
+                </React.Fragment>
+              ))}
+            </div>
             <h4>{store.gameW.game.players[1].userName}</h4>
           </div>
         </div>
@@ -95,7 +105,11 @@ class Main extends React.Component<{}, { clicked: number[] | null }> {
         // todo score
         store.gameW.info.alert = "game over";
       }
-      store.update(`moved ${this.state.clicked} -> ${[i, j]}`);
+      const from = `${utils.numberToLetter(this.state.clicked[1])}${
+        this.state.clicked[0] + 1
+      }`;
+      const to = `${utils.numberToLetter(j)}${i + 1}`;
+      store.update(`moved ${from} -> ${to}`);
       this.setState({ clicked: null });
     }
   }

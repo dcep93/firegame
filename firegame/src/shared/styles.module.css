@@ -99,3 +99,7 @@
   float: right;
   clear: both;
 }
+
+.grid {
+  display: inline-grid;
+}

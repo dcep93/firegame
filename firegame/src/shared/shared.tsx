@@ -181,6 +181,10 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
       .forEach((key) => (out[key] = obj[key]));
     return out;
   }
+
+  numberToLetter(i: number): string {
+    return String.fromCharCode(65 + i);
+  }
 }
 
 export default Shared;
