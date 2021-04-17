@@ -83,13 +83,38 @@ class Actions extends React.Component<
       store.update("submitted");
       return;
     }
-    this.perform(utils.getMe(), selected, store.gameW.game.stagedAction);
-    this.perform(utils.getOpponent(), store.gameW.game.stagedAction, selected);
+    this.perform(selected, store.gameW.game.stagedAction);
+    this.handle(utils.getMe(), selected);
+    this.handle(utils.getOpponent(), store.gameW.game.stagedAction);
     utils.incrementPlayerTurn();
     store.gameW.game.round++;
+    const message = [selected, store.gameW.game.stagedAction]
+      .map((actions) => actions!.map((a) => Action[a]).join(","))
+      .join(" / ");
+    delete store.gameW.game.stagedAction;
+    store.update(message);
   }
 
-  perform(p: PlayerType, selected: Action[], oppSelected: Action[]) {}
+  perform(selected: Action[], oppSelected: Action[]) {}
+
+  handle(p: PlayerType, selected: Action[]) {
+    p.twoInARow = selected.filter((a) => p.lastRound?.includes(a))[0];
+    if (p.twoInARow === undefined) {
+      delete p.twoInARow;
+    }
+    p.lastRound = selected;
+    Object.assign(p.lights, ...selected.map((a) => ({ [a]: true })));
+    if (
+      Object.values(p.lights).filter((i) => i).length ===
+      utils.enumArray(Action).length
+    ) {
+      Object.assign(
+        p.lights,
+        ...utils.enumArray(Action).map((a) => ({ [a]: false }))
+      );
+      p.chips++;
+    }
+  }
 }
 
 export default Actions;
