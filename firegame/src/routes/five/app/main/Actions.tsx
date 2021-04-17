@@ -83,7 +83,23 @@ class Actions extends React.Component<
       store.update("submitted");
       return;
     }
-    this.perform(selected, store.gameW.game.stagedAction);
+    utils
+      .enumArray(Action)
+      .sort()
+      .forEach((a) => {
+        this.perform(
+          a,
+          utils.getMe(),
+          selected,
+          store.gameW.game.stagedAction!
+        );
+        this.perform(
+          a,
+          utils.getOpponent(),
+          store.gameW.game.stagedAction!,
+          selected
+        );
+      });
     this.handle(utils.getMe(), selected);
     this.handle(utils.getOpponent(), store.gameW.game.stagedAction);
     utils.incrementPlayerTurn();
@@ -95,7 +111,36 @@ class Actions extends React.Component<
     store.update(message);
   }
 
-  perform(selected: Action[], oppSelected: Action[]) {}
+  perform(a: Action, p: PlayerType, selected: Action[], oppSelected: Action[]) {
+    if (!selected.includes(a)) return;
+    if (oppSelected.includes(a)) return;
+    if (p.blocked === a) return;
+    switch (a) {
+      case Action.Score:
+        p.chips++;
+        break;
+      case Action.Grow:
+        store.gameW.game.pot++;
+        break;
+      case Action.Claim:
+        if (!oppSelected.includes(Action.Steal)) {
+          p.chips += store.gameW.game.pot;
+          store.gameW.game.pot = 1;
+        }
+        break;
+      case Action.Steal:
+        if (oppSelected.includes(Action.Claim)) {
+          p.chips += store.gameW.game.pot;
+          store.gameW.game.pot = 1;
+        }
+        break;
+      case Action.Block:
+        // todo
+        break;
+      default:
+        throw new Error("unimplemented");
+    }
+  }
 
   handle(p: PlayerType, selected: Action[]) {
     p.twoInARow = selected.filter((a) => p.lastRound?.includes(a))[0];
