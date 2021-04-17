@@ -26,10 +26,10 @@ export type PlayerType = {
   userId: string;
   userName: string;
   chips: number;
+  lights: { [a in Action]: boolean };
   lastRound?: Action[];
   twoInARow?: Action;
   blocked?: Action;
-  lights: { [a in Action]: boolean };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -37,7 +37,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
-    round: 0,
+    round: 1,
     pot: 1,
   };
   return Promise.resolve(game).then(setPlayers);

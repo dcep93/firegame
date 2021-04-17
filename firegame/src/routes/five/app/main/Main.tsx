@@ -33,6 +33,10 @@ class Main extends React.Component {
             </div>
           ))}
         </div>
+        <div className={styles.bubble}>
+          <div>round: {store.gameW.game.round}</div>
+          <div>pot: {store.gameW.game.pot}</div>
+        </div>
         {utils.getMe() && <Actions />}
       </div>
     );
