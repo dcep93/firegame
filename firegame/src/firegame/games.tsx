@@ -1,5 +1,6 @@
 import _7wd from "../routes/7wd/app/X7wd";
 import azul from "../routes/azul/app/Azul";
+import five from "../routes/five/app/Five";
 import fox from "../routes/fox/app/Fox";
 import loveletter from "../routes/love_letter/app/LoveLetter";
 import splendor from "../routes/splendor/app/Splendor";
@@ -17,6 +18,7 @@ export default {
   "7wd": _7wd,
   loveletter,
   splendor,
+  five,
   spy,
   takebacktoe,
   timeline,
