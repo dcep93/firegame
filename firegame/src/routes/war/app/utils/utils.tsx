@@ -22,10 +22,6 @@ class Utils extends Shared<GameType, PlayerType> {
     }
   }
 
-  getOpponent(): PlayerType {
-    return store.gameW.game.players[1 - this.myIndex()];
-  }
-
   cardNumber(cardId: number): number {
     return Math.floor(cardId / 4) + 2;
   }

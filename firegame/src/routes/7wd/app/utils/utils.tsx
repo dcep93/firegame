@@ -55,10 +55,6 @@ class Utils extends Shared<GameType, PlayerType> {
     store.update(message);
   }
 
-  getOpponent(game_: GameType | undefined = undefined) {
-    return this.getPlayer(1 - this.myIndex(game_));
-  }
-
   deal(game: GameType) {
     const indices = utils.shuffle(
       bank.cards

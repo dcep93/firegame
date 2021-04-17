@@ -72,6 +72,10 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     return this.getPlayer(this.currentIndex(game_), game_);
   }
 
+  getOpponent(game_: T | undefined = undefined) {
+    return this.getPlayer(1 - this.myIndex(game_));
+  }
+
   currentIndex(game_: T | undefined = undefined): number {
     const game: T = game_ || store.gameW.game!;
     return game.currentPlayer;
