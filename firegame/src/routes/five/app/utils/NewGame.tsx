@@ -1,38 +1,64 @@
 import { LobbyType } from "../../../../shared/store";
-
 import utils, { store } from "./utils";
 
+export enum Action {
+  Score,
+  Grow,
+  Claim,
+  Steal,
+  Block,
+}
+
 export type GameType = {
-	params: Params;
-	currentPlayer: number;
-	players: PlayerType[];
+  params: Params;
+  currentPlayer: number;
+  players: PlayerType[];
+  round: number;
+  pot: number;
+  stagedAction?: Action[];
 };
 
 export type Params = {
-	lobby: LobbyType;
+  lobby: LobbyType;
 };
 
 export type PlayerType = {
-	userId: string;
-	userName: string;
+  userId: string;
+  userName: string;
+  chips: number;
+  lastRound?: Action[];
+  twoInARow?: Action;
+  blocked?: Action;
+  lights: { [a in Action]: boolean };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
-	// @ts-ignore game being constructed
-	const game: GameType = {};
-	game.params = params;
-	return Promise.resolve(game).then(setPlayers);
+  const game: GameType = {
+    params,
+    currentPlayer: 0,
+    players: [],
+    round: 0,
+    pot: 1,
+  };
+  return Promise.resolve(game).then(setPlayers);
 }
 
 function setPlayers(game: GameType): GameType {
-	game.players = Object.entries(store.lobby)
-		.sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
-		.map(([userId, userName]) => ({
-			userId,
-			userName,
-		}));
-	game.currentPlayer = utils.myIndex(game);
-	return game;
+  game.players = utils
+    .shuffle(Object.entries(store.lobby))
+    .sort((a, b) => (b[0] === store.me.userId ? 1 : -1 * Math.random()))
+    .map(([userId, userName]) => ({
+      userId,
+      userName,
+      chips: 0,
+      lights: Object.assign(
+        {},
+        ...utils.enumArray(Action).map((a) => ({ [a]: false }))
+      ),
+    }))
+    .slice(0, 2);
+  if (game.players.length !== 2) throw new Error("need 2 players");
+  return game;
 }
 
 export default NewGame;
