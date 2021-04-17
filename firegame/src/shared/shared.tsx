@@ -124,6 +124,10 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
       .sort();
   }
 
+  enumNameToValue(name: string, e: { [s: string]: number | string }): number {
+    return e[name] as number;
+  }
+
   copy<X>(obj: X): X {
     if (obj && typeof obj === "object") {
       if (Array.isArray(obj)) {

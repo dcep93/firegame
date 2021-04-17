@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import { Action } from "../utils/NewGame";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
+import Actions from "./Actions";
 
 class Main extends React.Component {
   render() {
@@ -32,7 +33,7 @@ class Main extends React.Component {
             </div>
           ))}
         </div>
-        <div>{/* todo - actions and submit and block selection */}</div>
+        {utils.getMe() && <Actions />}
       </div>
     );
   }
