@@ -14,7 +14,12 @@ class Main extends React.Component {
               <div className={styles.bubble}>
                 <h2>{p.userName}</h2>
                 <p>chips: {p.chips}</p>
-                {p.blocked !== undefined && <p>blocked: {Action[p.blocked]}</p>}
+                {
+                  <p>
+                    blocked:{" "}
+                    {p.blocked === undefined ? "<none>" : Action[p.blocked]}
+                  </p>
+                }
                 <p>
                   lights:{" "}
                   {Object.entries(p.lights)
