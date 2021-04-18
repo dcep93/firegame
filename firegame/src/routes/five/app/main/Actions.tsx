@@ -6,6 +6,7 @@ import utils, { store } from "../utils/utils";
 type turnData = {
   p: PlayerType;
   t: Turn;
+  b?: Action;
 };
 
 class Actions extends React.Component<
@@ -89,14 +90,8 @@ class Actions extends React.Component<
       store.update("submitted");
       return;
     }
-    const myData = {
-      p: utils.getMe(),
-      t: turn,
-    };
-    const oppData = {
-      p: utils.getOpponent(),
-      t: store.gameW.game.staged!,
-    };
+    const myData = this.getData(utils.getMe(), turn);
+    const oppData = this.getData(utils.getOpponent(), store.gameW.game.staged);
     utils
       .enumArray(Action)
       .sort()
@@ -122,10 +117,20 @@ class Actions extends React.Component<
     store.update(message);
   }
 
+  getData(p: PlayerType, t: Turn): turnData {
+    const rval = {
+      p,
+      t,
+      b: p.blocked,
+    };
+    delete p.blocked;
+    return rval;
+  }
+
   perform(a: Action, myTurnData: turnData, oppTurnData: turnData) {
     if (!myTurnData.t.actions.includes(a)) return;
     if (oppTurnData.t.actions.includes(a)) return;
-    if (myTurnData.p.blocked === a) return;
+    if (myTurnData.b === a) return;
     switch (a) {
       case Action.Score:
         myTurnData.p.chips++;
@@ -147,7 +152,6 @@ class Actions extends React.Component<
         break;
       case Action.Block:
         oppTurnData.p.blocked = myTurnData.t.blocked!;
-        // todo - clear blocked
         break;
       default:
         throw new Error("unimplemented");
