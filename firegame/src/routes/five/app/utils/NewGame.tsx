@@ -9,13 +9,18 @@ export enum Action {
   Block,
 }
 
+export type Turn = {
+  actions: Action[];
+  blocked: Action | null;
+};
+
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
   round: number;
   pot: number;
-  stagedAction?: Action[];
+  staged?: Turn;
 };
 
 export type Params = {

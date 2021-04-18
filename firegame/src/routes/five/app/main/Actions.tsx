@@ -1,7 +1,12 @@
 import React, { RefObject } from "react";
 import styles from "../../../../shared/styles.module.css";
-import { Action, PlayerType } from "../utils/NewGame";
+import { Action, PlayerType, Turn } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
+
+type turnData = {
+  p: PlayerType;
+  t: Turn;
+};
 
 class Actions extends React.Component<
   {},
@@ -72,92 +77,99 @@ class Actions extends React.Component<
       alert("cannot select the same actions 2 rounds in a row");
       return;
     }
-    const selected = rawSelected.flatMap((a) =>
-      a === Action.Block
-        ? [a, utils.enumNameToValue(this.blockRef.current!.value, Action)]
-        : a
-    );
-    if (store.gameW.game.stagedAction === undefined) {
-      store.gameW.game.stagedAction = selected;
+    const turn = {
+      actions: rawSelected,
+      blocked: this.state.selected[Action.Block]
+        ? utils.enumNameToValue(this.blockRef.current!.value, Action)
+        : null,
+    };
+    if (store.gameW.game.staged === undefined) {
+      store.gameW.game.staged = turn;
       utils.incrementPlayerTurn();
       store.update("submitted");
       return;
     }
+    const myData = {
+      p: utils.getMe(),
+      t: turn,
+    };
+    const oppData = {
+      p: utils.getOpponent(),
+      t: store.gameW.game.staged!,
+    };
     utils
       .enumArray(Action)
       .sort()
       .forEach((a) => {
-        this.perform(
-          a,
-          utils.getMe(),
-          selected,
-          store.gameW.game.stagedAction!
-        );
-        this.perform(
-          a,
-          utils.getOpponent(),
-          store.gameW.game.stagedAction!,
-          selected
-        );
+        this.perform(a, myData, oppData);
+        this.perform(a, oppData, myData);
       });
-    this.handle(utils.getMe(), selected);
-    this.handle(utils.getOpponent(), store.gameW.game.stagedAction);
+    this.handle(myData);
+    this.handle(oppData);
     utils.incrementPlayerTurn();
     store.gameW.game.round++;
-    const message = [selected, store.gameW.game.stagedAction]
-      .map((actions) => actions!.map((a) => Action[a]).join(","))
+    const message = [turn, store.gameW.game.staged]
+      .map((t) =>
+        t.actions
+          .map(
+            (a) =>
+              Action[a] + (a === Action.Block ? `(${Action[t.blocked!]})` : "")
+          )
+          .join(",")
+      )
       .join(" / ");
-    delete store.gameW.game.stagedAction;
+    delete store.gameW.game.staged;
     store.update(message);
   }
 
-  perform(a: Action, p: PlayerType, selected: Action[], oppSelected: Action[]) {
-    if (!selected.includes(a)) return;
-    if (oppSelected.includes(a)) return;
-    if (p.blocked === a) return;
+  perform(a: Action, myTurnData: turnData, oppTurnData: turnData) {
+    if (!myTurnData.t.actions.includes(a)) return;
+    if (oppTurnData.t.actions.includes(a)) return;
+    if (myTurnData.p.blocked === a) return;
     switch (a) {
       case Action.Score:
-        p.chips++;
+        myTurnData.p.chips++;
         break;
       case Action.Grow:
         store.gameW.game.pot++;
         break;
       case Action.Claim:
-        if (!oppSelected.includes(Action.Steal)) {
-          p.chips += store.gameW.game.pot;
+        if (!oppTurnData.t.actions.includes(Action.Steal)) {
+          myTurnData.p.chips += store.gameW.game.pot;
           store.gameW.game.pot = 1;
         }
         break;
       case Action.Steal:
-        if (oppSelected.includes(Action.Claim)) {
-          p.chips += store.gameW.game.pot;
+        if (oppTurnData.t.actions.includes(Action.Claim)) {
+          myTurnData.p.chips += store.gameW.game.pot;
           store.gameW.game.pot = 1;
         }
         break;
       case Action.Block:
-        // todo
+        oppTurnData.p.blocked = myTurnData.t.blocked!;
+        // todo - clear blocked
         break;
       default:
         throw new Error("unimplemented");
     }
   }
 
-  handle(p: PlayerType, selected: Action[]) {
-    p.twoInARow = selected.filter((a) => p.lastRound?.includes(a))[0];
-    if (p.twoInARow === undefined) {
-      delete p.twoInARow;
+  handle(td: turnData) {
+    td.p.twoInARow = td.t.actions.filter((a) => td.p.lastRound?.includes(a))[0];
+    if (td.p.twoInARow === undefined) {
+      delete td.p.twoInARow;
     }
-    p.lastRound = selected;
-    Object.assign(p.lights, ...selected.map((a) => ({ [a]: true })));
+    td.p.lastRound = td.t.actions;
+    Object.assign(td.p.lights, ...td.t.actions.map((a) => ({ [a]: true })));
     if (
-      Object.values(p.lights).filter((i) => i).length ===
+      Object.values(td.p.lights).filter((i) => i).length ===
       utils.enumArray(Action).length
     ) {
       Object.assign(
-        p.lights,
+        td.p.lights,
         ...utils.enumArray(Action).map((a) => ({ [a]: false }))
       );
-      p.chips++;
+      td.p.chips++;
     }
   }
 }
