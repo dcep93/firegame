@@ -36,7 +36,14 @@ class Actions extends React.Component<
               {a === Action.Block && (
                 <span>
                   {" "}
-                  <select ref={this.blockRef}>
+                  <select
+                    ref={this.blockRef}
+                    onChange={() =>
+                      this.setState(
+                        Object.assign(this.state, { [Action.Block]: true })
+                      )
+                    }
+                  >
                     {utils.enumArray(Action).map((a, i) => (
                       <option key={i}>{Action[a as Action]}</option>
                     ))}
