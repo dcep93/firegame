@@ -139,13 +139,21 @@ class Actions extends React.Component<
         store.gameW.game.pot++;
         break;
       case Action.Claim:
-        if (!oppTurnData.t.actions.includes(Action.Steal)) {
+        if (
+          !oppTurnData.t.actions.includes(Action.Steal) ||
+          myTurnData.t.actions.includes(Action.Steal) ||
+          oppTurnData.b === Action.Steal
+        ) {
           myTurnData.p.chips += store.gameW.game.pot;
           store.gameW.game.pot = 1;
         }
         break;
       case Action.Steal:
-        if (oppTurnData.t.actions.includes(Action.Claim)) {
+        if (
+          oppTurnData.t.actions.includes(Action.Claim) &&
+          !myTurnData.t.actions.includes(Action.Claim) &&
+          oppTurnData.b !== Action.Claim
+        ) {
           myTurnData.p.chips += store.gameW.game.pot;
           store.gameW.game.pot = 1;
         }
