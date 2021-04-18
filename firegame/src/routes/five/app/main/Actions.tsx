@@ -77,8 +77,8 @@ class Actions extends React.Component<
     const rawSelected = Object.entries(this.state.selected)
       .filter(([a, s]) => s)
       .map(([a, s]) => parseInt(a) as Action);
-    if (rawSelected.length > 2) {
-      alert("cannot select more than 2 options");
+    if (rawSelected.length !== 2) {
+      alert("need to select 2 options");
       return;
     }
     if (utils.objEqual(rawSelected, utils.getMe().lastRound || [])) {
