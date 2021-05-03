@@ -37,6 +37,7 @@ export type GameType = {
   auction?: Auction;
   deck: Art[];
   values: { [a in Artist]: number[] };
+  round: number;
 };
 
 export type Params = {
@@ -57,6 +58,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     currentPlayer: 0,
     players: [],
     deck: [],
+    round: 1,
     values: utils
       .enumArray(Artist)
       .reduce((c, a) => ({ ...c, [a]: [0, 0, 0, 0] }), {}) as {
@@ -81,6 +83,8 @@ function setPlayers(game: GameType): GameType {
         .enumArray(Artist)
         .reduce((c, a) => ({ ...c, [a]: 0 }), {}) as { [a in Artist]: number },
     }));
+  if (game.players.length < 3 || game.players.length > 5)
+    throw new Error("need between 3 and 5 players");
   return game;
 }
 

@@ -6,10 +6,44 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
   allDraw(game: GameType): GameType {
-    // todo
-    const num = 10;
+    const num = this.getNumToDraw(game);
     game.players.forEach((p) => p.hand.push(...game.deck.splice(0, num)));
     return game;
+  }
+
+  getNumToDraw(game: GameType): number {
+    switch (game.players.length) {
+      case 3:
+        switch (game.round) {
+          case 1:
+            return 10;
+          case 2:
+            return 6;
+          case 3:
+            return 6;
+        }
+        break;
+      case 4:
+        switch (game.round) {
+          case 1:
+            return 9;
+          case 2:
+            return 4;
+          case 3:
+            return 4;
+        }
+        break;
+      case 5:
+        switch (game.round) {
+          case 1:
+            return 8;
+          case 2:
+            return 3;
+          case 3:
+            return 3;
+        }
+    }
+    return 0;
   }
 }
 
