@@ -10,7 +10,6 @@ class ArtC extends React.Component<{ a: Art }> {
         <div>
           {Artist[this.props.a.artist]} - {AType[this.props.a.aType]}
         </div>
-        <div>{this.props.a.name}</div>
         <img className={css.artc} src={this.props.a.src} alt={""} />
       </div>
     );

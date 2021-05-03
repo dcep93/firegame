@@ -6,7 +6,7 @@ import Player from "./Player";
 import Values from "./Values";
 
 // todo
-// populate deck
+// populate deck AType distribution
 // double pass
 
 class Main extends React.Component {
