@@ -3,7 +3,7 @@ import azul from "../routes/azul/app/Azul";
 import five from "../routes/five/app/Five";
 import fox from "../routes/fox/app/Fox";
 import loveletter from "../routes/love_letter/app/LoveLetter";
-import ModernArt from "../routes/ModernArt/app/ModernArt";
+import ModernArt from "../routes/modern_art/app/ModernArt";
 import splendor from "../routes/splendor/app/Splendor";
 import spy from "../routes/spy/app/Spy";
 import takebacktoe from "../routes/takebacktoe/app/TakeBackToe";
