@@ -1,14 +1,21 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { GameType, PlayerType } from "./NewGame";
+import { Art, AType, GameType, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
   allDraw(game: GameType): GameType {
     const num = this.getNumToDraw(game);
-    game.players.forEach((p) => p.hand.push(...game.deck.splice(0, num)));
+    game.players.forEach((p) => {
+      p.hand.push(...game.deck.splice(0, num));
+      p.hand.sort((a, b) => this.sortVal(a) - this.sortVal(b));
+    });
     return game;
+  }
+
+  sortVal(a: Art): number {
+    return a.artist * this.enumArray(AType).length + a.aType;
   }
 
   getNumToDraw(game: GameType): number {

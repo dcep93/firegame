@@ -11,7 +11,7 @@ class Player extends React.Component<{ p: PlayerType }> {
         {Object.entries(this.props.p.collection)
           .map(([artist, num]) => [parseInt(artist) as Artist, num])
           .map(([artist, num]) => (
-            <div>
+            <div key={artist}>
               {Artist[artist]}: {num}
             </div>
           ))}
