@@ -19,7 +19,8 @@ export enum AType {
 
 export type Art = {
   artist: Artist;
-  auction: AType;
+  aType: AType;
+  name: string;
   src: string;
 };
 
@@ -35,6 +36,7 @@ export type GameType = {
   players: PlayerType[];
   auction?: Auction;
   deck: Art[];
+  values: { [a in Artist]: number[] };
 };
 
 export type Params = {
@@ -55,6 +57,11 @@ function NewGame(params: Params): PromiseLike<GameType> {
     currentPlayer: 0,
     players: [],
     deck: [],
+    values: utils
+      .enumArray(Artist)
+      .reduce((c, a) => ({ ...c, [a]: [0, 0, 0, 0] }), {}) as {
+      [a in Artist]: number[];
+    },
   };
   return Promise.resolve(game)
     .then(setPlayers)
@@ -79,6 +86,15 @@ function setPlayers(game: GameType): GameType {
 
 // todo
 function populateDeck(game: GameType): GameType {
+  game.deck = utils.repeat(
+    {
+      artist: Artist["Daniel Melim"],
+      name: "lmao",
+      src: "https://www.vangoghgallery.com/img/starry_night_full.jpg",
+      aType: AType.fixed,
+    },
+    100
+  );
   return game;
 }
 
