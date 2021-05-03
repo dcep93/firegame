@@ -2,20 +2,28 @@ import React, { RefObject } from "react";
 import styles from "../../../../shared/styles.module.css";
 import { AType } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
+import ArtC from "./ArtC";
 
 class AuctionC extends React.Component {
   inputRef: RefObject<HTMLInputElement> = React.createRef();
   render(): JSX.Element | null {
     const auction = store.gameW.game.auction!;
-    if (auction.art[0].aType === AType.double) return null;
+    const isBiddable = auction.art[0]!.aType !== AType.double;
     return (
       <div className={styles.bubble}>
-        <div>current bid: {auction.bid >= 0 && auction.bid}</div>
+        {auction.art.map((a, i) => (
+          <ArtC key={i} a={a} />
+        ))}
+        {isBiddable && (
+          <div>current bid: {auction.bid >= 0 && auction.bid}</div>
+        )}
         {utils.isMyTurn() && (
           <div>
-            <form onSubmit={this.submit.bind(this)}>
-              <input type="number" ref={this.inputRef} />
-            </form>
+            {isBiddable && (
+              <form onSubmit={this.submit.bind(this)}>
+                <input type="number" ref={this.inputRef} />
+              </form>
+            )}
             <button onClick={() => this.submitHelper(-1)}>pass</button>
           </div>
         )}
