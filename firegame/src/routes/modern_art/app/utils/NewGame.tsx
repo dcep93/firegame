@@ -28,6 +28,8 @@ export type Auction = {
   bid: number;
   playerIndex: number;
   bidder: number;
+
+  hiddenBids?: number[];
 };
 
 export type GameType = {

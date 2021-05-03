@@ -57,13 +57,19 @@ class AuctionC extends React.Component {
       case AType.hidden:
         if (utils.myIndex() === auction.playerIndex && bid < 0)
           return alert("cannot bid less than zero");
+        if (!auction.hiddenBids) auction.hiddenBids = [];
+        auction.hiddenBids.push(bid);
         if (bid > -auction.bid) {
           auction.bid = -bid;
           auction.bidder = utils.myIndex();
         }
         if (auction.playerIndex !== utils.myIndex())
           return store.update("placed a bid");
-        return this.buy(auction.bid, auction.bidder);
+        return this.buy(
+          auction.bid,
+          auction.bidder,
+          auction.hiddenBids!.join(",")
+        );
       case AType.open:
         if (bid < 0) {
           utils.incrementPlayerTurn();
@@ -97,13 +103,13 @@ class AuctionC extends React.Component {
       case AType.double:
         utils.incrementPlayerTurn();
         if (auction.playerIndex === utils.currentIndex()) {
-          return this.buy(0, utils.currentIndex());
+          return this.buy(0, utils.currentIndex(), "free");
         }
         return store.update("passed");
     }
   }
 
-  buy(bid: number, playerIndex: number): void {
+  buy(bid: number, playerIndex: number, msg: string | null = null): void {
     const auction = store.gameW.game.auction!;
     delete store.gameW.game.auction;
     store.gameW.game.currentPlayer = auction.playerIndex;
@@ -117,11 +123,15 @@ class AuctionC extends React.Component {
     for (let i = 0; i < store.gameW.game.players.length; i++) {
       if (utils.getCurrent().hand !== undefined) break;
     }
-    store.update(
-      `${bid} - ${
-        store.gameW.game.players[playerIndex].userName
-      } - ${auction.art.map(utils.artToString).join(",")}`
-    );
+    const msgs = [
+      "won auction",
+      bid,
+      store.gameW.game.players[playerIndex].userName,
+      auction.art.map(utils.artToString).join(","),
+    ];
+    if (msg) msgs.push(msg);
+
+    store.update(msgs.join(" - "));
   }
 }
 
