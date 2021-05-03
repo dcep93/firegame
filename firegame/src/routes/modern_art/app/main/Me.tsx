@@ -11,7 +11,7 @@ class Me extends React.Component {
       <div className={styles.bubble}>
         <div>money: {me.money}</div>
         <div>
-          {me.hand.map((a, i) => (
+          {(me.hand || []).map((a, i) => (
             <span onClick={() => this.click(a, i)} key={i}>
               <ArtC a={a} />
             </span>
@@ -25,9 +25,9 @@ class Me extends React.Component {
     if (!utils.isMyTurn()) return;
     const auction = store.gameW.game.auction;
     if (!auction) {
-      if (this.isFifth(a.artist, false)) return this.endRound(a);
+      if (this.isFifth(a.artist, false)) return this.endRound(a, i);
       store.gameW.game.auction = {
-        art: [utils.getMe().hand.splice(i, 1)[0]],
+        art: [utils.getMe().hand!.splice(i, 1)[0]],
         playerIndex: utils.myIndex(),
         bid: 0,
         bidder: utils.myIndex(),
@@ -38,8 +38,8 @@ class Me extends React.Component {
     }
     const last = auction.art[auction.art.length - 1];
     if (last.aType !== AType.double) return;
-    if (this.isFifth(a.artist, true)) return this.endRound(a);
-    auction.art.push(utils.getMe().hand.splice(i, 1)[0]);
+    if (this.isFifth(a.artist, true)) return this.endRound(a, i);
+    auction.art.push(utils.getMe().hand!.splice(i, 1)[0]);
     this.initializeAuction();
     store.update(`double auctions ${utils.artToString(a)}`);
   }
@@ -48,7 +48,8 @@ class Me extends React.Component {
     return utils.countArt(a) + (isDouble ? 1 : 0) === 5;
   }
 
-  endRound(a: Art): void {
+  endRound(a: Art, i: number): void {
+    utils.getMe().hand!.splice(i, 1);
     utils.incrementPlayerTurn();
     const ranks = utils
       .enumArray(Artist)

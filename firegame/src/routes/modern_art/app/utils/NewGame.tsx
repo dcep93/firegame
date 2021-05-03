@@ -49,7 +49,7 @@ export type PlayerType = {
   userId: string;
   userName: string;
   money: number;
-  hand: Art[];
+  hand?: Art[];
   collection: { [a in Artist]: number };
 };
 

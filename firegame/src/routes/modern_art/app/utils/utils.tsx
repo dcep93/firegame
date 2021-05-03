@@ -8,6 +8,7 @@ class Utils extends Shared<GameType, PlayerType> {
   allDraw(game: GameType): GameType {
     const num = this.getNumToDraw(game);
     game.players.forEach((p) => {
+      if (!p.hand) p.hand = [];
       p.hand.push(...game.deck.splice(0, num));
       p.hand.sort((a, b) => this.sortVal(a) - this.sortVal(b));
     });

@@ -9,7 +9,7 @@ class Player extends React.Component<{ p: PlayerType }> {
       <div className={styles.bubble}>
         <h2>{this.props.p.userName}</h2>
         {store.gameW.game.round > 4 && <div>money: {this.props.p.money}</div>}
-        <p>hand: {this.props.p.hand.length}</p>
+        <p>hand: {(this.props.p.hand || []).length}</p>
         {Object.entries(this.props.p.collection)
           .map(([artist, num]) => [parseInt(artist) as Artist, num])
           .map(([artist, num]) => (
