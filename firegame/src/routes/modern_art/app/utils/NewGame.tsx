@@ -25,7 +25,7 @@ export type Art = {
 };
 
 export type Auction = {
-  art: Art;
+  art: Art[];
   bid: number;
   playerIndex: number;
 };
@@ -89,7 +89,6 @@ function setPlayers(game: GameType): GameType {
   return game;
 }
 
-// todo
 function populateDeck(game: GameType): GameType {
   game.deck = utils.repeat(
     {

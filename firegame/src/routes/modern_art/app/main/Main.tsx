@@ -5,6 +5,11 @@ import Me from "./Me";
 import Player from "./Player";
 import Values from "./Values";
 
+// todo
+// populate deck
+// empty hand
+// double pass
+
 class Main extends React.Component {
   render() {
     return (
