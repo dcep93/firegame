@@ -100,6 +100,9 @@ class AuctionC extends React.Component {
       store.gameW.game.players[auction.bidder].money -= bid;
     }
     utils.incrementPlayerTurn();
+    for (let i = 0; i < store.gameW.game.players.length; i++) {
+      if (utils.getCurrent().hand !== undefined) break;
+    }
     store.update(
       `${bid} - ${
         store.gameW.game.players[playerIndex].userName
