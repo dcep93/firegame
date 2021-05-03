@@ -89,8 +89,23 @@ class AuctionC extends React.Component {
     }
   }
 
-  // todo
-  buy(bid: number, playerIndex: number): void {}
+  buy(bid: number, playerIndex: number): void {
+    const auction = store.gameW.game.auction!;
+    delete store.gameW.game.auction;
+    store.gameW.game.currentPlayer = auction.playerIndex;
+    if (utils.isMyTurn()) {
+      utils.getMe().money -= bid;
+    } else {
+      utils.getCurrent().money += bid;
+      store.gameW.game.players[auction.bidder].money -= bid;
+    }
+    utils.incrementPlayerTurn();
+    store.update(
+      `${bid} - ${
+        store.gameW.game.players[playerIndex].userName
+      } - ${auction.art.map(utils.artToString).join(",")}`
+    );
+  }
 }
 
 export default AuctionC;

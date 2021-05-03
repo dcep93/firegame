@@ -1,6 +1,6 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { Art, AType, GameType, PlayerType } from "./NewGame";
+import { Art, Artist, AType, GameType, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
@@ -51,6 +51,22 @@ class Utils extends Shared<GameType, PlayerType> {
         }
     }
     return 0;
+  }
+
+  countArt(a: Artist): number {
+    return store.gameW.game.players.map((p) => p.collection[a]).sum();
+  }
+
+  emptyCollection(): {
+    [a in Artist]: number;
+  } {
+    return utils.enumArray(Artist).reduce((c, a) => ({ ...c, [a]: 0 }), {}) as {
+      [a in Artist]: number;
+    };
+  }
+
+  artToString(a: Art): string {
+    return `${Artist[a.artist]} - ${AType[a.aType]}`;
   }
 }
 

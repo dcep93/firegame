@@ -81,9 +81,7 @@ function setPlayers(game: GameType): GameType {
       userName,
       hand: [],
       money: 100,
-      collection: utils
-        .enumArray(Artist)
-        .reduce((c, a) => ({ ...c, [a]: 0 }), {}) as { [a in Artist]: number },
+      collection: utils.emptyCollection(),
     }));
   if (game.players.length < 3 || game.players.length > 5)
     throw new Error("need between 3 and 5 players");

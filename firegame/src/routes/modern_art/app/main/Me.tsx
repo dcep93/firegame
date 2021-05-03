@@ -25,7 +25,7 @@ class Me extends React.Component {
     if (!utils.isMyTurn()) return;
     const auction = store.gameW.game.auction;
     if (!auction) {
-      if (this.isFifth(a.artist, false)) return this.endRound();
+      if (this.isFifth(a.artist, false)) return this.endRound(a);
       store.gameW.game.auction = {
         art: [utils.getMe().hand.splice(i, 1)[0]],
         playerIndex: utils.myIndex(),
@@ -33,24 +33,55 @@ class Me extends React.Component {
         bidder: utils.myIndex(),
       };
       this.initializeAuction();
-      store.update(`auctions ${Artist[a.artist]} - ${AType[a.aType]}`);
+      store.update(`auctions ${utils.artToString(a)}`);
       return;
     }
     const last = auction.art[auction.art.length - 1];
     if (last.aType !== AType.double) return;
-    if (this.isFifth(a.artist, true)) return this.endRound();
+    if (this.isFifth(a.artist, true)) return this.endRound(a);
     auction.art.push(utils.getMe().hand.splice(i, 1)[0]);
     this.initializeAuction();
-    store.update(`double auctions ${Artist[a.artist]} - ${AType[a.aType]}`);
+    store.update(`double auctions ${utils.artToString(a)}`);
   }
 
-  // todo
   isFifth(a: Artist, isDouble: boolean): boolean {
-    return false;
+    return utils.countArt(a) + (isDouble ? 1 : 0) === 5;
   }
 
-  // todo
-  endRound(): void {}
+  endRound(a: Art): void {
+    utils.incrementPlayerTurn();
+    const ranks = utils
+      .enumArray(Artist)
+      .sort((a, b) => utils.countArt(a) - utils.countArt(b)) as Artist[];
+    store.gameW.game.values[ranks[0]][store.gameW.game.round] = 30;
+    store.gameW.game.values[ranks[1]][store.gameW.game.round] = 20;
+    store.gameW.game.values[ranks[2]][store.gameW.game.round] = 10;
+    const incomeByArtist = utils.enumArray(Artist).reduce(
+      (iterIncome, a: Artist) => ({
+        ...iterIncome,
+        [a]:
+          store.gameW.game.values[a][store.gameW.game.round] === 0
+            ? 0
+            : store.gameW.game.values[a].sum(),
+      }),
+      {}
+    ) as {
+      [a in Artist]: number;
+    };
+    const incomeByPlayer = store.gameW.game.players.map((p) => {
+      const rval = Object.entries(p.collection)
+        .map(([a, num]) => num * incomeByArtist[parseInt(a) as Artist])
+        .sum();
+      p.collection = utils.emptyCollection();
+      p.money += rval;
+      return rval;
+    });
+    const valuesString = incomeByPlayer.map(
+      (income, index) =>
+        `${store.gameW.game.players[index].userName} - ${income}`
+    );
+    store.update(`ends the round - ${valuesString} - ${utils.artToString(a)}`);
+  }
 
   initializeAuction() {
     const auction = store.gameW.game.auction!;
