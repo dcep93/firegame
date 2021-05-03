@@ -94,6 +94,12 @@ class AuctionC extends React.Component {
         auction.bidder = utils.myIndex();
         utils.incrementPlayerTurn();
         return store.update(`bid ${bid}`);
+      case AType.double:
+        utils.incrementPlayerTurn();
+        if (auction.playerIndex === utils.currentIndex()) {
+          return this.buy(0, utils.currentIndex());
+        }
+        return store.update("passed");
     }
   }
 

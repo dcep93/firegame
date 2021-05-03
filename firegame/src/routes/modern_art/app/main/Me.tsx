@@ -37,8 +37,10 @@ class Me extends React.Component {
       return;
     }
     const last = auction.art[auction.art.length - 1];
+    if (last.artist !== a.artist) return;
     if (last.aType !== AType.double) return;
     if (this.roundEnds(a.artist, true)) return this.endRound(a, i);
+    auction.playerIndex = auction.bidder = utils.myIndex();
     auction.art.push(utils.getMe().hand!.splice(i, 1)[0]);
     this.initializeAuction();
     store.update(`double auctions ${utils.artToString(a)}`);

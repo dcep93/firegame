@@ -7,7 +7,8 @@ import Values from "./Values";
 
 // todo
 // populate deck AType distribution
-// double pass
+// reveal hidden bids
+// get double for free
 
 class Main extends React.Component {
   render() {
