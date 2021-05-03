@@ -25,7 +25,7 @@ class Me extends React.Component {
     if (!utils.isMyTurn()) return;
     const auction = store.gameW.game.auction;
     if (!auction) {
-      if (this.isFifth(a.artist, false)) return this.endRound(a, i);
+      if (this.roundEnds(a.artist, false)) return this.endRound(a, i);
       store.gameW.game.auction = {
         art: [utils.getMe().hand!.splice(i, 1)[0]],
         playerIndex: utils.myIndex(),
@@ -38,13 +38,15 @@ class Me extends React.Component {
     }
     const last = auction.art[auction.art.length - 1];
     if (last.aType !== AType.double) return;
-    if (this.isFifth(a.artist, true)) return this.endRound(a, i);
+    if (this.roundEnds(a.artist, true)) return this.endRound(a, i);
     auction.art.push(utils.getMe().hand!.splice(i, 1)[0]);
     this.initializeAuction();
     store.update(`double auctions ${utils.artToString(a)}`);
   }
 
-  isFifth(a: Artist, isDouble: boolean): boolean {
+  roundEnds(a: Artist, isDouble: boolean): boolean {
+    if (store.gameW.game.players.map((p) => (p.hand || []).length).sum() === 1)
+      return true;
     return utils.countArt(a) + (isDouble ? 1 : 0) === 5;
   }
 
