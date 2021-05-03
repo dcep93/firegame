@@ -25,10 +25,12 @@ class Me extends React.Component {
     if (!utils.isMyTurn()) return;
     const auction = store.gameW.game.auction;
     if (!auction) {
+      if (this.isFifth(a.artist, false)) return this.endRound();
       store.gameW.game.auction = {
         art: [utils.getMe().hand.splice(i, 1)[0]],
-        bid: -1,
         playerIndex: utils.myIndex(),
+        bid: 0,
+        bidder: utils.myIndex(),
       };
       this.initializeAuction();
       store.update(`auctions ${Artist[a.artist]} - ${AType[a.aType]}`);
@@ -36,20 +38,28 @@ class Me extends React.Component {
     }
     const last = auction.art[auction.art.length - 1];
     if (last.aType !== AType.double) return;
+    if (this.isFifth(a.artist, true)) return this.endRound();
     auction.art.push(utils.getMe().hand.splice(i, 1)[0]);
     this.initializeAuction();
     store.update(`double auctions ${Artist[a.artist]} - ${AType[a.aType]}`);
   }
 
+  // todo
+  isFifth(a: Artist, isDouble: boolean): boolean {
+    return false;
+  }
+
+  // todo
+  endRound(): void {}
+
   initializeAuction() {
     const auction = store.gameW.game.auction!;
     switch (auction.art[auction.art.length - 1].aType) {
+      case AType.fixed:
+        auction.bid = -1;
+        break;
       case AType.hidden:
-        utils.incrementPlayerTurn();
-        break;
       case AType.open:
-        utils.incrementPlayerTurn();
-        break;
       case AType.single:
         utils.incrementPlayerTurn();
         break;
