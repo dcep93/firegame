@@ -1,10 +1,40 @@
 import { LobbyType } from "../../../../shared/store";
-import { store } from "./utils";
+import utils, { store } from "./utils";
+
+export enum Artist {
+  "Manuel Carvalho",
+  "Sigrid Thaler",
+  "Daniel Melim",
+  "Ramon Martins",
+  "Rafael Silveira",
+}
+
+export enum AType {
+  double,
+  open,
+  hidden,
+  fixed,
+  single,
+}
+
+export type Art = {
+  artist: Artist;
+  auction: AType;
+  src: string;
+};
+
+export type Auction = {
+  art: Art;
+  bid: number;
+  playerIndex: number;
+};
 
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
+  auction?: Auction;
+  deck: Art[];
 };
 
 export type Params = {
@@ -14,6 +44,9 @@ export type Params = {
 export type PlayerType = {
   userId: string;
   userName: string;
+  money: number;
+  hand: Art[];
+  collection: { [a in Artist]: number };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -21,8 +54,12 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
+    deck: [],
   };
-  return Promise.resolve(game).then(setPlayers);
+  return Promise.resolve(game)
+    .then(setPlayers)
+    .then(populateDeck)
+    .then((game) => utils.allDraw(game));
 }
 
 function setPlayers(game: GameType): GameType {
@@ -31,7 +68,17 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName]) => ({
       userId,
       userName,
+      hand: [],
+      money: 100,
+      collection: utils
+        .enumArray(Artist)
+        .reduce((c, a) => ({ ...c, [a]: 0 }), {}) as { [a in Artist]: number },
     }));
+  return game;
+}
+
+// todo
+function populateDeck(game: GameType): GameType {
   return game;
 }
 
