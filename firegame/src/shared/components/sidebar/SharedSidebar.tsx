@@ -10,6 +10,8 @@ abstract class SharedSidebar<T> extends React.Component {
   abstract getParams(): T;
   abstract isMyTurn: () => boolean;
 
+  rules: string | null = null;
+
   isResizeable = true;
 
   render() {
@@ -44,6 +46,11 @@ abstract class SharedSidebar<T> extends React.Component {
     return (
       <div>
         <button onClick={this.startNewGame.bind(this)}>New Game</button>
+        {this.rules && (
+          <h4>
+            <a href={this.rules}>Rules</a>
+          </h4>
+        )}
       </div>
     );
   }

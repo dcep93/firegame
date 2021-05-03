@@ -4,6 +4,7 @@ import utils, { store } from "../utils/utils";
 
 class Sidebar extends SharedSidebar<Params> {
   name = "Modern Art";
+  rules = "https://www.acdd.com/media/files/CMNMDA001_Rules.pdf";
   NewGame = NewGame;
   isMyTurn = utils.isMyTurn.bind(utils);
 
