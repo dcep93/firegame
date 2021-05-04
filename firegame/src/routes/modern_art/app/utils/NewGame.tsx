@@ -91,19 +91,56 @@ function setPlayers(game: GameType): GameType {
 
 function populateDeck(game: GameType): Promise<GameType> {
   const counts = {
-    [Artist["Manuel Carvalho"]]: 12,
-    [Artist["Sigrid Thaler"]]: 13,
-    [Artist["Daniel Melim"]]: 15,
-    [Artist["Ramon Martins"]]: 15,
-    [Artist["Rafael Silveira"]]: 15,
-  } as { [a in Artist]: number };
+    [Artist["Manuel Carvalho"]]: {
+      [AType.double]: 2,
+      [AType.fixed]: 2,
+      [AType.hidden]: 2,
+      [AType.single]: 3,
+      [AType.open]: 3,
+    },
+    [Artist["Sigrid Thaler"]]: {
+      [AType.double]: 2,
+      [AType.fixed]: 3,
+      [AType.hidden]: 3,
+      [AType.single]: 2,
+      [AType.open]: 3,
+    },
+    [Artist["Daniel Melim"]]: {
+      [AType.double]: 3,
+      [AType.fixed]: 3,
+      [AType.hidden]: 3,
+      [AType.single]: 3,
+      [AType.open]: 3,
+    },
+    [Artist["Ramon Martins"]]: {
+      [AType.double]: 3,
+      [AType.fixed]: 3,
+      [AType.hidden]: 3,
+      [AType.single]: 3,
+      [AType.open]: 3,
+    },
+    [Artist["Rafael Silveira"]]: {
+      [AType.double]: 3,
+      [AType.fixed]: 3,
+      [AType.hidden]: 3,
+      [AType.single]: 3,
+      [AType.open]: 3,
+    },
+  } as { [a in Artist]: { [aType in AType]: number } };
   return Promise.all(
     utils.shuffle(
       utils
         .enumArray(Artist)
-        .map((a) => utils.repeat(a, counts[a as Artist]!))
+        .map((artist: Artist) =>
+          utils
+            .enumArray(AType)
+            .map((aType: AType) =>
+              utils.repeat({ artist, aType }, counts[artist][aType])
+            )
+            .flatMap((i) => i)
+        )
         .flatMap((i) => i)
-        .map(buildCard)
+        .map(({ artist, aType }) => buildCard(artist, aType))
     )
   ).then((deck) => {
     game.deck = deck;
@@ -111,12 +148,11 @@ function populateDeck(game: GameType): Promise<GameType> {
   });
 }
 
-function buildCard(artist: Artist): Promise<Art> {
-  console.log("building");
+function buildCard(artist: Artist, aType: AType): Promise<Art> {
   return fetch("https://loremflickr.com/320/240/art").then((response) => ({
     artist,
+    aType,
     src: response.url,
-    aType: utils.randomFrom(utils.enumArray(AType)),
   }));
 }
 
