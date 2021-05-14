@@ -13,7 +13,7 @@ class Values extends React.Component {
               <div>
                 {Artist[a]} - {utils.countArt(a)}
               </div>
-              {utils.count(store.gameW.game.round - 1).map((r, j) => (
+              {utils.count(store.gameW.game.round).map((r, j) => (
                 <div key={j}>{store.gameW.game.values[a as Artist][r]}</div>
               ))}
             </div>

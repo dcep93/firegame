@@ -60,7 +60,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     currentPlayer: 0,
     players: [],
     deck: [],
-    round: 1,
+    round: 0,
     values: utils
       .enumArray(Artist)
       .reduce((c, a) => ({ ...c, [a]: [0, 0, 0, 0] }), {}) as {

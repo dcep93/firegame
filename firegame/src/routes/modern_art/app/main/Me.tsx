@@ -77,6 +77,7 @@ class Me extends React.Component {
     ) as {
       [a in Artist]: number;
     };
+    store.gameW.game.round++;
     const incomeByPlayer = store.gameW.game.players.map((p) => {
       const rval = Object.entries(p.collection)
         .map(([a, num]) => num * incomeByArtist[parseInt(a) as Artist])

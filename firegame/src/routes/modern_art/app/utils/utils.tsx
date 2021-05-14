@@ -23,31 +23,31 @@ class Utils extends Shared<GameType, PlayerType> {
     switch (game.players.length) {
       case 3:
         switch (game.round) {
-          case 1:
+          case 0:
             return 10;
-          case 2:
+          case 1:
             return 6;
-          case 3:
+          case 2:
             return 6;
         }
         break;
       case 4:
         switch (game.round) {
-          case 1:
+          case 0:
             return 9;
-          case 2:
+          case 1:
             return 4;
-          case 3:
+          case 2:
             return 4;
         }
         break;
       case 5:
         switch (game.round) {
-          case 1:
+          case 0:
             return 8;
-          case 2:
+          case 1:
             return 3;
-          case 3:
+          case 2:
             return 3;
         }
     }
