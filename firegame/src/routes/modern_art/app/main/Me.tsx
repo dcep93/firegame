@@ -27,8 +27,8 @@ class Me extends React.Component {
     if (!auction) {
       if (this.roundEnds(a.artist, false)) return this.endRound(a, i);
       store.gameW.game.auction = {
-        art: [utils.getMe().hand!.splice(i, 1)[0]],
-        playerIndex: utils.myIndex(),
+        art: utils.getMe().hand!.splice(i, 1),
+        seller: utils.myIndex(),
         bid: 0,
         bidder: utils.myIndex(),
       };
@@ -36,12 +36,13 @@ class Me extends React.Component {
       store.update(`auctions ${utils.artToString(a)}`);
       return;
     }
-    const last = auction.art[auction.art.length - 1];
+    const last = auction.art[0];
     if (last.artist !== a.artist) return;
     if (last.aType !== AType.double) return;
+    if (utils.getMe().hand![i].aType === AType.double) return;
     if (this.roundEnds(a.artist, true)) return this.endRound(a, i);
-    auction.playerIndex = auction.bidder = utils.myIndex();
-    auction.art.push(utils.getMe().hand!.splice(i, 1)[0]);
+    auction.seller = auction.bidder = utils.myIndex();
+    auction.art.unshift(utils.getMe().hand!.splice(i, 1)[0]);
     this.initializeAuction();
     store.update(`double auctions ${utils.artToString(a)}`);
   }
@@ -90,7 +91,7 @@ class Me extends React.Component {
 
   initializeAuction() {
     const auction = store.gameW.game.auction!;
-    switch (auction.art[auction.art.length - 1].aType) {
+    switch (auction.art[0].aType) {
       case AType.fixed:
         auction.bid = -1;
         break;

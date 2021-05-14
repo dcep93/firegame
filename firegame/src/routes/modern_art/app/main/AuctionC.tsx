@@ -46,16 +46,19 @@ class AuctionC extends React.Component {
           if (bid > utils.getMe().money)
             return alert("cannot bid more than you have");
           auction.bid = bid;
+          utils.incrementPlayerTurn();
           return store.update(`set a price of ${bid}`);
         }
-        if (bid < 0 && auction.playerIndex !== utils.myIndex()) {
+        if (bid < 0 && auction.seller !== utils.myIndex()) {
           utils.incrementPlayerTurn();
           return store.update("passed");
         }
         if (auction.bid !== bid) return alert(`need to bid ${auction.bid}`);
-        return this.buy(bid, utils.myIndex());
+        auction.bidder = utils.myIndex();
+        auction.bid = bid;
+        return this.buy();
       case AType.hidden:
-        if (utils.myIndex() === auction.playerIndex && bid < 0)
+        if (utils.myIndex() === auction.seller && bid < 0)
           return alert("cannot bid less than zero");
         if (!auction.hiddenBids) auction.hiddenBids = [];
         auction.hiddenBids.push(bid);
@@ -63,18 +66,16 @@ class AuctionC extends React.Component {
           auction.bid = -bid;
           auction.bidder = utils.myIndex();
         }
-        if (auction.playerIndex !== utils.myIndex())
+        if (auction.seller !== utils.myIndex()) {
+          utils.incrementPlayerTurn();
           return store.update("placed a bid");
-        return this.buy(
-          auction.bid,
-          auction.bidder,
-          auction.hiddenBids!.join(",")
-        );
+        }
+        auction.bid = -auction.bid;
+        return this.buy(auction.hiddenBids!.join(","));
       case AType.open:
         if (bid < 0) {
           utils.incrementPlayerTurn();
-          if (auction.bidder === utils.currentIndex())
-            return this.buy(auction.bid, utils.currentIndex());
+          if (auction.bidder === utils.currentIndex()) return this.buy();
           return store.update("passed");
         }
         if (bid <= auction.bid) return alert("need to increase the bid");
@@ -83,15 +84,17 @@ class AuctionC extends React.Component {
         utils.incrementPlayerTurn();
         return store.update(`bid ${bid}`);
       case AType.single:
-        if (auction.playerIndex === utils.myIndex()) {
-          if (bid < 0) return this.buy(auction.bid, auction.bidder);
+        if (auction.seller === utils.myIndex()) {
+          if (bid < 0) return this.buy();
           if (auction.bid > bid) return alert("need to increase the bid");
-          return this.buy(bid, utils.myIndex());
+          auction.bidder = utils.myIndex();
+          auction.bid = bid;
+          return this.buy();
         }
         if (bid < 0) {
           utils.incrementPlayerTurn();
-          if (auction.playerIndex === utils.currentIndex() && auction.bid === 0)
-            return this.buy(0, auction.playerIndex);
+          if (auction.seller === utils.currentIndex() && auction.bid === 0)
+            return this.buy();
           return store.update("passed");
         }
         if (auction.bid && bid <= auction.bid)
@@ -102,31 +105,31 @@ class AuctionC extends React.Component {
         return store.update(`bid ${bid}`);
       case AType.double:
         utils.incrementPlayerTurn();
-        if (auction.playerIndex === utils.currentIndex()) {
-          return this.buy(0, utils.currentIndex(), "free");
+        if (auction.seller === utils.currentIndex()) {
+          return this.buy("free");
         }
         return store.update("passed");
     }
   }
 
-  buy(bid: number, playerIndex: number, msg: string | null = null): void {
+  buy(msg: string | null = null): void {
     const auction = store.gameW.game.auction!;
     delete store.gameW.game.auction;
-    store.gameW.game.currentPlayer = auction.playerIndex;
-    if (utils.isMyTurn()) {
-      utils.getMe().money -= bid;
-    } else {
-      utils.getCurrent().money += bid;
-      store.gameW.game.players[auction.bidder].money -= bid;
+    store.gameW.game.currentPlayer = auction.seller;
+    const winner = store.gameW.game.players[auction.bidder];
+    winner.money -= auction.bid;
+    if (auction.bidder !== auction.seller) {
+      store.gameW.game.players[auction.seller].money += auction.bid;
     }
-    utils.incrementPlayerTurn();
+    auction.art.forEach((a) => winner.collection[a.artist]++);
     for (let i = 0; i < store.gameW.game.players.length; i++) {
+      utils.incrementPlayerTurn();
       if (utils.getCurrent().hand !== undefined) break;
     }
     const msgs = [
       "won auction",
-      bid,
-      store.gameW.game.players[playerIndex].userName,
+      auction.bid,
+      store.gameW.game.players[auction.bidder].userName,
       auction.art.map(utils.artToString).join(","),
     ];
     if (msg) msgs.push(msg);

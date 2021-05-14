@@ -26,7 +26,7 @@ export type Art = {
 export type Auction = {
   art: Art[];
   bid: number;
-  playerIndex: number;
+  seller: number;
   bidder: number;
 
   hiddenBids?: number[];
