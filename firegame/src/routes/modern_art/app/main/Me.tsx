@@ -40,7 +40,10 @@ class Me extends React.Component {
     if (last.artist !== a.artist) return;
     if (last.aType !== AType.double) return;
     if (utils.getMe().hand![i].aType === AType.double) return;
-    if (this.roundEnds(a.artist, true)) return this.endRound(a, i);
+    if (this.roundEnds(a.artist, true)) {
+      delete store.gameW.game.auction;
+      return this.endRound(a, i);
+    }
     auction.seller = auction.bidder = utils.myIndex();
     auction.art.unshift(utils.getMe().hand!.splice(i, 1)[0]);
     this.initializeAuction();
@@ -50,7 +53,7 @@ class Me extends React.Component {
   roundEnds(a: Artist, isDouble: boolean): boolean {
     if (store.gameW.game.players.map((p) => (p.hand || []).length).sum() === 1)
       return true;
-    return utils.countArt(a) + (isDouble ? 1 : 0) === 5;
+    return utils.countArt(a) + (isDouble ? 1 : 0) === 4;
   }
 
   endRound(a: Art, i: number): void {
@@ -58,7 +61,7 @@ class Me extends React.Component {
     utils.incrementPlayerTurn();
     const ranks = utils
       .enumArray(Artist)
-      .sort((a, b) => utils.countArt(a) - utils.countArt(b)) as Artist[];
+      .sort((a, b) => utils.countArt(b) - utils.countArt(a)) as Artist[];
     store.gameW.game.values[ranks[0]][store.gameW.game.round] = 30;
     store.gameW.game.values[ranks[1]][store.gameW.game.round] = 20;
     store.gameW.game.values[ranks[2]][store.gameW.game.round] = 10;
@@ -86,6 +89,7 @@ class Me extends React.Component {
       (income, index) =>
         `${store.gameW.game.players[index].userName} - ${income}`
     );
+    utils.allDraw(store.gameW.game);
     store.update(`ends the round - ${valuesString} - ${utils.artToString(a)}`);
   }
 
