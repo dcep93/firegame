@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
 import { AType } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import ArtC from "./ArtC";
@@ -12,7 +13,7 @@ class AuctionC extends React.Component {
     return (
       <div className={styles.bubble}>
         {auction.art.map((a, i) => (
-          <ArtC key={i} a={a} />
+          <ArtC key={i} a={a} c={css.auction_art} />
         ))}
         {isBiddable && (
           <div>current bid: {auction.bid >= 0 && auction.bid}</div>
