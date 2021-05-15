@@ -1,12 +1,17 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import { Artist, PlayerType } from "../utils/NewGame";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 class Player extends React.Component<{ p: PlayerType }> {
   render() {
     return (
-      <div className={styles.bubble}>
+      <div
+        className={[
+          styles.bubble,
+          utils.getCurrent().userId === this.props.p.userId && styles.grey,
+        ].join(" ")}
+      >
         <h2>{this.props.p.userName}</h2>
         {store.gameW.game.round > 3 && <div>money: {this.props.p.money}</div>}
         <p>hand: {(this.props.p.hand || []).length}</p>
