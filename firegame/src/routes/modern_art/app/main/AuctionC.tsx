@@ -23,6 +23,7 @@ class AuctionC extends React.Component {
             {isBiddable && (
               <form onSubmit={this.submit.bind(this)}>
                 <input type="number" ref={this.inputRef} />
+                <input type="submit" value="Bid" />
               </form>
             )}
             <button onClick={() => this.submitHelper(-1)}>pass</button>
