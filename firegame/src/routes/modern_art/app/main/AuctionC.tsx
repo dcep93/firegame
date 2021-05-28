@@ -83,8 +83,7 @@ class AuctionC extends React.Component {
         if (bid <= auction.bid) return alert("need to increase the bid");
         auction.bid = bid;
         auction.bidder = utils.myIndex();
-        utils.incrementPlayerTurn();
-        return store.update(`bid ${bid}`);
+        return this.buy();
       case AType.single:
         if (auction.seller === utils.myIndex()) {
           if (bid < 0) return this.buy();

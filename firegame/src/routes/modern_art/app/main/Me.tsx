@@ -62,9 +62,12 @@ class Me extends React.Component {
     const ranks = utils
       .enumArray(Artist)
       .sort((a, b) => utils.countArt(b) - utils.countArt(a)) as Artist[];
-    store.gameW.game.values[ranks[0]][store.gameW.game.round] = 30;
-    store.gameW.game.values[ranks[1]][store.gameW.game.round] = 20;
-    store.gameW.game.values[ranks[2]][store.gameW.game.round] = 10;
+    if (utils.countArt(ranks[0]) > 0)
+      store.gameW.game.values[ranks[0]][store.gameW.game.round] = 30;
+    if (utils.countArt(ranks[1]) > 0)
+      store.gameW.game.values[ranks[1]][store.gameW.game.round] = 20;
+    if (utils.countArt(ranks[2]) > 0)
+      store.gameW.game.values[ranks[2]][store.gameW.game.round] = 10;
     const incomeByArtist = utils.enumArray(Artist).reduce(
       (iterIncome, a: Artist) => ({
         ...iterIncome,
