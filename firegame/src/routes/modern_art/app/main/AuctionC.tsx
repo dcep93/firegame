@@ -77,7 +77,6 @@ class AuctionC extends React.Component {
       case AType.open:
         if (bid < 0) {
           utils.incrementPlayerTurn();
-          if (auction.bidder === utils.currentIndex()) return this.buy();
           return store.update("passed");
         }
         if (bid <= auction.bid) return alert("need to increase the bid");
