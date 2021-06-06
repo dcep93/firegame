@@ -193,6 +193,12 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   numberToLetter(i: number): string {
     return String.fromCharCode(65 + i);
   }
+
+  freqDict(arr: string[]): { [s: string]: number } {
+    const d = {} as { [s: string]: number };
+    arr.sort().forEach((v) => (d[v] = (d[v] || 0) + 1));
+    return d;
+  }
 }
 
 export default Shared;
