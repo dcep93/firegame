@@ -68,6 +68,8 @@ class Main extends React.Component<
   }
 
   harvest(index: number) {
+    if (store.gameW.game.players.length === 2 && !utils.isMyTurn())
+      return alert("can only harvest on your turn");
     const me = utils.getMe();
     const field = me.fields[index];
     const bean = beans[field.bean];
