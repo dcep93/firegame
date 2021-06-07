@@ -33,7 +33,7 @@ class Main extends React.Component<
         {utils.myIndex() === i && (
           <div className={styles.flex}>
             {store.gameW.game.phase === Phase.plantSecond && (
-              <button onClick={() => this.flip()}>pass</button>
+              <button onClick={() => this.pass()}>pass</button>
             )}
             {(p.hand || []).map((c, j) => (
               <div key={j} onClick={() => this.clickCard(j)}>
@@ -122,14 +122,51 @@ class Main extends React.Component<
         } else {
           this.flip();
         }
-        store.update(`planted ${beans[field.bean].name}`);
+        store.update(`planted ${beans[field.bean].name} from hand`);
         break;
+      case Phase.draw:
+        if (this.state.selectedTable === undefined) return;
+        const selected = store.gameW.game.table![this.state.selectedTable];
+        if (!selected) return;
+        if (utils.isMyTurn()) {
+          if (selected.origin === utils.currentIndex()) {
+            return alert("cannot plant card from own hand");
+          }
+        } else {
+          if (
+            selected.origin !== -1 &&
+            selected.origin !== utils.currentIndex()
+          ) {
+            return alert("can only plant cards from current player");
+          }
+        }
+
+        if (field.bean !== -1 && field.bean !== selected.bean)
+          return alert("need to plant same type of bean");
+        field.bean = store.gameW.game.table!.splice(
+          this.state.selectedTable,
+          1
+        )[0].bean;
+        field.count++;
+        if (store.gameW.game.table!.length === 0) {
+          utils.incrementPlayerTurn();
+          store.gameW.game.phase = Phase.plant;
+          const p = utils.getCurrent();
+          if (!p.hand) p.hand = [];
+          p.hand.push(...this.draw(3));
+        }
+        store.update(`planted ${beans[field.bean].name} from table`);
     }
   }
 
   flip() {
     store.gameW.game.phase = Phase.draw;
     store.gameW.game.table = this.draw(2).map((b) => ({ bean: b, origin: -1 }));
+  }
+
+  pass() {
+    this.flip();
+    store.update("passed");
   }
 
   draw(num: number): number[] {
@@ -144,10 +181,12 @@ class Main extends React.Component<
 
   clickCard(index: number) {
     if (store.gameW.game.phase !== Phase.draw) return;
+    const bean = utils.getMe().hand!.splice(index, 1)[0];
     store.gameW.game.table!.push({
       origin: utils.myIndex(),
-      bean: utils.getMe().hand!.splice(index, 1)[0],
+      bean,
     });
+    store.update(`donated ${beans[bean].name}`);
   }
 }
 
