@@ -23,6 +23,9 @@ class Main extends React.Component {
         </div>
         {utils.myIndex() === i && (
           <div className={styles.flex}>
+            {store.gameW.game.phase === Phase.plantSecond && (
+              <button onClick={() => this.flip()}>pass</button>
+            )}
             {(p.hand || []).map((c, j) => (
               <div key={j} onClick={() => this.clickCard(j)}>
                 {this.renderCard(c)}
@@ -99,7 +102,35 @@ class Main extends React.Component {
     }
     switch (store.gameW.game.phase) {
       case Phase.plant:
+      case Phase.plantSecond:
+        if (!utils.isMyTurn()) return;
+        if (field.bean !== -1 && field.bean !== me.hand![0])
+          return alert("need to plant same type of bean");
+        field.bean = me.hand!.unshift();
+        field.count++;
+        if (store.gameW.game.phase === Phase.plant && me.hand!.length > 0) {
+          store.gameW.game.phase = Phase.plantSecond;
+        } else {
+          this.flip();
+        }
+        store.update(`planted ${beans[field.bean].name}`);
+        break;
     }
+  }
+
+  flip() {
+    store.gameW.game.phase = Phase.draw;
+    store.gameW.game.table = this.draw(2);
+  }
+
+  draw(num: number): number[] {
+    if (!store.gameW.game.deck) store.gameW.game.deck = [];
+    const deck = store.gameW.game.deck;
+    if ((deck || []).length < num) {
+      deck.push(...utils.shuffle(store.gameW.game.discard!.splice(0)));
+      store.gameW.game.shuffles++;
+    }
+    return deck!.splice(0, num);
   }
 
   clickCard(index: number) {}

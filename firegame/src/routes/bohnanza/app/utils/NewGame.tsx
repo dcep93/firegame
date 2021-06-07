@@ -5,6 +5,7 @@ import utils, { store } from "./utils";
 export enum Phase {
   plant,
   plantSecond,
+  draw,
 }
 
 export type GameType = {
@@ -14,6 +15,8 @@ export type GameType = {
   deck?: number[];
   discard?: number[];
   phase: Phase;
+  table?: number[];
+  shuffles: number;
 };
 
 export type Params = {
@@ -41,6 +44,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     players: [],
     deck: utils.shuffle(beans.flatMap((b, i) => utils.repeat(i, b.quantity))),
     phase: Phase.plant,
+    shuffles: 0,
   };
   return Promise.resolve(game).then(setPlayers);
 }
