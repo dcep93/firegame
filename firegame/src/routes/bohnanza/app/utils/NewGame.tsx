@@ -56,13 +56,35 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName]) => ({
       userId,
       userName,
-      hand: game.deck!.splice(0, 5),
+      hand: [],
       fields: utils.count(3).map((i) => ({
         purchased: i !== 2,
         bean: -1,
         count: 0,
       })),
     }));
+  switch (game.players.length) {
+    case 2:
+      game.deck = game.deck!.filter((b) => beans[b].name !== "Cocoa Bean");
+      game.players.forEach((p) => (p.fields[2].purchased = true));
+      game.players.forEach((p) => (p.hand = game.deck!.splice(0, 5)));
+      break;
+    case 3:
+    case 4:
+      game.deck = game.deck!.filter((b) => beans[b].name !== "Coffee Bean");
+      game.players.forEach((p) => (p.hand = game.deck!.splice(0, 5)));
+      break;
+    default:
+      game.deck = game.deck!.filter((b) => beans[b].name !== "Cocoa Bean");
+      game.deck = game.deck!.filter((b) => beans[b].name !== "Garden Bean");
+      game.players.forEach(
+        (p, i) =>
+          (p.hand = game.deck!.splice(
+            0,
+            i === 0 ? 3 : i === 1 ? 4 : i === 2 ? 5 : 6
+          ))
+      );
+  }
   return game;
 }
 

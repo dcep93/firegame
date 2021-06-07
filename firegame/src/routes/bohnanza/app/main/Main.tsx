@@ -113,11 +113,12 @@ class Main extends React.Component<
     const me = utils.getMe();
     const field = me.fields[index];
     if (!field.purchased) {
-      if ((me.money || []).length < 3) {
+      const cost = store.gameW.game.players.length < 6 ? 3 : 2;
+      if ((me.money || []).length < cost) {
         alert("not enough money to buy this field");
         return;
       }
-      const paid = me.money!.splice(0, 3);
+      const paid = me.money!.splice(0, cost);
       if (store.gameW.game.players.length > 2) {
         if (!store.gameW.game.discard) store.gameW.game.discard = [];
         store.gameW.game.discard.push(...paid);
@@ -170,7 +171,8 @@ class Main extends React.Component<
           store.gameW.game.phase = Phase.plant;
           const p = utils.getCurrent();
           if (!p.hand) p.hand = [];
-          p.hand.push(...this.draw(3));
+          const toDraw = store.gameW.game.players.length < 6 ? 3 : 4;
+          p.hand.push(...this.draw(toDraw));
         }
         store.update(`planted ${beans[field.bean].name} from table`);
     }
