@@ -4,7 +4,16 @@ import beans from "../utils/beans";
 import { Phase } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
-class Main extends React.Component {
+class Main extends React.Component<
+  {},
+  { selectedTable?: number; table?: number[] }
+> {
+  componentDidUpdate() {
+    if (this.state.table?.toString() !== store.gameW.game.table?.toString()) {
+      this.setState({ selectedTable: -1 });
+    }
+  }
+
   render() {
     return store.gameW.game.players.map((p, i) => (
       <div key={i} className={styles.bubble}>
@@ -120,7 +129,7 @@ class Main extends React.Component {
 
   flip() {
     store.gameW.game.phase = Phase.draw;
-    store.gameW.game.table = this.draw(2);
+    store.gameW.game.table = this.draw(2).map((b) => ({ bean: b, origin: -1 }));
   }
 
   draw(num: number): number[] {
@@ -133,7 +142,13 @@ class Main extends React.Component {
     return deck!.splice(0, num);
   }
 
-  clickCard(index: number) {}
+  clickCard(index: number) {
+    if (store.gameW.game.phase !== Phase.draw) return;
+    store.gameW.game.table!.push({
+      origin: utils.myIndex(),
+      bean: utils.getMe().hand!.splice(index, 1)[0],
+    });
+  }
 }
 
 export default Main;

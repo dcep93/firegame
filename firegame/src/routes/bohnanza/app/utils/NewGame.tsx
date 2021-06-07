@@ -15,7 +15,7 @@ export type GameType = {
   deck?: number[];
   discard?: number[];
   phase: Phase;
-  table?: number[];
+  table?: { origin: number; bean: number }[];
   shuffles: number;
 };
 
