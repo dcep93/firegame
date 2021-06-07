@@ -2,12 +2,18 @@ import { LobbyType } from "../../../../shared/store";
 import beans from "./beans";
 import utils, { store } from "./utils";
 
+export enum Phase {
+  plant,
+  plantSecond,
+}
+
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
   deck?: number[];
   discard?: number[];
+  phase: Phase;
 };
 
 export type Params = {
@@ -34,6 +40,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     currentPlayer: 0,
     players: [],
     deck: utils.shuffle(beans.flatMap((b, i) => utils.repeat(i, b.quantity))),
+    phase: Phase.plant,
   };
   return Promise.resolve(game).then(setPlayers);
 }
