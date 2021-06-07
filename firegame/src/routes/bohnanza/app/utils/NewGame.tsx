@@ -66,11 +66,16 @@ function setPlayers(game: GameType): GameType {
   switch (game.players.length) {
     case 2:
       game.deck = game.deck!.filter((b) => beans[b].name !== "Cocoa Bean");
-      game.players.forEach((p) => (p.fields[2].purchased = true));
+      game.deck = game.deck!.filter((b) => beans[b].name !== "Garden Bean");
       game.players.forEach((p) => (p.hand = game.deck!.splice(0, 5)));
       break;
     case 3:
+      game.deck = game.deck!.filter((b) => beans[b].name !== "Cocoa Bean");
+      game.players.forEach((p) => (p.fields[2].purchased = true));
+      game.players.forEach((p) => (p.hand = game.deck!.splice(0, 5)));
+      break;
     case 4:
+    case 5:
       game.deck = game.deck!.filter((b) => beans[b].name !== "Coffee Bean");
       game.players.forEach((p) => (p.hand = game.deck!.splice(0, 5)));
       break;
