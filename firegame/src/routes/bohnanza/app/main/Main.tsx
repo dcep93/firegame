@@ -34,7 +34,8 @@ class Main extends React.Component<
             </div>
             {utils.myIndex() === i && (
               <div className={styles.flex}>
-                {store.gameW.game.phase === Phase.plantSecond && (
+                {(store.gameW.game.phase === Phase.plantSecond ||
+                  store.gameW.game.phase === Phase.discard) && (
                   <button onClick={() => this.pass()}>pass</button>
                 )}
                 {(p.hand || []).map((c, j) => (
@@ -171,7 +172,12 @@ class Main extends React.Component<
           store.gameW.game.phase = Phase.plant;
           const p = utils.getCurrent();
           if (!p.hand) p.hand = [];
-          const toDraw = store.gameW.game.players.length < 6 ? 3 : 4;
+          const toDraw =
+            store.gameW.game.players.length === 2
+              ? 2
+              : store.gameW.game.players.length < 6
+              ? 3
+              : 4;
           p.hand.push(...this.draw(toDraw));
         }
         store.update(`planted ${beans[field.bean].name} from table`);
@@ -179,6 +185,10 @@ class Main extends React.Component<
   }
 
   flip() {
+    if (store.gameW.game.players.length === 2) {
+      store.gameW.game.phase = Phase.discard;
+      return;
+    }
     store.gameW.game.phase = Phase.draw;
     store.gameW.game.table = this.draw(2).map((b) => ({ bean: b, origin: -1 }));
   }
@@ -199,6 +209,11 @@ class Main extends React.Component<
   }
 
   clickCard(index: number) {
+    if (store.gameW.game.phase === Phase.discard) {
+      const bean = utils.getMe().hand!.splice(index, 1)[0];
+      store.gameW.game.phase = Phase.draw;
+      store.update(`discarded ${beans[bean].name}`);
+    }
     if (store.gameW.game.phase !== Phase.draw) return;
     const bean = utils.getMe().hand!.splice(index, 1)[0];
     store.gameW.game.table!.push({

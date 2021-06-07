@@ -5,6 +5,7 @@ import utils, { store } from "./utils";
 export enum Phase {
   plant,
   plantSecond,
+  discard,
   draw,
 }
 
