@@ -15,35 +15,40 @@ class Main extends React.Component<
   }
 
   render() {
-    return store.gameW.game.players.map((p, i) => (
-      <div key={i} className={styles.bubble}>
-        <h2>{p.userName}</h2>
-        <div>hand: {(p.hand || []).length}</div>
-        <div>money: {p.money}</div>
-        <div className={styles.flex}>
-          {p.fields.map((_, j) => (
-            <div
-              key={j}
-              onClick={() => utils.myIndex() === i && this.clickField(j)}
-            >
-              {this.renderField(j)}
+    return (
+      <div>
+        {store.gameW.game.players.map((p, i) => (
+          <div key={i} className={styles.bubble}>
+            <h2>{p.userName}</h2>
+            <div>hand: {(p.hand || []).length}</div>
+            <div>money: {p.money}</div>
+            <div className={styles.flex}>
+              {p.fields.map((_, j) => (
+                <div
+                  key={j}
+                  onClick={() => utils.myIndex() === i && this.clickField(j)}
+                >
+                  {this.renderField(j)}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        {utils.myIndex() === i && (
-          <div className={styles.flex}>
-            {store.gameW.game.phase === Phase.plantSecond && (
-              <button onClick={() => this.pass()}>pass</button>
-            )}
-            {(p.hand || []).map((c, j) => (
-              <div key={j} onClick={() => this.clickCard(j)}>
-                {this.renderCard(c)}
+            {utils.myIndex() === i && (
+              <div className={styles.flex}>
+                {store.gameW.game.phase === Phase.plantSecond && (
+                  <button onClick={() => this.pass()}>pass</button>
+                )}
+                {(p.hand || []).map((c, j) => (
+                  <div key={j} onClick={() => this.clickCard(j)}>
+                    {this.renderCard(c)}
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        )}
+        ))}
+        {this.renderTable()}
       </div>
-    ));
+    );
   }
 
   renderField(index: number): React.ReactElement {
@@ -53,11 +58,11 @@ class Main extends React.Component<
     if (field.bean === -1) return <div>empty</div>;
     return (
       <div>
+        {this.renderCard(field.bean)}
         <div>count: {field.count}</div>
         <div>
           <button onClick={() => this.harvest(index)}>harvest</button>
         </div>
-        {this.renderCard(field.bean)}
       </div>
     );
   }
@@ -192,6 +197,25 @@ class Main extends React.Component<
       bean,
     });
     store.update(`donated ${beans[bean].name}`);
+  }
+
+  renderTable() {
+    if (store.gameW.game.phase !== Phase.draw) return;
+    return store.gameW.game.table!.map((d, i) => (
+      <div
+        key={i}
+        onClick={() =>
+          this.setState({
+            selectedTable: this.state.selectedTable === i ? -1 : i,
+          })
+        }
+      >
+        <div>
+          {this.renderCard(d.bean)}
+          <div>origin: {store.gameW.game.players[d.origin]?.userName}</div>
+        </div>
+      </div>
+    ));
   }
 }
 
