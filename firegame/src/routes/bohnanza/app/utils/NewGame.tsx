@@ -33,7 +33,7 @@ export type PlayerType = {
   userId: string;
   userName: string;
   hand?: number[];
-  money: number;
+  money?: number[];
   fields: Field[];
 };
 
@@ -56,7 +56,6 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName]) => ({
       userId,
       userName,
-      money: 0,
       hand: game.deck!.splice(0, 5),
       fields: utils.count(3).map((i) => ({
         purchased: i !== 2,

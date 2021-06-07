@@ -21,7 +21,7 @@ class Main extends React.Component<
           <div key={i} className={styles.bubble}>
             <h2>{p.userName}</h2>
             <div>hand: {(p.hand || []).length}</div>
-            <div>money: {p.money}</div>
+            <div>money: {(p.money || []).length}</div>
             <div className={styles.flex}>
               {p.fields.map((_, j) => (
                 <div
@@ -83,7 +83,8 @@ class Main extends React.Component<
         .map((e, i) => ({ e, i }))
         .filter((e) => e.e > count)
         .reverse()[0]?.i + 1 || 0;
-    me.money += earnings;
+    if (!me.money) me.money = [];
+    me.money.push(...utils.repeat(field.bean, earnings));
 
     if (!store.gameW.game.discard) store.gameW.game.discard = [];
     store.gameW.game.discard.push(
@@ -110,11 +111,15 @@ class Main extends React.Component<
     const me = utils.getMe();
     const field = me.fields[index];
     if (!field.purchased) {
-      if (me.money < 3) {
+      if ((me.money || []).length < 3) {
         alert("not enough money to buy this field");
         return;
       }
-      me.money -= 3;
+      const paid = me.money!.splice(0, 3);
+      if (store.gameW.game.players.length > 2) {
+        if (!store.gameW.game.discard) store.gameW.game.discard = [];
+        store.gameW.game.discard.push(...paid);
+      }
       field.purchased = true;
       store.update("purchased a field");
       return;
