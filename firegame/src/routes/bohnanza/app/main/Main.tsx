@@ -68,6 +68,11 @@ class Main extends React.Component<
     const bean = beans[field.bean];
     const count = field.count;
 
+    if (count === 1 && me.fields.find((f) => f.count > 1))
+      return alert(
+        "cannot harvest from a field with one bean unless all fields have only a single bean"
+      );
+
     const earnings =
       bean.earnings
         .map((e, i) => ({ e, i }))

@@ -59,7 +59,7 @@ function setPlayers(game: GameType): GameType {
       money: 0,
       hand: game.deck!.splice(0, 5),
       fields: utils.count(3).map((i) => ({
-        purchased: i !== 2 || Object.keys(store.lobby).length === 3,
+        purchased: i !== 2,
         bean: -1,
         count: 0,
       })),
