@@ -25,6 +25,7 @@ class Main extends React.Component<
             <div className={styles.flex}>
               {p.fields.map((_, j) => (
                 <div
+                  className={styles.bubble}
                   key={j}
                   onClick={() => utils.myIndex() === i && this.clickField(j)}
                 >
@@ -39,7 +40,11 @@ class Main extends React.Component<
                   <button onClick={() => this.pass()}>pass</button>
                 )}
                 {(p.hand || []).map((c, j) => (
-                  <div key={j} onClick={() => this.clickCard(j)}>
+                  <div
+                    className={styles.bubble}
+                    key={j}
+                    onClick={() => this.clickCard(j)}
+                  >
                     {this.renderCard(c)}
                   </div>
                 ))}
