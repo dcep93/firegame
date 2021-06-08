@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
 import beans from "../utils/beans";
 import { Phase } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
@@ -126,6 +127,9 @@ class Main extends React.Component<
         <div>{bean.name}</div>
         <div>total: {bean.quantity}</div>
         <div>{bean.earnings.join(" ")}</div>
+        <div>
+          <img className={css.bean_pic} alt="pic" src={bean.pic} />
+        </div>
       </div>
     );
   }
