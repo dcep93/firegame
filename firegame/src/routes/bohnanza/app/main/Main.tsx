@@ -185,7 +185,10 @@ class Main extends React.Component<
   }
 
   flip() {
-    if (store.gameW.game.players.length === 2) {
+    if (
+      store.gameW.game.phase !== Phase.discard &&
+      store.gameW.game.players.length === 2
+    ) {
       store.gameW.game.phase = Phase.discard;
       return;
     }
