@@ -7,6 +7,7 @@ export enum Phase {
   plantSecond,
   discard,
   draw,
+  sloppySeconds,
 }
 
 export type GameType = {

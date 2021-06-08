@@ -35,7 +35,7 @@ class Main extends React.Component<
             {utils.myIndex() === i && (
               <div className={styles.flex}>
                 {(store.gameW.game.phase === Phase.plantSecond ||
-                  store.gameW.game.phase === Phase.discard) && (
+                  store.gameW.game.players.length === 2) && (
                   <button onClick={() => this.pass()}>pass</button>
                 )}
                 {(p.hand || []).map((c, j) => (
@@ -185,11 +185,40 @@ class Main extends React.Component<
   }
 
   flip() {
-    if (
-      store.gameW.game.phase !== Phase.discard &&
-      store.gameW.game.players.length === 2
-    ) {
-      store.gameW.game.phase = Phase.discard;
+    if (store.gameW.game.players.length === 2) {
+      switch (store.gameW.game.phase) {
+        case Phase.discard:
+          store.gameW.game.phase = Phase.draw;
+          store.gameW.game.table = this.draw(3).map((b) => ({
+            bean: b,
+            origin: -1,
+          }));
+          while (
+            store.gameW.game.table.find(
+              (b) => b.bean === (store.gameW.game.discard || [])[0]
+            )
+          ) {
+            store.gameW.game.table.push({
+              bean: store.gameW.game.discard!.unshift(),
+              origin: -1,
+            });
+          }
+          break;
+        case Phase.draw:
+          store.gameW.game.phase = Phase.sloppySeconds;
+          utils.incrementPlayerTurn();
+          break;
+        case Phase.sloppySeconds:
+          if (!store.gameW.game.discard) store.gameW.game.discard = [];
+          store.gameW.game.discard.push(
+            ...store.gameW.game.table!.splice(0).map((i) => i.bean)
+          );
+          store.gameW.game.phase = Phase.plant;
+          break;
+        default:
+          store.gameW.game.phase = Phase.discard;
+          break;
+      }
       return;
     }
     store.gameW.game.phase = Phase.draw;
