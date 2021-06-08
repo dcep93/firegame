@@ -8,7 +8,12 @@ class Main extends React.Component<
   {},
   { selectedTable?: number; table?: number[] }
 > {
-  componentDidUpdate() {
+  constructor(props: {}) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount() {
     if (this.state.table?.toString() !== store.gameW.game.table?.toString()) {
       this.setState({ selectedTable: -1 });
     }
@@ -17,6 +22,11 @@ class Main extends React.Component<
   render() {
     return (
       <div>
+        <div>
+          <div className={styles.bubble}>
+            Phase: {Phase[store.gameW.game.phase]}
+          </div>
+        </div>
         {store.gameW.game.players.map((p, i) => (
           <div key={i} className={styles.bubble}>
             <h2>{p.userName}</h2>
@@ -34,20 +44,23 @@ class Main extends React.Component<
               ))}
             </div>
             {utils.myIndex() === i && (
-              <div className={styles.flex}>
-                {(store.gameW.game.phase === Phase.plantSecond ||
-                  store.gameW.game.players.length === 2) && (
-                  <button onClick={() => this.pass()}>pass</button>
-                )}
-                {(p.hand || []).map((c, j) => (
-                  <div
-                    className={styles.bubble}
-                    key={j}
-                    onClick={() => this.clickCard(j)}
-                  >
-                    {this.renderCard(c)}
-                  </div>
-                ))}
+              <div>
+                <div className={styles.flex}>
+                  <h3>hand</h3>
+                  {(store.gameW.game.phase === Phase.plantSecond ||
+                    store.gameW.game.players.length === 2) && (
+                    <button onClick={() => this.pass()}>pass</button>
+                  )}
+                  {(p.hand || []).map((c, j) => (
+                    <div
+                      className={styles.bubble}
+                      key={j}
+                      onClick={() => this.clickCard(j)}
+                    >
+                      {this.renderCard(c)}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -139,7 +152,7 @@ class Main extends React.Component<
         if (!utils.isMyTurn()) return;
         if (field.bean !== -1 && field.bean !== me.hand![0])
           return alert("need to plant same type of bean");
-        field.bean = me.hand!.unshift();
+        field.bean = me.hand!.shift()!;
         field.count++;
         if (store.gameW.game.phase === Phase.plant && me.hand!.length > 0) {
           store.gameW.game.phase = Phase.plantSecond;
@@ -204,7 +217,7 @@ class Main extends React.Component<
             )
           ) {
             store.gameW.game.table.push({
-              bean: store.gameW.game.discard!.unshift(),
+              bean: store.gameW.game.discard!.shift()!,
               origin: -1,
             });
           }
@@ -264,6 +277,10 @@ class Main extends React.Component<
     if (store.gameW.game.phase !== Phase.draw) return;
     return store.gameW.game.table!.map((d, i) => (
       <div
+        className={[
+          styles.bubble,
+          this.state.selectedTable === i && styles.grey,
+        ].join(" ")}
         key={i}
         onClick={() =>
           this.setState({
@@ -271,10 +288,8 @@ class Main extends React.Component<
           })
         }
       >
-        <div>
-          {this.renderCard(d.bean)}
-          <div>origin: {store.gameW.game.players[d.origin]?.userName}</div>
-        </div>
+        {this.renderCard(d.bean)}
+        <div>origin: {store.gameW.game.players[d.origin]?.userName}</div>
       </div>
     ));
   }
