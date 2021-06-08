@@ -32,7 +32,7 @@ class Main extends React.Component<
             <h2>{p.userName}</h2>
             <div>hand: {(p.hand || []).length}</div>
             <div>money: {(p.money || []).length}</div>
-            <div className={styles.flex}>
+            <div className={styles.inline_flex_center}>
               {p.fields.map((_, j) => (
                 <div
                   className={styles.bubble}
@@ -45,11 +45,13 @@ class Main extends React.Component<
             </div>
             {utils.myIndex() === i && (
               <div>
-                <div className={styles.flex}>
+                <div className={styles.inline_flex_center}>
                   <h3>hand</h3>
                   {(store.gameW.game.phase === Phase.plantSecond ||
                     store.gameW.game.players.length === 2) && (
-                    <button onClick={() => this.pass()}>pass</button>
+                    <div className={styles.bubble} onClick={() => this.pass()}>
+                      pass
+                    </div>
                   )}
                   {(p.hand || []).map((c, j) => (
                     <div

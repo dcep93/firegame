@@ -16,6 +16,12 @@
   align-items: flex-start;
 }
 
+.inline_flex_center {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .dont_grow {
   width: 0;
   min-width: 100%;
