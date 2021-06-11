@@ -12,27 +12,29 @@ class Main extends React.Component<{}, { hidden: boolean }> {
   render() {
     const me = utils.getMe();
     return (
-      <div className={styles.bubble}>
-        <div>
-          <h2>Bank</h2>
+      <div>
+        <div className={styles.bubble}>
           <div>
-            <div className={[styles.inline_flex, css.bank].join(" ")}>
-              {store.gameW.game.bank.map((w) => (
-                <p key={w} className={styles.bubble}>
-                  {w}
-                </p>
-              ))}
+            <h2>Bank</h2>
+            <div>
+              <div className={[styles.inline_flex, css.bank].join(" ")}>
+                {store.gameW.game.bank.map((w) => (
+                  <p key={w} className={styles.bubble}>
+                    {w}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
+          {me && (
+            <div
+              className={[styles.bubble, css.my_word].join(" ")}
+              onClick={() => this.setState({ hidden: !this.state.hidden })}
+            >
+              <div hidden={this.state.hidden}>{me.word}</div>
+            </div>
+          )}
         </div>
-        {me && (
-          <div
-            className={[styles.bubble, css.my_word].join(" ")}
-            onClick={() => this.setState({ hidden: !this.state.hidden })}
-          >
-            <div hidden={this.state.hidden}>{me.word}</div>
-          </div>
-        )}
       </div>
     );
   }

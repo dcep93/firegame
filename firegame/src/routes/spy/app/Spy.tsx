@@ -2,14 +2,16 @@ import React from "react";
 import styles from "../../../shared/styles.module.css";
 import Main from "./main/Main";
 import Sidebar from "./sidebar/Sidebar";
-import { store } from "./utils/utils";
+import utils, { store } from "./utils/utils";
 
 class Spy extends React.Component {
   render() {
     return (
-      <div>
-        <div className={styles.content}>{store.gameW.game && <Main />}</div>
+      <div
+        className={[styles.main, utils.isMyTurn() && styles.my_turn].join(" ")}
+      >
         <Sidebar />
+        <div className={styles.content}>{store.gameW.game && <Main />}</div>
       </div>
     );
   }

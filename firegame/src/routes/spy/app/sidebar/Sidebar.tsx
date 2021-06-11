@@ -11,8 +11,6 @@ class Sidebar extends SharedSidebar<Params> {
   numTeamsRef: RefObject<HTMLInputElement> = React.createRef();
   numWordsRef: RefObject<HTMLInputElement> = React.createRef();
 
-  isResizeable = false;
-
   getParams(): Params {
     return {
       lobby: store.lobby,
