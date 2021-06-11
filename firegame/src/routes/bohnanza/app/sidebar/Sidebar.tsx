@@ -3,7 +3,7 @@ import NewGame, { Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 class Sidebar extends SharedSidebar<Params> {
-  name = "Template";
+  name = "Bohnanza";
   rules = "https://www.fgbradleys.com/rules/rules2/Bohnanza-rules.pdf";
   NewGame = NewGame;
   isMyTurn = utils.isMyTurn.bind(utils);

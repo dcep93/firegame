@@ -4,10 +4,7 @@ import Main from "./main/Main";
 import Sidebar from "./sidebar/Sidebar";
 import utils, { store } from "./utils/utils";
 
-// this folder should be as small as possible
-// common functions should be extended from shared folder!
-
-class Template extends React.Component {
+class Bohnanza extends React.Component {
   render() {
     return (
       <div className={`${utils.isMyTurn() && styles.my_turn}`}>
@@ -20,4 +17,4 @@ class Template extends React.Component {
   }
 }
 
-export default Template;
+export default Bohnanza;
