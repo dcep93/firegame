@@ -115,6 +115,7 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   }
 
   repeat<X>(value: X, count: number): X[] {
+    if (!count) return [];
     return Array.from(new Array(count)).map(() => value);
   }
 
