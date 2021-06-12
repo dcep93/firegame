@@ -51,7 +51,8 @@ class Main extends React.Component<
                 <div>
                   <h3>hand</h3>
                   <div className={styles.inline_flex_center}>
-                    {(store.gameW.game.phase === Phase.plantSecond ||
+                    {((utils.isMyTurn() &&
+                      store.gameW.game.phase === Phase.plantSecond) ||
                       store.gameW.game.players.length === 2) && (
                       <div
                         className={styles.bubble}
