@@ -200,9 +200,8 @@ class Main extends React.Component<
         )[0].bean;
         field.count++;
         if (store.gameW.game.table!.length === 0) {
-          utils.incrementPlayerTurn();
           store.gameW.game.phase = Phase.plant;
-          const p = utils.getMe();
+          const p = utils.getCurrent();
           if (!p.hand) p.hand = [];
           const toDraw =
             store.gameW.game.players.length === 2
@@ -211,6 +210,7 @@ class Main extends React.Component<
               ? 3
               : 4;
           p.hand.push(...this.draw(toDraw));
+          utils.incrementPlayerTurn();
         }
         store.update(`planted ${beans[field.bean].name} from table`);
     }
