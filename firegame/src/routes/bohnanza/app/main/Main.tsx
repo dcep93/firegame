@@ -113,7 +113,7 @@ class Main extends React.Component<
     const earnings =
       bean.earnings
         .map((e, i) => ({ e, i }))
-        .filter((e) => count > e.e)
+        .filter((e) => count >= e.e)
         .reverse()[0]?.i + 1 || 0;
     if (!me.money) me.money = [];
     me.money.push(...utils.repeat(field.bean, earnings));
