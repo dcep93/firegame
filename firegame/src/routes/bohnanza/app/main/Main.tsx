@@ -31,43 +31,48 @@ class Main extends React.Component<
           </div>
         </div>
         {store.gameW.game.players.map((p, i) => (
-          <div key={i} className={styles.bubble}>
-            <h2>{p.userName}</h2>
-            <div>hand: {(p.hand || []).length}</div>
-            <div>money: {(p.money || []).length}</div>
-            <div className={styles.inline_flex_center}>
-              {p.fields.map((_, j) => (
-                <div
-                  className={styles.bubble}
-                  key={j}
-                  onClick={() => utils.myIndex() === i && this.clickField(j)}
-                >
-                  {this.renderField(p, j)}
-                </div>
-              ))}
-            </div>
-            {utils.myIndex() === i && (
-              <div>
-                <div className={styles.inline_flex_center}>
-                  <h3>hand</h3>
-                  {(store.gameW.game.phase === Phase.plantSecond ||
-                    store.gameW.game.players.length === 2) && (
-                    <div className={styles.bubble} onClick={() => this.pass()}>
-                      pass
-                    </div>
-                  )}
-                  {(p.hand || []).map((c, j) => (
-                    <div
-                      className={styles.bubble}
-                      key={j}
-                      onClick={() => this.clickCard(j)}
-                    >
-                      {this.renderCard(c)}
-                    </div>
-                  ))}
-                </div>
+          <div key={i}>
+            <div className={styles.bubble}>
+              <h2>{p.userName}</h2>
+              <div>hand: {(p.hand || []).length}</div>
+              <div>money: {(p.money || []).length}</div>
+              <div className={styles.inline_flex_center}>
+                {p.fields.map((_, j) => (
+                  <div
+                    className={styles.bubble}
+                    key={j}
+                    onClick={() => utils.myIndex() === i && this.clickField(j)}
+                  >
+                    {this.renderField(p, j)}
+                  </div>
+                ))}
               </div>
-            )}
+              {utils.myIndex() === i && (
+                <div>
+                  <h3>hand</h3>
+                  <div className={styles.inline_flex_center}>
+                    {(store.gameW.game.phase === Phase.plantSecond ||
+                      store.gameW.game.players.length === 2) && (
+                      <div
+                        className={styles.bubble}
+                        onClick={() => this.pass()}
+                      >
+                        pass
+                      </div>
+                    )}
+                    {(p.hand || []).map((c, j) => (
+                      <div
+                        className={styles.bubble}
+                        key={j}
+                        onClick={() => this.clickCard(j)}
+                      >
+                        {this.renderCard(c)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ))}
         {this.renderTable()}
