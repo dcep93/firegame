@@ -195,7 +195,7 @@ class Main extends React.Component<
         if (store.gameW.game.table!.length === 0) {
           utils.incrementPlayerTurn();
           store.gameW.game.phase = Phase.plant;
-          const p = utils.getCurrent();
+          const p = utils.getMe();
           if (!p.hand) p.hand = [];
           const toDraw =
             store.gameW.game.players.length === 2
