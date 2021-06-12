@@ -25,6 +25,7 @@ class Main extends React.Component<
       <div>
         <div>
           <div className={styles.bubble}>
+            <div>turn: {utils.getCurrent().userName}</div>
             <div>Phase: {Phase[store.gameW.game.phase]}</div>
             <div>Deck: {(store.gameW.game.deck || []).length}</div>
             <div>Discard: {(store.gameW.game.discard || []).length}</div>
