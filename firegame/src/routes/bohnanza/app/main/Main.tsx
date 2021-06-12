@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 import beans from "../utils/beans";
-import { Phase } from "../utils/NewGame";
+import { Phase, PlayerType } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 class Main extends React.Component<
@@ -42,7 +42,7 @@ class Main extends React.Component<
                   key={j}
                   onClick={() => utils.myIndex() === i && this.clickField(j)}
                 >
-                  {this.renderField(j)}
+                  {this.renderField(p, j)}
                 </div>
               ))}
             </div>
@@ -75,9 +75,8 @@ class Main extends React.Component<
     );
   }
 
-  renderField(index: number): React.ReactElement {
-    const me = utils.getMe();
-    const field = me.fields[index];
+  renderField(p: PlayerType, index: number): React.ReactElement {
+    const field = p.fields[index];
     if (!field.purchased) return <div>not purchased</div>;
     if (field.bean === -1) return <div>empty</div>;
     return (
