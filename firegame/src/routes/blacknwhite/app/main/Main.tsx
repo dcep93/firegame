@@ -17,7 +17,7 @@ class Main extends React.Component {
                 hand:{" "}
                 {Object.entries(
                   utils.freqDict(
-                    (p.hand || []).map((n) => (n % 2 === 0 ? "white" : "black"))
+                    (p.hand || []).map((n) => (n % 2 === 1 ? "white" : "black"))
                   )
                 )
                   .map(([v, c]) => `${v}: ${c}`)
@@ -31,7 +31,7 @@ class Main extends React.Component {
             active:{" "}
             {played === undefined
               ? "NONE"
-              : played % 2 === 0
+              : played % 2 === 1
               ? "white"
               : "black"}
           </div>
@@ -42,7 +42,7 @@ class Main extends React.Component {
               <div
                 key={i}
                 className={styles.bubble}
-                style={{ backgroundColor: v % 2 === 0 ? "white" : "grey" }}
+                style={{ backgroundColor: v % 2 === 1 ? "white" : "grey" }}
                 onClick={() => this.click(i)}
               >
                 {v}
@@ -57,7 +57,7 @@ class Main extends React.Component {
   click(index: number) {
     if (!utils.isMyTurn()) return;
     const played = utils.getMe().hand!.splice(index, 1)[0];
-    const color = played % 2 === 0 ? "white" : "black";
+    const color = played % 2 === 1 ? "white" : "black";
     if (store.gameW.game.first === undefined) {
       store.gameW.game.first = played;
       utils.incrementPlayerTurn();
