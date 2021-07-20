@@ -10,7 +10,7 @@ const app = express();
 
 app.use(subdomain("api", api));
 
-const build = "build";
+const build = path.join(__dirname, "build");
 app.use(express.static(build));
 app.use(express.static("public"));
 app.get("/*", function (req, res) {
