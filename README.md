@@ -1,5 +1,9 @@
 # Firegame
 
+### changing infra?
+
+be sure to keep the firebase project isolated so it isnt upgraded to "blaze" plan
+
 ### update godaddy nameservers
 
 url like this https://dns.godaddy.com/somuchcinnamon.com/nameservers
