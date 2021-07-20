@@ -8,4 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: bash .github/workflows/build_react.sh
-      - run: bash .github/workflows/deploy_to_app_engine.sh
+      - run: bash .github/workflows/deploy_to_app_engine.sh "${{ secrets.SA_KEY }}"
