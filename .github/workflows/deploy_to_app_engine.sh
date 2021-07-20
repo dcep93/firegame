@@ -4,5 +4,6 @@ set -euo pipefail
 
 GAC="gac.json"
 echo "$1" > "$GAC"
-cat "$GAC" | wc -l
-cat "$GAC" | wc
+cat "$GAC"
+apt-get install jq
+cat "$GAC" | jq
