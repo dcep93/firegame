@@ -57,4 +57,5 @@ function set(path: string, obj: BlobType): void {
   database.ref(path).set(obj);
 }
 
-export default { init, now, latestChild, push, connect, set };
+const ex = { init, now, latestChild, push, connect, set };
+export default ex;

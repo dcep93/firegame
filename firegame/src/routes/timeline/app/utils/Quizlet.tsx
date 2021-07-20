@@ -16,13 +16,14 @@ function _fetch(base: string, path: string): Promise<any> {
 
 const downloaded: { [key: string]: any } = {};
 
-export default {
+const ex = {
   fetch: _fetch,
   TERMS_URL,
   SEARCH_URL,
   FOLDER_URL,
   SET_URL,
 };
+export default ex;
 
 downloaded[
   "https://quizlet.com/webapi/3.1/folder-sets?filters[folderId]=49189251&filters[isDeleted]=0"
@@ -3739,8 +3740,7 @@ downloaded[
           },
           {
             id: 10295646932,
-            word:
-              "J. Edgar Hoover appointed Director of the Bureau of Investigation",
+            word: "J. Edgar Hoover appointed Director of the Bureau of Investigation",
             _wordTtsUrl:
               "/tts/en.mp3?v=14&b=Si4gRWRnYXIgSG9vdmVyIGFwcG9pbnRlZCBEaXJlY3RvciBvZiB0aGUgQnVyZWF1IG9mIEludmVzdGlnYXRpb24&s=uki.iyQC",
             _wordSlowTtsUrl:

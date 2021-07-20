@@ -15,7 +15,7 @@ import war from "../routes/war/app/War";
 import wavelength from "../routes/wavelength/app/Wavelength";
 import wingspan from "../routes/wingspan/app/Wingspan";
 
-export default {
+const ex = {
   azul,
   fox,
   "7wd": _7wd,
@@ -33,3 +33,4 @@ export default {
   wavelength,
   wingspan,
 };
+export default ex;

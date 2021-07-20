@@ -672,4 +672,5 @@ const nobles = [
   { [Token.red]: 3, [Token.white]: 3, [Token.black]: 3 },
 ];
 
-export default { nobles, cards };
+const ex = { nobles, cards };
+export default ex;

@@ -13,6 +13,7 @@ interface PlayerType {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Array<T> {
     // @ts-ignore
     sum(): number;

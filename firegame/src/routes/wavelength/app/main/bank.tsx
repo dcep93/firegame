@@ -1,4 +1,4 @@
-import { Difficulty, Card } from "../utils/NewGame";
+import { Card, Difficulty } from "../utils/NewGame";
 
 const bankStringEasy = `
 bad TV show, good TV show
@@ -255,18 +255,18 @@ unreasonable phobia, reasonable phobia
 `;
 
 function stringToCard(s: string): Card[] {
-	return s
-		.split("\n")
-		.filter(Boolean)
-		.map((line) => {
-			const parts = line.split(",");
-			return { a: parts[0].toUpperCase(), b: parts[1].toUpperCase() };
-		});
+  return s
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const parts = line.split(",");
+      return { a: parts[0].toUpperCase(), b: parts[1].toUpperCase() };
+    });
 }
 
 const bank = {
-	[Difficulty.easy]: stringToCard(bankStringEasy),
-	[Difficulty.hard]: stringToCard(bankStringHard),
+  [Difficulty.easy]: stringToCard(bankStringEasy),
+  [Difficulty.hard]: stringToCard(bankStringHard),
 };
 
 export default bank;
