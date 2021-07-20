@@ -1,11 +1,13 @@
-// https://console.firebase.google.com/u/0/project/firegame-7eb05/database/firegame-7eb05/data/~2F
+// https://console.firebase.google.com/u/0/project/firebase-320421/database/firebase-320421-default-rtdb/data
 // jon is u_4110fc9342fd4
 
 import firebase from "firebase/app";
 import "firebase/database";
-import { gamePath } from "./writer/utils";
+import { gamePath, namespace } from "./writer/utils";
 
-const config = { databaseURL: "https://firegame-7eb05.firebaseio.com/" };
+const config = {
+  databaseURL: "https://firebase-320421-default-rtdb.firebaseio.com/",
+};
 
 var database: { ref: (path: string) => any };
 type ResultType = { val: () => BlobType | null };
@@ -17,10 +19,12 @@ var offset: number = 0;
 function init(): void {
   firebase.initializeApp(config);
   database = firebase.database();
+  const clearF = () => database.ref(namespace()).set({});
+  const undoF = () => database.ref(`${gamePath()}/${latest}`).set({});
   // @ts-ignore
-  window.clear = () => database.ref("/").set({});
+  window.clear = clearF;
   // @ts-ignore
-  window.undo = () => database.ref(`${gamePath()}/${latest}`).set({});
+  window.undo = undoF;
   database
     .ref(".info/serverTimeOffset")
     .once("value")
