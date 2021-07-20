@@ -1,6 +1,8 @@
 #!/bin/bash
+set -euo pipefail
+
 cd firegame || exit
-yarn install
+npm install
 yarn build
 rm -rf node_modules
-du -h -d2 .
+du -h -d3 . | sort -h
