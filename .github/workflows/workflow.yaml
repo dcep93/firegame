@@ -1,0 +1,10 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - run: bash .github/workflows/build_react.sh
+      - run: bash .github/workflows/deploy_to_app_engine.sh
