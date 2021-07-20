@@ -1,4 +1,6 @@
 #!/bin/bash
-ls
-touch butt1
-ls
+cd firegame || exit
+yarn install
+yarn build
+rm -rf node_modules
+du -h -d2 .
