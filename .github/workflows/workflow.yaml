@@ -8,6 +8,6 @@ jobs:
     steps:
       - run: ls
       - run: echo hi
-      - run: ls
+      - run: echo $(ls) wut
       - run: bash .github/workflows/build_react.sh
       - run: bash .github/workflows/deploy_to_app_engine.sh
