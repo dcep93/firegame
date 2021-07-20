@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-GAC="gac.json"
+export GOOGLE_APPLICATION_CREDENTIALS="gac.json"
 echo "$1" > "$GAC"
-cat "$GAC"
-cat "$GAC" | wc
+gcloud app deploy
