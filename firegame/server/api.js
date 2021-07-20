@@ -7,7 +7,9 @@ app.use(function (req, res, next) {
   next();
 });
 
+console.log("api");
 app.use("/sanity", (req, res) => {
+  console.log("sanity");
   res.send("sanity\n");
 });
 
