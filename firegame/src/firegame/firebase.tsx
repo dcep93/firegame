@@ -16,7 +16,10 @@ type BlobType = any;
 var latest: string;
 
 var offset: number = 0;
+var initialized = false;
 function init(): void {
+  if (initialized) return;
+  initialized = true;
   firebase.initializeApp(config);
   database = firebase.database();
   const clearF = () => database.ref(namespace()).set({});

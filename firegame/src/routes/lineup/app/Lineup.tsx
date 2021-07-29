@@ -2,6 +2,8 @@ import React from "react";
 import Firebase from "../../../firegame/firebase";
 import css from "./index.module.css";
 
+const VERSION = "lineup/0.0.1";
+
 type UserType = { [slotIndex: number]: number };
 type SlotType = { x: number; y: number }[];
 type StateType = {
@@ -9,6 +11,7 @@ type StateType = {
   slots: SlotType[];
   users: { [userId: string]: UserType };
 };
+type PropsType = { roomId: number };
 
 class SlotCount extends React.Component<{ names: string[] }> {
   render() {
@@ -26,7 +29,7 @@ class SlotCount extends React.Component<{ names: string[] }> {
   }
 }
 
-class Lineup extends React.Component<{ roomId: number }, StateType> {
+class Lineup extends React.Component<PropsType, StateType> {
   componentDidMount() {
     Firebase.init();
     Firebase.connect(this.getRoom(), this.setState.bind(this));
@@ -47,7 +50,8 @@ class Lineup extends React.Component<{ roomId: number }, StateType> {
     //   ]);
     //   return null;
     // }
-    if (!this.state) return "could not connect";
+    if (!this.getUserId()) this.login();
+    if (!this.state) return null;
     return (
       <div>
         <div className={css.imgs}>
@@ -80,7 +84,7 @@ class Lineup extends React.Component<{ roomId: number }, StateType> {
               )}
             ></div>
             <SlotCount
-              names={Object.entries(this.state.users)
+              names={Object.entries(this.state.users || {})
                 .filter(([name, userSlots]) => userSlots[i] || 0)
                 .map(([name, userSlots]) => name)}
             />
@@ -107,9 +111,13 @@ class Lineup extends React.Component<{ roomId: number }, StateType> {
     Firebase.set(`${this.getRoom()}/users/${this.getUserId()}`, me);
   }
 
+  login() {
+    const userId = prompt("enter your name");
+    localStorage.setItem(VERSION, JSON.stringify({ userId }));
+  }
+
   getUserId(): string {
-    // todo login/logout
-    return "dantest";
+    return JSON.parse(localStorage.getItem(VERSION) || "{}").userId;
   }
 
   getMe(): UserType {
