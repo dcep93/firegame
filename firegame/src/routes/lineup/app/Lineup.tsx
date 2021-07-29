@@ -10,6 +10,22 @@ type StateType = {
   users: { [userId: string]: UserType };
 };
 
+class SlotCount extends React.Component<{ names: string[] }> {
+  render() {
+    return (
+      <div
+        className={css.slotCount}
+        onClick={(e) => {
+          alert(this.props.names.join("\n") || "{none}");
+          e.stopPropagation();
+        }}
+      >
+        ({this.props.names.length})
+      </div>
+    );
+  }
+}
+
 class Lineup extends React.Component<{ roomId: number }, StateType> {
   componentDidMount() {
     Firebase.init();
@@ -31,7 +47,7 @@ class Lineup extends React.Component<{ roomId: number }, StateType> {
     //   ]);
     //   return null;
     // }
-    if (!this.state) return null;
+    if (!this.state) return "could not connect";
     return (
       <div>
         <div className={css.imgs}>
@@ -63,13 +79,11 @@ class Lineup extends React.Component<{ roomId: number }, StateType> {
                 " "
               )}
             ></div>
-            <div className={css.slotCount}>
-              (
-              {Object.values(this.state.users)
-                .map((u) => u[i] || 0)
-                .reduce((a, b) => a + b, 0)}
-              )
-            </div>
+            <SlotCount
+              names={Object.entries(this.state.users)
+                .filter(([name, userSlots]) => userSlots[i] || 0)
+                .map(([name, userSlots]) => name)}
+            />
           </div>
         ))}
       </div>
