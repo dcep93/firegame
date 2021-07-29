@@ -122,16 +122,7 @@ class Slot extends React.Component<{
           height: this.props.slot[1].y - this.props.slot[0].y,
         }}
       >
-        <div
-          className={[
-            css.slot,
-            this.props.selected > 0
-              ? css.selectedSlot
-              : this.props.names.length > 0
-              ? css.otherSelectedSlot
-              : false,
-          ].join(" ")}
-        ></div>
+        <div className={[css.slot, this.getSelected()].join(" ")}></div>
 
         <div
           className={css.slotCount}
@@ -144,6 +135,22 @@ class Slot extends React.Component<{
         </div>
       </div>
     );
+  }
+
+  getSelected(): string {
+    if (this.props.selected > 0) {
+      if (this.props.names.length > 1) {
+        return css.multipleSelectedSlot;
+      } else {
+        return css.selectedSlot;
+      }
+    } else {
+      if (this.props.names.length > 0) {
+        return css.otherSelectedSlot;
+      } else {
+        return "";
+      }
+    }
   }
 }
 

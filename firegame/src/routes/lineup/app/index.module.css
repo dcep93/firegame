@@ -22,6 +22,10 @@
   background-color: black;
 }
 
+.multipleSelectedSlot {
+  background-color: blue;
+}
+
 .otherSelectedSlot {
   background-color: red;
 }
