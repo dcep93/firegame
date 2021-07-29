@@ -4,6 +4,8 @@ import {
   Route,
   RouteComponentProps,
 } from "react-router-dom";
+import apps from "./firegame/apps";
+import AppWrapper from "./firegame/components/AppWrapper";
 import GameWrapper from "./firegame/components/GameWrapper";
 import Home from "./firegame/components/Home";
 import games from "./firegame/games";
@@ -31,6 +33,22 @@ function getRoutes(): JSX.Element {
           <GameWrapper
             component={component}
             gameName={gameName}
+            roomId={parseInt(props.match.params.roomId) || -1}
+          />
+        )}
+      />
+    );
+  }
+  for (let [appName, component] of Object.entries(apps)) {
+    routes.push(
+      <Route
+        key={appName}
+        path={`/${appName}/:roomId(\\d+)?`}
+        // @ts-ignore
+        render={(props: RouteComponentProps<{ roomId: string }>) => (
+          <AppWrapper
+            component={component}
+            appName={appName}
             roomId={parseInt(props.match.params.roomId) || -1}
           />
         )}
