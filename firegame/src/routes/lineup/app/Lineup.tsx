@@ -13,17 +13,37 @@ type StateType = {
 };
 type PropsType = { roomId: number };
 
-class SlotCount extends React.Component<{ names: string[] }> {
+class Slot extends React.Component<{
+  names: string[];
+  slot: SlotType;
+  selected: number;
+}> {
   render() {
     return (
       <div
-        className={css.slotCount}
-        onClick={(e) => {
-          alert(this.props.names.join("\n") || "{none}");
-          e.stopPropagation();
+        className={css.slotWrapper}
+        style={{
+          left: this.props.slot[0].x,
+          top: this.props.slot[0].y,
+          width: this.props.slot[1].x - this.props.slot[0].x,
+          height: this.props.slot[1].y - this.props.slot[0].y,
         }}
       >
-        ({this.props.names.length})
+        <div
+          className={[css.slot, this.props.selected && css.selectedSlot].join(
+            " "
+          )}
+        ></div>
+
+        <div
+          className={css.slotCount}
+          onClick={(e) => {
+            alert(this.props.names.join("\n") || "{none}");
+            e.stopPropagation();
+          }}
+        >
+          ({this.props.names.length})
+        </div>
       </div>
     );
   }
@@ -66,30 +86,22 @@ class Lineup extends React.Component<PropsType, StateType> {
             />
           ))}
         </div>
-        {(this.state.slots || []).map((slot, i) => (
-          <div
-            className={css.slotWrapper}
-            key={i}
-            onClick={() => this.click(i)}
-            style={{
-              left: slot[0].x,
-              top: slot[0].y,
-              width: slot[1].x - slot[0].x,
-              height: slot[1].y - slot[0].y,
-            }}
-          >
-            <div
-              className={[css.slot, this.getMe()[i] && css.selectedSlot].join(
-                " "
-              )}
-            ></div>
-            <SlotCount
-              names={Object.entries(this.state.users || {})
-                .filter(([name, userSlots]) => userSlots[i] || 0)
-                .map(([name, userSlots]) => name)}
-            />
-          </div>
-        ))}
+        <div>
+          {(this.state.slots || []).map((slot, i) => (
+            <div key={i} onClick={() => this.click(i)}>
+              <Slot
+                selected={this.getMe()[i]}
+                slot={slot}
+                names={Object.entries(this.state.users || {})
+                  .filter(([name, userSlots]) => userSlots[i] || 0)
+                  .map(([name, userSlots]) => name)}
+              />
+            </div>
+          ))}
+        </div>
+        <div className={css.logout} onClick={this.logout}>
+          logout
+        </div>
       </div>
     );
   }
@@ -114,6 +126,11 @@ class Lineup extends React.Component<PropsType, StateType> {
   login() {
     const userId = prompt("enter your name");
     localStorage.setItem(VERSION, JSON.stringify({ userId }));
+  }
+
+  logout() {
+    localStorage.setItem(VERSION, "{}");
+    window.location.reload();
   }
 
   getUserId(): string {

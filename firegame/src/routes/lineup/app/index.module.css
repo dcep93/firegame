@@ -27,3 +27,8 @@
   position: absolute;
   bottom: 0;
 }
+
+.logout {
+  z-index: 1;
+  position: absolute;
+}
