@@ -13,42 +13,6 @@ type StateType = {
 };
 type PropsType = { roomId: number };
 
-class Slot extends React.Component<{
-  names: string[];
-  slot: SlotType;
-  selected: number;
-}> {
-  render() {
-    return (
-      <div
-        className={css.slotWrapper}
-        style={{
-          left: this.props.slot[0].x,
-          top: this.props.slot[0].y,
-          width: this.props.slot[1].x - this.props.slot[0].x,
-          height: this.props.slot[1].y - this.props.slot[0].y,
-        }}
-      >
-        <div
-          className={[css.slot, this.props.selected && css.selectedSlot].join(
-            " "
-          )}
-        ></div>
-
-        <div
-          className={css.slotCount}
-          onClick={(e) => {
-            alert(this.props.names.join("\n") || "{none}");
-            e.stopPropagation();
-          }}
-        >
-          ({this.props.names.length})
-        </div>
-      </div>
-    );
-  }
-}
-
 class Lineup extends React.Component<PropsType, StateType> {
   componentDidMount() {
     Firebase.init();
@@ -139,6 +103,47 @@ class Lineup extends React.Component<PropsType, StateType> {
 
   getMe(): UserType {
     return (this.state.users || {})[this.getUserId()] || {};
+  }
+}
+
+class Slot extends React.Component<{
+  names: string[];
+  slot: SlotType;
+  selected: number;
+}> {
+  render() {
+    return (
+      <div
+        className={css.slotWrapper}
+        style={{
+          left: this.props.slot[0].x,
+          top: this.props.slot[0].y,
+          width: this.props.slot[1].x - this.props.slot[0].x,
+          height: this.props.slot[1].y - this.props.slot[0].y,
+        }}
+      >
+        <div
+          className={[
+            css.slot,
+            this.props.selected > 0
+              ? css.selectedSlot
+              : this.props.names.length > 0
+              ? css.otherSelectedSlot
+              : false,
+          ].join(" ")}
+        ></div>
+
+        <div
+          className={css.slotCount}
+          onClick={(e) => {
+            alert(this.props.names.join("\n") || "{none}");
+            e.stopPropagation();
+          }}
+        >
+          ({this.props.names.length})
+        </div>
+      </div>
+    );
   }
 }
 

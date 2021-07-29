@@ -22,6 +22,10 @@
   background-color: black;
 }
 
+.otherSelectedSlot {
+  background-color: red;
+}
+
 .slotCount {
   z-index: 1;
   position: absolute;
