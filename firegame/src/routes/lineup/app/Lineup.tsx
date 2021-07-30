@@ -35,7 +35,7 @@ class Lineup extends React.Component<PropsType, StateType> {
     //   return null;
     // }
     if (!this.getUserId()) this.login();
-    if (!this.state) return null;
+    if (!this.state) return "loading";
     return (
       <div>
         <div className={css.imgs}>
