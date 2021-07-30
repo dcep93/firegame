@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ErrorInfo } from "react";
 import Firebase from "../../../firegame/firebase";
 import css from "./index.module.css";
 
@@ -17,6 +17,10 @@ class Lineup extends React.Component<PropsType, StateType> {
   componentDidMount() {
     Firebase.init();
     Firebase.connect(this.getRoom(), this.setState.bind(this));
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    alert(JSON.stringify({ error, info }, null, 2));
   }
 
   getRoom() {
