@@ -13,6 +13,8 @@ type StateType = {
 };
 type PropsType = { roomId: number };
 
+var alerted = false;
+
 class Lineup extends React.Component<PropsType, StateType> {
   componentDidMount() {
     Firebase.init();
@@ -20,6 +22,8 @@ class Lineup extends React.Component<PropsType, StateType> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
+    if (alerted) return;
+    alerted = true;
     alert(JSON.stringify({ error, info }, null, 2));
   }
 
@@ -58,11 +62,13 @@ class Lineup extends React.Component<PropsType, StateType> {
           {(this.state.slots || []).map((slot, i) => (
             <div key={i} onClick={() => this.click(i)}>
               <Slot
-                selected={this.getMe()[i]}
+                mySelected={this.getMe()[i] || 0}
                 slot={slot}
-                names={Object.entries(this.state.users || {})
-                  .filter(([name, userSlots]) => userSlots[i] || 0)
-                  .map(([name, userSlots]) => name)}
+                selectedDict={Object.fromEntries(
+                  Object.entries(this.state.users || {})
+                    .map(([userId, userSlots]) => [userId, userSlots[i]])
+                    .filter(([userId, selected]) => selected > 0)
+                )}
               />
             </div>
           ))}
@@ -87,7 +93,7 @@ class Lineup extends React.Component<PropsType, StateType> {
 
   click(index: number) {
     const me = this.getMe();
-    me[index] = ((me[index] || 0) + 1) % 2;
+    me[index] = ((me[index] || 0) + 1) % 4;
     Firebase.set(`${this.getRoom()}/users/${this.getUserId()}`, me);
   }
 
@@ -111,9 +117,9 @@ class Lineup extends React.Component<PropsType, StateType> {
 }
 
 class Slot extends React.Component<{
-  names: string[];
+  selectedDict: { [userId: string]: number };
   slot: SlotType;
-  selected: number;
+  mySelected: number;
 }> {
   render() {
     return (
@@ -126,30 +132,46 @@ class Slot extends React.Component<{
           height: this.props.slot[1].y - this.props.slot[0].y,
         }}
       >
-        <div className={[css.slot, this.getSelected()].join(" ")}></div>
+        <div
+          className={[css.slot, this.getSelectedClass()].join(" ")}
+          style={{ opacity: this.getOpacity() }}
+        ></div>
 
         <div
           className={css.slotCount}
           onClick={(e) => {
-            alert(this.props.names.join("\n") || "{none}");
+            alert(
+              Object.entries(this.props.selectedDict)
+                .map(([userId, selected]) => `${userId} ${selected}`)
+                .join("\n") || "{none}"
+            );
             e.stopPropagation();
           }}
         >
-          ({this.props.names.length})
+          {this.props.mySelected}/{this.getSelected()}
         </div>
       </div>
     );
   }
 
-  getSelected(): string {
-    if (this.props.selected > 0) {
-      if (this.props.names.length > 1) {
+  getOpacity(): number {
+    return 0.4;
+  }
+
+  getSelected(): number {
+    return Object.values(this.props.selectedDict).reduce((a, b) => a + b, 0);
+  }
+
+  getSelectedClass(): string {
+    const selected = this.getSelected();
+    if (this.props.mySelected > 0) {
+      if (selected > this.props.mySelected) {
         return css.multipleSelectedSlot;
       } else {
         return css.selectedSlot;
       }
     } else {
-      if (this.props.names.length > 0) {
+      if (selected > 0) {
         return css.otherSelectedSlot;
       } else {
         return "";
