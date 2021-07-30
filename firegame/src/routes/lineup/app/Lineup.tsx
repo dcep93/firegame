@@ -3,6 +3,7 @@ import Firebase from "../../../firegame/firebase";
 import css from "./index.module.css";
 
 const VERSION = "lineup/0.0.1";
+const MAX_VOTES = 3;
 
 type UserType = { [slotIndex: number]: number };
 type SlotType = { x: number; y: number }[];
@@ -13,17 +14,16 @@ type StateType = {
 };
 type PropsType = { roomId: number };
 
-var alerted = false;
-
 class Lineup extends React.Component<PropsType, StateType> {
+  alerted = false;
   componentDidMount() {
     Firebase.init();
     Firebase.connect(this.getRoom(), this.setState.bind(this));
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    if (alerted) return;
-    alerted = true;
+    if (this.alerted) return;
+    this.alerted = true;
     alert(JSON.stringify({ error, info }, null, 2));
   }
 
@@ -80,22 +80,16 @@ class Lineup extends React.Component<PropsType, StateType> {
     );
   }
 
-  definedSlots: SlotType = [];
-  defineSlotCorner(e: { pageX: number; pageY: number }): void {
-    this.definedSlots.push({ x: e.pageX, y: e.pageY });
-    if (this.definedSlots.length === 2) {
-      const slots = (this.state.slots || []).concat([
-        this.definedSlots.splice(0),
-      ]);
-      Firebase.set(`${this.getRoom()}/slots`, slots);
-    }
-  }
-
-  click(index: number) {
-    const me = this.getMe();
-    me[index] = ((me[index] || 0) + 1) % 4;
-    Firebase.set(`${this.getRoom()}/users/${this.getUserId()}`, me);
-  }
+  // definedSlots: SlotType = [];
+  // defineSlotCorner(e: { pageX: number; pageY: number }): void {
+  //   this.definedSlots.push({ x: e.pageX, y: e.pageY });
+  //   if (this.definedSlots.length === 2) {
+  //     const slots = (this.state.slots || []).concat([
+  //       this.definedSlots.splice(0),
+  //     ]);
+  //     Firebase.set(`${this.getRoom()}/slots`, slots);
+  //   }
+  // }
 
   login() {
     const userId = prompt("enter your name");
@@ -113,6 +107,12 @@ class Lineup extends React.Component<PropsType, StateType> {
 
   getMe(): UserType {
     return (this.state.users || {})[this.getUserId()] || {};
+  }
+
+  click(index: number) {
+    const me = this.getMe();
+    me[index] = ((me[index] || 0) + 1) % (MAX_VOTES + 1);
+    Firebase.set(`${this.getRoom()}/users/${this.getUserId()}`, me);
   }
 }
 
@@ -155,7 +155,27 @@ class Slot extends React.Component<{
   }
 
   getOpacity(): number {
-    return 0.4;
+    const minOpacity = 0.4;
+    const maxOpacity = 0.6;
+    const selected = this.getSelected();
+    const selectedOpacity =
+      Math.min(selected / 15, 1) * (maxOpacity - minOpacity) + minOpacity;
+    if (this.props.mySelected > 0) {
+      const opacity =
+        (this.props.mySelected / MAX_VOTES) * (maxOpacity - minOpacity) +
+        minOpacity;
+      if (selected > this.props.mySelected) {
+        return (selectedOpacity + opacity) / 2;
+      } else {
+        return opacity;
+      }
+    } else {
+      if (selected > 0) {
+        return selectedOpacity;
+      } else {
+        return 0;
+      }
+    }
   }
 
   getSelected(): number {
