@@ -3,6 +3,7 @@ import Firebase from "../../../firegame/firebase";
 import css from "./index.module.css";
 
 const VERSION = "lineup/0.0.1";
+const MINOR_VERSION = "2";
 const MAX_VOTES = 3;
 
 type UserType = { [slotIndex: number]: number };
@@ -43,7 +44,7 @@ class Lineup extends React.Component<PropsType, StateType> {
     //   return null;
     // }
     if (!this.getUserId()) this.login();
-    if (!this.state) return `loading ${VERSION}`;
+    if (!this.state) return `loading ${VERSION}.${MINOR_VERSION}`;
     return (
       <div>
         <div className={css.imgs}>
