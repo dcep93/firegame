@@ -155,7 +155,7 @@ class Slot extends React.Component<{
   }
 
   getOpacity(): number {
-    const minOpacity = 0.4;
+    const minOpacity = 0.2;
     const maxOpacity = 0.6;
     const selected = this.getSelected();
     const selectedOpacity =
