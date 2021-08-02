@@ -43,14 +43,10 @@ function getRoutes(): JSX.Element {
     routes.push(
       <Route
         key={appName}
-        path={`/${appName}/:roomId(\\d+)?`}
-        // @ts-ignore
-        render={(props: RouteComponentProps<{ roomId: string }>) => (
-          <AppWrapper
-            component={component}
-            appName={appName}
-            roomId={parseInt(props.match.params.roomId) || -1}
-          />
+        path={`/${appName}`}
+        render={() => (
+          // @ts-ignore
+          <AppWrapper component={component} appName={appName} />
         )}
       />
     );
