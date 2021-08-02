@@ -1,4 +1,4 @@
-import lineup from "../routes/lineup/app/Lineup";
+import lineup from "../routes/lineup/lineup/src/App";
 
 const ex = {
   lineup,
