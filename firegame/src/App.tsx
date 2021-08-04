@@ -5,7 +5,6 @@ import {
   RouteComponentProps,
 } from "react-router-dom";
 import apps from "./firegame/apps";
-import AppWrapper from "./firegame/components/AppWrapper";
 import GameWrapper from "./firegame/components/GameWrapper";
 import Home from "./firegame/components/Home";
 import games from "./firegame/games";
@@ -39,16 +38,9 @@ function getRoutes(): JSX.Element {
       />
     );
   }
-  for (let [appName, component] of Object.entries(apps)) {
+  for (let [appName, Component] of Object.entries(apps)) {
     routes.push(
-      <Route
-        key={appName}
-        path={`/${appName}`}
-        render={() => (
-          // @ts-ignore
-          <AppWrapper component={component} appName={appName} />
-        )}
-      />
+      <Route key={appName} path={`/${appName}`} render={() => <Component />} />
     );
   }
   return <>{routes}</>;
