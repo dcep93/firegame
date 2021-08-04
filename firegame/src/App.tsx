@@ -4,7 +4,6 @@ import {
   Route,
   RouteComponentProps,
 } from "react-router-dom";
-import apps from "./firegame/apps";
 import GameWrapper from "./firegame/components/GameWrapper";
 import Home from "./firegame/components/Home";
 import games from "./firegame/games";
@@ -36,11 +35,6 @@ function getRoutes(): JSX.Element {
           />
         )}
       />
-    );
-  }
-  for (let [appName, Component] of Object.entries(apps)) {
-    routes.push(
-      <Route key={appName} path={`/${appName}`} render={() => <Component />} />
     );
   }
   return <>{routes}</>;
