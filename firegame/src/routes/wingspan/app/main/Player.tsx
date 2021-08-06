@@ -98,6 +98,7 @@ class Hand extends React.Component<{
     const goal = GoalsBank[g.index];
     const scoresA = game.players
       .map((p, i) => ({ p, i, s: goal.f(p) }))
+      .filter((i) => i.s > 0)
       .sort((i) => i.s);
     const scoresD = utils.arrToDict(scoresA, (o) => o.s.toString());
     var offset = 0;
