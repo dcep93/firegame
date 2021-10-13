@@ -11,7 +11,6 @@ import spy from "../routes/spy/app/Spy";
 import takebacktoe from "../routes/takebacktoe/app/TakeBackToe";
 import tictactoe from "../routes/tictactoe/app/TicTacToe";
 import timeline from "../routes/timeline/app/Timeline";
-import war from "../routes/war/app/War";
 import wavelength from "../routes/wavelength/app/Wavelength";
 import wingspan from "../routes/wingspan/app/Wingspan";
 
@@ -29,7 +28,6 @@ const ex = {
   timeline,
   blacknwhite,
   tictactoe,
-  war,
   wavelength,
   wingspan,
 };
