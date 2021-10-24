@@ -6,12 +6,14 @@ const FOLDER_URL =
   _api_url + "folder-sets?filters[folderId]=49189251&filters[isDeleted]=0";
 
 function _fetch(base: string, path: string): Promise<any> {
-  return Promise.resolve()
-    .then(() => downloaded[base + path].responses[0].models)
-    .catch(() => console.log(`downloaded["${base + path}"] = `));
-  //   return fetch(base + path)
-  //     .then((response) => response.json())
-  //     .then((response) => response.responses[0].models);
+  var responses = downloaded[base + path];
+  if (responses)
+    return Promise.resolve().then(() => responses.responses[0].models);
+  const anywhere = "https://cors-anywhere.herokuapp.com/";
+  return fetch(anywhere + base + path, { headers: { "x-requested-with": "*" } })
+    .then((response) => response.json())
+    .then((response) => response.responses[0].models)
+    .catch(() => window.open(`${anywhere}corsdemo`));
 }
 
 const downloaded: { [key: string]: any } = {};
