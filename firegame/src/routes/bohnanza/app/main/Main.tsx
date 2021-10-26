@@ -32,53 +32,64 @@ class Main extends React.Component<
             <div>Shuffles: {store.gameW.game.shuffles}</div>
           </div>
         </div>
-        {store.gameW.game.players.map((p, i) => (
-          <div key={i}>
-            <div className={styles.bubble}>
-              <h2>{p.userName}</h2>
-              <div>hand: {(p.hand || []).length}</div>
-              <div>money: {(p.money || []).length}</div>
-              <div className={styles.inline_flex_center}>
-                {p.fields.map((_, j) => (
-                  <div
-                    className={styles.bubble}
-                    key={j}
-                    onClick={() => utils.myIndex() === i && this.clickField(j)}
-                  >
-                    {this.renderField(p, j)}
-                  </div>
-                ))}
-              </div>
-              {utils.myIndex() === i && (
-                <div>
-                  <h3>hand</h3>
-                  <div className={styles.inline_flex_center}>
-                    {((utils.isMyTurn() &&
-                      store.gameW.game.phase === Phase.plantSecond) ||
-                      store.gameW.game.players.length === 2) && (
-                      <div
-                        className={styles.bubble}
-                        onClick={() => this.pass()}
-                      >
-                        pass
-                      </div>
-                    )}
-                    {(p.hand || []).map((c, j) => (
-                      <div
-                        className={styles.bubble}
-                        key={j}
-                        onClick={() => this.clickCard(j)}
-                      >
-                        {this.renderCard(c)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
         {this.renderTable()}
+        {store.gameW.game.players
+          .map((p, i) => ({
+            p,
+            i:
+              (i + store.gameW.game.players.length - utils.myIndex()) %
+              store.gameW.game.players.length,
+          }))
+          .sort((a, b) => a.i - b.i)
+          .map(({ p, i }) => p)
+          .map((p, i) => (
+            <div key={i}>
+              <div className={styles.bubble}>
+                <h2>{p.userName}</h2>
+                <div>hand: {(p.hand || []).length}</div>
+                <div>money: {(p.money || []).length}</div>
+                <div className={styles.inline_flex_center}>
+                  {p.fields.map((_, j) => (
+                    <div
+                      className={styles.bubble}
+                      key={j}
+                      onClick={() =>
+                        utils.getMe()?.userId === p.userId && this.clickField(j)
+                      }
+                    >
+                      {this.renderField(p, j)}
+                    </div>
+                  ))}
+                </div>
+                {utils.getMe()?.userId === p.userId && (
+                  <div>
+                    <h3>hand</h3>
+                    <div className={styles.inline_flex_center}>
+                      {((utils.isMyTurn() &&
+                        store.gameW.game.phase === Phase.plantSecond) ||
+                        store.gameW.game.players.length === 2) && (
+                        <div
+                          className={styles.bubble}
+                          onClick={() => this.pass()}
+                        >
+                          pass
+                        </div>
+                      )}
+                      {(p.hand || []).map((c, j) => (
+                        <div
+                          className={styles.bubble}
+                          key={j}
+                          onClick={() => this.clickCard(j)}
+                        >
+                          {this.renderCard(c)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
       </div>
     );
   }
