@@ -8,6 +8,5 @@ jobs:
     steps:
       - uses: n1hility/cancel-previous-runs@v2
       - uses: actions/checkout@v2
-      - uses: textbook/git-checkout-submodule-action@master
       - run: bash .github/workflows/build_react.sh
       - run: bash .github/workflows/deploy_to_app_engine.sh '${{ secrets.SA_KEY }}'
