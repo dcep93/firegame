@@ -2,6 +2,8 @@ const express = require("express");
 
 const app = express.Router();
 
+app.use(express.json());
+
 app.use(function (req, res, next) {
   console.log(req.path);
   next();
@@ -11,6 +13,14 @@ console.log("api");
 app.use("/sanity", (req, res) => {
   console.log("sanity");
   res.send("sanity\n");
+});
+
+app.use("/proxy", (req, res) => {
+  const url = req.body.url;
+  const params = req.body.params;
+  fetch(url, params)
+    .then((resp) => resp.text())
+    .then((text) => res.send(text));
 });
 
 app.use(function (err, req, res, next) {
