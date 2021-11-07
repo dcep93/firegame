@@ -10,6 +10,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"express": "^4.17.1",
-		"express-subdomain": "^1.0.5"
+		"express-subdomain": "^1.0.5",
+		"node-fetch": "2.0"
 	}
 }

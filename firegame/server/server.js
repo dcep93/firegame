@@ -9,6 +9,7 @@ const port = 8080;
 const app = express();
 
 app.use(subdomain("api", api));
+// app.use(api);
 
 const build = path.join(__dirname, "build");
 app.use(express.static(build));
