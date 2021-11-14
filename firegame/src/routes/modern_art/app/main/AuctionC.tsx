@@ -18,7 +18,7 @@ class AuctionC extends React.Component {
         {isBiddable && (
           <div>current bid: {auction.bid >= 0 && auction.bid}</div>
         )}
-        {utils.isMyTurn() && (
+        {(utils.isMyTurn() || auction.art[0].aType === AType.open) && (
           <div>
             {isBiddable && (
               <form onSubmit={this.submit.bind(this)}>
