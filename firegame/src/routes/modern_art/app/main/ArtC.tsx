@@ -10,7 +10,7 @@ class ArtC extends React.Component<{ a: Art; c?: string }> {
       <div
         className={[
           styles.bubble,
-          utils.countArt(this.props.a.artist) === 4 && styles.endable,
+          utils.countArt(this.props.a.artist) === 4 && css.endable,
         ].join(" ")}
       >
         <div>

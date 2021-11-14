@@ -9,7 +9,7 @@ class Player extends React.Component<{ p: PlayerType }> {
       <div
         className={[
           styles.bubble,
-          utils.getCurrent().userId === this.props.p.userId && styles.grey,
+          utils.getCurrent().userId === this.props.p.userId && styles.blue,
         ].join(" ")}
       >
         <h2>{this.props.p.userName}</h2>
