@@ -9,6 +9,7 @@ import ModernArt from "../routes/modern_art/app/ModernArt";
 import splendor from "../routes/splendor/app/Splendor";
 import spy from "../routes/spy/app/Spy";
 import takebacktoe from "../routes/takebacktoe/app/TakeBackToe";
+import TicketToRide from "../routes/ticket_to_ride/app/TicketToRide";
 import tictactoe from "../routes/tictactoe/app/TicTacToe";
 import timeline from "../routes/timeline/app/Timeline";
 import wavelength from "../routes/wavelength/app/Wavelength";
@@ -30,5 +31,6 @@ const ex = {
   tictactoe,
   wavelength,
   wingspan,
+  TicketToRide,
 };
 export default ex;
