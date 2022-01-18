@@ -1,17 +1,17 @@
 import React from "react";
 import { store } from "../utils/utils";
+import Board from "./Board";
+import Player from "./Player";
 
-import styles from "../../../../shared/styles.module.css";
-
-class Main extends React.Component {
-	render() {
-		return (
-			<div className={styles.bubble}>
-				<h2>Main</h2>
-				<pre>{JSON.stringify(store.gameW.game)}</pre>
-			</div>
-		);
-	}
+function Main() {
+  return (
+    <div>
+      <Board />
+      {store.gameW.game.players.map((p, i) => (
+        <Player key={i} player={p} />
+      ))}
+    </div>
+  );
 }
 
 export default Main;
