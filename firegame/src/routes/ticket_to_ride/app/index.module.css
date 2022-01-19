@@ -1,0 +1,11 @@
+.board {
+    position: relative;
+}
+
+.city {
+    position: absolute;
+    display: inline-block;
+    border: 2px solid black;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+}
