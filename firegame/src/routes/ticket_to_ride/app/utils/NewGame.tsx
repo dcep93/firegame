@@ -1,10 +1,14 @@
 import { LobbyType } from "../../../../shared/store";
+import { Color } from "./bank";
 import utils, { store } from "./utils";
 
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
+  bank: Color[];
+  deck?: Color[];
+  discard?: Color[];
 };
 
 export type Params = {
@@ -14,13 +18,25 @@ export type Params = {
 export type PlayerType = {
   userId: string;
   userName: string;
+  hand?: Color[];
+  routeIndices?: number[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
+  const deck = utils
+    .enumArray(Color)
+    .flatMap((c: Color) => utils.repeat(c, c === Color.grey ? 14 : 12));
+  var bank;
+  while (true) {
+    bank = deck.splice(0, 5);
+    if (bank.filter((c) => c === Color.grey).length < 3) break;
+  }
   const game: GameType = {
     params,
     currentPlayer: 0,
     players: [],
+    deck,
+    bank,
   };
   return Promise.resolve(game).then(setPlayers);
 }
