@@ -8,4 +8,7 @@
     border: 2px solid black;
     border-radius: 10px;
     transform: translate(-50%, -50%);
+    font-size: xx-small;
+    background-color: white;
+    padding: 2px;
 }

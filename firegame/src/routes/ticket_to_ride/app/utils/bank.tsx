@@ -37,23 +37,20 @@ export enum City {
   montreal,
 }
 
-export const Map: {
-  src: string;
-  refs: { [c in City]?: { top: number; left: number } };
-} = {
+export const Map = {
   src: "https://raw.githubusercontent.com/dcep93/firegame/master/firegame/src/routes/ticket_to_ride/assets/usa.jpeg",
-  refs: {
-    [City.san_francisco]: { top: 224, left: 68 },
-    [City.seattle]: { top: 53, left: 117 },
-    [City.el_paso]: { top: 371, left: 273 },
-    [City.kansas_city]: { top: 250, left: 450 },
-    [City.new_orleans]: { top: 410, left: 523 },
-    [City.saint_louis]: { top: 257, left: 510 },
-    [City.chicago]: { top: 196, left: 541 },
-    [City.miami]: { top: 466, left: 685 },
-    [City.boston]: { top: 150, left: 753 },
-    [City.new_york]: { top: 185, left: 724 },
-  },
+  refs: [
+    { city: City.san_francisco, top: 224, left: 68 },
+    { city: City.seattle, top: 53, left: 117 },
+    { city: City.el_paso, top: 371, left: 273 },
+    { city: City.kansas_city, top: 250, left: 450 },
+    { city: City.new_orleans, top: 410, left: 523 },
+    { city: City.saint_louis, top: 257, left: 510 },
+    { city: City.chicago, top: 196, left: 541 },
+    { city: City.miami, top: 466, left: 685 },
+    { city: City.boston, top: 150, left: 753 },
+    { city: City.new_york, top: 185, left: 724 },
+  ],
 };
 
 export type CityType = { name: string; latitude: number; longitude: number };
