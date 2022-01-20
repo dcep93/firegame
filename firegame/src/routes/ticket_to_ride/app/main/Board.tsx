@@ -7,7 +7,12 @@ import utils from "../utils/utils";
 function Board() {
   return (
     <div className={styles.bubble}>
-      <div className={css.board}>
+      <div
+        className={css.board}
+        onClick={(e) =>
+          console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+        }
+      >
         {utils
           .enumArray(City)
           .map((city: City) => ({ city, name: Cities[city].name }))

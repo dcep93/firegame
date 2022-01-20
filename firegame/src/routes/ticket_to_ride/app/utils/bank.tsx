@@ -50,6 +50,7 @@ export const Map = {
     { city: City.miami, top: 466, left: 685 },
     { city: City.boston, top: 150, left: 753 },
     { city: City.new_york, top: 185, left: 724 },
+    { city: City.duluth, top: 114, left: 477 },
   ],
 };
 
