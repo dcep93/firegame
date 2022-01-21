@@ -99,9 +99,7 @@ class Utils extends Shared<GameType, PlayerType> {
       if (game.bank.filter((c) => c === Color.rainbow).length < 3) return;
       if (!game.discard) game.discard = [];
       game.discard.push(...game.bank.splice(0));
-      for (let j = 0; j < utils.CARDS_IN_BANK; j++) {
-        utils.dealOneToBank(game);
-      }
+      utils.count(utils.CARDS_IN_BANK).forEach(() => utils.dealOneToBank(game));
     }
     alert("uh oh maybeRedeal");
   }
@@ -153,7 +151,35 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   longestPath(player: PlayerType): number {
-    return -1;
+    return this.longestPathHelper(null, player.routeIndices || [], [], 0);
+  }
+
+  longestPathHelper(
+    start: City | null,
+    routeIndices: number[],
+    seen: number[],
+    seenLength: number
+  ): number {
+    const candidates: { end: City; index: number; length: number }[] = [];
+    routeIndices.forEach((index) => {
+      if (seen.includes(index)) return;
+      const route = Routes[index];
+      if (start === null || route.start === start)
+        candidates.push({ end: route.end, index, length: route.length });
+      if (start === null || route.end === start)
+        candidates.push({ end: route.start, index, length: route.length });
+    });
+    return Math.max(
+      seenLength,
+      ...candidates.map((c) =>
+        this.longestPathHelper(
+          c.end,
+          routeIndices,
+          seen.concat(c.index),
+          seenLength + c.length
+        )
+      )
+    );
   }
 
   takeTickets() {
