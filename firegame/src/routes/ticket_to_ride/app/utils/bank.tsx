@@ -287,12 +287,14 @@ export enum Color {
   red,
 }
 
-export const Routes: {
+export type RouteType = {
   start: City;
   end: City;
   length: number;
   colors: Color[];
-}[] = [
+};
+
+export const Routes: RouteType[] = [
   {
     start: City.vancouver,
     end: City.seattle,

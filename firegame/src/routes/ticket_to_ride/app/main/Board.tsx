@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { Cities, City, CityType, Map } from "../utils/bank";
+import { Cities, City, CityType, Map, Routes, RouteType } from "../utils/bank";
 import utils from "../utils/utils";
 
 function Board(props: { selected: { [n: number]: boolean } }) {
@@ -14,6 +14,9 @@ function Board(props: { selected: { [n: number]: boolean } }) {
             console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
           }
         >
+          {Routes.map((r, i) => (
+            <Route key={i} route={r} index={i} selected={props.selected} />
+          ))}
           {utils
             .enumArray(City)
             .map((city: City) => ({ city, name: Cities[city].name }))
@@ -22,7 +25,7 @@ function Board(props: { selected: { [n: number]: boolean } }) {
                 key={i}
                 className={css.city}
                 title={obj.name}
-                style={{ ...getStyle(obj.city) }}
+                style={{ ...getCoords(obj.city) }}
               >
                 {obj.name}
               </div>
@@ -35,7 +38,7 @@ function Board(props: { selected: { [n: number]: boolean } }) {
   );
 }
 
-function getStyle(city: City): { top: number; left: number } {
+function getCoords(city: City): { top: number; left: number } {
   const mapRef = Map.refs.find((obj) => obj.city === city);
   if (mapRef !== undefined) return mapRef;
   const target = Cities[city];
@@ -75,6 +78,36 @@ function getAngle(city1: CityType, city2: CityType): number {
   return Math.atan2(
     city2.latitude - city1.latitude,
     city2.longitude - city1.longitude
+  );
+}
+
+function Route(props: {
+  route: RouteType;
+  index: number;
+  selected: { [n: number]: boolean };
+}) {
+  if (
+    props.route.start !== City.san_francisco ||
+    props.route.end !== City.salt_lake_city
+  )
+    return null;
+  const startCoords = getCoords(props.route.start);
+  const endCoords = getCoords(props.route.end);
+  const mapCities = [startCoords, endCoords].map((c) => ({
+    name: "",
+    latitude: c.top,
+    longitude: c.left,
+  }));
+  const width = getDistance(mapCities[0], mapCities[1]);
+  const angleDeg = (getAngle(mapCities[0], mapCities[1]) * 180) / Math.PI;
+  return (
+    <div
+      className={[styles.bubble, css.route].join(" ")}
+      style={{ ...startCoords, width, transform: `rotate(${angleDeg}deg)` }}
+      onClick={() => alert(props.index)}
+    >
+      {props.index}
+    </div>
   );
 }
 
