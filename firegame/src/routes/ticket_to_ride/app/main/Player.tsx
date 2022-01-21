@@ -10,10 +10,18 @@ function Player(props: { player: PlayerType }) {
       <div className={styles.bubble}>
         <h2>{props.player.userName}</h2>
         <div>hand: {(props.player.hand || []).length}</div>
-        <div>routes: {(props.player.routeIndices || []).length}</div>
         <div>tickets: {(props.player.ticketIndices || []).length}</div>
         <div>
-          train score:{" "}
+          trains left:{" "}
+          {45 -
+            (props.player.routeIndices || [])
+              .map((i) => Routes[i])
+              .map((r) => r.length)
+              .sum()}
+        </div>
+        <div>routes: {(props.player.routeIndices || []).length}</div>
+        <div>
+          base score:{" "}
           {(props.player.routeIndices || [])
             .map((i) => Routes[i])
             .map((r) => r.length)
