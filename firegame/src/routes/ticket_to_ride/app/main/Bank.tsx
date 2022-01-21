@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import utils, { store } from "../utils/utils";
 
-function Bank() {
+function Bank(props: { update: (selected: { [n: number]: boolean }) => void }) {
   return (
     <div>
       <div className={styles.bubble}>
@@ -13,7 +13,10 @@ function Bank() {
         <h4>Bank:</h4>
         <div className={styles.flex}>
           {store.gameW.game.bank.map((c, i) =>
-            utils.renderCard(c, i, utils.takeFromBank)
+            utils.renderCard(c, i, (index: number) => {
+              props.update({});
+              utils.takeFromBank(index);
+            })
           )}
         </div>
       </div>

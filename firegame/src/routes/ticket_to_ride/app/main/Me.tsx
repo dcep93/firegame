@@ -4,15 +4,35 @@ import styles from "../../../../shared/styles.module.css";
 import { Tickets } from "../utils/bank";
 import utils from "../utils/utils";
 
-function Me() {
+function Me(props: {
+  selected: { [n: number]: boolean };
+  update: (selected: { [n: number]: boolean }) => void;
+}) {
   const me = utils.getMe();
   return (
     <div>
       <div className={styles.bubble}>
         <h4>
-          <span onClick={utils.takeFromDeck}>Hand:</span>
+          <span
+            onClick={() => {
+              props.update({});
+              utils.takeFromDeck();
+            }}
+          >
+            Hand:
+          </span>
         </h4>
-        {(me.hand || []).map((c, i) => utils.renderCard(c, i, () => null))}
+        {(me.hand || []).map((c, i) => (
+          <div
+            key={i}
+            className={props.selected[i] ? styles.bubble : styles.inline}
+          >
+            {utils.renderCard(c, i, () => {
+              props.selected[i] = !props.selected[i];
+              props.update(utils.copy(props.selected));
+            })}
+          </div>
+        ))}
       </div>
       <div className={styles.bubble}>
         <h4>
@@ -54,7 +74,7 @@ function TakenTickets(props: { ticketIndices: number[] }) {
                 className={styles.bubble}
                 onClick={() => {
                   selected[i] = !selected[i];
-                  update(Object.fromEntries(Object.entries(selected)));
+                  update(utils.copy(selected));
                 }}
                 style={{
                   backgroundColor: selected[i] ? "lightblue" : "white",

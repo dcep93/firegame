@@ -177,6 +177,43 @@ class Utils extends Shared<GameType, PlayerType> {
       </div>
     );
   }
+
+  buyRoute(
+    routeIndex: number,
+    selected: { selected: { [n: number]: boolean } },
+    update: (selected: { [n: number]: boolean }) => void
+  ) {
+    if (!utils.isMyTurn()) return;
+    if (utils.getMe().takenTicketIndices) return;
+    if (store.gameW.game.tookTrain) return;
+    if (!utils.getMe().hand) return;
+    const selectedIndices = Object.entries(selected)
+      .filter(([key, val]) => val)
+      .map(([key, val]) => +key);
+    const colors = selectedIndices.map((index) => utils.getMe().hand![index]);
+    if (colors.filter((c) => c === undefined).length > 0) return;
+    if (
+      Object.entries(
+        Object.fromEntries(
+          colors.filter((c) => c !== Color.rainbow).map((c) => [c, true])
+        )
+      ).length > 1
+    )
+      return;
+    const route = Routes[routeIndex];
+    if (selectedIndices.length !== route.length) return;
+    utils.getMe().hand = utils
+      .getMe()
+      .hand!.filter((c, i) => !selectedIndices.includes(i));
+    update({});
+    if (!utils.getMe().routeIndices) utils.getMe().routeIndices = [];
+    utils.getMe().routeIndices!.push(routeIndex);
+    store.update(
+      `bought ${Cities[route.start].name} → ${
+        Cities[route.end].name
+      } for ${colors.map((c) => Color[c]).join(",")}`
+    );
+  }
 }
 
 const utils = new Utils();

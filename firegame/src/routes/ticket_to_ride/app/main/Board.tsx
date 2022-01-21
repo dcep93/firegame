@@ -4,7 +4,7 @@ import css from "../index.module.css";
 import { Cities, City, CityType, Map } from "../utils/bank";
 import utils from "../utils/utils";
 
-function Board() {
+function Board(props: { selected: { [n: number]: boolean } }) {
   return (
     <div>
       <div className={styles.bubble}>
