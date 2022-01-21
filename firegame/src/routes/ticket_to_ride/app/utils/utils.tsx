@@ -3,7 +3,7 @@ import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { Color, TicketType } from "./bank";
+import { Cities, City, Color, Routes, TicketType } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
@@ -49,6 +49,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
   takeFromBank(index: number) {
     if (!utils.isMyTurn()) return;
+    if (utils.getMe().takenTicketIndices) return;
     if (store.gameW.game.tookTrain) {
       if (store.gameW.game.bank[index] === Color.rainbow) return;
       delete store.gameW.game.tookTrain;
@@ -72,6 +73,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
   takeFromDeck() {
     if (!utils.isMyTurn()) return;
+    if (utils.getMe().takenTicketIndices) return;
     if (!store.gameW.game.deck) {
       if (!store.gameW.game.discard) return;
       store.gameW.game.deck = utils.shuffle(
@@ -113,11 +115,67 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   ticketCompleted(t: TicketType, player: PlayerType): boolean {
+    return this.ticketCompletedHelper(
+      t.start,
+      t.end,
+      player.routeIndices || [],
+      []
+    );
+  }
+
+  ticketCompletedHelper(
+    start: City,
+    end: City,
+    routeIndices: number[],
+    seen: number[]
+  ): boolean {
+    for (let i = 0; i < routeIndices.length; i++) {
+      const routeIndex = routeIndices[i];
+      if (seen.includes(routeIndex)) continue;
+      const route = Routes[routeIndex];
+      var nextCity;
+      if (route.end === start) {
+        nextCity = route.start;
+      } else if (route.start === start) {
+        nextCity = route.end;
+      } else {
+        continue;
+      }
+      if (nextCity === end) return true;
+      return this.ticketCompletedHelper(
+        nextCity,
+        end,
+        routeIndices,
+        seen.concat(routeIndex)
+      );
+    }
     return false;
   }
 
   longestPath(player: PlayerType): number {
     return -1;
+  }
+
+  takeTickets() {
+    if (!utils.isMyTurn()) return;
+    if (utils.getMe().takenTicketIndices) return;
+    if (store.gameW.game.tookTrain) return;
+    utils.getMe().takenTicketIndices = store.gameW.game.ticketIndices.splice(
+      0,
+      3
+    );
+    store.update("took tickets");
+  }
+
+  getTicket(t: TicketType) {
+    return (
+      <div>
+        <div>
+          {Cities[t.start].name} → {Cities[t.end].name}
+        </div>
+        <div>{t.points}</div>
+      </div>
+    );
   }
 }
 

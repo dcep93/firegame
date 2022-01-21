@@ -242,7 +242,14 @@ export const Cities: {
 };
 
 export type TicketType = { start: City; end: City; points: number };
-export const Tickets: TicketType[] = [];
+export const Tickets: TicketType[] = [
+  { start: City.san_francisco, end: City.los_angeles, points: 1000 },
+  { start: City.san_francisco, end: City.los_angeles, points: 1000 },
+  { start: City.san_francisco, end: City.los_angeles, points: 1000 },
+  { start: City.san_francisco, end: City.los_angeles, points: 1000 },
+  { start: City.san_francisco, end: City.los_angeles, points: 1000 },
+  { start: City.san_francisco, end: City.los_angeles, points: 1000 },
+];
 
 export enum Color {
   rainbow,

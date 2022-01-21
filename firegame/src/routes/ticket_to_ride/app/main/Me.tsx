@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import store from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
 import { Tickets } from "../utils/bank";
 import utils from "../utils/utils";
@@ -8,27 +9,77 @@ function Me() {
   return (
     <div>
       <div className={styles.bubble}>
-        <h4>Trains:</h4>
+        <h4>
+          <span onClick={utils.takeFromDeck}>Hand:</span>
+        </h4>
         {(me.hand || []).map((c, i) => utils.renderCard(c, i, () => null))}
       </div>
       <div className={styles.bubble}>
         <h4>
-          Tickets:{" "}
-          {(me.ticketIndices || [])
-            .map((t) => Tickets[t])
-            .map((t, i) => (
-              <div
-                key={i}
-                className={styles.bubble}
-                style={{
-                  backgroundColor: utils.ticketCompleted(t, me)
-                    ? "lightgreen"
-                    : "pink",
-                }}
-              ></div>
-            ))}
-        </h4>
+          <span onClick={utils.takeTickets}>Tickets:</span>
+        </h4>{" "}
+        {me.takenTicketIndices && (
+          <TakenTickets ticketIndices={me.takenTicketIndices} />
+        )}
+        {(me.ticketIndices || [])
+          .map((t) => Tickets[t])
+          .map((t, i) => (
+            <div
+              key={i}
+              className={styles.bubble}
+              style={{
+                backgroundColor: utils.ticketCompleted(t, me)
+                  ? "lightgreen"
+                  : "pink",
+              }}
+            >
+              {utils.getTicket(t)}
+            </div>
+          ))}
       </div>
+    </div>
+  );
+}
+
+function TakenTickets(props: { ticketIndices: number[] }) {
+  const [selected, update] = useState({} as { [n: number]: boolean });
+  return (
+    <div className={[styles.bubble, styles.grey].join(" ")}>
+      <div>
+        {props.ticketIndices
+          .map((t) => Tickets[t])
+          .map((t, i) => (
+            <div key={i}>
+              <div
+                className={styles.bubble}
+                onClick={() => {
+                  selected[i] = !selected[i];
+                  update(Object.fromEntries(Object.entries(selected)));
+                }}
+                style={{
+                  backgroundColor: selected[i] ? "lightblue" : "white",
+                }}
+              >
+                {utils.getTicket(t)}
+              </div>
+            </div>
+          ))}
+      </div>
+      <button
+        onClick={() => {
+          const selectedIndices = Object.entries(selected)
+            .filter(([key, val]) => val)
+            .map(([key, val]) => +key);
+          if (!utils.isMyTurn() || selectedIndices.length === 0) return;
+          delete utils.getMe().takenTicketIndices;
+          if (!utils.getMe().ticketIndices) utils.getMe().ticketIndices = [];
+          utils.getMe().ticketIndices!.push(...selectedIndices);
+          utils.incrementPlayerTurn();
+          store.update(`took ${selectedIndices.length} tickets`);
+        }}
+      >
+        Take Tickets
+      </button>
     </div>
   );
 }

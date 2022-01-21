@@ -6,7 +6,7 @@ function Bank() {
   return (
     <div>
       <div className={styles.bubble}>
-        <h4 className={styles.inline} onClick={utils.takeFromDeck}>
+        <h4 className={styles.inline}>
           Deck: {(store.gameW.game.deck || []).length}
         </h4>
         <h4>Discard: {(store.gameW.game.discard || []).length}</h4>

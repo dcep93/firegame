@@ -8,12 +8,12 @@ import Player from "./Player";
 function Main() {
   return (
     <div>
-      <Board />
-      <Bank />
-      {utils.getMe() && <Me />}
       {store.gameW.game.players.map((p, i) => (
         <Player key={i} player={p} />
       ))}
+      <Bank />
+      <Board />
+      {utils.getMe() && <Me />}
     </div>
   );
 }

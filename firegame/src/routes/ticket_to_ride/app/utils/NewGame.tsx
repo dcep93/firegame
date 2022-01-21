@@ -1,5 +1,5 @@
 import { LobbyType } from "../../../../shared/store";
-import { Color } from "./bank";
+import { Color, Tickets } from "./bank";
 import utils, { store } from "./utils";
 
 export type GameType = {
@@ -9,7 +9,7 @@ export type GameType = {
   bank: Color[];
   deck?: Color[];
   discard?: Color[];
-  ticketIndices?: number[];
+  ticketIndices: number[];
   tookTrain?: boolean;
   lastPlayer?: number;
 };
@@ -24,6 +24,7 @@ export type PlayerType = {
   hand?: Color[];
   routeIndices?: number[];
   ticketIndices?: number[];
+  takenTicketIndices?: number[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -39,6 +40,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     deck,
     bank: deck.splice(0, utils.CARDS_IN_BANK),
     discard: [],
+    ticketIndices: Tickets.map((t, i) => i),
   };
   utils.maybeRedeal(game);
   return Promise.resolve(game).then(setPlayers);
@@ -52,6 +54,7 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName]) => ({
       userId,
       userName,
+      takenTicketIndices: game.ticketIndices.splice(0, 3),
     }));
 
   return game;
