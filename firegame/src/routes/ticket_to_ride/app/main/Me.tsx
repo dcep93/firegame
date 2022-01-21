@@ -90,7 +90,9 @@ function TakenTickets(props: { ticketIndices: number[] }) {
           const selectedIndices = Object.entries(selected)
             .filter(([key, val]) => val)
             .map(([key, val]) => +key);
-          if (!utils.isMyTurn() || selectedIndices.length === 0) return;
+          if (!utils.isMyTurn()) return alert("not your turn");
+          if (selectedIndices.length === 0)
+            return alert("need to take at least 1 ticket");
           delete utils.getMe().takenTicketIndices;
           if (!utils.getMe().ticketIndices) utils.getMe().ticketIndices = [];
           utils.getMe().ticketIndices!.push(...selectedIndices);

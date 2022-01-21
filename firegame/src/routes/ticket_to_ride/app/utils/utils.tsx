@@ -48,10 +48,12 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   takeFromBank(index: number) {
-    if (!utils.isMyTurn()) return;
-    if (utils.getMe().takenTicketIndices) return;
+    if (!utils.isMyTurn()) return alert("not your turn");
+    if (utils.getMe().takenTicketIndices)
+      return alert("need to select tickets");
     if (store.gameW.game.tookTrain) {
-      if (store.gameW.game.bank[index] === Color.rainbow) return;
+      if (store.gameW.game.bank[index] === Color.rainbow)
+        return alert("already took card");
       delete store.gameW.game.tookTrain;
       utils.incrementPlayerTurn();
     } else {
@@ -72,10 +74,11 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   takeFromDeck() {
-    if (!utils.isMyTurn()) return;
-    if (utils.getMe().takenTicketIndices) return;
+    if (!utils.isMyTurn()) return alert("not your turn");
+    if (utils.getMe().takenTicketIndices)
+      return alert("need to select tickets");
     if (!store.gameW.game.deck) {
-      if (!store.gameW.game.discard) return;
+      if (!store.gameW.game.discard) return alert("no cards left");
       store.gameW.game.deck = utils.shuffle(
         store.gameW.game.discard!.splice(0)
       );
@@ -188,9 +191,10 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   takeTickets() {
-    if (!utils.isMyTurn()) return;
-    if (utils.getMe().takenTicketIndices) return;
-    if (store.gameW.game.tookTrain) return;
+    if (!utils.isMyTurn()) return alert("not your turn");
+    if (utils.getMe().takenTicketIndices)
+      return alert("need to select tickets");
+    if (store.gameW.game.tookTrain) return alert("already took card");
     utils.getMe().takenTicketIndices = store.gameW.game.ticketIndices.splice(
       0,
       3
@@ -215,29 +219,33 @@ class Utils extends Shared<GameType, PlayerType> {
     selected: { selected: { [n: number]: boolean } },
     update: (selected: { [n: number]: boolean }) => void
   ) {
-    if (!utils.isMyTurn()) return;
-    if (utils.getMe().takenTicketIndices) return;
-    if (store.gameW.game.tookTrain) return;
-    if (!utils.getMe().hand) return;
+    if (!utils.isMyTurn()) return alert("not your turn");
+    if (utils.getMe().takenTicketIndices)
+      return alert("need to select tickets");
+    if (store.gameW.game.tookTrain) return alert("already took card");
+    if (!utils.getMe().hand) return alert("invalid payment");
     const selectedIndices = Object.entries(selected)
       .filter(([key, val]) => val)
       .map(([key, val]) => +key);
     const colors = selectedIndices.map((i) => utils.getMe().hand![i]);
-    if (colors.filter((c) => c === undefined).length > 0) return;
+    if (colors.filter((c) => c === undefined).length > 0)
+      return alert("bug... refresh?");
     const spentColors = Object.entries(
       Object.fromEntries(
         colors.filter((c) => c !== Color.rainbow).map((c) => [c, true])
       )
     ).map(([c, v]) => +c);
-    if (spentColors.length > 1) return;
+    if (spentColors.length > 1)
+      return alert("can only spend one color per route");
     const route = Routes[index];
     if (
       spentColors.length > 0 &&
       route.colors[colorIndex] !== Color.rainbow &&
       route.colors[colorIndex] !== spentColors[0]!
     )
-      return;
-    if (selectedIndices.length !== route.length) return;
+      return alert("wrong color");
+    if (selectedIndices.length !== route.length)
+      return alert("wrong payment number");
     utils.getMe().hand = utils
       .getMe()
       .hand!.filter((c, i) => !selectedIndices.includes(i));
