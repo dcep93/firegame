@@ -11,6 +11,31 @@ function Me(props: {
   const me = utils.getMe();
   return (
     <div>
+      <div>
+        <div className={styles.bubble}>
+          <h4>
+            <span onClick={utils.takeTickets}>Tickets:</span>
+          </h4>{" "}
+          {me.takenTicketIndices && (
+            <TakenTickets ticketIndices={me.takenTicketIndices} />
+          )}
+          {(me.ticketIndices || [])
+            .map((t) => Tickets[t])
+            .map((t, i) => (
+              <div
+                key={i}
+                className={styles.bubble}
+                style={{
+                  backgroundColor: utils.ticketCompleted(t, me)
+                    ? "lightgreen"
+                    : "pink",
+                }}
+              >
+                {utils.getTicket(t)}
+              </div>
+            ))}
+        </div>
+      </div>
       <div className={styles.bubble}>
         <h4>
           <span
@@ -33,29 +58,6 @@ function Me(props: {
             })}
           </div>
         ))}
-      </div>
-      <div className={styles.bubble}>
-        <h4>
-          <span onClick={utils.takeTickets}>Tickets:</span>
-        </h4>{" "}
-        {me.takenTicketIndices && (
-          <TakenTickets ticketIndices={me.takenTicketIndices} />
-        )}
-        {(me.ticketIndices || [])
-          .map((t) => Tickets[t])
-          .map((t, i) => (
-            <div
-              key={i}
-              className={styles.bubble}
-              style={{
-                backgroundColor: utils.ticketCompleted(t, me)
-                  ? "lightgreen"
-                  : "pink",
-              }}
-            >
-              {utils.getTicket(t)}
-            </div>
-          ))}
       </div>
     </div>
   );
