@@ -242,7 +242,7 @@ export const Cities: {
 };
 
 export enum Color {
-  grey,
+  rainbow,
   yellow,
   blue,
   green,
@@ -263,13 +263,13 @@ export const Routes: {
     start: City.vancouver,
     end: City.seattle,
     length: 1,
-    colors: [Color.grey, Color.grey],
+    colors: [Color.rainbow, Color.rainbow],
   },
   {
     start: City.seattle,
     end: City.portland,
     length: 1,
-    colors: [Color.grey, Color.grey],
+    colors: [Color.rainbow, Color.rainbow],
   },
   {
     start: City.portland,
@@ -293,13 +293,13 @@ export const Routes: {
     start: City.vancouver,
     end: City.calgary,
     length: 3,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.calgary,
     end: City.seattle,
     length: 4,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.helena,
@@ -311,7 +311,7 @@ export const Routes: {
     start: City.calgary,
     end: City.helena,
     length: 4,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.helena,
@@ -341,13 +341,13 @@ export const Routes: {
     start: City.las_vegas,
     end: City.los_angeles,
     length: 2,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.los_angeles,
     end: City.phoenix,
     length: 3,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.phoenix,
@@ -377,7 +377,7 @@ export const Routes: {
     start: City.winnipeg,
     end: City.sault_st_marie,
     length: 6,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.duluth,
@@ -437,7 +437,7 @@ export const Routes: {
     start: City.houston,
     end: City.new_orleans,
     length: 2,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.houston,
@@ -461,7 +461,7 @@ export const Routes: {
     start: City.atlanta,
     end: City.charleston,
     length: 2,
-    colors: [Color.grey],
+    colors: [Color.rainbow],
   },
   {
     start: City.el_paso,

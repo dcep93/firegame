@@ -6,28 +6,30 @@ import utils from "../utils/utils";
 
 function Board() {
   return (
-    <div className={styles.bubble}>
-      <div
-        className={css.board}
-        onClick={(e) =>
-          console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
-        }
-      >
-        {utils
-          .enumArray(City)
-          .map((city: City) => ({ city, name: Cities[city].name }))
-          .map((obj, i) => (
-            <div
-              key={i}
-              className={css.city}
-              title={obj.name}
-              style={{ ...getStyle(obj.city) }}
-            >
-              {obj.name}
-            </div>
-          ))}
+    <div>
+      <div className={styles.bubble}>
+        <div
+          className={css.board}
+          onClick={(e) =>
+            console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+          }
+        >
+          {utils
+            .enumArray(City)
+            .map((city: City) => ({ city, name: Cities[city].name }))
+            .map((obj, i) => (
+              <div
+                key={i}
+                className={css.city}
+                title={obj.name}
+                style={{ ...getStyle(obj.city) }}
+              >
+                {obj.name}
+              </div>
+            ))}
 
-        <img src={Map.src} alt=""></img>
+          <img src={Map.src} alt=""></img>
+        </div>
       </div>
     </div>
   );

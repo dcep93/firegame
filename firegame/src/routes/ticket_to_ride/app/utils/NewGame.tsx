@@ -9,6 +9,8 @@ export type GameType = {
   bank: Color[];
   deck?: Color[];
   discard?: Color[];
+  ticketIndices?: number[];
+  tookTrain: boolean;
 };
 
 export type Params = {
@@ -20,24 +22,25 @@ export type PlayerType = {
   userName: string;
   hand?: Color[];
   routeIndices?: number[];
+  ticketIndices?: number[];
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
-  const deck = utils
-    .enumArray(Color)
-    .flatMap((c: Color) => utils.repeat(c, c === Color.grey ? 14 : 12));
-  var bank;
-  while (true) {
-    bank = deck.splice(0, 5);
-    if (bank.filter((c) => c === Color.grey).length < 3) break;
-  }
+  const deck = utils.shuffle(
+    utils
+      .enumArray(Color)
+      .flatMap((c: Color) => utils.repeat(c, c === Color.rainbow ? 14 : 12))
+  );
   const game: GameType = {
     params,
     currentPlayer: 0,
     players: [],
     deck,
-    bank,
+    bank: deck.splice(0, utils.CARDS_IN_BANK),
+    discard: [],
+    tookTrain: false,
   };
+  utils.maybeRedeal(game);
   return Promise.resolve(game).then(setPlayers);
 }
 
