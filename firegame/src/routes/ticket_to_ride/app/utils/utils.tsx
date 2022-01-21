@@ -10,6 +10,13 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
   CARDS_IN_BANK = 5;
+
+  incrementPlayerTurn(game_?: GameType | undefined): void {
+    if (store.gameW.game.currentPlayer === store.gameW.game.lastPlayer)
+      store.gameW.game.lastPlayer = -1;
+    super.incrementPlayerTurn(game_);
+  }
+
   linkPoints(length: number): number {
     return [1, 2, 4, 7, 10, 15][length - 1];
   }
