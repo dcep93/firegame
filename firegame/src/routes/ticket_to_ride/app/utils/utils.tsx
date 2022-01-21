@@ -2,7 +2,8 @@ import React from "react";
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
-import { Color } from "./bank";
+import css from "../index.module.css";
+import { Color, TicketType } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
@@ -29,7 +30,9 @@ class Utils extends Shared<GameType, PlayerType> {
       <div
         key={index}
         onClick={() => onClick(index)}
-        className={styles.bubble}
+        className={[styles.bubble, color === Color.rainbow && css.rainbow].join(
+          " "
+        )}
         style={{ backgroundColor }}
       >
         {Color[color]}
@@ -41,7 +44,7 @@ class Utils extends Shared<GameType, PlayerType> {
     if (!utils.isMyTurn()) return;
     if (store.gameW.game.tookTrain) {
       if (store.gameW.game.bank[index] === Color.rainbow) return;
-      store.gameW.game.tookTrain = false;
+      delete store.gameW.game.tookTrain;
       utils.incrementPlayerTurn();
     } else {
       if (store.gameW.game.bank[index] === Color.rainbow) {
@@ -69,7 +72,7 @@ class Utils extends Shared<GameType, PlayerType> {
       );
     }
     if (store.gameW.game.tookTrain) {
-      store.gameW.game.tookTrain = false;
+      delete store.gameW.game.tookTrain;
       utils.incrementPlayerTurn();
     } else {
       store.gameW.game.tookTrain = true;
@@ -91,7 +94,7 @@ class Utils extends Shared<GameType, PlayerType> {
         utils.dealOneToBank(game);
       }
     }
-    alert("uh oh");
+    alert("uh oh maybeRedeal");
   }
 
   dealOneToBank(game: GameType) {
@@ -100,6 +103,14 @@ class Utils extends Shared<GameType, PlayerType> {
     // no cards left in deck, cant deal!
     if (game.deck!.length === 0) return;
     game.bank.push(game.deck!.shift()!);
+  }
+
+  ticketCompleted(t: TicketType, player: PlayerType): boolean {
+    return false;
+  }
+
+  longestPath(player: PlayerType): number {
+    return -1;
   }
 }
 

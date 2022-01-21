@@ -10,7 +10,8 @@ export type GameType = {
   deck?: Color[];
   discard?: Color[];
   ticketIndices?: number[];
-  tookTrain: boolean;
+  tookTrain?: boolean;
+  lastPlayer?: number;
 };
 
 export type Params = {
@@ -38,7 +39,6 @@ function NewGame(params: Params): PromiseLike<GameType> {
     deck,
     bank: deck.splice(0, utils.CARDS_IN_BANK),
     discard: [],
-    tookTrain: false,
   };
   utils.maybeRedeal(game);
   return Promise.resolve(game).then(setPlayers);

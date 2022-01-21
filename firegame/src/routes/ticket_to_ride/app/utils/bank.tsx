@@ -241,6 +241,9 @@ export const Cities: {
   },
 };
 
+export type TicketType = { start: City; end: City; points: number };
+export const Tickets: TicketType[] = [];
+
 export enum Color {
   rainbow,
   yellow,
@@ -476,8 +479,6 @@ export const Routes: {
     colors: [Color.white],
   },
 ];
-
-export type TicketType = { start: City; end: City; points: number };
 
 const e = {};
 export default e;
