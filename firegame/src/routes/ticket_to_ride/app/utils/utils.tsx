@@ -211,6 +211,7 @@ class Utils extends Shared<GameType, PlayerType> {
 
   buyRoute(
     index: number,
+    colorIndex: number,
     selected: { selected: { [n: number]: boolean } },
     update: (selected: { [n: number]: boolean }) => void
   ) {
@@ -227,16 +228,21 @@ class Utils extends Shared<GameType, PlayerType> {
       Object.fromEntries(
         colors.filter((c) => c !== Color.rainbow).map((c) => [c, true])
       )
-    );
+    ).map(([c, v]) => +c);
     if (spentColors.length > 1) return;
     const route = Routes[index];
+    if (
+      spentColors.length > 0 &&
+      route.colors[colorIndex] !== Color.rainbow &&
+      route.colors[colorIndex] !== spentColors[0]!
+    )
+      return;
     if (selectedIndices.length !== route.length) return;
     utils.getMe().hand = utils
       .getMe()
       .hand!.filter((c, i) => !selectedIndices.includes(i));
     update({});
     if (!utils.getMe().routeIndices) utils.getMe().routeIndices = [];
-    const colorIndex = route.colors.indexOf(+spentColors[0][0]) || 0;
     utils.getMe().routeIndices!.push({ index, colorIndex });
     store.update(
       `bought ${Cities[route.start].name} → ${

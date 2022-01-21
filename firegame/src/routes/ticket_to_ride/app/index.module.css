@@ -21,4 +21,6 @@
 .route {
     position: absolute;
     margin: 0;
+    transform-origin: 0% 0%;
+    text-align: center;
 }

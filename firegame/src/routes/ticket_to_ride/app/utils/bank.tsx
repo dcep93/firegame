@@ -236,8 +236,8 @@ export const Cities: {
   },
   [City.montreal]: {
     name: "Montreal",
-    latitude: 47.14,
-    longitude: 84.39,
+    latitude: 45.55,
+    longitude: -73.87,
   },
 };
 

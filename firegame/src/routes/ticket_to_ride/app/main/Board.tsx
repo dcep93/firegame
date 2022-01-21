@@ -1,7 +1,15 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { Cities, City, CityType, Map, Routes, RouteType } from "../utils/bank";
+import {
+  Cities,
+  City,
+  CityType,
+  Color,
+  Map,
+  Routes,
+  RouteType,
+} from "../utils/bank";
 import utils from "../utils/utils";
 
 function Board(props: { selected: { [n: number]: boolean } }) {
@@ -86,11 +94,6 @@ function Route(props: {
   index: number;
   selected: { [n: number]: boolean };
 }) {
-  if (
-    props.route.start !== City.san_francisco ||
-    props.route.end !== City.salt_lake_city
-  )
-    return null;
   const startCoords = getCoords(props.route.start);
   const endCoords = getCoords(props.route.end);
   const mapCities = [startCoords, endCoords].map((c) => ({
@@ -103,10 +106,19 @@ function Route(props: {
   return (
     <div
       className={[styles.bubble, css.route].join(" ")}
-      style={{ ...startCoords, width, transform: `rotate(${angleDeg}deg)` }}
+      style={{
+        ...startCoords,
+        width,
+        transform: `rotate(${angleDeg}deg) translate(0%, -50%)`,
+      }}
+      title={`${Cities[props.route.start].name} → ${
+        Cities[props.route.end].name
+      }\n${props.route.length}\n${props.route.colors
+        .map((c) => Color[c])
+        .join("/")}`}
       onClick={() => alert(props.index)}
     >
-      {props.index}
+      {props.route.colors.length}
     </div>
   );
 }
