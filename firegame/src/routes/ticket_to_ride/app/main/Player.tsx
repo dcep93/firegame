@@ -18,7 +18,7 @@ function Player(props: { player: PlayerType }) {
           trains left:{" "}
           {NUM_TRAINS -
             (props.player.routeIndices || [])
-              .map((i) => Routes[i])
+              .map((i) => Routes[i.index])
               .map((r) => r.length)
               .sum()}
         </div>
@@ -27,7 +27,7 @@ function Player(props: { player: PlayerType }) {
         <div>
           base score:{" "}
           {(props.player.routeIndices || [])
-            .map((i) => Routes[i])
+            .map((i) => Routes[i.index])
             .map((r) => r.length)
             .map(utils.linkPoints)
             .sum()}
@@ -36,7 +36,7 @@ function Player(props: { player: PlayerType }) {
           <div>
             final score:{" "}
             {(props.player.routeIndices || [])
-              .map((i) => Routes[i])
+              .map((i) => Routes[i.index])
               .map((r) => r.length)
               .map(utils.linkPoints)
               .sum() +

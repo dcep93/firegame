@@ -116,7 +116,7 @@ class Utils extends Shared<GameType, PlayerType> {
     return this.ticketCompletedHelper(
       t.start,
       t.end,
-      player.routeIndices || [],
+      (player.routeIndices || []).map((i) => i.index),
       []
     );
   }
@@ -151,7 +151,12 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   longestPath(player: PlayerType): number {
-    return this.longestPathHelper(null, player.routeIndices || [], [], 0);
+    return this.longestPathHelper(
+      null,
+      (player.routeIndices || []).map((i) => i.index),
+      [],
+      0
+    );
   }
 
   longestPathHelper(
@@ -205,7 +210,7 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   buyRoute(
-    routeIndex: number,
+    index: number,
     selected: { selected: { [n: number]: boolean } },
     update: (selected: { [n: number]: boolean }) => void
   ) {
@@ -216,24 +221,23 @@ class Utils extends Shared<GameType, PlayerType> {
     const selectedIndices = Object.entries(selected)
       .filter(([key, val]) => val)
       .map(([key, val]) => +key);
-    const colors = selectedIndices.map((index) => utils.getMe().hand![index]);
+    const colors = selectedIndices.map((i) => utils.getMe().hand![i]);
     if (colors.filter((c) => c === undefined).length > 0) return;
-    if (
-      Object.entries(
-        Object.fromEntries(
-          colors.filter((c) => c !== Color.rainbow).map((c) => [c, true])
-        )
-      ).length > 1
-    )
-      return;
-    const route = Routes[routeIndex];
+    const spentColors = Object.entries(
+      Object.fromEntries(
+        colors.filter((c) => c !== Color.rainbow).map((c) => [c, true])
+      )
+    );
+    if (spentColors.length > 1) return;
+    const route = Routes[index];
     if (selectedIndices.length !== route.length) return;
     utils.getMe().hand = utils
       .getMe()
       .hand!.filter((c, i) => !selectedIndices.includes(i));
     update({});
     if (!utils.getMe().routeIndices) utils.getMe().routeIndices = [];
-    utils.getMe().routeIndices!.push(routeIndex);
+    const colorIndex = route.colors.indexOf(+spentColors[0][0]) || 0;
+    utils.getMe().routeIndices!.push({ index, colorIndex });
     store.update(
       `bought ${Cities[route.start].name} → ${
         Cities[route.end].name

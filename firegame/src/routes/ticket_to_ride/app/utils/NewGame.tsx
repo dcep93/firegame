@@ -22,7 +22,7 @@ export type PlayerType = {
   userId: string;
   userName: string;
   hand?: Color[];
-  routeIndices?: number[];
+  routeIndices?: { index: number; colorIndex: number }[];
   ticketIndices?: number[];
   takenTicketIndices?: number[];
 };
@@ -40,7 +40,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     deck,
     bank: deck.splice(0, utils.CARDS_IN_BANK),
     discard: [],
-    ticketIndices: Tickets.map((t, i) => i),
+    ticketIndices: utils.shuffle(Tickets.map((t, i) => i)),
   };
   utils.maybeRedeal(game);
   return Promise.resolve(game).then(setPlayers);
