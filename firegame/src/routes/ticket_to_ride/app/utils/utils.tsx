@@ -21,8 +21,8 @@ class Utils extends Shared<GameType, PlayerType> {
     return [1, 2, 4, 7, 10, 15][length - 1];
   }
 
-  renderCard(color: Color, index: number, onClick: (index: number) => void) {
-    const backgroundColor = {
+  backgroundColor(color: Color) {
+    return {
       [Color.black]: "grey",
       [Color.blue]: "lightblue",
       [Color.green]: "lightgreen",
@@ -33,6 +33,10 @@ class Utils extends Shared<GameType, PlayerType> {
       [Color.white]: "white",
       [Color.yellow]: "yellow",
     }[color];
+  }
+
+  renderCard(color: Color, index: number, onClick: (index: number) => void) {
+    const backgroundColor = this.backgroundColor(color);
     return (
       <div
         key={index}
@@ -119,7 +123,7 @@ class Utils extends Shared<GameType, PlayerType> {
     return this.ticketCompletedHelper(
       t.start,
       t.end,
-      (player.routeIndices || []).map((i) => i.index),
+      (player.routeIndices || []).map((i) => i.routeIndex),
       []
     );
   }
@@ -156,7 +160,7 @@ class Utils extends Shared<GameType, PlayerType> {
   longestPath(player: PlayerType): number {
     return this.longestPathHelper(
       null,
-      (player.routeIndices || []).map((i) => i.index),
+      (player.routeIndices || []).map((i) => i.routeIndex),
       [],
       0
     );
@@ -214,9 +218,9 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   buyRoute(
-    index: number,
+    routeIndex: number,
     colorIndex: number,
-    selected: { selected: { [n: number]: boolean } },
+    selected: { [n: number]: boolean },
     update: (selected: { [n: number]: boolean }) => void
   ) {
     if (!utils.isMyTurn()) return alert("not your turn");
@@ -237,7 +241,7 @@ class Utils extends Shared<GameType, PlayerType> {
     ).map(([c, v]) => +c);
     if (spentColors.length > 1)
       return alert("can only spend one color per route");
-    const route = Routes[index];
+    const route = Routes[routeIndex];
     if (
       spentColors.length > 0 &&
       route.colors[colorIndex] !== Color.rainbow &&
@@ -251,7 +255,7 @@ class Utils extends Shared<GameType, PlayerType> {
       .hand!.filter((c, i) => !selectedIndices.includes(i));
     update({});
     if (!utils.getMe().routeIndices) utils.getMe().routeIndices = [];
-    utils.getMe().routeIndices!.push({ index, colorIndex });
+    utils.getMe().routeIndices!.push({ routeIndex, colorIndex });
     store.update(
       `bought ${Cities[route.start].name} → ${
         Cities[route.end].name

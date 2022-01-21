@@ -13,7 +13,7 @@ function Main() {
         <Player key={i} player={p} />
       ))}
       <Bank update={update} />
-      <Board selected={selected} />
+      <Board selected={selected} update={update} />
       {utils.getMe() && <Me selected={selected} update={update} />}
     </div>
   );

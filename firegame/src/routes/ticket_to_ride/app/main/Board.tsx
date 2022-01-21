@@ -12,18 +12,27 @@ import {
 } from "../utils/bank";
 import utils from "../utils/utils";
 
-function Board(props: { selected: { [n: number]: boolean } }) {
+function Board(props: {
+  selected: { [n: number]: boolean };
+  update: (selected: { [n: number]: boolean }) => void;
+}) {
   return (
     <div>
-      <div className={styles.bubble}>
-        <div
-          className={css.board}
-          onClick={(e) =>
-            console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
-          }
-        >
+      <div
+        className={[styles.bubble, css.board].join(" ")}
+        onClick={(e) =>
+          console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+        }
+      >
+        <div className={css.overlay}>
           {Routes.map((r, i) => (
-            <Route key={i} route={r} index={i} selected={props.selected} />
+            <Route
+              key={i}
+              route={r}
+              routeIndex={i}
+              selected={props.selected}
+              update={props.update}
+            />
           ))}
           {utils
             .enumArray(City)
@@ -38,9 +47,9 @@ function Board(props: { selected: { [n: number]: boolean } }) {
                 {obj.name}
               </div>
             ))}
-
-          <img src={Map.src} alt=""></img>
         </div>
+
+        <img className={css.img} src={Map.src} alt=""></img>
       </div>
     </div>
   );
@@ -91,8 +100,9 @@ function getAngle(city1: CityType, city2: CityType): number {
 
 function Route(props: {
   route: RouteType;
-  index: number;
+  routeIndex: number;
   selected: { [n: number]: boolean };
+  update: (selected: { [n: number]: boolean }) => void;
 }) {
   const startCoords = getCoords(props.route.start);
   const endCoords = getCoords(props.route.end);
@@ -105,21 +115,54 @@ function Route(props: {
   const angleDeg = (getAngle(mapCities[0], mapCities[1]) * 180) / Math.PI;
   return (
     <div
-      className={[styles.bubble, css.route].join(" ")}
+      className={css.route}
       style={{
         ...startCoords,
         width,
         transform: `rotate(${angleDeg}deg) translate(0%, -50%)`,
       }}
-      title={`${Cities[props.route.start].name} → ${
-        Cities[props.route.end].name
-      }\n${props.route.length}\n${props.route.colors
-        .map((c) => Color[c])
-        .join("/")}`}
-      onClick={() => alert(props.index)}
     >
-      {props.route.colors.length}
+      {props.route.colors.map((c, i) => (
+        <SubRoute
+          key={i}
+          routeIndex={props.routeIndex}
+          colorIndex={i}
+          selected={props.selected}
+          update={props.update}
+        />
+      ))}
     </div>
+  );
+}
+
+function SubRoute(props: {
+  routeIndex: number;
+  colorIndex: number;
+  selected: { [n: number]: boolean };
+  update: (selected: { [n: number]: boolean }) => void;
+}) {
+  const route = Routes[props.routeIndex];
+  const color = route.colors[props.colorIndex];
+  return (
+    <div
+      style={{ backgroundColor: utils.backgroundColor(color) }}
+      className={[
+        styles.bubble,
+        css.subroute,
+        color === Color.rainbow && css.rainbow,
+      ].join(" ")}
+      onClick={() =>
+        utils.buyRoute(
+          props.routeIndex,
+          props.colorIndex,
+          props.selected,
+          props.update
+        )
+      }
+      title={`${Cities[route.start].name} → ${Cities[route.end].name}\n${
+        route.length
+      }\n${Color[route.colors[props.colorIndex]]}`}
+    ></div>
   );
 }
 
