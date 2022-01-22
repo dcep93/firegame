@@ -50,10 +50,6 @@
     overflow: hidden;
     display: inline-flex;
     justify-content: center;
-}
-
-.claimedroute {
-    display: inline-block;
-    font-size: x-small;
+    font-size: small;
     white-space: nowrap;
 }

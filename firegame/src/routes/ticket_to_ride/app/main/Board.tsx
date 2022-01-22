@@ -118,15 +118,17 @@ function Route(props: {
   update: (selected: { [n: number]: boolean }) => void;
   scale: number;
 }) {
-  const startCoords = getCoords(props.route.start, props.scale);
-  const endCoords = getCoords(props.route.end, props.scale);
+  var startCoords = getCoords(props.route.start, props.scale);
+  var endCoords = getCoords(props.route.end, props.scale);
+  if (startCoords.left > endCoords.left)
+    [startCoords, endCoords] = [endCoords, startCoords];
   const mapCities = [startCoords, endCoords].map((c) => ({
     name: "",
     latitude: c.top,
     longitude: c.left,
   }));
   const width = getDistance(mapCities[0], mapCities[1]);
-  const angleDeg = (getAngle(mapCities[0], mapCities[1]) * 180) / Math.PI;
+  var angleDeg = (getAngle(mapCities[0], mapCities[1]) * 180) / Math.PI;
   return (
     <div
       className={css.route}
@@ -157,13 +159,12 @@ function SubRoute(props: {
 }) {
   const route = Routes[props.routeIndex];
   const color = route.colors[props.colorIndex];
-  const owned =
-    store.gameW.game.players.find((p) =>
-      (p.routeIndices || []).find(
-        (r) =>
-          r.routeIndex === props.routeIndex && r.colorIndex === props.colorIndex
-      )
-    )?.userName || "🚂";
+  const owned = store.gameW.game.players.find((p) =>
+    (p.routeIndices || []).find(
+      (r) =>
+        r.routeIndex === props.routeIndex && r.colorIndex === props.colorIndex
+    )
+  )?.userName;
   return (
     <div
       style={{ backgroundColor: utils.backgroundColor(color) }}
@@ -185,8 +186,10 @@ function SubRoute(props: {
         route.length
       }\n${Color[route.colors[props.colorIndex]]}\n${owned}`}
     >
-      <span className={css.claimedroute}>
-        {route.length} / {owned}
+      <span>
+        {owned === undefined
+          ? `${route.length} / 🚂`
+          : ` ********* ${owned} ********* `}
       </span>
     </div>
   );
