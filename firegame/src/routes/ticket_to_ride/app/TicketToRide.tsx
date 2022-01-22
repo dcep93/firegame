@@ -10,8 +10,10 @@ class TicketToRide extends React.Component {
       <div
         className={[styles.main, utils.isMyTurn() && styles.my_turn].join(" ")}
       >
-        <Sidebar />
-        <div className={styles.content}>{store.gameW.game && <Main />}</div>
+        <div className={styles.main}>
+          <Sidebar />
+          <div className={styles.content}>{store.gameW.game && <Main />}</div>
+        </div>
       </div>
     );
   }
