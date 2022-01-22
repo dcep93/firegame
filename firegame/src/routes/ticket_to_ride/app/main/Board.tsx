@@ -17,11 +17,11 @@ function Board(props: {
   update: (selected: { [n: number]: boolean }) => void;
 }) {
   const [scaleIndex, update] = useState(0);
+  const width = Map.baseWidth * Map.scales[scaleIndex];
   return (
     <div>
       <div
         className={[styles.bubble, css.board].join(" ")}
-        style={{ transform: `scale(${Map.scales[scaleIndex]})` }}
         onClick={(e) => {
           if (true) {
             const newScale = (scaleIndex + 1) % Map.scales.length;
@@ -39,6 +39,7 @@ function Board(props: {
               routeIndex={i}
               selected={props.selected}
               update={props.update}
+              scale={Map.scales[scaleIndex]}
             />
           ))}
           {utils
@@ -49,28 +50,22 @@ function Board(props: {
                 key={i}
                 className={css.city}
                 title={obj.name}
-                style={{ ...getCoords(obj.city) }}
+                style={{ ...getCoords(obj.city, Map.scales[scaleIndex]) }}
               >
                 {obj.name}
               </div>
             ))}
         </div>
 
-        <img
-          style={{ width: Map.renderWidth }}
-          className={css.img}
-          src={Map.src}
-          alt=""
-        ></img>
+        <img style={{ width }} className={css.img} src={Map.src} alt=""></img>
       </div>
     </div>
   );
 }
 
-function getCoords(city: City): { top: number; left: number } {
+function getCoords(city: City, scale: number): { top: number; left: number } {
   var coords = getCoordsHelper(city);
-  const factor = Map.renderWidth / Map.baseWidth;
-  return { top: coords.top * factor, left: coords.left * factor };
+  return { top: coords.top * scale, left: coords.left * scale };
 }
 
 function getCoordsHelper(city: City): { top: number; left: number } {
@@ -121,9 +116,10 @@ function Route(props: {
   routeIndex: number;
   selected: { [n: number]: boolean };
   update: (selected: { [n: number]: boolean }) => void;
+  scale: number;
 }) {
-  const startCoords = getCoords(props.route.start);
-  const endCoords = getCoords(props.route.end);
+  const startCoords = getCoords(props.route.start, props.scale);
+  const endCoords = getCoords(props.route.end, props.scale);
   const mapCities = [startCoords, endCoords].map((c) => ({
     name: "",
     latitude: c.top,
@@ -167,7 +163,7 @@ function SubRoute(props: {
         (r) =>
           r.routeIndex === props.routeIndex && r.colorIndex === props.colorIndex
       )
-    )?.userName || "";
+    )?.userName || "🚂";
   return (
     <div
       style={{ backgroundColor: utils.backgroundColor(color) }}
@@ -190,7 +186,7 @@ function SubRoute(props: {
       }\n${Color[route.colors[props.colorIndex]]}\n${owned}`}
     >
       <span className={css.claimedroute}>
-        {route.length} / {owned} / 🚂
+        {route.length} / {owned}
       </span>
     </div>
   );

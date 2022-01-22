@@ -39,8 +39,7 @@ export enum City {
 
 export const Map = {
   src: "https://raw.githubusercontent.com/dcep93/firegame/master/firegame/src/routes/ticket_to_ride/assets/usa.jpeg",
-  scales: [0.6, 1, 1.3],
-  renderWidth: 2000,
+  scales: [2, 4, 1.2],
   baseWidth: 800,
   refs: [
     { city: City.san_francisco, top: 224, left: 68 },
