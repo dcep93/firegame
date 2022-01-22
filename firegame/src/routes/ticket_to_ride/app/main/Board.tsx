@@ -10,7 +10,7 @@ import {
   Routes,
   RouteType,
 } from "../utils/bank";
-import utils from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 function Board(props: {
   selected: { [n: number]: boolean };
@@ -143,6 +143,12 @@ function SubRoute(props: {
 }) {
   const route = Routes[props.routeIndex];
   const color = route.colors[props.colorIndex];
+  const owned = store.gameW.game.players.find((p) =>
+    (p.routeIndices || []).find(
+      (r) =>
+        r.routeIndex === props.routeIndex && r.colorIndex === props.colorIndex
+    )
+  )?.userName;
   return (
     <div
       style={{ backgroundColor: utils.backgroundColor(color) }}
@@ -162,7 +168,11 @@ function SubRoute(props: {
       title={`${Cities[route.start].name} → ${Cities[route.end].name}\n${
         route.length
       }\n${Color[route.colors[props.colorIndex]]}`}
-    ></div>
+    >
+      <span className={css.claimedroute}>
+        {route.length} / {owned} / 🚂
+      </span>
+    </div>
   );
 }
 
