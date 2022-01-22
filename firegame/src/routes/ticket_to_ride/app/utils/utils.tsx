@@ -227,6 +227,15 @@ class Utils extends Shared<GameType, PlayerType> {
     if (utils.getMe().takenTicketIndices)
       return alert("need to select tickets");
     if (store.gameW.game.tookTrain) return alert("already took card");
+
+    if (
+      store.gameW.game.players.find((p) =>
+        (p.routeIndices || []).find(
+          (r) => r.routeIndex === routeIndex && r.colorIndex === colorIndex
+        )
+      )
+    )
+      return alert("route already purchased");
     if (
       store.gameW.game.players.find((p) =>
         (p.routeIndices || []).find((r) => r.routeIndex === routeIndex)

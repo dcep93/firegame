@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 import {
@@ -16,13 +16,20 @@ function Board(props: {
   selected: { [n: number]: boolean };
   update: (selected: { [n: number]: boolean }) => void;
 }) {
+  const [scaleIndex, update] = useState(0);
   return (
     <div>
       <div
         className={[styles.bubble, css.board].join(" ")}
-        onClick={(e) =>
-          console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
-        }
+        style={{ transform: `scale(${Map.scales[scaleIndex]})` }}
+        onClick={(e) => {
+          if (true) {
+            const newScale = (scaleIndex + 1) % Map.scales.length;
+            update(newScale);
+          } else {
+            console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+          }
+        }}
       >
         <div className={css.overlay}>
           {Routes.map((r, i) => (
@@ -169,14 +176,15 @@ function SubRoute(props: {
         css.subroute,
         color === Color.rainbow && css.rainbow,
       ].join(" ")}
-      onClick={() =>
+      onClick={(e) => {
+        e.stopPropagation();
         utils.buyRoute(
           props.routeIndex,
           props.colorIndex,
           props.selected,
           props.update
-        )
-      }
+        );
+      }}
       title={`${Cities[route.start].name} → ${Cities[route.end].name}\n${
         route.length
       }\n${Color[route.colors[props.colorIndex]]}\n${owned}`}
