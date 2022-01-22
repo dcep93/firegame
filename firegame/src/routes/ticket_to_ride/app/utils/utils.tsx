@@ -229,7 +229,7 @@ class Utils extends Shared<GameType, PlayerType> {
     if (store.gameW.game.tookTrain) return alert("already took card");
     if (
       store.gameW.game.players.find((p) =>
-        (p.routeIndices || []).map((r) => r.routeIndex === routeIndex)
+        (p.routeIndices || []).find((r) => r.routeIndex === routeIndex)
       )
     )
       return alert("cannot buy parallel route in 2-3 player game");
