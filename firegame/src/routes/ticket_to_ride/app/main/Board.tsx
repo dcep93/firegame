@@ -49,13 +49,24 @@ function Board(props: {
             ))}
         </div>
 
-        <img className={css.img} src={Map.src} alt=""></img>
+        <img
+          style={{ width: Map.renderWidth }}
+          className={css.img}
+          src={Map.src}
+          alt=""
+        ></img>
       </div>
     </div>
   );
 }
 
 function getCoords(city: City): { top: number; left: number } {
+  var coords = getCoordsHelper(city);
+  const factor = Map.renderWidth / Map.baseWidth;
+  return { top: coords.top * factor, left: coords.left * factor };
+}
+
+function getCoordsHelper(city: City): { top: number; left: number } {
   const mapRef = Map.refs.find((obj) => obj.city === city);
   if (mapRef !== undefined) return mapRef;
   const target = Cities[city];
@@ -143,12 +154,13 @@ function SubRoute(props: {
 }) {
   const route = Routes[props.routeIndex];
   const color = route.colors[props.colorIndex];
-  const owned = store.gameW.game.players.find((p) =>
-    (p.routeIndices || []).find(
-      (r) =>
-        r.routeIndex === props.routeIndex && r.colorIndex === props.colorIndex
-    )
-  )?.userName;
+  const owned =
+    store.gameW.game.players.find((p) =>
+      (p.routeIndices || []).find(
+        (r) =>
+          r.routeIndex === props.routeIndex && r.colorIndex === props.colorIndex
+      )
+    )?.userName || "";
   return (
     <div
       style={{ backgroundColor: utils.backgroundColor(color) }}
@@ -167,7 +179,7 @@ function SubRoute(props: {
       }
       title={`${Cities[route.start].name} → ${Cities[route.end].name}\n${
         route.length
-      }\n${Color[route.colors[props.colorIndex]]}`}
+      }\n${Color[route.colors[props.colorIndex]]}\n${owned}`}
     >
       <span className={css.claimedroute}>
         {route.length} / {owned} / 🚂
