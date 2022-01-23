@@ -21,6 +21,7 @@ export type Params = {
 export type PlayerType = {
   userId: string;
   userName: string;
+  color: Color;
   hand?: Color[];
   routeIndices?: { routeIndex: number; colorIndex: number }[];
   ticketIndices?: number[];
@@ -48,13 +49,19 @@ function NewGame(params: Params): PromiseLike<GameType> {
 }
 
 function setPlayers(game: GameType): GameType {
+  const colorIndices = utils.shuffle(
+    utils
+      .enumArray(Color)
+      .filter((c) => c !== Color.rainbow && c !== Color.white)
+  );
   game.players = utils
     .shuffle(Object.entries(store.lobby))
     .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
     .slice(0, 2)
-    .map(([userId, userName]) => ({
+    .map(([userId, userName], index) => ({
       userId,
       userName,
+      color: colorIndices[index],
       takenTicketIndices: game.ticketIndices.splice(0, 3),
       rainbowsDrawn: 0,
     }));

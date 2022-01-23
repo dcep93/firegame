@@ -164,10 +164,28 @@ function SubRoute(props: {
       (r) =>
         r.routeIndex === props.routeIndex && r.colorIndex === props.colorIndex
     )
-  )?.userName;
+  );
+  const style =
+    owned === undefined
+      ? { backgroundColor: utils.backgroundColor(color) }
+      : {
+          background: `repeating-linear-gradient(-45deg, white 0 20px, ${utils.backgroundColor(
+            owned.color
+          )} 20px 40px)`,
+        };
+  const messageParts = [route.length, "🚂"];
+  const title = [
+    `${Cities[route.start].name} → ${Cities[route.end].name}`,
+    route.length,
+    Color[route.colors[props.colorIndex]],
+  ];
+  if (owned !== undefined) {
+    messageParts.push(owned.userName);
+    title.push(owned.userName);
+  }
   return (
     <div
-      style={{ backgroundColor: utils.backgroundColor(color) }}
+      style={style}
       className={[
         styles.bubble,
         css.subroute,
@@ -182,15 +200,9 @@ function SubRoute(props: {
           props.update
         );
       }}
-      title={`${Cities[route.start].name} → ${Cities[route.end].name}\n${
-        route.length
-      }\n${Color[route.colors[props.colorIndex]]}\n${owned}`}
+      title={title.join("\n")}
     >
-      <span>
-        {owned === undefined
-          ? `${route.length} / 🚂`
-          : ` ********* ${owned} ********* `}
-      </span>
+      <span>{messageParts.join(" / ")}</span>
     </div>
   );
 }

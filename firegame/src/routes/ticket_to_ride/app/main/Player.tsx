@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
-import { Routes, Tickets } from "../utils/bank";
+import { Color, Routes, Tickets } from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
@@ -16,6 +16,9 @@ function Player(props: { player: PlayerType }) {
       ].join(" ")}
     >
       <h2>{props.player.userName}</h2>
+      <div>
+        color: <span>{Color[props.player.color]}</span>
+      </div>
       <div>hand: {(props.player.hand || []).length}</div>
       <div>tickets: {(props.player.ticketIndices || []).length}</div>
       <div>
