@@ -9,6 +9,7 @@ import {
   Map,
   Routes,
   RouteType,
+  Tickets,
 } from "../utils/bank";
 import utils, { store } from "../utils/utils";
 
@@ -18,6 +19,14 @@ function Board(props: {
 }) {
   const [scaleIndex, update] = useState(0);
   const width = Map.baseWidth * Map.scales[scaleIndex];
+  const destinations = Object.fromEntries(
+    (utils.getMe()?.takenTicketIndices || [])
+      .concat(utils.getMe()?.ticketIndices || [])
+      .map((i) => Tickets[i])
+      .flatMap((t) => [t.end, t.start])
+      .map((c) => Cities[c].name)
+      .map((c) => [c, true])
+  );
   return (
     <div>
       <div
@@ -48,7 +57,10 @@ function Board(props: {
             .map((obj, i) => (
               <div
                 key={i}
-                className={css.city}
+                className={[
+                  css.city,
+                  destinations[obj.name] && css.destination,
+                ].join(" ")}
                 title={obj.name}
                 style={{ ...getCoords(obj.city, Map.scales[scaleIndex]) }}
               >

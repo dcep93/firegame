@@ -73,7 +73,7 @@ class Utils extends Shared<GameType, PlayerType> {
     me.hand.unshift(c);
     me.hand.sort();
     utils.dealOneToBank(store.gameW.game);
-    const msg = `took ${Color[c]} from bank`;
+    var msg = `took ${Color[c]} from bank`;
     const shuffled = utils.maybeRedeal(store.gameW.game);
     if (shuffled) msg += ` - ${shuffled}`;
     store.update(msg);
@@ -150,12 +150,15 @@ class Utils extends Shared<GameType, PlayerType> {
         continue;
       }
       if (nextCity === end) return true;
-      return this.ticketCompletedHelper(
-        nextCity,
-        end,
-        routeIndices,
-        seen.concat(routeIndex)
-      );
+      if (
+        this.ticketCompletedHelper(
+          nextCity,
+          end,
+          routeIndices,
+          seen.concat(routeIndex)
+        )
+      )
+        return true;
     }
     return false;
   }
