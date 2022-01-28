@@ -73,8 +73,10 @@ class Utils extends Shared<GameType, PlayerType> {
     me.hand.unshift(c);
     me.hand.sort();
     utils.dealOneToBank(store.gameW.game);
-    utils.maybeRedeal(store.gameW.game);
-    store.update(`took ${Color[c]} from bank`);
+    const msg = `took ${Color[c]} from bank`;
+    const shuffled = utils.maybeRedeal(store.gameW.game);
+    if (shuffled) msg += ` - ${shuffled}`;
+    store.update(msg);
   }
 
   takeFromDeck() {
@@ -101,14 +103,15 @@ class Utils extends Shared<GameType, PlayerType> {
     store.update(`took from deck`);
   }
 
-  maybeRedeal(game: GameType) {
+  maybeRedeal(game: GameType): number {
     for (let i = 0; i < 100; i++) {
-      if (game.bank.filter((c) => c === Color.rainbow).length < 3) return;
+      if (game.bank.filter((c) => c === Color.rainbow).length < 3) return i;
       if (!game.discard) game.discard = [];
       game.discard.push(...game.bank.splice(0));
       utils.count(utils.CARDS_IN_BANK).forEach(() => utils.dealOneToBank(game));
     }
     alert("uh oh maybeRedeal");
+    return -1;
   }
 
   dealOneToBank(game: GameType) {
