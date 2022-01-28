@@ -254,13 +254,23 @@ class Utils extends Shared<GameType, PlayerType> {
       )
     )
       return alert("cannot buy parallel route in 2-3 player game");
-    if (!utils.getMe().hand) return alert("invalid payment");
+    const route = Routes[routeIndex];
     const selectedIndices = Object.entries(selected)
       .filter(([key, val]) => val)
       .map(([key, val]) => +key);
+    if (selectedIndices.length === 0)
+      selectedIndices.push(
+        ...(utils.getMe().hand || [])
+          .map((c, i) => ({ c, i }))
+          .filter(
+            (obj) =>
+              obj.c === route.colors[colorIndex] || obj.c === Color.rainbow
+          )
+          .sort((a, b) => (a.c === Color.rainbow ? 1 : -1))
+          .map((obj) => obj.i)
+          .slice(0, route.length)
+      );
     const colors = selectedIndices.map((i) => utils.getMe().hand![i]);
-    if (colors.filter((c) => c === undefined).length > 0)
-      return alert("bug... refresh?");
     const spentColors = Object.entries(
       Object.fromEntries(
         colors.filter((c) => c !== Color.rainbow).map((c) => [c, true])
@@ -268,7 +278,6 @@ class Utils extends Shared<GameType, PlayerType> {
     ).map(([c, v]) => +c);
     if (spentColors.length > 1)
       return alert("can only spend one color per route");
-    const route = Routes[routeIndex];
     if (
       spentColors.length > 0 &&
       route.colors[colorIndex] !== Color.rainbow &&
