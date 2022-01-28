@@ -4,7 +4,6 @@ import { Color, Routes, Tickets } from "../utils/bank";
 import { PlayerType } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
-const NUM_TRAINS = 45;
 const LONGEST_PATH_REWARD = 10;
 
 function Player(props: { player: PlayerType }) {
@@ -21,14 +20,7 @@ function Player(props: { player: PlayerType }) {
       </div>
       <div>hand: {(props.player.hand || []).length}</div>
       <div>tickets: {(props.player.ticketIndices || []).length}</div>
-      <div>
-        trains left:{" "}
-        {NUM_TRAINS -
-          (props.player.routeIndices || [])
-            .map((i) => Routes[i.routeIndex])
-            .map((r) => r.length)
-            .sum()}
-      </div>
+      <div>trains left: {utils.trainsLeft(props.player)}</div>
       <div>routes: {(props.player.routeIndices || []).length}</div>
       <div>longest path: {utils.longestPath(props.player)}</div>
       <div>
@@ -55,7 +47,9 @@ function Player(props: { player: PlayerType }) {
                     t.points * (utils.ticketCompleted(t, props.player) ? 1 : -1)
                 )
                 .sum() +
-              Math.max(...store.gameW.game.players.map(utils.longestPath)) ===
+              Math.max(
+                ...store.gameW.game.players.map(utils.longestPath.bind(utils))
+              ) ===
             utils.longestPath(props.player)
               ? LONGEST_PATH_REWARD
               : 0}

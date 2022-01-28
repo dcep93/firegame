@@ -9,11 +9,14 @@ import { GameType, PlayerType } from "./NewGame";
 const store: StoreType<GameType> = store_;
 
 class Utils extends Shared<GameType, PlayerType> {
+  NUM_TRAINS = 45;
   CARDS_IN_BANK = 5;
 
   incrementPlayerTurn(game_?: GameType | undefined): void {
-    if (store.gameW.game.currentPlayer === store.gameW.game.lastPlayer)
+    if (store.gameW.game.currentPlayer === store.gameW.game.lastPlayer) {
+      store.gameW.info.alert = "the game is over";
       store.gameW.game.lastPlayer = -1;
+    }
     super.incrementPlayerTurn(game_);
   }
 
@@ -271,6 +274,8 @@ class Utils extends Shared<GameType, PlayerType> {
       return alert("wrong color");
     if (selectedIndices.length !== route.length)
       return alert("wrong payment number");
+    if (route.length > utils.trainsLeft(utils.getMe()))
+      return alert("not enough trains");
     utils.getMe().hand = utils
       .getMe()
       .hand!.filter((c, i) => !selectedIndices.includes(i));
@@ -278,10 +283,27 @@ class Utils extends Shared<GameType, PlayerType> {
     if (!utils.getMe().routeIndices) utils.getMe().routeIndices = [];
     utils.getMe().routeIndices!.push({ routeIndex, colorIndex });
     utils.incrementPlayerTurn();
+    if (
+      store.gameW.game.lastPlayer === null &&
+      utils.trainsLeft(utils.getMe()) <= 2
+    ) {
+      store.gameW.game.lastPlayer = utils.myIndex();
+      store.gameW.info.alert = "this is the last turn";
+    }
     store.update(
       `bought ${Cities[route.start].name} → ${
         Cities[route.end].name
       } for ${colors.map((c) => Color[c]).join(",")}`
+    );
+  }
+
+  trainsLeft(player: PlayerType): number {
+    return (
+      utils.NUM_TRAINS -
+      (player.routeIndices || [])
+        .map((i) => Routes[i.routeIndex])
+        .map((r) => r.length)
+        .sum()
     );
   }
 }
