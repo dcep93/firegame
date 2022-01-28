@@ -271,6 +271,7 @@ class Utils extends Shared<GameType, PlayerType> {
     update({});
     if (!utils.getMe().routeIndices) utils.getMe().routeIndices = [];
     utils.getMe().routeIndices!.push({ routeIndex, colorIndex });
+    utils.incrementPlayerTurn();
     store.update(
       `bought ${Cities[route.start].name} → ${
         Cities[route.end].name
