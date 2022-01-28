@@ -73,6 +73,7 @@ class Utils extends Shared<GameType, PlayerType> {
     const me = utils.getMe();
     if (!me.hand) me.hand = [];
     const c = store.gameW.game.bank.splice(index, 1)[0];
+    me.lastTaken = c;
     me.hand.unshift(c);
     me.hand.sort();
     utils.dealOneToBank(store.gameW.game);
@@ -101,6 +102,8 @@ class Utils extends Shared<GameType, PlayerType> {
     const me = utils.getMe();
     if (!me.hand) me.hand = [];
     const c = store.gameW.game.deck!.shift()!;
+    if (c === Color.rainbow) me.rainbowsDrawn++;
+    me.lastTaken = c;
     me.hand.unshift(c);
     me.hand.sort();
     store.update(`took from deck`);

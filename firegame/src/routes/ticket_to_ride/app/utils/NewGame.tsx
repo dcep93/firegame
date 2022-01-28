@@ -23,6 +23,7 @@ export type PlayerType = {
   userName: string;
   color: Color;
   hand?: Color[];
+  lastTaken?: Color;
   routeIndices?: { routeIndex: number; colorIndex: number }[];
   ticketIndices?: number[];
   takenTicketIndices?: number[];

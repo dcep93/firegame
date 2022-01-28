@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import store from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
-import { Tickets } from "../utils/bank";
+import { Color, Tickets } from "../utils/bank";
 import utils from "../utils/utils";
 
 function Me(props: {
@@ -39,6 +39,9 @@ function Me(props: {
       <div className={styles.bubble}>
         <h4>
           <span
+            title={`last taken: ${
+              me.lastTaken !== undefined && Color[me.lastTaken]
+            }`}
             onClick={() => {
               props.update({});
               utils.takeFromDeck();
@@ -47,17 +50,23 @@ function Me(props: {
             Hand:
           </span>
         </h4>
-        {(me.hand || []).map((c, i) => (
-          <div
-            key={i}
-            className={props.selected[i] ? styles.bubble : styles.inline}
-          >
-            {utils.renderCard(c, i, () => {
-              props.selected[i] = !props.selected[i];
-              props.update(utils.copy(props.selected));
-            })}
-          </div>
-        ))}
+        {(me.hand || [])
+          .flatMap((c, i) => (me.hand![i - 1] === c ? [c] : [-1, c]))
+          .map((c, i) =>
+            c === -1 ? (
+              <div key={i}></div>
+            ) : (
+              <div
+                key={i}
+                className={props.selected[i] ? styles.bubble : styles.inline}
+              >
+                {utils.renderCard(c, i, () => {
+                  props.selected[i] = !props.selected[i];
+                  props.update(utils.copy(props.selected));
+                })}
+              </div>
+            )
+          )}
       </div>
     </div>
   );
