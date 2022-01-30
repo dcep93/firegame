@@ -7,8 +7,10 @@ import {
 import GameWrapper from "./firegame/components/GameWrapper";
 import Home from "./firegame/components/Home";
 import games from "./firegame/games";
+import { recorded_sha } from "./recorded_sha";
 
 function App() {
+  console.log(recorded_sha);
   return (
     <Router>
       <div>
