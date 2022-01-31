@@ -278,6 +278,7 @@ class Utils extends Shared<GameType, PlayerType> {
     ).map(([c, v]) => +c);
     if (spentColors.length > 1)
       return alert("can only spend one color per route");
+    console.log(281, spentColors, route.colors);
     if (
       spentColors.length > 0 &&
       route.colors[colorIndex] !== Color.rainbow &&
@@ -302,6 +303,7 @@ class Utils extends Shared<GameType, PlayerType> {
       store.gameW.game.lastPlayer = utils.myIndex();
       store.gameW.info.alert = "this is the last turn";
     }
+    console.log(306, colors);
     store.update(
       `bought ${Cities[route.start].name} → ${
         Cities[route.end].name
