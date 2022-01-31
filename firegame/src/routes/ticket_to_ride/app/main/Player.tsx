@@ -47,12 +47,11 @@ function Player(props: { player: PlayerType }) {
                     t.points * (utils.ticketCompleted(t, props.player) ? 1 : -1)
                 )
                 .sum() +
-              Math.max(
+              (Math.max(
                 ...store.gameW.game.players.map(utils.longestPath.bind(utils))
-              ) ===
-            utils.longestPath(props.player)
-              ? LONGEST_PATH_REWARD
-              : 0}
+              ) === utils.longestPath(props.player)
+                ? LONGEST_PATH_REWARD
+                : 0)}
           </div>
           <div>rainbows drawn: {props.player.rainbowsDrawn}</div>
         </>
