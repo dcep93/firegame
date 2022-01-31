@@ -103,6 +103,7 @@ class Utils extends Shared<GameType, PlayerType> {
     if (!me.hand) me.hand = [];
     const c = store.gameW.game.deck!.shift()!;
     if (c === Color.rainbow) me.rainbowsDrawn++;
+    alert(Color[c]);
     me.lastTaken = c;
     me.hand.unshift(c);
     me.hand.sort();
