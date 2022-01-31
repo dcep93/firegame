@@ -1,4 +1,5 @@
 import React from "react";
+import { recorded_sha } from "../../../recorded_sha";
 import styles from "../../../shared/styles.module.css";
 import Shared from "../../shared";
 import store from "../../store";
@@ -17,7 +18,7 @@ abstract class SharedSidebar<T> extends React.Component {
       <div className={styles.resizeable}>
         <div className={styles.sidebar}>
           <div className={styles.bubble}>
-            <h2>{this.name}</h2>
+            <h2 title={recorded_sha}>{this.name}</h2>
             <div>{this.renderStartNewGame()}</div>
           </div>
           <div className={styles.bubble}>
