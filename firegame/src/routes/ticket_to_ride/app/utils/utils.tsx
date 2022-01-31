@@ -296,7 +296,7 @@ class Utils extends Shared<GameType, PlayerType> {
     utils.getMe().routeIndices!.push({ routeIndex, colorIndex });
     utils.incrementPlayerTurn();
     if (
-      store.gameW.game.lastPlayer === null &&
+      store.gameW.game.lastPlayer === undefined &&
       utils.trainsLeft(utils.getMe()) <= 2
     ) {
       store.gameW.game.lastPlayer = utils.myIndex();
