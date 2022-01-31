@@ -51,17 +51,22 @@ function Me(props: {
           </span>
         </h4>
         {(me.hand || [])
-          .flatMap((c, i) => (me.hand![i - 1] === c ? [c] : [-1, c]))
-          .map((c, i) =>
-            c === -1 ? (
+          .map((c, i) => ({ c, i }))
+          .flatMap((obj) =>
+            me.hand![obj.i - 1] === obj.c ? [obj] : [{ c: -1, i: obj.i }, obj]
+          )
+          .map((obj, i) =>
+            obj.c === -1 ? (
               <div key={i}></div>
             ) : (
               <div
                 key={i}
-                className={props.selected[i] ? styles.bubble : styles.inline}
+                className={
+                  props.selected[obj.i] ? styles.bubble : styles.inline
+                }
               >
-                {utils.renderCard(c, i, () => {
-                  props.selected[i] = !props.selected[i];
+                {utils.renderCard(obj.c, i, () => {
+                  props.selected[obj.i] = !props.selected[obj.i];
                   props.update(utils.copy(props.selected));
                 })}
               </div>
