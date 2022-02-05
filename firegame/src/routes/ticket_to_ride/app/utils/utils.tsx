@@ -291,6 +291,8 @@ class Utils extends Shared<GameType, PlayerType> {
     utils.getMe().hand = utils
       .getMe()
       .hand!.filter((c, i) => !selectedIndices.includes(i));
+    if (!store.gameW.game.discard) store.gameW.game.discard = [];
+    store.gameW.game.discard.push(...selectedIndices);
     update({});
     if (!utils.getMe().routeIndices) utils.getMe().routeIndices = [];
     utils.getMe().routeIndices!.push({ routeIndex, colorIndex });
