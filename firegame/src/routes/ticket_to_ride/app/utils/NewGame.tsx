@@ -58,7 +58,6 @@ function setPlayers(game: GameType): GameType {
   game.players = utils
     .shuffle(Object.entries(store.lobby))
     .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
-    .slice(0, 2)
     .map(([userId, userName], index) => ({
       userId,
       userName,
