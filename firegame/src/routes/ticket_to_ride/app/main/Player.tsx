@@ -53,7 +53,10 @@ function Player(props: { player: PlayerType }) {
                 ? LONGEST_PATH_REWARD
                 : 0)}
           </div>
-          <div>rainbows drawn: {props.player.rainbowsDrawn}</div>
+          <div>
+            rainbows drawn: {props.player.rainbowsDrawn}/
+            {props.player.cardsDrawn}
+          </div>
         </>
       )}
     </div>

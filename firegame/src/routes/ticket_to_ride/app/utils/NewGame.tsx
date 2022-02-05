@@ -28,6 +28,7 @@ export type PlayerType = {
   ticketIndices?: number[];
   takenTicketIndices?: number[];
   rainbowsDrawn: number;
+  cardsDrawn: number;
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -64,6 +65,7 @@ function setPlayers(game: GameType): GameType {
       color: colorIndices[index],
       takenTicketIndices: game.ticketIndices.splice(0, 3),
       rainbowsDrawn: 0,
+      cardsDrawn: 0,
     }));
 
   return game;
