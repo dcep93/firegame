@@ -3,7 +3,7 @@ import store, { GameWrapperType } from "../../store";
 import styles from "../../styles.module.css";
 import LogEntry from "./LogEntry";
 
-const history: GameWrapperType<any>[] = [];
+export const history: GameWrapperType<any>[] = [];
 
 abstract class Log<T> extends React.Component<
   {},

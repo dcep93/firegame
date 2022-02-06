@@ -3,6 +3,7 @@ import { recorded_sha } from "../../../recorded_sha";
 import styles from "../../../shared/styles.module.css";
 import Shared from "../../shared";
 import store from "../../store";
+import Player from "./Player";
 import SharedLog from "./SharedLog";
 
 abstract class SharedSidebar<T> extends React.Component {
@@ -25,7 +26,7 @@ abstract class SharedSidebar<T> extends React.Component {
             <h2 onClick={becomeHost}>Lobby</h2>
             {Object.entries(store.lobby).map(([userId, userName], index) => (
               <div key={index} onClick={() => become(userId)}>
-                {this.renderPlayer(userId, userName)}
+                {<Player userId={userId} userName={userName} />}
               </div>
             ))}
           </div>
@@ -52,10 +53,6 @@ abstract class SharedSidebar<T> extends React.Component {
         )}
       </div>
     );
-  }
-
-  renderPlayer(userId: string, userName: string): JSX.Element {
-    return <>{userName}</>;
   }
 
   startNewGame() {
