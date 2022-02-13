@@ -22,7 +22,7 @@ class Main extends React.Component {
           <button
             onClick={() => {
               if (!store.gameW.game.choices) store.gameW.game.choices = [];
-              const c = `new choice (${store.gameW.game.choices.length})`;
+              const c = `new choice (${store.gameW.game.choices.length + 1})`;
               store.gameW.game.choices.push(c);
               store.update(`created ${c}`);
             }}
