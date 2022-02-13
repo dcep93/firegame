@@ -6,6 +6,7 @@ import five from "../routes/five/app/Five";
 import fox from "../routes/fox/app/Fox";
 import loveletter from "../routes/love_letter/app/LoveLetter";
 import ModernArt from "../routes/modern_art/app/ModernArt";
+import Random from "../routes/random/app/Random";
 import splendor from "../routes/splendor/app/Splendor";
 import spy from "../routes/spy/app/Spy";
 import takebacktoe from "../routes/takebacktoe/app/TakeBackToe";
@@ -32,5 +33,6 @@ const ex = {
   wavelength,
   wingspan,
   TicketToRide,
+  Random,
 };
 export default ex;
