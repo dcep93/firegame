@@ -50,6 +50,7 @@ function latestChild(path: string, callback: (value: BlobType) => void): void {
 }
 
 function push(path: string, obj: BlobType): void {
+  console.log(obj);
   database.ref(path).push(obj);
 }
 
