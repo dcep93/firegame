@@ -568,9 +568,8 @@ class Utils extends Shared<GameType, PlayerType> {
     const me = utils.getMe();
     if (!me.scienceTokens) me.scienceTokens = [];
     me.scienceTokens.push(scienceName);
-    store.gameW.game.sciences.find(
-      (obj) => obj.token === scienceName
-    )!.taken = true;
+    store.gameW.game.sciences.find((obj) => obj.token === scienceName)!.taken =
+      true;
     switch (scienceName) {
       case ScienceToken.agriculture:
       case ScienceToken.urbanism:
