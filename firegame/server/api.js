@@ -32,7 +32,7 @@ app.use(function (err, req, res, next) {
 });
 
 app.use(function (req, res, next) {
-  res.sendStatus(404);
+  res.send("api 404\n");
 });
 
 module.exports = app;
