@@ -13,13 +13,13 @@ app.use(express.json());
 app.use(subdomain("api", api));
 // app.use(api);
 
-const build = path.join(__dirname, "build");
-app.use(express.static(build));
-app.use(express.static("public"));
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(build, "index.html"));
-});
+// const build = path.join(__dirname, "build");
+// app.use(express.static(build));
+// app.use(express.static("public"));
+// app.get("/*", function (req, res) {
+//   res.sendFile(path.join(build, "index.html"));
+// });
 
-app.listen(port, function () {
-  console.log(`listening on port ${port}`);
+app.listen(port, function() {
+    console.log(`listening on port ${port}`);
 });
