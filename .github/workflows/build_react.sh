@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-cd firegame
+cd app
 npm install
 yarn build
 rm -rf node_modules
