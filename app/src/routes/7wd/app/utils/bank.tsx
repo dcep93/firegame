@@ -965,7 +965,7 @@ const wonders: WonderType[] = [
   },
   {
     name: "circus maximus",
-    message: "3 points military +1 and destroy a grey card",
+    message: "3 points, military +1, and destroy a grey card",
     cost: [Resource.glass, Resource.wood, Resource.stone, Resource.stone],
     f: () => {
       utils.increaseMilitary(1);
@@ -978,7 +978,7 @@ const wonders: WonderType[] = [
   },
   {
     name: "the statue of zeus",
-    message: "3 points military +1 and destroy a brown card",
+    message: "3 points, military +1, and destroy a brown card",
     cost: [
       Resource.paper,
       Resource.paper,
