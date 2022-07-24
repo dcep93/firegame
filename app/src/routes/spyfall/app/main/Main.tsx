@@ -3,6 +3,8 @@ import { store } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
 
+import locations_json from "./locations.json";
+
 class Main extends React.Component {
   render() {
     return (
@@ -24,6 +26,16 @@ class Main extends React.Component {
               {p}
             </div>
           ))}
+        </div>
+        <div>
+          <h1>All Locations</h1>
+          <div>
+            {locations_json.map((l, i) => (
+              <div key={i} className={styles.bubble}>
+                {l}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
