@@ -9,6 +9,7 @@ import ModernArt from "../routes/modern_art/app/ModernArt";
 import Random from "../routes/random/app/Random";
 import splendor from "../routes/splendor/app/Splendor";
 import spy from "../routes/spy/app/Spy";
+import spyfall from "../routes/spyfall/app/Spyfall";
 import takebacktoe from "../routes/takebacktoe/app/TakeBackToe";
 import TicketToRide from "../routes/ticket_to_ride/app/TicketToRide";
 import tictactoe from "../routes/tictactoe/app/TicTacToe";
@@ -18,6 +19,7 @@ import wingspan from "../routes/wingspan/app/Wingspan";
 
 const ex = {
   azul,
+  spyfall,
   fox,
   "7wd": _7wd,
   loveletter,
