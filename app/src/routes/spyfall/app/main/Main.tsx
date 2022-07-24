@@ -9,8 +9,18 @@ class Main extends React.Component {
       <div className={styles.bubble}>
         <h2>Spyfall</h2>
         <div>
-          {store.gameW.game.params.p.split("\n").map((p, i) => (
-            <div className={styles.bubble} key={i} onClick={() => alert(p)}>
+          {store.gameW.game.ps.map((p, i) => (
+            <div
+              className={styles.bubble}
+              key={i}
+              onClick={() =>
+                alert(
+                  store.gameW.game.spy === p
+                    ? "you are the spy"
+                    : store.gameW.game.word
+                )
+              }
+            >
               {p}
             </div>
           ))}

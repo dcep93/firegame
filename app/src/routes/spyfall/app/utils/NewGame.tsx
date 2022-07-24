@@ -1,10 +1,15 @@
 import { LobbyType } from "../../../../shared/store";
 import utils, { store } from "./utils";
 
+import locations_json from "../main/locations.json";
+
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
+  ps: string[];
+  word: string;
+  spy: string;
 };
 
 export type Params = {
@@ -18,7 +23,11 @@ export type PlayerType = {
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
+  const ps = params.p.split("\n");
   const game: GameType = {
+    word: utils.randomFrom(locations_json),
+    ps,
+    spy: utils.randomFrom(ps),
     params,
     currentPlayer: 0,
     players: [],
