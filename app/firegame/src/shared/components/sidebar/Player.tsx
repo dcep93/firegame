@@ -64,7 +64,7 @@ class PlayerTimer extends React.Component<{
 }> {
   interval: number = -1;
   componentDidMount() {
-    this.interval = setInterval(this.forceUpdate.bind(this), 100);
+    this.interval = window.setInterval(this.forceUpdate.bind(this), 100);
   }
 
   componentWillUnmount() {

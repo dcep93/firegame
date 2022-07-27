@@ -54,6 +54,7 @@ class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
       return;
     actioning = true;
     switch (store.gameW.game.played) {
+      // @ts-ignore
       case WINNER:
         const jester = store.gameW.game.jester;
         delete store.gameW.game.jester;
@@ -81,6 +82,7 @@ class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
       // @ts-ignore fallthrough
       case Card.baroness:
         break;
+      // @ts-ignore
       case Card.bishop:
         if (store.gameW.game.bishop !== undefined) {
           this.setState({ c: ComponentsE.bishopDiscard });

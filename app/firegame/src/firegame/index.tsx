@@ -1,13 +1,12 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Route,
   RouteComponentProps,
 } from "react-router-dom";
-import GameWrapper from "./firegame/components/GameWrapper";
-import Home from "./firegame/components/Home";
-import games from "./firegame/games";
-import { recorded_sha } from "./recorded_sha";
+import { recorded_sha } from "../recorded_sha";
+import GameWrapper from "./components/GameWrapper";
+import Home from "./components/Home";
+import games from "./games";
 
 function App() {
   console.log(recorded_sha);
