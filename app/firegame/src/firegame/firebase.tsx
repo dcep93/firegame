@@ -1,15 +1,23 @@
 // https://console.firebase.google.com/u/0/project/firebase-320421/database/firebase-320421-default-rtdb/data
-// jon is u_4110fc9342fd4
-
-import firebase from "firebase/app";
-import "firebase/database";
+import { initializeApp } from "firebase/app";
+import {
+  Database,
+  get,
+  getDatabase,
+  limitToLast,
+  onValue,
+  push as f_push,
+  query,
+  ref,
+  set as f_set,
+} from "firebase/database";
 import { gamePath, namespace } from "./writer/utils";
 
 const config = {
   databaseURL: "https://firebase-320421-default-rtdb.firebaseio.com/",
 };
 
-var database: { ref: (path: string) => any };
+var database: Database;
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
@@ -20,18 +28,17 @@ var initialized = false;
 function init(): void {
   if (initialized) return;
   initialized = true;
-  firebase.initializeApp(config);
-  database = firebase.database();
-  const clearF = () => database.ref(namespace()).set({});
-  const undoF = () => database.ref(`${gamePath()}/${latest}`).set({});
+  var app = initializeApp(config);
+  database = getDatabase(app);
+  const clearF = () => f_set(ref(database, namespace()), {});
+  const undoF = () => f_set(ref(database, `${gamePath()}/${latest}`), {});
   // @ts-ignore
   window.clear = clearF;
   // @ts-ignore
   window.undo = undoF;
-  database
-    .ref(".info/serverTimeOffset")
-    .once("value")
-    .then((data: ResultType) => (offset = data.val()));
+  get(ref(database, ".info/serverTimeOffset")).then(
+    (data: ResultType) => (offset = data.val())
+  );
 }
 
 function now(): number {
@@ -39,30 +46,29 @@ function now(): number {
 }
 
 function latestChild(path: string, callback: (value: BlobType) => void): void {
-  database
-    .ref(path)
-    .limitToLast(1)
-    .on("value", (snapshot: ResultType) => {
+  onValue(
+    query(ref(database, path), limitToLast(1)),
+    (snapshot: ResultType) => {
       var val = snapshot.val();
-      if (val) latest = Object.keys(val)[0];
       callback(val);
-    });
+    }
+  );
 }
 
 function push(path: string, obj: BlobType): void {
   console.log(obj);
-  database.ref(path).push(obj);
+  f_push(ref(database, path), obj).then((pushed) => pushed.key!);
 }
 
 function connect(path: string, callback: (value: BlobType) => void): void {
-  database.ref(path).on("value", (snapshot: ResultType) => {
+  onValue(ref(database, path), (snapshot: ResultType) => {
     var val = snapshot.val();
     callback(val);
   });
 }
 
 function set(path: string, obj: BlobType): void {
-  database.ref(path).set(obj);
+  f_set(ref(database, path), obj);
 }
 
 const ex = { init, now, latestChild, push, connect, set };
