@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import { recorded_sha } from "../recorded_sha";
 import GameWrapper from "./components/GameWrapper";
 import Home from "./components/Home";
@@ -9,10 +9,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <div>
-          <Route path="/" element={<Home />} />
-          {getRoutes()}
-        </div>
+        <Route path="/" element={<Home />} />
+        {getRoutes()}
       </Routes>
     </BrowserRouter>
   );
@@ -22,21 +20,40 @@ function getRoutes(): JSX.Element {
   const routes: JSX.Element[] = [];
   for (let [gameName, component] of Object.entries(games)) {
     routes.push(
-      <Route
-        key={gameName}
-        path={`/${gameName}/:roomId(\\d+)?`}
-        // @ts-ignore
-        render={(props: RouteComponentProps<{ roomId: string }>) => (
-          <GameWrapper
-            component={component}
-            gameName={gameName}
-            roomId={parseInt(props.match.params.roomId) || -1}
-          />
-        )}
-      />
+      <Route key={gameName} path={`/${gameName}`}>
+        <Route
+          path={`:roomId`}
+          element={
+            <X
+              GetElement={(params) => (
+                <GameWrapper
+                  component={component}
+                  gameName={gameName}
+                  roomId={params.roomId}
+                />
+              )}
+            />
+          }
+        />
+        <Route
+          path={``}
+          element={
+            <GameWrapper
+              component={component}
+              gameName={gameName}
+              roomId={-1}
+            />
+          }
+        />
+      </Route>
     );
   }
   return <>{routes}</>;
+}
+
+function X(props: { GetElement: (params: { [field: string]: any }) => any }) {
+  const params = useParams();
+  return props.GetElement(params);
 }
 
 export default App;
