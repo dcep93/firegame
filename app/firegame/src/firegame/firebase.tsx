@@ -2,7 +2,6 @@
 import { initializeApp } from "firebase/app";
 import {
   Database,
-  get,
   getDatabase,
   limitToLast,
   onValue,
@@ -36,9 +35,9 @@ function init(): void {
   window.clear = clearF;
   // @ts-ignore
   window.undo = undoF;
-  get(ref(database, ".info/serverTimeOffset")).then(
-    (data: ResultType) => (offset = data.val())
-  );
+  onValue(ref(database, ".info/serverTimeOffset"), (snap: ResultType) => {
+    offset = snap.val();
+  });
 }
 
 function now(): number {
