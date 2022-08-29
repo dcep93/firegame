@@ -30,9 +30,6 @@ class Field extends React.Component {
   }
 
   renderPlayer(player: PlayerType): JSX.Element {
-    var prefix = "";
-    if (store.gameW.info.host === player.userId) prefix += "(host) ";
-    if (store.me.userId === player.userId) prefix += "(you) ";
     const parts = [<p key={"name"}>{player.userName}</p>];
     // const player = store.gameW.game?.players[utils.playerIndexById(userId)];
     if (player) {
