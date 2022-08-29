@@ -361,7 +361,7 @@ function playerHeuristic(p: PlayerType): number {
     scoreFactor * utils.getScore(p),
     handFactor * (p.hand || []).length,
     facedownHandFactor *
-      (p.hand || []).filter((c) => c.color === Token.gold).length,
+    (p.hand || []).filter((c) => c.color === Token.gold).length,
     tokenFactor * (p.tokens || []).length,
     starFactor * (p.tokens || []).filter((t) => t === Token.gold).length,
     cardFactor * (p.cards || []).length,
