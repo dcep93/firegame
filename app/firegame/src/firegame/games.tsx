@@ -8,6 +8,7 @@ import fox from "../routes/fox/app/Fox";
 import loveletter from "../routes/love_letter/app/LoveLetter";
 import ModernArt from "../routes/modern_art/app/ModernArt";
 import Random from "../routes/random/app/Random";
+import SecretHitler from "../routes/secret_hitler/app/SecretHitler";
 import splendor from "../routes/splendor/app/Splendor";
 import spy from "../routes/spy/app/Spy";
 import spyfall from "../routes/spyfall/app/Spyfall";
@@ -21,6 +22,7 @@ import wingspan from "../routes/wingspan/app/Wingspan";
 const ex = {
   ff_draft,
   azul,
+  SecretHitler,
   spyfall,
   fox,
   "7wd": _7wd,
