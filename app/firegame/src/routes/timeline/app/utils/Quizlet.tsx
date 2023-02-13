@@ -6,14 +6,19 @@ const FOLDER_URL =
   _api_url + "folder-sets?filters[folderId]=49189251&filters[isDeleted]=0";
 
 function _fetch(base: string, path: string): Promise<any> {
-  var responses = downloaded[base + path];
+  const key = base + path;
+  var responses = downloaded[key];
   if (responses)
     return Promise.resolve().then(() => responses.responses[0].models);
-  const anywhere = "https://cors-anywhere.herokuapp.com/";
-  return fetch(anywhere + base + path, { headers: { "x-requested-with": "*" } })
-    .then((response) => response.json())
-    .then((response) => response.responses[0].models)
-    .catch(() => window.open(`${anywhere}corsdemo`));
+  function f(key: string) {
+    fetch(key)
+      .then((response) => response.json())
+      .then((json) =>
+        console.log(`downloaded["${key}"] = ${JSON.stringify(json)}`)
+      );
+  }
+  console.log(`${f.toString().replaceAll("\n", " ")}; f("${key}")`);
+  throw new Error("check console");
 }
 
 const downloaded: { [key: string]: any } = {};
@@ -26,6 +31,17111 @@ const ex = {
   SET_URL,
 };
 export default ex;
+
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=303713083"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 10298994535,
+            word: '"Impression, Sunrise"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IkltcHJlc3Npb24sIFN1bnJpc2Ui&s=bjHqVdwB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IkltcHJlc3Npb24sIFN1bnJpc2Ui&s=bjHqVdwB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IkltcHJlc3Npb24sIFN1bnJpc2Ui&s=bjHqVdwB",
+            definition: "1872",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mg&s=byv6-P0R&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mg&s=byv6-P0R&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mg&s=byv6-P0R&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3427/3750216840_feefcd6e17_m.jpg",
+            setId: 303713083,
+            rank: 75,
+            lastModified: 1530219294,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20599694,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994533,
+            word: "Das Kapital",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RGFzIEthcGl0YWw&s=xkwVeYEz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGFzIEthcGl0YWw&s=xkwVeYEz&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RGFzIEthcGl0YWw&s=xkwVeYEz",
+            definition: "1867",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/JKKTVwUn32sjWaEAcC8ezQ_m.jpg",
+            setId: 303713083,
+            rank: 73,
+            lastModified: 1530219265,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 29758643,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994504,
+            word: "Railroad",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UmFpbHJvYWQ&s=jEh6dGyB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UmFpbHJvYWQ&s=jEh6dGyB&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UmFpbHJvYWQ&s=jEh6dGyB",
+            definition: "1763",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2Mw&s=gXBj31dZ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2Mw&s=gXBj31dZ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc2Mw&s=gXBj31dZ&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2553/4048831870_eb8639a3a3_m.jpg",
+            setId: 303713083,
+            rank: 44,
+            lastModified: 1530219024,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 5162664,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994466,
+            word: "Water navigation",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V2F0ZXIgbmF2aWdhdGlvbg&s=5ZAoVu5H",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2F0ZXIgbmF2aWdhdGlvbg&s=5ZAoVu5H&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=V2F0ZXIgbmF2aWdhdGlvbg&s=5ZAoVu5H",
+            definition: "-4,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsMDAw&s=XPqMwUwG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsMDAw&s=XPqMwUwG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQsMDAw&s=XPqMwUwG&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4102/4925267732_8b4a2cf887_m.jpg",
+            setId: 303713083,
+            rank: 6,
+            lastModified: 1530218935,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20576782,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994461,
+            word: "The discovery of fire",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBmaXJl&s=qC-7hWUn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBmaXJl&s=qC-7hWUn&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBmaXJl&s=qC-7hWUn",
+            definition: "-450,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQ1MCwwMDA&s=af09c0Ae&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQ1MCwwMDA&s=af09c0Ae&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQ1MCwwMDA&s=af09c0Ae&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4032/4308935146_cbcebb9130_m.jpg",
+            setId: 303713083,
+            rank: 1,
+            lastModified: 1530218601,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 111163,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994569,
+            word: "The television",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHRlbGV2aXNpb24&s=r2f3BCso",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRlbGV2aXNpb24&s=r2f3BCso&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHRlbGV2aXNpb24&s=r2f3BCso",
+            definition: "1925",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNQ&s=EIfBgJfF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNQ&s=EIfBgJfF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNQ&s=EIfBgJfF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/rsWzgMs9uew4B2VJAfE8RQ_m.jpg",
+            setId: 303713083,
+            rank: 93,
+            lastModified: 1530216992,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20497913,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994568,
+            word: "The laptop",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGxhcHRvcA&s=BdpuRGIm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxhcHRvcA&s=BdpuRGIm&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGxhcHRvcA&s=BdpuRGIm",
+            definition: "1981",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Qt6prvdVGwYZcMsDtQeJFg_m.jpg",
+            setId: 303713083,
+            rank: 109,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13639438,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994567,
+            word: "The compact disc",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNvbXBhY3QgZGlzYw&s=.V6SDPiJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbXBhY3QgZGlzYw&s=.V6SDPiJ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbXBhY3QgZGlzYw&s=.V6SDPiJ",
+            definition: "1979",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3OQ&s=-hxP-JqY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3OQ&s=-hxP-JqY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3OQ&s=-hxP-JqY&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/103/296878046_1c946b3735_m.jpg",
+            setId: 303713083,
+            rank: 108,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20543805,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994566,
+            word: "The role play",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHJvbGUgcGxheQ&s=8KWs2EfN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHJvbGUgcGxheQ&s=8KWs2EfN&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHJvbGUgcGxheQ&s=8KWs2EfN",
+            definition: "1974",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/NFZKZafUtn2hCsIG5pr8Fw_m.jpg",
+            setId: 303713083,
+            rank: 107,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20562483,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994565,
+            word: "The smart card",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHNtYXJ0IGNhcmQ&s=HhMAe9ab",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNtYXJ0IGNhcmQ&s=HhMAe9ab&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHNtYXJ0IGNhcmQ&s=HhMAe9ab",
+            definition: "1974",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Yqn3cHcIVHT-fOsVHkkv7w_m.png",
+            setId: 303713083,
+            rank: 106,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 23655524,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994564,
+            word: "The computer mouse",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbXB1dGVyIG1vdXNl&s=muHs11dd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbXB1dGVyIG1vdXNl&s=muHs11dd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbXB1dGVyIG1vdXNl&s=muHs11dd",
+            definition: "1963",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/bGnadouwO.1RW0vakAbc5A_m.jpg",
+            setId: 303713083,
+            rank: 105,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8969382,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994563,
+            word: "The can with easy open",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbiB3aXRoIGVhc3kgb3Blbg&s=CTJ0czzc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbiB3aXRoIGVhc3kgb3Blbg&s=CTJ0czzc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbiB3aXRoIGVhc3kgb3Blbg&s=CTJ0czzc",
+            definition: "1962",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Bk99ukFzTQSCmj8KNJJcWQ_m.jpg",
+            setId: 303713083,
+            rank: 104,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16927848,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994562,
+            word: "The miniskirt",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIG1pbmlza2lydA&s=bj0z31vb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1pbmlza2lydA&s=bj0z31vb&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIG1pbmlza2lydA&s=bj0z31vb",
+            definition: "1962",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/4VbfIAaebcSFLKw1-qoRgw_m.png",
+            setId: 303713083,
+            rank: 103,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19974119,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994561,
+            word: "The satellite (Spoutnik)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNhdGVsbGl0ZSAoU3BvdXRuaWsp&s=irH4g99Y",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNhdGVsbGl0ZSAoU3BvdXRuaWsp&s=irH4g99Y&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNhdGVsbGl0ZSAoU3BvdXRuaWsp&s=irH4g99Y",
+            definition: "1957",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Nw&s=O..J0gVq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Nw&s=O..J0gVq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Nw&s=O..J0gVq&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/Dv8bCWXaZex5rdRcCUXdyQ_m.jpg",
+            setId: 303713083,
+            rank: 102,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4558788,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994560,
+            word: "The contraceptive pill",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbnRyYWNlcHRpdmUgcGlsbA&s=Gm4YyOxA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbnRyYWNlcHRpdmUgcGlsbA&s=Gm4YyOxA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbnRyYWNlcHRpdmUgcGlsbA&s=Gm4YyOxA",
+            definition: "1956",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/52/113460230_301ef29f0f_m.jpg",
+            setId: 303713083,
+            rank: 101,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14121910,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994559,
+            word: "The garbage bag",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGdhcmJhZ2UgYmFn&s=pZ2IDtq1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdhcmJhZ2UgYmFn&s=pZ2IDtq1&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGdhcmJhZ2UgYmFn&s=pZ2IDtq1",
+            definition: "1950",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1MA&s=IOs.ZcpK&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1MA&s=IOs.ZcpK&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1MA&s=IOs.ZcpK&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/0Vl7g-qoWWG3HOMvuWhcuw_m.jpg",
+            setId: 303713083,
+            rank: 100,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 500515,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994558,
+            word: "The transistor",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHRyYW5zaXN0b3I&s=uRDHCkfr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRyYW5zaXN0b3I&s=uRDHCkfr&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHRyYW5zaXN0b3I&s=uRDHCkfr",
+            definition: "1947",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/121/275142789_29944b9b3c_m.jpg",
+            setId: 303713083,
+            rank: 99,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16627231,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994557,
+            word: "The atomic bomb",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGF0b21pYyBib21i&s=IjQ-EFLI",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGF0b21pYyBib21i&s=IjQ-EFLI&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGF0b21pYyBib21i&s=IjQ-EFLI",
+            definition: "1945",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/UFi9v-n_xKLeph88wtudfw_m.jpg",
+            setId: 303713083,
+            rank: 98,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13813978,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994556,
+            word: "The color television",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbG9yIHRlbGV2aXNpb24&s=6YrUw.NZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbG9yIHRlbGV2aXNpb24&s=6YrUw.NZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbG9yIHRlbGV2aXNpb24&s=6YrUw.NZ",
+            definition: "1938",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6218/6227755416_3f95801745_m.jpg",
+            setId: 303713083,
+            rank: 97,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17800409,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994555,
+            word: "The ballpoint pen",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJhbGxwb2ludCBwZW4&s=5o2MQBQV",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJhbGxwb2ludCBwZW4&s=5o2MQBQV&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJhbGxwb2ludCBwZW4&s=5o2MQBQV",
+            definition: "1938",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/6/85194577_2abda7f300_m.jpg",
+            setId: 303713083,
+            rank: 96,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18082961,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994554,
+            word: "The photocopier",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHBob3RvY29waWVy&s=KwHsrbvN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHBob3RvY29waWVy&s=KwHsrbvN&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHBob3RvY29waWVy&s=KwHsrbvN",
+            definition: "1938",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/vMJ7TvhSCrnGwxlILV.iNg_m.jpg",
+            setId: 303713083,
+            rank: 95,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11026663,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994553,
+            word: "Penicillin",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UGVuaWNpbGxpbg&s=aAlw.9bo",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UGVuaWNpbGxpbg&s=aAlw.9bo&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UGVuaWNpbGxpbg&s=aAlw.9bo",
+            definition: "1928",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/883iTk-mpRr-y-hzylW4AA_m.jpg",
+            setId: 303713083,
+            rank: 94,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19812686,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994552,
+            word: "The adhesive tape",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFkaGVzaXZlIHRhcGU&s=rfkyGr7p",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFkaGVzaXZlIHRhcGU&s=rfkyGr7p&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFkaGVzaXZlIHRhcGU&s=rfkyGr7p",
+            definition: "1923",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMw&s=LaU.9CL7&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMw&s=LaU.9CL7&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMw&s=LaU.9CL7&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/ylMiXeZose_0F_xd7_Xh5w_m.jpg",
+            setId: 303713083,
+            rank: 92,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19461906,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994551,
+            word: "The general theory of relativity",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdlbmVyYWwgdGhlb3J5IG9mIHJlbGF0aXZpdHk&s=eiupnqZV",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdlbmVyYWwgdGhlb3J5IG9mIHJlbGF0aXZpdHk&s=eiupnqZV&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdlbmVyYWwgdGhlb3J5IG9mIHJlbGF0aXZpdHk&s=eiupnqZV",
+            definition: "1915",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/IcnYVqE6yfjJ9F.bV4J5Ew_m.jpg",
+            setId: 303713083,
+            rank: 91,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20519597,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994550,
+            word: "The milk brick",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIG1pbGsgYnJpY2s&s=IE2-4fTq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1pbGsgYnJpY2s&s=IE2-4fTq&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIG1pbGsgYnJpY2s&s=IE2-4fTq",
+            definition: "1915",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/OFeDHH1ui.1l9HF6jwAhHQ_m.jpg",
+            setId: 303713083,
+            rank: 90,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18705054,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994549,
+            word: "The Ford T",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIEZvcmQgVA&s=jdaSYNAD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZvcmQgVA&s=jdaSYNAD&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIEZvcmQgVA&s=jdaSYNAD",
+            definition: "1908",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/sn9tEVlbBTH0wkDpeUazxg_m.jpg",
+            setId: 303713083,
+            rank: 89,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10615419,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994548,
+            word: "The airplane",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGFpcnBsYW5l&s=-1afeNt6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFpcnBsYW5l&s=-1afeNt6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGFpcnBsYW5l&s=-1afeNt6",
+            definition: "1903",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/hUs4RVKAIiO3LNyjQrCQ1w_m.jpg",
+            setId: 303713083,
+            rank: 88,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20591177,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994547,
+            word: "Fingerprints",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RmluZ2VycHJpbnRz&s=.O24X0WZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RmluZ2VycHJpbnRz&s=.O24X0WZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RmluZ2VycHJpbnRz&s=.O24X0WZ",
+            definition: "1902",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/9m-h1RLc67KrYtJOfovN9w_m.jpg",
+            setId: 303713083,
+            rank: 87,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15624138,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994546,
+            word: "The zeppelin",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHplcHBlbGlu&s=x6ATHVA6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHplcHBlbGlu&s=x6ATHVA6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHplcHBlbGlu&s=x6ATHVA6",
+            definition: "1900",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMA&s=9ytEu2-a&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMA&s=9ytEu2-a&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMA&s=9ytEu2-a&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7050/6947535545_fe6a4fcc63_m.jpg",
+            setId: 303713083,
+            rank: 86,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17056733,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994545,
+            word: "The toothpaste tube",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRvb3RocGFzdGUgdHViZQ&s=1W0z6MMG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRvb3RocGFzdGUgdHViZQ&s=1W0z6MMG&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRvb3RocGFzdGUgdHViZQ&s=1W0z6MMG",
+            definition: "1896",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Ng&s=pcsaWAM4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Ng&s=pcsaWAM4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5Ng&s=pcsaWAM4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/rWeLUphIUhbL4QJhNkumaA_m.png",
+            setId: 303713083,
+            rank: 85,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10538837,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994544,
+            word: "The wireless telegraph",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdpcmVsZXNzIHRlbGVncmFwaA&s=cxaueMbj",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdpcmVsZXNzIHRlbGVncmFwaA&s=cxaueMbj&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdpcmVsZXNzIHRlbGVncmFwaA&s=cxaueMbj",
+            definition: "1895",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/QuQGqFvJifYiQ4gWplrPhA_m.png",
+            setId: 303713083,
+            rank: 84,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8385173,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994543,
+            word: "The cinematograph",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNpbmVtYXRvZ3JhcGg&s=Ia7yR-.9",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNpbmVtYXRvZ3JhcGg&s=Ia7yR-.9&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNpbmVtYXRvZ3JhcGg&s=Ia7yR-.9",
+            definition: "1895",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Y4HAhQ.f71qCj7I.Cs8-bA_m.jpg",
+            setId: 303713083,
+            rank: 83,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17273336,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994542,
+            word: "The Eiffel Tower",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIEVpZmZlbCBUb3dlcg&s=PWh.-5Ht",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEVpZmZlbCBUb3dlcg&s=PWh.-5Ht&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEVpZmZlbCBUb3dlcg&s=PWh.-5Ht",
+            definition: "1889",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4OQ&s=IrDgJk2S&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4OQ&s=IrDgJk2S&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4OQ&s=IrDgJk2S&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/OkAsGu-9Y90WNlE0IypLwg_m.jpg",
+            setId: 303713083,
+            rank: 82,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6802892,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994541,
+            word: "Vaccine against rabies",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VmFjY2luZSBhZ2FpbnN0IHJhYmllcw&s=nq6m20by",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VmFjY2luZSBhZ2FpbnN0IHJhYmllcw&s=nq6m20by&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VmFjY2luZSBhZ2FpbnN0IHJhYmllcw&s=nq6m20by",
+            definition: "1885",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4NQ&s=3ZIPUIr2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4NQ&s=3ZIPUIr2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4NQ&s=3ZIPUIr2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/6K-t7aRoj20x6XTo1YtYUw_m.png",
+            setId: 303713083,
+            rank: 81,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25044106,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994540,
+            word: "The bulb",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGJ1bGI&s=7NFyxjMn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJ1bGI&s=7NFyxjMn&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGJ1bGI&s=7NFyxjMn",
+            definition: "1879",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3OQ&s=1fV0OlO6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3OQ&s=1fV0OlO6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3OQ&s=1fV0OlO6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/-wA2dkxbiOHdGJPTNhmKPg_m.jpg",
+            setId: 303713083,
+            rank: 80,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19347976,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994539,
+            word: "The phonograph",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHBob25vZ3JhcGg&s=GkuCSFrJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHBob25vZ3JhcGg&s=GkuCSFrJ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHBob25vZ3JhcGg&s=GkuCSFrJ",
+            definition: "1877",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Nw&s=iE6YNGok&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Nw&s=iE6YNGok&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Nw&s=iE6YNGok&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/9B7a-Z2lig1P7uHdMhBqWA_m.jpg",
+            setId: 303713083,
+            rank: 79,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19907760,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994538,
+            word: "The phone",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHBob25l&s=YDCSwNbX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHBob25l&s=YDCSwNbX&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHBob25l&s=YDCSwNbX",
+            definition: "1876",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4146/4955154459_ff2fc7103d_m.jpg",
+            setId: 303713083,
+            rank: 78,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20554172,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994537,
+            word: "The barbed wire",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGJhcmJlZCB3aXJl&s=RKG1Q-FY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJhcmJlZCB3aXJl&s=RKG1Q-FY&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGJhcmJlZCB3aXJl&s=RKG1Q-FY",
+            definition: "1874",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3NA&s=xnStbnZt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3NA&s=xnStbnZt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3NA&s=xnStbnZt&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/VRJnHvYgQKDmJWXFn9SaZQ_m.jpg",
+            setId: 303713083,
+            rank: 77,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9729298,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994536,
+            word: "The jeans",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGplYW5z&s=joj9K4.n",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGplYW5z&s=joj9K4.n&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGplYW5z&s=joj9K4.n",
+            definition: "1873",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mw&s=g2OzX7zW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mw&s=g2OzX7zW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mw&s=g2OzX7zW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/ZceuwAu4SGwpCR7t6Y39ow_m.jpg",
+            setId: 303713083,
+            rank: 76,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20072609,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994534,
+            word: "The motorcycle",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIG1vdG9yY3ljbGU&s=3GID.rw1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1vdG9yY3ljbGU&s=3GID.rw1&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIG1vdG9yY3ljbGU&s=3GID.rw1",
+            definition: "1868",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/44/156734636_e371237cb0_m.jpg",
+            setId: 303713083,
+            rank: 74,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20605894,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994532,
+            word: "The typewriter",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHR5cGV3cml0ZXI&s=RzENM5dU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHR5cGV3cml0ZXI&s=RzENM5dU&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHR5cGV3cml0ZXI&s=RzENM5dU",
+            definition: "1867",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3640/3626032099_9b54d3c009_m.jpg",
+            setId: 303713083,
+            rank: 72,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20458370,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994531,
+            word: "Dynamite",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RHluYW1pdGU&s=0qehFYNm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RHluYW1pdGU&s=0qehFYNm&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RHluYW1pdGU&s=0qehFYNm",
+            definition: "1867",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/HhL8plnp.CY5TiQdjO6p9w_m.jpg",
+            setId: 303713083,
+            rank: 71,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19199941,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994530,
+            word: "The winchester",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHdpbmNoZXN0ZXI&s=E6uTO-Fn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdpbmNoZXN0ZXI&s=E6uTO-Fn&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHdpbmNoZXN0ZXI&s=E6uTO-Fn",
+            definition: "1866",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Ng&s=grU-i43O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Ng&s=grU-i43O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Ng&s=grU-i43O&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/swNwggy0ZhY39aWeGS2q8A_m.jpg",
+            setId: 303713083,
+            rank: 70,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20314717,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994529,
+            word: '"Les Miserables"',
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=IkxlcyBNaXNlcmFibGVzIg&s=nWbE7vSR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IkxlcyBNaXNlcmFibGVzIg&s=nWbE7vSR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IkxlcyBNaXNlcmFibGVzIg&s=nWbE7vSR",
+            definition: "1862",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mg&s=5mrozQGu&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mg&s=5mrozQGu&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mg&s=5mrozQGu&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8367/8497457568_0be54f093e_m.jpg",
+            setId: 303713083,
+            rank: 69,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14501210,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994528,
+            word: "The combustion engine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbWJ1c3Rpb24gZW5naW5l&s=1YQUAL9I",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbWJ1c3Rpb24gZW5naW5l&s=1YQUAL9I&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbWJ1c3Rpb24gZW5naW5l&s=1YQUAL9I",
+            definition: "1860",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3085/2903185831_661b47be6b_m.jpg",
+            setId: 303713083,
+            rank: 68,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19789376,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994527,
+            word: "The bra",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGJyYQ&s=Jd3D2ir-",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJyYQ&s=Jd3D2ir-&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGJyYQ&s=Jd3D2ir-",
+            definition: "1859",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math",
+            _imageUrl: null,
+            setId: 303713083,
+            rank: 67,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: null,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994526,
+            word: "The can opener",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNhbiBvcGVuZXI&s=sD9jzaAq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbiBvcGVuZXI&s=sD9jzaAq&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGNhbiBvcGVuZXI&s=sD9jzaAq",
+            definition: "1858",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OA&s=pVlm58.k&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OA&s=pVlm58.k&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1OA&s=pVlm58.k&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/F-bTMrgN6duvdn0IvdyqUg_m.jpg",
+            setId: 303713083,
+            rank: 66,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20369833,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994525,
+            word: "The saxophone",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHNheG9waG9uZQ&s=NqGWAVAG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNheG9waG9uZQ&s=NqGWAVAG&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHNheG9waG9uZQ&s=NqGWAVAG",
+            definition: "1846",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Ng&s=zP4hZOXm&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Ng&s=zP4hZOXm&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0Ng&s=zP4hZOXm&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/yP7id2I95lOAxHbxIj5ZQA_m.jpg",
+            setId: 303713083,
+            rank: 65,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18719298,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994524,
+            word: "Elastic band",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RWxhc3RpYyBiYW5k&s=D3GOjL55",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RWxhc3RpYyBiYW5k&s=D3GOjL55&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RWxhc3RpYyBiYW5k&s=D3GOjL55",
+            definition: "1845",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/9GciCL4yZZAR6-roZkWo3A_m.jpg",
+            setId: 303713083,
+            rank: 64,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11026593,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994523,
+            word: "The safe",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHNhZmU&s=Rz0lYaVg",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNhZmU&s=Rz0lYaVg&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHNhZmU&s=Rz0lYaVg",
+            definition: "1844",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NA&s=ZCsud7fD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NA&s=ZCsud7fD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0NA&s=ZCsud7fD&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2083/2266041134_ee4f94876a_m.jpg",
+            setId: 303713083,
+            rank: 63,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20175994,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994522,
+            word: "Syringe",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U3lyaW5nZQ&s=087Rp1Mv",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3lyaW5nZQ&s=087Rp1Mv&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U3lyaW5nZQ&s=087Rp1Mv",
+            definition: "1841",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0MQ&s=GhuIrI84&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0MQ&s=GhuIrI84&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0MQ&s=GhuIrI84&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/gD.dqHucPYSPJ.d2SsoGPg_m.jpg",
+            setId: 303713083,
+            rank: 62,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19783034,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994521,
+            word: "The morse code",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIG1vcnNlIGNvZGU&s=ju2zzGZk",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1vcnNlIGNvZGU&s=ju2zzGZk&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIG1vcnNlIGNvZGU&s=ju2zzGZk",
+            definition: "1838",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzOA&s=WieWp1nd&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzOA&s=WieWp1nd&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzOA&s=WieWp1nd&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8177/7998802501_f4633002de_m.jpg",
+            setId: 303713083,
+            rank: 61,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16926805,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994520,
+            word: "The telegraph",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHRlbGVncmFwaA&s=AjD99imt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRlbGVncmFwaA&s=AjD99imt&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHRlbGVncmFwaA&s=AjD99imt",
+            definition: "1837",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNw&s=La1f3XU.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNw&s=La1f3XU.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzNw&s=La1f3XU.&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3269/2667726722_e42fbd8b93_m.jpg",
+            setId: 303713083,
+            rank: 60,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577265,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994519,
+            word: "The accordion",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGFjY29yZGlvbg&s=bO9eLxjw",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFjY29yZGlvbg&s=bO9eLxjw&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGFjY29yZGlvbg&s=bO9eLxjw",
+            definition: "1829",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyOQ&s=5ecxhgUc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyOQ&s=5ecxhgUc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyOQ&s=5ecxhgUc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/vU08opSqkyqkX2-RH70KfQ_m.jpg",
+            setId: 303713083,
+            rank: 59,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12093181,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994518,
+            word: "The match",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIG1hdGNo&s=SbzZs6pP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1hdGNo&s=SbzZs6pP&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIG1hdGNo&s=SbzZs6pP",
+            definition: "1827",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNw&s=.Ziz9P3Y&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNw&s=.Ziz9P3Y&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyNw&s=.Ziz9P3Y&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5086/5229733753_1e63c21504_m.jpg",
+            setId: 303713083,
+            rank: 58,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19768594,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994517,
+            word: "The velocipede",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHZlbG9jaXBlZGU&s=nXJVKs8P",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHZlbG9jaXBlZGU&s=nXJVKs8P&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHZlbG9jaXBlZGU&s=nXJVKs8P",
+            definition: "1817",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNw&s=MGuzdBNp&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNw&s=MGuzdBNp&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxNw&s=MGuzdBNp&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6226/6357026939_f19c130c8b_m.jpg",
+            setId: 303713083,
+            rank: 57,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10445181,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994516,
+            word: "The stethoscope",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHN0ZXRob3Njb3Bl&s=eZpqNlo7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHN0ZXRob3Njb3Bl&s=eZpqNlo7&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHN0ZXRob3Njb3Bl&s=eZpqNlo7",
+            definition: "1816",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNg&s=4S4OI.2N&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNg&s=4S4OI.2N&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxNg&s=4S4OI.2N&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/mBco9BuCI0pOAhjHBANrJQ_m.png",
+            setId: 303713083,
+            rank: 56,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20552762,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994515,
+            word: "The locomotive",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGxvY29tb3RpdmU&s=yIL1dX3-",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxvY29tb3RpdmU&s=yIL1dX3-&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGxvY29tb3RpdmU&s=yIL1dX3-",
+            definition: "1804",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwNA&s=NHumHkvO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwNA&s=NHumHkvO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgwNA&s=NHumHkvO&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/49/145450640_c337f29735_m.jpg",
+            setId: 303713083,
+            rank: 55,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20009605,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994514,
+            word: "The first asteroid",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IGFzdGVyb2lk&s=YxMCFnqJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IGFzdGVyb2lk&s=YxMCFnqJ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IGFzdGVyb2lk&s=YxMCFnqJ",
+            definition: "1801",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMQ&s=AT4b3PmB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMQ&s=AT4b3PmB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgwMQ&s=AT4b3PmB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/5CgVmPte1eTlatwXmiIltw_m.jpg",
+            setId: 303713083,
+            rank: 54,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20359054,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994513,
+            word: "The battery",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGJhdHRlcnk&s=xM6o0xbz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJhdHRlcnk&s=xM6o0xbz&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGJhdHRlcnk&s=xM6o0xbz",
+            definition: "1800",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMA&s=U3uBcEnQ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMA&s=U3uBcEnQ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgwMA&s=U3uBcEnQ&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2142/2109796582_7333925d4b_m.jpg",
+            setId: 303713083,
+            rank: 53,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20221953,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994512,
+            word: "The metric system",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1ldHJpYyBzeXN0ZW0&s=T1czyHEZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1ldHJpYyBzeXN0ZW0&s=T1czyHEZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1ldHJpYyBzeXN0ZW0&s=T1czyHEZ",
+            definition: "1799",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5OQ&s=YMOuSsrJ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5OQ&s=YMOuSsrJ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5OQ&s=YMOuSsrJ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/WduKdCz0S-A0Vht17v6wzA_m.jpg",
+            setId: 303713083,
+            rank: 52,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20415620,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994511,
+            word: "The corkscrew",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNvcmtzY3Jldw&s=S7CRi.wv",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvcmtzY3Jldw&s=S7CRi.wv&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGNvcmtzY3Jldw&s=S7CRi.wv",
+            definition: "1795",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5NQ&s=6kQtJCR-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5NQ&s=6kQtJCR-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5NQ&s=6kQtJCR-&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/O3ICR-LBOV0ZiyEaJlS2MQ_m.jpg",
+            setId: 303713083,
+            rank: 51,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19475680,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994510,
+            word: "The pen",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHBlbg&s=MKIiKk6y",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHBlbg&s=MKIiKk6y&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHBlbg&s=MKIiKk6y",
+            definition: "1795",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5NQ&s=6kQtJCR-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5NQ&s=6kQtJCR-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5NQ&s=6kQtJCR-&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/24/62630719_56679eba52_m.jpg",
+            setId: 303713083,
+            rank: 50,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20550069,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994509,
+            word: "The French Revolution",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZyZW5jaCBSZXZvbHV0aW9u&s=K.NrIHxM",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZyZW5jaCBSZXZvbHV0aW9u&s=K.NrIHxM&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZyZW5jaCBSZXZvbHV0aW9u&s=K.NrIHxM",
+            definition: "1789",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/s.PuDPQrASDYRI8lx4YYiA_m.jpg",
+            setId: 303713083,
+            rank: 49,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20482387,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994508,
+            word: "The hot air balloon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGhvdCBhaXIgYmFsbG9vbg&s=-OyXwrQR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGhvdCBhaXIgYmFsbG9vbg&s=-OyXwrQR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGhvdCBhaXIgYmFsbG9vbg&s=-OyXwrQR",
+            definition: "1783",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4Mw&s=7MicAs1E&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4Mw&s=7MicAs1E&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4Mw&s=7MicAs1E&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/RNivKxO7lFF1XIVNvzNd0A_m.jpg",
+            setId: 303713083,
+            rank: 48,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20368030,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994507,
+            word: "Uranus",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VXJhbnVz&s=kKOpxwer",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=VXJhbnVz&s=kKOpxwer&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VXJhbnVz&s=kKOpxwer",
+            definition: "1781",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4MQ&s=xcJ4qbTw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4MQ&s=xcJ4qbTw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4MQ&s=xcJ4qbTw&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/vIczYArXEr3y5SVx40oopQ_m.jpg",
+            setId: 303713083,
+            rank: 47,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19177348,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994506,
+            word: "The submarine",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHN1Ym1hcmluZQ&s=6t-v1O91",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHN1Ym1hcmluZQ&s=6t-v1O91&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHN1Ym1hcmluZQ&s=6t-v1O91",
+            definition: "1775",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3NQ&s=1KLy7uTv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3NQ&s=1KLy7uTv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3NQ&s=1KLy7uTv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/BzB0K5U-nybaQkB44P0OIA_m.jpg",
+            setId: 303713083,
+            rank: 46,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20368027,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994505,
+            word: "The eraser",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGVyYXNlcg&s=xKqnAJXB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGVyYXNlcg&s=xKqnAJXB&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGVyYXNlcg&s=xKqnAJXB",
+            definition: "1770",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3MA&s=JsLuceil&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3MA&s=JsLuceil&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3MA&s=JsLuceil&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/C9g_OQhicXJkrDKC5BMMJw_m.jpg",
+            setId: 303713083,
+            rank: 45,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19461883,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994503,
+            word: "The sign language",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNpZ24gbGFuZ3VhZ2U&s=htMb-AgI",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNpZ24gbGFuZ3VhZ2U&s=htMb-AgI&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNpZ24gbGFuZ3VhZ2U&s=htMb-AgI",
+            definition: "1760",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2MA&s=z8yzx3cj&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2MA&s=z8yzx3cj&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc2MA&s=z8yzx3cj&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/DP1UZR3oPGmAHYOw1iLwTg_m.jpg",
+            setId: 303713083,
+            rank: 43,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10844330,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994502,
+            word: "The lightning rod",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxpZ2h0bmluZyByb2Q&s=AYOuKDr5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxpZ2h0bmluZyByb2Q&s=AYOuKDr5&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxpZ2h0bmluZyByb2Q&s=AYOuKDr5",
+            definition: "1752",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1Mg&s=19SvCREy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1Mg&s=19SvCREy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc1Mg&s=19SvCREy&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5459/6933763690_ba3c1bdc11_m.jpg",
+            setId: 303713083,
+            rank: 42,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18163738,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994501,
+            word: "The encyclopedia",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGVuY3ljbG9wZWRpYQ&s=vUuZs7Tn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGVuY3ljbG9wZWRpYQ&s=vUuZs7Tn&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGVuY3ljbG9wZWRpYQ&s=vUuZs7Tn",
+            definition: "1751",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1MQ&s=2mv4y161&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1MQ&s=2mv4y161&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc1MQ&s=2mv4y161&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2656/3707310304_23a7605156_m.jpg",
+            setId: 303713083,
+            rank: 41,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20778314,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994500,
+            word: "The check",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNoZWNr&s=DN3dlwU8",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNoZWNr&s=DN3dlwU8&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGNoZWNr&s=DN3dlwU8",
+            definition: "1742",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc0Mg&s=o5ySbDa1&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc0Mg&s=o5ySbDa1&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc0Mg&s=o5ySbDa1&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/4HKrJvJELe3W-hyrjHV6Gg_m.jpg",
+            setId: 303713083,
+            rank: 40,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20416598,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994499,
+            word: "The Celsius scale",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENlbHNpdXMgc2NhbGU&s=nS3yQU5a",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENlbHNpdXMgc2NhbGU&s=nS3yQU5a&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENlbHNpdXMgc2NhbGU&s=nS3yQU5a",
+            definition: "1741",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc0MQ&s=EhLk7-O0&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc0MQ&s=EhLk7-O0&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc0MQ&s=EhLk7-O0&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/Fk5-jOmMABEi5qgwJyhHgw_m.jpg",
+            setId: 303713083,
+            rank: 39,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14321749,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994498,
+            word: "The steam engine",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHN0ZWFtIGVuZ2luZQ&s=5B6suAES",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHN0ZWFtIGVuZ2luZQ&s=5B6suAES&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHN0ZWFtIGVuZ2luZQ&s=5B6suAES",
+            definition: "1712",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcxMg&s=vfwep13v&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcxMg&s=vfwep13v&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcxMg&s=vfwep13v&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2581/4175558014_b5190d05ea_m.jpg",
+            setId: 303713083,
+            rank: 38,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577328,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994497,
+            word: "The fretboard",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGZyZXRib2FyZA&s=Cob2H0G6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZyZXRib2FyZA&s=Cob2H0G6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGZyZXRib2FyZA&s=Cob2H0G6",
+            definition: "1711",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcxMQ&s=IZDvRVmU&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcxMQ&s=IZDvRVmU&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcxMQ&s=IZDvRVmU&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/KTI0Sqv9xrrBfIIBk814ow_m.jpg",
+            setId: 303713083,
+            rank: 37,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11119746,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994496,
+            word: "The cork stopper",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNvcmsgc3RvcHBlcg&s=MfVLAqNR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvcmsgc3RvcHBlcg&s=MfVLAqNR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvcmsgc3RvcHBlcg&s=MfVLAqNR",
+            definition: "1695",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY5NQ&s=MTa7JtqG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY5NQ&s=MTa7JtqG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY5NQ&s=MTa7JtqG&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/aBEiEvj0QAM43yQuvimG4A_m.jpg",
+            setId: 303713083,
+            rank: 36,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 7448833,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994495,
+            word: "The Scuba",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIFNjdWJh&s=EofBut-f",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFNjdWJh&s=EofBut-f&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIFNjdWJh&s=EofBut-f",
+            definition: "1679",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3OQ&s=95I-dtFt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3OQ&s=95I-dtFt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY3OQ&s=95I-dtFt&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/3XaUynMf-9.f.tdBKU.DUw_m.jpg",
+            setId: 303713083,
+            rank: 35,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17058334,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994494,
+            word: "The pressure cooker",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHByZXNzdXJlIGNvb2tlcg&s=yYxPJ9Ou",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHByZXNzdXJlIGNvb2tlcg&s=yYxPJ9Ou&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHByZXNzdXJlIGNvb2tlcg&s=yYxPJ9Ou",
+            definition: "1679",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3OQ&s=95I-dtFt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3OQ&s=95I-dtFt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY3OQ&s=95I-dtFt&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/iwzLaMUXzs3Zrn0Y.oQ3eg_m.jpg",
+            setId: 303713083,
+            rank: 34,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11026783,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994493,
+            word: "The barometer",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGJhcm9tZXRlcg&s=Oj9hWoao",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJhcm9tZXRlcg&s=Oj9hWoao&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGJhcm9tZXRlcg&s=Oj9hWoao",
+            definition: "1643",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mw&s=pH4LEe94&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mw&s=pH4LEe94&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mw&s=pH4LEe94&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4012/4266609887_8dd97eb1d6_m.jpg",
+            setId: 303713083,
+            rank: 33,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20541190,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994492,
+            word: "The microscope",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIG1pY3Jvc2NvcGU&s=34G0F1NO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1pY3Jvc2NvcGU&s=34G0F1NO&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIG1pY3Jvc2NvcGU&s=34G0F1NO",
+            definition: "1615",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYxNQ&s=CWoIUKRo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYxNQ&s=CWoIUKRo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYxNQ&s=CWoIUKRo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/vsiXWj464yVZiXRoUNvvvg_m.png",
+            setId: 303713083,
+            rank: 32,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20365985,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994491,
+            word: "The telescope",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHRlbGVzY29wZQ&s=lFG4igHS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRlbGVzY29wZQ&s=lFG4igHS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHRlbGVzY29wZQ&s=lFG4igHS",
+            definition: "1608",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwOA&s=FCsqFi5E&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwOA&s=FCsqFi5E&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYwOA&s=FCsqFi5E&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3558/3461850112_2bb82fb0db_m.jpg",
+            setId: 303713083,
+            rank: 31,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20599254,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994490,
+            word: "The newspaper",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIG5ld3NwYXBlcg&s=e2UPJTi3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG5ld3NwYXBlcg&s=e2UPJTi3&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIG5ld3NwYXBlcg&s=e2UPJTi3",
+            definition: "1605",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwNQ&s=YeBxhLZ3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwNQ&s=YeBxhLZ3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYwNQ&s=YeBxhLZ3&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6033/6277209256_934f20da10_m.jpg",
+            setId: 303713083,
+            rank: 30,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20588246,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994489,
+            word: "The thermometer",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHRoZXJtb21ldGVy&s=9cSf5agK",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRoZXJtb21ldGVy&s=9cSf5agK&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHRoZXJtb21ldGVy&s=9cSf5agK",
+            definition: "1593",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU5Mw&s=1V-l3aDy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU5Mw&s=1V-l3aDy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU5Mw&s=1V-l3aDy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/tCH3Pqq05CyQdlX2IFseKg_m.jpg",
+            setId: 303713083,
+            rank: 29,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18561184,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994488,
+            word: "The violin",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHZpb2xpbg&s=DrI6HD8y",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHZpb2xpbg&s=DrI6HD8y&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHZpb2xpbg&s=DrI6HD8y",
+            definition: "1548",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0OA&s=9O57HejY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0OA&s=9O57HejY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU0OA&s=9O57HejY&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/220/501589455_e91e4880bf_m.jpg",
+            setId: 303713083,
+            rank: 28,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20590272,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994487,
+            word: "The pocket watch",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHBvY2tldCB3YXRjaA&s=VHULcF1P",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHBvY2tldCB3YXRjaA&s=VHULcF1P&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHBvY2tldCB3YXRjaA&s=VHULcF1P",
+            definition: "1504",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUwNA&s=q1DttjyW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUwNA&s=q1DttjyW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUwNA&s=q1DttjyW&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4134/4951368528_7929101e34_m.jpg",
+            setId: 303713083,
+            rank: 27,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11381141,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994486,
+            word: "The toothbrush",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHRvb3RoYnJ1c2g&s=iBIfpvKm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRvb3RoYnJ1c2g&s=iBIfpvKm&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHRvb3RoYnJ1c2g&s=iBIfpvKm",
+            definition: "1498",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5OA&s=wpe3a7fQ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5OA&s=wpe3a7fQ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5OA&s=wpe3a7fQ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/R9TYnDnNQMA4j6-OV52QLA_m.jpg",
+            setId: 303713083,
+            rank: 26,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20588212,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994485,
+            word: "The whiskey",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHdoaXNrZXk&s=mu2be3Le",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdoaXNrZXk&s=mu2be3Le&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHdoaXNrZXk&s=mu2be3Le",
+            definition: "1494",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5NA&s=bZaP5SMB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5NA&s=bZaP5SMB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5NA&s=bZaP5SMB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/Gk4lSpvEXcSoPKdgvwYZNg_m.jpg",
+            setId: 303713083,
+            rank: 25,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9288044,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994484,
+            word: "The Globe",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIEdsb2Jl&s=mkTpsI7a",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEdsb2Jl&s=mkTpsI7a&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIEdsb2Jl&s=mkTpsI7a",
+            definition: "1492",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/BudbTOcUKFuLiIdOI3W1AA_m.jpg",
+            setId: 303713083,
+            rank: 24,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20420677,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994483,
+            word: "The nautical astrolabe",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG5hdXRpY2FsIGFzdHJvbGFiZQ&s=Ti2JocF0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG5hdXRpY2FsIGFzdHJvbGFiZQ&s=Ti2JocF0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG5hdXRpY2FsIGFzdHJvbGFiZQ&s=Ti2JocF0",
+            definition: "1481",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ4MQ&s=PqORRStN&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ4MQ&s=PqORRStN&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ4MQ&s=PqORRStN&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/x3IQlCnHZFCHdP2Gyxr6uw_m.png",
+            setId: 303713083,
+            rank: 23,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22598912,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994482,
+            word: "The printing press",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHByaW50aW5nIHByZXNz&s=GxbSGMxQ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHByaW50aW5nIHByZXNz&s=GxbSGMxQ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHByaW50aW5nIHByZXNz&s=GxbSGMxQ",
+            definition: "1437",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQzNw&s=CeWJeJgV&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQzNw&s=CeWJeJgV&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQzNw&s=CeWJeJgV&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3202/3050589967_4474f83b14_m.jpg",
+            setId: 303713083,
+            rank: 22,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577310,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994481,
+            word: "The cannon",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNhbm5vbg&s=NaVjt4ib",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbm5vbg&s=NaVjt4ib&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGNhbm5vbg&s=NaVjt4ib",
+            definition: "1313",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMxMw&s=2P39OcDY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMxMw&s=2P39OcDY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTMxMw&s=2P39OcDY&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7031/6613609597_bae8f99e66_m.jpg",
+            setId: 303713083,
+            rank: 21,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9509293,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994480,
+            word: "The glasses",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGdsYXNzZXM&s=bVeHngmh",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdsYXNzZXM&s=bVeHngmh&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGdsYXNzZXM&s=bVeHngmh",
+            definition: "1299",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI5OQ&s=dhcBULo.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI5OQ&s=dhcBULo.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTI5OQ&s=dhcBULo.&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/21p6eMB3O3DmYPCR4CFbqQ_m.jpg",
+            setId: 303713083,
+            rank: 20,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20549386,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994479,
+            word: "The compass",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNvbXBhc3M&s=UhO19GyY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbXBhc3M&s=UhO19GyY&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGNvbXBhc3M&s=UhO19GyY",
+            definition: "1090",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA5MA&s=ByPBKFh4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA5MA&s=ByPBKFh4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTA5MA&s=ByPBKFh4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/wp6efmlH_8nB-1PMQ1MkJA_m.jpg",
+            setId: 303713083,
+            rank: 19,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13450694,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994478,
+            word: "Gunpowder",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=R3VucG93ZGVy&s=FvygkML5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=R3VucG93ZGVy&s=FvygkML5&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=R3VucG93ZGVy&s=FvygkML5",
+            definition: "950",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=OTUw&s=0TfShcz4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=OTUw&s=0TfShcz4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=OTUw&s=0TfShcz4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/sCJfe81Hk0LmA1gieBCByw_m.jpg",
+            setId: 303713083,
+            rank: 18,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11793105,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994477,
+            word: "The hourglass",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGhvdXJnbGFzcw&s=7jLEQdB3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGhvdXJnbGFzcw&s=7jLEQdB3&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGhvdXJnbGFzcw&s=7jLEQdB3",
+            definition: "900",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=OTAw&s=szwXocsR&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=OTAw&s=szwXocsR&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=OTAw&s=szwXocsR&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5183/5641308012_4640074fdd_m.jpg",
+            setId: 303713083,
+            rank: 17,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20418436,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994476,
+            word: "The windmill (in Europe)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdpbmRtaWxsIChpbiBFdXJvcGUp&s=vPVtjeuL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdpbmRtaWxsIChpbiBFdXJvcGUp&s=vPVtjeuL&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdpbmRtaWxsIChpbiBFdXJvcGUp&s=vPVtjeuL",
+            definition: "825",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=ODI1&s=ZWiPcxFz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=ODI1&s=ZWiPcxFz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=ODI1&s=ZWiPcxFz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/d3TlY4y9UyNG23jZqN9cYg_m.jpg",
+            setId: 303713083,
+            rank: 16,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18328619,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994475,
+            word: "The great barbarian invasion (beginning)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdyZWF0IGJhcmJhcmlhbiBpbnZhc2lvbiAoYmVnaW5uaW5nKQ&s=Vn94PnNP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdyZWF0IGJhcmJhcmlhbiBpbnZhc2lvbiAoYmVnaW5uaW5nKQ&s=Vn94PnNP&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGdyZWF0IGJhcmJhcmlhbiBpbnZhc2lvbiAoYmVnaW5uaW5nKQ&s=Vn94PnNP",
+            definition: "375",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=Mzc1&s=zWMXashw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=Mzc1&s=zWMXashw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=Mzc1&s=zWMXashw&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/F3sVqICNfQFlikVyHaz6WQ_m.jpg",
+            setId: 303713083,
+            rank: 15,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11620739,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994474,
+            word: "The paper",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHBhcGVy&s=XlEcj9yn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHBhcGVy&s=XlEcj9yn&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHBhcGVy&s=XlEcj9yn",
+            definition: "-200",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/tjF7kPt-41nq.XozUuGuXg_m.jpg",
+            setId: 303713083,
+            rank: 14,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20328871,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994473,
+            word: "The screw",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHNjcmV3&s=JTBznc91",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHNjcmV3&s=JTBznc91&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHNjcmV3&s=JTBznc91",
+            definition: "-250",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTI1MA&s=6MCH6ctQ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTI1MA&s=6MCH6ctQ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTI1MA&s=6MCH6ctQ&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2515/3713441792_5ca0fde724_m.jpg",
+            setId: 303713083,
+            rank: 13,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20713642,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994472,
+            word: "The catapult",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNhdGFwdWx0&s=DaEeKo62",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhdGFwdWx0&s=DaEeKo62&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGNhdGFwdWx0&s=DaEeKo62",
+            definition: "-397",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTM5Nw&s=9sEI8Fr2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTM5Nw&s=9sEI8Fr2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTM5Nw&s=9sEI8Fr2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/J5qRjaZoY2b.YDzcUV5b6A_m.jpg",
+            setId: 303713083,
+            rank: 12,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 5023661,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994471,
+            word: "The crossbow",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGNyb3NzYm93&s=tLec3OQ0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNyb3NzYm93&s=tLec3OQ0&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGNyb3NzYm93&s=tLec3OQ0",
+            definition: "-400",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQwMA&s=mk-ccSC7&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQwMA&s=mk-ccSC7&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQwMA&s=mk-ccSC7&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/XJQ5m84q4mJbIgKPzc6JwA_m.png",
+            setId: 303713083,
+            rank: 11,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6636023,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994470,
+            word: "The Pythagorean Theorem",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFB5dGhhZ29yZWFuIFRoZW9yZW0&s=DaYV3R42",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFB5dGhhZ29yZWFuIFRoZW9yZW0&s=DaYV3R42&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFB5dGhhZ29yZWFuIFRoZW9yZW0&s=DaYV3R42",
+            definition: "-548",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTU0OA&s=fFVppdRw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTU0OA&s=fFVppdRw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTU0OA&s=fFVppdRw&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/MqbdSCVU8sOSeO0tmtG4BA_m.jpg",
+            setId: 303713083,
+            rank: 10,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20123327,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994469,
+            word: "The bronze",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGJyb256ZQ&s=du7VDCoL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJyb256ZQ&s=du7VDCoL&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGJyb256ZQ&s=du7VDCoL",
+            definition: "-2,500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNTAw&s=03VI0xFO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNTAw&s=03VI0xFO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIsNTAw&s=03VI0xFO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/k2cwkCwfyjFOpCwY0yGufg_m.jpg",
+            setId: 303713083,
+            rank: 9,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20932410,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994468,
+            word: "Writing",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V3JpdGluZw&s=8ZOFLHm4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V3JpdGluZw&s=8ZOFLHm4&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=V3JpdGluZw&s=8ZOFLHm4",
+            definition: "-3,400",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsNDAw&s=MgGH5FEy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsNDAw&s=MgGH5FEy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMsNDAw&s=MgGH5FEy&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8162/7444744494_0a78be290a_m.jpg",
+            setId: 303713083,
+            rank: 8,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577259,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994467,
+            word: "The wheel",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHdoZWVs&s=GFfMFUOh",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHdoZWVs&s=GFfMFUOh&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHdoZWVs&s=GFfMFUOh",
+            definition: "-3,500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsNTAw&s=41RTz6nu&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsNTAw&s=41RTz6nu&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMsNTAw&s=41RTz6nu&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3397/3565229337_b39f5046ca_m.jpg",
+            setId: 303713083,
+            rank: 7,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19227368,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994465,
+            word: "The brick",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIGJyaWNr&s=Q1gSqvBZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJyaWNr&s=Q1gSqvBZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIGJyaWNr&s=Q1gSqvBZ",
+            definition: "-7,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTcsMDAw&s=SStesfEr&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTcsMDAw&s=SStesfEr&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTcsMDAw&s=SStesfEr&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5124/5270987711_d18c4b98d0_m.jpg",
+            setId: 303713083,
+            rank: 5,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20674593,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994464,
+            word: "Agriculture",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWdyaWN1bHR1cmU&s=098R2Qq9",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWdyaWN1bHR1cmU&s=098R2Qq9&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWdyaWN1bHR1cmU&s=098R2Qq9",
+            definition: "-8,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTgsMDAw&s=MvwRZ2-N&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTgsMDAw&s=MvwRZ2-N&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTgsMDAw&s=MvwRZ2-N&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/0Gt18mOIcNJk7ex4EIvMQw_m.jpg",
+            setId: 303713083,
+            rank: 4,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15508919,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994463,
+            word: "Ceramics",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q2VyYW1pY3M&s=MjQmc7W4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2VyYW1pY3M&s=MjQmc7W4&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q2VyYW1pY3M&s=MjQmc7W4",
+            definition: "-9,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTksMDAw&s=2hr1y0ga&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTksMDAw&s=2hr1y0ga&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTksMDAw&s=2hr1y0ga&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/NC8lunrqT5NqwZ1FyvDQOQ_m.jpg",
+            setId: 303713083,
+            rank: 3,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18899004,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994462,
+            word: "The cave paintings",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhdmUgcGFpbnRpbmdz&s=bKWRJBbH",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhdmUgcGFpbnRpbmdz&s=bKWRJBbH&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhdmUgcGFpbnRpbmdz&s=bKWRJBbH",
+            definition: "-30,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMwLDAwMA&s=vUXOioTb&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMwLDAwMA&s=vUXOioTb&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMwLDAwMA&s=vUXOioTb&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/xDN9yoDisIY5J8dE1RBAZQ_m.jpg",
+            setId: 303713083,
+            rank: 2,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19975407,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298994460,
+            word: "Stone carving",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U3RvbmUgY2FydmluZw&s=WkdBHjqt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RvbmUgY2FydmluZw&s=WkdBHjqt&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U3RvbmUgY2FydmluZw&s=WkdBHjqt",
+            definition: "-3,000,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAwLDAwMA&s=pL32uTzx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAwLDAwMA&s=pL32uTzx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAwLDAwMA&s=pL32uTzx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/jRUR36c5ws7KfHHLZP26Xg_m.jpg",
+            setId: 303713083,
+            rank: 0,
+            lastModified: 1530216974,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18180002,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 110,
+        page: 1,
+        perPage: 200,
+        token: "6Unbacb3Ru.cuY579fcexSjVYWBd",
+      },
+    },
+  ],
+};
+
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=510477676"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 18191987321,
+            word: "West Virginia",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V2VzdCBWaXJnaW5pYQ&s=Rje2WDl3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2VzdCBWaXJnaW5pYQ&s=Rje2WDl3&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=V2VzdCBWaXJnaW5pYQ&s=Rje2WDl3",
+            definition:
+              "35th State (6/20/1863)\nCapital: Charleston\nBird: Northern Cardinal\nFlower: Rhododendron",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MzV0aCBTdGF0ZSAoNi8yMC8xODYzKQpDYXBpdGFsOiBDaGFybGVzdG9uCkJpcmQ6IE5vcnRoZXJuIENhcmRpbmFsCkZsb3dlcjogUmhvZG9kZW5kcm9u&s=qAqWeP2R",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MzV0aCBTdGF0ZSAoNi8yMC8xODYzKQpDYXBpdGFsOiBDaGFybGVzdG9uCkJpcmQ6IE5vcnRoZXJuIENhcmRpbmFsCkZsb3dlcjogUmhvZG9kZW5kcm9u&s=qAqWeP2R&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MzV0aCBTdGF0ZSAoNi8yMC8xODYzKQpDYXBpdGFsOiBDaGFybGVzdG9uCkJpcmQ6IE5vcnRoZXJuIENhcmRpbmFsCkZsb3dlcjogUmhvZG9kZW5kcm9u&s=qAqWeP2R",
+            _imageUrl: "https://o.quizlet.com/i/8_Yr0_nTFLqnbyQPA7vbYA_m.jpg",
+            setId: 510477676,
+            rank: 34,
+            lastModified: 1590982027,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241216,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987336,
+            word: "Hawaii",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SGF3YWlp&s=STSfiEre",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=SGF3YWlp&s=STSfiEre&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SGF3YWlp&s=STSfiEre",
+            definition:
+              "50th State (8/21/1959)\nCapital: Honolulu\nBird: Nene\nFlower: Yellow hibiscus",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NTB0aCBTdGF0ZSAoOC8yMS8xOTU5KQpDYXBpdGFsOiBIb25vbHVsdQpCaXJkOiBOZW5lCkZsb3dlcjogWWVsbG93IGhpYmlzY3Vz&s=nkXvFAu6",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NTB0aCBTdGF0ZSAoOC8yMS8xOTU5KQpDYXBpdGFsOiBIb25vbHVsdQpCaXJkOiBOZW5lCkZsb3dlcjogWWVsbG93IGhpYmlzY3Vz&s=nkXvFAu6&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NTB0aCBTdGF0ZSAoOC8yMS8xOTU5KQpDYXBpdGFsOiBIb25vbHVsdQpCaXJkOiBOZW5lCkZsb3dlcjogWWVsbG93IGhpYmlzY3Vz&s=nkXvFAu6",
+            _imageUrl: "https://o.quizlet.com/9rzq9meqMwcTDvgQvbxo2g_m.png",
+            setId: 510477676,
+            rank: 49,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22202169,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987335,
+            word: "Alaska",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWxhc2th&s=hsBFrCVF",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=QWxhc2th&s=hsBFrCVF&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWxhc2th&s=hsBFrCVF",
+            definition:
+              "49th State (1/3/1959)\nCapital: Juneau\nBird: Willow ptarmigan\nFlower: Myosotis alpestris",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDl0aCBTdGF0ZSAoMS8zLzE5NTkpCkNhcGl0YWw6IEp1bmVhdQpCaXJkOiBXaWxsb3cgcHRhcm1pZ2FuCkZsb3dlcjogTXlvc290aXMgYWxwZXN0cmlz&s=YLgg6qHa",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDl0aCBTdGF0ZSAoMS8zLzE5NTkpCkNhcGl0YWw6IEp1bmVhdQpCaXJkOiBXaWxsb3cgcHRhcm1pZ2FuCkZsb3dlcjogTXlvc290aXMgYWxwZXN0cmlz&s=YLgg6qHa&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDl0aCBTdGF0ZSAoMS8zLzE5NTkpCkNhcGl0YWw6IEp1bmVhdQpCaXJkOiBXaWxsb3cgcHRhcm1pZ2FuCkZsb3dlcjogTXlvc290aXMgYWxwZXN0cmlz&s=YLgg6qHa",
+            _imageUrl: "https://o.quizlet.com/i/grUvKeIdXy2EXRF8Ts9uJw_m.jpg",
+            setId: 510477676,
+            rank: 48,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241170,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987334,
+            word: "Arizona",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QXJpem9uYQ&s=kkrnjCM3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJpem9uYQ&s=kkrnjCM3&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QXJpem9uYQ&s=kkrnjCM3",
+            definition:
+              "48th State (2/14/1912)\nCapital: Pheonix\nBird: Cactus wren\nFlower: Saguaro",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDh0aCBTdGF0ZSAoMi8xNC8xOTEyKQpDYXBpdGFsOiBQaGVvbml4CkJpcmQ6IENhY3R1cyB3cmVuCkZsb3dlcjogU2FndWFybw&s=u.Fk2JmB",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDh0aCBTdGF0ZSAoMi8xNC8xOTEyKQpDYXBpdGFsOiBQaGVvbml4CkJpcmQ6IENhY3R1cyB3cmVuCkZsb3dlcjogU2FndWFybw&s=u.Fk2JmB&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDh0aCBTdGF0ZSAoMi8xNC8xOTEyKQpDYXBpdGFsOiBQaGVvbml4CkJpcmQ6IENhY3R1cyB3cmVuCkZsb3dlcjogU2FndWFybw&s=u.Fk2JmB",
+            _imageUrl: "https://o.quizlet.com/i/6BRdSVpw7I2Id2PWKjtbVQ_m.jpg",
+            setId: 510477676,
+            rank: 47,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241171,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987333,
+            word: "New Mexico",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmV3IE1leGljbw&s=FcaWhgbE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmV3IE1leGljbw&s=FcaWhgbE&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmV3IE1leGljbw&s=FcaWhgbE",
+            definition:
+              "47th State (1/6/1912)\nCapital: Santa Fe\nBird: Greater roadrunner\nFlower: Yucca flower",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDd0aCBTdGF0ZSAoMS82LzE5MTIpCkNhcGl0YWw6IFNhbnRhIEZlCkJpcmQ6IEdyZWF0ZXIgcm9hZHJ1bm5lcgpGbG93ZXI6IFl1Y2NhIGZsb3dlcg&s=q30WXoD3",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDd0aCBTdGF0ZSAoMS82LzE5MTIpCkNhcGl0YWw6IFNhbnRhIEZlCkJpcmQ6IEdyZWF0ZXIgcm9hZHJ1bm5lcgpGbG93ZXI6IFl1Y2NhIGZsb3dlcg&s=q30WXoD3&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDd0aCBTdGF0ZSAoMS82LzE5MTIpCkNhcGl0YWw6IFNhbnRhIEZlCkJpcmQ6IEdyZWF0ZXIgcm9hZHJ1bm5lcgpGbG93ZXI6IFl1Y2NhIGZsb3dlcg&s=q30WXoD3",
+            _imageUrl: "https://o.quizlet.com/AqevVCRj.1rXMm.5O15S4Q_m.png",
+            setId: 510477676,
+            rank: 46,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24943344,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987332,
+            word: "Oklahoma",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=T2tsYWhvbWE&s=gFK27uwX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=T2tsYWhvbWE&s=gFK27uwX&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=T2tsYWhvbWE&s=gFK27uwX",
+            definition:
+              "46th State (11/16/1907)\nCapital: Oklahoma City\nBird: Scissor-tailed flycatcher\nFlower: Rosa 'Oklahoma'",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDZ0aCBTdGF0ZSAoMTEvMTYvMTkwNykKQ2FwaXRhbDogT2tsYWhvbWEgQ2l0eQpCaXJkOiBTY2lzc29yLXRhaWxlZCBmbHljYXRjaGVyCkZsb3dlcjogUm9zYSAnT2tsYWhvbWEn&s=mMV6Ny44",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDZ0aCBTdGF0ZSAoMTEvMTYvMTkwNykKQ2FwaXRhbDogT2tsYWhvbWEgQ2l0eQpCaXJkOiBTY2lzc29yLXRhaWxlZCBmbHljYXRjaGVyCkZsb3dlcjogUm9zYSAnT2tsYWhvbWEn&s=mMV6Ny44&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDZ0aCBTdGF0ZSAoMTEvMTYvMTkwNykKQ2FwaXRhbDogT2tsYWhvbWEgQ2l0eQpCaXJkOiBTY2lzc29yLXRhaWxlZCBmbHljYXRjaGVyCkZsb3dlcjogUm9zYSAnT2tsYWhvbWEn&s=mMV6Ny44",
+            _imageUrl: "https://o.quizlet.com/i/BwLoUJGM9C9mCAjmjFyXoA_m.jpg",
+            setId: 510477676,
+            rank: 45,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241204,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987331,
+            word: "Utah",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VXRhaA&s=fmNyMWS-",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=VXRhaA&s=fmNyMWS-&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VXRhaA&s=fmNyMWS-",
+            definition:
+              "45th State (1/4/1896)\nCapital: Salt Lake City\nBird: California gull\nCapital: Sego lily",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDV0aCBTdGF0ZSAoMS80LzE4OTYpCkNhcGl0YWw6IFNhbHQgTGFrZSBDaXR5CkJpcmQ6IENhbGlmb3JuaWEgZ3VsbApDYXBpdGFsOiBTZWdvIGxpbHk&s=c4AORvzZ",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDV0aCBTdGF0ZSAoMS80LzE4OTYpCkNhcGl0YWw6IFNhbHQgTGFrZSBDaXR5CkJpcmQ6IENhbGlmb3JuaWEgZ3VsbApDYXBpdGFsOiBTZWdvIGxpbHk&s=c4AORvzZ&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDV0aCBTdGF0ZSAoMS80LzE4OTYpCkNhcGl0YWw6IFNhbHQgTGFrZSBDaXR5CkJpcmQ6IENhbGlmb3JuaWEgZ3VsbApDYXBpdGFsOiBTZWdvIGxpbHk&s=c4AORvzZ",
+            _imageUrl: "https://o.quizlet.com/i/mFpWhQtxMVddcBYl9TRdjg_m.jpg",
+            setId: 510477676,
+            rank: 44,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20252370,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987330,
+            word: "Wyoming",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V3lvbWluZw&s=zPj5iC-D",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V3lvbWluZw&s=zPj5iC-D&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=V3lvbWluZw&s=zPj5iC-D",
+            definition:
+              "44th State (7/10/1890)\nCapital: Cheyenne\nBird: Western meadowlark\nFlower: Wyoming Indian paintbrush",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDR0aCBTdGF0ZSAoNy8xMC8xODkwKQpDYXBpdGFsOiBDaGV5ZW5uZQpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBXeW9taW5nIEluZGlhbiBwYWludGJydXNo&s=h2NM3iC9",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDR0aCBTdGF0ZSAoNy8xMC8xODkwKQpDYXBpdGFsOiBDaGV5ZW5uZQpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBXeW9taW5nIEluZGlhbiBwYWludGJydXNo&s=h2NM3iC9&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDR0aCBTdGF0ZSAoNy8xMC8xODkwKQpDYXBpdGFsOiBDaGV5ZW5uZQpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBXeW9taW5nIEluZGlhbiBwYWludGJydXNo&s=h2NM3iC9",
+            _imageUrl: "https://o.quizlet.com/i/SyEdNCjNB3Ik94ECvBQNpQ_m.jpg",
+            setId: 510477676,
+            rank: 43,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241218,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987329,
+            word: "Idaho",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SWRhaG8&s=wi3zooUV",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=SWRhaG8&s=wi3zooUV&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SWRhaG8&s=wi3zooUV",
+            definition:
+              "43rd State (7/3/1890)\nCapital: Boise\nBird: Mountain bluebird\nFlower: Philadelphus lewisii",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDNyZCBTdGF0ZSAoNy8zLzE4OTApCkNhcGl0YWw6IEJvaXNlCkJpcmQ6IE1vdW50YWluIGJsdWViaXJkCkZsb3dlcjogUGhpbGFkZWxwaHVzIGxld2lzaWk&s=7Zy6zSyk",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDNyZCBTdGF0ZSAoNy8zLzE4OTApCkNhcGl0YWw6IEJvaXNlCkJpcmQ6IE1vdW50YWluIGJsdWViaXJkCkZsb3dlcjogUGhpbGFkZWxwaHVzIGxld2lzaWk&s=7Zy6zSyk&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDNyZCBTdGF0ZSAoNy8zLzE4OTApCkNhcGl0YWw6IEJvaXNlCkJpcmQ6IE1vdW50YWluIGJsdWViaXJkCkZsb3dlcjogUGhpbGFkZWxwaHVzIGxld2lzaWk&s=7Zy6zSyk",
+            _imageUrl: "https://o.quizlet.com/foaV4LLg15wb-SRvt.L2.w_m.jpg",
+            setId: 510477676,
+            rank: 42,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10288068,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987328,
+            word: "Washington",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V2FzaGluZ3Rvbg&s=XCZy44cZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2FzaGluZ3Rvbg&s=XCZy44cZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=V2FzaGluZ3Rvbg&s=XCZy44cZ",
+            definition:
+              "42nd State (11/11/1889)\nCaptial: Olympia\nBird: American Goldfinch\nFlower: Pacific rhododendron",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDJuZCBTdGF0ZSAoMTEvMTEvMTg4OSkKQ2FwdGlhbDogT2x5bXBpYQpCaXJkOiBBbWVyaWNhbiBHb2xkZmluY2gKRmxvd2VyOiBQYWNpZmljIHJob2RvZGVuZHJvbg&s=WJfLuWGo",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDJuZCBTdGF0ZSAoMTEvMTEvMTg4OSkKQ2FwdGlhbDogT2x5bXBpYQpCaXJkOiBBbWVyaWNhbiBHb2xkZmluY2gKRmxvd2VyOiBQYWNpZmljIHJob2RvZGVuZHJvbg&s=WJfLuWGo&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDJuZCBTdGF0ZSAoMTEvMTEvMTg4OSkKQ2FwdGlhbDogT2x5bXBpYQpCaXJkOiBBbWVyaWNhbiBHb2xkZmluY2gKRmxvd2VyOiBQYWNpZmljIHJob2RvZGVuZHJvbg&s=WJfLuWGo",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8142/7406734600_fee83d67c8_m.jpg",
+            setId: 510477676,
+            rank: 41,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19360695,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987327,
+            word: "Montana",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TW9udGFuYQ&s=6BNU8Va3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TW9udGFuYQ&s=6BNU8Va3&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TW9udGFuYQ&s=6BNU8Va3",
+            definition:
+              "41st State (11/8/1889)\nCapital: Helena\nBird: Western meadowlark\nFlower: Bitterroot",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDFzdCBTdGF0ZSAoMTEvOC8xODg5KQpDYXBpdGFsOiBIZWxlbmEKQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkZsb3dlcjogQml0dGVycm9vdA&s=Ueey.M.U",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDFzdCBTdGF0ZSAoMTEvOC8xODg5KQpDYXBpdGFsOiBIZWxlbmEKQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkZsb3dlcjogQml0dGVycm9vdA&s=Ueey.M.U&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDFzdCBTdGF0ZSAoMTEvOC8xODg5KQpDYXBpdGFsOiBIZWxlbmEKQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkZsb3dlcjogQml0dGVycm9vdA&s=Ueey.M.U",
+            _imageUrl: "https://o.quizlet.com/i/Ajx9jVgTkI1GxfAt8iFhhg_m.jpg",
+            setId: 510477676,
+            rank: 40,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241194,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987326,
+            word: "South Dakota",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U291dGggRGFrb3Rh&s=skMWobcG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U291dGggRGFrb3Rh&s=skMWobcG&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U291dGggRGFrb3Rh&s=skMWobcG",
+            definition:
+              "40th State (11/2/1889)\nCapital: Pierre\nBird: Ring-necked Pheasant\nFlower: American Pasque flower",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NDB0aCBTdGF0ZSAoMTEvMi8xODg5KQpDYXBpdGFsOiBQaWVycmUKQmlyZDogUmluZy1uZWNrZWQgUGhlYXNhbnQKRmxvd2VyOiBBbWVyaWNhbiBQYXNxdWUgZmxvd2Vy&s=324rBjd3",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NDB0aCBTdGF0ZSAoMTEvMi8xODg5KQpDYXBpdGFsOiBQaWVycmUKQmlyZDogUmluZy1uZWNrZWQgUGhlYXNhbnQKRmxvd2VyOiBBbWVyaWNhbiBQYXNxdWUgZmxvd2Vy&s=324rBjd3&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NDB0aCBTdGF0ZSAoMTEvMi8xODg5KQpDYXBpdGFsOiBQaWVycmUKQmlyZDogUmluZy1uZWNrZWQgUGhlYXNhbnQKRmxvd2VyOiBBbWVyaWNhbiBQYXNxdWUgZmxvd2Vy&s=324rBjd3",
+            _imageUrl: "https://o.quizlet.com/i/AawIvVqqEIGUja6Tw12d_g_m.jpg",
+            setId: 510477676,
+            rank: 39,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241209,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987325,
+            word: "North Dakota",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Tm9ydGggRGFrb3Rh&s=zAzRkkyQ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Tm9ydGggRGFrb3Rh&s=zAzRkkyQ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Tm9ydGggRGFrb3Rh&s=zAzRkkyQ",
+            definition:
+              "39th State (11/2/1889)\nCapital: Bismarck\nBird: Western meadowlark\nFlower: Rosa arkansana",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=Mzl0aCBTdGF0ZSAoMTEvMi8xODg5KQpDYXBpdGFsOiBCaXNtYXJjawpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBSb3NhIGFya2Fuc2FuYQ&s=Xe-CbkYB",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Mzl0aCBTdGF0ZSAoMTEvMi8xODg5KQpDYXBpdGFsOiBCaXNtYXJjawpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBSb3NhIGFya2Fuc2FuYQ&s=Xe-CbkYB&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=Mzl0aCBTdGF0ZSAoMTEvMi8xODg5KQpDYXBpdGFsOiBCaXNtYXJjawpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBSb3NhIGFya2Fuc2FuYQ&s=Xe-CbkYB",
+            _imageUrl: "https://o.quizlet.com/i/9ODg6E6BuXr4GS3PDyJY_A_m.jpg",
+            setId: 510477676,
+            rank: 38,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241202,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987324,
+            word: "Colorado",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q29sb3JhZG8&s=kkhr8wPd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q29sb3JhZG8&s=kkhr8wPd&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q29sb3JhZG8&s=kkhr8wPd",
+            definition:
+              "38th State (8/1/1876)\nCapital: Denver\nBird: Lark bunting\nState flower: Colorado Blue Columbine",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=Mzh0aCBTdGF0ZSAoOC8xLzE4NzYpCkNhcGl0YWw6IERlbnZlcgpCaXJkOiBMYXJrIGJ1bnRpbmcKU3RhdGUgZmxvd2VyOiBDb2xvcmFkbyBCbHVlIENvbHVtYmluZQ&s=6Vxc3GHl",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Mzh0aCBTdGF0ZSAoOC8xLzE4NzYpCkNhcGl0YWw6IERlbnZlcgpCaXJkOiBMYXJrIGJ1bnRpbmcKU3RhdGUgZmxvd2VyOiBDb2xvcmFkbyBCbHVlIENvbHVtYmluZQ&s=6Vxc3GHl&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=Mzh0aCBTdGF0ZSAoOC8xLzE4NzYpCkNhcGl0YWw6IERlbnZlcgpCaXJkOiBMYXJrIGJ1bnRpbmcKU3RhdGUgZmxvd2VyOiBDb2xvcmFkbyBCbHVlIENvbHVtYmluZQ&s=6Vxc3GHl",
+            _imageUrl: "https://o.quizlet.com/i/1DnIoMpAYblzCw2tiJ7WQg_m.jpg",
+            setId: 510477676,
+            rank: 37,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241174,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987323,
+            word: "Nebraska",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmVicmFza2E&s=JNyLW5Xj",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmVicmFza2E&s=JNyLW5Xj&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmVicmFza2E&s=JNyLW5Xj",
+            definition:
+              "37th State (3/1/1867)\nCapital: Lincoln\nBird: Western meadowlark\nBird: Goldenrod",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=Mzd0aCBTdGF0ZSAoMy8xLzE4NjcpCkNhcGl0YWw6IExpbmNvbG4KQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkJpcmQ6IEdvbGRlbnJvZA&s=LipA5Mnm",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Mzd0aCBTdGF0ZSAoMy8xLzE4NjcpCkNhcGl0YWw6IExpbmNvbG4KQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkJpcmQ6IEdvbGRlbnJvZA&s=LipA5Mnm&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=Mzd0aCBTdGF0ZSAoMy8xLzE4NjcpCkNhcGl0YWw6IExpbmNvbG4KQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkJpcmQ6IEdvbGRlbnJvZA&s=LipA5Mnm",
+            _imageUrl: "https://o.quizlet.com/i/WzaTBiLldC_EL844tJ4JMQ_m.jpg",
+            setId: 510477676,
+            rank: 36,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241195,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987322,
+            word: "Nevada",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmV2YWRh&s=YBaxSElU",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=TmV2YWRh&s=YBaxSElU&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmV2YWRh&s=YBaxSElU",
+            definition:
+              "36th State (10/31/1864)\nCapital: Carson City\nBird: Mountain bluebird\nFlower: Artemisia tridentata",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MzZ0aCBTdGF0ZSAoMTAvMzEvMTg2NCkKQ2FwaXRhbDogQ2Fyc29uIENpdHkKQmlyZDogTW91bnRhaW4gYmx1ZWJpcmQKRmxvd2VyOiBBcnRlbWlzaWEgdHJpZGVudGF0YQ&s=3C00eHtZ",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MzZ0aCBTdGF0ZSAoMTAvMzEvMTg2NCkKQ2FwaXRhbDogQ2Fyc29uIENpdHkKQmlyZDogTW91bnRhaW4gYmx1ZWJpcmQKRmxvd2VyOiBBcnRlbWlzaWEgdHJpZGVudGF0YQ&s=3C00eHtZ&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MzZ0aCBTdGF0ZSAoMTAvMzEvMTg2NCkKQ2FwaXRhbDogQ2Fyc29uIENpdHkKQmlyZDogTW91bnRhaW4gYmx1ZWJpcmQKRmxvd2VyOiBBcnRlbWlzaWEgdHJpZGVudGF0YQ&s=3C00eHtZ",
+            _imageUrl: "https://o.quizlet.com/i/QQCETzC-woMoy11--qb8Og_m.jpg",
+            setId: 510477676,
+            rank: 35,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241196,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987320,
+            word: "Kansas",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2Fuc2Fz&s=1eZOwuED",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=S2Fuc2Fz&s=1eZOwuED&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2Fuc2Fz&s=1eZOwuED",
+            definition:
+              "34th State (1/29/1861)\nCapital: Topeka\nBird: Western meadowlark\nFlower: Wild Sunflower",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MzR0aCBTdGF0ZSAoMS8yOS8xODYxKQpDYXBpdGFsOiBUb3Bla2EKQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkZsb3dlcjogV2lsZCBTdW5mbG93ZXI&s=bn.87Mcw",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MzR0aCBTdGF0ZSAoMS8yOS8xODYxKQpDYXBpdGFsOiBUb3Bla2EKQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkZsb3dlcjogV2lsZCBTdW5mbG93ZXI&s=bn.87Mcw&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MzR0aCBTdGF0ZSAoMS8yOS8xODYxKQpDYXBpdGFsOiBUb3Bla2EKQmlyZDogV2VzdGVybiBtZWFkb3dsYXJrCkZsb3dlcjogV2lsZCBTdW5mbG93ZXI&s=bn.87Mcw",
+            _imageUrl: "https://o.quizlet.com/i/1QzKl_lgYBvGMHFyu4EP5w_m.jpg",
+            setId: 510477676,
+            rank: 33,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241184,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987319,
+            word: "Oregon",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=T3JlZ29u&s=OZ1P4t02",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=T3JlZ29u&s=OZ1P4t02&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=T3JlZ29u&s=OZ1P4t02",
+            definition:
+              "33rd State (2/14/1859)\nCapital: Salem\nBird: Western meadowlark\nFlower: Oregon Grape",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MzNyZCBTdGF0ZSAoMi8xNC8xODU5KQpDYXBpdGFsOiBTYWxlbQpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBPcmVnb24gR3JhcGU&s=R9UgpcPT",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MzNyZCBTdGF0ZSAoMi8xNC8xODU5KQpDYXBpdGFsOiBTYWxlbQpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBPcmVnb24gR3JhcGU&s=R9UgpcPT&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MzNyZCBTdGF0ZSAoMi8xNC8xODU5KQpDYXBpdGFsOiBTYWxlbQpCaXJkOiBXZXN0ZXJuIG1lYWRvd2xhcmsKRmxvd2VyOiBPcmVnb24gR3JhcGU&s=R9UgpcPT",
+            _imageUrl: "https://o.quizlet.com/KP.JUem6f3uzeu6r5yhngQ_m.jpg",
+            setId: 510477676,
+            rank: 32,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 37437623,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987318,
+            word: "Minnesota",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWlubmVzb3Rh&s=LnchUQuz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlubmVzb3Rh&s=LnchUQuz&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWlubmVzb3Rh&s=LnchUQuz",
+            definition:
+              "32nd State (5/11/1858)\nCapital: Saint Paul\nBird: Common loon\nState Flower: Cypripedium reginae",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MzJuZCBTdGF0ZSAoNS8xMS8xODU4KQpDYXBpdGFsOiBTYWludCBQYXVsCkJpcmQ6IENvbW1vbiBsb29uClN0YXRlIEZsb3dlcjogQ3lwcmlwZWRpdW0gcmVnaW5hZQ&s=2JhVdJq0",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MzJuZCBTdGF0ZSAoNS8xMS8xODU4KQpDYXBpdGFsOiBTYWludCBQYXVsCkJpcmQ6IENvbW1vbiBsb29uClN0YXRlIEZsb3dlcjogQ3lwcmlwZWRpdW0gcmVnaW5hZQ&s=2JhVdJq0&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MzJuZCBTdGF0ZSAoNS8xMS8xODU4KQpDYXBpdGFsOiBTYWludCBQYXVsCkJpcmQ6IENvbW1vbiBsb29uClN0YXRlIEZsb3dlcjogQ3lwcmlwZWRpdW0gcmVnaW5hZQ&s=2JhVdJq0",
+            _imageUrl: "https://o.quizlet.com/i/3jTcp6_dI_PrQa5mpEaTwQ_m.jpg",
+            setId: 510477676,
+            rank: 31,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241191,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987317,
+            word: "California",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q2FsaWZvcm5pYQ&s=SK8Cd3oG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2FsaWZvcm5pYQ&s=SK8Cd3oG&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q2FsaWZvcm5pYQ&s=SK8Cd3oG",
+            definition:
+              "31st State (9/9/1850)\nCapital: Sacramento\nBird: California quail\nFlower: California poppy",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MzFzdCBTdGF0ZSAoOS85LzE4NTApCkNhcGl0YWw6IFNhY3JhbWVudG8KQmlyZDogQ2FsaWZvcm5pYSBxdWFpbApGbG93ZXI6IENhbGlmb3JuaWEgcG9wcHk&s=fmmthg.4",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MzFzdCBTdGF0ZSAoOS85LzE4NTApCkNhcGl0YWw6IFNhY3JhbWVudG8KQmlyZDogQ2FsaWZvcm5pYSBxdWFpbApGbG93ZXI6IENhbGlmb3JuaWEgcG9wcHk&s=fmmthg.4&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MzFzdCBTdGF0ZSAoOS85LzE4NTApCkNhcGl0YWw6IFNhY3JhbWVudG8KQmlyZDogQ2FsaWZvcm5pYSBxdWFpbApGbG93ZXI6IENhbGlmb3JuaWEgcG9wcHk&s=fmmthg.4",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7201/6933191893_7e6635c2a9_m.jpg",
+            setId: 510477676,
+            rank: 30,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19212193,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987316,
+            word: "Wisconsin",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V2lzY29uc2lu&s=zTpq8mLr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2lzY29uc2lu&s=zTpq8mLr&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=V2lzY29uc2lu&s=zTpq8mLr",
+            definition:
+              "30th State (5/29/1848)\nCapital: Madison\nBird: American robin\nFlower: Common blue violet",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MzB0aCBTdGF0ZSAoNS8yOS8xODQ4KQpDYXBpdGFsOiBNYWRpc29uCkJpcmQ6IEFtZXJpY2FuIHJvYmluCkZsb3dlcjogQ29tbW9uIGJsdWUgdmlvbGV0&s=3hTVIuuI",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MzB0aCBTdGF0ZSAoNS8yOS8xODQ4KQpDYXBpdGFsOiBNYWRpc29uCkJpcmQ6IEFtZXJpY2FuIHJvYmluCkZsb3dlcjogQ29tbW9uIGJsdWUgdmlvbGV0&s=3hTVIuuI&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MzB0aCBTdGF0ZSAoNS8yOS8xODQ4KQpDYXBpdGFsOiBNYWRpc29uCkJpcmQ6IEFtZXJpY2FuIHJvYmluCkZsb3dlcjogQ29tbW9uIGJsdWUgdmlvbGV0&s=3hTVIuuI",
+            _imageUrl: "https://o.quizlet.com/q85dXqWSoahMlEZSljb0Ng_m.jpg",
+            setId: 510477676,
+            rank: 29,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21758948,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987315,
+            word: "Iowa",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SW93YQ&s=ddCWjs7Y",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=SW93YQ&s=ddCWjs7Y&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SW93YQ&s=ddCWjs7Y",
+            definition:
+              "29th State (12/28/1846)\nCapital: Des Moines\nBird: American Goldfinch\nFlower: Rosa arkansana",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=Mjl0aCBTdGF0ZSAoMTIvMjgvMTg0NikKQ2FwaXRhbDogRGVzIE1vaW5lcwpCaXJkOiBBbWVyaWNhbiBHb2xkZmluY2gKRmxvd2VyOiBSb3NhIGFya2Fuc2FuYQ&s=VDSnNJOg",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Mjl0aCBTdGF0ZSAoMTIvMjgvMTg0NikKQ2FwaXRhbDogRGVzIE1vaW5lcwpCaXJkOiBBbWVyaWNhbiBHb2xkZmluY2gKRmxvd2VyOiBSb3NhIGFya2Fuc2FuYQ&s=VDSnNJOg&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=Mjl0aCBTdGF0ZSAoMTIvMjgvMTg0NikKQ2FwaXRhbDogRGVzIE1vaW5lcwpCaXJkOiBBbWVyaWNhbiBHb2xkZmluY2gKRmxvd2VyOiBSb3NhIGFya2Fuc2FuYQ&s=VDSnNJOg",
+            _imageUrl: "https://o.quizlet.com/3L8ZMi.Zl15AI9no80jPeQ_m.png",
+            setId: 510477676,
+            rank: 28,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12348130,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987314,
+            word: "Texas",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGV4YXM&s=cMQucwn6",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=VGV4YXM&s=cMQucwn6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGV4YXM&s=cMQucwn6",
+            definition:
+              "28th State (12/29/1845)\nCapital: Austin\nBird: Mockingbird\nFlower: Bluebonnet",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=Mjh0aCBTdGF0ZSAoMTIvMjkvMTg0NSkKQ2FwaXRhbDogQXVzdGluCkJpcmQ6IE1vY2tpbmdiaXJkCkZsb3dlcjogQmx1ZWJvbm5ldA&s=xMAH4ba.",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Mjh0aCBTdGF0ZSAoMTIvMjkvMTg0NSkKQ2FwaXRhbDogQXVzdGluCkJpcmQ6IE1vY2tpbmdiaXJkCkZsb3dlcjogQmx1ZWJvbm5ldA&s=xMAH4ba.&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=Mjh0aCBTdGF0ZSAoMTIvMjkvMTg0NSkKQ2FwaXRhbDogQXVzdGluCkJpcmQ6IE1vY2tpbmdiaXJkCkZsb3dlcjogQmx1ZWJvbm5ldA&s=xMAH4ba.",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5159/7398521702_418f0129f1_m.jpg",
+            setId: 510477676,
+            rank: 27,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11048620,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987313,
+            word: "Florida",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RmxvcmlkYQ&s=0YwGqbYm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RmxvcmlkYQ&s=0YwGqbYm&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RmxvcmlkYQ&s=0YwGqbYm",
+            definition:
+              "27th State (3/3/1845)\nCapital: Tallahassee\nBird: Northern mockingbird\nFlower: Orange Blossom",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=Mjd0aCBTdGF0ZSAoMy8zLzE4NDUpCkNhcGl0YWw6IFRhbGxhaGFzc2VlCkJpcmQ6IE5vcnRoZXJuIG1vY2tpbmdiaXJkCkZsb3dlcjogT3JhbmdlIEJsb3Nzb20&s=Hm2i10Sd",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Mjd0aCBTdGF0ZSAoMy8zLzE4NDUpCkNhcGl0YWw6IFRhbGxhaGFzc2VlCkJpcmQ6IE5vcnRoZXJuIG1vY2tpbmdiaXJkCkZsb3dlcjogT3JhbmdlIEJsb3Nzb20&s=Hm2i10Sd&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=Mjd0aCBTdGF0ZSAoMy8zLzE4NDUpCkNhcGl0YWw6IFRhbGxhaGFzc2VlCkJpcmQ6IE5vcnRoZXJuIG1vY2tpbmdiaXJkCkZsb3dlcjogT3JhbmdlIEJsb3Nzb20&s=Hm2i10Sd",
+            _imageUrl: "https://o.quizlet.com/i/04V7LBYQ7_a_i_9aDORfSQ_m.jpg",
+            setId: 510477676,
+            rank: 26,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241177,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987312,
+            word: "Michigan",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWljaGlnYW4&s=O2bdIwnD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWljaGlnYW4&s=O2bdIwnD&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWljaGlnYW4&s=O2bdIwnD",
+            definition:
+              "26th State (1/26/1837)\nCapital: Lansing\nBird: American robin\nFlower: Apple Blossom",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MjZ0aCBTdGF0ZSAoMS8yNi8xODM3KQpDYXBpdGFsOiBMYW5zaW5nCkJpcmQ6IEFtZXJpY2FuIHJvYmluCkZsb3dlcjogQXBwbGUgQmxvc3NvbQ&s=jQ8lGYDk",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjZ0aCBTdGF0ZSAoMS8yNi8xODM3KQpDYXBpdGFsOiBMYW5zaW5nCkJpcmQ6IEFtZXJpY2FuIHJvYmluCkZsb3dlcjogQXBwbGUgQmxvc3NvbQ&s=jQ8lGYDk&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MjZ0aCBTdGF0ZSAoMS8yNi8xODM3KQpDYXBpdGFsOiBMYW5zaW5nCkJpcmQ6IEFtZXJpY2FuIHJvYmluCkZsb3dlcjogQXBwbGUgQmxvc3NvbQ&s=jQ8lGYDk",
+            _imageUrl: "https://o.quizlet.com/i/qSj8D3lhC98agIB_vXQTKQ_m.jpg",
+            setId: 510477676,
+            rank: 25,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241190,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987311,
+            word: "Arkansas",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QXJrYW5zYXM&s=z9TIeH2k",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJrYW5zYXM&s=z9TIeH2k&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QXJrYW5zYXM&s=z9TIeH2k",
+            definition:
+              "25th State (6/15/1836)\nCapital: Little Rock\nBird: Northern mockingbird\nFlower: Apple Blossom",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MjV0aCBTdGF0ZSAoNi8xNS8xODM2KQpDYXBpdGFsOiBMaXR0bGUgUm9jawpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZApGbG93ZXI6IEFwcGxlIEJsb3Nzb20&s=oftUQbqh",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjV0aCBTdGF0ZSAoNi8xNS8xODM2KQpDYXBpdGFsOiBMaXR0bGUgUm9jawpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZApGbG93ZXI6IEFwcGxlIEJsb3Nzb20&s=oftUQbqh&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MjV0aCBTdGF0ZSAoNi8xNS8xODM2KQpDYXBpdGFsOiBMaXR0bGUgUm9jawpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZApGbG93ZXI6IEFwcGxlIEJsb3Nzb20&s=oftUQbqh",
+            _imageUrl: "https://o.quizlet.com/i/emK_qLAP4RFf2dvZYnJSfg_m.jpg",
+            setId: 510477676,
+            rank: 24,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241172,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987310,
+            word: "Missouri",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWlzc291cmk&s=pDuymVL6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlzc291cmk&s=pDuymVL6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWlzc291cmk&s=pDuymVL6",
+            definition:
+              "24th State (8/10/1821)\nCapital: Jefferson City\nBird: Eastern bluebird\nFlower: Crataegus punctata",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MjR0aCBTdGF0ZSAoOC8xMC8xODIxKQpDYXBpdGFsOiBKZWZmZXJzb24gQ2l0eQpCaXJkOiBFYXN0ZXJuIGJsdWViaXJkCkZsb3dlcjogQ3JhdGFlZ3VzIHB1bmN0YXRh&s=3bY0zJgH",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjR0aCBTdGF0ZSAoOC8xMC8xODIxKQpDYXBpdGFsOiBKZWZmZXJzb24gQ2l0eQpCaXJkOiBFYXN0ZXJuIGJsdWViaXJkCkZsb3dlcjogQ3JhdGFlZ3VzIHB1bmN0YXRh&s=3bY0zJgH&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MjR0aCBTdGF0ZSAoOC8xMC8xODIxKQpDYXBpdGFsOiBKZWZmZXJzb24gQ2l0eQpCaXJkOiBFYXN0ZXJuIGJsdWViaXJkCkZsb3dlcjogQ3JhdGFlZ3VzIHB1bmN0YXRh&s=3bY0zJgH",
+            _imageUrl: "https://o.quizlet.com/i/OZLOx2HNhNfjrZXdmW77sw_m.jpg",
+            setId: 510477676,
+            rank: 23,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241193,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987309,
+            word: "Maine",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFpbmU&s=zsw51Tld",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=TWFpbmU&s=zsw51Tld&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFpbmU&s=zsw51Tld",
+            definition:
+              "23rd State (3/15/1820)\nCapital: Augusta\nBird: Black-capped chickadee\nFlower: White Pine Cone",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MjNyZCBTdGF0ZSAoMy8xNS8xODIwKQpDYXBpdGFsOiBBdWd1c3RhCkJpcmQ6IEJsYWNrLWNhcHBlZCBjaGlja2FkZWUKRmxvd2VyOiBXaGl0ZSBQaW5lIENvbmU&s=-Eq9UC3W",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjNyZCBTdGF0ZSAoMy8xNS8xODIwKQpDYXBpdGFsOiBBdWd1c3RhCkJpcmQ6IEJsYWNrLWNhcHBlZCBjaGlja2FkZWUKRmxvd2VyOiBXaGl0ZSBQaW5lIENvbmU&s=-Eq9UC3W&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MjNyZCBTdGF0ZSAoMy8xNS8xODIwKQpDYXBpdGFsOiBBdWd1c3RhCkJpcmQ6IEJsYWNrLWNhcHBlZCBjaGlja2FkZWUKRmxvd2VyOiBXaGl0ZSBQaW5lIENvbmU&s=-Eq9UC3W",
+            _imageUrl: "https://o.quizlet.com/i/E2UylFyAUQfQcmS8bpZv1g_m.jpg",
+            setId: 510477676,
+            rank: 22,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241187,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987308,
+            word: "Alabama",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWxhYmFtYQ&s=yzuoXjKM",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWxhYmFtYQ&s=yzuoXjKM&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWxhYmFtYQ&s=yzuoXjKM",
+            definition:
+              "22nd State (12/14/1819)\nCapital: Montgomery\nBird: Yellowhammer\nFlower: Tea",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MjJuZCBTdGF0ZSAoMTIvMTQvMTgxOSkKQ2FwaXRhbDogTW9udGdvbWVyeQpCaXJkOiBZZWxsb3doYW1tZXIKRmxvd2VyOiBUZWE&s=4ocZX.B4",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjJuZCBTdGF0ZSAoMTIvMTQvMTgxOSkKQ2FwaXRhbDogTW9udGdvbWVyeQpCaXJkOiBZZWxsb3doYW1tZXIKRmxvd2VyOiBUZWE&s=4ocZX.B4&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MjJuZCBTdGF0ZSAoMTIvMTQvMTgxOSkKQ2FwaXRhbDogTW9udGdvbWVyeQpCaXJkOiBZZWxsb3doYW1tZXIKRmxvd2VyOiBUZWE&s=4ocZX.B4",
+            _imageUrl: "https://o.quizlet.com/i/xlrOKQE8I3cenbgoUpksOA_m.jpg",
+            setId: 510477676,
+            rank: 21,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8162594,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987307,
+            word: "Illinois",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SWxsaW5vaXM&s=TL0YP.NU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SWxsaW5vaXM&s=TL0YP.NU&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SWxsaW5vaXM&s=TL0YP.NU",
+            definition:
+              "21st State (12/3/1818)\nCapital: Springfield\nBird: Northern cardinal\nFlower: Violet",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MjFzdCBTdGF0ZSAoMTIvMy8xODE4KQpDYXBpdGFsOiBTcHJpbmdmaWVsZApCaXJkOiBOb3J0aGVybiBjYXJkaW5hbApGbG93ZXI6IFZpb2xldA&s=BdiUFAZ9",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjFzdCBTdGF0ZSAoMTIvMy8xODE4KQpDYXBpdGFsOiBTcHJpbmdmaWVsZApCaXJkOiBOb3J0aGVybiBjYXJkaW5hbApGbG93ZXI6IFZpb2xldA&s=BdiUFAZ9&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MjFzdCBTdGF0ZSAoMTIvMy8xODE4KQpDYXBpdGFsOiBTcHJpbmdmaWVsZApCaXJkOiBOb3J0aGVybiBjYXJkaW5hbApGbG93ZXI6IFZpb2xldA&s=BdiUFAZ9",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7081/7392470554_b6935cbfcd_m.jpg",
+            setId: 510477676,
+            rank: 20,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19441161,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987306,
+            word: "Mississippi",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWlzc2lzc2lwcGk&s=B7QgLeSS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlzc2lzc2lwcGk&s=B7QgLeSS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWlzc2lzc2lwcGk&s=B7QgLeSS",
+            definition:
+              "20th State (12/10/1817)\nCapital: Jackson\nBird: Northern mockingbird, Wood duck\nFlower: Magnolia",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MjB0aCBTdGF0ZSAoMTIvMTAvMTgxNykKQ2FwaXRhbDogSmFja3NvbgpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZCwgV29vZCBkdWNrCkZsb3dlcjogTWFnbm9saWE&s=rfRb9DRN",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjB0aCBTdGF0ZSAoMTIvMTAvMTgxNykKQ2FwaXRhbDogSmFja3NvbgpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZCwgV29vZCBkdWNrCkZsb3dlcjogTWFnbm9saWE&s=rfRb9DRN&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MjB0aCBTdGF0ZSAoMTIvMTAvMTgxNykKQ2FwaXRhbDogSmFja3NvbgpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZCwgV29vZCBkdWNrCkZsb3dlcjogTWFnbm9saWE&s=rfRb9DRN",
+            _imageUrl: "https://o.quizlet.com/i/-HcJVfF6hxkSziYzmrM8Nw_m.jpg",
+            setId: 510477676,
+            rank: 19,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241192,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987305,
+            word: "Indiana",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SW5kaWFuYQ&s=pS1JETJ0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SW5kaWFuYQ&s=pS1JETJ0&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SW5kaWFuYQ&s=pS1JETJ0",
+            definition:
+              "19th State (12/11/1816)\nCapital: Indianapolis\nBird: Cardinal\nFlower: Peony",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTl0aCBTdGF0ZSAoMTIvMTEvMTgxNikKQ2FwaXRhbDogSW5kaWFuYXBvbGlzCkJpcmQ6IENhcmRpbmFsCkZsb3dlcjogUGVvbnk&s=GSyeTVe3",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTl0aCBTdGF0ZSAoMTIvMTEvMTgxNikKQ2FwaXRhbDogSW5kaWFuYXBvbGlzCkJpcmQ6IENhcmRpbmFsCkZsb3dlcjogUGVvbnk&s=GSyeTVe3&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTl0aCBTdGF0ZSAoMTIvMTEvMTgxNikKQ2FwaXRhbDogSW5kaWFuYXBvbGlzCkJpcmQ6IENhcmRpbmFsCkZsb3dlcjogUGVvbnk&s=GSyeTVe3",
+            _imageUrl: "https://o.quizlet.com/i/GPJmS7FFxKx78j-jJwAh0Q_m.jpg",
+            setId: 510477676,
+            rank: 18,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241182,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987304,
+            word: "Louisiana",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TG91aXNpYW5h&s=jF-C.Die",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TG91aXNpYW5h&s=jF-C.Die&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TG91aXNpYW5h&s=jF-C.Die",
+            definition:
+              "18th State (4/30/1812)\nCapital: Baton Rouge\nBird: Brown Pelican\nFlower: Magnolia",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTh0aCBTdGF0ZSAoNC8zMC8xODEyKQpDYXBpdGFsOiBCYXRvbiBSb3VnZQpCaXJkOiBCcm93biBQZWxpY2FuCkZsb3dlcjogTWFnbm9saWE&s=NhYek8DT",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTh0aCBTdGF0ZSAoNC8zMC8xODEyKQpDYXBpdGFsOiBCYXRvbiBSb3VnZQpCaXJkOiBCcm93biBQZWxpY2FuCkZsb3dlcjogTWFnbm9saWE&s=NhYek8DT&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTh0aCBTdGF0ZSAoNC8zMC8xODEyKQpDYXBpdGFsOiBCYXRvbiBSb3VnZQpCaXJkOiBCcm93biBQZWxpY2FuCkZsb3dlcjogTWFnbm9saWE&s=NhYek8DT",
+            _imageUrl: "https://o.quizlet.com/LXOtzEJoneCkcAL0fuBGkw_m.png",
+            setId: 510477676,
+            rank: 17,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 29720414,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987303,
+            word: "Ohio",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=T2hpbw&s=IJKpBTMo",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=T2hpbw&s=IJKpBTMo&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=T2hpbw&s=IJKpBTMo",
+            definition:
+              "17th State (3/1/1803)\nCapital: Columbus\nBird: Cardinal\nFlower: Scarlet Carnation",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTd0aCBTdGF0ZSAoMy8xLzE4MDMpCkNhcGl0YWw6IENvbHVtYnVzCkJpcmQ6IENhcmRpbmFsCkZsb3dlcjogU2NhcmxldCBDYXJuYXRpb24&s=f1Ljvtfr",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTd0aCBTdGF0ZSAoMy8xLzE4MDMpCkNhcGl0YWw6IENvbHVtYnVzCkJpcmQ6IENhcmRpbmFsCkZsb3dlcjogU2NhcmxldCBDYXJuYXRpb24&s=f1Ljvtfr&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTd0aCBTdGF0ZSAoMy8xLzE4MDMpCkNhcGl0YWw6IENvbHVtYnVzCkJpcmQ6IENhcmRpbmFsCkZsb3dlcjogU2NhcmxldCBDYXJuYXRpb24&s=f1Ljvtfr",
+            _imageUrl: "https://o.quizlet.com/i/Tzs_sdPMIPbMkgiwC-Af3A_m.jpg",
+            setId: 510477676,
+            rank: 16,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241203,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987302,
+            word: "Tennessee",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGVubmVzc2Vl&s=7OUteQNx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGVubmVzc2Vl&s=7OUteQNx&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGVubmVzc2Vl&s=7OUteQNx",
+            definition:
+              "16th State (6/1/1796)\nCapital: Nashville\nBird: Northern mockingbird, Northern bobwhite, Mockingbird\nFlower: Irises",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTZ0aCBTdGF0ZSAoNi8xLzE3OTYpCkNhcGl0YWw6IE5hc2h2aWxsZQpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZCwgTm9ydGhlcm4gYm9id2hpdGUsIE1vY2tpbmdiaXJkCkZsb3dlcjogSXJpc2Vz&s=dskjGrXP",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTZ0aCBTdGF0ZSAoNi8xLzE3OTYpCkNhcGl0YWw6IE5hc2h2aWxsZQpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZCwgTm9ydGhlcm4gYm9id2hpdGUsIE1vY2tpbmdiaXJkCkZsb3dlcjogSXJpc2Vz&s=dskjGrXP&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTZ0aCBTdGF0ZSAoNi8xLzE3OTYpCkNhcGl0YWw6IE5hc2h2aWxsZQpCaXJkOiBOb3J0aGVybiBtb2NraW5nYmlyZCwgTm9ydGhlcm4gYm9id2hpdGUsIE1vY2tpbmdiaXJkCkZsb3dlcjogSXJpc2Vz&s=dskjGrXP",
+            _imageUrl: "https://o.quizlet.com/i/hSN2xzv1g8s8wTQCAO0ITg_m.jpg",
+            setId: 510477676,
+            rank: 15,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241210,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987301,
+            word: "Kentucky",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2VudHVja3k&s=vdFcVZsY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2VudHVja3k&s=vdFcVZsY&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2VudHVja3k&s=vdFcVZsY",
+            definition:
+              "15th State (6/1/1792)\nCapital: Frankfort\nBird: Cardinal\nFlower: Goldenrod",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTV0aCBTdGF0ZSAoNi8xLzE3OTIpCkNhcGl0YWw6IEZyYW5rZm9ydApCaXJkOiBDYXJkaW5hbApGbG93ZXI6IEdvbGRlbnJvZA&s=OlhNcgF1",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTV0aCBTdGF0ZSAoNi8xLzE3OTIpCkNhcGl0YWw6IEZyYW5rZm9ydApCaXJkOiBDYXJkaW5hbApGbG93ZXI6IEdvbGRlbnJvZA&s=OlhNcgF1&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTV0aCBTdGF0ZSAoNi8xLzE3OTIpCkNhcGl0YWw6IEZyYW5rZm9ydApCaXJkOiBDYXJkaW5hbApGbG93ZXI6IEdvbGRlbnJvZA&s=OlhNcgF1",
+            _imageUrl: "https://o.quizlet.com/i/DBTjrG-EnT-pSyv_5H3CLg_m.jpg",
+            setId: 510477676,
+            rank: 14,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241185,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987300,
+            word: "Vermont",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VmVybW9udA&s=pFsRrqN7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VmVybW9udA&s=pFsRrqN7&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VmVybW9udA&s=pFsRrqN7",
+            definition:
+              "14th State (3/4/1791)\nCapital: Montpelier\nBird: Hermit thrush\nFlower: Red Clover",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTR0aCBTdGF0ZSAoMy80LzE3OTEpCkNhcGl0YWw6IE1vbnRwZWxpZXIKQmlyZDogSGVybWl0IHRocnVzaApGbG93ZXI6IFJlZCBDbG92ZXI&s=Wx.59FKB",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTR0aCBTdGF0ZSAoMy80LzE3OTEpCkNhcGl0YWw6IE1vbnRwZWxpZXIKQmlyZDogSGVybWl0IHRocnVzaApGbG93ZXI6IFJlZCBDbG92ZXI&s=Wx.59FKB&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTR0aCBTdGF0ZSAoMy80LzE3OTEpCkNhcGl0YWw6IE1vbnRwZWxpZXIKQmlyZDogSGVybWl0IHRocnVzaApGbG93ZXI6IFJlZCBDbG92ZXI&s=Wx.59FKB",
+            _imageUrl: "https://o.quizlet.com/i/DNZOGUyLxcGu6lcZ3r0XEQ_m.jpg",
+            setId: 510477676,
+            rank: 13,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241213,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987299,
+            word: "Rhode Island",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UmhvZGUgSXNsYW5k&s=4dSdov9w",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UmhvZGUgSXNsYW5k&s=4dSdov9w&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UmhvZGUgSXNsYW5k&s=4dSdov9w",
+            definition:
+              "13th State (5/29/1790)\nCapital: Providence\nBird: Rhode Island Red\nFlower: Violet",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTN0aCBTdGF0ZSAoNS8yOS8xNzkwKQpDYXBpdGFsOiBQcm92aWRlbmNlCkJpcmQ6IFJob2RlIElzbGFuZCBSZWQKRmxvd2VyOiBWaW9sZXQ&s=olZ5icxI",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTN0aCBTdGF0ZSAoNS8yOS8xNzkwKQpDYXBpdGFsOiBQcm92aWRlbmNlCkJpcmQ6IFJob2RlIElzbGFuZCBSZWQKRmxvd2VyOiBWaW9sZXQ&s=olZ5icxI&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTN0aCBTdGF0ZSAoNS8yOS8xNzkwKQpDYXBpdGFsOiBQcm92aWRlbmNlCkJpcmQ6IFJob2RlIElzbGFuZCBSZWQKRmxvd2VyOiBWaW9sZXQ&s=olZ5icxI",
+            _imageUrl: "https://o.quizlet.com/i/bDhDaf4c2JE9uQwSA8tPYg_m.jpg",
+            setId: 510477676,
+            rank: 12,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241207,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987298,
+            word: "North Carolina",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Tm9ydGggQ2Fyb2xpbmE&s=vFNJhbAF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Tm9ydGggQ2Fyb2xpbmE&s=vFNJhbAF&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Tm9ydGggQ2Fyb2xpbmE&s=vFNJhbAF",
+            definition:
+              "12th State (11/21/1789)\nCapital: Raleigh\nBird: Cardinal\nFlower: Flowering dogwood",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTJ0aCBTdGF0ZSAoMTEvMjEvMTc4OSkKQ2FwaXRhbDogUmFsZWlnaApCaXJkOiBDYXJkaW5hbApGbG93ZXI6IEZsb3dlcmluZyBkb2d3b29k&s=p.iAU2bH",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTJ0aCBTdGF0ZSAoMTEvMjEvMTc4OSkKQ2FwaXRhbDogUmFsZWlnaApCaXJkOiBDYXJkaW5hbApGbG93ZXI6IEZsb3dlcmluZyBkb2d3b29k&s=p.iAU2bH&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTJ0aCBTdGF0ZSAoMTEvMjEvMTc4OSkKQ2FwaXRhbDogUmFsZWlnaApCaXJkOiBDYXJkaW5hbApGbG93ZXI6IEZsb3dlcmluZyBkb2d3b29k&s=p.iAU2bH",
+            _imageUrl: "https://o.quizlet.com/i/wztQzbyQgw-K2Sbn-YkKrw_m.jpg",
+            setId: 510477676,
+            rank: 11,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241201,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987297,
+            word: "New York",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmV3IFlvcms&s=pINwc6YD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmV3IFlvcms&s=pINwc6YD&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmV3IFlvcms&s=pINwc6YD",
+            definition:
+              "11th State (7/26/1788)\nCapital: Albany\nBird: Eastern bluebird\nFlower: Rose",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTF0aCBTdGF0ZSAoNy8yNi8xNzg4KQpDYXBpdGFsOiBBbGJhbnkKQmlyZDogRWFzdGVybiBibHVlYmlyZApGbG93ZXI6IFJvc2U&s=dVThDXbk",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTF0aCBTdGF0ZSAoNy8yNi8xNzg4KQpDYXBpdGFsOiBBbGJhbnkKQmlyZDogRWFzdGVybiBibHVlYmlyZApGbG93ZXI6IFJvc2U&s=dVThDXbk&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTF0aCBTdGF0ZSAoNy8yNi8xNzg4KQpDYXBpdGFsOiBBbGJhbnkKQmlyZDogRWFzdGVybiBibHVlYmlyZApGbG93ZXI6IFJvc2U&s=dVThDXbk",
+            _imageUrl: "https://o.quizlet.com/i/pMTPv_1H_Mmad1OInLvPcg_m.jpg",
+            setId: 510477676,
+            rank: 10,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241200,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987296,
+            word: "Virginia",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VmlyZ2luaWE&s=4bueLAu3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VmlyZ2luaWE&s=4bueLAu3&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VmlyZ2luaWE&s=4bueLAu3",
+            definition:
+              "10th State (6/25/1788)\nCapital: Richmond\nBird: Northern Cardinal\nFlower: Flowering dogwood",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MTB0aCBTdGF0ZSAoNi8yNS8xNzg4KQpDYXBpdGFsOiBSaWNobW9uZApCaXJkOiBOb3J0aGVybiBDYXJkaW5hbApGbG93ZXI6IEZsb3dlcmluZyBkb2d3b29k&s=Js7qXa-T",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTB0aCBTdGF0ZSAoNi8yNS8xNzg4KQpDYXBpdGFsOiBSaWNobW9uZApCaXJkOiBOb3J0aGVybiBDYXJkaW5hbApGbG93ZXI6IEZsb3dlcmluZyBkb2d3b29k&s=Js7qXa-T&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MTB0aCBTdGF0ZSAoNi8yNS8xNzg4KQpDYXBpdGFsOiBSaWNobW9uZApCaXJkOiBOb3J0aGVybiBDYXJkaW5hbApGbG93ZXI6IEZsb3dlcmluZyBkb2d3b29k&s=Js7qXa-T",
+            _imageUrl: "https://o.quizlet.com/i/IrwAc6Y5vtUw2xJgl-QF8g_m.jpg",
+            setId: 510477676,
+            rank: 9,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241214,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987295,
+            word: "New Hampshire",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmV3IEhhbXBzaGlyZQ&s=bNrrypnL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmV3IEhhbXBzaGlyZQ&s=bNrrypnL&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmV3IEhhbXBzaGlyZQ&s=bNrrypnL",
+            definition:
+              "9th State (6/21/1788)\nCapital: Concord\nBird: Purple finch\nFlower: Purple lilac",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=OXRoIFN0YXRlICg2LzIxLzE3ODgpCkNhcGl0YWw6IENvbmNvcmQKQmlyZDogUHVycGxlIGZpbmNoCkZsb3dlcjogUHVycGxlIGxpbGFj&s=V8sUbOgb",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=OXRoIFN0YXRlICg2LzIxLzE3ODgpCkNhcGl0YWw6IENvbmNvcmQKQmlyZDogUHVycGxlIGZpbmNoCkZsb3dlcjogUHVycGxlIGxpbGFj&s=V8sUbOgb&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=OXRoIFN0YXRlICg2LzIxLzE3ODgpCkNhcGl0YWw6IENvbmNvcmQKQmlyZDogUHVycGxlIGZpbmNoCkZsb3dlcjogUHVycGxlIGxpbGFj&s=V8sUbOgb",
+            _imageUrl: "https://o.quizlet.com/i/lzxIk7ZWQ9dbQnOGnxlrgQ_m.jpg",
+            setId: 510477676,
+            rank: 8,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241197,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987294,
+            word: "South Carolina",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U291dGggQ2Fyb2xpbmE&s=QeTxcY7e",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U291dGggQ2Fyb2xpbmE&s=QeTxcY7e&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U291dGggQ2Fyb2xpbmE&s=QeTxcY7e",
+            definition:
+              "8th State (5/23/1788)\nCapital: Columbia\nBird: Carolina wren, Domesticated turkey\nFlower: Gelsemium sempervirens",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=OHRoIFN0YXRlICg1LzIzLzE3ODgpCkNhcGl0YWw6IENvbHVtYmlhCkJpcmQ6IENhcm9saW5hIHdyZW4sIERvbWVzdGljYXRlZCB0dXJrZXkKRmxvd2VyOiBHZWxzZW1pdW0gc2VtcGVydmlyZW5z&s=wp4D7c-u",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=OHRoIFN0YXRlICg1LzIzLzE3ODgpCkNhcGl0YWw6IENvbHVtYmlhCkJpcmQ6IENhcm9saW5hIHdyZW4sIERvbWVzdGljYXRlZCB0dXJrZXkKRmxvd2VyOiBHZWxzZW1pdW0gc2VtcGVydmlyZW5z&s=wp4D7c-u&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=OHRoIFN0YXRlICg1LzIzLzE3ODgpCkNhcGl0YWw6IENvbHVtYmlhCkJpcmQ6IENhcm9saW5hIHdyZW4sIERvbWVzdGljYXRlZCB0dXJrZXkKRmxvd2VyOiBHZWxzZW1pdW0gc2VtcGVydmlyZW5z&s=wp4D7c-u",
+            _imageUrl: "https://o.quizlet.com/a2kShnxn8m0y2l71fMWaDQ_m.png",
+            setId: 510477676,
+            rank: 7,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20847184,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987293,
+            word: "Maryland",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFyeWxhbmQ&s=IlqQd5pL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyeWxhbmQ&s=IlqQd5pL&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFyeWxhbmQ&s=IlqQd5pL",
+            definition:
+              "7th State (4/28/1788)\nCapital: Annapolis\nBird: Baltimore oriole\nFlower: Blackeyed susan",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=N3RoIFN0YXRlICg0LzI4LzE3ODgpCkNhcGl0YWw6IEFubmFwb2xpcwpCaXJkOiBCYWx0aW1vcmUgb3Jpb2xlCkZsb3dlcjogQmxhY2tleWVkIHN1c2Fu&s=C1kxbeJ6",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=N3RoIFN0YXRlICg0LzI4LzE3ODgpCkNhcGl0YWw6IEFubmFwb2xpcwpCaXJkOiBCYWx0aW1vcmUgb3Jpb2xlCkZsb3dlcjogQmxhY2tleWVkIHN1c2Fu&s=C1kxbeJ6&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=N3RoIFN0YXRlICg0LzI4LzE3ODgpCkNhcGl0YWw6IEFubmFwb2xpcwpCaXJkOiBCYWx0aW1vcmUgb3Jpb2xlCkZsb3dlcjogQmxhY2tleWVkIHN1c2Fu&s=C1kxbeJ6",
+            _imageUrl: "https://o.quizlet.com/i/O2aue9qySWcQegKhfHhS7g_m.jpg",
+            setId: 510477676,
+            rank: 6,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241188,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987292,
+            word: "Massachusetts",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFzc2FjaHVzZXR0cw&s=aHf9v4J6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFzc2FjaHVzZXR0cw&s=aHf9v4J6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFzc2FjaHVzZXR0cw&s=aHf9v4J6",
+            definition:
+              "6th State (2/6/1788)\nCapital: Boston\nBird: Domesticated turkey, Black-capped chickadee\nFlower: Epigaea repens",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NnRoIFN0YXRlICgyLzYvMTc4OCkKQ2FwaXRhbDogQm9zdG9uCkJpcmQ6IERvbWVzdGljYXRlZCB0dXJrZXksIEJsYWNrLWNhcHBlZCBjaGlja2FkZWUKRmxvd2VyOiBFcGlnYWVhIHJlcGVucw&s=MpfwjOB9",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NnRoIFN0YXRlICgyLzYvMTc4OCkKQ2FwaXRhbDogQm9zdG9uCkJpcmQ6IERvbWVzdGljYXRlZCB0dXJrZXksIEJsYWNrLWNhcHBlZCBjaGlja2FkZWUKRmxvd2VyOiBFcGlnYWVhIHJlcGVucw&s=MpfwjOB9&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NnRoIFN0YXRlICgyLzYvMTc4OCkKQ2FwaXRhbDogQm9zdG9uCkJpcmQ6IERvbWVzdGljYXRlZCB0dXJrZXksIEJsYWNrLWNhcHBlZCBjaGlja2FkZWUKRmxvd2VyOiBFcGlnYWVhIHJlcGVucw&s=MpfwjOB9",
+            _imageUrl: "https://o.quizlet.com/i/LZIC5_IiK-Q7h1QTfflg4A_m.jpg",
+            setId: 510477676,
+            rank: 5,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241189,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987291,
+            word: "Connecticut",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q29ubmVjdGljdXQ&s=DVC891dv",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q29ubmVjdGljdXQ&s=DVC891dv&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q29ubmVjdGljdXQ&s=DVC891dv",
+            definition:
+              "5th State (1/9/1788)\nCapital: Hartford\nBird: American Robin\nFlower: Mountain-laurel",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NXRoIFN0YXRlICgxLzkvMTc4OCkKQ2FwaXRhbDogSGFydGZvcmQKQmlyZDogQW1lcmljYW4gUm9iaW4KRmxvd2VyOiBNb3VudGFpbi1sYXVyZWw&s=4J3-eoMr",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NXRoIFN0YXRlICgxLzkvMTc4OCkKQ2FwaXRhbDogSGFydGZvcmQKQmlyZDogQW1lcmljYW4gUm9iaW4KRmxvd2VyOiBNb3VudGFpbi1sYXVyZWw&s=4J3-eoMr&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NXRoIFN0YXRlICgxLzkvMTc4OCkKQ2FwaXRhbDogSGFydGZvcmQKQmlyZDogQW1lcmljYW4gUm9iaW4KRmxvd2VyOiBNb3VudGFpbi1sYXVyZWw&s=4J3-eoMr",
+            _imageUrl: "https://o.quizlet.com/i/0tI_xuS-emveNh8X2kQuFw_m.jpg",
+            setId: 510477676,
+            rank: 4,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241175,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987290,
+            word: "Georgia",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=R2VvcmdpYQ&s=DJ87uYo0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=R2VvcmdpYQ&s=DJ87uYo0&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=R2VvcmdpYQ&s=DJ87uYo0",
+            definition:
+              "4th State (1/2/1788)\nCapital: Atlanta\nBird: Brown thrasher, Northern bobwhite\nFlower: Rosa laevigata",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=NHRoIFN0YXRlICgxLzIvMTc4OCkKQ2FwaXRhbDogQXRsYW50YQpCaXJkOiBCcm93biB0aHJhc2hlciwgTm9ydGhlcm4gYm9id2hpdGUKRmxvd2VyOiBSb3NhIGxhZXZpZ2F0YQ&s=eVWqGO6m",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=NHRoIFN0YXRlICgxLzIvMTc4OCkKQ2FwaXRhbDogQXRsYW50YQpCaXJkOiBCcm93biB0aHJhc2hlciwgTm9ydGhlcm4gYm9id2hpdGUKRmxvd2VyOiBSb3NhIGxhZXZpZ2F0YQ&s=eVWqGO6m&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=NHRoIFN0YXRlICgxLzIvMTc4OCkKQ2FwaXRhbDogQXRsYW50YQpCaXJkOiBCcm93biB0aHJhc2hlciwgTm9ydGhlcm4gYm9id2hpdGUKRmxvd2VyOiBSb3NhIGxhZXZpZ2F0YQ&s=eVWqGO6m",
+            _imageUrl: "https://o.quizlet.com/i/6v33MU3NSUHR0OG6WwkeMA_m.jpg",
+            setId: 510477676,
+            rank: 3,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241178,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987289,
+            word: "New Jersey",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmV3IEplcnNleQ&s=5E6ATFku",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmV3IEplcnNleQ&s=5E6ATFku&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmV3IEplcnNleQ&s=5E6ATFku",
+            definition:
+              "3rd State (12/18/1787)\nCapital: Trenton\nBird: American Goldfinch\nFlower: Viola sororia",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=M3JkIFN0YXRlICgxMi8xOC8xNzg3KQpDYXBpdGFsOiBUcmVudG9uCkJpcmQ6IEFtZXJpY2FuIEdvbGRmaW5jaApGbG93ZXI6IFZpb2xhIHNvcm9yaWE&s=KSg9lmX7",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=M3JkIFN0YXRlICgxMi8xOC8xNzg3KQpDYXBpdGFsOiBUcmVudG9uCkJpcmQ6IEFtZXJpY2FuIEdvbGRmaW5jaApGbG93ZXI6IFZpb2xhIHNvcm9yaWE&s=KSg9lmX7&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=M3JkIFN0YXRlICgxMi8xOC8xNzg3KQpDYXBpdGFsOiBUcmVudG9uCkJpcmQ6IEFtZXJpY2FuIEdvbGRmaW5jaApGbG93ZXI6IFZpb2xhIHNvcm9yaWE&s=KSg9lmX7",
+            _imageUrl: "https://o.quizlet.com/i/57dxxoQ3EH7E2TFWYuL8EQ_m.jpg",
+            setId: 510477676,
+            rank: 2,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241198,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987288,
+            word: "Pennsylvania",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UGVubnN5bHZhbmlh&s=y4sjdI7Y",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UGVubnN5bHZhbmlh&s=y4sjdI7Y&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UGVubnN5bHZhbmlh&s=y4sjdI7Y",
+            definition:
+              "2nd State (12/12/1787)\nCapital: Harrisburg\nBird: Ruffed grouse\nFlower: Mountain-laurel",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=Mm5kIFN0YXRlICgxMi8xMi8xNzg3KQpDYXBpdGFsOiBIYXJyaXNidXJnCkJpcmQ6IFJ1ZmZlZCBncm91c2UKRmxvd2VyOiBNb3VudGFpbi1sYXVyZWw&s=MJQYxrde",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Mm5kIFN0YXRlICgxMi8xMi8xNzg3KQpDYXBpdGFsOiBIYXJyaXNidXJnCkJpcmQ6IFJ1ZmZlZCBncm91c2UKRmxvd2VyOiBNb3VudGFpbi1sYXVyZWw&s=MJQYxrde&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=Mm5kIFN0YXRlICgxMi8xMi8xNzg3KQpDYXBpdGFsOiBIYXJyaXNidXJnCkJpcmQ6IFJ1ZmZlZCBncm91c2UKRmxvd2VyOiBNb3VudGFpbi1sYXVyZWw&s=MJQYxrde",
+            _imageUrl: "https://o.quizlet.com/i/JYDpkXMWcFEOW5XN91GpCg_m.jpg",
+            setId: 510477676,
+            rank: 1,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241206,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18191987287,
+            word: "Delaware",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RGVsYXdhcmU&s=tq4UUpkF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVsYXdhcmU&s=tq4UUpkF&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RGVsYXdhcmU&s=tq4UUpkF",
+            definition:
+              "1st State (12/7/1787)\nCapital: Dover\nBird: Delaware Blue Hen\nFlower: Peach Blossom",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IFN0YXRlICgxMi83LzE3ODcpCkNhcGl0YWw6IERvdmVyCkJpcmQ6IERlbGF3YXJlIEJsdWUgSGVuCkZsb3dlcjogUGVhY2ggQmxvc3NvbQ&s=CFZh64Rf",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IFN0YXRlICgxMi83LzE3ODcpCkNhcGl0YWw6IERvdmVyCkJpcmQ6IERlbGF3YXJlIEJsdWUgSGVuCkZsb3dlcjogUGVhY2ggQmxvc3NvbQ&s=CFZh64Rf&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IFN0YXRlICgxMi83LzE3ODcpCkNhcGl0YWw6IERvdmVyCkJpcmQ6IERlbGF3YXJlIEJsdWUgSGVuCkZsb3dlcjogUGVhY2ggQmxvc3NvbQ&s=CFZh64Rf",
+            _imageUrl: "https://o.quizlet.com/i/-Vik9QUfV_osZ5G9l6Tb_w_m.jpg",
+            setId: 510477676,
+            rank: 0,
+            lastModified: 1590981442,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19241176,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 50,
+        page: 1,
+        perPage: 200,
+        token: "ZDdpvgJMuM.Ghhs6RBsSUtW9ZKx2",
+      },
+    },
+  ],
+};
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=509798311"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 18159882188,
+            word: "Charlie Sheen",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q2hhcmxpZSBTaGVlbg&s=RojWQWae",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxpZSBTaGVlbg&s=RojWQWae&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q2hhcmxpZSBTaGVlbg&s=RojWQWae",
+            definition: "48",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NDg&s=xkA-tyBP",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NDg&s=xkA-tyBP&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NDg&s=xkA-tyBP",
+            _imageUrl: "https://o.quizlet.com/OYQKnzztBRsWym6q7rHwgQ_m.jpg",
+            setId: 509798311,
+            rank: 70,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25372356,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882187,
+            word: "Kristen Stewart",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S3Jpc3RlbiBTdGV3YXJ0&s=ZVmeKkbP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S3Jpc3RlbiBTdGV3YXJ0&s=ZVmeKkbP&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S3Jpc3RlbiBTdGV3YXJ0&s=ZVmeKkbP",
+            definition: "49",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _imageUrl: "https://o.quizlet.com/i/JDybGyx9kEOS_ExO1iQetw_m.jpg",
+            setId: 509798311,
+            rank: 69,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11841059,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882186,
+            word: "Natalie Portman",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmF0YWxpZSBQb3J0bWFu&s=WphzfwQA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmF0YWxpZSBQb3J0bWFu&s=WphzfwQA&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmF0YWxpZSBQb3J0bWFu&s=WphzfwQA",
+            definition: "49",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2752/4100177236_4661877a3e_m.jpg",
+            setId: 509798311,
+            rank: 68,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18559427,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882185,
+            word: "Tom Hardy",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VG9tIEhhcmR5&s=l6MUZrKN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VG9tIEhhcmR5&s=l6MUZrKN&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VG9tIEhhcmR5&s=l6MUZrKN",
+            definition: "50",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _imageUrl: "https://o.quizlet.com/5CHXztXeV-LqM1e.r5gmAA_m.png",
+            setId: 509798311,
+            rank: 67,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21763634,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882184,
+            word: "Mariah Carey",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFyaWFoIENhcmV5&s=KXBmwjPb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyaWFoIENhcmV5&s=KXBmwjPb&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFyaWFoIENhcmV5&s=KXBmwjPb",
+            definition: "50",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _imageUrl: "https://o.quizlet.com/oiGCgw.Aj-j8KvGehZtwGg_m.jpg",
+            setId: 509798311,
+            rank: 66,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 38355965,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882183,
+            word: "Bruno Mars",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJ1bm8gTWFycw&s=tN0Uz37i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJ1bm8gTWFycw&s=tN0Uz37i&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJ1bm8gTWFycw&s=tN0Uz37i",
+            definition: "50",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _imageUrl: "https://o.quizlet.com/FSZKH1DRyMIOMVVEUssTQA_m.jpg",
+            setId: 509798311,
+            rank: 65,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15396143,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882182,
+            word: "Robin Williams",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Um9iaW4gV2lsbGlhbXM&s=W6zvMEb2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Um9iaW4gV2lsbGlhbXM&s=W6zvMEb2&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Um9iaW4gV2lsbGlhbXM&s=W6zvMEb2",
+            definition: "51",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _imageUrl: "https://o.quizlet.com/r9ZTlkxdJVCEkQihqunoaA_m.jpg",
+            setId: 509798311,
+            rank: 64,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 32670692,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882181,
+            word: "Megan Fox",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWVnYW4gRm94&s=1xd.Uafx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWVnYW4gRm94&s=1xd.Uafx&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWVnYW4gRm94&s=1xd.Uafx",
+            definition: "51",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _imageUrl: "https://o.quizlet.com/i/-YSMaPwa0eWN6Gjpl0r6sQ_m.jpg",
+            setId: 509798311,
+            rank: 63,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6960606,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882180,
+            word: "Bob Marley",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Qm9iIE1hcmxleQ&s=ze7Tkeg6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9iIE1hcmxleQ&s=ze7Tkeg6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Qm9iIE1hcmxleQ&s=ze7Tkeg6",
+            definition: "52",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTI&s=s3Go-my0",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTI&s=s3Go-my0&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTI&s=s3Go-my0",
+            _imageUrl: "https://o.quizlet.com/mhHDhL1YMXVhRnTuBQOK4g_m.jpg",
+            setId: 509798311,
+            rank: 62,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25398096,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882178,
+            word: "Emma Watson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RW1tYSBXYXRzb24&s=rmc42bwe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RW1tYSBXYXRzb24&s=rmc42bwe&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RW1tYSBXYXRzb24&s=rmc42bwe",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3141/2683374643_8a6b1be995_m.jpg",
+            setId: 509798311,
+            rank: 61,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20560984,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882177,
+            word: "The Undertaker",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIFVuZGVydGFrZXI&s=p.1DdxfZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFVuZGVydGFrZXI&s=p.1DdxfZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIFVuZGVydGFrZXI&s=p.1DdxfZ",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl: "https://o.quizlet.com/B9ffTQG6Nk8cogG2oH46JQ_m.png",
+            setId: 509798311,
+            rank: 60,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 77039809,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882176,
+            word: "Mark Wahlberg",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFyayBXYWhsYmVyZw&s=xqbF7YrO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyayBXYWhsYmVyZw&s=xqbF7YrO&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFyayBXYWhsYmVyZw&s=xqbF7YrO",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7182/6908662917_87513194e2_m.jpg",
+            setId: 509798311,
+            rank: 59,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20552809,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882175,
+            word: "John Lennon",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Sm9obiBMZW5ub24&s=dDgLThiz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9obiBMZW5ub24&s=dDgLThiz&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Sm9obiBMZW5ub24&s=dDgLThiz",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl: "https://o.quizlet.com/i/dcXlc1nkrc4k_vmeknU35A_m.jpg",
+            setId: 509798311,
+            rank: 58,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 162806,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882174,
+            word: "Madonna (entertainer)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFkb25uYSAoZW50ZXJ0YWluZXIp&s=U69sOlsW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFkb25uYSAoZW50ZXJ0YWluZXIp&s=U69sOlsW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWFkb25uYSAoZW50ZXJ0YWluZXIp&s=U69sOlsW",
+            definition: "54",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _imageUrl: "https://o.quizlet.com/w2Ww5zSeZQ8BR0.3hYAaXQ_m.jpg",
+            setId: 509798311,
+            rank: 57,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 77039787,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882173,
+            word: "Demi Lovato",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RGVtaSBMb3ZhdG8&s=UxeSjQZA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVtaSBMb3ZhdG8&s=UxeSjQZA&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RGVtaSBMb3ZhdG8&s=UxeSjQZA",
+            definition: "54",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8420/8701552469_d5fd4b5f2d_m.jpg",
+            setId: 509798311,
+            rank: 56,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20233399,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882172,
+            word: "Clint Eastwood",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q2xpbnQgRWFzdHdvb2Q&s=92K3KWyL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2xpbnQgRWFzdHdvb2Q&s=92K3KWyL&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q2xpbnQgRWFzdHdvb2Q&s=92K3KWyL",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl: "https://o.quizlet.com/i/UO-xYFP3SHvxLhrvJrdScw_m.jpg",
+            setId: 509798311,
+            rank: 55,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1126691,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882171,
+            word: "Ryan Reynolds",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UnlhbiBSZXlub2xkcw&s=ZppSo-MC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UnlhbiBSZXlub2xkcw&s=ZppSo-MC&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UnlhbiBSZXlub2xkcw&s=ZppSo-MC",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl: "https://o.quizlet.com/Sgq-YM3lCB7imKiSJ6l2bQ_m.jpg",
+            setId: 509798311,
+            rank: 54,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 32665409,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882170,
+            word: "Jennifer Lopez",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SmVubmlmZXIgTG9wZXo&s=wnXjj-WJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTG9wZXo&s=wnXjj-WJ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SmVubmlmZXIgTG9wZXo&s=wnXjj-WJ",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl: "https://o.quizlet.com/4XEf2cmUEmRDcyNBdCvCAw_m.jpg",
+            setId: 509798311,
+            rank: 53,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6345754,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882169,
+            word: "Louis Tomlinson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TG91aXMgVG9tbGluc29u&s=0pInE5yl",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TG91aXMgVG9tbGluc29u&s=0pInE5yl&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TG91aXMgVG9tbGluc29u&s=0pInE5yl",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7180/6808117122_55fc731ec7_m.jpg",
+            setId: 509798311,
+            rank: 52,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20583606,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882168,
+            word: "Sylvester Stallone",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3lsdmVzdGVyIFN0YWxsb25l&s=Agj1Dsvk",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3lsdmVzdGVyIFN0YWxsb25l&s=Agj1Dsvk&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3lsdmVzdGVyIFN0YWxsb25l&s=Agj1Dsvk",
+            definition: "56",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTY&s=-Taq109y",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTY&s=-Taq109y&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTY&s=-Taq109y",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4124/4840005067_80f5902a00_m.jpg",
+            setId: 509798311,
+            rank: 51,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20552807,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882167,
+            word: "Brad Pitt",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJhZCBQaXR0&s=bRM4C7Ci",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJhZCBQaXR0&s=bRM4C7Ci&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJhZCBQaXR0&s=bRM4C7Ci",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4124/5072490175_c07741df5d_m.jpg",
+            setId: 509798311,
+            rank: 50,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20135222,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882166,
+            word: "Jennifer Lawrence",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTGF3cmVuY2U&s=G8QXhyHc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTGF3cmVuY2U&s=G8QXhyHc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTGF3cmVuY2U&s=G8QXhyHc",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl: "https://o.quizlet.com/xu3.PuAy1bcoNWmJYknhIQ_m.png",
+            setId: 509798311,
+            rank: 49,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9847319,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882165,
+            word: "Heath Ledger",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SGVhdGggTGVkZ2Vy&s=Cw9RTp1D",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SGVhdGggTGVkZ2Vy&s=Cw9RTp1D&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SGVhdGggTGVkZ2Vy&s=Cw9RTp1D",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl: "https://o.quizlet.com/C3DLAKrIFUTdAzF0EXhI2Q_m.png",
+            setId: 509798311,
+            rank: 48,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 30690874,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882164,
+            word: "Britney Spears",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJpdG5leSBTcGVhcnM&s=b4HctPCA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJpdG5leSBTcGVhcnM&s=b4HctPCA&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJpdG5leSBTcGVhcnM&s=b4HctPCA",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl: "https://o.quizlet.com/LEIoshBgj4YQKsFg0iYXhA_m.jpg",
+            setId: 509798311,
+            rank: 47,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15396312,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882163,
+            word: "David Bowie",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RGF2aWQgQm93aWU&s=0wEcyIcb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGF2aWQgQm93aWU&s=0wEcyIcb&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RGF2aWQgQm93aWU&s=0wEcyIcb",
+            definition: "58",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTg&s=iA9Z5EM9",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTg&s=iA9Z5EM9&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTg&s=iA9Z5EM9",
+            _imageUrl: "https://o.quizlet.com/-lyQ61iLgMnqaVslzU3q3Q_m.jpg",
+            setId: 509798311,
+            rank: 46,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20749103,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882162,
+            word: "Prince (musician)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=UHJpbmNlIChtdXNpY2lhbik&s=qlzKKZF6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UHJpbmNlIChtdXNpY2lhbik&s=qlzKKZF6&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=UHJpbmNlIChtdXNpY2lhbik&s=qlzKKZF6",
+            definition: "59",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTk&s=wjzlOfPD",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTk&s=wjzlOfPD&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTk&s=wjzlOfPD",
+            _imageUrl: "https://o.quizlet.com/aWuTHdLcPL7BhexI6pxgzw_m.jpg",
+            setId: 509798311,
+            rank: 45,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 34535283,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882161,
+            word: "Marilyn Monroe",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2U&s=E7SZhL1m",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2U&s=E7SZhL1m&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2U&s=E7SZhL1m",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl: "https://o.quizlet.com/aErIeZ-EMqYmpEVLt4dZLg_m.jpg",
+            setId: 509798311,
+            rank: 44,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15491439,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882160,
+            word: "Keanu Reeves",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2VhbnUgUmVldmVz&s=6-yE4cFE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2VhbnUgUmVldmVz&s=6-yE4cFE&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2VhbnUgUmVldmVz&s=6-yE4cFE",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl: "https://o.quizlet.com/S3fvuBqZqmqiB-p8KLcByw_m.jpg",
+            setId: 509798311,
+            rank: 43,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 45526663,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882159,
+            word: "Jay-Z",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SmF5LVo&s=4XWw4uPv",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=SmF5LVo&s=4XWw4uPv&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SmF5LVo&s=4XWw4uPv",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3611/4032638252_8a1a89e95e_m.jpg",
+            setId: 509798311,
+            rank: 42,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13698941,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882158,
+            word: "Adele",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWRlbGU&s=HKRmoCvU",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=QWRlbGU&s=HKRmoCvU&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWRlbGU&s=HKRmoCvU",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl: "https://o.quizlet.com/i/VIymygRZhSyPE0pbN-7beg_m.jpg",
+            setId: 509798311,
+            rank: 41,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1498849,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882157,
+            word: "Bruce Lee",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJ1Y2UgTGVl&s=hy9Ykt4L",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJ1Y2UgTGVl&s=hy9Ykt4L&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJ1Y2UgTGVl&s=hy9Ykt4L",
+            definition: "61",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _imageUrl:
+              "https://farm1.staticflickr.com/27/43855760_fa16727836_m.jpg",
+            setId: 509798311,
+            rank: 40,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18413026,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882156,
+            word: "Elvis Presley",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RWx2aXMgUHJlc2xleQ&s=sdA1tZmE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RWx2aXMgUHJlc2xleQ&s=sdA1tZmE&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RWx2aXMgUHJlc2xleQ&s=sdA1tZmE",
+            definition: "61",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _imageUrl: "https://o.quizlet.com/iBJTr34M3fLf9I9bLBhYfg_m.png",
+            setId: 509798311,
+            rank: 39,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16929354,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882155,
+            word: "Katy Perry",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2F0eSBQZXJyeQ&s=J5JYgzD.",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2F0eSBQZXJyeQ&s=J5JYgzD.&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2F0eSBQZXJyeQ&s=J5JYgzD.",
+            definition: "63",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjM&s=EdZKKtcp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjM&s=EdZKKtcp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjM&s=EdZKKtcp",
+            _imageUrl: "https://o.quizlet.com/XQ0-hkNgtyPsvXzMqRNVoQ_m.jpg",
+            setId: 509798311,
+            rank: 38,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15396149,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882154,
+            word: "Will Smith",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V2lsbCBTbWl0aA&s=iGJEPg93",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2lsbCBTbWl0aA&s=iGJEPg93&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=V2lsbCBTbWl0aA&s=iGJEPg93",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3547/5793543057_ac4e1def1d_m.jpg",
+            setId: 509798311,
+            rank: 37,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14632770,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882153,
+            word: "Jennifer Aniston",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SmVubmlmZXIgQW5pc3Rvbg&s=ODIjcF8F",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgQW5pc3Rvbg&s=ODIjcF8F&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgQW5pc3Rvbg&s=ODIjcF8F",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl: "https://o.quizlet.com/i/DRvWiJRMP0wYWdS4N7KbQA_m.jpg",
+            setId: 509798311,
+            rank: 36,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11841053,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882152,
+            word: "John Cena",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Sm9obiBDZW5h&s=TIF7FKWn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9obiBDZW5h&s=TIF7FKWn&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Sm9obiBDZW5h&s=TIF7FKWn",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2424/3854142502_5a1ae43f86_m.jpg",
+            setId: 509798311,
+            rank: 35,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4538683,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882151,
+            word: "Ariana Grande",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QXJpYW5hIEdyYW5kZQ&s=geLXxqra",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJpYW5hIEdyYW5kZQ&s=geLXxqra&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QXJpYW5hIEdyYW5kZQ&s=geLXxqra",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl: "https://o.quizlet.com/1ocBDTk.oKxRt1yOrM7OpA_m.jpg",
+            setId: 509798311,
+            rank: 34,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22760272,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882150,
+            word: "Tom Cruise",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VG9tIENydWlzZQ&s=QJJGp7Uc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VG9tIENydWlzZQ&s=QJJGp7Uc&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VG9tIENydWlzZQ&s=QJJGp7Uc",
+            definition: "65",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _imageUrl: "https://o.quizlet.com/DKlHCwNRX73ekMpmLa99Gg_m.jpg",
+            setId: 509798311,
+            rank: 33,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15392848,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882149,
+            word: "Scarlett Johansson",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U2NhcmxldHQgSm9oYW5zc29u&s=3ToiGLse",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U2NhcmxldHQgSm9oYW5zc29u&s=3ToiGLse&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U2NhcmxldHQgSm9oYW5zc29u&s=3ToiGLse",
+            definition: "65",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _imageUrl: "https://o.quizlet.com/i/JKRV0Qb-qwrAT7FpNNIDkg_m.jpg",
+            setId: 509798311,
+            rank: 32,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6960582,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882148,
+            word: "Arnold Schwarzenegger",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJub2xkIFNjaHdhcnplbmVnZ2Vy&s=xFVOYDGQ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJub2xkIFNjaHdhcnplbmVnZ2Vy&s=xFVOYDGQ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QXJub2xkIFNjaHdhcnplbmVnZ2Vy&s=xFVOYDGQ",
+            definition: "66",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3831/9048849945_b0020b81ea_m.jpg",
+            setId: 509798311,
+            rank: 31,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9111174,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882147,
+            word: "Nicki Minaj",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Tmlja2kgTWluYWo&s=wycUxLQ2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Tmlja2kgTWluYWo&s=wycUxLQ2&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Tmlja2kgTWluYWo&s=wycUxLQ2",
+            definition: "66",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6070/6124809071_b6a3627226_m.jpg",
+            setId: 509798311,
+            rank: 30,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18148506,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882146,
+            word: "Mila Kunis",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWlsYSBLdW5pcw&s=lwx.ThFZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlsYSBLdW5pcw&s=lwx.ThFZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWlsYSBLdW5pcw&s=lwx.ThFZ",
+            definition: "68",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Njg&s=DUvKUyYc",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Njg&s=DUvKUyYc&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Njg&s=DUvKUyYc",
+            _imageUrl: "https://o.quizlet.com/i/p2VK63sPaqF5b6fmDzrqYg_m.jpg",
+            setId: 509798311,
+            rank: 29,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1150897,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882145,
+            word: "LeBron James",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGVCcm9uIEphbWVz&s=Crn4dQTt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGVCcm9uIEphbWVz&s=Crn4dQTt&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGVCcm9uIEphbWVz&s=Crn4dQTt",
+            definition: "69",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Njk&s=rRBFM1cR",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Njk&s=rRBFM1cR&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Njk&s=rRBFM1cR",
+            _imageUrl: "https://o.quizlet.com/2AfEA8s7RHS14z7Dyn..vw_m.jpg",
+            setId: 509798311,
+            rank: 28,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24340908,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882144,
+            word: "Angelina Jolie",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QW5nZWxpbmEgSm9saWU&s=f7a8aHFS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QW5nZWxpbmEgSm9saWU&s=f7a8aHFS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QW5nZWxpbmEgSm9saWU&s=f7a8aHFS",
+            definition: "70",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzA&s=jbP1ZVB2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzA&s=jbP1ZVB2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzA&s=jbP1ZVB2",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4075/4860509634_49ccc8a40a_m.jpg",
+            setId: 509798311,
+            rank: 27,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20670279,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882143,
+            word: "Leonardo DiCaprio",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TGVvbmFyZG8gRGlDYXByaW8&s=b2PMWyZE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGVvbmFyZG8gRGlDYXByaW8&s=b2PMWyZE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TGVvbmFyZG8gRGlDYXByaW8&s=b2PMWyZE",
+            definition: "71",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzE&s=---A2cBJ",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzE&s=---A2cBJ&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzE&s=---A2cBJ",
+            _imageUrl: "https://o.quizlet.com/i/Q2gaXPhs5xJ6oM9fTRYMTw_m.jpg",
+            setId: 509798311,
+            rank: 26,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 767657,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882140,
+            word: "Michael Jordan",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKb3JkYW4&s=P.yp71BS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWljaGFlbCBKb3JkYW4&s=P.yp71BS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKb3JkYW4&s=P.yp71BS",
+            definition: "72",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _imageUrl: "https://o.quizlet.com/i/wJIy5X94msdODq13Q4HmUA_m.jpg",
+            setId: 509798311,
+            rank: 25,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20380333,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882139,
+            word: "Tupac Shakur",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VHVwYWMgU2hha3Vy&s=NP5KZO1w",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VHVwYWMgU2hha3Vy&s=NP5KZO1w&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VHVwYWMgU2hha3Vy&s=NP5KZO1w",
+            definition: "72",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _imageUrl: "https://o.quizlet.com/nwX5SdAUr9ysA2gTNFdR.Q_m.jpg",
+            setId: 509798311,
+            rank: 24,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13315941,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882138,
+            word: "Kanye West",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2FueWUgV2VzdA&s=L9bXEdlL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2FueWUgV2VzdA&s=L9bXEdlL&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2FueWUgV2VzdA&s=L9bXEdlL",
+            definition: "72",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3229/3028703779_00a2fd41c2_m.jpg",
+            setId: 509798311,
+            rank: 23,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19380303,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882137,
+            word: "Johnny Depp",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Sm9obm55IERlcHA&s=MgYzV2BX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9obm55IERlcHA&s=MgYzV2BX&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Sm9obm55IERlcHA&s=MgYzV2BX",
+            definition: "74",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2484/3683166130_221728efd2_m.jpg",
+            setId: 509798311,
+            rank: 22,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16405458,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882136,
+            word: "Albert Einstein",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWxiZXJ0IEVpbnN0ZWlu&s=X9nv-nFz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWxiZXJ0IEVpbnN0ZWlu&s=X9nv-nFz&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWxiZXJ0IEVpbnN0ZWlu&s=X9nv-nFz",
+            definition: "74",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _imageUrl: "https://o.quizlet.com/IcnYVqE6yfjJ9F.bV4J5Ew_m.jpg",
+            setId: 509798311,
+            rank: 21,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20519597,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882135,
+            word: "Rihanna",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UmloYW5uYQ&s=uCCF0v7A",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UmloYW5uYQ&s=uCCF0v7A&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UmloYW5uYQ&s=uCCF0v7A",
+            definition: "76",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzY&s=MM0ztJ0h",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzY&s=MM0ztJ0h&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzY&s=MM0ztJ0h",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5162/5312739853_9828a1f774_m.jpg",
+            setId: 509798311,
+            rank: 20,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20298881,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882133,
+            word: "Abraham Lincoln",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWJyYWhhbSBMaW5jb2xu&s=NgFygxBZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWJyYWhhbSBMaW5jb2xu&s=NgFygxBZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWJyYWhhbSBMaW5jb2xu&s=NgFygxBZ",
+            definition: "77",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2268/2393882882_9317266cb7_m.jpg",
+            setId: 509798311,
+            rank: 19,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20605863,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882132,
+            word: "Selena Gomez",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U2VsZW5hIEdvbWV6&s=fyOsAfJ0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U2VsZW5hIEdvbWV6&s=fyOsAfJ0&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U2VsZW5hIEdvbWV6&s=fyOsAfJ0",
+            definition: "77",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _imageUrl: "https://o.quizlet.com/i/Dg2UNamitryQkogZ65e_Yg_m.jpg",
+            setId: 509798311,
+            rank: 18,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11841068,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882131,
+            word: "Taylor Swift",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGF5bG9yIFN3aWZ0&s=KIOfiksS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGF5bG9yIFN3aWZ0&s=KIOfiksS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGF5bG9yIFN3aWZ0&s=KIOfiksS",
+            definition: "79",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Nzk&s=OjbP.u4m",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Nzk&s=OjbP.u4m&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Nzk&s=OjbP.u4m",
+            _imageUrl: "https://o.quizlet.com/9Cc5Sxciwp5jnc-JxGm1rQ_m.jpg",
+            setId: 509798311,
+            rank: 17,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 2206152,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882129,
+            word: "Miley Cyrus",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWlsZXkgQ3lydXM&s=-ZkcJMsc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlsZXkgQ3lydXM&s=-ZkcJMsc&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWlsZXkgQ3lydXM&s=-ZkcJMsc",
+            definition: "81",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _imageUrl: "https://o.quizlet.com/YmhEY0zN-qLn3Xfiex1wHg_m.jpg",
+            setId: 509798311,
+            rank: 16,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16143386,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882128,
+            word: "Dwayne Johnson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RHdheW5lIEpvaG5zb24&s=1aW5q8oN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RHdheW5lIEpvaG5zb24&s=1aW5q8oN&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RHdheW5lIEpvaG5zb24&s=1aW5q8oN",
+            definition: "81",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3595/3630739134_ce1bbcff55_m.jpg",
+            setId: 509798311,
+            rank: 15,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20552797,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882127,
+            word: "Lil Wayne",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGlsIFdheW5l&s=lfdmzTJJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGlsIFdheW5l&s=lfdmzTJJ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGlsIFdheW5l&s=lfdmzTJJ",
+            definition: "82",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODI&s=4.8yjPb.",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODI&s=4.8yjPb.&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODI&s=4.8yjPb.",
+            _imageUrl: "https://o.quizlet.com/40oCYeDE6n-RdZRMrrVcWg_m.jpg",
+            setId: 509798311,
+            rank: 14,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22557457,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882126,
+            word: "Lionel Messi",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGlvbmVsIE1lc3Np&s=6jzgCOvs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGlvbmVsIE1lc3Np&s=6jzgCOvs&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGlvbmVsIE1lc3Np&s=6jzgCOvs",
+            definition: "84",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODQ&s=UP3nZR.b",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODQ&s=UP3nZR.b&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODQ&s=UP3nZR.b",
+            _imageUrl: "https://o.quizlet.com/sx-YYLA3EsXqzo-tqF8n5g_m.jpg",
+            setId: 509798311,
+            rank: 13,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22760313,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882125,
+            word: "Stephen Hawking",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U3RlcGhlbiBIYXdraW5n&s=l41uzEyy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RlcGhlbiBIYXdraW5n&s=l41uzEyy&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U3RlcGhlbiBIYXdraW5n&s=l41uzEyy",
+            definition: "85",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODU&s=6RvBaQSp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODU&s=6RvBaQSp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODU&s=6RvBaQSp",
+            _imageUrl: "https://o.quizlet.com/01AajR8nPFeQ1uLUsTqRSw_m.jpg",
+            setId: 509798311,
+            rank: 12,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20886429,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882124,
+            word: "Freddie Mercury",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RnJlZGRpZSBNZXJjdXJ5&s=apf5t5dt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RnJlZGRpZSBNZXJjdXJ5&s=apf5t5dt&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RnJlZGRpZSBNZXJjdXJ5&s=apf5t5dt",
+            definition: "89",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODk&s=YfTy9inu",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODk&s=YfTy9inu&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODk&s=YfTy9inu",
+            _imageUrl: "https://o.quizlet.com/0Xwx89HwOdqnv-OA-4w-Yw_m.png",
+            setId: 509798311,
+            rank: 11,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18882673,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882123,
+            word: "Kim Kardashian",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2ltIEthcmRhc2hpYW4&s=18I-r7Cy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2ltIEthcmRhc2hpYW4&s=18I-r7Cy&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2ltIEthcmRhc2hpYW4&s=18I-r7Cy",
+            definition: "90",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=OTA&s=6hIql3b1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=OTA&s=6hIql3b1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=OTA&s=6hIql3b1",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8316/8002633833_b2ddfee75c_m.jpg",
+            setId: 509798311,
+            rank: 10,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19975906,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882122,
+            word: "Steve Jobs",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U3RldmUgSm9icw&s=l-h4n095",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RldmUgSm9icw&s=l-h4n095&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U3RldmUgSm9icw&s=l-h4n095",
+            definition: "91",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=OTE&s=yp3q8xBm",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=OTE&s=yp3q8xBm&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=OTE&s=yp3q8xBm",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6220/6216457030_2cf0aff09d_m.jpg",
+            setId: 509798311,
+            rank: 9,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20774137,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882121,
+            word: "Justin Bieber",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SnVzdGluIEJpZWJlcg&s=Rca6Do.i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SnVzdGluIEJpZWJlcg&s=Rca6Do.i&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SnVzdGluIEJpZWJlcg&s=Rca6Do.i",
+            definition: "97",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=OTc&s=-RqUngrm",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=OTc&s=-RqUngrm&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=OTc&s=-RqUngrm",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6160/6175343447_4525fc59f9_m.jpg",
+            setId: 509798311,
+            rank: 8,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20749095,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882120,
+            word: "Cristiano Ronaldo",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3Jpc3RpYW5vIFJvbmFsZG8&s=dxftJRsF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3Jpc3RpYW5vIFJvbmFsZG8&s=dxftJRsF&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q3Jpc3RpYW5vIFJvbmFsZG8&s=dxftJRsF",
+            definition: "101",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTAx&s=PT8BUEum",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTAx&s=PT8BUEum&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTAx&s=PT8BUEum",
+            _imageUrl: "https://o.quizlet.com/qh0uOa772dYOrb-Dc5xvZQ_m.png",
+            setId: 509798311,
+            rank: 7,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13889407,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882119,
+            word: "Adolf Hitler",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWRvbGYgSGl0bGVy&s=sylY8yHC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWRvbGYgSGl0bGVy&s=sylY8yHC&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWRvbGYgSGl0bGVy&s=sylY8yHC",
+            definition: "104",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTA0&s=.gjTjlL7",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTA0&s=.gjTjlL7&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTA0&s=.gjTjlL7",
+            _imageUrl: "https://o.quizlet.com/wPgHXEk2g2qH1pPLJKk6IA_m.jpg",
+            setId: 509798311,
+            rank: 6,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20543383,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882118,
+            word: "Eminem",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RW1pbmVt&s=ExR42nsS",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=RW1pbmVt&s=ExR42nsS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RW1pbmVt&s=ExR42nsS",
+            definition: "108",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4123/4930467466_e91a2ddf9a_m.jpg",
+            setId: 509798311,
+            rank: 5,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20042564,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882117,
+            word: "Elizabeth II",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RWxpemFiZXRoIElJ&s=ujbyb58a",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RWxpemFiZXRoIElJ&s=ujbyb58a&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RWxpemFiZXRoIElJ&s=ujbyb58a",
+            definition: "108",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _imageUrl: "https://o.quizlet.com/jSCvUvP0CGR6zGq-dGFCRg_m.jpg",
+            setId: 509798311,
+            rank: 4,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16511306,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882116,
+            word: "Lady Gaga",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGFkeSBHYWdh&s=4QXPn0J1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGFkeSBHYWdh&s=4QXPn0J1&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGFkeSBHYWdh&s=4QXPn0J1",
+            definition: "112",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTEy&s=f2-G742B",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTEy&s=f2-G742B&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTEy&s=f2-G742B",
+            _imageUrl: "https://o.quizlet.com/uWbjX0XQ4QXyT4mBadchmA_m.jpg",
+            setId: 509798311,
+            rank: 3,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25059146,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882115,
+            word: "Michael Jackson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKYWNrc29u&s=D8zJXjbr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWljaGFlbCBKYWNrc29u&s=D8zJXjbr&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKYWNrc29u&s=D8zJXjbr",
+            definition: "117",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTE3&s=1K8XmzjZ",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTE3&s=1K8XmzjZ&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTE3&s=1K8XmzjZ",
+            _imageUrl: "https://o.quizlet.com/i/k8U3eucR7cH5g4Faz1psTQ_m.jpg",
+            setId: 509798311,
+            rank: 2,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 659786,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882114,
+            word: "Barack Obama",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QmFyYWNrIE9iYW1h&s=0woe4toa",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFyYWNrIE9iYW1h&s=0woe4toa&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QmFyYWNrIE9iYW1h&s=0woe4toa",
+            definition: "135",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTM1&s=RfTcanoC",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTM1&s=RfTcanoC&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTM1&s=RfTcanoC",
+            _imageUrl: "https://o.quizlet.com/OBb5iOE91yjvcIf9x5Mc4Q_m.jpg",
+            setId: 509798311,
+            rank: 1,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 49850031,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882113,
+            word: "Donald Trump",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RG9uYWxkIFRydW1w&s=e10Ui2SU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RG9uYWxkIFRydW1w&s=e10Ui2SU&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RG9uYWxkIFRydW1w&s=e10Ui2SU",
+            definition: "165",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTY1&s=WclhxGnO",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTY1&s=WclhxGnO&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTY1&s=WclhxGnO",
+            _imageUrl: "https://o.quizlet.com/nrM5WMYLswZ6rl55Kw3aLg_m.png",
+            setId: 509798311,
+            rank: 0,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 31077094,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 71,
+        page: 1,
+        perPage: 200,
+        token: "xMBTEPq5HP.jGyUCtaGFGSHCQkXM",
+      },
+    },
+  ],
+};
+
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=509798311"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 18159882188,
+            word: "Charlie Sheen",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q2hhcmxpZSBTaGVlbg&s=RojWQWae",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxpZSBTaGVlbg&s=RojWQWae&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q2hhcmxpZSBTaGVlbg&s=RojWQWae",
+            definition: "48",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NDg&s=xkA-tyBP",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NDg&s=xkA-tyBP&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NDg&s=xkA-tyBP",
+            _imageUrl: "https://o.quizlet.com/OYQKnzztBRsWym6q7rHwgQ_m.jpg",
+            setId: 509798311,
+            rank: 70,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25372356,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882187,
+            word: "Kristen Stewart",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S3Jpc3RlbiBTdGV3YXJ0&s=ZVmeKkbP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S3Jpc3RlbiBTdGV3YXJ0&s=ZVmeKkbP&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S3Jpc3RlbiBTdGV3YXJ0&s=ZVmeKkbP",
+            definition: "49",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _imageUrl: "https://o.quizlet.com/i/JDybGyx9kEOS_ExO1iQetw_m.jpg",
+            setId: 509798311,
+            rank: 69,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11841059,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882186,
+            word: "Natalie Portman",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TmF0YWxpZSBQb3J0bWFu&s=WphzfwQA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmF0YWxpZSBQb3J0bWFu&s=WphzfwQA&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TmF0YWxpZSBQb3J0bWFu&s=WphzfwQA",
+            definition: "49",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NDk&s=tDTHFZ0k",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2752/4100177236_4661877a3e_m.jpg",
+            setId: 509798311,
+            rank: 68,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18559427,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882185,
+            word: "Tom Hardy",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VG9tIEhhcmR5&s=l6MUZrKN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VG9tIEhhcmR5&s=l6MUZrKN&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VG9tIEhhcmR5&s=l6MUZrKN",
+            definition: "50",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _imageUrl: "https://o.quizlet.com/5CHXztXeV-LqM1e.r5gmAA_m.png",
+            setId: 509798311,
+            rank: 67,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21763634,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882184,
+            word: "Mariah Carey",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFyaWFoIENhcmV5&s=KXBmwjPb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyaWFoIENhcmV5&s=KXBmwjPb&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFyaWFoIENhcmV5&s=KXBmwjPb",
+            definition: "50",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _imageUrl: "https://o.quizlet.com/oiGCgw.Aj-j8KvGehZtwGg_m.jpg",
+            setId: 509798311,
+            rank: 66,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 38355965,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882183,
+            word: "Bruno Mars",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJ1bm8gTWFycw&s=tN0Uz37i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJ1bm8gTWFycw&s=tN0Uz37i&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJ1bm8gTWFycw&s=tN0Uz37i",
+            definition: "50",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTA&s=GERRdzrp",
+            _imageUrl: "https://o.quizlet.com/FSZKH1DRyMIOMVVEUssTQA_m.jpg",
+            setId: 509798311,
+            rank: 65,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15396143,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882182,
+            word: "Robin Williams",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Um9iaW4gV2lsbGlhbXM&s=W6zvMEb2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Um9iaW4gV2lsbGlhbXM&s=W6zvMEb2&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Um9iaW4gV2lsbGlhbXM&s=W6zvMEb2",
+            definition: "51",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _imageUrl: "https://o.quizlet.com/r9ZTlkxdJVCEkQihqunoaA_m.jpg",
+            setId: 509798311,
+            rank: 64,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 32670692,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882181,
+            word: "Megan Fox",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWVnYW4gRm94&s=1xd.Uafx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWVnYW4gRm94&s=1xd.Uafx&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWVnYW4gRm94&s=1xd.Uafx",
+            definition: "51",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTE&s=xUyhsPcV",
+            _imageUrl: "https://o.quizlet.com/i/-YSMaPwa0eWN6Gjpl0r6sQ_m.jpg",
+            setId: 509798311,
+            rank: 63,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6960606,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882180,
+            word: "Bob Marley",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Qm9iIE1hcmxleQ&s=ze7Tkeg6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9iIE1hcmxleQ&s=ze7Tkeg6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Qm9iIE1hcmxleQ&s=ze7Tkeg6",
+            definition: "52",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTI&s=s3Go-my0",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTI&s=s3Go-my0&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTI&s=s3Go-my0",
+            _imageUrl: "https://o.quizlet.com/mhHDhL1YMXVhRnTuBQOK4g_m.jpg",
+            setId: 509798311,
+            rank: 62,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25398096,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882178,
+            word: "Emma Watson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RW1tYSBXYXRzb24&s=rmc42bwe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RW1tYSBXYXRzb24&s=rmc42bwe&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RW1tYSBXYXRzb24&s=rmc42bwe",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3141/2683374643_8a6b1be995_m.jpg",
+            setId: 509798311,
+            rank: 61,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20560984,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882177,
+            word: "The Undertaker",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIFVuZGVydGFrZXI&s=p.1DdxfZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFVuZGVydGFrZXI&s=p.1DdxfZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIFVuZGVydGFrZXI&s=p.1DdxfZ",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl: "https://o.quizlet.com/B9ffTQG6Nk8cogG2oH46JQ_m.png",
+            setId: 509798311,
+            rank: 60,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 77039809,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882176,
+            word: "Mark Wahlberg",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFyayBXYWhsYmVyZw&s=xqbF7YrO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyayBXYWhsYmVyZw&s=xqbF7YrO&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFyayBXYWhsYmVyZw&s=xqbF7YrO",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7182/6908662917_87513194e2_m.jpg",
+            setId: 509798311,
+            rank: 59,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20552809,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882175,
+            word: "John Lennon",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Sm9obiBMZW5ub24&s=dDgLThiz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9obiBMZW5ub24&s=dDgLThiz&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Sm9obiBMZW5ub24&s=dDgLThiz",
+            definition: "53",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTM&s=B7Av.vDr",
+            _imageUrl: "https://o.quizlet.com/i/dcXlc1nkrc4k_vmeknU35A_m.jpg",
+            setId: 509798311,
+            rank: 58,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 162806,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882174,
+            word: "Madonna (entertainer)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFkb25uYSAoZW50ZXJ0YWluZXIp&s=U69sOlsW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFkb25uYSAoZW50ZXJ0YWluZXIp&s=U69sOlsW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWFkb25uYSAoZW50ZXJ0YWluZXIp&s=U69sOlsW",
+            definition: "54",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _imageUrl: "https://o.quizlet.com/w2Ww5zSeZQ8BR0.3hYAaXQ_m.jpg",
+            setId: 509798311,
+            rank: 57,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 77039787,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882173,
+            word: "Demi Lovato",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RGVtaSBMb3ZhdG8&s=UxeSjQZA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVtaSBMb3ZhdG8&s=UxeSjQZA&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RGVtaSBMb3ZhdG8&s=UxeSjQZA",
+            definition: "54",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTQ&s=dj0j6-wu",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8420/8701552469_d5fd4b5f2d_m.jpg",
+            setId: 509798311,
+            rank: 56,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20233399,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882172,
+            word: "Clint Eastwood",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Q2xpbnQgRWFzdHdvb2Q&s=92K3KWyL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2xpbnQgRWFzdHdvb2Q&s=92K3KWyL&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Q2xpbnQgRWFzdHdvb2Q&s=92K3KWyL",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl: "https://o.quizlet.com/i/UO-xYFP3SHvxLhrvJrdScw_m.jpg",
+            setId: 509798311,
+            rank: 55,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1126691,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882171,
+            word: "Ryan Reynolds",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UnlhbiBSZXlub2xkcw&s=ZppSo-MC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UnlhbiBSZXlub2xkcw&s=ZppSo-MC&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UnlhbiBSZXlub2xkcw&s=ZppSo-MC",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl: "https://o.quizlet.com/Sgq-YM3lCB7imKiSJ6l2bQ_m.jpg",
+            setId: 509798311,
+            rank: 54,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 32665409,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882170,
+            word: "Jennifer Lopez",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SmVubmlmZXIgTG9wZXo&s=wnXjj-WJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTG9wZXo&s=wnXjj-WJ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SmVubmlmZXIgTG9wZXo&s=wnXjj-WJ",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl: "https://o.quizlet.com/4XEf2cmUEmRDcyNBdCvCAw_m.jpg",
+            setId: 509798311,
+            rank: 53,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6345754,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882169,
+            word: "Louis Tomlinson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TG91aXMgVG9tbGluc29u&s=0pInE5yl",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TG91aXMgVG9tbGluc29u&s=0pInE5yl&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TG91aXMgVG9tbGluc29u&s=0pInE5yl",
+            definition: "55",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTU&s=gZw1I0fS",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7180/6808117122_55fc731ec7_m.jpg",
+            setId: 509798311,
+            rank: 52,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20583606,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882168,
+            word: "Sylvester Stallone",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3lsdmVzdGVyIFN0YWxsb25l&s=Agj1Dsvk",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3lsdmVzdGVyIFN0YWxsb25l&s=Agj1Dsvk&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3lsdmVzdGVyIFN0YWxsb25l&s=Agj1Dsvk",
+            definition: "56",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTY&s=-Taq109y",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTY&s=-Taq109y&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTY&s=-Taq109y",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4124/4840005067_80f5902a00_m.jpg",
+            setId: 509798311,
+            rank: 51,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20552807,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882167,
+            word: "Brad Pitt",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJhZCBQaXR0&s=bRM4C7Ci",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJhZCBQaXR0&s=bRM4C7Ci&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJhZCBQaXR0&s=bRM4C7Ci",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4124/5072490175_c07741df5d_m.jpg",
+            setId: 509798311,
+            rank: 50,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20135222,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882166,
+            word: "Jennifer Lawrence",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTGF3cmVuY2U&s=G8QXhyHc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTGF3cmVuY2U&s=G8QXhyHc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgTGF3cmVuY2U&s=G8QXhyHc",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl: "https://o.quizlet.com/xu3.PuAy1bcoNWmJYknhIQ_m.png",
+            setId: 509798311,
+            rank: 49,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9847319,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882165,
+            word: "Heath Ledger",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SGVhdGggTGVkZ2Vy&s=Cw9RTp1D",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SGVhdGggTGVkZ2Vy&s=Cw9RTp1D&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SGVhdGggTGVkZ2Vy&s=Cw9RTp1D",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl: "https://o.quizlet.com/C3DLAKrIFUTdAzF0EXhI2Q_m.png",
+            setId: 509798311,
+            rank: 48,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 30690874,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882164,
+            word: "Britney Spears",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJpdG5leSBTcGVhcnM&s=b4HctPCA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJpdG5leSBTcGVhcnM&s=b4HctPCA&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJpdG5leSBTcGVhcnM&s=b4HctPCA",
+            definition: "57",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTc&s=owg4KW4Z",
+            _imageUrl: "https://o.quizlet.com/LEIoshBgj4YQKsFg0iYXhA_m.jpg",
+            setId: 509798311,
+            rank: 47,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15396312,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882163,
+            word: "David Bowie",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RGF2aWQgQm93aWU&s=0wEcyIcb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGF2aWQgQm93aWU&s=0wEcyIcb&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RGF2aWQgQm93aWU&s=0wEcyIcb",
+            definition: "58",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTg&s=iA9Z5EM9",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTg&s=iA9Z5EM9&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTg&s=iA9Z5EM9",
+            _imageUrl: "https://o.quizlet.com/-lyQ61iLgMnqaVslzU3q3Q_m.jpg",
+            setId: 509798311,
+            rank: 46,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20749103,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882162,
+            word: "Prince (musician)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=UHJpbmNlIChtdXNpY2lhbik&s=qlzKKZF6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UHJpbmNlIChtdXNpY2lhbik&s=qlzKKZF6&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=UHJpbmNlIChtdXNpY2lhbik&s=qlzKKZF6",
+            definition: "59",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NTk&s=wjzlOfPD",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NTk&s=wjzlOfPD&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NTk&s=wjzlOfPD",
+            _imageUrl: "https://o.quizlet.com/aWuTHdLcPL7BhexI6pxgzw_m.jpg",
+            setId: 509798311,
+            rank: 45,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 34535283,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882161,
+            word: "Marilyn Monroe",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2U&s=E7SZhL1m",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2U&s=E7SZhL1m&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2U&s=E7SZhL1m",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl: "https://o.quizlet.com/aErIeZ-EMqYmpEVLt4dZLg_m.jpg",
+            setId: 509798311,
+            rank: 44,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15491439,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882160,
+            word: "Keanu Reeves",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2VhbnUgUmVldmVz&s=6-yE4cFE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2VhbnUgUmVldmVz&s=6-yE4cFE&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2VhbnUgUmVldmVz&s=6-yE4cFE",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl: "https://o.quizlet.com/S3fvuBqZqmqiB-p8KLcByw_m.jpg",
+            setId: 509798311,
+            rank: 43,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 45526663,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882159,
+            word: "Jay-Z",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SmF5LVo&s=4XWw4uPv",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=SmF5LVo&s=4XWw4uPv&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SmF5LVo&s=4XWw4uPv",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3611/4032638252_8a1a89e95e_m.jpg",
+            setId: 509798311,
+            rank: 42,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13698941,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882158,
+            word: "Adele",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWRlbGU&s=HKRmoCvU",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=QWRlbGU&s=HKRmoCvU&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWRlbGU&s=HKRmoCvU",
+            definition: "60",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjA&s=vw1Z6ZJ2",
+            _imageUrl: "https://o.quizlet.com/i/VIymygRZhSyPE0pbN-7beg_m.jpg",
+            setId: 509798311,
+            rank: 41,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1498849,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882157,
+            word: "Bruce Lee",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QnJ1Y2UgTGVl&s=hy9Ykt4L",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJ1Y2UgTGVl&s=hy9Ykt4L&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QnJ1Y2UgTGVl&s=hy9Ykt4L",
+            definition: "61",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _imageUrl:
+              "https://farm1.staticflickr.com/27/43855760_fa16727836_m.jpg",
+            setId: 509798311,
+            rank: 40,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18413026,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882156,
+            word: "Elvis Presley",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RWx2aXMgUHJlc2xleQ&s=sdA1tZmE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RWx2aXMgUHJlc2xleQ&s=sdA1tZmE&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RWx2aXMgUHJlc2xleQ&s=sdA1tZmE",
+            definition: "61",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjE&s=xsR8FnVK",
+            _imageUrl: "https://o.quizlet.com/iBJTr34M3fLf9I9bLBhYfg_m.png",
+            setId: 509798311,
+            rank: 39,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16929354,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882155,
+            word: "Katy Perry",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2F0eSBQZXJyeQ&s=J5JYgzD.",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2F0eSBQZXJyeQ&s=J5JYgzD.&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2F0eSBQZXJyeQ&s=J5JYgzD.",
+            definition: "63",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjM&s=EdZKKtcp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjM&s=EdZKKtcp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjM&s=EdZKKtcp",
+            _imageUrl: "https://o.quizlet.com/XQ0-hkNgtyPsvXzMqRNVoQ_m.jpg",
+            setId: 509798311,
+            rank: 38,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15396149,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882154,
+            word: "Will Smith",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=V2lsbCBTbWl0aA&s=iGJEPg93",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2lsbCBTbWl0aA&s=iGJEPg93&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=V2lsbCBTbWl0aA&s=iGJEPg93",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3547/5793543057_ac4e1def1d_m.jpg",
+            setId: 509798311,
+            rank: 37,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14632770,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882153,
+            word: "Jennifer Aniston",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SmVubmlmZXIgQW5pc3Rvbg&s=ODIjcF8F",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgQW5pc3Rvbg&s=ODIjcF8F&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SmVubmlmZXIgQW5pc3Rvbg&s=ODIjcF8F",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl: "https://o.quizlet.com/i/DRvWiJRMP0wYWdS4N7KbQA_m.jpg",
+            setId: 509798311,
+            rank: 36,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11841053,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882152,
+            word: "John Cena",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Sm9obiBDZW5h&s=TIF7FKWn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9obiBDZW5h&s=TIF7FKWn&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Sm9obiBDZW5h&s=TIF7FKWn",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2424/3854142502_5a1ae43f86_m.jpg",
+            setId: 509798311,
+            rank: 35,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4538683,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882151,
+            word: "Ariana Grande",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QXJpYW5hIEdyYW5kZQ&s=geLXxqra",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJpYW5hIEdyYW5kZQ&s=geLXxqra&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QXJpYW5hIEdyYW5kZQ&s=geLXxqra",
+            definition: "64",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjQ&s=pq-KthJb",
+            _imageUrl: "https://o.quizlet.com/1ocBDTk.oKxRt1yOrM7OpA_m.jpg",
+            setId: 509798311,
+            rank: 34,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22760272,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882150,
+            word: "Tom Cruise",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VG9tIENydWlzZQ&s=QJJGp7Uc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VG9tIENydWlzZQ&s=QJJGp7Uc&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VG9tIENydWlzZQ&s=QJJGp7Uc",
+            definition: "65",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _imageUrl: "https://o.quizlet.com/DKlHCwNRX73ekMpmLa99Gg_m.jpg",
+            setId: 509798311,
+            rank: 33,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15392848,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882149,
+            word: "Scarlett Johansson",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U2NhcmxldHQgSm9oYW5zc29u&s=3ToiGLse",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U2NhcmxldHQgSm9oYW5zc29u&s=3ToiGLse&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U2NhcmxldHQgSm9oYW5zc29u&s=3ToiGLse",
+            definition: "65",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjU&s=Mq8D2ruR",
+            _imageUrl: "https://o.quizlet.com/i/JKRV0Qb-qwrAT7FpNNIDkg_m.jpg",
+            setId: 509798311,
+            rank: 32,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6960582,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882148,
+            word: "Arnold Schwarzenegger",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJub2xkIFNjaHdhcnplbmVnZ2Vy&s=xFVOYDGQ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXJub2xkIFNjaHdhcnplbmVnZ2Vy&s=xFVOYDGQ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QXJub2xkIFNjaHdhcnplbmVnZ2Vy&s=xFVOYDGQ",
+            definition: "66",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3831/9048849945_b0020b81ea_m.jpg",
+            setId: 509798311,
+            rank: 31,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9111174,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882147,
+            word: "Nicki Minaj",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Tmlja2kgTWluYWo&s=wycUxLQ2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Tmlja2kgTWluYWo&s=wycUxLQ2&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Tmlja2kgTWluYWo&s=wycUxLQ2",
+            definition: "66",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NjY&s=o9GcN0a8",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6070/6124809071_b6a3627226_m.jpg",
+            setId: 509798311,
+            rank: 30,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18148506,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882146,
+            word: "Mila Kunis",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWlsYSBLdW5pcw&s=lwx.ThFZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlsYSBLdW5pcw&s=lwx.ThFZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWlsYSBLdW5pcw&s=lwx.ThFZ",
+            definition: "68",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Njg&s=DUvKUyYc",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Njg&s=DUvKUyYc&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Njg&s=DUvKUyYc",
+            _imageUrl: "https://o.quizlet.com/i/p2VK63sPaqF5b6fmDzrqYg_m.jpg",
+            setId: 509798311,
+            rank: 29,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1150897,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882145,
+            word: "LeBron James",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGVCcm9uIEphbWVz&s=Crn4dQTt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGVCcm9uIEphbWVz&s=Crn4dQTt&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGVCcm9uIEphbWVz&s=Crn4dQTt",
+            definition: "69",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Njk&s=rRBFM1cR",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Njk&s=rRBFM1cR&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Njk&s=rRBFM1cR",
+            _imageUrl: "https://o.quizlet.com/2AfEA8s7RHS14z7Dyn..vw_m.jpg",
+            setId: 509798311,
+            rank: 28,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24340908,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882144,
+            word: "Angelina Jolie",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QW5nZWxpbmEgSm9saWU&s=f7a8aHFS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QW5nZWxpbmEgSm9saWU&s=f7a8aHFS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QW5nZWxpbmEgSm9saWU&s=f7a8aHFS",
+            definition: "70",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzA&s=jbP1ZVB2",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzA&s=jbP1ZVB2&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzA&s=jbP1ZVB2",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4075/4860509634_49ccc8a40a_m.jpg",
+            setId: 509798311,
+            rank: 27,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20670279,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882143,
+            word: "Leonardo DiCaprio",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TGVvbmFyZG8gRGlDYXByaW8&s=b2PMWyZE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGVvbmFyZG8gRGlDYXByaW8&s=b2PMWyZE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TGVvbmFyZG8gRGlDYXByaW8&s=b2PMWyZE",
+            definition: "71",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzE&s=---A2cBJ",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzE&s=---A2cBJ&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzE&s=---A2cBJ",
+            _imageUrl: "https://o.quizlet.com/i/Q2gaXPhs5xJ6oM9fTRYMTw_m.jpg",
+            setId: 509798311,
+            rank: 26,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 767657,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882140,
+            word: "Michael Jordan",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKb3JkYW4&s=P.yp71BS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWljaGFlbCBKb3JkYW4&s=P.yp71BS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKb3JkYW4&s=P.yp71BS",
+            definition: "72",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _imageUrl: "https://o.quizlet.com/i/wJIy5X94msdODq13Q4HmUA_m.jpg",
+            setId: 509798311,
+            rank: 25,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20380333,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882139,
+            word: "Tupac Shakur",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VHVwYWMgU2hha3Vy&s=NP5KZO1w",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VHVwYWMgU2hha3Vy&s=NP5KZO1w&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VHVwYWMgU2hha3Vy&s=NP5KZO1w",
+            definition: "72",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _imageUrl: "https://o.quizlet.com/nwX5SdAUr9ysA2gTNFdR.Q_m.jpg",
+            setId: 509798311,
+            rank: 24,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13315941,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882138,
+            word: "Kanye West",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2FueWUgV2VzdA&s=L9bXEdlL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2FueWUgV2VzdA&s=L9bXEdlL&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2FueWUgV2VzdA&s=L9bXEdlL",
+            definition: "72",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzI&s=LehZ35u1",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3229/3028703779_00a2fd41c2_m.jpg",
+            setId: 509798311,
+            rank: 23,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19380303,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882137,
+            word: "Johnny Depp",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=Sm9obm55IERlcHA&s=MgYzV2BX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9obm55IERlcHA&s=MgYzV2BX&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=Sm9obm55IERlcHA&s=MgYzV2BX",
+            definition: "74",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2484/3683166130_221728efd2_m.jpg",
+            setId: 509798311,
+            rank: 22,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16405458,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882136,
+            word: "Albert Einstein",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWxiZXJ0IEVpbnN0ZWlu&s=X9nv-nFz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWxiZXJ0IEVpbnN0ZWlu&s=X9nv-nFz&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWxiZXJ0IEVpbnN0ZWlu&s=X9nv-nFz",
+            definition: "74",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzQ&s=aDa-wEPb",
+            _imageUrl: "https://o.quizlet.com/IcnYVqE6yfjJ9F.bV4J5Ew_m.jpg",
+            setId: 509798311,
+            rank: 21,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20519597,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882135,
+            word: "Rihanna",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=UmloYW5uYQ&s=uCCF0v7A",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UmloYW5uYQ&s=uCCF0v7A&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=UmloYW5uYQ&s=uCCF0v7A",
+            definition: "76",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=NzY&s=MM0ztJ0h",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=NzY&s=MM0ztJ0h&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=NzY&s=MM0ztJ0h",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5162/5312739853_9828a1f774_m.jpg",
+            setId: 509798311,
+            rank: 20,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20298881,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882133,
+            word: "Abraham Lincoln",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWJyYWhhbSBMaW5jb2xu&s=NgFygxBZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWJyYWhhbSBMaW5jb2xu&s=NgFygxBZ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWJyYWhhbSBMaW5jb2xu&s=NgFygxBZ",
+            definition: "77",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2268/2393882882_9317266cb7_m.jpg",
+            setId: 509798311,
+            rank: 19,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20605863,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882132,
+            word: "Selena Gomez",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U2VsZW5hIEdvbWV6&s=fyOsAfJ0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U2VsZW5hIEdvbWV6&s=fyOsAfJ0&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U2VsZW5hIEdvbWV6&s=fyOsAfJ0",
+            definition: "77",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Nzc&s=SyiTGcoI",
+            _imageUrl: "https://o.quizlet.com/i/Dg2UNamitryQkogZ65e_Yg_m.jpg",
+            setId: 509798311,
+            rank: 18,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11841068,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882131,
+            word: "Taylor Swift",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGF5bG9yIFN3aWZ0&s=KIOfiksS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGF5bG9yIFN3aWZ0&s=KIOfiksS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGF5bG9yIFN3aWZ0&s=KIOfiksS",
+            definition: "79",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=Nzk&s=OjbP.u4m",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=Nzk&s=OjbP.u4m&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=Nzk&s=OjbP.u4m",
+            _imageUrl: "https://o.quizlet.com/9Cc5Sxciwp5jnc-JxGm1rQ_m.jpg",
+            setId: 509798311,
+            rank: 17,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 2206152,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882129,
+            word: "Miley Cyrus",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWlsZXkgQ3lydXM&s=-ZkcJMsc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlsZXkgQ3lydXM&s=-ZkcJMsc&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWlsZXkgQ3lydXM&s=-ZkcJMsc",
+            definition: "81",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _imageUrl: "https://o.quizlet.com/YmhEY0zN-qLn3Xfiex1wHg_m.jpg",
+            setId: 509798311,
+            rank: 16,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16143386,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882128,
+            word: "Dwayne Johnson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RHdheW5lIEpvaG5zb24&s=1aW5q8oN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RHdheW5lIEpvaG5zb24&s=1aW5q8oN&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RHdheW5lIEpvaG5zb24&s=1aW5q8oN",
+            definition: "81",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODE&s=bFfSgQSy",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3595/3630739134_ce1bbcff55_m.jpg",
+            setId: 509798311,
+            rank: 15,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20552797,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882127,
+            word: "Lil Wayne",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGlsIFdheW5l&s=lfdmzTJJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGlsIFdheW5l&s=lfdmzTJJ&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGlsIFdheW5l&s=lfdmzTJJ",
+            definition: "82",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODI&s=4.8yjPb.",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODI&s=4.8yjPb.&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODI&s=4.8yjPb.",
+            _imageUrl: "https://o.quizlet.com/40oCYeDE6n-RdZRMrrVcWg_m.jpg",
+            setId: 509798311,
+            rank: 14,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22557457,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882126,
+            word: "Lionel Messi",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGlvbmVsIE1lc3Np&s=6jzgCOvs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGlvbmVsIE1lc3Np&s=6jzgCOvs&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGlvbmVsIE1lc3Np&s=6jzgCOvs",
+            definition: "84",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODQ&s=UP3nZR.b",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODQ&s=UP3nZR.b&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODQ&s=UP3nZR.b",
+            _imageUrl: "https://o.quizlet.com/sx-YYLA3EsXqzo-tqF8n5g_m.jpg",
+            setId: 509798311,
+            rank: 13,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22760313,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882125,
+            word: "Stephen Hawking",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U3RlcGhlbiBIYXdraW5n&s=l41uzEyy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RlcGhlbiBIYXdraW5n&s=l41uzEyy&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U3RlcGhlbiBIYXdraW5n&s=l41uzEyy",
+            definition: "85",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODU&s=6RvBaQSp",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODU&s=6RvBaQSp&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODU&s=6RvBaQSp",
+            _imageUrl: "https://o.quizlet.com/01AajR8nPFeQ1uLUsTqRSw_m.jpg",
+            setId: 509798311,
+            rank: 12,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20886429,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882124,
+            word: "Freddie Mercury",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RnJlZGRpZSBNZXJjdXJ5&s=apf5t5dt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RnJlZGRpZSBNZXJjdXJ5&s=apf5t5dt&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RnJlZGRpZSBNZXJjdXJ5&s=apf5t5dt",
+            definition: "89",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=ODk&s=YfTy9inu",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=ODk&s=YfTy9inu&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=ODk&s=YfTy9inu",
+            _imageUrl: "https://o.quizlet.com/0Xwx89HwOdqnv-OA-4w-Yw_m.png",
+            setId: 509798311,
+            rank: 11,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18882673,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882123,
+            word: "Kim Kardashian",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2ltIEthcmRhc2hpYW4&s=18I-r7Cy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2ltIEthcmRhc2hpYW4&s=18I-r7Cy&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2ltIEthcmRhc2hpYW4&s=18I-r7Cy",
+            definition: "90",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=OTA&s=6hIql3b1",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=OTA&s=6hIql3b1&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=OTA&s=6hIql3b1",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8316/8002633833_b2ddfee75c_m.jpg",
+            setId: 509798311,
+            rank: 10,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19975906,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882122,
+            word: "Steve Jobs",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U3RldmUgSm9icw&s=l-h4n095",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RldmUgSm9icw&s=l-h4n095&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U3RldmUgSm9icw&s=l-h4n095",
+            definition: "91",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=OTE&s=yp3q8xBm",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=OTE&s=yp3q8xBm&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=OTE&s=yp3q8xBm",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6220/6216457030_2cf0aff09d_m.jpg",
+            setId: 509798311,
+            rank: 9,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20774137,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882121,
+            word: "Justin Bieber",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=SnVzdGluIEJpZWJlcg&s=Rca6Do.i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SnVzdGluIEJpZWJlcg&s=Rca6Do.i&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=SnVzdGluIEJpZWJlcg&s=Rca6Do.i",
+            definition: "97",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=OTc&s=-RqUngrm",
+            _definitionSlowTtsUrl: "/tts/en.mp3?v=14&b=OTc&s=-RqUngrm&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=OTc&s=-RqUngrm",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6160/6175343447_4525fc59f9_m.jpg",
+            setId: 509798311,
+            rank: 8,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20749095,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882120,
+            word: "Cristiano Ronaldo",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3Jpc3RpYW5vIFJvbmFsZG8&s=dxftJRsF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3Jpc3RpYW5vIFJvbmFsZG8&s=dxftJRsF&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q3Jpc3RpYW5vIFJvbmFsZG8&s=dxftJRsF",
+            definition: "101",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTAx&s=PT8BUEum",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTAx&s=PT8BUEum&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTAx&s=PT8BUEum",
+            _imageUrl: "https://o.quizlet.com/qh0uOa772dYOrb-Dc5xvZQ_m.png",
+            setId: 509798311,
+            rank: 7,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13889407,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882119,
+            word: "Adolf Hitler",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QWRvbGYgSGl0bGVy&s=sylY8yHC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWRvbGYgSGl0bGVy&s=sylY8yHC&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QWRvbGYgSGl0bGVy&s=sylY8yHC",
+            definition: "104",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTA0&s=.gjTjlL7",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTA0&s=.gjTjlL7&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTA0&s=.gjTjlL7",
+            _imageUrl: "https://o.quizlet.com/wPgHXEk2g2qH1pPLJKk6IA_m.jpg",
+            setId: 509798311,
+            rank: 6,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20543383,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882118,
+            word: "Eminem",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RW1pbmVt&s=ExR42nsS",
+            _wordSlowTtsUrl: "/tts/en.mp3?v=14&b=RW1pbmVt&s=ExR42nsS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RW1pbmVt&s=ExR42nsS",
+            definition: "108",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4123/4930467466_e91a2ddf9a_m.jpg",
+            setId: 509798311,
+            rank: 5,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20042564,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882117,
+            word: "Elizabeth II",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RWxpemFiZXRoIElJ&s=ujbyb58a",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RWxpemFiZXRoIElJ&s=ujbyb58a&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RWxpemFiZXRoIElJ&s=ujbyb58a",
+            definition: "108",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTA4&s=bt285Xui",
+            _imageUrl: "https://o.quizlet.com/jSCvUvP0CGR6zGq-dGFCRg_m.jpg",
+            setId: 509798311,
+            rank: 4,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16511306,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882116,
+            word: "Lady Gaga",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TGFkeSBHYWdh&s=4QXPn0J1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGFkeSBHYWdh&s=4QXPn0J1&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TGFkeSBHYWdh&s=4QXPn0J1",
+            definition: "112",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTEy&s=f2-G742B",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTEy&s=f2-G742B&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTEy&s=f2-G742B",
+            _imageUrl: "https://o.quizlet.com/uWbjX0XQ4QXyT4mBadchmA_m.jpg",
+            setId: 509798311,
+            rank: 3,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25059146,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882115,
+            word: "Michael Jackson",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKYWNrc29u&s=D8zJXjbr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWljaGFlbCBKYWNrc29u&s=D8zJXjbr&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TWljaGFlbCBKYWNrc29u&s=D8zJXjbr",
+            definition: "117",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTE3&s=1K8XmzjZ",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTE3&s=1K8XmzjZ&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTE3&s=1K8XmzjZ",
+            _imageUrl: "https://o.quizlet.com/i/k8U3eucR7cH5g4Faz1psTQ_m.jpg",
+            setId: 509798311,
+            rank: 2,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 659786,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882114,
+            word: "Barack Obama",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QmFyYWNrIE9iYW1h&s=0woe4toa",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFyYWNrIE9iYW1h&s=0woe4toa&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=QmFyYWNrIE9iYW1h&s=0woe4toa",
+            definition: "135",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTM1&s=RfTcanoC",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTM1&s=RfTcanoC&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTM1&s=RfTcanoC",
+            _imageUrl: "https://o.quizlet.com/OBb5iOE91yjvcIf9x5Mc4Q_m.jpg",
+            setId: 509798311,
+            rank: 1,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 49850031,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 18159882113,
+            word: "Donald Trump",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RG9uYWxkIFRydW1w&s=e10Ui2SU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RG9uYWxkIFRydW1w&s=e10Ui2SU&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=RG9uYWxkIFRydW1w&s=e10Ui2SU",
+            definition: "165",
+            _definitionTtsUrl: "/tts/en.mp3?v=14&b=MTY1&s=WclhxGnO",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MTY1&s=WclhxGnO&speed=70",
+            _definitionAudioUrl: "/tts/en.mp3?v=14&b=MTY1&s=WclhxGnO",
+            _imageUrl: "https://o.quizlet.com/nrM5WMYLswZ6rl55Kw3aLg_m.png",
+            setId: 509798311,
+            rank: 0,
+            lastModified: 1590528351,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 31077094,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 71,
+        page: 1,
+        perPage: 200,
+        token: "xMBTEPq5HP.8zK6XpsJYwbY2acCW",
+      },
+    },
+  ],
+};
+
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=303712836"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 10298971589,
+            word: "The invention of insulin",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBpbnN1bGlu&s=FTgLvyig",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBpbnN1bGlu&s=FTgLvyig&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBpbnN1bGlu&s=FTgLvyig",
+            definition: "1921",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMQ&s=mNVzcWBn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMQ&s=mNVzcWBn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMQ&s=mNVzcWBn&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/KnCXlHqIIbtYUJtoSLKgbw_m.jpg",
+            setId: 303712836,
+            rank: 93,
+            lastModified: 1594233378,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18404818,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971618,
+            word: "The invention of the laser",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgbGFzZXI&s=Aeu6Cow4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgbGFzZXI&s=Aeu6Cow4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgbGFzZXI&s=Aeu6Cow4",
+            definition: "1954",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1NA&s=JL9G-uia&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1NA&s=JL9G-uia&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1NA&s=JL9G-uia&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5252/5391914387_8256899ff8_m.jpg",
+            setId: 303712836,
+            rank: 103,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20390606,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971617,
+            word: "The invention of the antibiotics",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYW50aWJpb3RpY3M&s=rg6ATW.r",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYW50aWJpb3RpY3M&s=rg6ATW.r&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYW50aWJpb3RpY3M&s=rg6ATW.r",
+            definition: "1887",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/yv59UAAVIowqe34ruqdZtg_m.png",
+            setId: 303712836,
+            rank: 78,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20442095,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971616,
+            word: "The discovery of the molecule",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgbW9sZWN1bGU&s=ZAMsKJnL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgbW9sZWN1bGU&s=ZAMsKJnL&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgbW9sZWN1bGU&s=ZAMsKJnL",
+            definition: "1811",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMQ&s=Fh48hBuE&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMQ&s=Fh48hBuE&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxMQ&s=Fh48hBuE&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/19bh2xaRzKvl3rpKSluCvg_m.jpg",
+            setId: 303712836,
+            rank: 52,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10321873,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971615,
+            word: "The invention of the vaccination",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgdmFjY2luYXRpb24&s=.Ioq-W1O",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgdmFjY2luYXRpb24&s=.Ioq-W1O&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgdmFjY2luYXRpb24&s=.Ioq-W1O",
+            definition: "1796",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Ng&s=ktsCTuKo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Ng&s=ktsCTuKo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5Ng&s=ktsCTuKo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/jEjInHoDksaB2L5p-4.uFA_m.jpg",
+            setId: 303712836,
+            rank: 50,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20549884,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971614,
+            word: "The discovery of bacteria",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBiYWN0ZXJpYQ&s=Vw-i8fzD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBiYWN0ZXJpYQ&s=Vw-i8fzD&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBiYWN0ZXJpYQ&s=Vw-i8fzD",
+            definition: "1680",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY4MA&s=TlYV4ItB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY4MA&s=TlYV4ItB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY4MA&s=TlYV4ItB&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2416/2234750993_66e2a59f4d_m.jpg",
+            setId: 303712836,
+            rank: 43,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20774149,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971613,
+            word: "The discovery of the cell",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgY2VsbA&s=-a0baHtK",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgY2VsbA&s=-a0baHtK&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgY2VsbA&s=-a0baHtK",
+            definition: "1665",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2NQ&s=fn7ktLBA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2NQ&s=fn7ktLBA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY2NQ&s=fn7ktLBA&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/6IY9iJTPUxnKewftiKuzzA_m.jpg",
+            setId: 303712836,
+            rank: 40,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20375519,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971612,
+            word: "The invention of + and - signs",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiArIGFuZCAtIHNpZ25z&s=LEIMpoC0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiArIGFuZCAtIHNpZ25z&s=LEIMpoC0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiArIGFuZCAtIHNpZ25z&s=LEIMpoC0",
+            definition: "1489",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ4OQ&s=Nur.MstQ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ4OQ&s=Nur.MstQ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ4OQ&s=Nur.MstQ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/T7QhS3WFo.76hmhbVZRJcQ_m.jpg",
+            setId: 303712836,
+            rank: 18,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22796305,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971611,
+            word: "The cloning of mammals",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNsb25pbmcgb2YgbWFtbWFscw&s=ZBlrWVXB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNsb25pbmcgb2YgbWFtbWFscw&s=ZBlrWVXB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNsb25pbmcgb2YgbWFtbWFscw&s=ZBlrWVXB",
+            definition: "1996",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Ng&s=0mIOGmmf&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Ng&s=0mIOGmmf&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5Ng&s=0mIOGmmf&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/PhTSeh9fhQnmlNMwOK-F7g_m.png",
+            setId: 303712836,
+            rank: 109,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12601705,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971610,
+            word: "The discovery of the remains of the Titanic",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcmVtYWlucyBvZiB0aGUgVGl0YW5pYw&s=9V1TW2zZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcmVtYWlucyBvZiB0aGUgVGl0YW5pYw&s=9V1TW2zZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcmVtYWlucyBvZiB0aGUgVGl0YW5pYw&s=9V1TW2zZ",
+            definition: "1985",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4NQ&s=keWfvmkE&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4NQ&s=keWfvmkE&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4NQ&s=keWfvmkE&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/4wvjk7WYvw041GsirTYO0g_m.jpg",
+            setId: 303712836,
+            rank: 108,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 26430973,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971609,
+            word: "The discovery of the army of statues of Emperor Qin",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgYXJteSBvZiBzdGF0dWVzIG9mIEVtcGVyb3IgUWlu&s=-OZTlrvk",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgYXJteSBvZiBzdGF0dWVzIG9mIEVtcGVyb3IgUWlu&s=-OZTlrvk&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgYXJteSBvZiBzdGF0dWVzIG9mIEVtcGVyb3IgUWlu&s=-OZTlrvk",
+            definition: "1974",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/vZWVcb5-p1fU2w7Ikz20AA_m.png",
+            setId: 303712836,
+            rank: 107,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15672231,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971608,
+            word: "Discovery of Lucy",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIEx1Y3k&s=2HF2PxKt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIEx1Y3k&s=2HF2PxKt&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIEx1Y3k&s=2HF2PxKt",
+            definition: "1974",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/RYR9LAyA5YPKT8yUq3FZeQ_m.jpg",
+            setId: 303712836,
+            rank: 106,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 7356970,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971607,
+            word: "The discovery of the pulsars",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcHVsc2Fycw&s=kds4fwU8",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcHVsc2Fycw&s=kds4fwU8&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcHVsc2Fycw&s=kds4fwU8",
+            definition: "1967",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/eLVJnQr6l4yR16m9_o7IJg_m.jpg",
+            setId: 303712836,
+            rank: 105,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14420774,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971606,
+            word: "The map of the ocean floor",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1hcCBvZiB0aGUgb2NlYW4gZmxvb3I&s=ylpAqomB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1hcCBvZiB0aGUgb2NlYW4gZmxvb3I&s=ylpAqomB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1hcCBvZiB0aGUgb2NlYW4gZmxvb3I&s=ylpAqomB",
+            definition: "1959",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/XlkFBYc5ma9wF9Ex1LITaw_m.jpg",
+            setId: 303712836,
+            rank: 104,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19049066,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971605,
+            word: "The 1st exploration of the seabed",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBleHBsb3JhdGlvbiBvZiB0aGUgc2VhYmVk&s=sLYm2Ufo",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBleHBsb3JhdGlvbiBvZiB0aGUgc2VhYmVk&s=sLYm2Ufo&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBleHBsb3JhdGlvbiBvZiB0aGUgc2VhYmVk&s=sLYm2Ufo",
+            definition: "1954",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1NA&s=JL9G-uia&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1NA&s=JL9G-uia&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1NA&s=JL9G-uia&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2669/4143219396_d154a58032_m.jpg",
+            setId: 303712836,
+            rank: 102,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13378310,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971604,
+            word: "1st exploration of Mars",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGV4cGxvcmF0aW9uIG9mIE1hcnM&s=9Gz-u.5M",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGV4cGxvcmF0aW9uIG9mIE1hcnM&s=9Gz-u.5M&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGV4cGxvcmF0aW9uIG9mIE1hcnM&s=9Gz-u.5M",
+            definition: "1976",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Jzbi95omTYQrz4dFpzC-vw_m.jpg",
+            setId: 303712836,
+            rank: 101,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17036573,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971603,
+            word: "The discovery of the DNA structure",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgRE5BIHN0cnVjdHVyZQ&s=GVYX4qRo",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgRE5BIHN0cnVjdHVyZQ&s=GVYX4qRo&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgRE5BIHN0cnVjdHVyZQ&s=GVYX4qRo",
+            definition: "1953",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mw&s=mcSjqCip&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mw&s=mcSjqCip&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mw&s=mcSjqCip&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/mdFqlVBk-SfgwO3P9LmPCA_m.jpg",
+            setId: 303712836,
+            rank: 100,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19281755,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971602,
+            word: "Discovery of manuscripts of the Dead Sea",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIG1hbnVzY3JpcHRzIG9mIHRoZSBEZWFkIFNlYQ&s=OcbgRBvi",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIG1hbnVzY3JpcHRzIG9mIHRoZSBEZWFkIFNlYQ&s=OcbgRBvi&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIG1hbnVzY3JpcHRzIG9mIHRoZSBEZWFkIFNlYQ&s=OcbgRBvi",
+            definition: "1947",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5248/5249145754_627002d9f7_m.jpg",
+            setId: 303712836,
+            rank: 99,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17261847,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971601,
+            word: "The discovery of carbon 14",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjYXJib24gMTQ&s=wc7VIYIq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjYXJib24gMTQ&s=wc7VIYIq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjYXJib24gMTQ&s=wc7VIYIq",
+            definition: "1940",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/3qBL3EAJDQP.htB6pvxm3A_m.png",
+            setId: 303712836,
+            rank: 98,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22346311,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971600,
+            word: "The discovery of the bonobo (by the Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgYm9ub2JvIChieSB0aGUgRXVyb3BlYW5zKQ&s=Gtg-imhf",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgYm9ub2JvIChieSB0aGUgRXVyb3BlYW5zKQ&s=Gtg-imhf&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgYm9ub2JvIChieSB0aGUgRXVyb3BlYW5zKQ&s=Gtg-imhf",
+            definition: "1929",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6089/6100263167_fb8d5aff5e_m.jpg",
+            setId: 303712836,
+            rank: 97,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17803339,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971599,
+            word: "The Big Bang Theory",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJpZyBCYW5nIFRoZW9yeQ&s=sk83CLmy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJpZyBCYW5nIFRoZW9yeQ&s=sk83CLmy&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJpZyBCYW5nIFRoZW9yeQ&s=sk83CLmy",
+            definition: "1927",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/SZze-LNnHMRvtbQcWa6WBw_m.jpg",
+            setId: 303712836,
+            rank: 96,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20359050,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971598,
+            word: "The discovery of the language of bees",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgbGFuZ3VhZ2Ugb2YgYmVlcw&s=VtO7cnNR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgbGFuZ3VhZ2Ugb2YgYmVlcw&s=VtO7cnNR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgbGFuZ3VhZ2Ugb2YgYmVlcw&s=VtO7cnNR",
+            definition: "1927",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/AFQEZyI5aRhcvPNA3zq6Gw_m.jpg",
+            setId: 303712836,
+            rank: 95,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18647849,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971597,
+            word: "The discovery of the tomb of Tutankhamun",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBUdXRhbmtoYW11bg&s=-HRd9gEs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBUdXRhbmtoYW11bg&s=-HRd9gEs&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBUdXRhbmtoYW11bg&s=-HRd9gEs",
+            definition: "1922",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/D.LKev1Sylk0UrYsemmn5Q_m.jpg",
+            setId: 303712836,
+            rank: 94,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20522069,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971596,
+            word: "The discovery of the relationship between chromosomes and inheritance",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcmVsYXRpb25zaGlwIGJldHdlZW4gY2hyb21vc29tZXMgYW5kIGluaGVyaXRhbmNl&s=wmOVsWZn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcmVsYXRpb25zaGlwIGJldHdlZW4gY2hyb21vc29tZXMgYW5kIGluaGVyaXRhbmNl&s=wmOVsWZn&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcmVsYXRpb25zaGlwIGJldHdlZW4gY2hyb21vc29tZXMgYW5kIGluaGVyaXRhbmNl&s=wmOVsWZn",
+            definition: "1915",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/2Fd7h4HELFDRpgm9P.vimw_m.png",
+            setId: 303712836,
+            rank: 92,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20586929,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971595,
+            word: "The discovery of cosmic rays",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb3NtaWMgcmF5cw&s=MyjO7QbB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb3NtaWMgcmF5cw&s=MyjO7QbB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb3NtaWMgcmF5cw&s=MyjO7QbB",
+            definition: "1912",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/lQp32z5c6tQ2aP8jEf6U1A_m.jpg",
+            setId: 303712836,
+            rank: 91,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10809581,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971594,
+            word: "Discovery of the bust of Nefertiti",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBidXN0IG9mIE5lZmVydGl0aQ&s=ipgPNwMW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBidXN0IG9mIE5lZmVydGl0aQ&s=ipgPNwMW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBidXN0IG9mIE5lZmVydGl0aQ&s=ipgPNwMW",
+            definition: "1912",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/zoTrgH.WXz.AkPdtliCtTw_m.jpg",
+            setId: 303712836,
+            rank: 90,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20150396,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971593,
+            word: "The discovery of Machu Pichu",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBNYWNodSBQaWNodQ&s=SoVSpi6t",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBNYWNodSBQaWNodQ&s=SoVSpi6t&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBNYWNodSBQaWNodQ&s=SoVSpi6t",
+            definition: "1911",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/142/351454489_e51c91238a_m.jpg",
+            setId: 303712836,
+            rank: 89,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19327083,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971592,
+            word: "The discovery of conditioned reflexes",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb25kaXRpb25lZCByZWZsZXhlcw&s=AVJAuLK.",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb25kaXRpb25lZCByZWZsZXhlcw&s=AVJAuLK.&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb25kaXRpb25lZCByZWZsZXhlcw&s=AVJAuLK.",
+            definition: "1910",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMA&s=y8TnHuuL&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMA&s=y8TnHuuL&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMA&s=y8TnHuuL&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/qjZe7vOf4mFZO8BENwmSbg_m.png",
+            setId: 303712836,
+            rank: 88,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1544029,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971591,
+            word: "The discovery of continental drift",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb250aW5lbnRhbCBkcmlmdA&s=Z8CkhKbz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb250aW5lbnRhbCBkcmlmdA&s=Z8CkhKbz&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb250aW5lbnRhbCBkcmlmdA&s=Z8CkhKbz",
+            definition: "1908",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/A1-GAXDc7SCKXmtv8OH4mQ_m.jpg",
+            setId: 303712836,
+            rank: 87,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19823934,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971590,
+            word: "The discovery of the 1st Tyrannosaur skeleton",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IFR5cmFubm9zYXVyIHNrZWxldG9u&s=T.DrM7c.",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IFR5cmFubm9zYXVyIHNrZWxldG9u&s=T.DrM7c.&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IFR5cmFubm9zYXVyIHNrZWxldG9u&s=T.DrM7c.",
+            definition: "1905",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNQ&s=1ID67gJI&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNQ&s=1ID67gJI&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwNQ&s=1ID67gJI&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7191/6948130787_a36fbf4c11_m.jpg",
+            setId: 303712836,
+            rank: 86,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16641979,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971588,
+            word: "The invention of psychoanalysis",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBwc3ljaG9hbmFseXNpcw&s=aJ32RCVo",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBwc3ljaG9hbmFseXNpcw&s=aJ32RCVo&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBwc3ljaG9hbmFseXNpcw&s=aJ32RCVo",
+            definition: "1904",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNA&s=veqnYpuv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNA&s=veqnYpuv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwNA&s=veqnYpuv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/1kKVhYk2.HbGuiZdEVCtWQ_m.jpg",
+            setId: 303712836,
+            rank: 85,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19509854,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971587,
+            word: "The discovery of the tomb of Nefertari",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBOZWZlcnRhcmk&s=OaBwyF59",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBOZWZlcnRhcmk&s=OaBwyF59&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBOZWZlcnRhcmk&s=OaBwyF59",
+            definition: "1904",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNA&s=veqnYpuv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNA&s=veqnYpuv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwNA&s=veqnYpuv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/YMmkhrVXg4M.a1WPZmZWFA_m.jpg",
+            setId: 303712836,
+            rank: 84,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15623577,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971586,
+            word: "The discovery of okapi (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBva2FwaSAoYnkgRXVyb3BlYW5zKQ&s=V.DDS-A1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBva2FwaSAoYnkgRXVyb3BlYW5zKQ&s=V.DDS-A1&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBva2FwaSAoYnkgRXVyb3BlYW5zKQ&s=V.DDS-A1",
+            definition: "1901",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5243/5269538538_36ca6af020_m.jpg",
+            setId: 303712836,
+            rank: 83,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19391981,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971585,
+            word: "The discovery of blood groups",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBibG9vZCBncm91cHM&s=UYYm-4XI",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBibG9vZCBncm91cHM&s=UYYm-4XI&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBibG9vZCBncm91cHM&s=UYYm-4XI",
+            definition: "1901",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/k05XaZITU1oQtqOqZCVAnA_m.png",
+            setId: 303712836,
+            rank: 82,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12666948,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971584,
+            word: "The discovery of epinephrine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBlcGluZXBocmluZQ&s=iTDG1c54",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBlcGluZXBocmluZQ&s=iTDG1c54&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBlcGluZXBocmluZQ&s=iTDG1c54",
+            definition: "1901",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/LE3--McsXCp5oK4MZ5NYXQ_m.jpg",
+            setId: 303712836,
+            rank: 81,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20501006,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971583,
+            word: "The invention of aspirin",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBhc3Bpcmlu&s=JMa7oP5J",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBhc3Bpcmlu&s=JMa7oP5J&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBhc3Bpcmlu&s=JMa7oP5J",
+            definition: "1899",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5OQ&s=.mquJ6Gr&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5OQ&s=.mquJ6Gr&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5OQ&s=.mquJ6Gr&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/UBMbBp5ES1b7u35AdxM6zQ_m.jpg",
+            setId: 303712836,
+            rank: 80,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11164912,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971582,
+            word: "The discovery of X-rays",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBYLXJheXM&s=zu2smVN2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBYLXJheXM&s=zu2smVN2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBYLXJheXM&s=zu2smVN2",
+            definition: "1895",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1440/1438403889_e53804a5fc_m.jpg",
+            setId: 303712836,
+            rank: 79,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20600442,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971581,
+            word: "Discovery of the first Paleolithic paintings",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBmaXJzdCBQYWxlb2xpdGhpYyBwYWludGluZ3M&s=cLSR.PLu",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBmaXJzdCBQYWxlb2xpdGhpYyBwYWludGluZ3M&s=cLSR.PLu&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBmaXJzdCBQYWxlb2xpdGhpYyBwYWludGluZ3M&s=cLSR.PLu",
+            definition: "1879",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3OQ&s=1fV0OlO6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3OQ&s=1fV0OlO6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3OQ&s=1fV0OlO6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/med6jLULbEMdzm4w0zJCFw_m.jpg",
+            setId: 303712836,
+            rank: 77,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15014588,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971580,
+            word: "The discovery of the tomb of Ramses II",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBSYW1zZXMgSUk&s=T4DP3l60",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBSYW1zZXMgSUk&s=T4DP3l60&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdG9tYiBvZiBSYW1zZXMgSUk&s=T4DP3l60",
+            definition: "1871",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3MQ&s=XD.RGuRp&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3MQ&s=XD.RGuRp&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3MQ&s=XD.RGuRp&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/Mhp3WHR5-nQ0xhoZY1D_fw_m.jpg",
+            setId: 303712836,
+            rank: 76,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19931180,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971579,
+            word: "The discovery of the ruins of Troy",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcnVpbnMgb2YgVHJveQ&s=pYbe8ULr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcnVpbnMgb2YgVHJveQ&s=pYbe8ULr&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcnVpbnMgb2YgVHJveQ&s=pYbe8ULr",
+            definition: "1870",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3MA&s=FfWUoSr9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3MA&s=FfWUoSr9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3MA&s=FfWUoSr9&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3328/3556798025_1242bfb8b4_m.jpg",
+            setId: 303712836,
+            rank: 75,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18547425,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971578,
+            word: "The discovery of the Pygmies (by the Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgUHlnbWllcyAoYnkgdGhlIEV1cm9wZWFucyk&s=sLsQtS.7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgUHlnbWllcyAoYnkgdGhlIEV1cm9wZWFucyk&s=sLsQtS.7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgUHlnbWllcyAoYnkgdGhlIEV1cm9wZWFucyk&s=sLsQtS.7",
+            definition: "1870",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3MA&s=FfWUoSr9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3MA&s=FfWUoSr9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3MA&s=FfWUoSr9&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/qRW6xOMIZTgBSNziTspi.g_m.jpg",
+            setId: 303712836,
+            rank: 74,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 29012961,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971577,
+            word: "The discovery of the giant panda (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgZ2lhbnQgcGFuZGEgKGJ5IEV1cm9wZWFucyk&s=6Oc0IR5L",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgZ2lhbnQgcGFuZGEgKGJ5IEV1cm9wZWFucyk&s=6Oc0IR5L&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgZ2lhbnQgcGFuZGEgKGJ5IEV1cm9wZWFucyk&s=6Oc0IR5L",
+            definition: "1869",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5017/5402340884_e472d9f447_m.jpg",
+            setId: 303712836,
+            rank: 73,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20414611,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971576,
+            word: "The discovery of the Altamira cave",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgQWx0YW1pcmEgY2F2ZQ&s=v4ScRU2X",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgQWx0YW1pcmEgY2F2ZQ&s=v4ScRU2X&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgQWx0YW1pcmEgY2F2ZQ&s=v4ScRU2X",
+            definition: "1868",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/GFauFFqzPUd3.wqHWAkUZQ_m.jpg",
+            setId: 303712836,
+            rank: 72,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16194261,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971575,
+            word: "The invention of the antisepsis",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYW50aXNlcHNpcw&s=DYNuL1xm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYW50aXNlcHNpcw&s=DYNuL1xm&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYW50aXNlcHNpcw&s=DYNuL1xm",
+            definition: "1867",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Nw&s=BJbahFKn&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/nDpxYp-U0YerDYCQ02fAhQ_m.jpg",
+            setId: 303712836,
+            rank: 71,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8330880,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971574,
+            word: "The law of genetic inheritance",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxhdyBvZiBnZW5ldGljIGluaGVyaXRhbmNl&s=rBNMFzYY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxhdyBvZiBnZW5ldGljIGluaGVyaXRhbmNl&s=rBNMFzYY&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxhdyBvZiBnZW5ldGljIGluaGVyaXRhbmNl&s=rBNMFzYY",
+            definition: "1865",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/ZSyyYLBh0bP26GTC72X2fQ_m.jpg",
+            setId: 303712836,
+            rank: 70,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19009130,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971573,
+            word: "The calculation of the speed of light",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBzcGVlZCBvZiBsaWdodA&s=fN7WDSMV",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBzcGVlZCBvZiBsaWdodA&s=fN7WDSMV&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBzcGVlZCBvZiBsaWdodA&s=fN7WDSMV",
+            definition: "1862",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mg&s=5mrozQGu&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mg&s=5mrozQGu&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mg&s=5mrozQGu&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/iFa9FRYfRx0fMeTph590_Q_m.jpg",
+            setId: 303712836,
+            rank: 69,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12926099,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971572,
+            word: "The discovery of Angkor Wat (by the Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbmdrb3IgV2F0IChieSB0aGUgRXVyb3BlYW5zKQ&s=5MmdFToZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbmdrb3IgV2F0IChieSB0aGUgRXVyb3BlYW5zKQ&s=5MmdFToZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbmdrb3IgV2F0IChieSB0aGUgRXVyb3BlYW5zKQ&s=5MmdFToZ",
+            definition: "1861",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/kw7cXhzrnwUMT4ykUQWFVA_m.png",
+            setId: 303712836,
+            rank: 68,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15672210,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971571,
+            word: "Discovery of the Temple of Horus",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBUZW1wbGUgb2YgSG9ydXM&s=aoTiSwZs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBUZW1wbGUgb2YgSG9ydXM&s=aoTiSwZs&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGlzY292ZXJ5IG9mIHRoZSBUZW1wbGUgb2YgSG9ydXM&s=aoTiSwZs",
+            definition: "1860",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/OjSeb1JH6xIfOpLLbgRXoQ_m.png",
+            setId: 303712836,
+            rank: 67,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15772899,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971570,
+            word: "The discovery of the 1st mammoth skeleton",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IG1hbW1vdGggc2tlbGV0b24&s=gmZ0PT1P",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IG1hbW1vdGggc2tlbGV0b24&s=gmZ0PT1P&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IG1hbW1vdGggc2tlbGV0b24&s=gmZ0PT1P",
+            definition: "1859",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8160/7701098190_49afa63d98_m.jpg",
+            setId: 303712836,
+            rank: 66,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15900552,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971569,
+            word: "The theory of evolution",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRoZW9yeSBvZiBldm9sdXRpb24&s=HFmwUL8t",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRoZW9yeSBvZiBldm9sdXRpb24&s=HFmwUL8t&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRoZW9yeSBvZiBldm9sdXRpb24&s=HFmwUL8t",
+            definition: "1858",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OA&s=pVlm58.k&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OA&s=pVlm58.k&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1OA&s=pVlm58.k&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/BaPiUqDb6wTogziV08pstg_m.jpg",
+            setId: 303712836,
+            rank: 65,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20539916,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971568,
+            word: "The discovery of the Sphinx of Giza",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgU3BoaW54IG9mIEdpemE&s=hwPxGgDU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgU3BoaW54IG9mIEdpemE&s=hwPxGgDU&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgU3BoaW54IG9mIEdpemE&s=hwPxGgDU",
+            definition: "1853",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1Mw&s=otiwty1c&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1Mw&s=otiwty1c&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1Mw&s=otiwty1c&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/9.5HdaqUR5MTxkPGabzcoQ_m.jpg",
+            setId: 303712836,
+            rank: 64,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15465269,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971567,
+            word: "The discovery of the rotation of the Earth",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcm90YXRpb24gb2YgdGhlIEVhcnRo&s=B9Bumv0B",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcm90YXRpb24gb2YgdGhlIEVhcnRo&s=B9Bumv0B&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcm90YXRpb24gb2YgdGhlIEVhcnRo&s=B9Bumv0B",
+            definition: "1851",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/MSOZtMuZ60z0RU2iwv0QcA_m.png",
+            setId: 303712836,
+            rank: 63,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20570695,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971566,
+            word: "The discovery of the Komodo dragon (by the Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgS29tb2RvIGRyYWdvbiAoYnkgdGhlIEV1cm9wZWFucyk&s=pCVwbZFH",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgS29tb2RvIGRyYWdvbiAoYnkgdGhlIEV1cm9wZWFucyk&s=pCVwbZFH&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgS29tb2RvIGRyYWdvbiAoYnkgdGhlIEV1cm9wZWFucyk&s=pCVwbZFH",
+            definition: "1850",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MA&s=68911NC1&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MA&s=68911NC1&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1MA&s=68911NC1&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6083/6111947126_b75392c164_m.jpg",
+            setId: 303712836,
+            rank: 62,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20557320,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971565,
+            word: "The discovery of the gorilla (by the Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgZ29yaWxsYSAoYnkgdGhlIEV1cm9wZWFucyk&s=Glm3k0ib",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgZ29yaWxsYSAoYnkgdGhlIEV1cm9wZWFucyk&s=Glm3k0ib&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgZ29yaWxsYSAoYnkgdGhlIEV1cm9wZWFucyk&s=Glm3k0ib",
+            definition: "1847",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Nw&s=z4TRLRkq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Nw&s=z4TRLRkq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0Nw&s=z4TRLRkq&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/179/459292254_7fdf520442_m.jpg",
+            setId: 303712836,
+            rank: 61,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19227317,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971564,
+            word: "The discovery of Neptune",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBOZXB0dW5l&s=8J5W69uu",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBOZXB0dW5l&s=8J5W69uu&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBOZXB0dW5l&s=8J5W69uu",
+            definition: "1846",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Ng&s=zP4hZOXm&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Ng&s=zP4hZOXm&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0Ng&s=zP4hZOXm&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6008/5926876092_656aca4e26_m.jpg",
+            setId: 303712836,
+            rank: 60,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20531891,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971563,
+            word: "The discovery of photosynthesis",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBwaG90b3N5bnRoZXNpcw&s=XpxIK80W",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBwaG90b3N5bnRoZXNpcw&s=XpxIK80W&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBwaG90b3N5bnRoZXNpcw&s=XpxIK80W",
+            definition: "1845",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Ri1Z5pi5lFWj53spiDvpJQ_m.png",
+            setId: 303712836,
+            rank: 59,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20180781,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971562,
+            word: "The discovery of anesthesia",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBhbmVzdGhlc2lh&s=n4NDz6NG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBhbmVzdGhlc2lh&s=n4NDz6NG&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBhbmVzdGhlc2lh&s=n4NDz6NG",
+            definition: "1842",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Mg&s=HS9rfTNG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Mg&s=HS9rfTNG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0Mg&s=HS9rfTNG&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/te2W5rBnl.fVLbU2wZOMOA_m.jpg",
+            setId: 303712836,
+            rank: 58,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18505510,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971561,
+            word: "The discovery of the 1st human fossil",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IGh1bWFuIGZvc3NpbA&s=FhdKt-Ky",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IGh1bWFuIGZvc3NpbA&s=FhdKt-Ky&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgMXN0IGh1bWFuIGZvc3NpbA&s=FhdKt-Ky",
+            definition: "1830",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzMA&s=iaFH1o1Y&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzMA&s=iaFH1o1Y&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzMA&s=iaFH1o1Y&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/edhng0eE0SXnh.oXaRVhRQ_m.jpg",
+            setId: 303712836,
+            rank: 57,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20441652,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971560,
+            word: "The deciphering of hieroglyphics",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRlY2lwaGVyaW5nIG9mIGhpZXJvZ2x5cGhpY3M&s=exsfvJlJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRlY2lwaGVyaW5nIG9mIGhpZXJvZ2x5cGhpY3M&s=exsfvJlJ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRlY2lwaGVyaW5nIG9mIGhpZXJvZ2x5cGhpY3M&s=exsfvJlJ",
+            definition: "1822",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyMg&s=ILY6GRGw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyMg&s=ILY6GRGw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyMg&s=ILY6GRGw&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Q0YdmLRVl3q6iTj4TNxqCA_m.jpg",
+            setId: 303712836,
+            rank: 56,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 2231145,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971559,
+            word: "The discovery of Abu Simbel Temple",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBYnUgU2ltYmVsIFRlbXBsZQ&s=fMFiPfiA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBYnUgU2ltYmVsIFRlbXBsZQ&s=fMFiPfiA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBYnUgU2ltYmVsIFRlbXBsZQ&s=fMFiPfiA",
+            definition: "1821",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyMQ&s=yP-Tb9JS&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyMQ&s=yP-Tb9JS&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyMQ&s=yP-Tb9JS&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/ncl_0FGSbZ4OJI3Ehnq1zQ_m.jpg",
+            setId: 303712836,
+            rank: 55,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19856943,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971558,
+            word: "The discovery of Antarctica (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbnRhcmN0aWNhIChieSBFdXJvcGVhbnMp&s=6xCRVBzc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbnRhcmN0aWNhIChieSBFdXJvcGVhbnMp&s=6xCRVBzc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbnRhcmN0aWNhIChieSBFdXJvcGVhbnMp&s=6xCRVBzc",
+            definition: "1817",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNw&s=MGuzdBNp&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNw&s=MGuzdBNp&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxNw&s=MGuzdBNp&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/bOT-fFy3rX.EnFY2WO6uhg_m.jpg",
+            setId: 303712836,
+            rank: 54,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19749839,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971557,
+            word: "The discovery of Petra (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBQZXRyYSAoYnkgRXVyb3BlYW5zKQ&s=GPauuFIs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBQZXRyYSAoYnkgRXVyb3BlYW5zKQ&s=GPauuFIs&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBQZXRyYSAoYnkgRXVyb3BlYW5zKQ&s=GPauuFIs",
+            definition: "1812",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/8K3FdRHw2I7xJG-KmIn8WQ_m.png",
+            setId: 303712836,
+            rank: 53,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15974971,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971556,
+            word: "The discovery of the Rosetta Stone",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgUm9zZXR0YSBTdG9uZQ&s=xASmnnUC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgUm9zZXR0YSBTdG9uZQ&s=xASmnnUC&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgUm9zZXR0YSBTdG9uZQ&s=xASmnnUC",
+            definition: "1799",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5OQ&s=YMOuSsrJ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5OQ&s=YMOuSsrJ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5OQ&s=YMOuSsrJ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/oVwEENhYQ-AziIvJg1Z.dQ_m.jpg",
+            setId: 303712836,
+            rank: 51,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20001343,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971555,
+            word: "The discovery of bioelectricity",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBiaW9lbGVjdHJpY2l0eQ&s=.D.57s58",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBiaW9lbGVjdHJpY2l0eQ&s=.D.57s58&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBiaW9lbGVjdHJpY2l0eQ&s=.D.57s58",
+            definition: "1791",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5MQ&s=6-UyMUyt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5MQ&s=6-UyMUyt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5MQ&s=6-UyMUyt&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/VNYvVjy1w0VlbQg2NXgJJQ_m.jpg",
+            setId: 303712836,
+            rank: 49,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22777539,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971554,
+            word: "The 1st electrical resuscitation of a heart",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBlbGVjdHJpY2FsIHJlc3VzY2l0YXRpb24gb2YgYSBoZWFydA&s=iqT9xxmR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBlbGVjdHJpY2FsIHJlc3VzY2l0YXRpb24gb2YgYSBoZWFydA&s=iqT9xxmR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBlbGVjdHJpY2FsIHJlc3VzY2l0YXRpb24gb2YgYSBoZWFydA&s=iqT9xxmR",
+            definition: "1775",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3NQ&s=1KLy7uTv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3NQ&s=1KLy7uTv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3NQ&s=1KLy7uTv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/7UWeCZqAs2wAC7m.nWcNug_m.jpg",
+            setId: 303712836,
+            rank: 48,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14971609,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971553,
+            word: "The discovery of Palenque (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBQYWxlbnF1ZSAoYnkgRXVyb3BlYW5zKQ&s=3XeyiJYX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBQYWxlbnF1ZSAoYnkgRXVyb3BlYW5zKQ&s=3XeyiJYX&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBQYWxlbnF1ZSAoYnkgRXVyb3BlYW5zKQ&s=3XeyiJYX",
+            definition: "1773",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Mw&s=w4986wyO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Mw&s=w4986wyO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3Mw&s=w4986wyO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/PKhsMGPwD0TOTEUDBItRKw_m.jpg",
+            setId: 303712836,
+            rank: 47,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11202890,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971552,
+            word: "The discovery of oxygen",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBveHlnZW4&s=ZTW2tjRg",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBveHlnZW4&s=ZTW2tjRg&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBveHlnZW4&s=ZTW2tjRg",
+            definition: "1771",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3MQ&s=gNcMZ4pM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3MQ&s=gNcMZ4pM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3MQ&s=gNcMZ4pM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/kEaL1TZNjQBrYtqZymWvEg_m.png",
+            setId: 303712836,
+            rank: 46,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18717264,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971551,
+            word: "The discovery of Easter Island (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBFYXN0ZXIgSXNsYW5kIChieSBFdXJvcGVhbnMp&s=9ZLsf6un",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBFYXN0ZXIgSXNsYW5kIChieSBFdXJvcGVhbnMp&s=9ZLsf6un&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBFYXN0ZXIgSXNsYW5kIChieSBFdXJvcGVhbnMp&s=9ZLsf6un",
+            definition: "1722",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcyMg&s=ERCjPb7T&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcyMg&s=ERCjPb7T&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcyMg&s=ERCjPb7T&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/hRadjwJP1voWrvQmj4qgxg_m.jpg",
+            setId: 303712836,
+            rank: 45,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19425133,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971550,
+            word: "The discovery of Halley Comet",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBIYWxsZXkgQ29tZXQ&s=NpFjFhKt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBIYWxsZXkgQ29tZXQ&s=NpFjFhKt&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBIYWxsZXkgQ29tZXQ&s=NpFjFhKt",
+            definition: "1682",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY4Mg&s=d.jPWZo7&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY4Mg&s=d.jPWZo7&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY4Mg&s=d.jPWZo7&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7210/6967153925_9716066eca_m.jpg",
+            setId: 303712836,
+            rank: 44,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17661009,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971549,
+            word: "The discovery of microscopic life",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBtaWNyb3Njb3BpYyBsaWZl&s=79m6SsdH",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBtaWNyb3Njb3BpYyBsaWZl&s=79m6SsdH&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBtaWNyb3Njb3BpYyBsaWZl&s=79m6SsdH",
+            definition: "1673",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3Mw&s=qab3QVnq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3Mw&s=qab3QVnq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY3Mw&s=qab3QVnq&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/cX-RvjkOm0AAR3NHp0Z3Uw_m.jpg",
+            setId: 303712836,
+            rank: 42,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16288318,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971548,
+            word: "The discovery of universal gravitation",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB1bml2ZXJzYWwgZ3Jhdml0YXRpb24&s=Vr39rXwP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB1bml2ZXJzYWwgZ3Jhdml0YXRpb24&s=Vr39rXwP&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB1bml2ZXJzYWwgZ3Jhdml0YXRpb24&s=Vr39rXwP",
+            definition: "1666",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2Ng&s=lqo1LXe1&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2Ng&s=lqo1LXe1&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY2Ng&s=lqo1LXe1&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/eKsg3QQBoqKSXGZs6gCvgw_m.jpg",
+            setId: 303712836,
+            rank: 41,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8556617,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971547,
+            word: "The theory of probability",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRoZW9yeSBvZiBwcm9iYWJpbGl0eQ&s=aT42RsMR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRoZW9yeSBvZiBwcm9iYWJpbGl0eQ&s=aT42RsMR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHRoZW9yeSBvZiBwcm9iYWJpbGl0eQ&s=aT42RsMR",
+            definition: "1654",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY1NA&s=MX.C6dW6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY1NA&s=MX.C6dW6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY1NA&s=MX.C6dW6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/7kABcyaBQ5ApcLYm18iqSQ_m.jpg",
+            setId: 303712836,
+            rank: 39,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18126216,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971546,
+            word: "The discovery of Saturn's rings",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBTYXR1cm4ncyByaW5ncw&s=Syb0FIgZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBTYXR1cm4ncyByaW5ncw&s=Syb0FIgZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBTYXR1cm4ncyByaW5ncw&s=Syb0FIgZ",
+            definition: "1659",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY1OQ&s=Wd.DgpLT&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY1OQ&s=Wd.DgpLT&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY1OQ&s=Wd.DgpLT&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/p-pMJIdfDzymRUjhUqe5RA_m.jpg",
+            setId: 303712836,
+            rank: 38,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20404473,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971545,
+            word: "The invention of the sign x",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2lnbiB4&s=4VE5mWdd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2lnbiB4&s=4VE5mWdd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2lnbiB4&s=4VE5mWdd",
+            definition: "1631",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYzMQ&s=tpCx8T--&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYzMQ&s=tpCx8T--&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYzMQ&s=tpCx8T--&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/fFXZ8IYxjb8tpLjmvz1uzg_m.jpg",
+            setId: 303712836,
+            rank: 37,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 3638047,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971544,
+            word: "The discovery of Australia (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBdXN0cmFsaWEgKGJ5IEV1cm9wZWFucyk&s=2EeMZ0rr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBdXN0cmFsaWEgKGJ5IEV1cm9wZWFucyk&s=2EeMZ0rr&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBdXN0cmFsaWEgKGJ5IEV1cm9wZWFucyk&s=2EeMZ0rr",
+            definition: "1605",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwNQ&s=YeBxhLZ3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwNQ&s=YeBxhLZ3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYwNQ&s=YeBxhLZ3&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/SjYt-buEqw6cTlv1swTyiw_m.png",
+            setId: 303712836,
+            rank: 36,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20044602,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971543,
+            word: "The discovery of sequoia (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBzZXF1b2lhIChieSBFdXJvcGVhbnMp&s=i-oh-kt.",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBzZXF1b2lhIChieSBFdXJvcGVhbnMp&s=i-oh-kt.&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBzZXF1b2lhIChieSBFdXJvcGVhbnMp&s=i-oh-kt.",
+            definition: "1602",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwMg&s=aW0eqhTd&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwMg&s=aW0eqhTd&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYwMg&s=aW0eqhTd&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2032/1746286638_6910d5a14a_m.jpg",
+            setId: 303712836,
+            rank: 35,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15631774,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971542,
+            word: "The discovery of the ruins of Pompeii",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcnVpbnMgb2YgUG9tcGVpaQ&s=tAjL5blf",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcnVpbnMgb2YgUG9tcGVpaQ&s=tAjL5blf&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcnVpbnMgb2YgUG9tcGVpaQ&s=tAjL5blf",
+            definition: "1600",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwMA&s=KS1RSjEy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwMA&s=KS1RSjEy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYwMA&s=KS1RSjEy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/PnKwAp_IloxoH-MxCT7uUg_m.jpg",
+            setId: 303712836,
+            rank: 34,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 209394,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971541,
+            word: "The law of falling bodies",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxhdyBvZiBmYWxsaW5nIGJvZGllcw&s=TAEcKO-b",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxhdyBvZiBmYWxsaW5nIGJvZGllcw&s=TAEcKO-b&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGxhdyBvZiBmYWxsaW5nIGJvZGllcw&s=TAEcKO-b",
+            definition: "1590",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU5MA&s=nCdBx7V1&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU5MA&s=nCdBx7V1&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU5MA&s=nCdBx7V1&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/0z8x3BnBfbedvUi4m6ijKA_m.jpg",
+            setId: 303712836,
+            rank: 33,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18344656,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971540,
+            word: "The invention of the sign =",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2lnbiA9&s=Aygt7h1M",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2lnbiA9&s=Aygt7h1M&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2lnbiA9&s=Aygt7h1M",
+            definition: "1557",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU1Nw&s=xiaJGReY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU1Nw&s=xiaJGReY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU1Nw&s=xiaJGReY&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/21Qu7gMNhcEOhPQ_Eh9xcA_m.jpg",
+            setId: 303712836,
+            rank: 32,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16279311,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971539,
+            word: "The microbial theory",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1pY3JvYmlhbCB0aGVvcnk&s=ouiCINM2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1pY3JvYmlhbCB0aGVvcnk&s=ouiCINM2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIG1pY3JvYmlhbCB0aGVvcnk&s=ouiCINM2",
+            definition: "1546",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0Ng&s=HqwG8q6X&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0Ng&s=HqwG8q6X&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU0Ng&s=HqwG8q6X&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/mkX8xinJ8Gx9eZb6GBqj7w_m.jpg",
+            setId: 303712836,
+            rank: 31,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19793643,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971538,
+            word: "The discovery of tomato (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0b21hdG8gKGJ5IEV1cm9wZWFucyk&s=SAgMweJx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0b21hdG8gKGJ5IEV1cm9wZWFucyk&s=SAgMweJx&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0b21hdG8gKGJ5IEV1cm9wZWFucyk&s=SAgMweJx",
+            definition: "1544",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0NA&s=dTTbgkNG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0NA&s=dTTbgkNG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU0NA&s=dTTbgkNG&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3218/2700323949_591c921968_m.jpg",
+            setId: 303712836,
+            rank: 30,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20545175,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971537,
+            word: "The discovery of modern anatomy",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBtb2Rlcm4gYW5hdG9teQ&s=xsqCFtJG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBtb2Rlcm4gYW5hdG9teQ&s=xsqCFtJG&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBtb2Rlcm4gYW5hdG9teQ&s=xsqCFtJG",
+            definition: "1543",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0Mw&s=d9.IUw14&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU0Mw&s=d9.IUw14&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU0Mw&s=d9.IUw14&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/ZGEUGvTz5AMRRUMEwBWa0w_m.png",
+            setId: 303712836,
+            rank: 29,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13770745,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971536,
+            word: "The discovery of Canada (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBDYW5hZGEgKGJ5IEV1cm9wZWFucyk&s=uuDGxgxK",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBDYW5hZGEgKGJ5IEV1cm9wZWFucyk&s=uuDGxgxK&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBDYW5hZGEgKGJ5IEV1cm9wZWFucyk&s=uuDGxgxK",
+            definition: "1534",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUzNA&s=W7-pPNOB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUzNA&s=W7-pPNOB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUzNA&s=W7-pPNOB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/ICAaTFSnCTGG4vJcYK-VPA_m.png",
+            setId: 303712836,
+            rank: 28,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20012042,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971535,
+            word: "The discovery of the potato (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcG90YXRvIChieSBFdXJvcGVhbnMp&s=6gGh2sx7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcG90YXRvIChieSBFdXJvcGVhbnMp&s=6gGh2sx7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcG90YXRvIChieSBFdXJvcGVhbnMp&s=6gGh2sx7",
+            definition: "1533",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUzMw&s=Yqk7ldDZ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUzMw&s=Yqk7ldDZ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUzMw&s=Yqk7ldDZ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/MTM-9G5usU6CjnAdi_bUtw_m.jpg",
+            setId: 303712836,
+            rank: 27,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20369894,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971534,
+            word: "The discovery of Mexico (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBNZXhpY28gKGJ5IEV1cm9wZWFucyk&s=oAEapev0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBNZXhpY28gKGJ5IEV1cm9wZWFucyk&s=oAEapev0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBNZXhpY28gKGJ5IEV1cm9wZWFucyk&s=oAEapev0",
+            definition: "1520",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUyMA&s=Q2XbnhYP&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUyMA&s=Q2XbnhYP&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUyMA&s=Q2XbnhYP&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/RhoFa2d-M4.fahof-uKKdQ_m.jpg",
+            setId: 303712836,
+            rank: 26,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20394552,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971533,
+            word: "The discovery of vanilla (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB2YW5pbGxhIChieSBFdXJvcGVhbnMp&s=EZ7.bvJd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB2YW5pbGxhIChieSBFdXJvcGVhbnMp&s=EZ7.bvJd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB2YW5pbGxhIChieSBFdXJvcGVhbnMp&s=EZ7.bvJd",
+            definition: "1519",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUxOQ&s=HxngBgTM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUxOQ&s=HxngBgTM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUxOQ&s=HxngBgTM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/5PyN3m8BjYxvX5Ibk8G4SA_m.jpg",
+            setId: 303712836,
+            rank: 25,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9288034,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971532,
+            word: "The discovery of the planetary movement",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcGxhbmV0YXJ5IG1vdmVtZW50&s=PZ.DMgmb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcGxhbmV0YXJ5IG1vdmVtZW50&s=PZ.DMgmb&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcGxhbmV0YXJ5IG1vdmVtZW50&s=PZ.DMgmb",
+            definition: "1513",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUxMw&s=uIsCDwW9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUxMw&s=uIsCDwW9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUxMw&s=uIsCDwW9&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/X42Tib8Z2CU2r7NnoXzJuA_m.jpg",
+            setId: 303712836,
+            rank: 24,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12565436,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971531,
+            word: "The discovery of Brazil (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBCcmF6aWwgKGJ5IEV1cm9wZWFucyk&s=Nq.1g9y.",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBCcmF6aWwgKGJ5IEV1cm9wZWFucyk&s=Nq.1g9y.&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBCcmF6aWwgKGJ5IEV1cm9wZWFucyk&s=Nq.1g9y.",
+            definition: "1500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUwMA&s=SSUYVc9R&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUwMA&s=SSUYVc9R&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUwMA&s=SSUYVc9R&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/4AuzrAh8DPlcMq2ZW_VFzg_m.jpg",
+            setId: 303712836,
+            rank: 23,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20586264,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971530,
+            word: "The discovery of Venezuela (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBWZW5lenVlbGEgKGJ5IEV1cm9wZWFucyk&s=11mTAliI",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBWZW5lenVlbGEgKGJ5IEV1cm9wZWFucyk&s=11mTAliI&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBWZW5lenVlbGEgKGJ5IEV1cm9wZWFucyk&s=11mTAliI",
+            definition: "1499",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5OQ&s=lGiXezqN&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5OQ&s=lGiXezqN&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5OQ&s=lGiXezqN&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/DYCtNyI7x73kdR0IGYyG6g_m.jpg",
+            setId: 303712836,
+            rank: 22,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20586269,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971529,
+            word: "The discovery of cocoa (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb2NvYSAoYnkgRXVyb3BlYW5zKQ&s=BwqpgGc2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb2NvYSAoYnkgRXVyb3BlYW5zKQ&s=BwqpgGc2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb2NvYSAoYnkgRXVyb3BlYW5zKQ&s=BwqpgGc2",
+            definition: "1494",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5NA&s=bZaP5SMB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5NA&s=bZaP5SMB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5NA&s=bZaP5SMB&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2320/2256853740_6f044f5809_m.jpg",
+            setId: 303712836,
+            rank: 21,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13802688,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971528,
+            word: "The discovery of tobacco (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0b2JhY2NvIChieSBFdXJvcGVhbnMp&s=AhOISvCy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0b2JhY2NvIChieSBFdXJvcGVhbnMp&s=AhOISvCy&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0b2JhY2NvIChieSBFdXJvcGVhbnMp&s=AhOISvCy",
+            definition: "1492",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/67/195097786_712abc15c9_m.jpg",
+            setId: 303712836,
+            rank: 20,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19765309,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971527,
+            word: "The discovery of America (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbWVyaWNhIChieSBFdXJvcGVhbnMp&s=GQngNr0Q",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbWVyaWNhIChieSBFdXJvcGVhbnMp&s=GQngNr0Q&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBBbWVyaWNhIChieSBFdXJvcGVhbnMp&s=GQngNr0Q",
+            definition: "1492",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/MvjzFA1-7CapOeLr2HCdZw_m.jpg",
+            setId: 303712836,
+            rank: 19,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 3933406,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971526,
+            word: "1st human dissection",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGh1bWFuIGRpc3NlY3Rpb24&s=glpAdpzE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGh1bWFuIGRpc3NlY3Rpb24&s=glpAdpzE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGh1bWFuIGRpc3NlY3Rpb24&s=glpAdpzE",
+            definition: "1315",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMxNQ&s=wYUBO1Md&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMxNQ&s=wYUBO1Md&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTMxNQ&s=wYUBO1Md&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/cuKf0y10DXf2a8HH5o-kQg_m.jpg",
+            setId: 303712836,
+            rank: 17,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 672498,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971525,
+            word: "Marco Polo travels for the first time the Silk Road",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyY28gUG9sbyB0cmF2ZWxzIGZvciB0aGUgZmlyc3QgdGltZSB0aGUgU2lsayBSb2Fk&s=VHEejOvN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyY28gUG9sbyB0cmF2ZWxzIGZvciB0aGUgZmlyc3QgdGltZSB0aGUgU2lsayBSb2Fk&s=VHEejOvN&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWFyY28gUG9sbyB0cmF2ZWxzIGZvciB0aGUgZmlyc3QgdGltZSB0aGUgU2lsayBSb2Fk&s=VHEejOvN",
+            definition: "1271",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI3MQ&s=V8u.hn1O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI3MQ&s=V8u.hn1O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTI3MQ&s=V8u.hn1O&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/c7MTnS3gEsogNRQjoF2tSg_m.jpg",
+            setId: 303712836,
+            rank: 16,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19695739,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971524,
+            word: "The discovery of blood circulation",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBibG9vZCBjaXJjdWxhdGlvbg&s=VoplJb7L",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBibG9vZCBjaXJjdWxhdGlvbg&s=VoplJb7L&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBibG9vZCBjaXJjdWxhdGlvbg&s=VoplJb7L",
+            definition: "1242",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI0Mg&s=ZgHCmzsG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI0Mg&s=ZgHCmzsG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTI0Mg&s=ZgHCmzsG&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5542/10826089793_4acfc2d7fb_m.jpg",
+            setId: 303712836,
+            rank: 15,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20264594,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971523,
+            word: "The discovery of Greenland (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBHcmVlbmxhbmQgKGJ5IEV1cm9wZWFucyk&s=UBmwGsar",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBHcmVlbmxhbmQgKGJ5IEV1cm9wZWFucyk&s=UBmwGsar&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBHcmVlbmxhbmQgKGJ5IEV1cm9wZWFucyk&s=UBmwGsar",
+            definition: "978",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=OTc4&s=-rtx5lLF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=OTc4&s=-rtx5lLF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=OTc4&s=-rtx5lLF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/j2nsdfFfmMU61xNN9mT0BA_m.png",
+            setId: 303712836,
+            rank: 14,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20278668,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971522,
+            word: "The first report on the Loch Ness monster",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IHJlcG9ydCBvbiB0aGUgTG9jaCBOZXNzIG1vbnN0ZXI&s=kTaSu2fP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IHJlcG9ydCBvbiB0aGUgTG9jaCBOZXNzIG1vbnN0ZXI&s=kTaSu2fP&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IHJlcG9ydCBvbiB0aGUgTG9jaCBOZXNzIG1vbnN0ZXI&s=kTaSu2fP",
+            definition: "565",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=NTY1&s=sOmMc-Oz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=NTY1&s=sOmMc-Oz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=NTY1&s=sOmMc-Oz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/jxSGPaFnY0E5c3wnYyYjEQ_m.jpg",
+            setId: 303712836,
+            rank: 13,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21221072,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971521,
+            word: "The use of zero",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIHVzZSBvZiB6ZXJv&s=WxLYY5f1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHVzZSBvZiB6ZXJv&s=WxLYY5f1&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIHVzZSBvZiB6ZXJv&s=WxLYY5f1",
+            definition: "458",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=NDU4&s=0bgX-6OH&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=NDU4&s=0bgX-6OH&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=NDU4&s=0bgX-6OH&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3494/3242360409_8186778763_m.jpg",
+            setId: 303712836,
+            rank: 12,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20457494,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971520,
+            word: "The calculation of the circumference of the Earth",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBjaXJjdW1mZXJlbmNlIG9mIHRoZSBFYXJ0aA&s=DqyCaFM2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBjaXJjdW1mZXJlbmNlIG9mIHRoZSBFYXJ0aA&s=DqyCaFM2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBjaXJjdW1mZXJlbmNlIG9mIHRoZSBFYXJ0aA&s=DqyCaFM2",
+            definition: "-200",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/X0JX.3cxwNbE06dSsNr3Cg_m.jpg",
+            setId: 303712836,
+            rank: 11,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16581359,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971519,
+            word: "The invention of Euclidean geometry",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBFdWNsaWRlYW4gZ2VvbWV0cnk&s=iB6tbMPE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBFdWNsaWRlYW4gZ2VvbWV0cnk&s=iB6tbMPE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBFdWNsaWRlYW4gZ2VvbWV0cnk&s=iB6tbMPE",
+            definition: "-300",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMwMA&s=Asjw.GBB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMwMA&s=Asjw.GBB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMwMA&s=Asjw.GBB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/zeQgJrxctSORfflLb18rZA_m.jpg",
+            setId: 303712836,
+            rank: 10,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17909460,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971518,
+            word: "The concept of the atom",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbmNlcHQgb2YgdGhlIGF0b20&s=HXujYNoy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbmNlcHQgb2YgdGhlIGF0b20&s=HXujYNoy&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNvbmNlcHQgb2YgdGhlIGF0b20&s=HXujYNoy",
+            definition: "-400",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQwMA&s=mk-ccSC7&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQwMA&s=mk-ccSC7&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQwMA&s=mk-ccSC7&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/5EgkJDy41zYpV.nDW12GJw_m.png",
+            setId: 303712836,
+            rank: 9,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14476563,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971517,
+            word: "The calculation of the distance between Earth and the Moon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBkaXN0YW5jZSBiZXR3ZWVuIEVhcnRoIGFuZCB0aGUgTW9vbg&s=b4NBxh85",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBkaXN0YW5jZSBiZXR3ZWVuIEVhcnRoIGFuZCB0aGUgTW9vbg&s=b4NBxh85&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBkaXN0YW5jZSBiZXR3ZWVuIEVhcnRoIGFuZCB0aGUgTW9vbg&s=b4NBxh85",
+            definition: "-428",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQyOA&s=RZ9Ii8-u&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQyOA&s=RZ9Ii8-u&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQyOA&s=RZ9Ii8-u&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/h-ZxHdIndnLCRP3awIe35Q_m.png",
+            setId: 303712836,
+            rank: 8,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19064874,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971516,
+            word: "The invention of fractions",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBmcmFjdGlvbnM&s=PR22E4t9",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBmcmFjdGlvbnM&s=PR22E4t9&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBmcmFjdGlvbnM&s=PR22E4t9",
+            definition: "-1,650",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNjUw&s=TjmlAqd8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNjUw&s=TjmlAqd8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsNjUw&s=TjmlAqd8&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/A3AYtDg-ONV4EMHbqH7DrA_m.png",
+            setId: 303712836,
+            rank: 7,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19663533,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971515,
+            word: "The discovery of cotton",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb3R0b24&s=3r3-BwtY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb3R0b24&s=3r3-BwtY&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBjb3R0b24&s=3r3-BwtY",
+            definition: "-3,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/fnxNpNN.YJsSwIsbs4ymdQ_m.png",
+            setId: 303712836,
+            rank: 6,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21063964,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971514,
+            word: "The calculation of the duration of a year",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBkdXJhdGlvbiBvZiBhIHllYXI&s=U1M2PVJs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBkdXJhdGlvbiBvZiBhIHllYXI&s=U1M2PVJs&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGNhbGN1bGF0aW9uIG9mIHRoZSBkdXJhdGlvbiBvZiBhIHllYXI&s=U1M2PVJs",
+            definition: "-4,236",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsMjM2&s=o1lweukX&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsMjM2&s=o1lweukX&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQsMjM2&s=o1lweukX&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/4Vw2V1jO3bPYVGCVSzug2A_m.jpg",
+            setId: 303712836,
+            rank: 5,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19938377,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971513,
+            word: "The discovery of the potato (by the Andeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcG90YXRvIChieSB0aGUgQW5kZWFucyk&s=szuSpttd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcG90YXRvIChieSB0aGUgQW5kZWFucyk&s=szuSpttd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgcG90YXRvIChieSB0aGUgQW5kZWFucyk&s=szuSpttd",
+            definition: "-6,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTYsMDAw&s=nR.aAj1x&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTYsMDAw&s=nR.aAj1x&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTYsMDAw&s=nR.aAj1x&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/MTM-9G5usU6CjnAdi_bUtw_m.jpg",
+            setId: 303712836,
+            rank: 4,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20369894,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971512,
+            word: "The appearance of Cro-Magnon man",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgQ3JvLU1hZ25vbiBtYW4&s=uF4XoWpJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgQ3JvLU1hZ25vbiBtYW4&s=uF4XoWpJ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgQ3JvLU1hZ25vbiBtYW4&s=uF4XoWpJ",
+            definition: "-40,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQwLDAwMA&s=QN16pelc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQwLDAwMA&s=QN16pelc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQwLDAwMA&s=QN16pelc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/VNNU8LttSKQpFCie85DdNA_m.jpg",
+            setId: 303712836,
+            rank: 3,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20383579,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971511,
+            word: "The appearance of Homo Sapiens",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgSG9tbyBTYXBpZW5z&s=ICJZUVu6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgSG9tbyBTYXBpZW5z&s=ICJZUVu6&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgSG9tbyBTYXBpZW5z&s=ICJZUVu6",
+            definition: "-200,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMCwwMDA&s=k2NiCRC5&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMCwwMDA&s=k2NiCRC5&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIwMCwwMDA&s=k2NiCRC5&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/6jFepIatskSOUeetqZlaJw_m.jpg",
+            setId: 303712836,
+            rank: 2,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20441626,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971510,
+            word: "The appearance of Neanderthal man",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgTmVhbmRlcnRoYWwgbWFu&s=2gZ-nX-l",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgTmVhbmRlcnRoYWwgbWFu&s=2gZ-nX-l&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgTmVhbmRlcnRoYWwgbWFu&s=2gZ-nX-l",
+            definition: "-250,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTI1MCwwMDA&s=MI2QJt90&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTI1MCwwMDA&s=MI2QJt90&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTI1MCwwMDA&s=MI2QJt90&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/VNNU8LttSKQpFCie85DdNA_m.jpg",
+            setId: 303712836,
+            rank: 1,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20383579,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10298971509,
+            word: "The appearance of Australopithecus",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgQXVzdHJhbG9waXRoZWN1cw&s=SghY0aQC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgQXVzdHJhbG9waXRoZWN1cw&s=SghY0aQC&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgQXVzdHJhbG9waXRoZWN1cw&s=SghY0aQC",
+            definition: "-7,000,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTcsMDAwLDAwMA&s=SxLR35J6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTcsMDAwLDAwMA&s=SxLR35J6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTcsMDAwLDAwMA&s=SxLR35J6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/QaD1Qm1RNrh8aJg2t6QBEg_m.jpg",
+            setId: 303712836,
+            rank: 0,
+            lastModified: 1594233375,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 5085235,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 110,
+        page: 1,
+        perPage: 200,
+        token: "XFEHbKZGqf.bkDYgqrpEFZRuZ7jb",
+      },
+    },
+  ],
+};
+
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=303629084"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 10295682720,
+            word: "The discovery of Nazca geoglyphs",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBOYXpjYSBnZW9nbHlwaHM&s=K7hDXfjm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBOYXpjYSBnZW9nbHlwaHM&s=K7hDXfjm&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiBOYXpjYSBnZW9nbHlwaHM&s=K7hDXfjm",
+            definition: "1927",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/omN_Cr8dyzPYliNGmxazvA_m.jpg",
+            setId: 303629084,
+            rank: 85,
+            lastModified: 1530557787,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 388740,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682701,
+            word: "Napoleon named Emperor",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TmFwb2xlb24gbmFtZWQgRW1wZXJvcg&s=04OeXRn1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmFwb2xlb24gbmFtZWQgRW1wZXJvcg&s=04OeXRn1&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TmFwb2xlb24gbmFtZWQgRW1wZXJvcg&s=04OeXRn1",
+            definition: "1804",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwNA&s=NHumHkvO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwNA&s=NHumHkvO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgwNA&s=NHumHkvO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/G2iBMEh2lvNqnczuZls3hw_m.jpg",
+            setId: 303629084,
+            rank: 61,
+            lastModified: 1530557607,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19900050,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682700,
+            word: "The Battle of the Alamo",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJhdHRsZSBvZiB0aGUgQWxhbW8&s=cOnXbUaN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJhdHRsZSBvZiB0aGUgQWxhbW8&s=cOnXbUaN&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJhdHRsZSBvZiB0aGUgQWxhbW8&s=cOnXbUaN",
+            definition: "1836",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNg&s=iRP9VMvb&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNg&s=iRP9VMvb&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzNg&s=iRP9VMvb&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3303/3657612412_5e0ddbb47f_m.jpg",
+            setId: 303629084,
+            rank: 66,
+            lastModified: 1530557607,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 288000,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682699,
+            word: "The invention of the colt revolver",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgY29sdCByZXZvbHZlcg&s=aQITnIYp",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgY29sdCByZXZvbHZlcg&s=aQITnIYp&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgY29sdCByZXZvbHZlcg&s=aQITnIYp",
+            definition: "1836",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNg&s=iRP9VMvb&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNg&s=iRP9VMvb&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzNg&s=iRP9VMvb&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3320/3449384436_6a1b9b441c_m.jpg",
+            setId: 303629084,
+            rank: 65,
+            lastModified: 1530557607,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 263983,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682698,
+            word: "The invention of the baguette",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYmFndWV0dGU&s=tUf4UbfE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYmFndWV0dGU&s=tUf4UbfE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgYmFndWV0dGU&s=tUf4UbfE",
+            definition: "1830",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzMA&s=iaFH1o1Y&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzMA&s=iaFH1o1Y&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzMA&s=iaFH1o1Y&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/bQ23BMjph_clr67WodARyQ_m.jpg",
+            setId: 303629084,
+            rank: 64,
+            lastModified: 1530557607,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20398313,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682697,
+            word: "Defeat of Napoleon at Waterloo",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVmZWF0IG9mIE5hcG9sZW9uIGF0IFdhdGVybG9v&s=SddDZWoM",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVmZWF0IG9mIE5hcG9sZW9uIGF0IFdhdGVybG9v&s=SddDZWoM&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGVmZWF0IG9mIE5hcG9sZW9uIGF0IFdhdGVybG9v&s=SddDZWoM",
+            definition: "1815",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNQ&s=3884vzw-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxNQ&s=3884vzw-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxNQ&s=3884vzw-&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7372/12459257844_911da4accf_m.jpg",
+            setId: 303629084,
+            rank: 63,
+            lastModified: 1530557607,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20584336,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682696,
+            word: "Start of the taming of the Wild West",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIHRhbWluZyBvZiB0aGUgV2lsZCBXZXN0&s=vPUodnoX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIHRhbWluZyBvZiB0aGUgV2lsZCBXZXN0&s=vPUodnoX&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIHRhbWluZyBvZiB0aGUgV2lsZCBXZXN0&s=vPUodnoX",
+            definition: "1803",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMw&s=Ip6RTGMx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMw&s=Ip6RTGMx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgwMw&s=Ip6RTGMx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/.wUTt-APP4Zhl9Cc48OcJg_m.jpg",
+            setId: 303629084,
+            rank: 62,
+            lastModified: 1530557607,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8720163,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682644,
+            word: "The Trojan War",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIFRyb2phbiBXYXI&s=p3ireu31",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFRyb2phbiBXYXI&s=p3ireu31&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIFRyb2phbiBXYXI&s=p3ireu31",
+            definition: "-1,250",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjUw&s=U6YGzSAg&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjUw&s=U6YGzSAg&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjUw&s=U6YGzSAg&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/d3LPxokohAweR6xpUOXpfQ_m.jpg",
+            setId: 303629084,
+            rank: 9,
+            lastModified: 1530557169,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19951112,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682643,
+            word: "Ramses II crowned Pharaoh",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=UmFtc2VzIElJIGNyb3duZWQgUGhhcmFvaA&s=4ia0SGDQ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UmFtc2VzIElJIGNyb3duZWQgUGhhcmFvaA&s=4ia0SGDQ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=UmFtc2VzIElJIGNyb3duZWQgUGhhcmFvaA&s=4ia0SGDQ",
+            definition: "-1,279",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjc5&s=QYP7.Obs&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjc5&s=QYP7.Obs&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjc5&s=QYP7.Obs&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/ncl_0FGSbZ4OJI3Ehnq1zQ_m.jpg",
+            setId: 303629084,
+            rank: 8,
+            lastModified: 1530557158,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19856943,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682642,
+            word: "The Invention of Chinese calligraphy",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDaGluZXNlIGNhbGxpZ3JhcGh5&s=zgjRoc14",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDaGluZXNlIGNhbGxpZ3JhcGh5&s=zgjRoc14&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDaGluZXNlIGNhbGxpZ3JhcGh5&s=zgjRoc14",
+            definition: "-2,650",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNjUw&s=S6uGJuwW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNjUw&s=S6uGJuwW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIsNjUw&s=S6uGJuwW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/gtdZKVl23DFHv83ousK0ZQ_m.jpg",
+            setId: 303629084,
+            rank: 7,
+            lastModified: 1530557158,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 5025020,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682641,
+            word: "1st Pyramid",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=MXN0IFB5cmFtaWQ&s=4b9jFNd5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IFB5cmFtaWQ&s=4b9jFNd5&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=MXN0IFB5cmFtaWQ&s=4b9jFNd5",
+            definition: "-2,650",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNjUw&s=S6uGJuwW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNjUw&s=S6uGJuwW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIsNjUw&s=S6uGJuwW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/3R6l5qeWl2KfpfRqiqEDcg_m.jpg",
+            setId: 303629084,
+            rank: 6,
+            lastModified: 1530557146,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19995770,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682640,
+            word: "The Dolmens",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIERvbG1lbnM&s=w-wG60ON",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbG1lbnM&s=w-wG60ON&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIERvbG1lbnM&s=w-wG60ON",
+            definition: "-3,500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsNTAw&s=41RTz6nu&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsNTAw&s=41RTz6nu&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMsNTAw&s=41RTz6nu&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3325/3513219328_7f039e6da3_m.jpg",
+            setId: 303629084,
+            rank: 5,
+            lastModified: 1530557146,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16135229,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682639,
+            word: "The domestication of the dog",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRvbWVzdGljYXRpb24gb2YgdGhlIGRvZw&s=fYwUSfh4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRvbWVzdGljYXRpb24gb2YgdGhlIGRvZw&s=fYwUSfh4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRvbWVzdGljYXRpb24gb2YgdGhlIGRvZw&s=fYwUSfh4",
+            definition: "-12,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEyLDAwMA&s=s8XqbE.F&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEyLDAwMA&s=s8XqbE.F&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEyLDAwMA&s=s8XqbE.F&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/mD0ost35rToLH8cLdgEZuQ_m.jpg",
+            setId: 303629084,
+            rank: 4,
+            lastModified: 1530557133,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9472067,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682638,
+            word: "Dinosaurs become extinct",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlub3NhdXJzIGJlY29tZSBleHRpbmN0&s=rbsbdfFr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlub3NhdXJzIGJlY29tZSBleHRpbmN0&s=rbsbdfFr&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGlub3NhdXJzIGJlY29tZSBleHRpbmN0&s=rbsbdfFr",
+            definition: "-65,000,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTY1LDAwMCwwMDA&s=HTj7hE1F&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTY1LDAwMCwwMDA&s=HTj7hE1F&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTY1LDAwMCwwMDA&s=HTj7hE1F&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/-elahYNzLcKSIpa23ui-HA_m.png",
+            setId: 303629084,
+            rank: 3,
+            lastModified: 1530557133,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20578493,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682637,
+            word: "The appearance of dinosaurs",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgZGlub3NhdXJz&s=79vNRuQ0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgZGlub3NhdXJz&s=79vNRuQ0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFwcGVhcmFuY2Ugb2YgZGlub3NhdXJz&s=79vNRuQ0",
+            definition: "-230,000,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIzMCwwMDAsMDAw&s=rUh7LVxB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIzMCwwMDAsMDAw&s=rUh7LVxB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIzMCwwMDAsMDAw&s=rUh7LVxB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/MUjiy5o1b2lq-GaSlCSWyg_m.png",
+            setId: 303629084,
+            rank: 2,
+            lastModified: 1530557117,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20578503,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682636,
+            word: "The Moon is formed",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE1vb24gaXMgZm9ybWVk&s=p-CYWQKc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE1vb24gaXMgZm9ybWVk&s=p-CYWQKc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE1vb24gaXMgZm9ybWVk&s=p-CYWQKc",
+            definition: "-4,000,000,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsMDAwLDAwMCwwMDA&s=oQw0r4V7&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsMDAwLDAwMCwwMDA&s=oQw0r4V7&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQsMDAwLDAwMCwwMDA&s=oQw0r4V7&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/185/376134441_233e705786_m.jpg",
+            setId: 303629084,
+            rank: 1,
+            lastModified: 1530557117,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20383718,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682635,
+            word: "The Earth is formed",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEVhcnRoIGlzIGZvcm1lZA&s=51WBQn8O",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEVhcnRoIGlzIGZvcm1lZA&s=51WBQn8O&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEVhcnRoIGlzIGZvcm1lZA&s=51WBQn8O",
+            definition: "-4,550,000,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsNTUwLDAwMCwwMDA&s=jMXW4dNv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsNTUwLDAwMCwwMDA&s=jMXW4dNv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQsNTUwLDAwMCwwMDA&s=jMXW4dNv&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2084/2222523486_5e1894e314_m.jpg",
+            setId: 303629084,
+            rank: 0,
+            lastModified: 1530557104,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20430992,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682744,
+            word: "Introduction of the Euro",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SW50cm9kdWN0aW9uIG9mIHRoZSBFdXJv&s=O9nJ49s7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SW50cm9kdWN0aW9uIG9mIHRoZSBFdXJv&s=O9nJ49s7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SW50cm9kdWN0aW9uIG9mIHRoZSBFdXJv&s=O9nJ49s7",
+            definition: "1999",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5OQ&s=zSrmbWRP&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5OQ&s=zSrmbWRP&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5OQ&s=zSrmbWRP&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7113/7027584837_6750e02f17_m.jpg",
+            setId: 303629084,
+            rank: 109,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20590730,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682743,
+            word: "Defeat of Kasparov by Deep Blue",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVmZWF0IG9mIEthc3Bhcm92IGJ5IERlZXAgQmx1ZQ&s=qAIdfmfR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVmZWF0IG9mIEthc3Bhcm92IGJ5IERlZXAgQmx1ZQ&s=qAIdfmfR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGVmZWF0IG9mIEthc3Bhcm92IGJ5IERlZXAgQmx1ZQ&s=qAIdfmfR",
+            definition: "1997",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Nw&s=OD.KwUQ5&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Nw&s=OD.KwUQ5&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5Nw&s=OD.KwUQ5&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/gcR2-B40qDv0PQjReoQ3DA_m.jpg",
+            setId: 303629084,
+            rank: 108,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22093550,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682742,
+            word: "Start of the 1st Gulf War",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIDFzdCBHdWxmIFdhcg&s=CnBAyl7W",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIDFzdCBHdWxmIFdhcg&s=CnBAyl7W&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIDFzdCBHdWxmIFdhcg&s=CnBAyl7W",
+            definition: "1991",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5MQ&s=jTFLWK5c&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5MQ&s=jTFLWK5c&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5MQ&s=jTFLWK5c&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/NHhswMat2-HoxmFITsZo1Q_m.jpg",
+            setId: 303629084,
+            rank: 107,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6658271,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682741,
+            word: "Public access to the Internet",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=UHVibGljIGFjY2VzcyB0byB0aGUgSW50ZXJuZXQ&s=OTB15ISq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UHVibGljIGFjY2VzcyB0byB0aGUgSW50ZXJuZXQ&s=OTB15ISq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=UHVibGljIGFjY2VzcyB0byB0aGUgSW50ZXJuZXQ&s=OTB15ISq",
+            definition: "1990",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5MA&s=inMQ.QmM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5MA&s=inMQ.QmM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5MA&s=inMQ.QmM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/eo0IZyYIWBVSNEjonU9-MA_m.jpg",
+            setId: 303629084,
+            rank: 106,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20491307,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682740,
+            word: "The release of Nelson Mandela",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHJlbGVhc2Ugb2YgTmVsc29uIE1hbmRlbGE&s=Hd-OpOgB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHJlbGVhc2Ugb2YgTmVsc29uIE1hbmRlbGE&s=Hd-OpOgB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHJlbGVhc2Ugb2YgTmVsc29uIE1hbmRlbGE&s=Hd-OpOgB",
+            definition: "1990",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5MA&s=inMQ.QmM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5MA&s=inMQ.QmM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5MA&s=inMQ.QmM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/-23__xbzumlcfwcD4EIv2w_m.jpg",
+            setId: 303629084,
+            rank: 105,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13431311,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682739,
+            word: "Fall of the Berlin Wall",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RmFsbCBvZiB0aGUgQmVybGluIFdhbGw&s=N-gZwskx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RmFsbCBvZiB0aGUgQmVybGluIFdhbGw&s=N-gZwskx&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RmFsbCBvZiB0aGUgQmVybGluIFdhbGw&s=N-gZwskx",
+            definition: "1989",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4OQ&s=15JoLHs9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4OQ&s=15JoLHs9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4OQ&s=15JoLHs9&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/idK8ghRuw7kxr9W42Udgcw_m.jpg",
+            setId: 303629084,
+            rank: 104,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13182293,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682738,
+            word: "The Chernobyl Disaster",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENoZXJub2J5bCBEaXNhc3Rlcg&s=sv4Z.CLB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENoZXJub2J5bCBEaXNhc3Rlcg&s=sv4Z.CLB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENoZXJub2J5bCBEaXNhc3Rlcg&s=sv4Z.CLB",
+            definition: "1986",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4Ng&s=h-dBGIuG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4Ng&s=h-dBGIuG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4Ng&s=h-dBGIuG&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/d2rE5nrxvppJkjyX0lkpug_m.jpg",
+            setId: 303629084,
+            rank: 103,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25957026,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682737,
+            word: "Abolition of the death penalty in France",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QWJvbGl0aW9uIG9mIHRoZSBkZWF0aCBwZW5hbHR5IGluIEZyYW5jZQ&s=vF4QFA7f",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QWJvbGl0aW9uIG9mIHRoZSBkZWF0aCBwZW5hbHR5IGluIEZyYW5jZQ&s=vF4QFA7f&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QWJvbGl0aW9uIG9mIHRoZSBkZWF0aCBwZW5hbHR5IGluIEZyYW5jZQ&s=vF4QFA7f",
+            definition: "1981",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/DqHCGLW76AioE2.Kz1crjg_m.jpg",
+            setId: 303629084,
+            rank: 102,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13741857,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682736,
+            word: "1st step on the Moon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHN0ZXAgb24gdGhlIE1vb24&s=Jr4FpCey",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHN0ZXAgb24gdGhlIE1vb24&s=Jr4FpCey&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHN0ZXAgb24gdGhlIE1vb24&s=Jr4FpCey",
+            definition: "1969",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3427/3739947268_0880a33de8_m.jpg",
+            setId: 303629084,
+            rank: 101,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13539437,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682735,
+            word: "The 1st Woodstock Festival",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBXb29kc3RvY2sgRmVzdGl2YWw&s=2xrZSk07",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBXb29kc3RvY2sgRmVzdGl2YWw&s=2xrZSk07&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBXb29kc3RvY2sgRmVzdGl2YWw&s=2xrZSk07",
+            definition: "1969",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/GUjmd5I11E12n5e5Czz.qg_m.jpg",
+            setId: 303629084,
+            rank: 100,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21171581,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682734,
+            word: '"I have a dream"...',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IkkgaGF2ZSBhIGRyZWFtIi4uLg&s=EsVNFHS4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IkkgaGF2ZSBhIGRyZWFtIi4uLg&s=EsVNFHS4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IkkgaGF2ZSBhIGRyZWFtIi4uLg&s=EsVNFHS4",
+            definition: "1963",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/dCt7tNLolgMmXXtC0nyFug_m.jpg",
+            setId: 303629084,
+            rank: 99,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11539116,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682733,
+            word: "The assassination of JFK",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFzc2Fzc2luYXRpb24gb2YgSkZL&s=zRCQj110",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFzc2Fzc2luYXRpb24gb2YgSkZL&s=zRCQj110&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFzc2Fzc2luYXRpb24gb2YgSkZL&s=zRCQj110",
+            definition: "1963",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/rBtABAAtS3fSWTy5XJTkpA_m.jpg",
+            setId: 303629084,
+            rank: 98,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1574383,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682732,
+            word: "The invention of fast food",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBmYXN0IGZvb2Q&s=.Fv.hzL5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBmYXN0IGZvb2Q&s=.Fv.hzL5&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBmYXN0IGZvb2Q&s=.Fv.hzL5",
+            definition: "1948",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/TaDpITaXOUclsiFzqTB.Ow_m.jpg",
+            setId: 303629084,
+            rank: 97,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19557115,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682731,
+            word: "Start of the Cold War",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIENvbGQgV2Fy&s=-Cto2Al7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIENvbGQgV2Fy&s=-Cto2Al7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIENvbGQgV2Fy&s=-Cto2Al7",
+            definition: "1946",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/0bqf4mcbujwTS8rm0oeT0w_m.jpg",
+            setId: 303629084,
+            rank: 96,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16057420,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682730,
+            word: "The bombing of Hiroshima",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJvbWJpbmcgb2YgSGlyb3NoaW1h&s=mYmo2Sig",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJvbWJpbmcgb2YgSGlyb3NoaW1h&s=mYmo2Sig&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJvbWJpbmcgb2YgSGlyb3NoaW1h&s=mYmo2Sig",
+            definition: "1945",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/UFi9v-n_xKLeph88wtudfw_m.jpg",
+            setId: 303629084,
+            rank: 95,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13813978,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682729,
+            word: "End of World War II",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIFdvcmxkIFdhciBJSQ&s=2JtlylV2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIFdvcmxkIFdhciBJSQ&s=2JtlylV2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIFdvcmxkIFdhciBJSQ&s=2JtlylV2",
+            definition: "1945",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/5t0kH8hRA5Ii-Q2-m1ZwLg_m.jpg",
+            setId: 303629084,
+            rank: 94,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21511444,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682728,
+            word: "Decolonisation of Africa (end)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVjb2xvbmlzYXRpb24gb2YgQWZyaWNhIChlbmQp&s=ozSGuXd-",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVjb2xvbmlzYXRpb24gb2YgQWZyaWNhIChlbmQp&s=ozSGuXd-&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGVjb2xvbmlzYXRpb24gb2YgQWZyaWNhIChlbmQp&s=ozSGuXd-",
+            definition: "1945",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0NQ&s=CL3cufpv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/uHRe1FqrU7Lb3sZRa4WDhQ_m.jpg",
+            setId: 303629084,
+            rank: 93,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20523933,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682727,
+            word: "The invention of ENIAC",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBFTklBQw&s=9D3q28T9",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBFTklBQw&s=9D3q28T9&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBFTklBQw&s=9D3q28T9",
+            definition: "1944",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NA&s=zvythDnM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0NA&s=zvythDnM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0NA&s=zvythDnM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Vi.xQ7kBR4m1mqNrBHMOQA_m.png",
+            setId: 303629084,
+            rank: 92,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15523036,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682726,
+            word: "Apppeal of 18 June",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QXBwcGVhbCBvZiAxOCBKdW5l&s=XkA21BvC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXBwcGVhbCBvZiAxOCBKdW5l&s=XkA21BvC&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QXBwcGVhbCBvZiAxOCBKdW5l&s=XkA21BvC",
+            definition: "1940",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Fwu3WlJqxWILTftM58Ekqw_m.jpg",
+            setId: 303629084,
+            rank: 91,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16937608,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682725,
+            word: "Start of World War II",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgV29ybGQgV2FyIElJ&s=3xY7xt1m",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgV29ybGQgV2FyIElJ&s=3xY7xt1m&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgV29ybGQgV2FyIElJ&s=3xY7xt1m",
+            definition: "1939",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/wPgHXEk2g2qH1pPLJKk6IA_m.jpg",
+            setId: 303629084,
+            rank: 90,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20543383,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682724,
+            word: "The invention of the shopping cart",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2hvcHBpbmcgY2FydA&s=1cHj3wg7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2hvcHBpbmcgY2FydA&s=1cHj3wg7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgc2hvcHBpbmcgY2FydA&s=1cHj3wg7",
+            definition: "1937",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzNw&s=KHztZ2xx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzNw&s=KHztZ2xx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzNw&s=KHztZ2xx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/MvZX0EZN6jAlC0fAzEhusA_m.jpg",
+            setId: 303629084,
+            rank: 89,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20394829,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682723,
+            word: "King Kong",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=S2luZyBLb25n&s=X8ZX7YO6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=S2luZyBLb25n&s=X8ZX7YO6&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=S2luZyBLb25n&s=X8ZX7YO6",
+            definition: "1933",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzMw&s=N-8OBGHF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzMw&s=N-8OBGHF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzMw&s=N-8OBGHF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/QjKcFdl8s8Ji3zig3n0wyQ_m.png",
+            setId: 303629084,
+            rank: 88,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21627209,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682722,
+            word: "Black Thusday (Wall Street crash)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QmxhY2sgVGh1c2RheSAoV2FsbCBTdHJlZXQgY3Jhc2gp&s=Ipcx.M3w",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmxhY2sgVGh1c2RheSAoV2FsbCBTdHJlZXQgY3Jhc2gp&s=Ipcx.M3w&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmxhY2sgVGh1c2RheSAoV2FsbCBTdHJlZXQgY3Jhc2gp&s=Ipcx.M3w",
+            definition: "1929",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/qUpisEXWbqmROYuTySNFQw_m.jpg",
+            setId: 303629084,
+            rank: 87,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 554738,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682721,
+            word: "1st crossing of the Atlantic in an Airplane",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGNyb3NzaW5nIG9mIHRoZSBBdGxhbnRpYyBpbiBhbiBBaXJwbGFuZQ&s=HiChoo--",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGNyb3NzaW5nIG9mIHRoZSBBdGxhbnRpYyBpbiBhbiBBaXJwbGFuZQ&s=HiChoo--&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGNyb3NzaW5nIG9mIHRoZSBBdGxhbnRpYyBpbiBhbiBBaXJwbGFuZQ&s=HiChoo--",
+            definition: "1927",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/hUs4RVKAIiO3LNyjQrCQ1w_m.jpg",
+            setId: 303629084,
+            rank: 86,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20591177,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682719,
+            word: "End of World War I",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIFdvcmxkIFdhciBJ&s=ZBHuZ82i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIFdvcmxkIFdhciBJ&s=ZBHuZ82i&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIFdvcmxkIFdhciBJ&s=ZBHuZ82i",
+            definition: "1918",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxOA&s=A7czpTJz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxOA&s=A7czpTJz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxOA&s=A7czpTJz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/7hgxEL7dBs3P482TLTFLMA_m.png",
+            setId: 303629084,
+            rank: 84,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10084068,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682718,
+            word: "Start of World War I",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgV29ybGQgV2FyIEk&s=TdM7V10e",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgV29ybGQgV2FyIEk&s=TdM7V10e&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgV29ybGQgV2FyIEk&s=TdM7V10e",
+            definition: "1914",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/9yvp5BaYwbeMXAimizNGDw_m.jpg",
+            setId: 303629084,
+            rank: 83,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9410775,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682717,
+            word: "Sinking of the Titanic",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U2lua2luZyBvZiB0aGUgVGl0YW5pYw&s=1M4rDlh7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U2lua2luZyBvZiB0aGUgVGl0YW5pYw&s=1M4rDlh7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U2lua2luZyBvZiB0aGUgVGl0YW5pYw&s=1M4rDlh7",
+            definition: "1912",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMg&s=t4BgyHMi&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/kOOO1l9BpC4Weh-JTmv1iw_m.jpg",
+            setId: 303629084,
+            rank: 82,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14771479,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682716,
+            word: "The invention of the cartoon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgY2FydG9vbg&s=XaRvUYzH",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgY2FydG9vbg&s=XaRvUYzH&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgY2FydG9vbg&s=XaRvUYzH",
+            definition: "1908",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7034/6387951985_69805702d4_m.jpg",
+            setId: 303629084,
+            rank: 81,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19700320,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682715,
+            word: "The invention of basketball",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBiYXNrZXRiYWxs&s=dvYZ3FHg",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBiYXNrZXRiYWxs&s=dvYZ3FHg&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBiYXNrZXRiYWxs&s=dvYZ3FHg",
+            definition: "1897",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Nw&s=RXgRYl7U&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Nw&s=RXgRYl7U&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5Nw&s=RXgRYl7U&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/QwKKOH6nDsQVb8YaZv2dkQ_m.png",
+            setId: 303629084,
+            rank: 80,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12257706,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682714,
+            word: "1st modern Olympic Games",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IG1vZGVybiBPbHltcGljIEdhbWVz&s=X.yJLzaq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IG1vZGVybiBPbHltcGljIEdhbWVz&s=X.yJLzaq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IG1vZGVybiBPbHltcGljIEdhbWVz&s=X.yJLzaq",
+            definition: "1896",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Ng&s=pcsaWAM4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Ng&s=pcsaWAM4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5Ng&s=pcsaWAM4&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4013/4353114920_e23c078835_m.jpg",
+            setId: 303629084,
+            rank: 79,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19917046,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682713,
+            word: "1st newspaper photo",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IG5ld3NwYXBlciBwaG90bw&s=eJ200LL8",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IG5ld3NwYXBlciBwaG90bw&s=eJ200LL8&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IG5ld3NwYXBlciBwaG90bw&s=eJ200LL8",
+            definition: "1880",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4MA&s=V.huoZLv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4MA&s=V.huoZLv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4MA&s=V.huoZLv&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/43/81680010_1b52fb1ec6_m.jpg",
+            setId: 303629084,
+            rank: 78,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20343057,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682712,
+            word: "The invention of chewing gum",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBjaGV3aW5nIGd1bQ&s=-O-tv2wv",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBjaGV3aW5nIGd1bQ&s=-O-tv2wv&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBjaGV3aW5nIGd1bQ&s=-O-tv2wv",
+            definition: "1872",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mg&s=byv6-P0R&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mg&s=byv6-P0R&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Mg&s=byv6-P0R&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1405/1265540043_b5d1edf9c7_m.jpg",
+            setId: 303629084,
+            rank: 77,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19018397,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682711,
+            word: "20000 Leagues Under the Sea",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MjAwMDAgTGVhZ3VlcyBVbmRlciB0aGUgU2Vh&s=hoFXB4-X",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MjAwMDAgTGVhZ3VlcyBVbmRlciB0aGUgU2Vh&s=hoFXB4-X&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MjAwMDAgTGVhZ3VlcyBVbmRlciB0aGUgU2Vh&s=hoFXB4-X",
+            definition: "1869",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/Dsl1MivYIyM4mO1CbOpVkQ_m.jpg",
+            setId: 303629084,
+            rank: 76,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 731605,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682710,
+            word: "Start of the American Civil War",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEFtZXJpY2FuIENpdmlsIFdhcg&s=Ppb6fZ44",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEFtZXJpY2FuIENpdmlsIFdhcg&s=Ppb6fZ44&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEFtZXJpY2FuIENpdmlsIFdhcg&s=Ppb6fZ44",
+            definition: "1861",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/f6fQ595Tl-qH02mCjnLn-w_m.jpg",
+            setId: 303629084,
+            rank: 75,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20400693,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682709,
+            word: "Founding of the Pony Express",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIFBvbnkgRXhwcmVzcw&s=ZY1cBE8Z",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIFBvbnkgRXhwcmVzcw&s=ZY1cBE8Z&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIFBvbnkgRXhwcmVzcw&s=ZY1cBE8Z",
+            definition: "1860",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/NLDzU_dc046u0vKaXxHQgQ_m.jpg",
+            setId: 303629084,
+            rank: 74,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18279922,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682708,
+            word: "The discovery of the source of the Nile (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgc291cmNlIG9mIHRoZSBOaWxlIChieSBFdXJvcGVhbnMp&s=hCSFhztS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgc291cmNlIG9mIHRoZSBOaWxlIChieSBFdXJvcGVhbnMp&s=hCSFhztS&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgc291cmNlIG9mIHRoZSBOaWxlIChieSBFdXJvcGVhbnMp&s=hCSFhztS",
+            definition: "1860",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MA&s=yJP5W4X3&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/VGiGAb5frzNw4WSa3Tthlg_m.jpg",
+            setId: 303629084,
+            rank: 73,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17632199,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682707,
+            word: "1st oil well",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=MXN0IG9pbCB3ZWxs&s=t9EACJFS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IG9pbCB3ZWxs&s=t9EACJFS&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=MXN0IG9pbCB3ZWxs&s=t9EACJFS",
+            definition: "1859",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1OQ&s=Rt7H9j9v&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/91/249922565_50879baf06_m.jpg",
+            setId: 303629084,
+            rank: 72,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20227982,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682706,
+            word: "The invention of the elevator",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgZWxldmF0b3I&s=TzbmLgTw",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgZWxldmF0b3I&s=TzbmLgTw&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgZWxldmF0b3I&s=TzbmLgTw",
+            definition: "1857",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1Nw&s=azEXe-y-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1Nw&s=azEXe-y-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1Nw&s=azEXe-y-&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/TyYDLDBJzmkCdSZXojCKGw_m.png",
+            setId: 303629084,
+            rank: 71,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 23839603,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682705,
+            word: "The California Gold Rush",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENhbGlmb3JuaWEgR29sZCBSdXNo&s=85hZUcXv",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENhbGlmb3JuaWEgR29sZCBSdXNo&s=85hZUcXv&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENhbGlmb3JuaWEgR29sZCBSdXNo&s=85hZUcXv",
+            definition: "1848",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0OA&s=fzxZ1EA8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0OA&s=fzxZ1EA8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0OA&s=fzxZ1EA8&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/bnhiHE0PvtcPh2m9D6EEaQ_m.jpg",
+            setId: 303629084,
+            rank: 70,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11457406,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682704,
+            word: "Slavery abolished in France",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U2xhdmVyeSBhYm9saXNoZWQgaW4gRnJhbmNl&s=P0I-chiN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U2xhdmVyeSBhYm9saXNoZWQgaW4gRnJhbmNl&s=P0I-chiN&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U2xhdmVyeSBhYm9saXNoZWQgaW4gRnJhbmNl&s=P0I-chiN",
+            definition: "1848",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0OA&s=fzxZ1EA8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0OA&s=fzxZ1EA8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0OA&s=fzxZ1EA8&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/TCmE5.LpsNQPPVnjIIFt7g_m.jpg",
+            setId: 303629084,
+            rank: 69,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17402214,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682703,
+            word: "1st train accident",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHRyYWluIGFjY2lkZW50&s=uQsO.sYh",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHRyYWluIGFjY2lkZW50&s=uQsO.sYh&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHRyYWluIGFjY2lkZW50&s=uQsO.sYh",
+            definition: "1842",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Mg&s=HS9rfTNG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Mg&s=HS9rfTNG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0Mg&s=HS9rfTNG&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/29/56844105_a98dab13ea_m.jpg",
+            setId: 303629084,
+            rank: 68,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20446464,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682702,
+            word: "The invention of the postage stamp",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgcG9zdGFnZSBzdGFtcA&s=5-A2yjZp",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgcG9zdGFnZSBzdGFtcA&s=5-A2yjZp&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiB0aGUgcG9zdGFnZSBzdGFtcA&s=5-A2yjZp",
+            definition: "1840",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0MA&s=quzkLRmM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0MA&s=quzkLRmM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0MA&s=quzkLRmM&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4008/4232167630_53cbddef62_m.jpg",
+            setId: 303629084,
+            rank: 67,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18264776,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682695,
+            word: "1st parachute jump",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHBhcmFjaHV0ZSBqdW1w&s=lgAJ8h8F",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHBhcmFjaHV0ZSBqdW1w&s=lgAJ8h8F&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHBhcmFjaHV0ZSBqdW1w&s=lgAJ8h8F",
+            definition: "1797",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Nw&s=NdIpXYPm&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Nw&s=NdIpXYPm&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5Nw&s=NdIpXYPm&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/wy-v4CKAl_doQx_6rFtzlg_m.jpg",
+            setId: 303629084,
+            rank: 60,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15702802,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682694,
+            word: "The birth of the Dollar",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJpcnRoIG9mIHRoZSBEb2xsYXI&s=NIwmvrqM",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJpcnRoIG9mIHRoZSBEb2xsYXI&s=NIwmvrqM&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJpcnRoIG9mIHRoZSBEb2xsYXI&s=NIwmvrqM",
+            definition: "1792",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Mg&s=TTCCoovZ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Mg&s=TTCCoovZ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5Mg&s=TTCCoovZ&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4108/5198357766_2c08c17de7_m.jpg",
+            setId: 303629084,
+            rank: 59,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20041319,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682693,
+            word: "The Mutiny on the Bounty",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE11dGlueSBvbiB0aGUgQm91bnR5&s=hBCQQ65Z",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE11dGlueSBvbiB0aGUgQm91bnR5&s=hBCQQ65Z&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE11dGlueSBvbiB0aGUgQm91bnR5&s=hBCQQ65Z",
+            definition: "1789",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Obfw6FLajhEgMsPP-IJFzQ_m.jpg",
+            setId: 303629084,
+            rank: 58,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25017595,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682692,
+            word: "The Declaration of the Rights of Man and of the Citizen",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERlY2xhcmF0aW9uIG9mIHRoZSBSaWdodHMgb2YgTWFuIGFuZCBvZiB0aGUgQ2l0aXplbg&s=jYFA57Bd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERlY2xhcmF0aW9uIG9mIHRoZSBSaWdodHMgb2YgTWFuIGFuZCBvZiB0aGUgQ2l0aXplbg&s=jYFA57Bd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERlY2xhcmF0aW9uIG9mIHRoZSBSaWdodHMgb2YgTWFuIGFuZCBvZiB0aGUgQ2l0aXplbg&s=jYFA57Bd",
+            definition: "1789",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4OQ&s=oBuIoTVC&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/V2Pm7OEb6Ze3XGrRr.NztQ_m.jpg",
+            setId: 303629084,
+            rank: 57,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8872063,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682691,
+            word: '1st edition of "The Times" newspaper',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGVkaXRpb24gb2YgIlRoZSBUaW1lcyIgbmV3c3BhcGVy&s=exwb7Bxe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGVkaXRpb24gb2YgIlRoZSBUaW1lcyIgbmV3c3BhcGVy&s=exwb7Bxe&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGVkaXRpb24gb2YgIlRoZSBUaW1lcyIgbmV3c3BhcGVy&s=exwb7Bxe",
+            definition: "1788",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OA&s=eFsEeVjt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4OA&s=eFsEeVjt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4OA&s=eFsEeVjt&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6033/6277209256_934f20da10_m.jpg",
+            setId: 303629084,
+            rank: 56,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20588246,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682690,
+            word: "1st crossing of the Channel by hot air balloon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGNyb3NzaW5nIG9mIHRoZSBDaGFubmVsIGJ5IGhvdCBhaXIgYmFsbG9vbg&s=fwxKLXiZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGNyb3NzaW5nIG9mIHRoZSBDaGFubmVsIGJ5IGhvdCBhaXIgYmFsbG9vbg&s=fwxKLXiZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IGNyb3NzaW5nIG9mIHRoZSBDaGFubmVsIGJ5IGhvdCBhaXIgYmFsbG9vbg&s=fwxKLXiZ",
+            definition: "1785",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4NQ&s=-Qu6PTgw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4NQ&s=-Qu6PTgw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4NQ&s=-Qu6PTgw&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/PIlYSgmKIkwQundJhf1dUQ_m.jpg",
+            setId: 303629084,
+            rank: 55,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19972523,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682689,
+            word: "The American Declaration of Independence",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFtZXJpY2FuIERlY2xhcmF0aW9uIG9mIEluZGVwZW5kZW5jZQ&s=UkSU2-Cc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFtZXJpY2FuIERlY2xhcmF0aW9uIG9mIEluZGVwZW5kZW5jZQ&s=UkSU2-Cc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFtZXJpY2FuIERlY2xhcmF0aW9uIG9mIEluZGVwZW5kZW5jZQ&s=UkSU2-Cc",
+            definition: "1776",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Ng&s=J5bEolGv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Ng&s=J5bEolGv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3Ng&s=J5bEolGv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/KP7pGwT6bky39oKFgFKr4g_m.jpg",
+            setId: 303629084,
+            rank: 54,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20277989,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682688,
+            word: "Casanova breaks out of jail",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2FzYW5vdmEgYnJlYWtzIG91dCBvZiBqYWls&s=mGHrqXmJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2FzYW5vdmEgYnJlYWtzIG91dCBvZiBqYWls&s=mGHrqXmJ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q2FzYW5vdmEgYnJlYWtzIG91dCBvZiBqYWls&s=mGHrqXmJ",
+            definition: "1756",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1Ng&s=gOXzU1cH&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1Ng&s=gOXzU1cH&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc1Ng&s=gOXzU1cH&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/V8ug3Qt7eXn6oKclwvPhEg_m.jpg",
+            setId: 303629084,
+            rank: 53,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12123017,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682687,
+            word: "The arrest of Jack Rackham",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFycmVzdCBvZiBKYWNrIFJhY2toYW0&s=Mv0wi6PT",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFycmVzdCBvZiBKYWNrIFJhY2toYW0&s=Mv0wi6PT&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGFycmVzdCBvZiBKYWNrIFJhY2toYW0&s=Mv0wi6PT",
+            definition: "1720",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcyMA&s=bAXuF5jf&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcyMA&s=bAXuF5jf&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcyMA&s=bAXuF5jf&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/SfwVLEmVvSODpPmo0Pb8Kw_m.jpg",
+            setId: 303629084,
+            rank: 52,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17787016,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682686,
+            word: "Blackbeard VS HMS Pearl",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QmxhY2tiZWFyZCBWUyBITVMgUGVhcmw&s=ZcTc5ZxY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmxhY2tiZWFyZCBWUyBITVMgUGVhcmw&s=ZcTc5ZxY&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmxhY2tiZWFyZCBWUyBITVMgUGVhcmw&s=ZcTc5ZxY",
+            definition: "1718",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcxOA&s=WkKRbDfo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcxOA&s=WkKRbDfo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcxOA&s=WkKRbDfo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/AcA9tJxkFImOqctXxiUOpQ_m.jpg",
+            setId: 303629084,
+            rank: 51,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25597126,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682685,
+            word: "The Salem Witch Trials",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFNhbGVtIFdpdGNoIFRyaWFscw&s=9QtAk3aN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFNhbGVtIFdpdGNoIFRyaWFscw&s=9QtAk3aN&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFNhbGVtIFdpdGNoIFRyaWFscw&s=9QtAk3aN",
+            definition: "1692",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY5Mg&s=LTh1vDYt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY5Mg&s=LTh1vDYt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY5Mg&s=LTh1vDYt&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Kf2w-9vdAyFXJIo8GVrmLg_m.jpg",
+            setId: 303629084,
+            rank: 50,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15269627,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682684,
+            word: "1st Crop Circle reported",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IENyb3AgQ2lyY2xlIHJlcG9ydGVk&s=gJDX-ksn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IENyb3AgQ2lyY2xlIHJlcG9ydGVk&s=gJDX-ksn&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IENyb3AgQ2lyY2xlIHJlcG9ydGVk&s=gJDX-ksn",
+            definition: "1678",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3OA&s=27ycBfh4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY3OA&s=27ycBfh4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY3OA&s=27ycBfh4&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/78/216055173_0cd271d746_m.jpg",
+            setId: 303629084,
+            rank: 49,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20640787,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682683,
+            word: "The invention of Champagne",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBDaGFtcGFnbmU&s=qYaxd1s4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBDaGFtcGFnbmU&s=qYaxd1s4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBDaGFtcGFnbmU&s=qYaxd1s4",
+            definition: "1668",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2OA&s=.hvZxa9k&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2OA&s=.hvZxa9k&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY2OA&s=.hvZxa9k&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3592/3324879428_3beeef894a_m.jpg",
+            setId: 303629084,
+            rank: 48,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19476066,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682682,
+            word: "The Great Fire of London",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEdyZWF0IEZpcmUgb2YgTG9uZG9u&s=-xZcOZOf",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEdyZWF0IEZpcmUgb2YgTG9uZG9u&s=-xZcOZOf&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEdyZWF0IEZpcmUgb2YgTG9uZG9u&s=-xZcOZOf",
+            definition: "1666",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2Ng&s=lqo1LXe1&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2Ng&s=lqo1LXe1&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY2Ng&s=lqo1LXe1&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4036/4419539004_9269fd964f_m.jpg",
+            setId: 303629084,
+            rank: 47,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12598753,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682681,
+            word: "Louix XIV, crowned King of France",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TG91aXggWElWLCBjcm93bmVkIEtpbmcgb2YgRnJhbmNl&s=0fNZGAQ1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TG91aXggWElWLCBjcm93bmVkIEtpbmcgb2YgRnJhbmNl&s=0fNZGAQ1&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TG91aXggWElWLCBjcm93bmVkIEtpbmcgb2YgRnJhbmNl&s=0fNZGAQ1",
+            definition: "1643",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mw&s=pH4LEe94&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mw&s=pH4LEe94&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mw&s=pH4LEe94&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/P7LHcWkE7KEEhJX2oFQaDQ_m.png",
+            setId: 303629084,
+            rank: 46,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11794775,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682680,
+            word: "Calculating machine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2FsY3VsYXRpbmcgbWFjaGluZQ&s=ohcK6AKW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2FsY3VsYXRpbmcgbWFjaGluZQ&s=ohcK6AKW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q2FsY3VsYXRpbmcgbWFjaGluZQ&s=ohcK6AKW",
+            definition: "1642",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mg&s=-VgLv37d&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mg&s=-VgLv37d&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY0Mg&s=-VgLv37d&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/dy5LXBPDZtAozvJnNCl9YQ_m.jpg",
+            setId: 303629084,
+            rank: 45,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 33107910,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682679,
+            word: "Founding of the King's Musketeers",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEtpbmcncyBNdXNrZXRlZXJz&s=j5kKJj47",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEtpbmcncyBNdXNrZXRlZXJz&s=j5kKJj47&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEtpbmcncyBNdXNrZXRlZXJz&s=j5kKJj47",
+            definition: "1622",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYyMg&s=VfJhWGBn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYyMg&s=VfJhWGBn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYyMg&s=VfJhWGBn&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/87/236851608_f32879ba26_m.jpg",
+            setId: 303629084,
+            rank: 44,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20481087,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682678,
+            word: "1st voyage around the world",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHZveWFnZSBhcm91bmQgdGhlIHdvcmxk&s=hOm41H6S",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHZveWFnZSBhcm91bmQgdGhlIHdvcmxk&s=hOm41H6S&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IHZveWFnZSBhcm91bmQgdGhlIHdvcmxk&s=hOm41H6S",
+            definition: "1522",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUyMg&s=Yj1LpP09&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUyMg&s=Yj1LpP09&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUyMg&s=Yj1LpP09&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/56/134974908_0bfc108593_m.jpg",
+            setId: 303629084,
+            rank: 43,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20541692,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682677,
+            word: "The discovery of the turkey (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdHVya2V5IChieSBFdXJvcGVhbnMp&s=U.QVP0wW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdHVya2V5IChieSBFdXJvcGVhbnMp&s=U.QVP0wW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgdHVya2V5IChieSBFdXJvcGVhbnMp&s=U.QVP0wW",
+            definition: "1492",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ5Mg&s=epRBQzox&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3141/2441818832_aa89a2ffa2_m.jpg",
+            setId: 303629084,
+            rank: 42,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20550965,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682676,
+            word: "Colonisation of Africa (start)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q29sb25pc2F0aW9uIG9mIEFmcmljYSAoc3RhcnQp&s=YS3WnQ.G",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q29sb25pc2F0aW9uIG9mIEFmcmljYSAoc3RhcnQp&s=YS3WnQ.G&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q29sb25pc2F0aW9uIG9mIEFmcmljYSAoc3RhcnQp&s=YS3WnQ.G",
+            definition: "1454",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ1NA&s=yHMFn87l&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ1NA&s=yHMFn87l&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ1NA&s=yHMFn87l&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/tly89wxu09lxsLxICyKtjw_m.jpg",
+            setId: 303629084,
+            rank: 41,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24633590,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682675,
+            word: "The fall of Constantinople",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgQ29uc3RhbnRpbm9wbGU&s=BB.cC.mU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgQ29uc3RhbnRpbm9wbGU&s=BB.cC.mU&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgQ29uc3RhbnRpbm9wbGU&s=BB.cC.mU",
+            definition: "1453",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ1Mw&s=pg6keiB2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ1Mw&s=pg6keiB2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ1Mw&s=pg6keiB2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/tPwr2g1PQ711y6CUfi9f.g_m.jpg",
+            setId: 303629084,
+            rank: 40,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19890221,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682674,
+            word: "End of the 100 Year War",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIHRoZSAxMDAgWWVhciBXYXI&s=q6qr7Msh",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIHRoZSAxMDAgWWVhciBXYXI&s=q6qr7Msh&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RW5kIG9mIHRoZSAxMDAgWWVhciBXYXI&s=q6qr7Msh",
+            definition: "1453",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ1Mw&s=pg6keiB2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQ1Mw&s=pg6keiB2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQ1Mw&s=pg6keiB2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Qymowszec7VeXCx5wpNe.Q_m.jpg",
+            setId: 303629084,
+            rank: 39,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11802381,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682673,
+            word: "The death of Joan of Arc",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRlYXRoIG9mIEpvYW4gb2YgQXJj&s=sKP4dJfe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRlYXRoIG9mIEpvYW4gb2YgQXJj&s=sKP4dJfe&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRlYXRoIG9mIEpvYW4gb2YgQXJj&s=sKP4dJfe",
+            definition: "1431",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQzMQ&s=sMmrsgei&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTQzMQ&s=sMmrsgei&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTQzMQ&s=sMmrsgei&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/f4hedVs9k4qapfG45D7zoQ_m.jpg",
+            setId: 303629084,
+            rank: 38,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18501151,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682672,
+            word: "The start of the Black Death",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHN0YXJ0IG9mIHRoZSBCbGFjayBEZWF0aA&s=gbnAHK-t",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHN0YXJ0IG9mIHRoZSBCbGFjayBEZWF0aA&s=gbnAHK-t&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIHN0YXJ0IG9mIHRoZSBCbGFjayBEZWF0aA&s=gbnAHK-t",
+            definition: "1346",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTM0Ng&s=nj98wCV.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTM0Ng&s=nj98wCV.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTM0Ng&s=nj98wCV.&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Z3VAwY1P6DTurvcAMRpp3Q_m.jpg",
+            setId: 303629084,
+            rank: 37,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10834661,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682671,
+            word: "Start of the 100 Year War",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIDEwMCBZZWFyIFdhcg&s=MpSqLV.k",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIDEwMCBZZWFyIFdhcg&s=MpSqLV.k&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIDEwMCBZZWFyIFdhcg&s=MpSqLV.k",
+            definition: "1337",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMzNw&s=zpbF9JKK&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMzNw&s=zpbF9JKK&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTMzNw&s=zpbF9JKK&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/cX6680T7KCchm3A4BNIifQ_m.jpg",
+            setId: 303629084,
+            rank: 36,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20482412,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682670,
+            word: "The execution of William Wallace",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGV4ZWN1dGlvbiBvZiBXaWxsaWFtIFdhbGxhY2U&s=go-DS.yx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGV4ZWN1dGlvbiBvZiBXaWxsaWFtIFdhbGxhY2U&s=go-DS.yx&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGV4ZWN1dGlvbiBvZiBXaWxsaWFtIFdhbGxhY2U&s=go-DS.yx",
+            definition: "1305",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMwNQ&s=RQNoHJFb&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTMwNQ&s=RQNoHJFb&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTMwNQ&s=RQNoHJFb&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/KdEcWduGfGYJ0RSSpDQYUA_m.jpg",
+            setId: 303629084,
+            rank: 35,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13431213,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682669,
+            word: "The Last (12th) Crusade",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExhc3QgKDEydGgpIENydXNhZGU&s=We7-Hx.2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExhc3QgKDEydGgpIENydXNhZGU&s=We7-Hx.2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExhc3QgKDEydGgpIENydXNhZGU&s=We7-Hx.2",
+            definition: "1272",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI3Mg&s=EPTS1uJX&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTI3Mg&s=EPTS1uJX&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTI3Mg&s=EPTS1uJX&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/3h066D6LCPjqwdCm5mYlpQ_m.png",
+            setId: 303629084,
+            rank: 34,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13301385,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682668,
+            word: "Start of the Holy Inquisition",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEhvbHkgSW5xdWlzaXRpb24&s=Gk9NiZrZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEhvbHkgSW5xdWlzaXRpb24&s=Gk9NiZrZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEhvbHkgSW5xdWlzaXRpb24&s=Gk9NiZrZ",
+            definition: "1231",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTIzMQ&s=XdgLcve2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTIzMQ&s=XdgLcve2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTIzMQ&s=XdgLcve2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/4r83PxBIm2jsspm8c1IryQ_m.jpg",
+            setId: 303629084,
+            rank: 33,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19875291,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682667,
+            word: "Founding of the Kinghts Templar",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEtpbmdodHMgVGVtcGxhcg&s=9rqC7HW4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEtpbmdodHMgVGVtcGxhcg&s=9rqC7HW4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEtpbmdodHMgVGVtcGxhcg&s=9rqC7HW4",
+            definition: "1119",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTExOQ&s=vtL4c0oM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTExOQ&s=vtL4c0oM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTExOQ&s=vtL4c0oM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/voDxjjNNP_K-663JcJL32g_m.jpg",
+            setId: 303629084,
+            rank: 32,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6811167,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682666,
+            word: "The discovery of the shallot (by Europeans)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgc2hhbGxvdCAoYnkgRXVyb3BlYW5zKQ&s=vRVAOtSP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgc2hhbGxvdCAoYnkgRXVyb3BlYW5zKQ&s=vRVAOtSP&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGRpc2NvdmVyeSBvZiB0aGUgc2hhbGxvdCAoYnkgRXVyb3BlYW5zKQ&s=vRVAOtSP",
+            definition: "1099",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA5OQ&s=NCs.Tl.4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA5OQ&s=NCs.Tl.4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTA5OQ&s=NCs.Tl.4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/d-hC_LAn_-rsDI2idVgUZA_m.jpg",
+            setId: 303629084,
+            rank: 31,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4092803,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682665,
+            word: "The 1st Crusade",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIDFzdCBDcnVzYWRl&s=wGpU7v0J",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBDcnVzYWRl&s=wGpU7v0J&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=VGhlIDFzdCBDcnVzYWRl&s=wGpU7v0J",
+            definition: "1096",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA5Ng&s=J03P1yyx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA5Ng&s=J03P1yyx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTA5Ng&s=J03P1yyx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/8VJTp.wHeOKETPdKFD6kMQ_m.jpg",
+            setId: 303629084,
+            rank: 30,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17850192,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682664,
+            word: "The Battle of Hastings",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJhdHRsZSBvZiBIYXN0aW5ncw&s=j1sYFH96",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJhdHRsZSBvZiBIYXN0aW5ncw&s=j1sYFH96&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJhdHRsZSBvZiBIYXN0aW5ncw&s=j1sYFH96",
+            definition: "1066",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA2Ng&s=-SsIfveE&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTA2Ng&s=-SsIfveE&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTA2Ng&s=-SsIfveE&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/55/272439850_ad00a50d47_m.jpg",
+            setId: 303629084,
+            rank: 29,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577409,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682663,
+            word: "Vikings loot the Tomb of Charlemagne",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VmlraW5ncyBsb290IHRoZSBUb21iIG9mIENoYXJsZW1hZ25l&s=vsY4W.4h",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VmlraW5ncyBsb290IHRoZSBUb21iIG9mIENoYXJsZW1hZ25l&s=vsY4W.4h&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VmlraW5ncyBsb290IHRoZSBUb21iIG9mIENoYXJsZW1hZ25l&s=vsY4W.4h",
+            definition: "882",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=ODgy&s=wp7WkiBt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=ODgy&s=wp7WkiBt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=ODgy&s=wp7WkiBt&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/fMVXYXFyvt6XFn1eQcHxYQ_m.jpg",
+            setId: 303629084,
+            rank: 28,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20490515,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682662,
+            word: "Charlemagne crowned Western Emperor",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxlbWFnbmUgY3Jvd25lZCBXZXN0ZXJuIEVtcGVyb3I&s=MOs3t5Pd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxlbWFnbmUgY3Jvd25lZCBXZXN0ZXJuIEVtcGVyb3I&s=MOs3t5Pd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxlbWFnbmUgY3Jvd25lZCBXZXN0ZXJuIEVtcGVyb3I&s=MOs3t5Pd",
+            definition: "800",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=ODAw&s=UM8GqmWv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=ODAw&s=UM8GqmWv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=ODAw&s=UM8GqmWv&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1331/1400003318_fab4429861_m.jpg",
+            setId: 303629084,
+            rank: 27,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20585906,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682661,
+            word: "1st Viking raid",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=MXN0IFZpa2luZyByYWlk&s=YvsdRCAd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IFZpa2luZyByYWlk&s=YvsdRCAd&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=MXN0IFZpa2luZyByYWlk&s=YvsdRCAd",
+            definition: "789",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=Nzg5&s=Qba59CCx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=Nzg5&s=Qba59CCx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=Nzg5&s=Qba59CCx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/0TdhG1C4jHDmUXTRY7mAtQ_m.jpg",
+            setId: 303629084,
+            rank: 26,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 35348760,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682660,
+            word: "The fall of the Western Roman Empire",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgdGhlIFdlc3Rlcm4gUm9tYW4gRW1waXJl&s=s4aJew5Y",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgdGhlIFdlc3Rlcm4gUm9tYW4gRW1waXJl&s=s4aJew5Y&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgdGhlIFdlc3Rlcm4gUm9tYW4gRW1waXJl&s=s4aJew5Y",
+            definition: "476",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=NDc2&s=bdUTD4lT&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=NDc2&s=bdUTD4lT&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=NDc2&s=bdUTD4lT&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/-6UlosJShxg3vkqFPVGpJg_m.jpg",
+            setId: 303629084,
+            rank: 25,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 2723353,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682659,
+            word: "Atiila crowned King of the Huns",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QXRpaWxhIGNyb3duZWQgS2luZyBvZiB0aGUgSHVucw&s=owLf8ffd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXRpaWxhIGNyb3duZWQgS2luZyBvZiB0aGUgSHVucw&s=owLf8ffd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QXRpaWxhIGNyb3duZWQgS2luZyBvZiB0aGUgSHVucw&s=owLf8ffd",
+            definition: "434",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=NDM0&s=qdb6eOm-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=NDM0&s=qdb6eOm-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=NDM0&s=qdb6eOm-&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Np7MBVO9dgZ1xP2LS9ZboQ_m.jpg",
+            setId: 303629084,
+            rank: 24,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16415996,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682658,
+            word: "Start of the Barbarian Invasions",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEJhcmJhcmlhbiBJbnZhc2lvbnM&s=0pIjOA8g",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEJhcmJhcmlhbiBJbnZhc2lvbnM&s=0pIjOA8g&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcnQgb2YgdGhlIEJhcmJhcmlhbiBJbnZhc2lvbnM&s=0pIjOA8g",
+            definition: "375",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=Mzc1&s=zWMXashw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=Mzc1&s=zWMXashw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=Mzc1&s=zWMXashw&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/vXS7RQZkixzTR84tzdeYng_m.jpg",
+            setId: 303629084,
+            rank: 23,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20543029,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682657,
+            word: "Founding of Constantinople",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgQ29uc3RhbnRpbm9wbGU&s=E4C1eVbG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgQ29uc3RhbnRpbm9wbGU&s=E4C1eVbG&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgQ29uc3RhbnRpbm9wbGU&s=E4C1eVbG",
+            definition: "324",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MzI0&s=-oAtf.jo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MzI0&s=-oAtf.jo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MzI0&s=-oAtf.jo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/tPwr2g1PQ711y6CUfi9f.g_m.jpg",
+            setId: 303629084,
+            rank: 22,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19890221,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682656,
+            word: "The burial of Pompeii",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJ1cmlhbCBvZiBQb21wZWlp&s=AA8AbPko",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJ1cmlhbCBvZiBQb21wZWlp&s=AA8AbPko&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGJ1cmlhbCBvZiBQb21wZWlp&s=AA8AbPko",
+            definition: "79",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=Nzk&s=JAxHkcdu&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=Nzk&s=JAxHkcdu&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=Nzk&s=JAxHkcdu&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/-tNdrVdK6LFTvYAKEwCIYA_m.jpg",
+            setId: 303629084,
+            rank: 21,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18809843,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682655,
+            word: "Great fire of Rome",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=R3JlYXQgZmlyZSBvZiBSb21l&s=Q10N4vEe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=R3JlYXQgZmlyZSBvZiBSb21l&s=Q10N4vEe&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=R3JlYXQgZmlyZSBvZiBSb21l&s=Q10N4vEe",
+            definition: "64",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=NjQ&s=h8I5st9t&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=NjQ&s=h8I5st9t&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=NjQ&s=h8I5st9t&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/160/336073279_94e699b127_m.jpg",
+            setId: 303629084,
+            rank: 20,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20265112,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682654,
+            word: "The Crucifixion of Jesus",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENydWNpZml4aW9uIG9mIEplc3Vz&s=zcIlEBh3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENydWNpZml4aW9uIG9mIEplc3Vz&s=zcIlEBh3&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENydWNpZml4aW9uIG9mIEplc3Vz&s=zcIlEBh3",
+            definition: "30",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MzA&s=uH19seAR&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MzA&s=uH19seAR&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MzA&s=uH19seAR&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5135/5501640617_1ca82727a1_m.jpg",
+            setId: 303629084,
+            rank: 19,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20574455,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682653,
+            word: "Julius Caesar named Dictator for Life",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SnVsaXVzIENhZXNhciBuYW1lZCBEaWN0YXRvciBmb3IgTGlmZQ&s=IjXmIp4F",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SnVsaXVzIENhZXNhciBuYW1lZCBEaWN0YXRvciBmb3IgTGlmZQ&s=IjXmIp4F&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SnVsaXVzIENhZXNhciBuYW1lZCBEaWN0YXRvciBmb3IgTGlmZQ&s=IjXmIp4F",
+            definition: "-44",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQ0&s=0QV34hlP&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQ0&s=0QV34hlP&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQ0&s=0QV34hlP&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8459/7993839621_62be41db79_m.jpg",
+            setId: 303629084,
+            rank: 18,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18464286,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682652,
+            word: "\"Alea jacta est' spoken by Caesar",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IkFsZWEgamFjdGEgZXN0JyBzcG9rZW4gYnkgQ2Flc2Fy&s=Q06nf5R0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IkFsZWEgamFjdGEgZXN0JyBzcG9rZW4gYnkgQ2Flc2Fy&s=Q06nf5R0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IkFsZWEgamFjdGEgZXN0JyBzcG9rZW4gYnkgQ2Flc2Fy&s=Q06nf5R0",
+            definition: "-49",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQ5&s=46v8a.Fm&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQ5&s=46v8a.Fm&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQ5&s=46v8a.Fm&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3244/3054713625_dd9ed94c99_m.jpg",
+            setId: 303629084,
+            rank: 17,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577123,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682651,
+            word: "Cleopatra crowned Queen of Egypt",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2xlb3BhdHJhIGNyb3duZWQgUXVlZW4gb2YgRWd5cHQ&s=mv7iJT33",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2xlb3BhdHJhIGNyb3duZWQgUXVlZW4gb2YgRWd5cHQ&s=mv7iJT33&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q2xlb3BhdHJhIGNyb3duZWQgUXVlZW4gb2YgRWd5cHQ&s=mv7iJT33",
+            definition: "-51",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTUx&s=R7-839GB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTUx&s=R7-839GB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTUx&s=R7-839GB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/v.1FDc2UmuLIFcy1-J8kfQ_m.jpg",
+            setId: 303629084,
+            rank: 16,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16059409,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682650,
+            word: "Battle of Alesia",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QmF0dGxlIG9mIEFsZXNpYQ&s=4NQCNeS1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmF0dGxlIG9mIEFsZXNpYQ&s=4NQCNeS1&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmF0dGxlIG9mIEFsZXNpYQ&s=4NQCNeS1",
+            definition: "-52",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTUy&s=GPdz2nI8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTUy&s=GPdz2nI8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTUy&s=GPdz2nI8&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Lmlh8tEB8hqJ25o6-foODw_m.jpg",
+            setId: 303629084,
+            rank: 15,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 23224212,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682649,
+            word: "Hannibal crosses the Alps",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SGFubmliYWwgY3Jvc3NlcyB0aGUgQWxwcw&s=AWRo.1nL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SGFubmliYWwgY3Jvc3NlcyB0aGUgQWxwcw&s=AWRo.1nL&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SGFubmliYWwgY3Jvc3NlcyB0aGUgQWxwcw&s=AWRo.1nL",
+            definition: "-218",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIxOA&s=cmIYZSEV&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIxOA&s=cmIYZSEV&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIxOA&s=cmIYZSEV&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/_MO6BVLqZNBaWpvdRJiaFw_m.jpg",
+            setId: 303629084,
+            rank: 14,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20094779,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682648,
+            word: "Building of the Great Wall of China starts",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QnVpbGRpbmcgb2YgdGhlIEdyZWF0IFdhbGwgb2YgQ2hpbmEgc3RhcnRz&s=5PFHezf2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnVpbGRpbmcgb2YgdGhlIEdyZWF0IFdhbGwgb2YgQ2hpbmEgc3RhcnRz&s=5PFHezf2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QnVpbGRpbmcgb2YgdGhlIEdyZWF0IFdhbGwgb2YgQ2hpbmEgc3RhcnRz&s=5PFHezf2",
+            definition: "-221",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIyMQ&s=id1GrVWv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIyMQ&s=id1GrVWv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIyMQ&s=id1GrVWv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/zBwHOlxQKc7-jyGOxkjBhw_m.jpg",
+            setId: 303629084,
+            rank: 13,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19796631,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682647,
+            word: "Building of Lighthouse of Alexandria",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QnVpbGRpbmcgb2YgTGlnaHRob3VzZSBvZiBBbGV4YW5kcmlh&s=-YCNnQOu",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnVpbGRpbmcgb2YgTGlnaHRob3VzZSBvZiBBbGV4YW5kcmlh&s=-YCNnQOu&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QnVpbGRpbmcgb2YgTGlnaHRob3VzZSBvZiBBbGV4YW5kcmlh&s=-YCNnQOu",
+            definition: "-297",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTI5Nw&s=WG9KywpF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTI5Nw&s=WG9KywpF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTI5Nw&s=WG9KywpF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/SwR0DM_Vzydo0GoF_iEEOA_m.jpg",
+            setId: 303629084,
+            rank: 12,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 3802885,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682646,
+            word: "The fall of Babylon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgQmFieWxvbg&s=IkY7Niou",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgQmFieWxvbg&s=IkY7Niou&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZhbGwgb2YgQmFieWxvbg&s=IkY7Niou",
+            definition: "-539",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTUzOQ&s=TFf-6hRN&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTUzOQ&s=TFf-6hRN&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTUzOQ&s=TFf-6hRN&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/2wXWgIKySvaFURwSwirGZw_m.jpg",
+            setId: 303629084,
+            rank: 11,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1124950,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295682645,
+            word: "1st Ancient Olympic Games",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IEFuY2llbnQgT2x5bXBpYyBHYW1lcw&s=JYsrtqxH",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=MXN0IEFuY2llbnQgT2x5bXBpYyBHYW1lcw&s=JYsrtqxH&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=MXN0IEFuY2llbnQgT2x5bXBpYyBHYW1lcw&s=JYsrtqxH",
+            definition: "-779",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTc3OQ&s=YhAFxf5R&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTc3OQ&s=YhAFxf5R&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTc3OQ&s=YhAFxf5R&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/bXQSuyioi2YEuAvd2doV7Q_m.jpg",
+            setId: 303629084,
+            rank: 10,
+            lastModified: 1530149289,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20135685,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 110,
+        page: 1,
+        perPage: 200,
+        token: "PwxQpa5nRk.fDdmAEFdCaYRbFw6Q",
+      },
+    },
+  ],
+};
+
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=303628463"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 10295673067,
+            word: "The Invention of Post-It",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBQb3N0LUl0&s=n1Kh00z4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBQb3N0LUl0&s=n1Kh00z4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBQb3N0LUl0&s=n1Kh00z4",
+            definition: "1974",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6202/6061830410_77444cedeb_m.jpg",
+            setId: 303628463,
+            rank: 104,
+            lastModified: 1530560611,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19432082,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673015,
+            word: "The Discovery of the Ancient City of Petra",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgQW5jaWVudCBDaXR5IG9mIFBldHJh&s=.6EcJTQU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgQW5jaWVudCBDaXR5IG9mIFBldHJh&s=.6EcJTQU&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgQW5jaWVudCBDaXR5IG9mIFBldHJh&s=.6EcJTQU",
+            definition: "1812",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/8K3FdRHw2I7xJG-KmIn8WQ_m.png",
+            setId: 303628463,
+            rank: 52,
+            lastModified: 1530560251,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15974971,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672996,
+            word: "The Invention of the Mailbox",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWFpbGJveA&s=rYAMYPsE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWFpbGJveA&s=rYAMYPsE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWFpbGJveA&s=rYAMYPsE",
+            definition: "1653",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY1Mw&s=uFEo0xW8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY1Mw&s=uFEo0xW8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY1Mw&s=uFEo0xW8&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/RXJulCe2Toxm4GnqwIgfJw_m.jpg",
+            setId: 303628463,
+            rank: 33,
+            lastModified: 1530560136,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20588201,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672991,
+            word: "The Invention of the Fork",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRm9yaw&s=s9v4tLhg",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRm9yaw&s=s9v4tLhg&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRm9yaw&s=s9v4tLhg",
+            definition: "972",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=OTcy&s=vEttLbG9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=OTcy&s=vEttLbG9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=OTcy&s=vEttLbG9&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/5Vmoe8u9CaLfYye2ErPD3Q_m.jpg",
+            setId: 303628463,
+            rank: 28,
+            lastModified: 1530560109,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20369836,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672984,
+            word: "The Carving of the Rosetta Stone",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENhcnZpbmcgb2YgdGhlIFJvc2V0dGEgU3RvbmU&s=up2trFCr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENhcnZpbmcgb2YgdGhlIFJvc2V0dGEgU3RvbmU&s=up2trFCr&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENhcnZpbmcgb2YgdGhlIFJvc2V0dGEgU3RvbmU&s=up2trFCr",
+            definition: "-196",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTE5Ng&s=fYXp3xpy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTE5Ng&s=fYXp3xpy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTE5Ng&s=fYXp3xpy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/oVwEENhYQ-AziIvJg1Z.dQ_m.jpg",
+            setId: 303628463,
+            rank: 21,
+            lastModified: 1530560075,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20001343,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672978,
+            word: "The Construction of the Trojan Horse",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENvbnN0cnVjdGlvbiBvZiB0aGUgVHJvamFuIEhvcnNl&s=SeSF6f.-",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENvbnN0cnVjdGlvbiBvZiB0aGUgVHJvamFuIEhvcnNl&s=SeSF6f.-&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENvbnN0cnVjdGlvbiBvZiB0aGUgVHJvamFuIEhvcnNl&s=SeSF6f.-",
+            definition: "-1,240",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjQw&s=AIwJTigo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjQw&s=AIwJTigo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjQw&s=AIwJTigo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/6YisC0PCcRUkLy6UXj1J_Q_m.jpg",
+            setId: 303628463,
+            rank: 15,
+            lastModified: 1530560025,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1040975,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672977,
+            word: "The Invention of the Die",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRGll&s=CBay5g64",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRGll&s=CBay5g64&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRGll&s=CBay5g64",
+            definition: "-1,250",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjUw&s=U6YGzSAg&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjUw&s=U6YGzSAg&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsMjUw&s=U6YGzSAg&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/62/201651074_30058a36ac_m.jpg",
+            setId: 303628463,
+            rank: 14,
+            lastModified: 1530560025,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20445570,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672976,
+            word: "The Invention of Soap",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTb2Fw&s=-09AaW7F",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTb2Fw&s=-09AaW7F&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTb2Fw&s=-09AaW7F",
+            definition: "-1,500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNTAw&s=Fc9S1X94&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNTAw&s=Fc9S1X94&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsNTAw&s=Fc9S1X94&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/bD28TTfrL30gYWmS0hHURA_m.jpg",
+            setId: 303628463,
+            rank: 13,
+            lastModified: 1530560025,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14165410,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672975,
+            word: "The Invention of the Sundial",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU3VuZGlhbA&s=PPqnYKw4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU3VuZGlhbA&s=PPqnYKw4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU3VuZGlhbA&s=PPqnYKw4",
+            definition: "-1,500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNTAw&s=Fc9S1X94&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNTAw&s=Fc9S1X94&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsNTAw&s=Fc9S1X94&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/53/129950124_156f4ac15f_m.jpg",
+            setId: 303628463,
+            rank: 12,
+            lastModified: 1530560012,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18079242,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672974,
+            word: "The Legend of the Minotaur",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExlZ2VuZCBvZiB0aGUgTWlub3RhdXI&s=o5WWnHzi",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExlZ2VuZCBvZiB0aGUgTWlub3RhdXI&s=o5WWnHzi&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExlZ2VuZCBvZiB0aGUgTWlub3RhdXI&s=o5WWnHzi",
+            definition: "-1,600",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNjAw&s=13tDZzI4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEsNjAw&s=13tDZzI4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEsNjAw&s=13tDZzI4&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6227/6301463686_9dc3f41f6d_m.jpg",
+            setId: 303628463,
+            rank: 11,
+            lastModified: 1530560012,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19951111,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672973,
+            word: "The Invention of the Key",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgS2V5&s=f6YInUk7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgS2V5&s=f6YInUk7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgS2V5&s=f6YInUk7",
+            definition: "-2,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsMDAw&s=zeRaqHMP&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsMDAw&s=zeRaqHMP&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIsMDAw&s=zeRaqHMP&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/E23SnyKHxvFaPxfv5BhxmA_m.jpg",
+            setId: 303628463,
+            rank: 10,
+            lastModified: 1530559999,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19756873,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672972,
+            word: "The Fabrication of Glass",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhYnJpY2F0aW9uIG9mIEdsYXNz&s=elQf14gn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhYnJpY2F0aW9uIG9mIEdsYXNz&s=elQf14gn&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhYnJpY2F0aW9uIG9mIEdsYXNz&s=elQf14gn",
+            definition: "-2,500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNTAw&s=03VI0xFO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIsNTAw&s=03VI0xFO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIsNTAw&s=03VI0xFO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/7t7VftHqWk8Dx1zWqjBlDA_m.jpg",
+            setId: 303628463,
+            rank: 9,
+            lastModified: 1530559999,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20589587,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672971,
+            word: "The Invention of the Water Clock",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgV2F0ZXIgQ2xvY2s&s=AyGFtzQV",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgV2F0ZXIgQ2xvY2s&s=AyGFtzQV&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgV2F0ZXIgQ2xvY2s&s=AyGFtzQV",
+            definition: "-3,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4049/4693749706_7271c5a688_m.jpg",
+            setId: 303628463,
+            rank: 8,
+            lastModified: 1530559944,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20516994,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672970,
+            word: "The Invention of the Oil Lamp",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgT2lsIExhbXA&s=mTa4OVGm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgT2lsIExhbXA&s=mTa4OVGm&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgT2lsIExhbXA&s=mTa4OVGm",
+            definition: "-3,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMsMDAw&s=YmlIMvkK&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5043/5343787828_b13bd62b73_m.jpg",
+            setId: 303628463,
+            rank: 7,
+            lastModified: 1530559944,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20693863,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672969,
+            word: "The Domestication of the Cat",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgdGhlIENhdA&s=4qG5YEWC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgdGhlIENhdA&s=4qG5YEWC&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgdGhlIENhdA&s=4qG5YEWC",
+            definition: "-4,500",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsNTAw&s=vklQTkNB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTQsNTAw&s=vklQTkNB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTQsNTAw&s=vklQTkNB&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1261/1413379559_412a540d29_m.jpg",
+            setId: 303628463,
+            rank: 6,
+            lastModified: 1530559944,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20584778,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672968,
+            word: "The Invention of Wine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBXaW5l&s=5TBsaxdI",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBXaW5l&s=5TBsaxdI&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBXaW5l&s=5TBsaxdI",
+            definition: "-6,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTYsMDAw&s=nR.aAj1x&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTYsMDAw&s=nR.aAj1x&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTYsMDAw&s=nR.aAj1x&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8522/8538709738_0e2f5bb2ab_m.jpg",
+            setId: 303628463,
+            rank: 5,
+            lastModified: 1530559931,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20540749,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672967,
+            word: "The Domestication of Cattle",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgQ2F0dGxl&s=NvF9NYPq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgQ2F0dGxl&s=NvF9NYPq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgQ2F0dGxl&s=NvF9NYPq",
+            definition: "-9,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTksMDAw&s=2hr1y0ga&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTksMDAw&s=2hr1y0ga&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTksMDAw&s=2hr1y0ga&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/6gY0dbW7fz9uP1hHRWBrUw_m.jpg",
+            setId: 303628463,
+            rank: 4,
+            lastModified: 1530559931,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15757008,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672966,
+            word: "The Domestication of Sheep",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgU2hlZXA&s=WSJoB-ZO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgU2hlZXA&s=WSJoB-ZO&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERvbWVzdGljYXRpb24gb2YgU2hlZXA&s=WSJoB-ZO",
+            definition: "-9,200",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTksMjAw&s=NQ4A3BX4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTksMjAw&s=NQ4A3BX4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTksMjAw&s=NQ4A3BX4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/6D1h8Mo38wSWO9LyKtsAdQ_m.jpg",
+            setId: 303628463,
+            rank: 3,
+            lastModified: 1530559921,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9472079,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672965,
+            word: "The Founding of the First Village",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZvdW5kaW5nIG9mIHRoZSBGaXJzdCBWaWxsYWdl&s=EgRxyqQ5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZvdW5kaW5nIG9mIHRoZSBGaXJzdCBWaWxsYWdl&s=EgRxyqQ5&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZvdW5kaW5nIG9mIHRoZSBGaXJzdCBWaWxsYWdl&s=EgRxyqQ5",
+            definition: "-10,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEwLDAwMA&s=ArkevdgM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEwLDAwMA&s=ArkevdgM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEwLDAwMA&s=ArkevdgM&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/61/156288613_84cfe8e86d_m.jpg",
+            setId: 303628463,
+            rank: 2,
+            lastModified: 1530559910,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20293848,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672964,
+            word: "The Invention of the Flute",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRmx1dGU&s=HuWVcHOJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRmx1dGU&s=HuWVcHOJ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRmx1dGU&s=HuWVcHOJ",
+            definition: "-35,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTM1LDAwMA&s=Ihgb89Ue&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTM1LDAwMA&s=Ihgb89Ue&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTM1LDAwMA&s=Ihgb89Ue&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3460/3375872782_38823d59f0_m.jpg",
+            setId: 303628463,
+            rank: 1,
+            lastModified: 1530559910,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20383601,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672963,
+            word: "The Appearance of Bees",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFwcGVhcmFuY2Ugb2YgQmVlcw&s=AI9-1wi3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFwcGVhcmFuY2Ugb2YgQmVlcw&s=AI9-1wi3&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFwcGVhcmFuY2Ugb2YgQmVlcw&s=AI9-1wi3",
+            definition: "-100,000,000",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEwMCwwMDAsMDAw&s=jacxHnYN&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEwMCwwMDAsMDAw&s=jacxHnYN&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEwMCwwMDAsMDAw&s=jacxHnYN&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/AFQEZyI5aRhcvPNA3zq6Gw_m.jpg",
+            setId: 303628463,
+            rank: 0,
+            lastModified: 1530559896,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18647849,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673072,
+            word: "The Discovery of the Wreck of the Titanic",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgV3JlY2sgb2YgdGhlIFRpdGFuaWM&s=GYVvAiMs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgV3JlY2sgb2YgdGhlIFRpdGFuaWM&s=GYVvAiMs&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgV3JlY2sgb2YgdGhlIFRpdGFuaWM&s=GYVvAiMs",
+            definition: "1985",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4NQ&s=keWfvmkE&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4NQ&s=keWfvmkE&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4NQ&s=keWfvmkE&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3446/3278639065_15b38c0390_m.jpg",
+            setId: 303628463,
+            rank: 109,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20584361,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673071,
+            word: "The 1st Flight of a Space Shuttle",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBGbGlnaHQgb2YgYSBTcGFjZSBTaHV0dGxl&s=CmtM08vA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBGbGlnaHQgb2YgYSBTcGFjZSBTaHV0dGxl&s=CmtM08vA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBGbGlnaHQgb2YgYSBTcGFjZSBTaHV0dGxl&s=CmtM08vA",
+            definition: "1981",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4MQ&s=4xOLwoYa&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1090/1050733503_fe2291909a_m.jpg",
+            setId: 303628463,
+            rank: 108,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20453741,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673070,
+            word: "The Invention of Sudoku",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTdWRva3U&s=zZTCAsGF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTdWRva3U&s=zZTCAsGF&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTdWRva3U&s=zZTCAsGF",
+            definition: "1979",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3OQ&s=-hxP-JqY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3OQ&s=-hxP-JqY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3OQ&s=-hxP-JqY&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/n7wCIJ9jqAPpfLuEbT2yhg_m.png",
+            setId: 303628463,
+            rank: 107,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20930702,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673069,
+            word: "The Invention of GPS",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBHUFM&s=TW5of-7r",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBHUFM&s=TW5of-7r&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBHUFM&s=TW5of-7r",
+            definition: "1978",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3OA&s=rDaqkZ1m&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3OA&s=rDaqkZ1m&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3OA&s=rDaqkZ1m&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/cCcHAvLIpoLCojmfbeiCDA_m.jpg",
+            setId: 303628463,
+            rank: 106,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20420678,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673068,
+            word: "The 1st Exploration of Mars",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBFeHBsb3JhdGlvbiBvZiBNYXJz&s=gZ9NyNcW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBFeHBsb3JhdGlvbiBvZiBNYXJz&s=gZ9NyNcW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBFeHBsb3JhdGlvbiBvZiBNYXJz&s=gZ9NyNcW",
+            definition: "1976",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Jzbi95omTYQrz4dFpzC-vw_m.jpg",
+            setId: 303628463,
+            rank: 105,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17036573,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673066,
+            word: "The Advent of Hip-Hop",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFkdmVudCBvZiBIaXAtSG9w&s=9fz3wo5i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFkdmVudCBvZiBIaXAtSG9w&s=9fz3wo5i&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFkdmVudCBvZiBIaXAtSG9w&s=9fz3wo5i",
+            definition: "1974",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/a7GtrMJMQyuiUoO2qdB1Og_m.jpg",
+            setId: 303628463,
+            rank: 103,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19029302,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673065,
+            word: "The Inention of the Portable Phone",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEluZW50aW9uIG9mIHRoZSBQb3J0YWJsZSBQaG9uZQ&s=3hWBfUU7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEluZW50aW9uIG9mIHRoZSBQb3J0YWJsZSBQaG9uZQ&s=3hWBfUU7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEluZW50aW9uIG9mIHRoZSBQb3J0YWJsZSBQaG9uZQ&s=3hWBfUU7",
+            definition: "1973",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mw&s=xF71EuGm&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mw&s=xF71EuGm&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mw&s=xF71EuGm&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/5/10503867_cd17fd71e8_m.jpg",
+            setId: 303628463,
+            rank: 102,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 2127047,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673064,
+            word: "The Invention of the Videogame Console",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVmlkZW9nYW1lIENvbnNvbGU&s=REsuBnfB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVmlkZW9nYW1lIENvbnNvbGU&s=REsuBnfB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVmlkZW9nYW1lIENvbnNvbGU&s=REsuBnfB",
+            definition: "1971",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/OkwZen6oV6cyMuNDUHVJ0A_m.png",
+            setId: 303628463,
+            rank: 101,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 23844404,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673063,
+            word: "The Invention of the Plastic Bottle",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGxhc3RpYyBCb3R0bGU&s=6Xvz94Vd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGxhc3RpYyBCb3R0bGU&s=6Xvz94Vd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGxhc3RpYyBCb3R0bGU&s=6Xvz94Vd",
+            definition: "1963",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/uctkV5f9h-beHEVkxPi-8g_m.jpg",
+            setId: 303628463,
+            rank: 100,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16185506,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673062,
+            word: 'The "West Side Story" Musical',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlICJXZXN0IFNpZGUgU3RvcnkiIE11c2ljYWw&s=mJgEYNiq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlICJXZXN0IFNpZGUgU3RvcnkiIE11c2ljYWw&s=mJgEYNiq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlICJXZXN0IFNpZGUgU3RvcnkiIE11c2ljYWw&s=mJgEYNiq",
+            definition: "1957",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Nw&s=O..J0gVq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Nw&s=O..J0gVq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Nw&s=O..J0gVq&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/eZV.fzlkQMEy.ZYFt7D3GA_m.jpg",
+            setId: 303628463,
+            rank: 99,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4765465,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673061,
+            word: "The Beginning of the 45 rpm Record",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJlZ2lubmluZyBvZiB0aGUgNDUgcnBtIFJlY29yZA&s=ueizZhtD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJlZ2lubmluZyBvZiB0aGUgNDUgcnBtIFJlY29yZA&s=ueizZhtD&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJlZ2lubmluZyBvZiB0aGUgNDUgcnBtIFJlY29yZA&s=ueizZhtD",
+            definition: "1949",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OQ&s=DPOneCoL&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OQ&s=DPOneCoL&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0OQ&s=DPOneCoL&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/jIjYExMQFlQdqYLUtJ40GA_m.png",
+            setId: 303628463,
+            rank: 98,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 3266643,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673060,
+            word: "The 1st Appearance of a Flying Saucer",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIGEgRmx5aW5nIFNhdWNlcg&s=CZAa6z.w",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIGEgRmx5aW5nIFNhdWNlcg&s=CZAa6z.w&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIGEgRmx5aW5nIFNhdWNlcg&s=CZAa6z.w",
+            definition: "1947",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/NuCUCWp0uUizE3BKgRUgNw_m.png",
+            setId: 303628463,
+            rank: 97,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10366016,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673059,
+            word: "The Invention of the Gas Lighter",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2FzIExpZ2h0ZXI&s=foE8gCF3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2FzIExpZ2h0ZXI&s=foE8gCF3&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2FzIExpZ2h0ZXI&s=foE8gCF3",
+            definition: "1946",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/5pA7I50W3.4WTkXLdnkewg_m.jpg",
+            setId: 303628463,
+            rank: 96,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13689957,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673058,
+            word: "The Invention of the Microwave Oven",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWljcm93YXZlIE92ZW4&s=qjsU4UTA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWljcm93YXZlIE92ZW4&s=qjsU4UTA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWljcm93YXZlIE92ZW4&s=qjsU4UTA",
+            definition: "1946",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Ng&s=gAWxO-aU&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/w0IroFC81AbR3mvhSeKc1w_m.jpg",
+            setId: 303628463,
+            rank: 95,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4123769,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673057,
+            word: "The Invention of Instant Coffee",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBJbnN0YW50IENvZmZlZQ&s=Ze2THmHS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBJbnN0YW50IENvZmZlZQ&s=Ze2THmHS&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBJbnN0YW50IENvZmZlZQ&s=Ze2THmHS",
+            definition: "1938",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/vCTm-NIlW0Bp1H-3iEfEnQ_m.jpg",
+            setId: 303628463,
+            rank: 94,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17234783,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673056,
+            word: "The 1st Appearance of a Superhero",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIGEgU3VwZXJoZXJv&s=vCzFONlk",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIGEgU3VwZXJoZXJv&s=vCzFONlk&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIGEgU3VwZXJoZXJv&s=vCzFONlk",
+            definition: "1938",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/dCulidtObSB7vzpKLntqgA_m.jpg",
+            setId: 303628463,
+            rank: 93,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20167717,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673055,
+            word: "The Invention of the Pocketbook",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUG9ja2V0Ym9vaw&s=oRv3JzRU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUG9ja2V0Ym9vaw&s=oRv3JzRU&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUG9ja2V0Ym9vaw&s=oRv3JzRU",
+            definition: "1938",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2714/4274638289_88ae6251fd_m.jpg",
+            setId: 303628463,
+            rank: 92,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15825841,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673054,
+            word: "The Invention of Sunglasses",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTdW5nbGFzc2Vz&s=MbzfFYAx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTdW5nbGFzc2Vz&s=MbzfFYAx&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTdW5nbGFzc2Vz&s=MbzfFYAx",
+            definition: "1929",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/146/388116980_c7285712a8_m.jpg",
+            setId: 303628463,
+            rank: 91,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20392635,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673053,
+            word: "The Invention of the Spray Can",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU3ByYXkgQ2Fu&s=RDElaO8i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU3ByYXkgQ2Fu&s=RDElaO8i&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU3ByYXkgQ2Fu&s=RDElaO8i",
+            definition: "1928",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/49/180202581_6220f7180f_m.jpg",
+            setId: 303628463,
+            rank: 90,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20513381,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673052,
+            word: "The Invention of the Toaster",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVG9hc3Rlcg&s=e9QRHKbd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVG9hc3Rlcg&s=e9QRHKbd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVG9hc3Rlcg&s=e9QRHKbd",
+            definition: "1924",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNA&s=0-xIHr6s&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNA&s=0-xIHr6s&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNA&s=0-xIHr6s&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/gpDg5hxa.dIuBVPuM7gZQg_m.jpg",
+            setId: 303628463,
+            rank: 89,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4239915,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673051,
+            word: "The Invention of the Electric Guitar",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgR3VpdGFy&s=0Bsy1w-i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgR3VpdGFy&s=0Bsy1w-i&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgR3VpdGFy&s=0Bsy1w-i",
+            definition: "1924",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNA&s=0-xIHr6s&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNA&s=0-xIHr6s&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNA&s=0-xIHr6s&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/JqrY47GsNAczIUk0cKmmSw_m.jpg",
+            setId: 303628463,
+            rank: 88,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11435846,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673050,
+            word: "The 1st Appearance of the Yeti",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIHRoZSBZZXRp&s=X8BjcYo0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIHRoZSBZZXRp&s=X8BjcYo0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIHRoZSBZZXRp&s=X8BjcYo0",
+            definition: "1921",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMQ&s=mNVzcWBn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMQ&s=mNVzcWBn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMQ&s=mNVzcWBn&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8167/7455498072_f3c8109c05_m.jpg",
+            setId: 303628463,
+            rank: 87,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19821690,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673049,
+            word: "The Invention of the Tank",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGFuaw&s=YFUTwYBd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGFuaw&s=YFUTwYBd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGFuaw&s=YFUTwYBd",
+            definition: "1915",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNQ&s=pSsNWEgn&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1019/1278518191_6b7be6e9c8_m.jpg",
+            setId: 303628463,
+            rank: 86,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20262975,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673048,
+            word: "The 1st Appearance of the Tramp",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIHRoZSBUcmFtcA&s=Tz01SyPF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIHRoZSBUcmFtcA&s=Tz01SyPF&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIHRoZSBUcmFtcA&s=Tz01SyPF",
+            definition: "1914",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/NZbb1sb.X-RhQ9yjfgcvmg_m.jpg",
+            setId: 303628463,
+            rank: 85,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4765410,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673047,
+            word: "The Invention of the Crossword Puzzle",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ3Jvc3N3b3JkIFB1enpsZQ&s=VkEkzoPu",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ3Jvc3N3b3JkIFB1enpsZQ&s=VkEkzoPu&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ3Jvc3N3b3JkIFB1enpsZQ&s=VkEkzoPu",
+            definition: "1913",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMw&s=2ZzOYqlJ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMw&s=2ZzOYqlJ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMw&s=2ZzOYqlJ&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2489/3932408620_316b24d8df_m.jpg",
+            setId: 303628463,
+            rank: 84,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13419251,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673046,
+            word: "The Discovery of Machu Pichu",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiBNYWNodSBQaWNodQ&s=7AVXVuEY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiBNYWNodSBQaWNodQ&s=7AVXVuEY&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiBNYWNodSBQaWNodQ&s=7AVXVuEY",
+            definition: "1911",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/142/351454489_e51c91238a_m.jpg",
+            setId: 303628463,
+            rank: 83,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19327083,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673045,
+            word: "The Invention of the Electric Razor",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgUmF6b3I&s=kaje4BTV",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgUmF6b3I&s=kaje4BTV&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgUmF6b3I&s=kaje4BTV",
+            definition: "1911",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMQ&s=sYutxRvw&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/uVbhz7mq2wL9XuRPVab0sg_m.jpg",
+            setId: 303628463,
+            rank: 82,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18125151,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673044,
+            word: "The Invention of the Seaplane",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2VhcGxhbmU&s=56.GvBNS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2VhcGxhbmU&s=56.GvBNS&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2VhcGxhbmU&s=56.GvBNS",
+            definition: "1910",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMA&s=y8TnHuuL&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxMA&s=y8TnHuuL&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxMA&s=y8TnHuuL&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/VWRjtZJgHyO8Fx0aaVLSMQ_m.jpg",
+            setId: 303628463,
+            rank: 81,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 799204,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673043,
+            word: "The Invention of the Tea Packet",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGVhIFBhY2tldA&s=uEsJAKvD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGVhIFBhY2tldA&s=uEsJAKvD&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGVhIFBhY2tldA&s=uEsJAKvD",
+            definition: "1908",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwOA&s=Dq9MYXzx&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/PzX7OZ1n2-uml4Kg-RHGsQ_m.jpg",
+            setId: 303628463,
+            rank: 80,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21485939,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673042,
+            word: '"The Voyage to the Moon"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBWb3lhZ2UgdG8gdGhlIE1vb24i&s=1qWcYbxZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBWb3lhZ2UgdG8gdGhlIE1vb24i&s=1qWcYbxZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBWb3lhZ2UgdG8gdGhlIE1vb24i&s=1qWcYbxZ",
+            definition: "1902",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/w4kucUhxmao1TZKf9lQbQQ_m.jpg",
+            setId: 303628463,
+            rank: 79,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1381688,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673041,
+            word: "The Invention of the Electric Washing Machine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgV2FzaGluZyBNYWNoaW5l&s=RdUrfSPg",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgV2FzaGluZyBNYWNoaW5l&s=RdUrfSPg&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgV2FzaGluZyBNYWNoaW5l&s=RdUrfSPg",
+            definition: "1901",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMQ&s=Hc8.k7nz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/o.x48Y4d29m.roETxp9D8w_m.jpg",
+            setId: 303628463,
+            rank: 78,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20169098,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673040,
+            word: "The Invention of Corn Flakes",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDb3JuIEZsYWtlcw&s=uqVaJWaf",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDb3JuIEZsYWtlcw&s=uqVaJWaf&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDb3JuIEZsYWtlcw&s=uqVaJWaf",
+            definition: "1894",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NA&s=otSvgDkc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NA&s=otSvgDkc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5NA&s=otSvgDkc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/zf4IpU3YUEbDpSFl6P76Tg_m.jpg",
+            setId: 303628463,
+            rank: 77,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 5327733,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673039,
+            word: "The Introduction of the Clementine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludHJvZHVjdGlvbiBvZiB0aGUgQ2xlbWVudGluZQ&s=YpB.tSDP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludHJvZHVjdGlvbiBvZiB0aGUgQ2xlbWVudGluZQ&s=YpB.tSDP&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludHJvZHVjdGlvbiBvZiB0aGUgQ2xlbWVudGluZQ&s=YpB.tSDP",
+            definition: "1894",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NA&s=otSvgDkc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NA&s=otSvgDkc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5NA&s=otSvgDkc&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/35/69550999_47284a6e75_m.jpg",
+            setId: 303628463,
+            rank: 76,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20440460,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673038,
+            word: "The Invention of the Zipper",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgWmlwcGVy&s=iyZ8fVrL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgWmlwcGVy&s=iyZ8fVrL&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgWmlwcGVy&s=iyZ8fVrL",
+            definition: "1891",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5MQ&s=JO9uuDQX&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5MQ&s=JO9uuDQX&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5MQ&s=JO9uuDQX&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/UTd5cAI1uOpS7UioutBVSA_m.jpg",
+            setId: 303628463,
+            rank: 75,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20241651,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673037,
+            word: "The Invention of the Hairdryer",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSGFpcmRyeWVy&s=F5XbX7rb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSGFpcmRyeWVy&s=F5XbX7rb&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSGFpcmRyeWVy&s=F5XbX7rb",
+            definition: "1890",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5MA&s=UNL44JKo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5MA&s=UNL44JKo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5MA&s=UNL44JKo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/gQCZywWMlpOA3oSLOFAx5w_m.jpg",
+            setId: 303628463,
+            rank: 74,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20169068,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673036,
+            word: "The Invention of the Camera",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ2FtZXJh&s=KMX5JzHl",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ2FtZXJh&s=KMX5JzHl&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ2FtZXJh&s=KMX5JzHl",
+            definition: "1888",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4OA&s=5ZR.u.KF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4OA&s=5ZR.u.KF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4OA&s=5ZR.u.KF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/YdJybYOfbJQsg5RX9diL0Q_m.jpg",
+            setId: 303628463,
+            rank: 73,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20369907,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673035,
+            word: "The 1st Appearance of Sherlock Holmes",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIFNoZXJsb2NrIEhvbG1lcw&s=hIjXA4SG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIFNoZXJsb2NrIEhvbG1lcw&s=hIjXA4SG&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIFNoZXJsb2NrIEhvbG1lcw&s=hIjXA4SG",
+            definition: "1887",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/0M8beeQpUaOa2F6XVSVAAA_m.jpg",
+            setId: 303628463,
+            rank: 72,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21854086,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673034,
+            word: "The Invention of the Dishwasher",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRGlzaHdhc2hlcg&s=KBTpojvQ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRGlzaHdhc2hlcg&s=KBTpojvQ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRGlzaHdhc2hlcg&s=KBTpojvQ",
+            definition: "1886",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Ng&s=o-5hYXpc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Ng&s=o-5hYXpc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4Ng&s=o-5hYXpc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/tCrnc0wY5ccGCAMDpqyf2A_m.jpg",
+            setId: 303628463,
+            rank: 71,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14472333,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673033,
+            word: "The Invention of the Ink Pen",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSW5rIFBlbg&s=IMRig758",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSW5rIFBlbg&s=IMRig758&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSW5rIFBlbg&s=IMRig758",
+            definition: "1884",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4NA&s=Z.JAcpI8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4NA&s=Z.JAcpI8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4NA&s=Z.JAcpI8&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/24/62630719_56679eba52_m.jpg",
+            setId: 303628463,
+            rank: 70,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20550069,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673032,
+            word: "The Invention of the Garbage Can",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2FyYmFnZSBDYW4&s=axA.tzGb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2FyYmFnZSBDYW4&s=axA.tzGb&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2FyYmFnZSBDYW4&s=axA.tzGb",
+            definition: "1884",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4NA&s=Z.JAcpI8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4NA&s=Z.JAcpI8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4NA&s=Z.JAcpI8&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/vJW6SEdungyZW8G0XyCiGw_m.jpg",
+            setId: 303628463,
+            rank: 69,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19182488,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673031,
+            word: "The Invention of the Electric Iron",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgSXJvbg&s=lY9h-lql",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgSXJvbg&s=lY9h-lql&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRWxlY3RyaWMgSXJvbg&s=lY9h-lql",
+            definition: "1882",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Mg&s=bf7M3xbq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Mg&s=bf7M3xbq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4Mg&s=bf7M3xbq&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/LygeF6Y0oT0znwxrJ6HzmQ_m.jpg",
+            setId: 303628463,
+            rank: 68,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22304262,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673030,
+            word: "The Invention of the Traffic Light",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVHJhZmZpYyBMaWdodA&s=bfar8zlA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVHJhZmZpYyBMaWdodA&s=bfar8zlA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVHJhZmZpYyBMaWdodA&s=bfar8zlA",
+            definition: "1868",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2OA&s=FAZPvP2E&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/Q-t0C232Iu8yVvP42xubNA_m.jpg",
+            setId: 303628463,
+            rank: 67,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19741991,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673029,
+            word: "First Armed Daylight Bank Robbery",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQXJtZWQgRGF5bGlnaHQgQmFuayBSb2JiZXJ5&s=Lg33uhHh",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQXJtZWQgRGF5bGlnaHQgQmFuayBSb2JiZXJ5&s=Lg33uhHh&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQXJtZWQgRGF5bGlnaHQgQmFuayBSb2JiZXJ5&s=Lg33uhHh",
+            definition: "1866",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Ng&s=grU-i43O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Ng&s=grU-i43O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Ng&s=grU-i43O&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/I-JzIEEwlufSZtgtNqGr-A_m.jpg",
+            setId: 303628463,
+            rank: 66,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19452233,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673028,
+            word: '"Alice\'s Adventures in Wonderland"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IkFsaWNlJ3MgQWR2ZW50dXJlcyBpbiBXb25kZXJsYW5kIg&s=nGMS1uht",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IkFsaWNlJ3MgQWR2ZW50dXJlcyBpbiBXb25kZXJsYW5kIg&s=nGMS1uht&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IkFsaWNlJ3MgQWR2ZW50dXJlcyBpbiBXb25kZXJsYW5kIg&s=nGMS1uht",
+            definition: "1865",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4043/4283960820_d5f58c7f73_m.jpg",
+            setId: 303628463,
+            rank: 65,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 2138750,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673027,
+            word: "The Invention of the Croissant",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ3JvaXNzYW50&s=BLvHuvvk",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ3JvaXNzYW50&s=BLvHuvvk&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ3JvaXNzYW50&s=BLvHuvvk",
+            definition: "1863",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mw&s=cWFhlwK9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mw&s=cWFhlwK9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mw&s=cWFhlwK9&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/ouR0NT0rsl5wqW.saGOU3g_m.jpg",
+            setId: 303628463,
+            rank: 64,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20440517,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673026,
+            word: "The Invention of Football",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBGb290YmFsbA&s=unuHtRZ2",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBGb290YmFsbA&s=unuHtRZ2&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBGb290YmFsbA&s=unuHtRZ2",
+            definition: "1863",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mw&s=cWFhlwK9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mw&s=cWFhlwK9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2Mw&s=cWFhlwK9&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/jbFQWXvi98sXiHTDoUMFJg_m.png",
+            setId: 303628463,
+            rank: 63,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8695095,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673025,
+            word: "The Invention of the Pneumatic Drill",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUG5ldW1hdGljIERyaWxs&s=VJwh4GNO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUG5ldW1hdGljIERyaWxs&s=VJwh4GNO&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUG5ldW1hdGljIERyaWxs&s=VJwh4GNO",
+            definition: "1861",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/zDUHMTqamFKBfM-e0GST1g_m.jpg",
+            setId: 303628463,
+            rank: 62,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20698714,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673024,
+            word: "The 1st Man in Space",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBNYW4gaW4gU3BhY2U&s=UAtLxhGN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBNYW4gaW4gU3BhY2U&s=UAtLxhGN&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBNYW4gaW4gU3BhY2U&s=UAtLxhGN",
+            definition: "1861",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2MQ&s=x641Y9er&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/mrkqR4q9BnaJ6EI1kOhIMg_m.jpg",
+            setId: 303628463,
+            rank: 61,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10794176,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673023,
+            word: "The Invention of the Alarm Clock",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQWxhcm0gQ2xvY2s&s=iYZJUxAq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQWxhcm0gQ2xvY2s&s=iYZJUxAq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQWxhcm0gQ2xvY2s&s=iYZJUxAq",
+            definition: "1847",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Nw&s=z4TRLRkq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0Nw&s=z4TRLRkq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0Nw&s=z4TRLRkq&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/r74no6fo99xmcu38yoNXHA_m.jpg",
+            setId: 303628463,
+            rank: 60,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19545449,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673022,
+            word: '"The Three Musketeers"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBUaHJlZSBNdXNrZXRlZXJzIg&s=P6SzvpTq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBUaHJlZSBNdXNrZXRlZXJzIg&s=P6SzvpTq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBUaHJlZSBNdXNrZXRlZXJzIg&s=P6SzvpTq",
+            definition: "1844",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NA&s=ZCsud7fD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NA&s=ZCsud7fD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0NA&s=ZCsud7fD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/93lMf-q1cQliaqHx.qJxFw_m.png",
+            setId: 303628463,
+            rank: 59,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13082345,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673021,
+            word: "The Invention of the Refrigerator",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUmVmcmlnZXJhdG9y&s=ofrRhbZZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUmVmcmlnZXJhdG9y&s=ofrRhbZZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUmVmcmlnZXJhdG9y&s=ofrRhbZZ",
+            definition: "1834",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNA&s=s2nYZvEh&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNA&s=s2nYZvEh&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzNA&s=s2nYZvEh&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/DJVgR.FZGyJg3LdiIGi3jg_m.jpg",
+            setId: 303628463,
+            rank: 58,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20371991,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673020,
+            word: "The Invention of the Pencil Sharpener",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGVuY2lsIFNoYXJwZW5lcg&s=Yi7bObWF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGVuY2lsIFNoYXJwZW5lcg&s=Yi7bObWF&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGVuY2lsIFNoYXJwZW5lcg&s=Yi7bObWF",
+            definition: "1828",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyOA&s=JQuw6jkJ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyOA&s=JQuw6jkJ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyOA&s=JQuw6jkJ&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4055/4375076207_98bf642546_m.jpg",
+            setId: 303628463,
+            rank: 57,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20583198,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673019,
+            word: "The Invention of the Comic Strip",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ29taWMgU3RyaXA&s=MLxjPUJJ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ29taWMgU3RyaXA&s=MLxjPUJJ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ29taWMgU3RyaXA&s=MLxjPUJJ",
+            definition: "1826",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNg&s=TRCQs7KK&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNg&s=TRCQs7KK&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyNg&s=TRCQs7KK&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Cxho6X58uCbQ.ml.uh2xmA_m.png",
+            setId: 303628463,
+            rank: 56,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19016111,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673018,
+            word: "The Invention of the Helicopter",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSGVsaWNvcHRlcg&s=rrG23GbA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSGVsaWNvcHRlcg&s=rrG23GbA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgSGVsaWNvcHRlcg&s=rrG23GbA",
+            definition: "1825",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNQ&s=NHYR2gTC&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNQ&s=NHYR2gTC&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyNQ&s=NHYR2gTC&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2127/1806348921_43b31d498d_m.jpg",
+            setId: 303628463,
+            rank: 55,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12626855,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673017,
+            word: '"The 9th Symphony"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSA5dGggU3ltcGhvbnki&s=irMAErt0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSA5dGggU3ltcGhvbnki&s=irMAErt0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSA5dGggU3ltcGhvbnki&s=irMAErt0",
+            definition: "1824",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNA&s=D6OOVGhZ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyNA&s=D6OOVGhZ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyNA&s=D6OOVGhZ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/VvB9WEoihG69UAftP-9UeQ_m.jpg",
+            setId: 303628463,
+            rank: 54,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24760980,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673016,
+            word: "The 1st Appearance of Frankenstein's Monster",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIEZyYW5rZW5zdGVpbidzIE1vbnN0ZXI&s=3QGRgLI6",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIEZyYW5rZW5zdGVpbidzIE1vbnN0ZXI&s=3QGRgLI6&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBBcHBlYXJhbmNlIG9mIEZyYW5rZW5zdGVpbidzIE1vbnN0ZXI&s=3QGRgLI6",
+            definition: "1818",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxOA&s=RSJIjhiu&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxOA&s=RSJIjhiu&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxOA&s=RSJIjhiu&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2147/1538953234_59b4799eab_m.jpg",
+            setId: 303628463,
+            rank: 53,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577675,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673014,
+            word: 'The Tale of "Snow White"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFRhbGUgb2YgIlNub3cgV2hpdGUi&s=c87yCCOM",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFRhbGUgb2YgIlNub3cgV2hpdGUi&s=c87yCCOM&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFRhbGUgb2YgIlNub3cgV2hpdGUi&s=c87yCCOM",
+            definition: "1812",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/I6b8797TF8rIzgTk-UMVlw_m.jpg",
+            setId: 303628463,
+            rank: 51,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6676597,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673013,
+            word: "The Invention of the Tin Can",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGluIENhbg&s=KTAEQ3V9",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGluIENhbg&s=KTAEQ3V9&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGluIENhbg&s=KTAEQ3V9",
+            definition: "1810",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMA&s=987cbS9q&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMA&s=987cbS9q&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxMA&s=987cbS9q&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/220/508517760_752c4003bd_m.jpg",
+            setId: 303628463,
+            rank: 50,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19258419,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673012,
+            word: "The Invention of the Coffee Maker",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ29mZmVlIE1ha2Vy&s=AP3jlNsM",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ29mZmVlIE1ha2Vy&s=AP3jlNsM&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ29mZmVlIE1ha2Vy&s=AP3jlNsM",
+            definition: "1802",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMg&s=xHIAAsBx&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMg&s=xHIAAsBx&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgwMg&s=xHIAAsBx&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4033/4361272534_e88cdc0ed7_m.jpg",
+            setId: 303628463,
+            rank: 49,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19215167,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673011,
+            word: "The Invention of Camembert",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDYW1lbWJlcnQ&s=BuKbrQkX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDYW1lbWJlcnQ&s=BuKbrQkX&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDYW1lbWJlcnQ&s=BuKbrQkX",
+            definition: "1790",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5MA&s=YMl1SsVi&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5MA&s=YMl1SsVi&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5MA&s=YMl1SsVi&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/-NsCA5b-H-ezjrPZGJpp3A_m.jpg",
+            setId: 303628463,
+            rank: 48,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18705050,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673010,
+            word: "The invention of Canning",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBDYW5uaW5n&s=awY5Wzmp",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBDYW5uaW5n&s=awY5Wzmp&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGludmVudGlvbiBvZiBDYW5uaW5n&s=awY5Wzmp",
+            definition: "1782",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4Mg&s=Kh608L7.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4Mg&s=Kh608L7.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4Mg&s=Kh608L7.&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2247/2298595155_168de790e7_m.jpg",
+            setId: 303628463,
+            rank: 47,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14515531,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673009,
+            word: "The Invention of the French Fry",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRnJlbmNoIEZyeQ&s=JAGjRhr3",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRnJlbmNoIEZyeQ&s=JAGjRhr3&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRnJlbmNoIEZyeQ&s=JAGjRhr3",
+            definition: "1781",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4MQ&s=xcJ4qbTw&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc4MQ&s=xcJ4qbTw&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc4MQ&s=xcJ4qbTw&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4053/4249593362_8196362ef7_m.jpg",
+            setId: 303628463,
+            rank: 46,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20501333,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673008,
+            word: "The Invention of Hypnotism",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBIeXBub3Rpc20&s=kLED8syN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBIeXBub3Rpc20&s=kLED8syN&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBIeXBub3Rpc20&s=kLED8syN",
+            definition: "1776",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Ng&s=J5bEolGv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Ng&s=J5bEolGv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3Ng&s=J5bEolGv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/HC0OvQrSaeG6U3OzmfbeiQ_m.jpg",
+            setId: 303628463,
+            rank: 45,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15930292,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673007,
+            word: "The Discovery of the City of Palenque",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgQ2l0eSBvZiBQYWxlbnF1ZQ&s=nllKJdnD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgQ2l0eSBvZiBQYWxlbnF1ZQ&s=nllKJdnD&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIERpc2NvdmVyeSBvZiB0aGUgQ2l0eSBvZiBQYWxlbnF1ZQ&s=nllKJdnD",
+            definition: "1773",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Mw&s=w4986wyO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3Mw&s=w4986wyO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3Mw&s=w4986wyO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/FNR6CAvGDQqNDYJKBCpQMg_m.jpg",
+            setId: 303628463,
+            rank: 44,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1137195,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673006,
+            word: "The Invention of the Safety Razor",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2FmZXR5IFJhem9y&s=qiKiBscK",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2FmZXR5IFJhem9y&s=qiKiBscK&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2FmZXR5IFJhem9y&s=qiKiBscK",
+            definition: "1770",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3MA&s=JsLuceil&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc3MA&s=JsLuceil&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc3MA&s=JsLuceil&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/noFpfHJz4DcjndOeEQJxxQ_m.jpg",
+            setId: 303628463,
+            rank: 43,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1508341,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673005,
+            word: "The Invention of the Automobile",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQXV0b21vYmlsZQ&s=TvULs2Cq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQXV0b21vYmlsZQ&s=TvULs2Cq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQXV0b21vYmlsZQ&s=TvULs2Cq",
+            definition: "1769",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2OQ&s=2oXA5vTs&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2OQ&s=2oXA5vTs&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc2OQ&s=2oXA5vTs&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/1GxsB82bYNx7f4-3jYl7sQ_m.jpg",
+            setId: 303628463,
+            rank: 42,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21250269,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673004,
+            word: "The Invention of the Mechanical Washing Machine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWVjaGFuaWNhbCBXYXNoaW5nIE1hY2hpbmU&s=aiZmqZtU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWVjaGFuaWNhbCBXYXNoaW5nIE1hY2hpbmU&s=aiZmqZtU&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgTWVjaGFuaWNhbCBXYXNoaW5nIE1hY2hpbmU&s=aiZmqZtU",
+            definition: "1765",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2NQ&s=H6XHdAWM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2NQ&s=H6XHdAWM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc2NQ&s=H6XHdAWM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/o.x48Y4d29m.roETxp9D8w_m.jpg",
+            setId: 303628463,
+            rank: 41,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20169098,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673003,
+            word: "The Invention of the Sandwich",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2FuZHdpY2g&s=kukZ56bW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2FuZHdpY2g&s=kukZ56bW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgU2FuZHdpY2g&s=kukZ56bW",
+            definition: "1762",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2Mg&s=L.ztOXdv&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc2Mg&s=L.ztOXdv&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc2Mg&s=L.ztOXdv&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/D21qZVaWr9_WE8rq1spJ5A_m.jpg",
+            setId: 303628463,
+            rank: 40,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20369825,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673002,
+            word: "The Invention of Shampoo",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTaGFtcG9v&s=FDzPAvhT",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTaGFtcG9v&s=FDzPAvhT&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBTaGFtcG9v&s=FDzPAvhT",
+            definition: "1759",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1OQ&s=TvqYY9Kh&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc1OQ&s=TvqYY9Kh&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc1OQ&s=TvqYY9Kh&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/6p.mFLHC2fQPC.IvPyD71w_m.png",
+            setId: 303628463,
+            rank: 39,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14377802,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673001,
+            word: "The Invention of the Chronometer",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ2hyb25vbWV0ZXI&s=DrBLF6Nr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ2hyb25vbWV0ZXI&s=DrBLF6Nr&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQ2hyb25vbWV0ZXI&s=DrBLF6Nr",
+            definition: "1735",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTczNQ&s=H8Msakc-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTczNQ&s=H8Msakc-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTczNQ&s=H8Msakc-&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/UkAv69locp7LxRd..K4GqA_m.jpg",
+            setId: 303628463,
+            rank: 38,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15937725,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295673000,
+            word: '"The Four Seasons"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBGb3VyIFNlYXNvbnMi&s=j3EFa4Yj",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBGb3VyIFNlYXNvbnMi&s=j3EFa4Yj&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBGb3VyIFNlYXNvbnMi&s=j3EFa4Yj",
+            definition: "1725",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcyNQ&s=OoS...ho&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcyNQ&s=OoS...ho&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcyNQ&s=OoS...ho&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/vEzn-PIL5NMp7Oke7QDq2w_m.jpg",
+            setId: 303628463,
+            rank: 37,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 705158,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672999,
+            word: "The Invention of the Folding Umbrella",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRm9sZGluZyBVbWJyZWxsYQ&s=8Mh61F2I",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRm9sZGluZyBVbWJyZWxsYQ&s=8Mh61F2I&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgRm9sZGluZyBVbWJyZWxsYQ&s=8Mh61F2I",
+            definition: "1705",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcwNQ&s=dM2LOmqr&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcwNQ&s=dM2LOmqr&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcwNQ&s=dM2LOmqr&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3240/2732155864_4e5a383a0f_m.jpg",
+            setId: 303628463,
+            rank: 36,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 588831,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672998,
+            word: 'The Tale of "Cinderella, or the Little Glass Slipper"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFRhbGUgb2YgIkNpbmRlcmVsbGEsIG9yIHRoZSBMaXR0bGUgR2xhc3MgU2xpcHBlciI&s=Wa0ICpu1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFRhbGUgb2YgIkNpbmRlcmVsbGEsIG9yIHRoZSBMaXR0bGUgR2xhc3MgU2xpcHBlciI&s=Wa0ICpu1&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFRhbGUgb2YgIkNpbmRlcmVsbGEsIG9yIHRoZSBMaXR0bGUgR2xhc3MgU2xpcHBlciI&s=Wa0ICpu1",
+            definition: "1697",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY5Nw&s=1fcTomqS&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY5Nw&s=1fcTomqS&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY5Nw&s=1fcTomqS&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/V7joBhQJMrcxhvv-QCWD2Q_m.jpg",
+            setId: 303628463,
+            rank: 35,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 767557,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672997,
+            word: 'The Fable of "The Crow and the Fox"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhYmxlIG9mICJUaGUgQ3JvdyBhbmQgdGhlIEZveCI&s=4.1mp3V1",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhYmxlIG9mICJUaGUgQ3JvdyBhbmQgdGhlIEZveCI&s=4.1mp3V1&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhYmxlIG9mICJUaGUgQ3JvdyBhbmQgdGhlIEZveCI&s=4.1mp3V1",
+            definition: "1668",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2OA&s=.hvZxa9k&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2OA&s=.hvZxa9k&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY2OA&s=.hvZxa9k&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/w2C8asOvca1abyJyI-6bPQ_m.png",
+            setId: 303628463,
+            rank: 34,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 30450115,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672995,
+            word: "The Invention of the Table Knife",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGFibGUgS25pZmU&s=FD9t8iL9",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGFibGUgS25pZmU&s=FD9t8iL9&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgVGFibGUgS25pZmU&s=FD9t8iL9",
+            definition: "1610",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYxMA&s=4SmwMwd5&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYxMA&s=4SmwMwd5&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYxMA&s=4SmwMwd5&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/23/30192914_785c3a7a93_m.jpg",
+            setId: 303628463,
+            rank: 32,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20546836,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672994,
+            word: "The Invention of the Binoculars",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQmlub2N1bGFycw&s=JUsTHcQP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQmlub2N1bGFycw&s=JUsTHcQP&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgQmlub2N1bGFycw&s=JUsTHcQP",
+            definition: "1608",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwOA&s=FCsqFi5E&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTYwOA&s=FCsqFi5E&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTYwOA&s=FCsqFi5E&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3059/3119891607_5c70175eac_m.jpg",
+            setId: 303628463,
+            rank: 31,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20594502,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672993,
+            word: "The Invention of Fencing",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBGZW5jaW5n&s=brbLspuc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBGZW5jaW5n&s=brbLspuc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBGZW5jaW5n&s=brbLspuc",
+            definition: "1553",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU1Mw&s=hZq1NVf5&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU1Mw&s=hZq1NVf5&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU1Mw&s=hZq1NVf5&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/uLrFYvtzT_9-5ipv9Xvxrw_m.jpg",
+            setId: 303628463,
+            rank: 30,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11477455,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672992,
+            word: "The Legend of Robin Hood",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExlZ2VuZCBvZiBSb2JpbiBIb29k&s=cprP.wBl",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExlZ2VuZCBvZiBSb2JpbiBIb29k&s=cprP.wBl&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIExlZ2VuZCBvZiBSb2JpbiBIb29k&s=cprP.wBl",
+            definition: "1377",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTM3Nw&s=NdACGbH8&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTM3Nw&s=NdACGbH8&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTM3Nw&s=NdACGbH8&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3489/3936100116_289ce9f0b7_m.jpg",
+            setId: 303628463,
+            rank: 29,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20584976,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672990,
+            word: "The Invention of the Playing Card",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGxheWluZyBDYXJk&s=0c.HGVWA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGxheWluZyBDYXJk&s=0c.HGVWA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgUGxheWluZyBDYXJk&s=0c.HGVWA",
+            definition: "900",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=OTAw&s=szwXocsR&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=OTAw&s=szwXocsR&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=OTAw&s=szwXocsR&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8027/7545741768_8f04f317c8_m.jpg",
+            setId: 303628463,
+            rank: 27,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20372197,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672989,
+            word: "The Invention of Chess",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDaGVzcw&s=S8zPGuR5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDaGVzcw&s=S8zPGuR5&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDaGVzcw&s=S8zPGuR5",
+            definition: "570",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=NTcw&s=8WlbCSVQ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=NTcw&s=8WlbCSVQ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=NTcw&s=8WlbCSVQ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/30i.1jLHutooxN2Vc7vl7A_m.jpg",
+            setId: 303628463,
+            rank: 26,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12075217,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672988,
+            word: "The 1st Report of the Loch Ness Monster",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBSZXBvcnQgb2YgdGhlIExvY2ggTmVzcyBNb25zdGVy&s=nHLBzM3w",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBSZXBvcnQgb2YgdGhlIExvY2ggTmVzcyBNb25zdGVy&s=nHLBzM3w&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIDFzdCBSZXBvcnQgb2YgdGhlIExvY2ggTmVzcyBNb25zdGVy&s=nHLBzM3w",
+            definition: "535",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=NTM1&s=iqeB1RP2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=NTM1&s=iqeB1RP2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=NTM1&s=iqeB1RP2&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1132/1266380969_5462a2d02f_m.jpg",
+            setId: 303628463,
+            rank: 25,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20110749,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672987,
+            word: "The Inauguration of the Colosseum",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEluYXVndXJhdGlvbiBvZiB0aGUgQ29sb3NzZXVt&s=tTFhjP4b",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEluYXVndXJhdGlvbiBvZiB0aGUgQ29sb3NzZXVt&s=tTFhjP4b&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEluYXVndXJhdGlvbiBvZiB0aGUgQ29sb3NzZXVt&s=tTFhjP4b",
+            definition: "82",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=ODI&s=hYdaoLL.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=ODI&s=hYdaoLL.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=ODI&s=hYdaoLL.&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/4C2BS9FGXFOrDqb0.o5i8w_m.jpg",
+            setId: 303628463,
+            rank: 24,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 23679661,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672986,
+            word: "The Revolt of Spartacus",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFJldm9sdCBvZiBTcGFydGFjdXM&s=2xpFMZwc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFJldm9sdCBvZiBTcGFydGFjdXM&s=2xpFMZwc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFJldm9sdCBvZiBTcGFydGFjdXM&s=2xpFMZwc",
+            definition: "-73",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTcz&s=rbnb5Qwd&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTcz&s=rbnb5Qwd&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTcz&s=rbnb5Qwd&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/wmy7HBUc5GVw2cgIwKSGhA_m.png",
+            setId: 303628463,
+            rank: 23,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22125683,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672985,
+            word: '"The Venus de Milo"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBWZW51cyBkZSBNaWxvIg&s=YrJHzowz",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBWZW51cyBkZSBNaWxvIg&s=YrJHzowz&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBWZW51cyBkZSBNaWxvIg&s=YrJHzowz",
+            definition: "-100",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEwMA&s=WTzOqO7t&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTEwMA&s=WTzOqO7t&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTEwMA&s=WTzOqO7t&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/oBmCX4Je0BOR9j0RJDKFHw_m.jpg",
+            setId: 303628463,
+            rank: 22,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19995758,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672983,
+            word: "The Invention of the Glass Bottle",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2xhc3MgQm90dGxl&s=dXbhHKb7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2xhc3MgQm90dGxl&s=dXbhHKb7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiB0aGUgR2xhc3MgQm90dGxl&s=dXbhHKb7",
+            definition: "-200",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Svli6zzr7rgID4o31VmVPg_m.jpg",
+            setId: 303628463,
+            rank: 20,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11121452,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672982,
+            word: "The Invention of Parchment",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBQYXJjaG1lbnQ&s=qYAF1jyT",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBQYXJjaG1lbnQ&s=qYAF1jyT&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBQYXJjaG1lbnQ&s=qYAF1jyT",
+            definition: "-200",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTIwMA&s=YKtFIHwA&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/b4HD-oAbIwl.SGiiIICGtg_m.png",
+            setId: 303628463,
+            rank: 19,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17043802,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672981,
+            word: "The Colossus of Rhodes",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENvbG9zc3VzIG9mIFJob2Rlcw&s=6cpJXu2b",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENvbG9zc3VzIG9mIFJob2Rlcw&s=6cpJXu2b&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIENvbG9zc3VzIG9mIFJob2Rlcw&s=6cpJXu2b",
+            definition: "-305",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMwNQ&s=.zmUICRg&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTMwNQ&s=.zmUICRg&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTMwNQ&s=.zmUICRg&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/P27v4UQHIAVoBeDdRiTImg_m.jpg",
+            setId: 303628463,
+            rank: 18,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 3802886,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672980,
+            word: "The Invention of Currency",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDdXJyZW5jeQ&s=rB54XGhg",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDdXJyZW5jeQ&s=rB54XGhg&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEludmVudGlvbiBvZiBDdXJyZW5jeQ&s=rB54XGhg",
+            definition: "-680",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTY4MA&s=3VvSh2pP&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTY4MA&s=3VvSh2pP&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTY4MA&s=3VvSh2pP&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1121/1435739708_5cb0ad5c44_m.jpg",
+            setId: 303628463,
+            rank: 17,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20389310,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295672979,
+            word: '"The Illiad and the Odyssey"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBJbGxpYWQgYW5kIHRoZSBPZHlzc2V5Ig&s=no0NeXPr",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBJbGxpYWQgYW5kIHRoZSBPZHlzc2V5Ig&s=no0NeXPr&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBJbGxpYWQgYW5kIHRoZSBPZHlzc2V5Ig&s=no0NeXPr",
+            definition: "-800",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=LTgwMA&s=X2UWk.-J&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=LTgwMA&s=X2UWk.-J&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=LTgwMA&s=X2UWk.-J&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/xGRIqE6n88Bb7imhFn1B5Q_m.jpg",
+            setId: 303628463,
+            rank: 16,
+            lastModified: 1530149119,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19966730,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 110,
+        page: 1,
+        perPage: 200,
+        token: "kd4R9e53C4.mRMmCGx8WxzwVPb9n",
+      },
+    },
+  ],
+};
 
 downloaded[
   "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=303629439"
@@ -10933,6 +28043,3138 @@ downloaded[
         page: 1,
         perPage: 200,
         token: "mk5xeEHtjC.3XszavS2jQqcp3uXk",
+      },
+    },
+  ],
+};
+
+downloaded[
+  "https://quizlet.com/webapi/3.1/terms?filters[isDeleted]=0&filters[setId]=303627863"
+] = {
+  responses: [
+    {
+      models: {
+        term: [
+          {
+            id: 10295621709,
+            word: "Tiger Woods becomes youngest Masters Champ",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGlnZXIgV29vZHMgYmVjb21lcyB5b3VuZ2VzdCBNYXN0ZXJzIENoYW1w&s=32JM4yei",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGlnZXIgV29vZHMgYmVjb21lcyB5b3VuZ2VzdCBNYXN0ZXJzIENoYW1w&s=32JM4yei&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGlnZXIgV29vZHMgYmVjb21lcyB5b3VuZ2VzdCBNYXN0ZXJzIENoYW1w&s=32JM4yei",
+            definition: "1997",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Nw&s=OD.KwUQ5&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Nw&s=OD.KwUQ5&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5Nw&s=OD.KwUQ5&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4064/4212702206_8d0b09913c_m.jpg",
+            setId: 303627863,
+            rank: 101,
+            lastModified: 1530304337,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16181369,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296609513,
+            word: "The X-Files premiers",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFgtRmlsZXMgcHJlbWllcnM&s=vViRxzbf",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFgtRmlsZXMgcHJlbWllcnM&s=vViRxzbf&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFgtRmlsZXMgcHJlbWllcnM&s=vViRxzbf",
+            definition: "1993",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Mw&s=CWvOOadr&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Mw&s=CWvOOadr&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5Mw&s=CWvOOadr&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/iaTWMknlC1iI3HBcw31uZw_m.jpg",
+            setId: 303627863,
+            rank: 98,
+            lastModified: 1530304310,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16633998,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621704,
+            word: "First issue for USA Today",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgaXNzdWUgZm9yIFVTQSBUb2RheQ&s=amiQQjBb",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgaXNzdWUgZm9yIFVTQSBUb2RheQ&s=amiQQjBb&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgaXNzdWUgZm9yIFVTQSBUb2RheQ&s=amiQQjBb",
+            definition: "1982",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4Mg&s=XP8Q9b9q&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4Mg&s=XP8Q9b9q&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4Mg&s=XP8Q9b9q&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/cw-urFFxIWhH127QgJ6X3w_m.png",
+            setId: 303627863,
+            rank: 95,
+            lastModified: 1530304282,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 31528994,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621691,
+            word: 'Appearance of the name "Silicon Valley"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QXBwZWFyYW5jZSBvZiB0aGUgbmFtZSAiU2lsaWNvbiBWYWxsZXki&s=LpItWnXB",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXBwZWFyYW5jZSBvZiB0aGUgbmFtZSAiU2lsaWNvbiBWYWxsZXki&s=LpItWnXB&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QXBwZWFyYW5jZSBvZiB0aGUgbmFtZSAiU2lsaWNvbiBWYWxsZXki&s=LpItWnXB",
+            definition: "1971",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/V7LxY2ugmfz5p7kVV-DvCA_m.jpg",
+            setId: 303627863,
+            rank: 82,
+            lastModified: 1530304117,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 22212922,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296609740,
+            word: "Michael Phelps wins 8 Gold Medals at the Olympics",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWljaGFlbCBQaGVscHMgd2lucyA4IEdvbGQgTWVkYWxzIGF0IHRoZSBPbHltcGljcw&s=KCehHrjW",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWljaGFlbCBQaGVscHMgd2lucyA4IEdvbGQgTWVkYWxzIGF0IHRoZSBPbHltcGljcw&s=KCehHrjW&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWljaGFlbCBQaGVscHMgd2lucyA4IEdvbGQgTWVkYWxzIGF0IHRoZSBPbHltcGljcw&s=KCehHrjW",
+            definition: "2008",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwOA&s=DpPELXzO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwOA&s=DpPELXzO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MjAwOA&s=DpPELXzO&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/25/65440969_032598d87b_m.jpg",
+            setId: 303627863,
+            rank: 106,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19771163,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296609153,
+            word: "First woman to run the Boston Marathon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgd29tYW4gdG8gcnVuIHRoZSBCb3N0b24gTWFyYXRob24&s=IDfveVsS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgd29tYW4gdG8gcnVuIHRoZSBCb3N0b24gTWFyYXRob24&s=IDfveVsS&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgd29tYW4gdG8gcnVuIHRoZSBCb3N0b24gTWFyYXRob24&s=IDfveVsS",
+            definition: "1967",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5605/15331946359_624c57d0fd_m.jpg",
+            setId: 303627863,
+            rank: 80,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19869605,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296608969,
+            word: "The Star Trek TV series airs for the first time",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFN0YXIgVHJlayBUViBzZXJpZXMgYWlycyBmb3IgdGhlIGZpcnN0IHRpbWU&s=sMKX0lkO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFN0YXIgVHJlayBUViBzZXJpZXMgYWlycyBmb3IgdGhlIGZpcnN0IHRpbWU&s=sMKX0lkO&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFN0YXIgVHJlayBUViBzZXJpZXMgYWlycyBmb3IgdGhlIGZpcnN0IHRpbWU&s=sMKX0lkO",
+            definition: "1966",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Ng&s=T4U1nBuz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Ng&s=T4U1nBuz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Ng&s=T4U1nBuz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/74V.TsaXfQq3y0Py9AdDhQ_m.jpg",
+            setId: 303627863,
+            rank: 77,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 26944071,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296608536,
+            word: "Launch of Explorer I, the first American satellite",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TGF1bmNoIG9mIEV4cGxvcmVyIEksIHRoZSBmaXJzdCBBbWVyaWNhbiBzYXRlbGxpdGU&s=2HMtYE.j",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGF1bmNoIG9mIEV4cGxvcmVyIEksIHRoZSBmaXJzdCBBbWVyaWNhbiBzYXRlbGxpdGU&s=2HMtYE.j&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TGF1bmNoIG9mIEV4cGxvcmVyIEksIHRoZSBmaXJzdCBBbWVyaWNhbiBzYXRlbGxpdGU&s=2HMtYE.j",
+            definition: "1958",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OA&s=oSS9ADqL&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OA&s=oSS9ADqL&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1OA&s=oSS9ADqL&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/BGuarYxfNAa9ciLhA6n2WQ_m.jpg",
+            setId: 303627863,
+            rank: 68,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15619120,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296607787,
+            word: "Opening of the Pentagon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=T3BlbmluZyBvZiB0aGUgUGVudGFnb24&s=OR8sZzUL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=T3BlbmluZyBvZiB0aGUgUGVudGFnb24&s=OR8sZzUL&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=T3BlbmluZyBvZiB0aGUgUGVudGFnb24&s=OR8sZzUL",
+            definition: "1942",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Mg&s=YRN7P-P4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Mg&s=YRN7P-P4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Mg&s=YRN7P-P4&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3484/3733687366_5ed0a9bdca_m.jpg",
+            setId: 303627863,
+            rank: 57,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20495792,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296607080,
+            word: "McDonalds founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWNEb25hbGRzIGZvdW5kZWQ&s=K-tyDifO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWNEb25hbGRzIGZvdW5kZWQ&s=K-tyDifO&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWNEb25hbGRzIGZvdW5kZWQ&s=K-tyDifO",
+            definition: "1940",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/cLVA.5I8OpGTPg-aHRixIw_m.jpg",
+            setId: 303627863,
+            rank: 53,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24352473,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296606538,
+            word: "First televised sporting event",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgdGVsZXZpc2VkIHNwb3J0aW5nIGV2ZW50&s=dgeRPCYL",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgdGVsZXZpc2VkIHNwb3J0aW5nIGV2ZW50&s=dgeRPCYL&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgdGVsZXZpc2VkIHNwb3J0aW5nIGV2ZW50&s=dgeRPCYL",
+            definition: "1936",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzNg&s=eBI1gZjO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzNg&s=eBI1gZjO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzNg&s=eBI1gZjO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/h8FbMAaNXNw-gWwYHFCSfQ_m.jpg",
+            setId: 303627863,
+            rank: 48,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16814341,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296605547,
+            word: "Charles Lindbergh flies across the Atlantic Ocean",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxlcyBMaW5kYmVyZ2ggZmxpZXMgYWNyb3NzIHRoZSBBdGxhbnRpYyBPY2Vhbg&s=OuWurXDi",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxlcyBMaW5kYmVyZ2ggZmxpZXMgYWNyb3NzIHRoZSBBdGxhbnRpYyBPY2Vhbg&s=OuWurXDi&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q2hhcmxlcyBMaW5kYmVyZ2ggZmxpZXMgYWNyb3NzIHRoZSBBdGxhbnRpYyBPY2Vhbg&s=OuWurXDi",
+            definition: "1927",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2006/1539479348_365a708ec1_m.jpg",
+            setId: 303627863,
+            rank: 43,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6418761,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621716,
+            word: "Space Shuttle fleet retired",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3BhY2UgU2h1dHRsZSBmbGVldCByZXRpcmVk&s=DRHIbwzq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3BhY2UgU2h1dHRsZSBmbGVldCByZXRpcmVk&s=DRHIbwzq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3BhY2UgU2h1dHRsZSBmbGVldCByZXRpcmVk&s=DRHIbwzq",
+            definition: "2011",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAxMQ&s=MxDjK451&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAxMQ&s=MxDjK451&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MjAxMQ&s=MxDjK451&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1090/1050733503_fe2291909a_m.jpg",
+            setId: 303627863,
+            rank: 109,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20453741,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621715,
+            word: "Fisrt iPad unveiled",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RmlzcnQgaVBhZCB1bnZlaWxlZA&s=dvUsnsnt",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RmlzcnQgaVBhZCB1bnZlaWxlZA&s=dvUsnsnt&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RmlzcnQgaVBhZCB1bnZlaWxlZA&s=dvUsnsnt",
+            definition: "2010",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAxMA&s=za-CL3dC&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAxMA&s=za-CL3dC&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MjAxMA&s=za-CL3dC&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7438/9642568282_440d6f0a08_m.jpg",
+            setId: 303627863,
+            rank: 108,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15623473,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621714,
+            word: "Death of Michael Jackson",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVhdGggb2YgTWljaGFlbCBKYWNrc29u&s=ZsIFDgNm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGVhdGggb2YgTWljaGFlbCBKYWNrc29u&s=ZsIFDgNm&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGVhdGggb2YgTWljaGFlbCBKYWNrc29u&s=ZsIFDgNm",
+            definition: "2009",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwOQ&s=Hzom3Mgo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwOQ&s=Hzom3Mgo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MjAwOQ&s=Hzom3Mgo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/k8U3eucR7cH5g4Faz1psTQ_m.jpg",
+            setId: 303627863,
+            rank: 107,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 659786,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621713,
+            word: "Big Bang Theory (American sitcom)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QmlnIEJhbmcgVGhlb3J5IChBbWVyaWNhbiBzaXRjb20p&s=4kc1lF02",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmlnIEJhbmcgVGhlb3J5IChBbWVyaWNhbiBzaXRjb20p&s=4kc1lF02&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmlnIEJhbmcgVGhlb3J5IChBbWVyaWNhbiBzaXRjb20p&s=4kc1lF02",
+            definition: "2007",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwNw&s=34jeYHX6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwNw&s=34jeYHX6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MjAwNw&s=34jeYHX6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/70HkkCvecrp3Yk.V4AhDWQ_m.jpg",
+            setId: 303627863,
+            rank: 105,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 23981904,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621712,
+            word: "Janet Jackson wardrobe malfunction during Superbowl",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SmFuZXQgSmFja3NvbiB3YXJkcm9iZSBtYWxmdW5jdGlvbiBkdXJpbmcgU3VwZXJib3ds&s=vUMyXyh.",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmFuZXQgSmFja3NvbiB3YXJkcm9iZSBtYWxmdW5jdGlvbiBkdXJpbmcgU3VwZXJib3ds&s=vUMyXyh.&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SmFuZXQgSmFja3NvbiB3YXJkcm9iZSBtYWxmdW5jdGlvbiBkdXJpbmcgU3VwZXJib3ds&s=vUMyXyh.",
+            definition: "2004",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwNA&s=pRIq8o21&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwNA&s=pRIq8o21&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MjAwNA&s=pRIq8o21&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6026/5908048569_91c8e98577_m.jpg",
+            setId: 303627863,
+            rank: 104,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20749127,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621711,
+            word: "Facebook founded",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=RmFjZWJvb2sgZm91bmRlZA&s=0L5EfQ.M",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RmFjZWJvb2sgZm91bmRlZA&s=0L5EfQ.M&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RmFjZWJvb2sgZm91bmRlZA&s=0L5EfQ.M",
+            definition: "2004",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwNA&s=pRIq8o21&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MjAwNA&s=pRIq8o21&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MjAwNA&s=pRIq8o21&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3270/2391747442_eaedaa1ff4_m.jpg",
+            setId: 303627863,
+            rank: 103,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20577025,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621710,
+            word: "International Federation of American Football is formed",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SW50ZXJuYXRpb25hbCBGZWRlcmF0aW9uIG9mIEFtZXJpY2FuIEZvb3RiYWxsIGlzIGZvcm1lZA&s=MXVPEtbK",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SW50ZXJuYXRpb25hbCBGZWRlcmF0aW9uIG9mIEFtZXJpY2FuIEZvb3RiYWxsIGlzIGZvcm1lZA&s=MXVPEtbK&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SW50ZXJuYXRpb25hbCBGZWRlcmF0aW9uIG9mIEFtZXJpY2FuIEZvb3RiYWxsIGlzIGZvcm1lZA&s=MXVPEtbK",
+            definition: "1998",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5OA&s=ZFr0zvaR&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5OA&s=ZFr0zvaR&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5OA&s=ZFr0zvaR&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/17eFwBGoNQzYeHf4gR7WWQ_m.png",
+            setId: 303627863,
+            rank: 102,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21230255,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621708,
+            word: "Friends premieres",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RnJpZW5kcyBwcmVtaWVyZXM&s=d2UUpOKA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RnJpZW5kcyBwcmVtaWVyZXM&s=d2UUpOKA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RnJpZW5kcyBwcmVtaWVyZXM&s=d2UUpOKA",
+            definition: "1994",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5NA&s=4Z1yNUxJ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5NA&s=4Z1yNUxJ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5NA&s=4Z1yNUxJ&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/ZGQqgq319I5QKvUdBlY8mg_m.jpg",
+            setId: 303627863,
+            rank: 100,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21726629,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621707,
+            word: "First UFC event held",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgVUZDIGV2ZW50IGhlbGQ&s=TPPwb7bh",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgVUZDIGV2ZW50IGhlbGQ&s=TPPwb7bh&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgVUZDIGV2ZW50IGhlbGQ&s=TPPwb7bh",
+            definition: "1993",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Mw&s=CWvOOadr&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk5Mw&s=CWvOOadr&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk5Mw&s=CWvOOadr&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8208/8270603618_7c85b48850_m.jpg",
+            setId: 303627863,
+            rank: 99,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6584028,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621706,
+            word: "Pete Rose is banned from baseball",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=UGV0ZSBSb3NlIGlzIGJhbm5lZCBmcm9tIGJhc2ViYWxs&s=mMmcLI6R",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UGV0ZSBSb3NlIGlzIGJhbm5lZCBmcm9tIGJhc2ViYWxs&s=mMmcLI6R&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=UGV0ZSBSb3NlIGlzIGJhbm5lZCBmcm9tIGJhc2ViYWxs&s=mMmcLI6R",
+            definition: "1989",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4OQ&s=15JoLHs9&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4OQ&s=15JoLHs9&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4OQ&s=15JoLHs9&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3002/2790928865_38695a3a81_m.jpg",
+            setId: 303627863,
+            rank: 97,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16632839,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621705,
+            word: "The Oprah Winfrey Show (nationally syndicated)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE9wcmFoIFdpbmZyZXkgU2hvdyAobmF0aW9uYWxseSBzeW5kaWNhdGVkKQ&s=EBmkpmdl",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE9wcmFoIFdpbmZyZXkgU2hvdyAobmF0aW9uYWxseSBzeW5kaWNhdGVkKQ&s=EBmkpmdl&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE9wcmFoIFdpbmZyZXkgU2hvdyAobmF0aW9uYWxseSBzeW5kaWNhdGVkKQ&s=EBmkpmdl",
+            definition: "1986",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4Ng&s=h-dBGIuG&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4Ng&s=h-dBGIuG&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4Ng&s=h-dBGIuG&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/jas3sAxdv3YIXbH3nq7HQA_m.jpg",
+            setId: 303627863,
+            rank: 96,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18995978,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621703,
+            word: "Mount St-Helens erupts",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TW91bnQgU3QtSGVsZW5zIGVydXB0cw&s=xSESw-8N",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TW91bnQgU3QtSGVsZW5zIGVydXB0cw&s=xSESw-8N&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TW91bnQgU3QtSGVsZW5zIGVydXB0cw&s=xSESw-8N",
+            definition: "1980",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MA&s=V0YTMQfH&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MA&s=V0YTMQfH&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4MA&s=V0YTMQfH&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/uY9BatgyzNeMW1Ha3Zx5.Q_m.jpg",
+            setId: 303627863,
+            rank: 94,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 13718334,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621702,
+            word: "USA Hockey Team defeat USSR (Olympics)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VVNBIEhvY2tleSBUZWFtIGRlZmVhdCBVU1NSIChPbHltcGljcyk&s=VlG6qVwC",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VVNBIEhvY2tleSBUZWFtIGRlZmVhdCBVU1NSIChPbHltcGljcyk&s=VlG6qVwC&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VVNBIEhvY2tleSBUZWFtIGRlZmVhdCBVU1NSIChPbHltcGljcyk&s=VlG6qVwC",
+            definition: "1980",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MA&s=V0YTMQfH&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk4MA&s=V0YTMQfH&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk4MA&s=V0YTMQfH&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/71jNaEs9OgseH9G6fKSAMw_m.png",
+            setId: 303627863,
+            rank: 93,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 38997187,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621701,
+            word: "Star Wars",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=U3RhciBXYXJz&s=A0m4iLES",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhciBXYXJz&s=A0m4iLES&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=U3RhciBXYXJz&s=A0m4iLES",
+            definition: "1977",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Nw&s=HvnbR5.3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Nw&s=HvnbR5.3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Nw&s=HvnbR5.3&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/p1XfVPZxhNRQ8K5vSryjkw_m.jpg",
+            setId: 303627863,
+            rank: 92,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12565736,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621700,
+            word: "Annie opens on Broadway",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QW5uaWUgb3BlbnMgb24gQnJvYWR3YXk&s=pkJLbPsd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QW5uaWUgb3BlbnMgb24gQnJvYWR3YXk&s=pkJLbPsd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QW5uaWUgb3BlbnMgb24gQnJvYWR3YXk&s=pkJLbPsd",
+            definition: "1977",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Nw&s=HvnbR5.3&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Nw&s=HvnbR5.3&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Nw&s=HvnbR5.3&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/SgMUcsYnh7itGeg7dGgrlQ_m.jpg",
+            setId: 303627863,
+            rank: 91,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 21030365,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621699,
+            word: "Apple is founded",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=QXBwbGUgaXMgZm91bmRlZA&s=uDw.fLFe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QXBwbGUgaXMgZm91bmRlZA&s=uDw.fLFe&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QXBwbGUgaXMgZm91bmRlZA&s=uDw.fLFe",
+            definition: "1976",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/80/235315669_8a80629cfc_m.jpg",
+            setId: 303627863,
+            rank: 90,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20561503,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621698,
+            word: "Bruce Jenner wins the Olympic decathlon",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJ1Y2UgSmVubmVyIHdpbnMgdGhlIE9seW1waWMgZGVjYXRobG9u&s=ZhUzW-VR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QnJ1Y2UgSmVubmVyIHdpbnMgdGhlIE9seW1waWMgZGVjYXRobG9u&s=ZhUzW-VR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QnJ1Y2UgSmVubmVyIHdpbnMgdGhlIE9seW1waWMgZGVjYXRobG9u&s=ZhUzW-VR",
+            definition: "1976",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Ng&s=IZ7KW-q6&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/dGysEhZIEQGk-A0N9cW99g_m.jpg",
+            setId: 303627863,
+            rank: 89,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25372303,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621697,
+            word: "Bill Gates founded Microsoft",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QmlsbCBHYXRlcyBmb3VuZGVkIE1pY3Jvc29mdA&s=DVkrcV-P",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmlsbCBHYXRlcyBmb3VuZGVkIE1pY3Jvc29mdA&s=DVkrcV-P&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmlsbCBHYXRlcyBmb3VuZGVkIE1pY3Jvc29mdA&s=DVkrcV-P",
+            definition: "1975",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NQ&s=pwLfyb7m&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NQ&s=pwLfyb7m&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NQ&s=pwLfyb7m&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/YZmpJ0Dcm-K-WfKb1lzx9g_m.jpg",
+            setId: 303627863,
+            rank: 88,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18995971,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621696,
+            word: "Happy Days first airs",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SGFwcHkgRGF5cyBmaXJzdCBhaXJz&s=RgjGmmoS",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SGFwcHkgRGF5cyBmaXJzdCBhaXJz&s=RgjGmmoS&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SGFwcHkgRGF5cyBmaXJzdCBhaXJz&s=RgjGmmoS",
+            definition: "1974",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3NA&s=ToKKRZFD&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2086/2781181266_137d20a6ed_m.jpg",
+            setId: 303627863,
+            rank: 87,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9498136,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621695,
+            word: "American troops begin to withdraw from Vietnam",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QW1lcmljYW4gdHJvb3BzIGJlZ2luIHRvIHdpdGhkcmF3IGZyb20gVmlldG5hbQ&s=fpRrHEfm",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QW1lcmljYW4gdHJvb3BzIGJlZ2luIHRvIHdpdGhkcmF3IGZyb20gVmlldG5hbQ&s=fpRrHEfm&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QW1lcmljYW4gdHJvb3BzIGJlZ2luIHRvIHdpdGhkcmF3IGZyb20gVmlldG5hbQ&s=fpRrHEfm",
+            definition: "1973",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mw&s=xF71EuGm&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mw&s=xF71EuGm&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mw&s=xF71EuGm&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/1SRsf5dEKxox5iSN2rYbIg_m.jpg",
+            setId: 303627863,
+            rank: 86,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17593062,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621694,
+            word: "Miami Dolphins have the NFL's first undefeated season",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlhbWkgRG9scGhpbnMgaGF2ZSB0aGUgTkZMJ3MgZmlyc3QgdW5kZWZlYXRlZCBzZWFzb24&s=YV1UHGWw",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlhbWkgRG9scGhpbnMgaGF2ZSB0aGUgTkZMJ3MgZmlyc3QgdW5kZWZlYXRlZCBzZWFzb24&s=YV1UHGWw&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWlhbWkgRG9scGhpbnMgaGF2ZSB0aGUgTkZMJ3MgZmlyc3QgdW5kZWZlYXRlZCBzZWFzb24&s=YV1UHGWw",
+            definition: "1972",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mg&s=acn97xij&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mg&s=acn97xij&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3Mg&s=acn97xij&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/Z_pXShjTqtfg_W2_GZLyVg_m.jpg",
+            setId: 303627863,
+            rank: 85,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19637913,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621693,
+            word: "Starbucks is founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcmJ1Y2tzIGlzIGZvdW5kZWQ&s=zP5CS4bu",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U3RhcmJ1Y2tzIGlzIGZvdW5kZWQ&s=zP5CS4bu&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U3RhcmJ1Y2tzIGlzIGZvdW5kZWQ&s=zP5CS4bu",
+            definition: "1971",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/WImW3ZfHJfT3zTgE24cVUg_m.jpg",
+            setId: 303627863,
+            rank: 84,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24320278,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621692,
+            word: "M*A*S*H premieres",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TSpBKlMqSCBwcmVtaWVyZXM&s=HAX-n.2M",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TSpBKlMqSCBwcmVtaWVyZXM&s=HAX-n.2M&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TSpBKlMqSCBwcmVtaWVyZXM&s=HAX-n.2M",
+            definition: "1971",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk3MQ&s=T9IHozH4&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/7K8lJRMSYHPAQ3i7yJAKNA_m.jpg",
+            setId: 303627863,
+            rank: 83,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20239370,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621690,
+            word: "First flight of a Boeing 747",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgZmxpZ2h0IG9mIGEgQm9laW5nIDc0Nw&s=8XmH2DQw",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgZmxpZ2h0IG9mIGEgQm9laW5nIDc0Nw&s=8XmH2DQw&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgZmxpZ2h0IG9mIGEgQm9laW5nIDc0Nw&s=8XmH2DQw",
+            definition: "1969",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2OQ&s=rig-lDw.&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/SQc61OYhFCVZmdEgasYwGg_m.jpg",
+            setId: 303627863,
+            rank: 81,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16977206,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621689,
+            word: "Bonnie and Clyde hist the theaters",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9ubmllIGFuZCBDbHlkZSBoaXN0IHRoZSB0aGVhdGVycw&s=SinqR0o4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9ubmllIGFuZCBDbHlkZSBoaXN0IHRoZSB0aGVhdGVycw&s=SinqR0o4&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Qm9ubmllIGFuZCBDbHlkZSBoaXN0IHRoZSB0aGVhdGVycw&s=SinqR0o4",
+            definition: "1967",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/bXuZ8YVf0GxSWlRPROGBKw_m.jpg",
+            setId: 303627863,
+            rank: 79,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18381367,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621688,
+            word: "First Superbowl Halftime Show",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3VwZXJib3dsIEhhbGZ0aW1lIFNob3c&s=c4BVkjhH",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3VwZXJib3dsIEhhbGZ0aW1lIFNob3c&s=c4BVkjhH&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3VwZXJib3dsIEhhbGZ0aW1lIFNob3c&s=c4BVkjhH",
+            definition: "1967",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Nw&s=pjRxdEan&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/0PVzzDZcoSIY1L4mzhvDQQ_m.jpg",
+            setId: 303627863,
+            rank: 78,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 10468084,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621687,
+            word: "The Jackson Five band is formed",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEphY2tzb24gRml2ZSBiYW5kIGlzIGZvcm1lZA&s=gVnvoNgy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEphY2tzb24gRml2ZSBiYW5kIGlzIGZvcm1lZA&s=gVnvoNgy&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEphY2tzb24gRml2ZSBiYW5kIGlzIGZvcm1lZA&s=gVnvoNgy",
+            definition: "1965",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2NQ&s=9PIHq1tm&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2NQ&s=9PIHq1tm&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2NQ&s=9PIHq1tm&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6214/6306205970_ef8c519f91_m.jpg",
+            setId: 303627863,
+            rank: 76,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15796993,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621686,
+            word: 'Martin Luther King\'s speech "I Have A Dream"',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFydGluIEx1dGhlciBLaW5nJ3Mgc3BlZWNoICJJIEhhdmUgQSBEcmVhbSI&s=tPvRjIPI",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFydGluIEx1dGhlciBLaW5nJ3Mgc3BlZWNoICJJIEhhdmUgQSBEcmVhbSI&s=tPvRjIPI&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWFydGluIEx1dGhlciBLaW5nJ3Mgc3BlZWNoICJJIEhhdmUgQSBEcmVhbSI&s=tPvRjIPI",
+            definition: "1963",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mw&s=h60DSJxW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/dCt7tNLolgMmXXtC0nyFug_m.jpg",
+            setId: 303627863,
+            rank: 75,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11539116,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621685,
+            word: "Wilt Chamberlin scores 100 points in a single game",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=V2lsdCBDaGFtYmVybGluIHNjb3JlcyAxMDAgcG9pbnRzIGluIGEgc2luZ2xlIGdhbWU&s=.YicZP4Q",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2lsdCBDaGFtYmVybGluIHNjb3JlcyAxMDAgcG9pbnRzIGluIGEgc2luZ2xlIGdhbWU&s=.YicZP4Q&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=V2lsdCBDaGFtYmVybGluIHNjb3JlcyAxMDAgcG9pbnRzIGluIGEgc2luZ2xlIGdhbWU&s=.YicZP4Q",
+            definition: "1962",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8470/8407852446_18677bae89_m.jpg",
+            setId: 303627863,
+            rank: 74,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 6934490,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621684,
+            word: "First Target and Wal-Mart stores open",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgVGFyZ2V0IGFuZCBXYWwtTWFydCBzdG9yZXMgb3Blbg&s=-8YM1.0H",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgVGFyZ2V0IGFuZCBXYWwtTWFydCBzdG9yZXMgb3Blbg&s=-8YM1.0H&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgVGFyZ2V0IGFuZCBXYWwtTWFydCBzdG9yZXMgb3Blbg&s=-8YM1.0H",
+            definition: "1962",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2Mg&s=Q3DjTmUc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/smP_0A5NVvurD4lVX0H7HQ_m.jpg",
+            setId: 303627863,
+            rank: 73,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 9021416,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621683,
+            word: "Ray Charles perfoms Hit the Road Jack for the 1st time",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=UmF5IENoYXJsZXMgcGVyZm9tcyBIaXQgdGhlIFJvYWQgSmFjayBmb3IgdGhlIDFzdCB0aW1l&s=HisXhQ5j",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UmF5IENoYXJsZXMgcGVyZm9tcyBIaXQgdGhlIFJvYWQgSmFjayBmb3IgdGhlIDFzdCB0aW1l&s=HisXhQ5j&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=UmF5IENoYXJsZXMgcGVyZm9tcyBIaXQgdGhlIFJvYWQgSmFjayBmb3IgdGhlIDFzdCB0aW1l&s=HisXhQ5j",
+            definition: "1961",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2MQ&s=KW1vz6Pk&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2MQ&s=KW1vz6Pk&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2MQ&s=KW1vz6Pk&sublanguage=math",
+            _imageUrl: null,
+            setId: 303627863,
+            rank: 72,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: null,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621682,
+            word: "Bob Dylan releases first album",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9iIER5bGFuIHJlbGVhc2VzIGZpcnN0IGFsYnVt&s=9UG-FwTO",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9iIER5bGFuIHJlbGVhc2VzIGZpcnN0IGFsYnVt&s=9UG-FwTO&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Qm9iIER5bGFuIHJlbGVhc2VzIGZpcnN0IGFsYnVt&s=9UG-FwTO",
+            definition: "1961",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2MQ&s=KW1vz6Pk&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk2MQ&s=KW1vz6Pk&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk2MQ&s=KW1vz6Pk&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1381/1428148840_db98693d53_m.jpg",
+            setId: 303627863,
+            rank: 71,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14397545,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621681,
+            word: "Barbie's first appearance",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFyYmllJ3MgZmlyc3QgYXBwZWFyYW5jZQ&s=MlKKwVgh",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFyYmllJ3MgZmlyc3QgYXBwZWFyYW5jZQ&s=MlKKwVgh&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmFyYmllJ3MgZmlyc3QgYXBwZWFyYW5jZQ&s=MlKKwVgh",
+            definition: "1959",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/-qpuN46zz9y3I0cJ.NhWlw_m.jpg",
+            setId: 303627863,
+            rank: 70,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 12942243,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621680,
+            word: "The Twilight Zone premieres on television",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFR3aWxpZ2h0IFpvbmUgcHJlbWllcmVzIG9uIHRlbGV2aXNpb24&s=YJIXmxKX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFR3aWxpZ2h0IFpvbmUgcHJlbWllcmVzIG9uIHRlbGV2aXNpb24&s=YJIXmxKX&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFR3aWxpZ2h0IFpvbmUgcHJlbWllcmVzIG9uIHRlbGV2aXNpb24&s=YJIXmxKX",
+            definition: "1959",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1OQ&s=RbHYjTgD&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/bKkoZVKze2RdniX4mJBQzw_m.gif",
+            setId: 303627863,
+            rank: 69,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24123996,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621679,
+            word: "Elvis releases Heartbreak Hotel",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RWx2aXMgcmVsZWFzZXMgSGVhcnRicmVhayBIb3RlbA&s=AknYaHcd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RWx2aXMgcmVsZWFzZXMgSGVhcnRicmVhayBIb3RlbA&s=AknYaHcd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RWx2aXMgcmVsZWFzZXMgSGVhcnRicmVhayBIb3RlbA&s=AknYaHcd",
+            definition: "1956",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/iBJTr34M3fLf9I9bLBhYfg_m.png",
+            setId: 303627863,
+            rank: 67,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16929354,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621678,
+            word: "First skateboard sold",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgc2thdGVib2FyZCBzb2xk&s=TwIRTep7",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgc2thdGVib2FyZCBzb2xk&s=TwIRTep7&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgc2thdGVib2FyZCBzb2xk&s=TwIRTep7",
+            definition: "1956",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Ng&s=pMOsCc15&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2499/3674686528_39d0b95591_m.jpg",
+            setId: 303627863,
+            rank: 66,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20794133,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621677,
+            word: "Disneyland, the first Disney theme park, opens",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzbmV5bGFuZCwgdGhlIGZpcnN0IERpc25leSB0aGVtZSBwYXJrLCBvcGVucw&s=wHc0j315",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=RGlzbmV5bGFuZCwgdGhlIGZpcnN0IERpc25leSB0aGVtZSBwYXJrLCBvcGVucw&s=wHc0j315&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=RGlzbmV5bGFuZCwgdGhlIGZpcnN0IERpc25leSB0aGVtZSBwYXJrLCBvcGVucw&s=wHc0j315",
+            definition: "1955",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1NQ&s=OPFAtZSC&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1NQ&s=OPFAtZSC&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1NQ&s=OPFAtZSC&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3231/2929992604_98b1e3a581_m.jpg",
+            setId: 303627863,
+            rank: 65,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 930809,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621676,
+            word: "Marilyn Monroe stars in Gentlemen Prefer Blondes",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2Ugc3RhcnMgaW4gR2VudGxlbWVuIFByZWZlciBCbG9uZGVz&s=1OR7J61J",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2Ugc3RhcnMgaW4gR2VudGxlbWVuIFByZWZlciBCbG9uZGVz&s=1OR7J61J&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWFyaWx5biBNb25yb2Ugc3RhcnMgaW4gR2VudGxlbWVuIFByZWZlciBCbG9uZGVz&s=1OR7J61J",
+            definition: "1953",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mw&s=mcSjqCip&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mw&s=mcSjqCip&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mw&s=mcSjqCip&sublanguage=math",
+            _imageUrl:
+              "https://farm8.staticflickr.com/7441/11096102775_cfbc4c6ef7_m.jpg",
+            setId: 303627863,
+            rank: 64,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16941333,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621675,
+            word: "First Rock & Roll concert in Cleveland",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgUm9jayAmIFJvbGwgY29uY2VydCBpbiBDbGV2ZWxhbmQ&s=F37KQWbX",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgUm9jayAmIFJvbGwgY29uY2VydCBpbiBDbGV2ZWxhbmQ&s=F37KQWbX&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgUm9jayAmIFJvbGwgY29uY2VydCBpbiBDbGV2ZWxhbmQ&s=F37KQWbX",
+            definition: "1952",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mg&s=6jOA2wYH&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mg&s=6jOA2wYH&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mg&s=6jOA2wYH&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/6nYFZA5rCaXdt_kW1a761Q_m.jpg",
+            setId: 303627863,
+            rank: 63,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16927962,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621674,
+            word: "The Old Man and the Sea first published",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE9sZCBNYW4gYW5kIHRoZSBTZWEgZmlyc3QgcHVibGlzaGVk&s=tB-EOy42",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE9sZCBNYW4gYW5kIHRoZSBTZWEgZmlyc3QgcHVibGlzaGVk&s=tB-EOy42&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIE9sZCBNYW4gYW5kIHRoZSBTZWEgZmlyc3QgcHVibGlzaGVk&s=tB-EOy42",
+            definition: "1952",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mg&s=6jOA2wYH&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mg&s=6jOA2wYH&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk1Mg&s=6jOA2wYH&sublanguage=math",
+            _imageUrl:
+              "https://farm2.staticflickr.com/1325/1063811558_c0c63106ed_m.jpg",
+            setId: 303627863,
+            rank: 62,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20521998,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621673,
+            word: "NASCAR founded",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TkFTQ0FSIGZvdW5kZWQ&s=eS70yyr4",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TkFTQ0FSIGZvdW5kZWQ&s=eS70yyr4&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TkFTQ0FSIGZvdW5kZWQ&s=eS70yyr4",
+            definition: "1948",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2046/2349599270_c437bd59d6_m.jpg",
+            setId: 303627863,
+            rank: 61,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19416028,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621672,
+            word: "First airing of Candid Camera",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYWlyaW5nIG9mIENhbmRpZCBDYW1lcmE&s=1-4TMg5D",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYWlyaW5nIG9mIENhbmRpZCBDYW1lcmE&s=1-4TMg5D&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYWlyaW5nIG9mIENhbmRpZCBDYW1lcmE&s=1-4TMg5D",
+            definition: "1948",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0OA&s=wFcq2I.z&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/218/474799810_d57749322a_m.jpg",
+            setId: 303627863,
+            rank: 60,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1780541,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621671,
+            word: "Jackie Robinson signs contract with the Brooklyn Dodgers",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SmFja2llIFJvYmluc29uIHNpZ25zIGNvbnRyYWN0IHdpdGggdGhlIEJyb29rbHluIERvZGdlcnM&s=9fCZqR9i",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SmFja2llIFJvYmluc29uIHNpZ25zIGNvbnRyYWN0IHdpdGggdGhlIEJyb29rbHluIERvZGdlcnM&s=9fCZqR9i&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SmFja2llIFJvYmluc29uIHNpZ25zIGNvbnRyYWN0IHdpdGggdGhlIEJyb29rbHluIERvZGdlcnM&s=9fCZqR9i",
+            definition: "1947",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Jv9Z3hKCRA.K7atpGb.eTQ_m.jpg",
+            setId: 303627863,
+            rank: 59,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11300450,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621670,
+            word: "Miracle on 34th Street (film)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlyYWNsZSBvbiAzNHRoIFN0cmVldCAoZmlsbSk&s=aSUVOOgn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWlyYWNsZSBvbiAzNHRoIFN0cmVldCAoZmlsbSk&s=aSUVOOgn&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWlyYWNsZSBvbiAzNHRoIFN0cmVldCAoZmlsbSk&s=aSUVOOgn",
+            definition: "1947",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0Nw&s=ZTfiDX5O&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/k0dthfMSchviOD1ibI0tnw_m.jpg",
+            setId: 303627863,
+            rank: 58,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 37192824,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621669,
+            word: "Joe DiMaggio 56-game hitting streak",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9lIERpTWFnZ2lvIDU2LWdhbWUgaGl0dGluZyBzdHJlYWs&s=tkUz.OsZ",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Sm9lIERpTWFnZ2lvIDU2LWdhbWUgaGl0dGluZyBzdHJlYWs&s=tkUz.OsZ&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Sm9lIERpTWFnZ2lvIDU2LWdhbWUgaGl0dGluZyBzdHJlYWs&s=tkUz.OsZ",
+            definition: "1941",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MQ&s=TSmWl3Da&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MQ&s=TSmWl3Da&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0MQ&s=TSmWl3Da&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Yy9zgRLHME6Z88ad7tLf6w_m.jpg",
+            setId: 303627863,
+            rank: 56,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 3911466,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621668,
+            word: "M&M's Candy is first sold",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TSZNJ3MgQ2FuZHkgaXMgZmlyc3Qgc29sZA&s=JhbvxDLR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TSZNJ3MgQ2FuZHkgaXMgZmlyc3Qgc29sZA&s=JhbvxDLR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TSZNJ3MgQ2FuZHkgaXMgZmlyc3Qgc29sZA&s=JhbvxDLR",
+            definition: "1941",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MQ&s=TSmWl3Da&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MQ&s=TSmWl3Da&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0MQ&s=TSmWl3Da&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/33/53127642_cc79e5b8b0_m.jpg",
+            setId: 303627863,
+            rank: 55,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20546825,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621667,
+            word: "For Whom the Bell Tolls",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm9yIFdob20gdGhlIEJlbGwgVG9sbHM&s=r9VET5Te",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm9yIFdob20gdGhlIEJlbGwgVG9sbHM&s=r9VET5Te&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rm9yIFdob20gdGhlIEJlbGwgVG9sbHM&s=r9VET5Te",
+            definition: "1940",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTk0MA&s=ytUC2TVa&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/925MaAgA781dk8vm-6bz2Q_m.jpg",
+            setId: 303627863,
+            rank: 54,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 25494344,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621666,
+            word: "Opening of Guggenheim Museum",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=T3BlbmluZyBvZiBHdWdnZW5oZWltIE11c2V1bQ&s=rxNcaMfK",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=T3BlbmluZyBvZiBHdWdnZW5oZWltIE11c2V1bQ&s=rxNcaMfK&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=T3BlbmluZyBvZiBHdWdnZW5oZWltIE11c2V1bQ&s=rxNcaMfK",
+            definition: "1939",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Z.jfOM8XLqF-BawhEsp.AQ_m.jpg",
+            setId: 303627863,
+            rank: 52,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16086514,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621665,
+            word: "Wizard of Oz (film)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=V2l6YXJkIG9mIE96IChmaWxtKQ&s=ZVAT4vt-",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2l6YXJkIG9mIE96IChmaWxtKQ&s=ZVAT4vt-&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=V2l6YXJkIG9mIE96IChmaWxtKQ&s=ZVAT4vt-",
+            definition: "1939",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/gwz122X1GTmDYN1oJRniWg_m.jpg",
+            setId: 303627863,
+            rank: 51,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 4765458,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621664,
+            word: "Gone with the Wind (film)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=R29uZSB3aXRoIHRoZSBXaW5kIChmaWxtKQ&s=Xdzq6mqU",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=R29uZSB3aXRoIHRoZSBXaW5kIChmaWxtKQ&s=Xdzq6mqU&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=R29uZSB3aXRoIHRoZSBXaW5kIChmaWxtKQ&s=Xdzq6mqU",
+            definition: "1939",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOQ&s=WI2qGeJF&sublanguage=math",
+            _imageUrl:
+              "https://farm5.staticflickr.com/4042/4662769733_4b55762a18_m.jpg",
+            setId: 303627863,
+            rank: 50,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 347465,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621663,
+            word: "First Superman comic book",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3VwZXJtYW4gY29taWMgYm9vaw&s=IMAeCjfq",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3VwZXJtYW4gY29taWMgYm9vaw&s=IMAeCjfq&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3VwZXJtYW4gY29taWMgYm9vaw&s=IMAeCjfq",
+            definition: "1938",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzOA&s=dJS0PviO&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/zsJr1soAWxdsTjegIzk2HA_m.jpg",
+            setId: 303627863,
+            rank: 49,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 7153645,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621662,
+            word: "First zombie move (White Zombie)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgem9tYmllIG1vdmUgKFdoaXRlIFpvbWJpZSk&s=Trel8rnT",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgem9tYmllIG1vdmUgKFdoaXRlIFpvbWJpZSk&s=Trel8rnT&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3Qgem9tYmllIG1vdmUgKFdoaXRlIFpvbWJpZSk&s=Trel8rnT",
+            definition: "1932",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzMg&s=y6B0qI40&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzMg&s=y6B0qI40&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzMg&s=y6B0qI40&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/LA-T-rG7g4j5gu2gvMmF1A_m.jpg",
+            setId: 303627863,
+            rank: 47,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 18577527,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621661,
+            word: "Bonnie and Clyde start their rampage",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9ubmllIGFuZCBDbHlkZSBzdGFydCB0aGVpciByYW1wYWdl&s=FeUgTycc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Qm9ubmllIGFuZCBDbHlkZSBzdGFydCB0aGVpciByYW1wYWdl&s=FeUgTycc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Qm9ubmllIGFuZCBDbHlkZSBzdGFydCB0aGVpciByYW1wYWdl&s=FeUgTycc",
+            definition: "1931",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzMQ&s=OnDxFaKp&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkzMQ&s=OnDxFaKp&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkzMQ&s=OnDxFaKp&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/B.IST8c-j4Qxd1DRLZ9dYw_m.jpg",
+            setId: 303627863,
+            rank: 46,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 23193225,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621660,
+            word: "The first Academy Awards",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IEFjYWRlbXkgQXdhcmRz&s=OuP0TPUd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IEFjYWRlbXkgQXdhcmRz&s=OuP0TPUd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0IEFjYWRlbXkgQXdhcmRz&s=OuP0TPUd",
+            definition: "1929",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyOQ&s=3KBuSn0l&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3249/3001714270_2e74ccde42_m.jpg",
+            setId: 303627863,
+            rank: 45,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19564273,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621659,
+            word: "Creation of Mickey Mouse",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgTWlja2V5IE1vdXNl&s=RVjgzjv5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgTWlja2V5IE1vdXNl&s=RVjgzjv5&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgTWlja2V5IE1vdXNl&s=RVjgzjv5",
+            definition: "1928",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyOA&s=UviOLTsg&sublanguage=math",
+            _imageUrl:
+              "https://farm9.staticflickr.com/8036/7970107050_06c3bd8d5b_m.jpg",
+            setId: 303627863,
+            rank: 44,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20461979,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621658,
+            word: "The Jazz Singer (first sound movie)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEphenogU2luZ2VyIChmaXJzdCBzb3VuZCBtb3ZpZSk&s=u32wQNkV",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEphenogU2luZ2VyIChmaXJzdCBzb3VuZCBtb3ZpZSk&s=u32wQNkV&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEphenogU2luZ2VyIChmaXJzdCBzb3VuZCBtb3ZpZSk&s=u32wQNkV",
+            definition: "1927",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNw&s=kVQu.v2A&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/0cdICbFx9Unze5kfe4A-jA_m.jpg",
+            setId: 303627863,
+            rank: 42,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8282103,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621657,
+            word: "Route 66 established",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Um91dGUgNjYgZXN0YWJsaXNoZWQ&s=tp-lFfQw",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Um91dGUgNjYgZXN0YWJsaXNoZWQ&s=tp-lFfQw&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Um91dGUgNjYgZXN0YWJsaXNoZWQ&s=tp-lFfQw",
+            definition: "1926",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNg&s=TmHBRkJr&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNg&s=TmHBRkJr&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNg&s=TmHBRkJr&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3810/9382033406_b2e9419108_m.jpg",
+            setId: 303627863,
+            rank: 41,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20569754,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621656,
+            word: "The Great Gatsby",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=VGhlIEdyZWF0IEdhdHNieQ&s=0d4t52oy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEdyZWF0IEdhdHNieQ&s=0d4t52oy&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEdyZWF0IEdhdHNieQ&s=0d4t52oy",
+            definition: "1925",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNQ&s=EIfBgJfF&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyNQ&s=EIfBgJfF&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyNQ&s=EIfBgJfF&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/F.wXYOT-9PVKFJVX0P3I6A_m.jpg",
+            setId: 303627863,
+            rank: 40,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15912059,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621655,
+            word: "Creation of the first Walt Disney Studio",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgdGhlIGZpcnN0IFdhbHQgRGlzbmV5IFN0dWRpbw&s=xK3nqnzi",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgdGhlIGZpcnN0IFdhbHQgRGlzbmV5IFN0dWRpbw&s=xK3nqnzi&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgdGhlIGZpcnN0IFdhbHQgRGlzbmV5IFN0dWRpbw&s=xK3nqnzi",
+            definition: "1922",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/BRt2P5O6mhbPwn9mnerB7g_m.jpg",
+            setId: 303627863,
+            rank: 39,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 15717957,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621654,
+            word: "Inauguration of the Lincoln Memorial in Washington",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SW5hdWd1cmF0aW9uIG9mIHRoZSBMaW5jb2xuIE1lbW9yaWFsIGluIFdhc2hpbmd0b24&s=D6iSKTXR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SW5hdWd1cmF0aW9uIG9mIHRoZSBMaW5jb2xuIE1lbW9yaWFsIGluIFdhc2hpbmd0b24&s=D6iSKTXR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SW5hdWd1cmF0aW9uIG9mIHRoZSBMaW5jb2xuIE1lbW9yaWFsIGluIFdhc2hpbmd0b24&s=D6iSKTXR",
+            definition: "1922",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMg&s=zX.9Kj3h&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/WoUTry_YnBqrI9VwjvkHyQ_m.jpg",
+            setId: 303627863,
+            rank: 38,
+            lastModified: 1530303703,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 588915,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10302402460,
+            word: 'Flu Pandemic ("Spanish Flu")',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmx1IFBhbmRlbWljICgiU3BhbmlzaCBGbHUiKQ&s=koBn3qAE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmx1IFBhbmRlbWljICgiU3BhbmlzaCBGbHUiKQ&s=koBn3qAE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmx1IFBhbmRlbWljICgiU3BhbmlzaCBGbHUiKQ&s=koBn3qAE",
+            definition: "1918",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxOA&s=A7czpTJz&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxOA&s=A7czpTJz&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxOA&s=A7czpTJz&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Kau017QdBNHomzn73q6MoQ_m.png",
+            setId: 303627863,
+            rank: 34,
+            lastModified: 1530303648,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 29739741,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621651,
+            word: "First African-American in the NFL",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQWZyaWNhbi1BbWVyaWNhbiBpbiB0aGUgTkZM&s=kWCq-VPy",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQWZyaWNhbi1BbWVyaWNhbiBpbiB0aGUgTkZM&s=kWCq-VPy&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQWZyaWNhbi1BbWVyaWNhbiBpbiB0aGUgTkZM&s=kWCq-VPy",
+            definition: "1920",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/huqiLv4fJm9xXdWU1eM4Dw_m.png",
+            setId: 303627863,
+            rank: 37,
+            lastModified: 1530303648,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 32707023,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621650,
+            word: "The Boston Red Sox trade Babe Ruth to the New York Yankees",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJvc3RvbiBSZWQgU294IHRyYWRlIEJhYmUgUnV0aCB0byB0aGUgTmV3IFlvcmsgWWFua2Vlcw&s=Xpv8FRvE",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJvc3RvbiBSZWQgU294IHRyYWRlIEJhYmUgUnV0aCB0byB0aGUgTmV3IFlvcmsgWWFua2Vlcw&s=Xpv8FRvE&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEJvc3RvbiBSZWQgU294IHRyYWRlIEJhYmUgUnV0aCB0byB0aGUgTmV3IFlvcmsgWWFua2Vlcw&s=Xpv8FRvE",
+            definition: "1920",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/49/135636695_0ba93e67a5_m.jpg",
+            setId: 303627863,
+            rank: 36,
+            lastModified: 1530303648,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20518255,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621649,
+            word: "NFL founded",
+            _wordTtsUrl: "/tts/en.mp3?v=14&b=TkZMIGZvdW5kZWQ&s=dzPTCZSP",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TkZMIGZvdW5kZWQ&s=dzPTCZSP&speed=70",
+            _wordAudioUrl: "/tts/en.mp3?v=14&b=TkZMIGZvdW5kZWQ&s=dzPTCZSP",
+            definition: "1920",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkyMA&s=9h3GETPo&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3460/3405933244_8fcaa133ef_m.jpg",
+            setId: 303627863,
+            rank: 35,
+            lastModified: 1530303648,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14158579,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621648,
+            word: "Founding of the Boeing Company",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEJvZWluZyBDb21wYW55&s=LZUNyZt0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEJvZWluZyBDb21wYW55&s=LZUNyZt0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rm91bmRpbmcgb2YgdGhlIEJvZWluZyBDb21wYW55&s=LZUNyZt0",
+            definition: "1916",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNg&s=gqXON2ly&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNg&s=gqXON2ly&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNg&s=gqXON2ly&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/SQc61OYhFCVZmdEgasYwGg_m.jpg",
+            setId: 303627863,
+            rank: 33,
+            lastModified: 1530303648,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16977206,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10302380367,
+            word: "Moby Dick first published",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TW9ieSBEaWNrIGZpcnN0IHB1Ymxpc2hlZA&s=Oqe4uz.o",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TW9ieSBEaWNrIGZpcnN0IHB1Ymxpc2hlZA&s=Oqe4uz.o&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TW9ieSBEaWNrIGZpcnN0IHB1Ymxpc2hlZA&s=Oqe4uz.o",
+            definition: "1851",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/bbKt5oiihJvkdX7qVkCD.w_m.png",
+            setId: 303627863,
+            rank: 15,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20485967,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296604759,
+            word: "Las Vegas Founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TGFzIFZlZ2FzIEZvdW5kZWQ&s=pw-mWw8t",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TGFzIFZlZ2FzIEZvdW5kZWQ&s=pw-mWw8t&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TGFzIFZlZ2FzIEZvdW5kZWQ&s=pw-mWw8t",
+            definition: "1905",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNQ&s=1ID67gJI&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwNQ&s=1ID67gJI&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwNQ&s=1ID67gJI&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/ljEzlSMkN5q-mDKiBjjjgA_m.jpg",
+            setId: 303627863,
+            rank: 31,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20659062,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296604427,
+            word: "Harley Davidson Motors founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SGFybGV5IERhdmlkc29uIE1vdG9ycyBmb3VuZGVk&s=0vX4iVFe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SGFybGV5IERhdmlkc29uIE1vdG9ycyBmb3VuZGVk&s=0vX4iVFe&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SGFybGV5IERhdmlkc29uIE1vdG9ycyBmb3VuZGVk&s=0vX4iVFe",
+            definition: "1903",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/OcWTk1.WmQh1XkhBX2M9PA_m.png",
+            setId: 303627863,
+            rank: 30,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 26987364,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296604426,
+            word: "First modern World Series (baseball)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgbW9kZXJuIFdvcmxkIFNlcmllcyAoYmFzZWJhbGwp&s=eyfTkK-c",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgbW9kZXJuIFdvcmxkIFNlcmllcyAoYmFzZWJhbGwp&s=eyfTkK-c&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgbW9kZXJuIFdvcmxkIFNlcmllcyAoYmFzZWJhbGwp&s=eyfTkK-c",
+            definition: "1903",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMw&s=AZAPA.dy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Jv9Z3hKCRA.K7atpGb.eTQ_m.jpg",
+            setId: 303627863,
+            rank: 29,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11300450,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296604164,
+            word: "First issue of Life magazine",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgaXNzdWUgb2YgTGlmZSBtYWdhemluZQ&s=aNVLbohR",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgaXNzdWUgb2YgTGlmZSBtYWdhemluZQ&s=aNVLbohR&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgaXNzdWUgb2YgTGlmZSBtYWdhemluZQ&s=aNVLbohR",
+            definition: "1883",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Mw&s=15Owbtu7&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Mw&s=15Owbtu7&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4Mw&s=15Owbtu7&sublanguage=math",
+            _imageUrl:
+              "https://farm3.staticflickr.com/2618/4092438859_ef54a03c9c_m.jpg",
+            setId: 303627863,
+            rank: 22,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19978851,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10296603991,
+            word: "Creation of The New York Times",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgVGhlIE5ldyBZb3JrIFRpbWVz&s=zst34sHv",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgVGhlIE5ldyBZb3JrIFRpbWVz&s=zst34sHv&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Q3JlYXRpb24gb2YgVGhlIE5ldyBZb3JrIFRpbWVz&s=zst34sHv",
+            definition: "1851",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg1MQ&s=fnVgCFyY&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/dwfhbz1PyMyV6RjRXVYPbg_m.jpg",
+            setId: 303627863,
+            rank: 14,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19594548,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621647,
+            word: "First Automobile mass-production assembly line",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQXV0b21vYmlsZSBtYXNzLXByb2R1Y3Rpb24gYXNzZW1ibHkgbGluZQ&s=MUsYK-40",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQXV0b21vYmlsZSBtYXNzLXByb2R1Y3Rpb24gYXNzZW1ibHkgbGluZQ&s=MUsYK-40&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgQXV0b21vYmlsZSBtYXNzLXByb2R1Y3Rpb24gYXNzZW1ibHkgbGluZQ&s=MUsYK-40",
+            definition: "1914",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkxNA&s=t1vfHKpW&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/qOKMlzC8JowHMbuwhijQiw_m.png",
+            setId: 303627863,
+            rank: 32,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20864930,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621646,
+            word: 'The "Teddy Bear" is first created',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlICJUZWRkeSBCZWFyIiBpcyBmaXJzdCBjcmVhdGVk&s=IaBe-BCN",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlICJUZWRkeSBCZWFyIiBpcyBmaXJzdCBjcmVhdGVk&s=IaBe-BCN&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlICJUZWRkeSBCZWFyIiBpcyBmaXJzdCBjcmVhdGVk&s=IaBe-BCN",
+            definition: "1902",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTkwMg&s=V8hBPlvy&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Io2WW92Nv5EqIp18vr8Cxw_m.jpg",
+            setId: 303627863,
+            rank: 28,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20599456,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621645,
+            word: "Process for making peanut butter patented",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=UHJvY2VzcyBmb3IgbWFraW5nIHBlYW51dCBidXR0ZXIgcGF0ZW50ZWQ&s=Olaib-wn",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=UHJvY2VzcyBmb3IgbWFraW5nIHBlYW51dCBidXR0ZXIgcGF0ZW50ZWQ&s=Olaib-wn&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=UHJvY2VzcyBmb3IgbWFraW5nIHBlYW51dCBidXR0ZXIgcGF0ZW50ZWQ&s=Olaib-wn",
+            definition: "1895",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5NQ&s=80DGVs37&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/fL4l3P87jL2S3NmiMtRIJg_m.jpg",
+            setId: 303627863,
+            rank: 27,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19857382,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621644,
+            word: "General Electric founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=R2VuZXJhbCBFbGVjdHJpYyBmb3VuZGVk&s=tYBlajpj",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=R2VuZXJhbCBFbGVjdHJpYyBmb3VuZGVk&s=tYBlajpj&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=R2VuZXJhbCBFbGVjdHJpYyBmb3VuZGVk&s=tYBlajpj",
+            definition: "1892",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Mg&s=RiX6T7O.&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg5Mg&s=RiX6T7O.&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg5Mg&s=RiX6T7O.&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/TltgYiNtZcxV.OCqUgtQvw_m.png",
+            setId: 303627863,
+            rank: 26,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 24385152,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621643,
+            word: '"The Star-Spangled Banner" is recognized for official use',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBTdGFyLVNwYW5nbGVkIEJhbm5lciIgaXMgcmVjb2duaXplZCBmb3Igb2ZmaWNpYWwgdXNl&s=obEA9UDx",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBTdGFyLVNwYW5nbGVkIEJhbm5lciIgaXMgcmVjb2duaXplZCBmb3Igb2ZmaWNpYWwgdXNl&s=obEA9UDx&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlRoZSBTdGFyLVNwYW5nbGVkIEJhbm5lciIgaXMgcmVjb2duaXplZCBmb3Igb2ZmaWNpYWwgdXNl&s=obEA9UDx",
+            definition: "1889",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4OQ&s=IrDgJk2S&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4OQ&s=IrDgJk2S&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4OQ&s=IrDgJk2S&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3357/3605113871_ff7eae823d_m.jpg",
+            setId: 303627863,
+            rank: 25,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20121235,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621642,
+            word: "Official founding of the city of Hollywood",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=T2ZmaWNpYWwgZm91bmRpbmcgb2YgdGhlIGNpdHkgb2YgSG9sbHl3b29k&s=Pgv4lYiF",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=T2ZmaWNpYWwgZm91bmRpbmcgb2YgdGhlIGNpdHkgb2YgSG9sbHl3b29k&s=Pgv4lYiF&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=T2ZmaWNpYWwgZm91bmRpbmcgb2YgdGhlIGNpdHkgb2YgSG9sbHl3b29k&s=Pgv4lYiF",
+            definition: "1887",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4Nw&s=JFThotoA&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6003/5921490858_ef9e28cb69_m.jpg",
+            setId: 303627863,
+            rank: 24,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14385493,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621641,
+            word: "First appearance of the Coca-Cola brand",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgQ29jYS1Db2xhIGJyYW5k&s=7jiqWRax",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgQ29jYS1Db2xhIGJyYW5k&s=7jiqWRax&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgQ29jYS1Db2xhIGJyYW5k&s=7jiqWRax",
+            definition: "1886",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Ng&s=o-5hYXpc&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg4Ng&s=o-5hYXpc&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg4Ng&s=o-5hYXpc&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/9nczmF3rIgnWlf247lgRYg_m.jpg",
+            setId: 303627863,
+            rank: 23,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20522479,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621640,
+            word: "The Washington Post is founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFdhc2hpbmd0b24gUG9zdCBpcyBmb3VuZGVk&s=ka0j4gQo",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFdhc2hpbmd0b24gUG9zdCBpcyBmb3VuZGVk&s=ka0j4gQo&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIFdhc2hpbmd0b24gUG9zdCBpcyBmb3VuZGVk&s=ka0j4gQo",
+            definition: "1877",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Nw&s=iE6YNGok&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Nw&s=iE6YNGok&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Nw&s=iE6YNGok&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3041/3020281035_4fb652b541_m.jpg",
+            setId: 303627863,
+            rank: 21,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 1137707,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621639,
+            word: "Baseball's National League is founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFzZWJhbGwncyBOYXRpb25hbCBMZWFndWUgaXMgZm91bmRlZA&s=W6OUdtpG",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFzZWJhbGwncyBOYXRpb25hbCBMZWFndWUgaXMgZm91bmRlZA&s=W6OUdtpG&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmFzZWJhbGwncyBOYXRpb25hbCBMZWFndWUgaXMgZm91bmRlZA&s=W6OUdtpG",
+            definition: "1876",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Jv9Z3hKCRA.K7atpGb.eTQ_m.jpg",
+            setId: 303627863,
+            rank: 20,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11300450,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621638,
+            word: "The Adventures of Tom Sawyer first published",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFkdmVudHVyZXMgb2YgVG9tIFNhd3llciBmaXJzdCBwdWJsaXNoZWQ&s=FiHQJ8xi",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFkdmVudHVyZXMgb2YgVG9tIFNhd3llciBmaXJzdCBwdWJsaXNoZWQ&s=FiHQJ8xi&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEFkdmVudHVyZXMgb2YgVG9tIFNhd3llciBmaXJzdCBwdWJsaXNoZWQ&s=FiHQJ8xi",
+            definition: "1876",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3Ng&s=2YKcH3JB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/UanNH96d7ge.VOpgShJeRg_m.jpg",
+            setId: 303627863,
+            rank: 19,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16814349,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621637,
+            word: "First appearance of the Republican Elephant",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgUmVwdWJsaWNhbiBFbGVwaGFudA&s=BUE7ezgA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgUmVwdWJsaWNhbiBFbGVwaGFudA&s=BUE7ezgA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgUmVwdWJsaWNhbiBFbGVwaGFudA&s=BUE7ezgA",
+            definition: "1874",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3NA&s=xnStbnZt&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg3NA&s=xnStbnZt&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg3NA&s=xnStbnZt&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6100/6262125642_ab5ab01f2b_m.jpg",
+            setId: 303627863,
+            rank: 18,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20433347,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621636,
+            word: "Major League Baseball organization founded.",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFqb3IgTGVhZ3VlIEJhc2ViYWxsIG9yZ2FuaXphdGlvbiBmb3VuZGVkLg&s=DXWBYpBe",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TWFqb3IgTGVhZ3VlIEJhc2ViYWxsIG9yZ2FuaXphdGlvbiBmb3VuZGVkLg&s=DXWBYpBe&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TWFqb3IgTGVhZ3VlIEJhc2ViYWxsIG9yZ2FuaXphdGlvbiBmb3VuZGVkLg&s=DXWBYpBe",
+            definition: "1869",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2OQ&s=UX4iyl7-&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3539/3441045198_6660fc85cf_m.jpg",
+            setId: 303627863,
+            rank: 17,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 35738,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621635,
+            word: "First Stetson hat sold",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3RldHNvbiBoYXQgc29sZA&s=SycRsVQ0",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3RldHNvbiBoYXQgc29sZA&s=SycRsVQ0&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgU3RldHNvbiBoYXQgc29sZA&s=SycRsVQ0",
+            definition: "1865",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg2NQ&s=OeaNTamq&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6078/6143942839_986876731a_m.jpg",
+            setId: 303627863,
+            rank: 16,
+            lastModified: 1530303111,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17327177,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621634,
+            word: 'The first "modern" baseball rules',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0ICJtb2Rlcm4iIGJhc2ViYWxsIHJ1bGVz&s=EDJbqmkH",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0ICJtb2Rlcm4iIGJhc2ViYWxsIHJ1bGVz&s=EDJbqmkH&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIGZpcnN0ICJtb2Rlcm4iIGJhc2ViYWxsIHJ1bGVz&s=EDJbqmkH",
+            definition: "1845",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0NQ&s=hrDBpU2p&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/Jv9Z3hKCRA.K7atpGb.eTQ_m.jpg",
+            setId: 303627863,
+            rank: 13,
+            lastModified: 1530170013,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 11300450,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621633,
+            word: "Invention of the doughnut",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SW52ZW50aW9uIG9mIHRoZSBkb3VnaG51dA&s=N.oyYHK5",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SW52ZW50aW9uIG9mIHRoZSBkb3VnaG51dA&s=N.oyYHK5&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SW52ZW50aW9uIG9mIHRoZSBkb3VnaG51dA&s=N.oyYHK5",
+            definition: "1840",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0MA&s=quzkLRmM&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTg0MA&s=quzkLRmM&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTg0MA&s=quzkLRmM&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/tMNCqdrfdFqeZ1PWqm5LMw_m.jpg",
+            setId: 303627863,
+            rank: 12,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 14025226,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621632,
+            word: "The Fall of the House of Usher",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhbGwgb2YgdGhlIEhvdXNlIG9mIFVzaGVy&s=4SWHLz4v",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhbGwgb2YgdGhlIEhvdXNlIG9mIFVzaGVy&s=4SWHLz4v&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=VGhlIEZhbGwgb2YgdGhlIEhvdXNlIG9mIFVzaGVy&s=4SWHLz4v",
+            definition: "1839",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzOQ&s=lG29j73V&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzOQ&s=lG29j73V&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzOQ&s=lG29j73V&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3082/2376723228_3bd21eafa7_m.jpg",
+            setId: 303627863,
+            rank: 11,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 17154746,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621631,
+            word: "Samuel Colt introduces the first revolver",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=U2FtdWVsIENvbHQgaW50cm9kdWNlcyB0aGUgZmlyc3QgcmV2b2x2ZXI&s=VRHqh1Vs",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=U2FtdWVsIENvbHQgaW50cm9kdWNlcyB0aGUgZmlyc3QgcmV2b2x2ZXI&s=VRHqh1Vs&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=U2FtdWVsIENvbHQgaW50cm9kdWNlcyB0aGUgZmlyc3QgcmV2b2x2ZXI&s=VRHqh1Vs",
+            definition: "1835",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNQ&s=IHYurT4p&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgzNQ&s=IHYurT4p&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgzNQ&s=IHYurT4p&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3320/3449384436_6a1b9b441c_m.jpg",
+            setId: 303627863,
+            rank: 10,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 263983,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621630,
+            word: "First appearance of the Democratic Donkey",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgRGVtb2NyYXRpYyBEb25rZXk&s=fMQ1.3ta",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgRGVtb2NyYXRpYyBEb25rZXk&s=fMQ1.3ta&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYW5jZSBvZiB0aGUgRGVtb2NyYXRpYyBEb25rZXk&s=fMQ1.3ta",
+            definition: "1828",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyOA&s=JQuw6jkJ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgyOA&s=JQuw6jkJ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgyOA&s=JQuw6jkJ&sublanguage=math",
+            _imageUrl:
+              "https://farm7.staticflickr.com/6057/6262125702_a086dd49f1_m.jpg",
+            setId: 303627863,
+            rank: 9,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20386271,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621629,
+            word: '"Uncle Sam" first popularized',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IlVuY2xlIFNhbSIgZmlyc3QgcG9wdWxhcml6ZWQ&s=UlBvYhF-",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IlVuY2xlIFNhbSIgZmlyc3QgcG9wdWxhcml6ZWQ&s=UlBvYhF-&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IlVuY2xlIFNhbSIgZmlyc3QgcG9wdWxhcml6ZWQ&s=UlBvYhF-",
+            definition: "1812",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgxMg&s=MC8w0Yr2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/5M7weIy1TJNyJjPMKrGLAw_m.jpg",
+            setId: 303627863,
+            rank: 8,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 3942565,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621628,
+            word: "First appearacne of the tomato ketchup recipe",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYWNuZSBvZiB0aGUgdG9tYXRvIGtldGNodXAgcmVjaXBl&s=-5BHW9ir",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYWNuZSBvZiB0aGUgdG9tYXRvIGtldGNodXAgcmVjaXBl&s=-5BHW9ir&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgYXBwZWFyYWNuZSBvZiB0aGUgdG9tYXRvIGtldGNodXAgcmVjaXBl&s=-5BHW9ir",
+            definition: "1801",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMQ&s=AT4b3PmB&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTgwMQ&s=AT4b3PmB&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTgwMQ&s=AT4b3PmB&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/c8Cu.23NsA0p-XqTcF0d9A_m.png",
+            setId: 303627863,
+            rank: 7,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16930855,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621627,
+            word: "First Dollar Coin",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgRG9sbGFyIENvaW4&s=ucVKb8wA",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgRG9sbGFyIENvaW4&s=ucVKb8wA&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=Rmlyc3QgRG9sbGFyIENvaW4&s=ucVKb8wA",
+            definition: "1792",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Mg&s=TTCCoovZ&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5Mg&s=TTCCoovZ&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5Mg&s=TTCCoovZ&sublanguage=math",
+            _imageUrl:
+              "https://farm4.staticflickr.com/3396/3600127071_c429e1cd41_m.jpg",
+            setId: 303627863,
+            rank: 6,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 19914722,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621626,
+            word: "Washington, DC officially became the Captial of the USA",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=V2FzaGluZ3RvbiwgREMgb2ZmaWNpYWxseSBiZWNhbWUgdGhlIENhcHRpYWwgb2YgdGhlIFVTQQ&s=XthO1XLd",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=V2FzaGluZ3RvbiwgREMgb2ZmaWNpYWxseSBiZWNhbWUgdGhlIENhcHRpYWwgb2YgdGhlIFVTQQ&s=XthO1XLd&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=V2FzaGluZ3RvbiwgREMgb2ZmaWNpYWxseSBiZWNhbWUgdGhlIENhcHRpYWwgb2YgdGhlIFVTQQ&s=XthO1XLd",
+            definition: "1790",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5MA&s=YMl1SsVi&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTc5MA&s=YMl1SsVi&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTc5MA&s=YMl1SsVi&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/fKstR3SGn-iz0X1EhMDBdw_m.jpg",
+            setId: 303627863,
+            rank: 5,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20466589,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621625,
+            word: "Yale University founded",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=WWFsZSBVbml2ZXJzaXR5IGZvdW5kZWQ&s=fZzdmuTD",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=WWFsZSBVbml2ZXJzaXR5IGZvdW5kZWQ&s=fZzdmuTD&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=WWFsZSBVbml2ZXJzaXR5IGZvdW5kZWQ&s=fZzdmuTD",
+            definition: "1701",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcwMQ&s=uKejZeTr&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTcwMQ&s=uKejZeTr&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTcwMQ&s=uKejZeTr&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/m2GRZmsa1hoX2rhHy2ttPA_m.jpg",
+            setId: 303627863,
+            rank: 4,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 8451153,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621624,
+            word: "New Amsterdam is renamed New York",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=TmV3IEFtc3RlcmRhbSBpcyByZW5hbWVkIE5ldyBZb3Jr&s=7wrjCZ1W",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=TmV3IEFtc3RlcmRhbSBpcyByZW5hbWVkIE5ldyBZb3Jr&s=7wrjCZ1W&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=TmV3IEFtc3RlcmRhbSBpcyByZW5hbWVkIE5ldyBZb3Jr&s=7wrjCZ1W",
+            definition: "1664",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2NA&s=BKZt8lkb&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTY2NA&s=BKZt8lkb&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTY2NA&s=BKZt8lkb&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/3GRJN9BLml6l4T-evrYTiQ_m.png",
+            setId: 303627863,
+            rank: 3,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 34704959,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621623,
+            word: "Iroquois Confederacy is formed (5 tribes)",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=SXJvcXVvaXMgQ29uZmVkZXJhY3kgaXMgZm9ybWVkICg1IHRyaWJlcyk&s=wZP4DtXT",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=SXJvcXVvaXMgQ29uZmVkZXJhY3kgaXMgZm9ybWVkICg1IHRyaWJlcyk&s=wZP4DtXT&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=SXJvcXVvaXMgQ29uZmVkZXJhY3kgaXMgZm9ybWVkICg1IHRyaWJlcyk&s=wZP4DtXT",
+            definition: "1570",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU3MA&s=PIfG4l6o&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU3MA&s=PIfG4l6o&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU3MA&s=PIfG4l6o&sublanguage=math",
+            _imageUrl:
+              "https://farm6.staticflickr.com/5528/10999724704_12daf6ec4c_m.jpg",
+            setId: 303627863,
+            rank: 2,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 16725535,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621622,
+            word: "Bald Eagle becomes America's national bird",
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFsZCBFYWdsZSBiZWNvbWVzIEFtZXJpY2EncyBuYXRpb25hbCBiaXJk&s=317Y5.xY",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=QmFsZCBFYWdsZSBiZWNvbWVzIEFtZXJpY2EncyBuYXRpb25hbCBiaXJk&s=317Y5.xY&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=QmFsZCBFYWdsZSBiZWNvbWVzIEFtZXJpY2EncyBuYXRpb25hbCBiaXJk&s=317Y5.xY",
+            definition: "1570",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU3MA&s=PIfG4l6o&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTU3MA&s=PIfG4l6o&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTU3MA&s=PIfG4l6o&sublanguage=math",
+            _imageUrl:
+              "https://farm1.staticflickr.com/127/348448681_ff0f56ab67_m.jpg",
+            setId: 303627863,
+            rank: 1,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20256445,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+          {
+            id: 10295621621,
+            word: '"America" is first applied to the New World',
+            _wordTtsUrl:
+              "/tts/en.mp3?v=14&b=IkFtZXJpY2EiIGlzIGZpcnN0IGFwcGxpZWQgdG8gdGhlIE5ldyBXb3JsZA&s=IBO69Jxc",
+            _wordSlowTtsUrl:
+              "/tts/en.mp3?v=14&b=IkFtZXJpY2EiIGlzIGZpcnN0IGFwcGxpZWQgdG8gdGhlIE5ldyBXb3JsZA&s=IBO69Jxc&speed=70",
+            _wordAudioUrl:
+              "/tts/en.mp3?v=14&b=IkFtZXJpY2EiIGlzIGZpcnN0IGFwcGxpZWQgdG8gdGhlIE5ldyBXb3JsZA&s=IBO69Jxc",
+            definition: "1507",
+            _definitionTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUwNw&s=RrK0nUf2&sublanguage=math",
+            _definitionSlowTtsUrl:
+              "/tts/en.mp3?v=15&b=MTUwNw&s=RrK0nUf2&sublanguage=math&speed=70",
+            _definitionAudioUrl:
+              "/tts/en.mp3?v=15&b=MTUwNw&s=RrK0nUf2&sublanguage=math",
+            _imageUrl: "https://o.quizlet.com/i/5kqUjAco-AFfcUpmlOzVag_m.jpg",
+            setId: 303627863,
+            rank: 0,
+            lastModified: 1530148156,
+            wordCustomAudioId: null,
+            definitionCustomAudioId: null,
+            definitionImageId: 20420655,
+            definitionRichText: null,
+            wordRichText: null,
+            definitionCustomDistractors: null,
+            wordCustomDistractors: null,
+          },
+        ],
+      },
+      paging: {
+        total: 110,
+        page: 1,
+        perPage: 200,
+        token: "cT4Rryxf5H.st5aFWJpTdqR7uKrX",
       },
     },
   ],
