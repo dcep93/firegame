@@ -141,6 +141,7 @@ class Main extends React.Component<{}, { selected: Set<string> }> {
           if (utils.getMe().canPlaceNeutral) {
             store.gameW.game.skippedPlacing = false;
             store.gameW.game.isPlacingNeutralAtEndOfTurn = true;
+            store.gameW.isSliding = false;
           } else {
             utils.incrementPlayerTurn();
           }
