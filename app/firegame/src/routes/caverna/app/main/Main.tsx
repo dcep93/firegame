@@ -1,9 +1,9 @@
 import React from "react";
 import { store } from "../utils/utils";
-import Actions from "./Actions";
+import ActionsBoard from "./ActionsBoard";
 import CardActions from "./CardActions";
 import Player from "./Player";
-import Store from "./Store";
+import StoreBoard from "./StoreBoard";
 
 class Main extends React.Component {
   render() {
@@ -15,8 +15,8 @@ class Main extends React.Component {
           ))}
         </div>
         <CardActions />
-        <Store />
-        <Actions />
+        <StoreBoard />
+        <ActionsBoard />
       </div>
     );
   }
