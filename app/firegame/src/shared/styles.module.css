@@ -37,7 +37,7 @@
 }
 
 .my_turn > * > * {
-  background-color: red;
+  background-color: rgb(255, 159, 159);
 }
 
 .bubble {
