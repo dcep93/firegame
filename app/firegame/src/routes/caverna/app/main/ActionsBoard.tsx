@@ -9,15 +9,15 @@ export default function ActionsBoard() {
         <h3>actions</h3>
         <div style={{ display: "flex" }}>
           {utils.chunk(store.gameW.game.actions, 3).map((a2, i) => (
-            <div>
+            <div key={i}>
               {a2.map((a1, j) => (
                 <div key={a1}>
-                  <div
+                  <pre
                     className={styles.bubble}
-                    style={{ width: "120px", height: "60px" }}
+                    style={{ width: "8em", height: "4em" }}
                   >
-                    {Action[a1]}
-                  </div>
+                    {Action[a1].replaceAll("_", "\n")}
+                  </pre>
                 </div>
               ))}
             </div>

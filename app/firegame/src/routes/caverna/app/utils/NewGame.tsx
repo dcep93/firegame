@@ -59,10 +59,10 @@ export type PlayerType = {
     [row: number]: {
       [column: number]: {
         resources: ResourcesType | undefined;
-        // if stable and not green,
+        // if stable and not pasture,
         // must be stable in forest
         isStable: boolean;
-        isGreen: boolean;
+        isPasture: boolean;
         isFence: boolean;
         doubleFencePair?: [number, number];
       };

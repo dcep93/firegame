@@ -50,7 +50,6 @@
 
 .resizeable {
   display: table;
-  height: 100%;
   border: 2px solid black;
 }
 

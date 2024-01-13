@@ -16,7 +16,7 @@ export default function StoreBoard() {
                 <div
                   key={`${i}.${j}`}
                   style={{
-                    margin: "20px",
+                    margin: "1em",
                   }}
                 >
                   {utils.chunk(t2, 3).map((t1, k) => (
@@ -25,7 +25,7 @@ export default function StoreBoard() {
                         <pre
                           key={`${i}.${j}.${k}.${l}`}
                           className={styles.bubble}
-                          style={{ display: "inline-block", width: "100px" }}
+                          style={{ display: "inline-block", width: "8em" }}
                         >
                           {Tile[t].replaceAll("_", "\n")}
                         </pre>
