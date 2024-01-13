@@ -7,21 +7,27 @@ export default function ActionsBoard() {
     <div>
       <div className={styles.bubble}>
         <h3>actions</h3>
+        <div>
+          remaining harvests:{" "}
+          {(store.gameW.game.remainingHarvests || []).join(",")}
+        </div>
         <div style={{ display: "flex" }}>
           {utils.chunk(store.gameW.game.actions, 3).map((a2, i) => (
             <div key={i}>
               {a2.map((a, j) => (
                 <div key={a}>
-                  <pre
+                  <div
                     className={styles.bubble}
                     style={{
-                      width: "8em",
+                      width: "5em",
                       height: "4em",
                       cursor: utils.canAction(a) ? "pointer" : undefined,
                     }}
                   >
-                    {Action[a].replaceAll("_", "\n")}
-                  </pre>
+                    <pre style={{ width: 0, fontSize: "small" }}>
+                      {Action[a].replaceAll("_", "\n")}
+                    </pre>
+                  </div>
                 </div>
               ))}
             </div>

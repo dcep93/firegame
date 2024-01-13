@@ -31,6 +31,7 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   enrichAndReveal(g: GameType): GameType {
+    g.year++;
     g.actions.push(
       utils
         .shuffle(g.upcomingActions!)
@@ -40,7 +41,13 @@ class Utils extends Shared<GameType, PlayerType> {
     if (g.actionBonuses === undefined) {
       g.actionBonuses = {};
     }
-    g.players.forEach((p) => (p.availableDwarves = p.usedDwarves!.splice(0)));
+    g.players.forEach(
+      (p) =>
+        (p.availableDwarves = p
+          .usedDwarves!.splice(0)
+          .map((d) => Math.max(d, 0))
+          .sort())
+    );
     g.actions
       .map((a) => ({ a, e: Actions[a].enrichment }))
       .filter(({ e }) => e)

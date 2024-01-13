@@ -99,7 +99,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     players: [],
 
     startingPlayer: 0,
-    year: 1,
+    year: 0,
     remainingHarvests: [true, true, true, true, false, false, false],
     purchasedTiles: {},
     actions: utils
