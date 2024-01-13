@@ -1,8 +1,11 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import Actions from "./Actions";
+import Actions, { Action } from "./Actions";
+import { ExpeditionAction } from "./ExpeditionActions";
 
 import { GameType, PlayerType, ResourcesType } from "./NewGame";
+import { RubyAction } from "./RubyActions";
+import { Tile } from "./Tiles";
 
 const store: StoreType<GameType> = store_;
 
@@ -66,6 +69,22 @@ class Utils extends Shared<GameType, PlayerType> {
         [[]] as T[][]
       )
       .reverse();
+  }
+
+  canAction(a: Action): boolean {
+    return true;
+  }
+
+  canBuy(t: Tile): boolean {
+    return true;
+  }
+
+  canRubyTrade(a: RubyAction): boolean {
+    return true;
+  }
+
+  canExpedition(a: ExpeditionAction): boolean {
+    return true;
   }
 }
 

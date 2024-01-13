@@ -12,7 +12,13 @@ function ExpeditionsElement() {
       <div style={{ display: "flex", flexWrap: "wrap", width: "30em" }}>
         {utils.enumArray(ExpeditionAction).map((a) => (
           <div key={a} style={{ flexBasis: "33%", display: "flex" }}>
-            <div className={styles.bubble} style={{ flexGrow: 1 }}>
+            <div
+              className={styles.bubble}
+              style={{
+                flexGrow: 1,
+                cursor: utils.canExpedition(a) ? "pointer" : undefined,
+              }}
+            >
               <div>level: {ExpeditionActions[a].level}</div>
               <div style={{ width: 0 }}>{ExpeditionAction[a]}</div>
             </div>
@@ -36,7 +42,13 @@ function RubiesElement() {
               display: "flex",
             }}
           >
-            <div className={styles.bubble} style={{ flexGrow: 1 }}>
+            <div
+              className={styles.bubble}
+              style={{
+                flexGrow: 1,
+                cursor: utils.canRubyTrade(a) ? "pointer" : undefined,
+              }}
+            >
               <div style={{ width: 0 }}>{RubyAction[a]}</div>
               {RubyActions[a].cost && (
                 <div>cost: {JSON.stringify(RubyActions[a].cost!)}</div>

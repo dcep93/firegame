@@ -10,22 +10,26 @@ export default function StoreBoard() {
           <h3>store</h3>
         </div>
         <div>
-          {utils.chunk(utils.enumArray(Tile), 12).map((t3, i) => (
+          {utils.chunk(utils.enumArray(Tile), 12).map((t4, i) => (
             <div key={i} style={{ display: "flex" }}>
-              {utils.chunk(t3, 6).map((t2, j) => (
+              {utils.chunk(t4, 6).map((t3, j) => (
                 <div
                   key={`${i}.${j}`}
                   style={{
                     margin: "1em",
                   }}
                 >
-                  {utils.chunk(t2, 3).map((t1, k) => (
+                  {utils.chunk(t3, 3).map((t2, k) => (
                     <div key={`${i}.${j}.${k}`} style={{ display: "flex" }}>
-                      {t1.map((t, l) => (
+                      {t2.map((t, l) => (
                         <pre
                           key={`${i}.${j}.${k}.${l}`}
                           className={styles.bubble}
-                          style={{ display: "inline-block", width: "8em" }}
+                          style={{
+                            display: "inline-block",
+                            width: "8em",
+                            cursor: utils.canBuy(t) ? "pointer" : undefined,
+                          }}
                         >
                           {Tile[t].replaceAll("_", "\n")}
                         </pre>
