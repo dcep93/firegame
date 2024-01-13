@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
-import { Action } from "./Action";
-import { CavernTile, FarmTile } from "./Tile";
+import { Action } from "./Actions";
+import { Tile } from "./Tiles";
 import utils, { store } from "./utils";
 
 export type GameType = {
@@ -10,14 +10,16 @@ export type GameType = {
 
   startingPlayer: number;
   year: number;
-  actionBonuses: { [a: number]: ResourcesType } | undefined;
-  actions: Action[];
-  upcomingActions: Action[] | undefined;
   remainingHarvests: boolean[] | undefined;
 
+  storeSoldOut: Tile[] | undefined;
+
+  actions: Action[];
+  upcomingActions: Action[] | undefined;
+  actionBonuses: { [a in Action]?: ResourcesType } | undefined;
   takenActions:
     | {
-        [index: number]: { playerIndex: number; weaponLevel: number };
+        [a in Action]?: { playerIndex: number; weaponLevel: number };
       }
     | undefined;
 };
@@ -38,17 +40,24 @@ export type PlayerType = {
 
   begging: number;
 
-  farm: FarmTile[][];
-  cavern: CavernTile[][];
+  farm: undefined;
+  cavern: undefined;
 };
 
 export type ResourcesType = {
-  food: number;
-  stone: number;
-  wood: number;
-  ore: number;
-  rubies: number;
-  gold: number;
+  food?: number;
+  stone?: number;
+  wood?: number;
+  ore?: number;
+  rubies?: number;
+  gold?: number;
+  grain?: number;
+  vegetables?: number;
+  dogs?: number;
+  sheep?: number;
+  donkeys?: number;
+  boars?: number;
+  cows?: number;
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -59,10 +68,11 @@ function NewGame(params: Params): PromiseLike<GameType> {
 
     startingPlayer: 0,
     year: 1,
-    actionBonuses: undefined,
+    remainingHarvests: undefined,
+    storeSoldOut: undefined,
     actions: [],
     upcomingActions: undefined,
-    remainingHarvests: undefined,
+    actionBonuses: undefined,
     takenActions: undefined,
   };
   return Promise.resolve(game).then(setPlayers);
@@ -72,20 +82,19 @@ function setPlayers(game: GameType): GameType {
   game.players = utils
     .shuffle(Object.entries(store.lobby))
     .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
-    .slice(0, 2)
-    .map(([userId, userName]) => ({
+    .map(([userId, userName], index) => ({
       userId,
       userName,
 
       usedDwarves: undefined,
-      availableDwarves: undefined,
+      availableDwarves: [0, 0],
 
-      resources: undefined,
+      resources: { food: index === 0 ? 1 : index },
 
       begging: 0,
 
-      farm: [],
-      cavern: [],
+      farm: undefined,
+      cavern: undefined,
     }));
 
   return game;
