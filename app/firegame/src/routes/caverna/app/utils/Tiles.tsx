@@ -1,4 +1,4 @@
-import { PlayerType, ResourcesType } from "./NewGame";
+import { AnimalResourcesType, PlayerType, ResourcesType } from "./NewGame";
 import utils from "./utils";
 
 export enum Tile {
@@ -52,264 +52,328 @@ export enum Tile {
   fodder_chamber,
 }
 
+export enum TileCategory {
+  dwelling,
+  green,
+  yellow,
+}
+
 export type TileType = {
+  cost: ResourcesType;
+  category: TileCategory;
   points?: number;
   pointsF?: (p: PlayerType) => number;
-  cost: ResourcesType;
-  dwelling?: number;
   onPurchase?: (p: PlayerType) => void;
-  onClick?: (p: PlayerType) => void;
+  convert?: (p: PlayerType) => void;
+  animalRoom?: (r: AnimalResourcesType, p: PlayerType) => boolean;
+  supply?: ResourcesType;
 };
 
 const Tiles: { [t in Tile]: TileType } = {
   [Tile.dwelling]: {
-    points: 3,
     cost: { wood: 4, stone: 3 },
-    dwelling: 1,
+    category: TileCategory.dwelling,
+    points: 3,
   },
   [Tile.simple_dwelling_4_2]: {
-    points: 0,
     cost: { wood: 4, stone: 2 },
-    dwelling: 1,
+    category: TileCategory.dwelling,
+    points: 0,
   },
   [Tile.simple_dwelling_3_3]: {
-    points: 0,
     cost: { wood: 3, stone: 3 },
-    dwelling: 1,
+    category: TileCategory.dwelling,
+    points: 0,
   },
   [Tile.mixed_dwelling]: {
-    points: 4,
     cost: { wood: 5, stone: 4 },
-    dwelling: 1,
-    // TODO
+    category: TileCategory.dwelling,
+    points: 4,
+    animalRoom: (r: AnimalResourcesType, p: PlayerType) =>
+      Object.keys(r).length === 1 && Object.values(r)[0] <= 2,
   },
   [Tile.couple_dwelling]: {
-    points: 5,
     cost: { wood: 8, stone: 6 },
-    dwelling: 2,
+    category: TileCategory.dwelling,
+    points: 5,
   },
   [Tile.additional_dwelling]: {
-    points: 5,
     cost: { wood: 4, stone: 3 },
+    category: TileCategory.dwelling,
+    points: 5,
     // TODO
   },
   [Tile.cuddle_room]: {
-    points: 2,
     cost: { wood: 1 },
-    // TODO
+    category: TileCategory.green,
+    points: 2,
+    animalRoom: (r: AnimalResourcesType, p: PlayerType) =>
+      Object.keys(r).length === 1 &&
+      r.sheep !== undefined &&
+      r.sheep <= (p.availableDwarves || []).concat(p.usedDwarves || []).length,
   },
   [Tile.breakfast_room]: {
-    points: 0,
     cost: { wood: 1 },
-    // TODO
+    category: TileCategory.green,
+    points: 0,
+    animalRoom: (r: AnimalResourcesType, p: PlayerType) =>
+      Object.keys(r).length === 1 && r.cows !== undefined && r.cows <= 3,
   },
   [Tile.stubble_room]: {
-    points: 1,
     cost: { wood: 1, ore: 1 },
+    category: TileCategory.green,
+    points: 1,
     // TODO
   },
   [Tile.work_room]: {
-    points: 2,
     cost: { stone: 1 },
+    category: TileCategory.green,
+    points: 2,
     // TODO
   },
   [Tile.guest_room]: {
-    points: 0,
     cost: { wood: 1, stone: 1 },
+    category: TileCategory.green,
+    points: 0,
     // TODO
   },
   [Tile.office_room]: {
-    points: 0,
     cost: { stone: 1 },
+    category: TileCategory.green,
+    points: 0,
     // TODO
   },
   [Tile.carpenter]: {
-    points: 0,
     cost: { stone: 1 },
+    category: TileCategory.green,
+    points: 0,
     // TODO
   },
   [Tile.stone_carver]: {
-    points: 1,
     cost: { wood: 1 },
+    category: TileCategory.green,
+    points: 1,
+    onPurchase: (p: PlayerType) => utils.addResourcesToPlayer(p, { stone: 2 }),
     // TODO
   },
   [Tile.blacksmith]: {
-    points: 3,
     cost: { wood: 1, stone: 2 },
+    category: TileCategory.green,
+    points: 3,
+    onPurchase: (p: PlayerType) => utils.addResourcesToPlayer(p, { ore: 2 }),
     // TODO
   },
   [Tile.miner]: {
-    points: 3,
     cost: { wood: 1, stone: 1 },
+    category: TileCategory.green,
+    points: 3,
     // TODO
   },
   [Tile.builder]: {
-    points: 3,
     cost: { stone: 1 },
+    category: TileCategory.green,
+    points: 3,
     // TODO
   },
   [Tile.trader]: {
-    points: 2,
     cost: { wood: 1 },
-    // TODO
+    category: TileCategory.green,
+    points: 2,
+    convert: (p: PlayerType) =>
+      utils.convert(p, { gold: -2, wood: 1, ore: 1, stone: 1 }),
   },
   [Tile.wood_supplier]: {
-    points: 2,
     cost: { stone: 1 },
-    // TODO
+    category: TileCategory.green,
+    points: 2,
+    supply: { wood: 7 },
   },
   [Tile.stone_supplier]: {
-    points: 1,
     cost: { wood: 1 },
-    // TODO
+    category: TileCategory.green,
+    points: 1,
+    supply: { stone: 5 },
   },
   [Tile.ruby_supplier]: {
-    points: 2,
     cost: { wood: 2, stone: 2 },
-    // TODO
+    category: TileCategory.green,
+    points: 2,
+    supply: { rubies: 4 },
   },
   [Tile.dog_school]: {
-    points: 0,
     cost: {},
+    category: TileCategory.green,
+    points: 0,
     // TODO
   },
   [Tile.quarry]: {
-    points: 2,
     cost: { wood: 1 },
+    category: TileCategory.green,
+    points: 2,
     // TODO
   },
   [Tile.seam]: {
-    points: 1,
     cost: { wood: 2 },
+    category: TileCategory.green,
+    points: 1,
     // TODO
   },
   [Tile.slaughtering_cave]: {
-    points: 2,
     cost: { wood: 2, stone: 2 },
+    category: TileCategory.green,
+    points: 2,
     // TODO
   },
   [Tile.cooking_cave]: {
-    points: 2,
     cost: { stone: 2 },
-    // TODO
+    category: TileCategory.green,
+    points: 2,
+    convert: (p: PlayerType) =>
+      utils.convert(p, { grain: -1, vegetables: -1, food: 5 }),
   },
   [Tile.working_cave]: {
-    points: 2,
     cost: { wood: 1, stone: 1 },
+    category: TileCategory.green,
+    points: 2,
     // TODO
   },
   [Tile.mining_cave]: {
-    points: 2,
     cost: { wood: 3, stone: 2 },
+    category: TileCategory.green,
+    points: 2,
     // TODO
   },
   [Tile.breeding_cave]: {
-    points: 2,
     cost: { grain: 1, stone: 1 },
+    category: TileCategory.green,
+    points: 2,
     // TODO
   },
   [Tile.peaceful_cave]: {
-    points: 2,
     cost: { wood: 2, stone: 2 },
+    category: TileCategory.green,
+    points: 2,
     // TODO
   },
   [Tile.weaving_parlor]: {
-    pointsF: (p: PlayerType) => Math.floor((p.resources?.sheep || 0) / 2),
     cost: { wood: 2, stone: 1 },
+    category: TileCategory.yellow,
+    pointsF: (p: PlayerType) => Math.floor((p.resources?.sheep || 0) / 2),
     onPurchase: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { food: p.resources?.sheep || 0 }),
   },
   [Tile.milking_parlor]: {
-    pointsF: (p: PlayerType) => p.resources?.cows || 0,
     cost: { wood: 2, stone: 2 },
+    category: TileCategory.yellow,
+    pointsF: (p: PlayerType) => p.resources?.cows || 0,
     onPurchase: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { food: p.resources?.cows || 0 }),
   },
   [Tile.state_parlor]: {
     cost: { gold: 5, stone: 3 },
+    category: TileCategory.yellow,
     // TODO
   },
   [Tile.hunting_parlor]: {
-    points: 1,
     cost: { wood: 2 },
-    // TODO
+    category: TileCategory.yellow,
+    points: 1,
+    convert: (p: PlayerType) =>
+      utils.convert(p, { boars: -2, gold: 2, food: 2 }),
   },
   [Tile.beer_parlor]: {
-    points: 3,
     cost: { wood: 2 },
+    category: TileCategory.yellow,
+    points: 3,
     // TODO
   },
   [Tile.blacksmithing_parlor]: {
-    points: 2,
     cost: { ore: 3 },
-    // TODO
+    category: TileCategory.yellow,
+    points: 2,
+    convert: (p: PlayerType) =>
+      utils.convert(p, { ore: -1, rubies: -1, gold: 2, food: 1 }),
   },
   [Tile.stone_storage]: {
-    pointsF: (p: PlayerType) => p.resources?.stone || 0,
     cost: { wood: 3, ore: 1 },
+    category: TileCategory.yellow,
+    pointsF: (p: PlayerType) => p.resources?.stone || 0,
   },
   [Tile.ore_storage]: {
-    pointsF: (p: PlayerType) => Math.floor((p.resources?.ore || 0) / 2),
     cost: { wood: 1, stone: 2 },
+    category: TileCategory.yellow,
+    pointsF: (p: PlayerType) => Math.floor((p.resources?.ore || 0) / 2),
   },
   [Tile.spare_part_storage]: {
-    points: 0,
     cost: { wood: 2 },
-    // TODO
+    category: TileCategory.yellow,
+    points: 0,
+    convert: (p: PlayerType) =>
+      utils.convert(p, { wood: -1, stone: -1, ore: -1, gold: 2 }),
   },
   [Tile.main_storage]: {
-    points: 3,
     cost: { wood: 2, stone: 1 },
+    category: TileCategory.yellow,
+    points: 3,
     // TODO
   },
   [Tile.weapon_storage]: {
+    cost: { wood: 3, stone: 2 },
+    category: TileCategory.yellow,
     pointsF: (p: PlayerType) =>
       (p.availableDwarves || [])
         .concat(p.usedDwarves || [])
         .filter((d) => d > 0).length,
-    cost: { wood: 3, stone: 2 },
   },
   [Tile.supplies_storage]: {
+    cost: { wood: 1, food: 3 },
+    category: TileCategory.yellow,
     pointsF: (p: PlayerType) =>
       (p.availableDwarves || [])
         .concat(p.usedDwarves || [])
         .filter((d) => d <= 0).length === 0
         ? 8
         : 0,
-    cost: { wood: 1, food: 3 },
   },
   [Tile.broom_chamber]: {
+    cost: { wood: 1 },
+    category: TileCategory.yellow,
     pointsF: (p: PlayerType) =>
       Math.max(
         0,
         5 * ((p.availableDwarves || []).concat(p.usedDwarves || []).length - 4)
       ),
-    cost: { wood: 1 },
   },
   [Tile.treasure_chamber]: {
-    pointsF: (p: PlayerType) => p.resources?.rubies || 0,
     cost: { wood: 1, stone: 1 },
+    category: TileCategory.yellow,
+    pointsF: (p: PlayerType) => p.resources?.rubies || 0,
   },
   [Tile.food_chamber]: {
+    cost: { wood: 2, vegetables: 2 },
+    category: TileCategory.yellow,
     pointsF: (p: PlayerType) =>
       2 * Math.min(p.resources?.grain || 0, p.resources?.vegetables || 0),
-    cost: { wood: 2, vegetables: 2 },
   },
   [Tile.prayer_chamber]: {
+    cost: { wood: 2 },
+    category: TileCategory.yellow,
     pointsF: (p: PlayerType) =>
       (p.availableDwarves || [])
         .concat(p.usedDwarves || [])
         .filter((d) => d > 0).length === 0
         ? 8
         : 0,
-    cost: { wood: 2 },
   },
   [Tile.writing_chamber]: {
-    points: 0,
     cost: { stone: 2 },
+    category: TileCategory.yellow,
+    points: 0,
     // TODO
   },
   [Tile.fodder_chamber]: {
+    cost: { grain: 2, stone: 1 },
+    category: TileCategory.yellow,
     pointsF: (p: PlayerType) =>
       Math.floor(
         ((p.resources?.sheep || 0) +
@@ -318,7 +382,6 @@ const Tiles: { [t in Tile]: TileType } = {
           (p.resources?.cows || 0)) /
           3
       ),
-    cost: { grain: 2, stone: 1 },
   },
 };
 

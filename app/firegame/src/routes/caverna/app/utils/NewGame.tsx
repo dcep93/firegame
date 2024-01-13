@@ -44,6 +44,14 @@ export type PlayerType = {
   cavern: undefined;
 };
 
+export type AnimalResourcesType = {
+  dogs?: number;
+  sheep?: number;
+  donkeys?: number;
+  boars?: number;
+  cows?: number;
+};
+
 export type ResourcesType = {
   food?: number;
   stone?: number;
@@ -53,12 +61,7 @@ export type ResourcesType = {
   gold?: number;
   grain?: number;
   vegetables?: number;
-  dogs?: number;
-  sheep?: number;
-  donkeys?: number;
-  boars?: number;
-  cows?: number;
-};
+} & AnimalResourcesType;
 
 function NewGame(params: Params): PromiseLike<GameType> {
   const game: GameType = {

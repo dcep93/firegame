@@ -19,7 +19,7 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   convert(p: PlayerType, conversion: ResourcesType) {
-    const newResources = this.addResources(p.resources || {}, conversion);
+    const newResources = this.addResources(conversion, p.resources || {});
     if (Object.values(newResources).filter((c) => c < 0).length > 0) {
       return;
     }
