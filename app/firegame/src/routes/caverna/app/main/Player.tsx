@@ -68,18 +68,50 @@ export default function Player(props: { p: PlayerType }) {
           </button>
         </div>
         <div style={{ display: "flex" }}>
-          <Farm p={props.p} />
-          <Cave p={props.p} />
+          <Grid
+            p={props.p}
+            title={"farm"}
+            f={(i, j) => (
+              <div>
+                {i}.{j}
+              </div>
+            )}
+          />
+          <Grid
+            p={props.p}
+            title={"cave"}
+            f={(i, j) => (
+              <div>
+                {i}.{j}
+              </div>
+            )}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-function Farm(props: { p: PlayerType }) {
-  return <div className={styles.bubble}>farm</div>;
-}
-
-function Cave(props: { p: PlayerType }) {
-  return <div className={styles.bubble}>cave</div>;
+function Grid(props: {
+  p: PlayerType;
+  title: string;
+  f: (i: number, j: number) => JSX.Element;
+}) {
+  return (
+    <div className={styles.bubble}>
+      <h4>{props.title}</h4>
+      {utils.count(4).map((i) => (
+        <div key={i} style={{ display: "flex" }}>
+          {utils.count(3).map((j) => (
+            <div
+              key={`${i}.${j}`}
+              style={{ border: "2px solid black", width: "8em", height: "4em" }}
+            >
+              {props.f(i, j)}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
