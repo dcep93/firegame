@@ -1,5 +1,5 @@
 import React from "react";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 import ActionsBoard from "./ActionsBoard";
 import CardActions from "./CardActions";
 import Player from "./Player";
@@ -10,9 +10,17 @@ class Main extends React.Component {
     return (
       <div style={{ width: "100%" }}>
         <div>
-          {store.gameW.game.players.map((p, i) => (
-            <Player key={i} p={p} />
-          ))}
+          {store.gameW.game.players
+            .map(
+              (_, i) =>
+                store.gameW.game.players[
+                  (i + store.gameW.game.players.length - utils.myIndex()) %
+                    store.gameW.game.players.length
+                ]
+            )
+            .map((p, i) => (
+              <Player key={i} p={p} />
+            ))}
         </div>
         <CardActions />
         <StoreBoard />
