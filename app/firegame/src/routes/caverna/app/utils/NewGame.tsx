@@ -1,5 +1,5 @@
 import { LobbyType } from "../../../../shared/store";
-import { Action } from "./Actions";
+import Actions, { Action } from "./Actions";
 import { Tile } from "./Tiles";
 import utils, { store } from "./utils";
 
@@ -12,7 +12,7 @@ export type GameType = {
   year: number;
   remainingHarvests: boolean[] | undefined;
 
-  purchasedTiles: Tile[] | undefined;
+  purchasedTiles: { [t in Tile]?: boolean } | undefined;
 
   actions: Action[];
   upcomingActions: Action[] | undefined;
@@ -98,13 +98,23 @@ function NewGame(params: Params): PromiseLike<GameType> {
     startingPlayer: 0,
     year: 1,
     remainingHarvests: [true, true, true, true, false, false, false],
-    purchasedTiles: [],
-    actions: [],
-    upcomingActions: [],
+    purchasedTiles: {},
+    actions: utils
+      .enumArray(Action)
+      .map((a) => ({ a, o: Actions[a] }))
+      .filter(
+        ({ o }) =>
+          o.availability[0] <= Object.keys(store.lobby).length &&
+          o.availability[1] >= Object.keys(store.lobby).length
+      )
+      .map(({ a }) => a),
+    upcomingActions: utils
+      .enumArray(Action)
+      .filter((a) => Actions[a].availability[0] < 0),
     actionBonuses: {},
     takenActions: {},
   };
-  return Promise.resolve(game).then(setPlayers);
+  return Promise.resolve(game).then(setPlayers).then(utils.enrichAndReveal);
 }
 
 function setPlayers(game: GameType): GameType {

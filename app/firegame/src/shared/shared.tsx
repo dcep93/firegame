@@ -124,11 +124,12 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     return Array.from(new Array(num)).map((_, i) => i);
   }
 
-  enumArray<X extends {}>(enumType: X): number[] {
+  enumArray<X>(enumType: { [k: string]: string | X }): X[] {
     return Object.values(enumType)
-      .map((e) => e as number)
       .filter((e) => typeof e === "number")
-      .sort((a, b) => a - b);
+      .map((e) => e as unknown as number)
+      .sort((a, b) => a - b)
+      .map((e) => e as unknown as X);
   }
 
   enumNameToValue(name: string, e: { [s: string]: number | string }): number {

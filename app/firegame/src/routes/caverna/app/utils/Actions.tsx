@@ -1,3 +1,5 @@
+import { ResourcesType } from "./NewGame";
+
 export enum Action {
   // 0-1
   blacksmithing,
@@ -65,56 +67,57 @@ export enum Action {
 }
 
 export type ActionType = {
-  availability: number[];
+  availability: [number, number];
+  enrichment?: ResourcesType[];
 };
 
 const Actions: { [a in Action]: ActionType } = {
   [Action.blacksmithing]: {
-    availability: [-1],
+    availability: [-1, 0],
     // TODO
   },
   [Action.ore_mine_construction]: {
-    availability: [-1],
+    availability: [-1, 0],
     // TODO
   },
   [Action.sheep_farming]: {
-    availability: [-1],
+    availability: [-1, 0],
     // TODO
   },
   [Action.wish_for_children]: {
-    availability: [-2],
+    availability: [-1.5, 0],
     // TODO
   },
   [Action.ruby_mine_construction]: {
-    availability: [-2],
+    availability: [-2, 0],
     // TODO
   },
   [Action.donkey_farming]: {
-    availability: [-2],
+    availability: [-2, 0],
     // TODO
   },
   [Action.exploration]: {
-    availability: [-3],
+    availability: [-3, 0],
     // TODO
   },
   [Action.family_life]: {
-    availability: [-3],
+    availability: [-3, 0],
     // TODO
   },
   [Action.ore_delivery]: {
-    availability: [-3],
+    availability: [-3, 0],
     // TODO
   },
   [Action.ore_trading]: {
-    availability: [-4],
+    availability: [-4, 0],
     // TODO
   },
   [Action.ruby_delivery]: {
-    availability: [-4],
+    availability: [-4, 0],
     // TODO
   },
   [Action.adventure]: {
-    availability: [-4],
+    availability: [-4, 0],
     // TODO
   },
   [Action.ruby_mining]: {
@@ -166,15 +169,15 @@ const Actions: { [a in Action]: ActionType } = {
     // TODO
   },
   [Action.strip_mining]: {
-    availability: [3],
+    availability: [3, 3],
     // TODO
   },
   [Action.forest_exploration_3]: {
-    availability: [3],
+    availability: [3, 3],
     // TODO
   },
   [Action.imitation_3]: {
-    availability: [3],
+    availability: [3, 3],
     // TODO
   },
   [Action.drift_mining_4_7]: {
@@ -218,27 +221,27 @@ const Actions: { [a in Action]: ActionType } = {
     // TODO
   },
   [Action.depot_5]: {
-    availability: [5],
+    availability: [5, 5],
     // TODO
   },
   [Action.small_scale_drift_mining]: {
-    availability: [5],
+    availability: [5, 5],
     // TODO
   },
   [Action.weekly_market_5]: {
-    availability: [5],
+    availability: [5, 5],
     // TODO
   },
   [Action.imitation_5]: {
-    availability: [5],
+    availability: [5, 5],
     // TODO
   },
   [Action.hardware_rental_5]: {
-    availability: [5],
+    availability: [5, 5],
     // TODO
   },
   [Action.fence_building_5]: {
-    availability: [5],
+    availability: [5, 5],
     // TODO
   },
   [Action.depot_6_7]: {
@@ -266,15 +269,15 @@ const Actions: { [a in Action]: ActionType } = {
     // TODO
   },
   [Action.large_depot]: {
-    availability: [7],
+    availability: [7, 7],
     // TODO
   },
   [Action.imitation_7]: {
-    availability: [7],
+    availability: [7, 7],
     // TODO
   },
   [Action.extension]: {
-    availability: [7],
+    availability: [7, 7],
     // TODO
   },
 };

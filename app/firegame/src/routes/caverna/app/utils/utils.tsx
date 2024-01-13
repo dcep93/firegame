@@ -1,5 +1,6 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
+import Actions from "./Actions";
 
 import { GameType, PlayerType, ResourcesType } from "./NewGame";
 
@@ -24,6 +25,47 @@ class Utils extends Shared<GameType, PlayerType> {
       return;
     }
     p.resources = newResources;
+  }
+
+  enrichAndReveal(g: GameType): GameType {
+    g.actions.push(
+      utils
+        .shuffle(g.upcomingActions!)
+        .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
+        .pop()!
+    );
+    if (store.gameW.game.actionBonuses === undefined) {
+      store.gameW.game.actionBonuses = {};
+    }
+    g.actions
+      .map((a) => ({ a, e: Actions[a].enrichment }))
+      .filter(({ e }) => e)
+      .forEach(
+        ({ a, e }) =>
+          (store.gameW.game.actionBonuses![a] =
+            store.gameW.game.actionBonuses![a] === undefined
+              ? Object.assign({}, e![0])
+              : utils.addResources(
+                  store.gameW.game.actionBonuses![a]!,
+                  e![e!.length - 1]
+                ))
+      );
+    return g;
+  }
+
+  chunk<T>(ts: T[], num: number): T[][] {
+    return ts
+      .reduce(
+        (prev, curr: T) => {
+          if (prev[0].length === num) {
+            prev.unshift([]);
+          }
+          prev[0].push(curr);
+          return prev;
+        },
+        [[]] as T[][]
+      )
+      .reverse();
   }
 }
 
