@@ -1,3 +1,5 @@
+import styles from "../../../../shared/styles.module.css";
+
 export default function StoreBoard() {
-  return <div>StoreBoard</div>;
+  return <div className={styles.bubble}></div>;
 }

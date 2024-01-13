@@ -12,7 +12,7 @@ export type GameType = {
   year: number;
   remainingHarvests: boolean[] | undefined;
 
-  storeSoldOut: Tile[] | undefined;
+  purchasedTiles: Tile[] | undefined;
 
   actions: Action[];
   upcomingActions: Action[] | undefined;
@@ -37,11 +37,37 @@ export type PlayerType = {
   availableDwarves: number[] | undefined;
 
   resources: ResourcesType | undefined;
+  illegalAnimals: AnimalResourcesType | undefined;
 
   begging: number;
 
-  farm: undefined;
-  cavern: undefined;
+  boughtTiles: { [t in Tile]?: {} } | undefined;
+
+  cavern: {
+    [row: number]: {
+      [column: number]: {
+        resources: ResourcesType | undefined;
+        isTunnel: boolean;
+        isOreTunnel: boolean;
+        isOreMine: boolean;
+        isRubyMine: boolean;
+      };
+    };
+  };
+
+  farm: {
+    [row: number]: {
+      [column: number]: {
+        resources: ResourcesType | undefined;
+        // if stable and not green,
+        // must be stable in forest
+        isStable: boolean;
+        isGreen: boolean;
+        isFence: boolean;
+        doubleFencePair?: [number, number];
+      };
+    };
+  };
 };
 
 export type AnimalResourcesType = {
@@ -71,12 +97,12 @@ function NewGame(params: Params): PromiseLike<GameType> {
 
     startingPlayer: 0,
     year: 1,
-    remainingHarvests: undefined,
-    storeSoldOut: undefined,
+    remainingHarvests: [true, true, true, true, false, false, false],
+    purchasedTiles: [],
     actions: [],
-    upcomingActions: undefined,
-    actionBonuses: undefined,
-    takenActions: undefined,
+    upcomingActions: [],
+    actionBonuses: {},
+    takenActions: {},
   };
   return Promise.resolve(game).then(setPlayers);
 }
@@ -89,15 +115,18 @@ function setPlayers(game: GameType): GameType {
       userId,
       userName,
 
-      usedDwarves: undefined,
+      usedDwarves: [],
       availableDwarves: [0, 0],
 
       resources: { food: index === 0 ? 1 : index },
+      illegalAnimals: {},
 
       begging: 0,
 
-      farm: undefined,
-      cavern: undefined,
+      boughtTiles: {},
+
+      farm: {},
+      cavern: {},
     }));
 
   return game;
