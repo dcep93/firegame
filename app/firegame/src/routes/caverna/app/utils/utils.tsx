@@ -40,6 +40,7 @@ class Utils extends Shared<GameType, PlayerType> {
     if (g.actionBonuses === undefined) {
       g.actionBonuses = {};
     }
+    g.players.forEach((p) => (p.availableDwarves = p.usedDwarves!.splice(0)));
     g.actions
       .map((a) => ({ a, e: Actions[a].enrichment }))
       .filter(({ e }) => e)
@@ -83,6 +84,22 @@ class Utils extends Shared<GameType, PlayerType> {
   canExpedition(a: ExpeditionAction): boolean {
     return true;
   }
+
+  payRubyOutOfOrder(p: PlayerType, index: number) {}
+
+  canPayRubyOutOfOrder(p: PlayerType, index: number): boolean {
+    return (
+      index > 0 &&
+      p.availableDwarves![index] > 0 &&
+      ((p.resources || {}).rubies || 0) >= 1
+    );
+  }
+
+  canSlaughter(p: PlayerType): boolean {
+    return true;
+  }
+
+  slaughter(p: PlayerType) {}
 }
 
 const utils = new Utils();

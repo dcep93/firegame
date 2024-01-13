@@ -37,37 +37,40 @@ export type PlayerType = {
   availableDwarves: number[] | undefined;
 
   resources: ResourcesType | undefined;
-  illegalAnimals: AnimalResourcesType | undefined;
 
-  begging: number;
+  begging?: number;
 
   boughtTiles: { [t in Tile]?: {} } | undefined;
 
-  cavern: {
-    [row: number]: {
-      [column: number]: {
-        resources: ResourcesType | undefined;
-        isTunnel: boolean;
-        isOreTunnel: boolean;
-        isOreMine: boolean;
-        isRubyMine: boolean;
-      };
-    };
-  };
+  cave:
+    | {
+        [row: number]: {
+          [column: number]: {
+            resources: ResourcesType | undefined;
+            isTunnel: boolean;
+            isOreTunnel: boolean;
+            isOreMine: boolean;
+            isRubyMine: boolean;
+          };
+        };
+      }
+    | undefined;
 
-  farm: {
-    [row: number]: {
-      [column: number]: {
-        resources: ResourcesType | undefined;
-        // if stable and not pasture,
-        // must be stable in forest
-        isStable: boolean;
-        isPasture: boolean;
-        isFence: boolean;
-        doubleFencePair?: [number, number];
-      };
-    };
-  };
+  farm:
+    | {
+        [row: number]: {
+          [column: number]: {
+            resources: ResourcesType | undefined;
+            // if stable and not pasture,
+            // must be stable in forest
+            isStable: boolean;
+            isPasture: boolean;
+            isFence: boolean;
+            doubleFenceAngleDeg?: number;
+          };
+        };
+      }
+    | undefined;
 };
 
 export type AnimalResourcesType = {
@@ -121,22 +124,20 @@ function setPlayers(game: GameType): GameType {
   game.players = utils
     .shuffle(Object.entries(store.lobby))
     .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
+    .slice(0, 7)
     .map(([userId, userName], index) => ({
       userId,
       userName,
 
-      usedDwarves: [],
-      availableDwarves: [0, 0],
+      availableDwarves: [],
+      usedDwarves: [0, 0],
 
-      resources: { food: index === 0 ? 1 : index },
-      illegalAnimals: {},
-
-      begging: 0,
+      resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
 
       boughtTiles: {},
 
       farm: {},
-      cavern: {},
+      cave: {},
     }));
 
   return game;
