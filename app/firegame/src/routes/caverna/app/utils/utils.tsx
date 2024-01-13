@@ -37,21 +37,18 @@ class Utils extends Shared<GameType, PlayerType> {
         .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
         .pop()!
     );
-    if (store.gameW.game.actionBonuses === undefined) {
-      store.gameW.game.actionBonuses = {};
+    if (g.actionBonuses === undefined) {
+      g.actionBonuses = {};
     }
     g.actions
       .map((a) => ({ a, e: Actions[a].enrichment }))
       .filter(({ e }) => e)
       .forEach(
         ({ a, e }) =>
-          (store.gameW.game.actionBonuses![a] =
-            store.gameW.game.actionBonuses![a] === undefined
+          (g.actionBonuses![a] =
+            g.actionBonuses![a] === undefined
               ? Object.assign({}, e![0])
-              : utils.addResources(
-                  store.gameW.game.actionBonuses![a]!,
-                  e![e!.length - 1]
-                ))
+              : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
       );
     return g;
   }
