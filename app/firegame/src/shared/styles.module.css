@@ -36,7 +36,7 @@
   display: inline-block;
 }
 
-.my_turn > * > * {
+.my_turn {
   background-color: rgb(255, 159, 159);
 }
 

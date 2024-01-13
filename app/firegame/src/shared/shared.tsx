@@ -124,10 +124,11 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     return Array.from(new Array(num)).map((_, i) => i);
   }
 
-  enumArray<X>(enumType: X): number[] {
+  enumArray<X extends {}>(enumType: X): number[] {
     return Object.values(enumType)
+      .map((e) => e as number)
       .filter((e) => typeof e === "number")
-      .sort();
+      .sort((a, b) => a - b);
   }
 
   enumNameToValue(name: string, e: { [s: string]: number | string }): number {
@@ -200,6 +201,11 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
     const d = {} as { [s: string]: number };
     arr.sort().forEach((v) => (d[v] = (d[v] || 0) + 1));
     return d;
+  }
+
+  log<TT>(x: TT): TT {
+    console.log(x);
+    return x;
   }
 }
 
