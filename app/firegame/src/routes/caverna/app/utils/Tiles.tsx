@@ -369,7 +369,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { stone: 2 },
     category: TileCategory.yellow,
     points: 0,
-    // TODO
   },
   [Tile.fodder_chamber]: {
     cost: { grain: 2, stone: 1 },

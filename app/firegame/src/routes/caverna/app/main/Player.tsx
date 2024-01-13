@@ -3,6 +3,7 @@ import { PlayerType, ResourcesType } from "../utils/NewGame";
 import utils from "../utils/utils";
 
 export default function Player(props: { p: PlayerType }) {
+  const scoreDict = utils.getScoreDict(props.p);
   return (
     <div>
       <div
@@ -12,6 +13,9 @@ export default function Player(props: { p: PlayerType }) {
         ].join(" ")}
       >
         <h2>{props.p.userName}</h2>
+        <h4 title={JSON.stringify(scoreDict, null, 2)}>
+          score: {Object.values(scoreDict).sum()}
+        </h4>
         <div>
           ready dwarves:{" "}
           {(props.p.availableDwarves || []).map((d, i) => (

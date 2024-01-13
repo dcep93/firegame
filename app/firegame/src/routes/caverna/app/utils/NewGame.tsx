@@ -28,6 +28,24 @@ export type Params = {
   lobby: LobbyType;
 };
 
+export type CaveTileType = {
+  resources: ResourcesType | undefined;
+  isTunnel: boolean;
+  isOreTunnel: boolean;
+  isOreMine: boolean;
+  isRubyMine: boolean;
+};
+
+export type FarmTileType = {
+  resources: ResourcesType | undefined;
+  // if stable and not pasture,
+  // must be stable in forest
+  isStable: boolean;
+  isPasture: boolean;
+  isFence: boolean;
+  doubleFenceAngleDeg?: number;
+};
+
 export type PlayerType = {
   userId: string;
   userName: string;
@@ -45,13 +63,7 @@ export type PlayerType = {
   cave:
     | {
         [row: number]: {
-          [column: number]: {
-            resources: ResourcesType | undefined;
-            isTunnel: boolean;
-            isOreTunnel: boolean;
-            isOreMine: boolean;
-            isRubyMine: boolean;
-          };
+          [column: number]: CaveTileType;
         };
       }
     | undefined;
@@ -59,15 +71,7 @@ export type PlayerType = {
   farm:
     | {
         [row: number]: {
-          [column: number]: {
-            resources: ResourcesType | undefined;
-            // if stable and not pasture,
-            // must be stable in forest
-            isStable: boolean;
-            isPasture: boolean;
-            isFence: boolean;
-            doubleFenceAngleDeg?: number;
-          };
+          [column: number]: FarmTileType;
         };
       }
     | undefined;
