@@ -1,6 +1,6 @@
 import styles from "../../../../shared/styles.module.css";
 import { Tile } from "../utils/Tiles";
-import utils from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 export default function StoreBoard(props: {
   selected: [number, number, number] | undefined;
@@ -30,7 +30,7 @@ export default function StoreBoard(props: {
                     {utils.chunk(t3, 3).map((t2, k) => (
                       <div key={`${i}.${j}.${k}`} style={{ display: "flex" }}>
                         {t2.map((t, l) => (
-                          <pre
+                          <div
                             key={`${i}.${j}.${k}.${l}`}
                             className={styles.bubble}
                             style={{
@@ -41,13 +41,28 @@ export default function StoreBoard(props: {
                                 !utils.canFurnish(t, me, props.selected!)
                                   ? undefined
                                   : "pointer",
+                              position: "relative",
                             }}
                             onClick={() =>
                               utils.furnish(t, me, props.selected!)
                             }
                           >
-                            {Tile[t].replaceAll("_", "\n")}
-                          </pre>
+                            {(store.gameW.game.purchasedTiles || {})[t] ===
+                            undefined ? null : (
+                              <div
+                                className={styles.bubble}
+                                style={{
+                                  position: "absolute",
+                                  right: 0,
+                                  bottom: 0,
+                                  backgroundColor: utils.getColor(
+                                    store.gameW.game.purchasedTiles![t]!
+                                  ),
+                                }}
+                              ></div>
+                            )}
+                            <pre>{Tile[t].replaceAll("_", "\n")}</pre>
+                          </div>
                         ))}
                       </div>
                     ))}

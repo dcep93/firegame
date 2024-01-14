@@ -27,7 +27,7 @@ export default function Player(props: {
               position: "absolute",
               right: 0,
               bottom: 0,
-              backgroundColor: props.p.color,
+              backgroundColor: utils.getColor(props.p.index),
             }}
           ></div>
         </div>

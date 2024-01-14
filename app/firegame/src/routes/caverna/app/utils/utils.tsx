@@ -233,6 +233,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     p: PlayerType,
     selected: [number, number, number]
   ): boolean {
+    if ((store.gameW.game.purchasedTiles || {})[t] !== undefined) {
+      return false;
+    }
     if (!utils.isMyTurn()) return false;
     if (selected[2] !== 1) return false;
     if (p.cave[selected[0]] === undefined) p.cave[selected[0]] = [];
@@ -257,6 +260,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   furnish(t: Tile, p: PlayerType, selected: [number, number, number]) {
+    if (store.gameW.game.purchasedTiles === undefined)
+      store.gameW.game.purchasedTiles = {};
+    store.gameW.game.purchasedTiles[t] = p.index;
     this.addResourcesToPlayer(p, Tiles[t].cost);
     p.boughtTiles[t] = true;
     p.cave[selected[0]]![selected[1]] = { tile: t };

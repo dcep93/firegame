@@ -56,7 +56,7 @@ export type GameType = {
   startingPlayer: number;
   remainingHarvests?: boolean[];
 
-  purchasedTiles?: { [t in Tile]?: boolean };
+  purchasedTiles?: { [t in Tile]?: number };
 
   actions: Action[];
   upcomingActions?: Action[];
@@ -92,7 +92,7 @@ export type PlayerType = {
   userId: string;
   userName: string;
 
-  color: string;
+  index: number;
 
   // -1: baby, 0: no weapon, 1+: weapon level
   usedDwarves?: number[];
@@ -170,8 +170,7 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName], index) => ({
       userId,
       userName,
-
-      color: utils.getColor(index),
+      index,
 
       usedDwarves: [0, 0],
 
