@@ -11,6 +11,7 @@ import {
   PlayerType,
   ResourcesType,
   Task,
+  TaskType,
 } from "./NewGame";
 import RubyActions, { RubyAction } from "./RubyActions";
 import Tiles, { Tile, TileCategory } from "./Tiles";
@@ -216,9 +217,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (at.action !== undefined) {
       at.action(p);
     }
-    if (store.gameW.game.tasks.length === 0) {
-      utils.finishTurn();
-    }
+    this.prepareNextTask();
     store.update(`action: ${Action[a]}`);
   }
 
@@ -246,6 +245,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) return false;
     const taskObj = store.gameW.game.tasks[0];
     if (taskObj.t !== Task.expedition) return false;
+    if (a === ExpeditionAction.strength && taskObj.d!.num !== 1) return false;
     const e = ExpeditionActions[a];
     if ((taskObj.d!.expeditionsTaken || {})[a] !== undefined) return false;
     return p.usedDwarves![p.usedDwarves!.length - 1] >= e.level;
@@ -350,6 +350,30 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       )
       .sum();
     return numDwellingSpaces > numDwarves;
+  }
+
+  queueTasks(ts: TaskType[]) {
+    store.gameW.game.tasks.splice(0, 0, ...ts);
+    this.prepareNextTask();
+  }
+
+  prepareNextTask() {
+    while (true) {
+      if (this.canUpcomingTask()) return;
+      store.gameW.game.tasks.shift();
+    }
+  }
+
+  canUpcomingTask(): boolean {
+    const task = store.gameW.game.tasks[0];
+    if (task === undefined) {
+      this.finishTurn();
+      return true;
+    }
+    if (task.t === Task.forge) {
+      return utils.getCurrent().usedDwarves![0] === 0;
+    }
+    return true;
   }
 }
 

@@ -1,4 +1,5 @@
-import { PlayerType, ResourcesType } from "./NewGame";
+import { PlayerType, ResourcesType, Task } from "./NewGame";
+import utils from "./utils";
 
 export enum ExpeditionAction {
   strength,
@@ -35,7 +36,9 @@ const ExpeditionActions: {
 } = {
   [ExpeditionAction.strength]: {
     level: 1,
-    // TODO
+    action: (p: PlayerType) => {
+      p.usedDwarves = p.usedDwarves!.map((d) => (d <= 0 ? d : d + 1));
+    },
   },
   [ExpeditionAction.wood]: { level: 1, reward: { wood: 1 } },
   [ExpeditionAction.dog]: { level: 1, reward: { dogs: 1 } },
@@ -49,32 +52,45 @@ const ExpeditionActions: {
   [ExpeditionAction.gold_2]: { level: 6, reward: { gold: 2 } },
   [ExpeditionAction.furnish]: {
     level: 7,
-    // TODO
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish_cavern }]),
   },
   [ExpeditionAction.stable]: {
     level: 8,
-    // TODO
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.stable }]),
   },
   [ExpeditionAction.tunnel]: {
     level: 9,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Task.tunnel] } },
+      ]),
   },
   [ExpeditionAction.fence_1]: {
     level: 9,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 1, buildableOptions: [Task.fence] } },
+      ]),
   },
   [ExpeditionAction.cow]: { level: 10, reward: { cows: 1 } },
   [ExpeditionAction.fence_2]: {
     level: 10,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 2, buildableOptions: [Task.double_fence] } },
+      ]),
   },
   [ExpeditionAction.pasture]: {
     level: 11,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 1, buildableOptions: [Task.pasture] } },
+      ]),
   },
   [ExpeditionAction.dwelling_2_2]: {
     level: 11,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([{ t: Task.furnish_dwelling_for_2_2 }]),
   },
   [ExpeditionAction.field]: {
     level: 12,

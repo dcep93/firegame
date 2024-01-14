@@ -78,25 +78,25 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.blacksmithing]: {
     availability: [-1, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = (
-        p.usedDwarves![0] > 0 ? [] : [{ t: Task.forge } as { t: Task; d?: any }]
-      ).concat([{ t: Task.expedition, d: { num: 3 } }])),
+      utils.queueTasks([
+        { t: Task.forge },
+        { t: Task.expedition, d: { num: 3 } },
+      ]),
   },
   [Action.ore_mine_construction]: {
     availability: [-1, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
-        { t: Task.ore_mine_construction } as { t: Task; d?: any },
-      ].concat(
-        p.usedDwarves![0] > 0 ? [{ t: Task.expedition, d: { num: 2 } }] : []
-      )),
+      utils.queueTasks([
+        { t: Task.ore_mine_construction },
+        { t: Task.expedition, d: { num: 2 } },
+      ]),
   },
   [Action.sheep_farming]: {
     availability: [-1, 0],
     enrichment: [{ sheep: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
-        { t: Task.single_fence },
+      utils.queueTasks([
+        { t: Task.fence },
         { t: Task.double_fence },
         { t: Task.stable },
       ]),
@@ -104,19 +104,19 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.wish_for_children]: {
     availability: [-1.5, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [{ t: Task.wish_for_children }]),
+      utils.queueTasks([{ t: Task.wish_for_children }]),
   },
   [Action.ruby_mine_construction]: {
     availability: [-2, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [{ t: Task.ruby_mine_construction }]),
+      utils.queueTasks([{ t: Task.ruby_mine_construction }]),
   },
   [Action.donkey_farming]: {
     availability: [-2, 0],
     enrichment: [{ donkeys: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
-        { t: Task.single_fence },
+      utils.queueTasks([
+        { t: Task.fence },
         { t: Task.double_fence },
         { t: Task.stable },
       ]),
@@ -124,12 +124,12 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.exploration]: {
     availability: [-3, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [{ t: Task.expedition, d: { num: 4 } }]),
+      utils.queueTasks([{ t: Task.expedition, d: { num: 4 } }]),
   },
   [Action.family_life]: {
     availability: [-3, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [{ t: Task.sow }, { t: Task.have_baby }]),
+      utils.queueTasks([{ t: Task.sow }, { t: Task.have_baby }]),
   },
   [Action.ore_delivery]: {
     availability: [-3, 0],
@@ -146,7 +146,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.ore_trading]: {
     availability: [-4, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [{ t: Task.ore_trading, d: { num: 3 } }]),
+      utils.queueTasks([{ t: Task.ore_trading, d: { num: 3 } }]),
   },
   [Action.ruby_delivery]: {
     availability: [-4, 0],
@@ -164,12 +164,11 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.adventure]: {
     availability: [-4, 0],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = (
-        p.usedDwarves![0] > 0 ? [] : [{ t: Task.forge } as { t: Task; d?: any }]
-      ).concat([
+      utils.queueTasks([
+        { t: Task.forge },
         { t: Task.expedition, d: { num: 1 } },
         { t: Task.expedition, d: { num: 1 } },
-      ])),
+      ]),
   },
   [Action.ruby_mining]: {
     availability: [1, 7],
@@ -187,15 +186,13 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.housework]: {
     availability: [1, 7],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
-        { t: Task.furnish_cavern, d: { housework: true } },
-      ]),
+      utils.queueTasks([{ t: Task.furnish_cavern, d: { housework: true } }]),
   },
   [Action.slash_and_burn]: {
     availability: [1, 7],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
-        { t: Task.build, d: { buildableOptions: [Task.farmTile] } },
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Task.farm_tle] } },
         { t: Task.sow },
       ]),
   },
@@ -203,18 +200,18 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
-        { t: Task.build, d: { buildableOptions: [Task.cavernTunnel] } },
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Task.cavern_tunnel] } },
       ]),
   },
   [Action.excavation_1_3]: {
     availability: [1, 3],
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.cavernTunnel, Task.doubleCavern] },
+          d: { buildableOptions: [Task.cavern_tunnel, Task.double_cavern] },
         },
       ]),
   },
@@ -230,7 +227,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ wood: 3 }, { wood: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.expedition,
           d: { num: 1 },
@@ -267,10 +264,10 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.farmTile] },
+          d: { buildableOptions: [Task.farm_tle] },
         },
       ]),
   },
@@ -278,10 +275,10 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.farmTile] },
+          d: { buildableOptions: [Task.farm_tle] },
         },
       ]),
   },
@@ -301,10 +298,10 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     enrichment: [{ stone: 2 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.cavernTunnel] },
+          d: { buildableOptions: [Task.cavern_tunnel] },
         },
       ]),
   },
@@ -312,10 +309,10 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     enrichment: [{ stone: 2 }, { stone: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.cavernTunnel, Task.doubleCavern] },
+          d: { buildableOptions: [Task.cavern_tunnel, Task.double_cavern] },
         },
       ]),
   },
@@ -328,7 +325,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     foodCost: 2,
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.imitate,
         },
@@ -338,8 +335,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     enrichment: [{ wood: 3 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks =
-        p.usedDwarves![0] > 0 ? [] : [{ t: Task.expedition, d: { num: 2 } }]),
+      utils.queueTasks([{ t: Task.expedition, d: { num: 2 } }]),
   },
   [Action.forest_exploration_4_7]: {
     availability: [4, 7],
@@ -349,29 +345,19 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.growth]: {
     availability: [4, 7],
     action: (p: PlayerType) => {
-      if (utils.canHaveChild(p)) {
-        store.gameW.game.tasks = [
-          {
-            t: Task.growth,
-          },
-        ];
-      } else {
-        utils.addResourcesToPlayer(p, {
-          wood: 1,
-          stone: 1,
-          ore: 1,
-          food: 1,
-          gold: 2,
-        });
-      }
+      utils.queueTasks([
+        {
+          t: Task.growth,
+        },
+      ]);
     },
   },
   [Action.clearing_4_7]: {
     availability: [4, 7],
     enrichment: [{ wood: 2 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
-        { t: Task.build, d: { buildableOptions: [Task.farmTile] } },
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Task.farm_tle] } },
       ]),
   },
   [Action.ore_mining_4_7]: {
@@ -389,10 +375,10 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     enrichment: [{ grain: 1 }, { vegetables: 1 }],
     action: (p: PlayerType) =>
-      (store.gameW.game.tasks = [
+      utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.farmTile] },
+          d: { buildableOptions: [Task.farm_tle] },
         },
       ]),
   },

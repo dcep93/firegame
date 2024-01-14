@@ -14,7 +14,7 @@ export enum Task {
   expedition,
   forge,
   ore_mine_construction,
-  single_fence,
+  fence,
   double_fence,
   stable,
   wish_for_children,
@@ -22,27 +22,32 @@ export enum Task {
   sow,
   have_baby,
   ore_trading,
-  farmTile,
+  farm_tle,
   build,
-  cavernTunnel,
-  doubleCavern,
+  cavern_tunnel,
+  double_cavern,
   growth,
+  tunnel,
+  pasture,
+  furnish_dwelling_for_2_2,
 }
+
+export type TaskType = {
+  t: Task;
+  d?: {
+    num?: number;
+    expeditionsTaken?: { [e in ExpeditionAction]: boolean };
+    housework?: boolean;
+    buildableOptions?: Task[];
+  };
+};
 
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
 
-  tasks: {
-    t: Task;
-    d?: {
-      num?: number;
-      expeditionsTaken?: { [e in ExpeditionAction]: boolean };
-      housework?: boolean;
-      buildableOptions?: Task[];
-    };
-  }[];
+  tasks: TaskType[];
 
   startingPlayer: number;
   remainingHarvests?: boolean[];
