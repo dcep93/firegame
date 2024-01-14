@@ -3,7 +3,7 @@ import { Tile } from "../utils/Tiles";
 import utils from "../utils/utils";
 
 export default function StoreBoard(props: {
-  selected: [number, number] | undefined;
+  selected: [number, number, number] | undefined;
 }) {
   const me = utils.getMe();
   return (

@@ -2,7 +2,11 @@ import styles from "../../../../shared/styles.module.css";
 import { PlayerType, ResourcesType, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
-export default function Player(props: { p: PlayerType }) {
+export default function Player(props: {
+  p: PlayerType;
+  selected: [number, number, number] | undefined;
+  updateSelected: (s: [number, number, number]) => void;
+}) {
   const scoreDict = utils.getScoreDict(props.p);
   return (
     <div>
@@ -90,6 +94,12 @@ export default function Player(props: { p: PlayerType }) {
                 {i}.{j}
               </div>
             )}
+            selected={
+              (props.selected || [])[2] !== 0 ? undefined : props.selected
+            }
+            updateSelected={(i: number, j: number) =>
+              props.updateSelected([i, j, 0])
+            }
           />
           <Grid
             p={props.p}
@@ -99,6 +109,12 @@ export default function Player(props: { p: PlayerType }) {
                 {i}.{j}
               </div>
             )}
+            selected={
+              (props.selected || [])[2] !== 1 ? undefined : props.selected
+            }
+            updateSelected={(i: number, j: number) =>
+              props.updateSelected([i, j, 1])
+            }
           />
         </div>
       </div>
@@ -110,6 +126,8 @@ function Grid(props: {
   p: PlayerType;
   title: string;
   f: (i: number, j: number) => JSX.Element;
+  selected: [number, number, number] | undefined;
+  updateSelected: (i: number, j: number) => void;
 }) {
   return (
     <div className={styles.bubble}>
@@ -119,7 +137,18 @@ function Grid(props: {
           {utils.count(3).map((j) => (
             <div
               key={`${i}.${j}`}
-              style={{ border: "2px solid black", width: "8em", height: "4em" }}
+              style={{
+                border: "2px solid black",
+                width: "8em",
+                height: "4em",
+                backgroundColor:
+                  props.selected === undefined ||
+                  props.selected[0] !== i ||
+                  props.selected[1] !== j
+                    ? undefined
+                    : "grey",
+              }}
+              onClick={() => props.updateSelected(i, j)}
             >
               {props.f(i, j)}
             </div>

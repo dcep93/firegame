@@ -92,7 +92,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .sum() +
         Object.values(p.cave || {})
           .flatMap((r) => Object.values(r))
-          .map((t) => (t.isMine ? 3 : t.isRubyMine ? 4 : 0))
+          .map((t) => (t.isRubyMine ? 4 : t.isMine ? 3 : 0))
           .sum(),
       parlorsStoragesChambers: Object.keys(p.boughtTiles || {})
         .map((t) => parseInt(t) as Tile)
@@ -222,8 +222,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.update(`action: ${Action[a]}`);
   }
 
-  canFurnish(t: Tile, p: PlayerType, selected: [number, number]): boolean {
+  canFurnish(
+    t: Tile,
+    p: PlayerType,
+    selected: [number, number, number]
+  ): boolean {
     if (!utils.isMyTurn()) return false;
+    if (selected[2] !== 1) return false;
     if (p.cave[selected[0]] === undefined) p.cave[selected[0]] = [];
     const caveTile = p.cave[selected[0]][selected[1]];
     if (caveTile !== undefined) {
@@ -244,7 +249,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return task === Task.furnish_cavern;
   }
 
-  furnish(t: Tile, p: PlayerType, selected: [number, number]) {
+  furnish(t: Tile, p: PlayerType, selected: [number, number, number]) {
     this.addResourcesToPlayer(p, Tiles[t].cost);
     p.boughtTiles[t] = true;
     p.cave[selected[0]]![selected[1]] = { tile: t };
