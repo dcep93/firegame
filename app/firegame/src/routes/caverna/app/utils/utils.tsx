@@ -92,7 +92,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .sum() +
         Object.values(p.cave || {})
           .flatMap((r) => Object.values(r))
-          .map((t) => (t.isOreMine ? 3 : t.isRubyMine ? 4 : 0))
+          .map((t) => (t.isMine ? 3 : t.isRubyMine ? 4 : 0))
           .sum(),
       parlorsStoragesChambers: Object.keys(p.boughtTiles || {})
         .map((t) => parseInt(t) as Tile)
@@ -205,6 +205,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   action(a: Action, p: PlayerType) {
+    store.gameW.game.tasks.shift();
     p.usedDwarves = p
       .availableDwarves!.splice(0, 1)
       .concat(p.usedDwarves || []);
@@ -221,8 +222,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.update(`action: ${Action[a]}`);
   }
 
-  canBuy(t: Tile, p: PlayerType): boolean {
+  canFurnish(t: Tile, p: PlayerType, selected: [number, number]): boolean {
     if (!utils.isMyTurn()) return false;
+    if (p.cave[selected[0]] === undefined) p.cave[selected[0]] = [];
+    const caveTile = p.cave[selected[0]][selected[1]];
+    if (caveTile !== undefined) {
+      if (
+        caveTile.tile !== undefined ||
+        p.cave[selected[0]][selected[1]].isMine ||
+        p.boughtTiles[Tile.work_room] === undefined
+      ) {
+        return false;
+      }
+    }
     if (this.addResources(p.resources || {}, Tiles[t].cost) === undefined)
       return false;
     const task = store.gameW.game.tasks[0].t;
@@ -230,6 +242,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return Tiles[t].category === TileCategory.dwelling;
     }
     return task === Task.furnish_cavern;
+  }
+
+  furnish(t: Tile, p: PlayerType, selected: [number, number]) {
+    this.addResourcesToPlayer(p, Tiles[t].cost);
+    p.boughtTiles[t] = true;
+    p.cave[selected[0]]![selected[1]] = { tile: t };
+    this.completeTask();
   }
 
   canRubyTrade(a: RubyAction, p: PlayerType): boolean {
@@ -333,7 +352,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.addResourcesToPlayer(p, { food: -numToFeed });
     utils.incrementPlayerTurn();
     if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
-      store.gameW.game.tasks = [{ t: Task.check_breed }];
+      store.gameW.game.tasks = [{ t: Task.breed }];
     }
     store.update(`fed ${numToFeed}`);
   }
@@ -363,10 +382,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.prepareNextTask();
   }
 
+  completeTask() {
+    store.gameW.game.tasks.shift();
+  }
+
   prepareNextTask() {
     while (true) {
       if (this.canUpcomingTask()) return;
-      store.gameW.game.tasks.shift();
+      this.completeTask();
     }
   }
 

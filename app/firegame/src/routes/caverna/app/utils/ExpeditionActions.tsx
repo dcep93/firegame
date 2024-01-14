@@ -95,8 +95,7 @@ const ExpeditionActions: {
   },
   [ExpeditionAction.dwelling_2_2]: {
     level: 11,
-    action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.furnish_dwelling_for_2_2 }]),
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish_dwelling }]),
   },
   [ExpeditionAction.field]: {
     level: 12,

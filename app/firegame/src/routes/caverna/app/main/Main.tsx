@@ -10,15 +10,22 @@ import StoreBoard from "./StoreBoard";
 class Main extends React.Component {
   render() {
     return (
-      <div style={{ width: "100%" }}>
+      <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
         <div>
           <div className={styles.bubble}>
-            {utils.getCurrent().userName}:{" "}
-            {store.gameW.game.tasks.map((t) => Task[t.t]).join(",")}
+            <div>current: {utils.getCurrent().userName}</div>
+            <div>
+              {store.gameW.game.tasks.map((t, i) => (
+                <div key={i}>
+                  <div>{Task[t.t]}</div>
+                  {t.d === undefined ? null : JSON.stringify(t.d)}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <ActionsBoard />
-        <div>
+        <div style={{ alignSelf: "flex-end" }}>
           {store.gameW.game.players
             .map(
               (_, i) =>
@@ -32,7 +39,7 @@ class Main extends React.Component {
             ))}
         </div>
         <CardActions />
-        <StoreBoard />
+        <StoreBoard selected={undefined} />
       </div>
     );
   }

@@ -87,7 +87,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [-1, 0],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.ore_mine_construction },
+        { t: Task.build, d: { buildableOptions: [Buildable.ruby_mine] } },
         { t: Task.expedition, d: { num: 2 } },
       ]),
   },
@@ -112,7 +112,9 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.ruby_mine_construction]: {
     availability: [-2, 0],
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.ruby_mine_construction }]),
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Buildable.ruby_mine] } },
+      ]),
   },
   [Action.donkey_farming]: {
     availability: [-2, 0],
@@ -146,7 +148,7 @@ const Actions: { [a in Action]: ActionType } = {
           2 *
           Object.values(p.cave || {})
             .flatMap((r) => Object.values(r))
-            .filter((t) => t.isOreMine).length,
+            .filter((t) => t.isMine).length,
       }),
   },
   [Action.ore_trading]: {
@@ -191,8 +193,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.housework]: {
     availability: [1, 7],
-    action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.furnish_cavern, d: { housework: true } }]),
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish_cavern }]),
   },
   [Action.slash_and_burn]: {
     availability: [1, 7],
@@ -264,7 +265,7 @@ const Actions: { [a in Action]: ActionType } = {
         ore:
           Object.values(p.cave || {})
             .flatMap((r) => Object.values(r))
-            .filter((t) => t.isOreMine).length * 2,
+            .filter((t) => t.isMine).length * 2,
       }),
   },
   [Action.wood_gathering]: {
@@ -384,7 +385,7 @@ const Actions: { [a in Action]: ActionType } = {
         ore:
           Object.values(p.cave || {})
             .flatMap((r) => Object.values(r))
-            .filter((t) => t.isOreMine).length * 2,
+            .filter((t) => t.isMine).length * 2,
       }),
   },
   [Action.sustenance_4_7]: {

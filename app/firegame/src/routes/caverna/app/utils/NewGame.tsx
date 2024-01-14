@@ -6,22 +6,19 @@ import utils, { store } from "./utils";
 
 export enum Task {
   action,
-  feed,
-  check_breed,
   imitate,
+  feed,
+  finish_year,
   furnish_dwelling,
   furnish_cavern,
   expedition,
   forge,
-  ore_mine_construction,
   wish_for_children,
-  ruby_mine_construction,
   sow,
   have_baby,
   ore_trading,
   build,
   growth,
-  furnish_dwelling_for_2_2,
   breed,
 }
 
@@ -36,6 +33,8 @@ export enum Buildable {
   pasture,
   field,
   cavern,
+  ore_mine,
+  ruby_mine,
 }
 
 export type TaskType = {
@@ -43,7 +42,6 @@ export type TaskType = {
   d?: {
     num?: number;
     expeditionsTaken?: { [e in ExpeditionAction]: boolean };
-    housework?: boolean;
     buildableOptions?: Buildable[];
   };
 };
@@ -75,9 +73,10 @@ export type Params = {
 
 export type CaveTileType = {
   resources?: ResourcesType;
-  isTunnel?: boolean;
+  tile?: Tile;
+  isCavern?: boolean;
   isOreTunnel?: boolean;
-  isOreMine?: boolean;
+  isMine?: boolean;
   isRubyMine?: boolean;
 };
 
@@ -103,7 +102,7 @@ export type PlayerType = {
 
   boughtTiles: { [t in Tile]?: boolean };
 
-  cave?: {
+  cave: {
     [row: number]: {
       [column: number]: CaveTileType;
     };
@@ -177,8 +176,8 @@ function setPlayers(game: GameType): GameType {
       boughtTiles: { [Tile.starting_dwelling]: true },
 
       cave: {
-        2: { 0: { isTunnel: false } },
-        3: { 0: { tile: Tile.starting_dwelling, isTunnel: false } },
+        2: { 0: { isCavern: true } },
+        3: { 0: { tile: Tile.starting_dwelling } },
       },
     }));
 

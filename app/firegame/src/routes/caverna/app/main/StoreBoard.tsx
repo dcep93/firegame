@@ -2,7 +2,9 @@ import styles from "../../../../shared/styles.module.css";
 import { Tile } from "../utils/Tiles";
 import utils from "../utils/utils";
 
-export default function StoreBoard() {
+export default function StoreBoard(props: {
+  selected: [number, number] | undefined;
+}) {
   const me = utils.getMe();
   return (
     <div>
@@ -34,10 +36,15 @@ export default function StoreBoard() {
                             style={{
                               display: "inline-block",
                               width: "8em",
-                              cursor: utils.canBuy(t, me)
-                                ? "pointer"
-                                : undefined,
+                              cursor:
+                                props.selected === undefined ||
+                                !utils.canFurnish(t, me, props.selected!)
+                                  ? undefined
+                                  : "pointer",
                             }}
+                            onClick={() =>
+                              utils.furnish(t, me, props.selected!)
+                            }
                           >
                             {Tile[t].replaceAll("_", "\n")}
                           </pre>
