@@ -342,6 +342,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const numDwarves = (p.availableDwarves || []).concat(
       p.usedDwarves || []
     ).length;
+    if (numDwarves > 5) {
+      return false;
+    }
+    if (numDwarves === 5) {
+      if (p.boughtTiles[Tile.additional_dwelling] === undefined) return false;
+    }
     const numDwellingSpaces = Object.keys(p.boughtTiles)
       .map((t) => parseInt(t) as Tile)
       .filter((t) => Tiles[t].category === TileCategory.dwelling)

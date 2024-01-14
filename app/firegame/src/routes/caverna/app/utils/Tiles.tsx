@@ -107,7 +107,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 4, stone: 3 },
     category: TileCategory.dwelling,
     points: 5,
-    // TODO
   },
   [Tile.cuddle_room]: {
     cost: { wood: 1 },

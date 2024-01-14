@@ -1,4 +1,5 @@
-import { PlayerType, ResourcesType } from "./NewGame";
+import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
+import utils from "./utils";
 
 export enum RubyAction {
   dog,
@@ -34,18 +35,30 @@ const RubyActions: {
   [RubyAction.boar]: { reward: { boars: 1 } },
   [RubyAction.ore]: { reward: { ore: 1 } },
   [RubyAction.pasture]: {
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.pasture] } },
+      ]),
   },
   [RubyAction.field]: {
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.field] } },
+      ]),
   },
   [RubyAction.tunnel]: {
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.tunnel] } },
+      ]),
   },
   [RubyAction.cow]: { reward: { cows: 1 }, cost: { rubies: -1, food: -1 } },
   [RubyAction.cavern]: {
     cost: { rubies: -2 },
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.cavern] } },
+      ]),
   },
 };
 
