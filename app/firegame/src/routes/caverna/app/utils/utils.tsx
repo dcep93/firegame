@@ -435,8 +435,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   completeTask() {
-    const completedTask = store.gameW.game.tasks.shift();
+    const tasks = store.gameW.game.tasks;
+    const completedTask = tasks.shift()!;
     this.prepareNextTask();
+    if (tasks.length > 0) return;
+    alert(`finished ${completedTask}`);
   }
 
   prepareNextTask() {
@@ -449,7 +452,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   canUpcomingTask(): boolean {
     const task = store.gameW.game.tasks[0];
     if (task === undefined) {
-      this.finishTurn();
       return true;
     }
     if (task.t === Task.forge) {
