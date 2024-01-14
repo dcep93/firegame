@@ -9,6 +9,7 @@ class Main extends React.Component {
   render() {
     return (
       <div style={{ width: "100%" }}>
+        <ActionsBoard />
         <div>
           {store.gameW.game.players
             .map(
@@ -24,7 +25,6 @@ class Main extends React.Component {
         </div>
         <CardActions />
         <StoreBoard />
-        <ActionsBoard />
       </div>
     );
   }
