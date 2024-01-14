@@ -14,7 +14,7 @@ class Main extends React.Component {
         <div>
           <div className={styles.bubble}>
             {utils.getCurrent().userName}:{" "}
-            {store.gameW.game.tasks.map((t) => Task[t.t])}
+            {store.gameW.game.tasks.map((t) => Task[t.t]).join(",")}
           </div>
         </div>
         <ActionsBoard />

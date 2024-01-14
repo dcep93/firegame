@@ -1,5 +1,5 @@
-import { ResourcesType } from "./NewGame";
-import { store } from "./utils";
+import { PlayerType, ResourcesType, Task } from "./NewGame";
+import utils, { store } from "./utils";
 
 export enum Action {
   // 0-1
@@ -69,106 +69,221 @@ export enum Action {
 
 export type ActionType = {
   availability: [number, number];
+  foodCost?: number;
   enrichment?: ResourcesType[];
-  action?: () => void;
+  action?: (p: PlayerType) => void;
 };
 
 const Actions: { [a in Action]: ActionType } = {
   [Action.blacksmithing]: {
     availability: [-1, 0],
-    action: () => store.gameW.game.tasks,
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = (
+        p.usedDwarves![0] > 0 ? [] : [{ t: Task.forge } as { t: Task; d?: any }]
+      ).concat([{ t: Task.expedition, d: { num: 3 } }])),
   },
   [Action.ore_mine_construction]: {
     availability: [-1, 0],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        { t: Task.ore_mine_construction } as { t: Task; d?: any },
+      ].concat(
+        p.usedDwarves![0] > 0 ? [{ t: Task.expedition, d: { num: 2 } }] : []
+      )),
   },
   [Action.sheep_farming]: {
     availability: [-1, 0],
-    // TODO
+    enrichment: [{ sheep: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        { t: Task.single_fence },
+        { t: Task.double_fence },
+        { t: Task.stable },
+      ]),
   },
   [Action.wish_for_children]: {
     availability: [-1.5, 0],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [{ t: Task.wish_for_children }]),
   },
   [Action.ruby_mine_construction]: {
     availability: [-2, 0],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [{ t: Task.ruby_mine_construction }]),
   },
   [Action.donkey_farming]: {
     availability: [-2, 0],
-    // TODO
+    enrichment: [{ donkeys: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        { t: Task.single_fence },
+        { t: Task.double_fence },
+        { t: Task.stable },
+      ]),
   },
   [Action.exploration]: {
     availability: [-3, 0],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [{ t: Task.expedition, d: { num: 4 } }]),
   },
   [Action.family_life]: {
     availability: [-3, 0],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [{ t: Task.sow }, { t: Task.have_baby }]),
   },
   [Action.ore_delivery]: {
     availability: [-3, 0],
-    // TODO
+    enrichment: [{ stone: 1, ore: 1 }],
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        ore:
+          2 *
+          Object.values(p.cave || {})
+            .flatMap((r) => Object.values(r))
+            .filter((t) => t.isOreMine).length,
+      }),
   },
   [Action.ore_trading]: {
     availability: [-4, 0],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [{ t: Task.ore_trading, d: { num: 3 } }]),
   },
   [Action.ruby_delivery]: {
     availability: [-4, 0],
-    // TODO
+    enrichment: [{ rubies: 2 }, { rubies: 1 }],
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        rubies:
+          Object.values(p.cave || {})
+            .flatMap((r) => Object.values(r))
+            .filter((t) => t.isRubyMine).length >= 2
+            ? 1
+            : 0,
+      }),
   },
   [Action.adventure]: {
     availability: [-4, 0],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = (
+        p.usedDwarves![0] > 0 ? [] : [{ t: Task.forge } as { t: Task; d?: any }]
+      ).concat([
+        { t: Task.expedition, d: { num: 1 } },
+        { t: Task.expedition, d: { num: 1 } },
+      ])),
   },
   [Action.ruby_mining]: {
     availability: [1, 7],
-    // TODO
+    enrichment: [{ rubies: 1 }],
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        rubies:
+          Object.values(p.cave || {})
+            .flatMap((r) => Object.values(r))
+            .filter((t) => t.isRubyMine).length >= 1
+            ? 1
+            : 0,
+      }),
   },
   [Action.housework]: {
     availability: [1, 7],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        { t: Task.furnish_cavern, d: { housework: true } },
+      ]),
   },
   [Action.slash_and_burn]: {
     availability: [1, 7],
-    // TODO
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        { t: Task.build, d: { buildableOptions: [Task.farmTile] } },
+        { t: Task.sow },
+      ]),
   },
   [Action.drift_mining_1_3]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ stone: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        { t: Task.build, d: { buildableOptions: [Task.cavernTunnel] } },
+      ]),
   },
   [Action.excavation_1_3]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ stone: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.build,
+          d: { buildableOptions: [Task.cavernTunnel, Task.doubleCavern] },
+        },
+      ]),
   },
   [Action.starting_player_1_3]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ food: 1 }],
+    action: (p: PlayerType) => {
+      utils.addResourcesToPlayer(p, { ore: 2 });
+      store.gameW.game.currentPlayer = utils.myIndex();
+    },
   },
   [Action.logging_1_3]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ wood: 3 }, { wood: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.expedition,
+          d: { num: 1 },
+        },
+      ]),
   },
   [Action.supplies]: {
     availability: [1, 3],
-    // TODO
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        wood: 1,
+        stone: 1,
+        ore: 1,
+        food: 1,
+        gold: 2,
+      }),
   },
   [Action.ore_mining_1_3]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ ore: 2 }, { ore: 1 }],
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        ore:
+          Object.values(p.cave || {})
+            .flatMap((r) => Object.values(r))
+            .filter((t) => t.isOreMine).length * 2,
+      }),
   },
   [Action.wood_gathering]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ wood: 1 }],
   },
   [Action.clearing_1_3]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ wood: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.build,
+          d: { buildableOptions: [Task.farmTile] },
+        },
+      ]),
   },
   [Action.sustenance_1_3]: {
     availability: [1, 3],
-    // TODO
+    enrichment: [{ food: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.build,
+          d: { buildableOptions: [Task.farmTile] },
+        },
+      ]),
   },
   [Action.strip_mining]: {
     availability: [3, 3],
@@ -184,43 +299,102 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.drift_mining_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ stone: 2 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.build,
+          d: { buildableOptions: [Task.cavernTunnel] },
+        },
+      ]),
   },
   [Action.excavation_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ stone: 2 }, { stone: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.build,
+          d: { buildableOptions: [Task.cavernTunnel, Task.doubleCavern] },
+        },
+      ]),
   },
   [Action.starting_player_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ food: 1 }],
+    action: (p: PlayerType) => utils.addResourcesToPlayer(p, { rubies: 1 }),
   },
   [Action.imitation_4_7]: {
     availability: [4, 7],
-    // TODO
+    foodCost: 2,
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.imitate,
+        },
+      ]),
   },
   [Action.logging_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ wood: 3 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks =
+        p.usedDwarves![0] > 0 ? [] : [{ t: Task.expedition, d: { num: 2 } }]),
   },
   [Action.forest_exploration_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ wood: 2 }, { wood: 1 }],
+    action: (p: PlayerType) => utils.addResourcesToPlayer(p, { food: 2 }),
   },
   [Action.growth]: {
     availability: [4, 7],
-    // TODO
+    action: (p: PlayerType) => {
+      if (utils.canHaveChild(p)) {
+        store.gameW.game.tasks = [
+          {
+            t: Task.growth,
+          },
+        ];
+      } else {
+        utils.addResourcesToPlayer(p, {
+          wood: 1,
+          stone: 1,
+          ore: 1,
+          food: 1,
+          gold: 2,
+        });
+      }
+    },
   },
   [Action.clearing_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ wood: 2 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        { t: Task.build, d: { buildableOptions: [Task.farmTile] } },
+      ]),
   },
   [Action.ore_mining_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ ore: 3 }, { ore: 2 }],
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        ore:
+          Object.values(p.cave || {})
+            .flatMap((r) => Object.values(r))
+            .filter((t) => t.isOreMine).length * 2,
+      }),
   },
   [Action.sustenance_4_7]: {
     availability: [4, 7],
-    // TODO
+    enrichment: [{ grain: 1 }, { vegetables: 1 }],
+    action: (p: PlayerType) =>
+      (store.gameW.game.tasks = [
+        {
+          t: Task.build,
+          d: { buildableOptions: [Task.farmTile] },
+        },
+      ]),
   },
   [Action.depot_5]: {
     availability: [5, 5],

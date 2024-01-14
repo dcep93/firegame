@@ -136,7 +136,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   enrichAndReveal(g: GameType): GameType {
-    store.gameW.game.tasks = [{ t: Task.action }];
+    g.tasks = [{ t: Task.action }];
     g.actions.push(
       utils
         .shuffle(g.upcomingActions!)
@@ -184,6 +184,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   canAction(a: Action): boolean {
     if (!utils.isMyTurn()) return false;
+    const foodCost = Actions[a].foodCost;
+    if (
+      foodCost !== undefined &&
+      utils.addResources(utils.getCurrent().resources || {}, {
+        food: foodCost,
+      }) === undefined
+    )
+      return false;
     const task = store.gameW.game.tasks[0].t;
     const playerIndex = (store.gameW.game.takenActions || {})[a]?.playerIndex;
     if (task === Task.action) {
@@ -196,7 +204,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   action(a: Action, p: PlayerType) {
-    p.usedDwarves = (p.usedDwarves || []).concat(p.availableDwarves!.shift()!);
+    p.usedDwarves = p
+      .availableDwarves!.splice(0, 1)
+      .concat(p.usedDwarves || []);
     const bonus = (store.gameW.game.actionBonuses || {})[a];
     if (bonus !== undefined) {
       utils.addResourcesToPlayer(p, bonus);
@@ -204,7 +214,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     const at = Actions[a];
     if (at.action !== undefined) {
-      at.action();
+      at.action(p);
     }
     if (store.gameW.game.tasks.length === 0) {
       utils.finishTurn();
@@ -217,10 +227,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (this.addResources(p.resources || {}, Tiles[t].cost) === undefined)
       return false;
     const task = store.gameW.game.tasks[0].t;
-    if (task === Task.furnishDwelling) {
+    if (task === Task.furnish_dwelling) {
       return Tiles[t].category === TileCategory.dwelling;
     }
-    return task === Task.furnishCavern;
+    return task === Task.furnish_cavern;
   }
 
   canRubyTrade(a: RubyAction, p: PlayerType): boolean {
@@ -299,6 +309,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     while (true) {
       utils.incrementPlayerTurn();
       if ((utils.getCurrent().availableDwarves || []).length > 0) {
+        store.gameW.game.tasks = [{ t: Task.action }];
         return;
       }
       if (utils.isMyTurn()) {
@@ -325,6 +336,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       store.gameW.game.tasks = [{ t: Task.check_breed }];
     }
     store.update(`fed ${numToFeed}`);
+  }
+
+  canHaveChild(p: PlayerType): boolean {
+    const numDwarves = (p.availableDwarves || []).concat(
+      p.usedDwarves || []
+    ).length;
+    const numDwellingSpaces = Object.keys(p.boughtTiles)
+      .map((t) => parseInt(t) as Tile)
+      .filter((t) => Tiles[t].category === TileCategory.dwelling)
+      .map((t) =>
+        [Tile.couple_dwelling, Tile.starting_dwelling].includes(t) ? 2 : 1
+      )
+      .sum();
+    return numDwellingSpaces > numDwarves;
   }
 }
 

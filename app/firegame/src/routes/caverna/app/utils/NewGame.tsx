@@ -9,9 +9,24 @@ export enum Task {
   feed,
   check_breed,
   imitate,
-  furnishDwelling,
-  furnishCavern,
+  furnish_dwelling,
+  furnish_cavern,
   expedition,
+  forge,
+  ore_mine_construction,
+  single_fence,
+  double_fence,
+  stable,
+  wish_for_children,
+  ruby_mine_construction,
+  sow,
+  have_baby,
+  ore_trading,
+  farmTile,
+  build,
+  cavernTunnel,
+  doubleCavern,
+  growth,
 }
 
 export type GameType = {
@@ -21,7 +36,12 @@ export type GameType = {
 
   tasks: {
     t: Task;
-    d?: { expeditionsTaken?: { [e in ExpeditionAction]: boolean } };
+    d?: {
+      num?: number;
+      expeditionsTaken?: { [e in ExpeditionAction]: boolean };
+      housework?: boolean;
+      buildableOptions?: Task[];
+    };
   }[];
 
   startingPlayer: number;
@@ -70,7 +90,7 @@ export type PlayerType = {
 
   begging?: number;
 
-  boughtTiles?: { [t in Tile]?: boolean };
+  boughtTiles: { [t in Tile]?: boolean };
 
   cave?: {
     [row: number]: {
@@ -142,6 +162,8 @@ function setPlayers(game: GameType): GameType {
       usedDwarves: [0, 0],
 
       resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
+
+      boughtTiles: { [Tile.starting_dwelling]: true },
 
       cave: {
         2: { 0: { isTunnel: false } },
