@@ -23,6 +23,9 @@ export default function ActionsBoard() {
                       height: "4em",
                       cursor: utils.canAction(a) ? "pointer" : undefined,
                     }}
+                    onClick={() =>
+                      utils.canAction(a) && utils.action(a, utils.getMe())
+                    }
                   >
                     <pre style={{ width: 0, fontSize: "small" }}>
                       {Action[a].replaceAll("_", "\n")}

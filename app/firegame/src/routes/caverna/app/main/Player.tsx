@@ -1,6 +1,6 @@
 import styles from "../../../../shared/styles.module.css";
-import { PlayerType, ResourcesType } from "../utils/NewGame";
-import utils from "../utils/utils";
+import { PlayerType, ResourcesType, Task } from "../utils/NewGame";
+import utils, { store } from "../utils/utils";
 
 export default function Player(props: { p: PlayerType }) {
   const scoreDict = utils.getScoreDict(props.p);
@@ -70,6 +70,16 @@ export default function Player(props: { p: PlayerType }) {
           >
             slaughter
           </button>
+          {store.gameW.game.tasks[0].t === Task.feed &&
+            props.p.userId === utils.getMe().userId &&
+            utils.isMyTurn() && (
+              <button
+                disabled={utils.canFeed(props.p)}
+                onClick={() => utils.feed(props.p)}
+              >
+                feed
+              </button>
+            )}
         </div>
         <div style={{ display: "flex" }}>
           <Grid

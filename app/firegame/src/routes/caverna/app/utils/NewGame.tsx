@@ -1,10 +1,13 @@
 import { LobbyType } from "../../../../shared/store";
 import Actions, { Action } from "./Actions";
+import { ExpeditionAction } from "./ExpeditionActions";
 import { Tile } from "./Tiles";
 import utils, { store } from "./utils";
 
 export enum Task {
   action,
+  feed,
+  check_breed,
   imitate,
   furnishDwelling,
   furnishCavern,
@@ -16,7 +19,10 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
-  tasks: { t: Task; d?: any }[];
+  tasks: {
+    t: Task;
+    d?: { expeditionsTaken?: { [e in ExpeditionAction]: boolean } };
+  }[];
 
   startingPlayer: number;
   remainingHarvests?: boolean[];
@@ -104,7 +110,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     currentPlayer: 0,
     players: [],
 
-    tasks: [{ t: Task.action }],
+    tasks: [],
 
     startingPlayer: 0,
     remainingHarvests: [true, true, true, true, false, false, false],

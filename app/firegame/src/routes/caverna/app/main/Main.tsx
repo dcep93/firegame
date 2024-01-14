@@ -1,4 +1,6 @@
 import React from "react";
+import styles from "../../../../shared/styles.module.css";
+import { Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import ActionsBoard from "./ActionsBoard";
 import CardActions from "./CardActions";
@@ -9,6 +11,12 @@ class Main extends React.Component {
   render() {
     return (
       <div style={{ width: "100%" }}>
+        <div>
+          <div className={styles.bubble}>
+            {utils.getCurrent().userName}:{" "}
+            {store.gameW.game.tasks.map((t) => Task[t.t])}
+          </div>
+        </div>
         <ActionsBoard />
         <div>
           {store.gameW.game.players

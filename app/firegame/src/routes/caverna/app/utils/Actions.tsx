@@ -1,4 +1,5 @@
 import { ResourcesType } from "./NewGame";
+import { store } from "./utils";
 
 export enum Action {
   // 0-1
@@ -69,12 +70,13 @@ export enum Action {
 export type ActionType = {
   availability: [number, number];
   enrichment?: ResourcesType[];
+  action?: () => void;
 };
 
 const Actions: { [a in Action]: ActionType } = {
   [Action.blacksmithing]: {
     availability: [-1, 0],
-    // TODO
+    action: () => store.gameW.game.tasks,
   },
   [Action.ore_mine_construction]: {
     availability: [-1, 0],

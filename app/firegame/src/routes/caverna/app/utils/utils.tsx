@@ -136,6 +136,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   enrichAndReveal(g: GameType): GameType {
+    store.gameW.game.tasks = [{ t: Task.action }];
     g.actions.push(
       utils
         .shuffle(g.upcomingActions!)
@@ -162,6 +163,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ? Object.assign({}, e![0])
               : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
       );
+    g.currentPlayer = g.startingPlayer;
     return g;
   }
 
@@ -193,6 +195,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
+  action(a: Action, p: PlayerType) {
+    p.usedDwarves = (p.usedDwarves || []).concat(p.availableDwarves!.shift()!);
+    const bonus = (store.gameW.game.actionBonuses || {})[a];
+    if (bonus !== undefined) {
+      utils.addResourcesToPlayer(p, bonus);
+      delete store.gameW.game.actionBonuses![a];
+    }
+    const at = Actions[a];
+    if (at.action !== undefined) {
+      at.action();
+    }
+    if (store.gameW.game.tasks.length === 0) {
+      utils.finishTurn();
+    }
+    store.update(`action: ${Action[a]}`);
+  }
+
   canBuy(t: Tile, p: PlayerType): boolean {
     if (!utils.isMyTurn()) return false;
     if (this.addResources(p.resources || {}, Tiles[t].cost) === undefined)
@@ -218,8 +237,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const taskObj = store.gameW.game.tasks[0];
     if (taskObj.t !== Task.expedition) return false;
     const e = ExpeditionActions[a];
-    if ((taskObj.d!.taken || {}).includes(a)) return false;
-    return taskObj.d!.dwarf >= e.level;
+    if ((taskObj.d!.expeditionsTaken || {})[a] !== undefined) return false;
+    return p.usedDwarves![p.usedDwarves!.length - 1] >= e.level;
   }
 
   canPayRubyOutOfOrder(p: PlayerType, index: number): boolean {
@@ -274,6 +293,38 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         .sum(),
     });
     this.addResourcesToPlayer(p, toSlaughter);
+  }
+
+  finishTurn() {
+    while (true) {
+      utils.incrementPlayerTurn();
+      if ((utils.getCurrent().availableDwarves || []).length > 0) {
+        return;
+      }
+      if (utils.isMyTurn()) {
+        store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
+        store.gameW.game.tasks = [{ t: Task.feed }];
+        return;
+      }
+    }
+  }
+
+  _numToFeed(p: PlayerType): number {
+    return p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum();
+  }
+
+  canFeed(p: PlayerType): boolean {
+    return ((p.resources || {}).food || 0) >= this._numToFeed(p);
+  }
+
+  feed(p: PlayerType) {
+    const numToFeed = this._numToFeed(p);
+    this.addResourcesToPlayer(p, { food: -numToFeed });
+    utils.incrementPlayerTurn();
+    if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
+      store.gameW.game.tasks = [{ t: Task.check_breed }];
+    }
+    store.update(`fed ${numToFeed}`);
   }
 }
 
