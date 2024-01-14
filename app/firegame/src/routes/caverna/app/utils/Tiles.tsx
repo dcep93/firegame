@@ -2,6 +2,7 @@ import { AnimalResourcesType, PlayerType, ResourcesType } from "./NewGame";
 import utils from "./utils";
 
 export enum Tile {
+  starting_dwelling,
   dwelling,
   simple_dwelling_4_2,
   simple_dwelling_3_3,
@@ -70,6 +71,11 @@ export type TileType = {
 };
 
 const Tiles: { [t in Tile]: TileType } = {
+  [Tile.starting_dwelling]: {
+    cost: {},
+    category: TileCategory.dwelling,
+    points: 0,
+  },
   [Tile.dwelling]: {
     cost: { wood: 4, stone: 3 },
     category: TileCategory.dwelling,

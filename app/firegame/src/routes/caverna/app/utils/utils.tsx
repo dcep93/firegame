@@ -208,7 +208,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return (
       this.addResources(
         p.resources || {},
-        RubyActions[a].cost || { rubies: 1 }
+        RubyActions[a].cost || { rubies: -1 }
       ) !== undefined
     );
   }

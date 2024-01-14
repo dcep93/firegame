@@ -38,17 +38,17 @@ export type Params = {
 
 export type CaveTileType = {
   resources?: ResourcesType;
-  isTunnel: boolean;
-  isOreTunnel: boolean;
-  isOreMine: boolean;
-  isRubyMine: boolean;
+  isTunnel?: boolean;
+  isOreTunnel?: boolean;
+  isOreMine?: boolean;
+  isRubyMine?: boolean;
 };
 
 export type FarmTileType = {
   resources?: ResourcesType;
-  isStable: boolean;
-  isPasture: boolean;
-  isFence: boolean;
+  isStable?: boolean;
+  isPasture?: boolean;
+  isFence?: boolean;
   doubleFenceAngleDeg?: number;
 };
 
@@ -64,7 +64,7 @@ export type PlayerType = {
 
   begging?: number;
 
-  boughtTiles?: { [t in Tile]?: {} };
+  boughtTiles?: { [t in Tile]?: boolean };
 
   cave?: {
     [row: number]: {
@@ -133,15 +133,14 @@ function setPlayers(game: GameType): GameType {
       userId,
       userName,
 
-      availableDwarves: [],
       usedDwarves: [0, 0],
 
       resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
 
-      boughtTiles: {},
-
-      farm: {},
-      cave: {},
+      cave: {
+        2: { 0: { isTunnel: false } },
+        3: { 0: { tile: Tile.starting_dwelling, isTunnel: false } },
+      },
     }));
 
   return game;
