@@ -108,6 +108,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   addResourcesToPlayer(p: PlayerType, r: ResourcesType): PlayerType {
     p.resources = this.addResources(p.resources || {}, r);
+    if ((r.dogs || 0) > 0 && p.boughtTiles[Tile.dog_school])
+      this.addResourcesToPlayer(p, { wood: r.dogs! });
+    if (
+      (r.stone || 0) > 0 &&
+      p.boughtTiles[Tile.seam] &&
+      Object.values(r).filter((v) => v < 0).length === 0
+    )
+      this.addResourcesToPlayer(p, { ore: r.stone! });
     return p;
   }
 
@@ -165,6 +173,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
       );
     g.currentPlayer = g.startingPlayer;
+
+    g.players
+      .filter((p) => p.boughtTiles[Tile.miner])
+      .map((p) => ({
+        p,
+        num: Object.values(p.cave || {})
+          .flatMap((r) => Object.values(r))
+          .filter(
+            (t) =>
+              t.resources?.donkeys !== undefined && t.isMine && !t.isRubyMine
+          ).length,
+      }));
     return g;
   }
 
@@ -318,27 +338,31 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   slaughter(p: PlayerType) {
     const toSlaughter = this._toSlaughter(p);
     this.addResourcesToPlayer(p, {
-      food: Object.entries(toSlaughter)
-        .map(([r, c]) => ({
-          c: -c,
-          r: r as keyof AnimalResourcesType,
-        }))
-        .map(({ r, c }) => {
-          if (r === "sheep") {
-            return c;
-          }
-          if (r === "donkeys") {
-            return Math.floor(c * 1.5);
-          }
-          if (r === "boars") {
-            return c * 2;
-          }
-          if (r === "cows") {
-            return c * 3;
-          }
-          return 0;
-        })
-        .sum(),
+      food:
+        Object.entries(toSlaughter)
+          .map(([r, c]) => ({
+            c: -c,
+            r: r as keyof AnimalResourcesType,
+          }))
+          .map(({ r, c }) => {
+            if (r === "sheep") {
+              return c;
+            }
+            if (r === "donkeys") {
+              return Math.floor(c * 1.5);
+            }
+            if (r === "boars") {
+              return c * 2;
+            }
+            if (r === "cows") {
+              return c * 3;
+            }
+            return 0;
+          })
+          .sum() +
+        (!p.boughtTiles[Tile.slaughtering_cave]
+          ? 0
+          : -Object.values(toSlaughter).sum()),
     });
     this.addResourcesToPlayer(p, toSlaughter);
   }
@@ -359,7 +383,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   _numToFeed(p: PlayerType): number {
-    return p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum();
+    return Math.max(
+      0,
+      p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
+        (!p.boughtTiles[Tile.mining_cave]
+          ? 0
+          : Object.values(p.cave || {})
+              .flatMap((r) => Object.values(r))
+              .filter((t) => t.resources?.donkeys !== undefined && t.isMine)
+              .length)
+    );
   }
 
   canFeed(p: PlayerType): boolean {
@@ -435,6 +468,28 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       "lightcoral",
       "lightsalmon",
     ][index];
+  }
+
+  numAdjacentToStateParlor(p: PlayerType): number {
+    const coords = Object.entries(p.cave)
+      .flatMap(([i, r]) =>
+        Object.entries(r).flatMap(([j, t]) => ({
+          t,
+          i: parseInt(i),
+          j: parseInt(j),
+        }))
+      )
+      .find(({ t }) => t.tile === Tile.state_parlor)!;
+    return [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ]
+      .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.tile)
+      .filter(
+        (t) => t !== undefined && Tiles[t]?.category === TileCategory.dwelling
+      ).length;
   }
 }
 

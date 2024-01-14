@@ -134,7 +134,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { stone: 1 },
     category: TileCategory.green,
     points: 2,
-    // TODO
   },
   [Tile.guest_room]: {
     cost: { wood: 1, stone: 1 },
@@ -172,7 +171,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 1, stone: 1 },
     category: TileCategory.green,
     points: 3,
-    // TODO
   },
   [Tile.builder]: {
     cost: { stone: 1 },
@@ -209,7 +207,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: {},
     category: TileCategory.green,
     points: 0,
-    // TODO
   },
   [Tile.quarry]: {
     cost: { wood: 1 },
@@ -221,13 +218,11 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 2 },
     category: TileCategory.green,
     points: 1,
-    // TODO
   },
   [Tile.slaughtering_cave]: {
     cost: { wood: 2, stone: 2 },
     category: TileCategory.green,
     points: 2,
-    // TODO
   },
   [Tile.cooking_cave]: {
     cost: { stone: 2 },
@@ -246,7 +241,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 3, stone: 2 },
     category: TileCategory.green,
     points: 2,
-    // TODO
   },
   [Tile.breeding_cave]: {
     cost: { grain: 1, stone: 1 },
@@ -277,7 +271,11 @@ const Tiles: { [t in Tile]: TileType } = {
   [Tile.state_parlor]: {
     cost: { gold: 5, stone: 3 },
     category: TileCategory.yellow,
-    // TODO
+    pointsF: (p: PlayerType) => 4 * utils.numAdjacentToStateParlor(p),
+    onPurchase: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        food: 2 * utils.numAdjacentToStateParlor(p),
+      }),
   },
   [Tile.hunting_parlor]: {
     cost: { wood: 2 },
@@ -319,8 +317,11 @@ const Tiles: { [t in Tile]: TileType } = {
   [Tile.main_storage]: {
     cost: { wood: 2, stone: 1 },
     category: TileCategory.yellow,
-    points: 3,
-    // TODO
+    pointsF: (p: PlayerType) =>
+      2 *
+      Object.keys(p.boughtTiles)
+        .map((t) => Tiles[parseInt(t) as Tile])
+        .filter((t) => t.category === TileCategory.yellow).length,
   },
   [Tile.weapon_storage]: {
     cost: { wood: 3, stone: 2 },

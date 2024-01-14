@@ -2,15 +2,15 @@
 import { initializeApp } from "firebase/app";
 import {
   Database,
+  push as f_push,
+  set as f_set,
   getDatabase,
   limitToLast,
   onValue,
-  push as f_push,
   query,
   ref,
-  set as f_set,
 } from "firebase/database";
-import { gamePath, namespace } from "./writer/utils";
+import { namespace } from "./writer/utils";
 
 const config = {
   databaseURL: "https://firebase-320421-default-rtdb.firebaseio.com/",
@@ -20,8 +20,6 @@ var database: Database;
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
 
-var latest: string;
-
 var offset: number = 0;
 var initialized = false;
 function init(): void {
@@ -30,11 +28,8 @@ function init(): void {
   var app = initializeApp(config);
   database = getDatabase(app);
   const clearF = () => f_set(ref(database, namespace()), {});
-  const undoF = () => f_set(ref(database, `${gamePath()}/${latest}`), {});
   // @ts-ignore
   window.clear = clearF;
-  // @ts-ignore
-  window.undo = undoF;
   onValue(ref(database, ".info/serverTimeOffset"), (snap: ResultType) => {
     offset = snap.val();
   });
