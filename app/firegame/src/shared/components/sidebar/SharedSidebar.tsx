@@ -1,16 +1,16 @@
 import React from "react";
 import { recorded_sha } from "../../../recorded_sha";
 import styles from "../../../shared/styles.module.css";
-import Shared from "../../shared";
+import SharedUtils from "../../shared";
 import store from "../../store";
 import Player from "./Player";
 import SharedLog from "./SharedLog";
 
 abstract class SharedSidebar<T> extends React.Component {
   abstract name: string;
+  abstract utils: SharedUtils<any, any>;
   abstract NewGame: (params: T) => any;
   abstract getParams(): T;
-  abstract isMyTurn: () => boolean;
 
   rules: string | null = null;
 
@@ -67,6 +67,11 @@ abstract class SharedSidebar<T> extends React.Component {
   }
 
   componentDidMount() {
+    // @ts-ignore
+    window.store = store;
+    // @ts-ignore
+    window.utils = this.utils;
+
     this.maybeSyncParams();
   }
 
@@ -75,7 +80,7 @@ abstract class SharedSidebar<T> extends React.Component {
   }
 
   maybeSyncParams(): void {
-    document.title = (this.isMyTurn() ? "(!) " : "") + this.name;
+    document.title = (this.utils.isMyTurn() ? "(!) " : "") + this.name;
   }
 
   renderInfo(): JSX.Element | null {
@@ -89,7 +94,7 @@ function become(userId: string) {
   for (let index = 0; index < p.length; index++) {
     const uId = p[index].userId;
     if (uId === userId) {
-      Shared.M(index);
+      SharedUtils.M(index);
       return;
     }
   }

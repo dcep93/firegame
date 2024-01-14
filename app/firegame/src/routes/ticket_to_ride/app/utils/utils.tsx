@@ -1,14 +1,13 @@
-import React from "react";
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { Cities, City, Color, Routes, TicketType } from "./bank";
 import { GameType, PlayerType } from "./NewGame";
+import { Cities, City, Color, Routes, TicketType } from "./bank";
 
 const store: StoreType<GameType> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   NUM_TRAINS = 45;
   CARDS_IN_BANK = 5;
 

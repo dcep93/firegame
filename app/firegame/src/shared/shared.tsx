@@ -25,14 +25,7 @@ Array.prototype.sum = function (this: number[]): number {
   return this.reduce((a, b) => a + b, 0);
 };
 
-class Shared<T extends TurnGame<U>, U extends PlayerType> {
-  constructor() {
-    // @ts-ignore
-    window.store = store;
-    // @ts-ignore
-    window.utils = this;
-  }
-
+class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
   isMyTurn(game_: T | undefined = undefined): boolean {
     const game: T = game_ || store.gameW.game!;
     if (!game) return false;
@@ -112,7 +105,7 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   }
 
   m(index: number) {
-    Shared.M(index);
+    SharedUtils.M(index);
   }
 
   repeat<X>(value: X, count: number): X[] {
@@ -210,4 +203,4 @@ class Shared<T extends TurnGame<U>, U extends PlayerType> {
   }
 }
 
-export default Shared;
+export default SharedUtils;

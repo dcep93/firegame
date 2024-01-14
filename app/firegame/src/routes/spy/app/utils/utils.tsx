@@ -1,10 +1,10 @@
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import { GameType, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   setWords(game: GameType): GameType {
     game.bank = this.shuffle(wordList.slice()).slice(0, game.params.numWords);
     this.shuffle(this.count(game.players.length)).forEach(

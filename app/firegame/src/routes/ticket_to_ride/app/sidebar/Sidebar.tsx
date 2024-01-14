@@ -7,7 +7,7 @@ class Sidebar extends SharedSidebar<Params> {
   rules =
     "https://ncdn0.daysofwonder.com/tickettoride/de/img/tt_rules_2015_en.pdf";
   NewGame = NewGame;
-  isMyTurn = utils.isMyTurn.bind(utils);
+  utils = utils;
 
   getParams(): Params {
     return { lobby: store.lobby };

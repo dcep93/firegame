@@ -1,4 +1,4 @@
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import { SelectedEnum } from "../main/Main";
 import { NUM_SCIENCES } from "../main/Science";
@@ -24,7 +24,7 @@ const NUM_PURPLES = 3;
 const SCIENCE_TO_WIN = 6;
 const BASE_TRASH = 2;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   tokenToPoints: {
     [token in ScienceToken]?: (player: PlayerType) => number;
   } = {

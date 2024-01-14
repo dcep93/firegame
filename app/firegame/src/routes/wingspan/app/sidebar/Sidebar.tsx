@@ -8,7 +8,7 @@ class Sidebar extends SharedSidebar<Params> {
   expansionRef: RefObject<HTMLInputElement> = React.createRef();
   name = "Wingspan";
   NewGame = NewGame;
-  isMyTurn = utils.isMyTurn.bind(utils);
+  utils = utils;
 
   renderStartNewGame() {
     return (

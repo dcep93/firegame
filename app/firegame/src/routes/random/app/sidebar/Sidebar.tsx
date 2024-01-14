@@ -5,7 +5,7 @@ import utils, { store } from "../utils/utils";
 class Sidebar extends SharedSidebar<Params> {
   name = "Random";
   NewGame = NewGame;
-  isMyTurn = utils.isMyTurn.bind(utils);
+  utils = utils;
 
   getParams(): Params {
     return { lobby: store.lobby };

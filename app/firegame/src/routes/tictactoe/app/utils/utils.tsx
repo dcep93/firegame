@@ -1,10 +1,10 @@
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import { GameType, PlayerType, Tile } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   incrementPlayerTurn() {
     store.gameW.game.isPlacingNeutralAtEndOfTurn = false;
     if (this.checkIfFourOrLessEmpty()) {

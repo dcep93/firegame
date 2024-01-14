@@ -7,7 +7,7 @@ import utils, { store } from "../utils/utils";
 class Sidebar extends SharedSidebar<Params> {
   name = "Spy";
   NewGame = NewGame;
-  isMyTurn = utils.isMyTurn.bind(utils);
+  utils = utils;
   numTeamsRef: RefObject<HTMLInputElement> = React.createRef();
   numWordsRef: RefObject<HTMLInputElement> = React.createRef();
 

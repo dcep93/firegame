@@ -1,4 +1,4 @@
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import Actions, { Action } from "./Actions";
 import ExpeditionActions, { ExpeditionAction } from "./ExpeditionActions";
@@ -17,7 +17,7 @@ import Tiles, { Tile, TileCategory } from "./Tiles";
 
 const store: StoreType<GameType> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   getScoreDict(p: PlayerType): { [k: string]: number } {
     const allResources = [p.cave, p.farm]
       .flatMap((grid) =>

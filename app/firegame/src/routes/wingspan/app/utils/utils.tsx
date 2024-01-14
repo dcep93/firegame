@@ -1,4 +1,4 @@
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import wStyles from "../index.module.css";
 import Preview from "../sidebar/Preview";
@@ -16,7 +16,7 @@ import {
 
 const store: StoreType<GameType> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   goalScoring = [
     [4, 1, 0, 0],
     [5, 2, 1, 0],

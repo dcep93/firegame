@@ -1,4 +1,4 @@
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import "./ai";
 import { Card, Token, TokenToEmoji } from "./bank";
@@ -8,7 +8,7 @@ const store: StoreType<GameType> = store_;
 
 export const MAX_HAND_TOKENS = 10;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   finishTurn(message: string) {
     if (!store.gameW.game.tooManyTokens) utils.incrementPlayerTurn();
     if (store.gameW.game.over && store.gameW.game.currentPlayer === 0)

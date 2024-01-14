@@ -1,10 +1,10 @@
-import Shared from "../../../../shared/shared";
+import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import { Art, Artist, AType, GameType, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
-class Utils extends Shared<GameType, PlayerType> {
+class Utils extends SharedUtils<GameType, PlayerType> {
   allDraw(game: GameType): GameType {
     const num = this.getNumToDraw(game);
     game.players.forEach((p) => {

@@ -6,7 +6,7 @@ class Sidebar extends SharedSidebar<Params> {
   name = "Modern Art";
   rules = "https://www.acdd.com/media/files/CMNMDA001_Rules.pdf";
   NewGame = NewGame;
-  isMyTurn = utils.isMyTurn.bind(utils);
+  utils = utils;
 
   getParams(): Params {
     return { lobby: store.lobby };

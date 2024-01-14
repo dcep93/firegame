@@ -6,7 +6,7 @@ class Sidebar extends SharedSidebar<Params> {
   name = "Bohnanza";
   rules = "https://www.fgbradleys.com/rules/rules2/Bohnanza-rules.pdf";
   NewGame = NewGame;
-  isMyTurn = utils.isMyTurn.bind(utils);
+  utils = utils;
 
   getParams(): Params {
     return { lobby: store.lobby };
