@@ -3,25 +3,32 @@ import Actions, { Action } from "./Actions";
 import { Tile } from "./Tiles";
 import utils, { store } from "./utils";
 
+export enum Task {
+  action,
+  imitate,
+  furnishDwelling,
+  furnishCavern,
+}
+
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
 
-  startingPlayer: number;
-  year: number;
-  remainingHarvests: boolean[] | undefined;
+  tasks: { t: Task; d?: any }[];
 
-  purchasedTiles: { [t in Tile]?: boolean } | undefined;
+  startingPlayer: number;
+  remainingHarvests?: boolean[];
+
+  purchasedTiles?: { [t in Tile]?: boolean };
 
   actions: Action[];
-  upcomingActions: Action[] | undefined;
-  actionBonuses: { [a in Action]?: ResourcesType } | undefined;
-  takenActions:
+  upcomingActions?: Action[];
+  actionBonuses?: { [a in Action]?: ResourcesType };
+  takenActions?:
     | {
         [a in Action]?: { playerIndex: number; weaponLevel: number };
-      }
-    | undefined;
+      };
 };
 
 export type Params = {
@@ -29,7 +36,7 @@ export type Params = {
 };
 
 export type CaveTileType = {
-  resources: ResourcesType | undefined;
+  resources?: ResourcesType;
   isTunnel: boolean;
   isOreTunnel: boolean;
   isOreMine: boolean;
@@ -37,9 +44,7 @@ export type CaveTileType = {
 };
 
 export type FarmTileType = {
-  resources: ResourcesType | undefined;
-  // if stable and not pasture,
-  // must be stable in forest
+  resources?: ResourcesType;
   isStable: boolean;
   isPasture: boolean;
   isFence: boolean;
@@ -51,30 +56,26 @@ export type PlayerType = {
   userName: string;
 
   // -1: baby, 0: no weapon, 1+: weapon level
-  usedDwarves: number[] | undefined;
-  availableDwarves: number[] | undefined;
+  usedDwarves?: number[];
+  availableDwarves?: number[];
 
-  resources: ResourcesType | undefined;
+  resources?: ResourcesType;
 
   begging?: number;
 
-  boughtTiles: { [t in Tile]?: {} } | undefined;
+  boughtTiles?: { [t in Tile]?: {} };
 
-  cave:
-    | {
-        [row: number]: {
-          [column: number]: CaveTileType;
-        };
-      }
-    | undefined;
+  cave?: {
+    [row: number]: {
+      [column: number]: CaveTileType;
+    };
+  };
 
-  farm:
-    | {
-        [row: number]: {
-          [column: number]: FarmTileType;
-        };
-      }
-    | undefined;
+  farm?: {
+    [row: number]: {
+      [column: number]: FarmTileType;
+    };
+  };
 };
 
 export type AnimalResourcesType = {
@@ -102,10 +103,10 @@ function NewGame(params: Params): PromiseLike<GameType> {
     currentPlayer: 0,
     players: [],
 
+    tasks: [{ t: Task.action }],
+
     startingPlayer: 0,
-    year: 0,
     remainingHarvests: [true, true, true, true, false, false, false],
-    purchasedTiles: {},
     actions: utils
       .enumArray(Action)
       .map((a) => ({ a, o: Actions[a] }))
@@ -118,8 +119,6 @@ function NewGame(params: Params): PromiseLike<GameType> {
     upcomingActions: utils
       .enumArray(Action)
       .filter((a) => Actions[a].availability[0] < 0),
-    actionBonuses: {},
-    takenActions: {},
   };
   return Promise.resolve(game).then(setPlayers).then(utils.enrichAndReveal);
 }

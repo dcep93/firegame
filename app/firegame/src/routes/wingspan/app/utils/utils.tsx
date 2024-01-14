@@ -1,10 +1,9 @@
-import React from "react";
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import wStyles from "../index.module.css";
 import Preview from "../sidebar/Preview";
-import bank from "./bank";
 import { BirdType, GameType, PlayerType } from "./NewGame";
+import bank from "./bank";
 import {
   BonusType,
   CardType,

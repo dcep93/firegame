@@ -9,6 +9,7 @@ import {
   GameType,
   PlayerType,
   ResourcesType,
+  Task,
 } from "./NewGame";
 import { RubyAction } from "./RubyActions";
 import Tiles, { Tile, TileCategory } from "./Tiles";
@@ -27,7 +28,7 @@ class Utils extends Shared<GameType, PlayerType> {
       )
       .concat(p.resources || {})
       .reduce(
-        (prev, curr) => utils.addResources(prev, curr),
+        (prev, curr) => utils.addResources(prev, curr)!,
         {} as ResourcesType
       );
     return {
@@ -108,7 +109,11 @@ class Utils extends Shared<GameType, PlayerType> {
     return p;
   }
 
-  addResources(addTo: ResourcesType, addFrom: ResourcesType): ResourcesType {
+  addResources(
+    _addTo: ResourcesType,
+    addFrom: ResourcesType
+  ): ResourcesType | undefined {
+    const addTo = Object.assign({}, _addTo);
     Object.entries(addFrom)
       .map(([k, v]) => ({ k, v } as { k: keyof ResourcesType; v: number }))
       .forEach(({ k, v }) => {
@@ -117,35 +122,35 @@ class Utils extends Shared<GameType, PlayerType> {
           delete addTo[k];
         }
       });
+    if (Object.values(addTo).filter((c) => c < 0).length > 0) {
+      return undefined;
+    }
     return addTo;
   }
 
   convert(p: PlayerType, conversion: ResourcesType) {
     const newResources = this.addResources(conversion, p.resources || {});
-    if (Object.values(newResources).filter((c) => c < 0).length > 0) {
-      return;
-    }
+    if (newResources === undefined) return;
     p.resources = newResources;
   }
 
   enrichAndReveal(g: GameType): GameType {
-    g.year++;
     g.actions.push(
       utils
         .shuffle(g.upcomingActions!)
         .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
         .pop()!
     );
-    if (g.actionBonuses === undefined) {
-      g.actionBonuses = {};
-    }
     g.players.forEach(
       (p) =>
         (p.availableDwarves = p
           .usedDwarves!.splice(0)
           .map((d) => Math.max(d, 0))
-          .sort())
+          .sort((a, b) => a - b))
     );
+    if (g.actionBonuses === undefined) {
+      g.actionBonuses = {};
+    }
     g.actions
       .map((a) => ({ a, e: Actions[a].enrichment }))
       .filter(({ e }) => e)
@@ -175,19 +180,38 @@ class Utils extends Shared<GameType, PlayerType> {
   }
 
   canAction(a: Action): boolean {
-    return true;
+    if (!utils.isMyTurn()) return false;
+    const task = store.gameW.game.tasks[0].t;
+    const playerIndex = (store.gameW.game.takenActions || {})[a]?.playerIndex;
+    if (task === Task.action) {
+      return playerIndex === undefined;
+    }
+    if (task === Task.imitate) {
+      return playerIndex !== undefined && playerIndex !== utils.myIndex();
+    }
+    return false;
   }
 
   canBuy(t: Tile): boolean {
-    return true;
+    if (!utils.isMyTurn()) return false;
+    if (
+      this.addResources(utils.getMe().resources || {}, Tiles[t].cost) ===
+      undefined
+    )
+      return false;
+    const task = store.gameW.game.tasks[0].t;
+    if (task === Task.furnishDwelling) {
+      return Tiles[t].category === TileCategory.dwelling;
+    }
+    return task === Task.furnishCavern;
   }
 
   canRubyTrade(a: RubyAction): boolean {
-    return true;
+    return false;
   }
 
   canExpedition(a: ExpeditionAction): boolean {
-    return true;
+    return false;
   }
 
   payRubyOutOfOrder(p: PlayerType, index: number) {}
