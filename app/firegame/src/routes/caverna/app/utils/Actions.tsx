@@ -1,4 +1,4 @@
-import { PlayerType, ResourcesType, Task } from "./NewGame";
+import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
 import utils, { store } from "./utils";
 
 export enum Action {
@@ -96,9 +96,12 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ sheep: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.fence },
-        { t: Task.double_fence },
-        { t: Task.stable },
+        { t: Task.build, d: { num: 2, buildableOptions: [Buildable.fence] } },
+        {
+          t: Task.build,
+          d: { num: 4, buildableOptions: [Buildable.double_fence] },
+        },
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.stable] } },
       ]),
   },
   [Action.wish_for_children]: {
@@ -116,9 +119,12 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ donkeys: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.fence },
-        { t: Task.double_fence },
-        { t: Task.stable },
+        { t: Task.build, d: { num: 2, buildableOptions: [Buildable.fence] } },
+        {
+          t: Task.build,
+          d: { num: 4, buildableOptions: [Buildable.double_fence] },
+        },
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.stable] } },
       ]),
   },
   [Action.exploration]: {
@@ -192,7 +198,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 7],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Task.farm_tle] } },
+        { t: Task.build, d: { buildableOptions: [Buildable.farm_tle] } },
         { t: Task.sow },
       ]),
   },
@@ -201,7 +207,7 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Task.cavern_tunnel] } },
+        { t: Task.build, d: { buildableOptions: [Buildable.cavern_tunnel] } },
       ]),
   },
   [Action.excavation_1_3]: {
@@ -211,7 +217,12 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.cavern_tunnel, Task.double_cavern] },
+          d: {
+            buildableOptions: [
+              Buildable.cavern_tunnel,
+              Buildable.double_cavern,
+            ],
+          },
         },
       ]),
   },
@@ -267,7 +278,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.farm_tle] },
+          d: { buildableOptions: [Buildable.farm_tle] },
         },
       ]),
   },
@@ -278,7 +289,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.farm_tle] },
+          d: { buildableOptions: [Buildable.farm_tle] },
         },
       ]),
   },
@@ -301,7 +312,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.cavern_tunnel] },
+          d: { buildableOptions: [Buildable.cavern_tunnel] },
         },
       ]),
   },
@@ -312,7 +323,12 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.cavern_tunnel, Task.double_cavern] },
+          d: {
+            buildableOptions: [
+              Buildable.cavern_tunnel,
+              Buildable.double_cavern,
+            ],
+          },
         },
       ]),
   },
@@ -357,7 +373,7 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ wood: 2 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Task.farm_tle] } },
+        { t: Task.build, d: { buildableOptions: [Buildable.farm_tle] } },
       ]),
   },
   [Action.ore_mining_4_7]: {
@@ -378,7 +394,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Task.farm_tle] },
+          d: { buildableOptions: [Buildable.farm_tle] },
         },
       ]),
   },

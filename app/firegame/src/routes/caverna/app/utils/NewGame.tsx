@@ -14,22 +14,28 @@ export enum Task {
   expedition,
   forge,
   ore_mine_construction,
-  fence,
-  double_fence,
-  stable,
   wish_for_children,
   ruby_mine_construction,
   sow,
   have_baby,
   ore_trading,
-  farm_tle,
   build,
+  growth,
+  furnish_dwelling_for_2_2,
+  breed,
+}
+
+export enum Buildable {
+  fence,
+  double_fence,
+  stable,
+  farm_tle,
   cavern_tunnel,
   double_cavern,
-  growth,
   tunnel,
   pasture,
-  furnish_dwelling_for_2_2,
+  field,
+  cavern,
 }
 
 export type TaskType = {
@@ -38,7 +44,7 @@ export type TaskType = {
     num?: number;
     expeditionsTaken?: { [e in ExpeditionAction]: boolean };
     housework?: boolean;
-    buildableOptions?: Task[];
+    buildableOptions?: Buildable[];
   };
 };
 

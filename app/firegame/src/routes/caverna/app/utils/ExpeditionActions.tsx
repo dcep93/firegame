@@ -1,4 +1,4 @@
-import { PlayerType, ResourcesType, Task } from "./NewGame";
+import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
 import utils from "./utils";
 
 export enum ExpeditionAction {
@@ -56,20 +56,23 @@ const ExpeditionActions: {
   },
   [ExpeditionAction.stable]: {
     level: 8,
-    action: (p: PlayerType) => utils.queueTasks([{ t: Task.stable }]),
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Buildable.stable] } },
+      ]),
   },
   [ExpeditionAction.tunnel]: {
     level: 9,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Task.tunnel] } },
+        { t: Task.build, d: { buildableOptions: [Buildable.tunnel] } },
       ]),
   },
   [ExpeditionAction.fence_1]: {
     level: 9,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, buildableOptions: [Task.fence] } },
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.fence] } },
       ]),
   },
   [ExpeditionAction.cow]: { level: 10, reward: { cows: 1 } },
@@ -77,14 +80,17 @@ const ExpeditionActions: {
     level: 10,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 2, buildableOptions: [Task.double_fence] } },
+        {
+          t: Task.build,
+          d: { num: 2, buildableOptions: [Buildable.double_fence] },
+        },
       ]),
   },
   [ExpeditionAction.pasture]: {
     level: 11,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, buildableOptions: [Task.pasture] } },
+        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.pasture] } },
       ]),
   },
   [ExpeditionAction.dwelling_2_2]: {
@@ -94,19 +100,26 @@ const ExpeditionActions: {
   },
   [ExpeditionAction.field]: {
     level: 12,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Buildable.field] } },
+      ]),
   },
   [ExpeditionAction.sow]: {
     level: 12,
-    // TODO
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.sow }]),
   },
   [ExpeditionAction.cavern]: {
     level: 14,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { buildableOptions: [Buildable.cavern] } },
+      ]),
   },
   [ExpeditionAction.breed_2]: {
     level: 14,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([{ t: Task.breed, d: { num: 2 } }]),
   },
 };
 
