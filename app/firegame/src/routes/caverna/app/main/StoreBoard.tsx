@@ -3,6 +3,7 @@ import { Tile } from "../utils/Tiles";
 import utils from "../utils/utils";
 
 export default function StoreBoard() {
+  const me = utils.getMe();
   return (
     <div>
       <div className={styles.bubble}>
@@ -28,7 +29,7 @@ export default function StoreBoard() {
                           style={{
                             display: "inline-block",
                             width: "8em",
-                            cursor: utils.canBuy(t) ? "pointer" : undefined,
+                            cursor: utils.canBuy(t, me) ? "pointer" : undefined,
                           }}
                         >
                           {Tile[t].replaceAll("_", "\n")}

@@ -4,6 +4,7 @@ import Actions, { Action } from "./Actions";
 import { ExpeditionAction } from "./ExpeditionActions";
 
 import {
+  AnimalResourcesType,
   CaveTileType,
   FarmTileType,
   GameType,
@@ -192,12 +193,9 @@ class Utils extends Shared<GameType, PlayerType> {
     return false;
   }
 
-  canBuy(t: Tile): boolean {
+  canBuy(t: Tile, p: PlayerType): boolean {
     if (!utils.isMyTurn()) return false;
-    if (
-      this.addResources(utils.getMe().resources || {}, Tiles[t].cost) ===
-      undefined
-    )
+    if (this.addResources(p.resources || {}, Tiles[t].cost) === undefined)
       return false;
     const task = store.gameW.game.tasks[0].t;
     if (task === Task.furnishDwelling) {
@@ -224,11 +222,46 @@ class Utils extends Shared<GameType, PlayerType> {
     );
   }
 
-  canSlaughter(p: PlayerType): boolean {
-    return true;
+  _toSlaughter(p: PlayerType): AnimalResourcesType {
+    return Object.fromEntries(
+      Object.entries(p.resources || {})
+        .map(([r, c]) => ({ c, r: r as keyof ResourcesType }))
+        .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
+        .map(({ r, c }) => [r, -c])
+    );
   }
 
-  slaughter(p: PlayerType) {}
+  canSlaughter(p: PlayerType): boolean {
+    return Object.keys(this._toSlaughter(p)).length > 0;
+  }
+
+  slaughter(p: PlayerType) {
+    const toSlaughter = this._toSlaughter(p);
+    this.addResourcesToPlayer(p, {
+      food: Object.entries(toSlaughter)
+        .map(([r, c]) => ({
+          c: -c,
+          r: r as keyof AnimalResourcesType,
+        }))
+        .map(({ r, c }) => {
+          if (r === "sheep") {
+            return c;
+          }
+          if (r === "donkeys") {
+            return Math.floor(c * 1.5);
+          }
+          if (r === "boars") {
+            return c * 2;
+          }
+          if (r === "cows") {
+            return c * 3;
+          }
+          return 0;
+        })
+        .sum(),
+    });
+    this.addResourcesToPlayer(p, toSlaughter);
+  }
 }
 
 const utils = new Utils();
