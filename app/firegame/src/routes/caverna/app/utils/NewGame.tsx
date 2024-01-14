@@ -8,6 +8,7 @@ export enum Task {
   imitate,
   furnishDwelling,
   furnishCavern,
+  expedition,
 }
 
 export type GameType = {

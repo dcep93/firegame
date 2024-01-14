@@ -1,7 +1,7 @@
 import Shared from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import Actions, { Action } from "./Actions";
-import { ExpeditionAction } from "./ExpeditionActions";
+import ExpeditionActions, { ExpeditionAction } from "./ExpeditionActions";
 
 import {
   AnimalResourcesType,
@@ -12,7 +12,7 @@ import {
   ResourcesType,
   Task,
 } from "./NewGame";
-import { RubyAction } from "./RubyActions";
+import RubyActions, { RubyAction } from "./RubyActions";
 import Tiles, { Tile, TileCategory } from "./Tiles";
 
 const store: StoreType<GameType> = store_;
@@ -204,15 +204,23 @@ class Utils extends Shared<GameType, PlayerType> {
     return task === Task.furnishCavern;
   }
 
-  canRubyTrade(a: RubyAction): boolean {
-    return false;
+  canRubyTrade(a: RubyAction, p: PlayerType): boolean {
+    return (
+      this.addResources(
+        p.resources || {},
+        RubyActions[a].cost || { rubies: 1 }
+      ) !== undefined
+    );
   }
 
-  canExpedition(a: ExpeditionAction): boolean {
-    return false;
+  canExpedition(a: ExpeditionAction, p: PlayerType): boolean {
+    if (!utils.isMyTurn()) return false;
+    const taskObj = store.gameW.game.tasks[0];
+    if (taskObj.t !== Task.expedition) return false;
+    const e = ExpeditionActions[a];
+    if ((taskObj.d!.taken || {}).includes(a)) return false;
+    return taskObj.d!.dwarf >= e.level;
   }
-
-  payRubyOutOfOrder(p: PlayerType, index: number) {}
 
   canPayRubyOutOfOrder(p: PlayerType, index: number): boolean {
     return (
@@ -220,6 +228,11 @@ class Utils extends Shared<GameType, PlayerType> {
       p.availableDwarves![index] > 0 &&
       ((p.resources || {}).rubies || 0) >= 1
     );
+  }
+
+  payRubyOutOfOrder(p: PlayerType, index: number) {
+    p.availableDwarves!.unshift(p.availableDwarves!.splice(index, 1)[0]);
+    store.update("paid a ruby to play out of order");
   }
 
   _toSlaughter(p: PlayerType): AnimalResourcesType {

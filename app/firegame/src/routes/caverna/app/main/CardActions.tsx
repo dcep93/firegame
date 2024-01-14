@@ -6,6 +6,7 @@ import RubyActions, { RubyAction } from "../utils/RubyActions";
 import utils from "../utils/utils";
 
 function ExpeditionsElement() {
+  const me = utils.getMe();
   return (
     <div className={styles.bubble}>
       <h3>expeditions</h3>
@@ -16,7 +17,7 @@ function ExpeditionsElement() {
               className={styles.bubble}
               style={{
                 flexGrow: 1,
-                cursor: utils.canExpedition(a) ? "pointer" : undefined,
+                cursor: utils.canExpedition(a, me) ? "pointer" : undefined,
               }}
             >
               <div>level: {ExpeditionActions[a].level}</div>
@@ -30,6 +31,7 @@ function ExpeditionsElement() {
 }
 
 function RubiesElement() {
+  const me = utils.getMe();
   return (
     <div className={styles.bubble}>
       <h3>ruby trader</h3>
@@ -46,7 +48,7 @@ function RubiesElement() {
               className={styles.bubble}
               style={{
                 flexGrow: 1,
-                cursor: utils.canRubyTrade(a) ? "pointer" : undefined,
+                cursor: utils.canRubyTrade(a, me) ? "pointer" : undefined,
               }}
             >
               <div style={{ width: 0 }}>{RubyAction[a]}</div>
