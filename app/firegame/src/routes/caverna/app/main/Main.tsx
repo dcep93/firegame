@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
-import { Task } from "../utils/NewGame";
+import { Buildable, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import ActionsBoard from "./ActionsBoard";
 import CardActions from "./CardActions";
@@ -20,7 +20,22 @@ export default function Main() {
             {store.gameW.game.tasks.map((t, i) => (
               <div key={i}>
                 <div>{Task[t.t]}</div>
-                {t.d === undefined ? null : JSON.stringify(t.d)}
+                {t.d === undefined
+                  ? null
+                  : JSON.stringify(
+                      Object.assign(
+                        {},
+                        null,
+                        t.d,
+                        t.d.buildableOptions === undefined
+                          ? null
+                          : {
+                              buildableOptions: t.d.buildableOptions.map(
+                                (b) => Buildable[b]
+                              ),
+                            }
+                      )
+                    )}
               </div>
             ))}
           </div>

@@ -16,10 +16,21 @@ export default function Player(props: {
           utils.getCurrent().userId === props.p.userId && styles.blue,
         ].join(" ")}
       >
-        <h2>{props.p.userName}</h2>
-        <h4 title={JSON.stringify(scoreDict, null, 2)}>
-          score: {Object.values(scoreDict).sum()}
-        </h4>
+        <div style={{ position: "relative" }}>
+          <h2>{props.p.userName}</h2>
+          <h4 title={JSON.stringify(scoreDict, null, 2)}>
+            score: {Object.values(scoreDict).sum()}
+          </h4>
+          <div
+            className={styles.bubble}
+            style={{
+              position: "absolute",
+              right: 0,
+              bottom: 0,
+              backgroundColor: props.p.color,
+            }}
+          ></div>
+        </div>
         <div>
           ready dwarves:{" "}
           {(props.p.availableDwarves || []).map((d, i) => (
@@ -146,7 +157,7 @@ function Grid(props: {
                   props.selected[0] !== i ||
                   props.selected[1] !== j
                     ? undefined
-                    : "grey",
+                    : "lightgrey",
               }}
               onClick={() => props.updateSelected(i, j)}
             >

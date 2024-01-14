@@ -209,6 +209,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     p.usedDwarves = p
       .availableDwarves!.splice(0, 1)
       .concat(p.usedDwarves || []);
+    if (store.gameW.game.takenActions === undefined)
+      store.gameW.game.takenActions = {};
+    store.gameW.game.takenActions![a] = {
+      playerIndex: utils.myIndex(),
+      weaponLevel: p.usedDwarves![0],
+    };
     const bonus = (store.gameW.game.actionBonuses || {})[a];
     if (bonus !== undefined) {
       utils.addResourcesToPlayer(p, bonus);
@@ -408,6 +414,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return utils.getCurrent().usedDwarves![0] === 0;
     }
     return true;
+  }
+
+  getColor(index: number): string {
+    return [
+      "pink",
+      "lightblue",
+      "lightgreen",
+      "yellow",
+      "violet",
+      "lightcoral",
+      "lightsalmon",
+    ][index];
   }
 }
 

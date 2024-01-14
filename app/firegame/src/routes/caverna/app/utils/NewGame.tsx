@@ -92,6 +92,8 @@ export type PlayerType = {
   userId: string;
   userName: string;
 
+  color: string;
+
   // -1: baby, 0: no weapon, 1+: weapon level
   usedDwarves?: number[];
   availableDwarves?: number[];
@@ -168,6 +170,8 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName], index) => ({
       userId,
       userName,
+
+      color: utils.getColor(index),
 
       usedDwarves: [0, 0],
 
