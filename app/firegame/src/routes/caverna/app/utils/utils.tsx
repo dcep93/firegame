@@ -241,7 +241,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       if (
         caveTile.tile !== undefined ||
         p.cave[selected[0]][selected[1]].isMine ||
-        p.boughtTiles[Tile.work_room] === undefined
+        (!p.cave[selected[0]][selected[1]].isCavern &&
+          p.boughtTiles[Tile.work_room] === undefined)
       ) {
         return false;
       }
@@ -260,6 +261,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     p.boughtTiles[t] = true;
     p.cave[selected[0]]![selected[1]] = { tile: t };
     this.completeTask();
+    store.update(`furnished ${Tile[t]}`);
   }
 
   canRubyTrade(a: RubyAction, p: PlayerType): boolean {
@@ -394,7 +396,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   completeTask() {
-    store.gameW.game.tasks.shift();
+    const completedTask = store.gameW.game.tasks.shift();
+    this.prepareNextTask();
   }
 
   prepareNextTask() {
