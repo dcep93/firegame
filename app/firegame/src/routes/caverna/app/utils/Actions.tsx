@@ -144,7 +144,10 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.family_life]: {
     availability: [-3, 0],
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.sow }, { t: Task.have_baby }]),
+      utils.queueTasks([
+        { t: Task.sow, d: { canSow: { grain: 2, vegetables: 2 } } },
+        { t: Task.have_baby },
+      ]),
   },
   [Action.ore_delivery]: {
     availability: [-3, 0],
@@ -204,7 +207,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.build, d: { toBuild: Buildable.farm_tile } },
-        { t: Task.sow },
+        { t: Task.sow, d: { canSow: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.drift_mining__1_3]: {
@@ -422,7 +425,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.expedition, d: { num: 2 } },
-        { t: Task.sow },
+        { t: Task.sow, d: { canSow: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.fence_building__5]: {
@@ -467,7 +470,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, { wood: 2 }) &&
       utils.queueTasks([
         { t: Task.expedition, d: { num: 2 } },
-        { t: Task.sow },
+        { t: Task.sow, d: { canSow: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.fence_building__6_7]: {

@@ -51,16 +51,13 @@ function Special() {
   const task = utils.getTask();
   const p = utils.getCurrent()!;
   if (
+    (task.t === Task.furnish_dwelling || task.t === Task.furnish_cavern) &&
     task.d?.num === undefined &&
-    p.boughtTiles[Cavern.builder] &&
-    (task.t === Task.furnish_dwelling || task.t === Task.furnish_cavern)
+    p.boughtTiles[Cavern.builder]
   ) {
     return (
       <div className={styles.bubble}>
-        {[
-          { builderResource: "wood", convert: { wood: 1 } },
-          { builderResource: "stone", convert: { stone: 1 } },
-        ].map(({ builderResource, convert }) => (
+        {["wood", "stone"].map((builderResource) => (
           <button
             key={builderResource}
             disabled={

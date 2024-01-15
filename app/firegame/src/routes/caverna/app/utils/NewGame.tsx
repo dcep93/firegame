@@ -4,26 +4,27 @@ import { Cavern } from "./Caverns";
 import { ExpeditionAction } from "./ExpeditionActions";
 import utils, { store } from "./utils";
 
-// TODO Task
 export enum Task {
   action,
-  feed,
-  finish_year,
   forge,
   expedition,
   imitate,
   furnish_cavern,
   furnish_dwelling,
-  wish_for_children,
+  build,
+  beer_parlor,
+  // TODO Task
   sow,
+
+  feed,
+  finish_year,
+  wish_for_children,
   have_baby,
   ore_trading,
-  build,
   growth,
   breed,
   peaceful_cave,
   choose_excavation,
-  beer_parlor,
   weekly_market,
   extension,
 }
@@ -47,6 +48,7 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
+    canSow?: ResourcesType;
     builderResource?: keyof ResourcesType;
     toBuild?: Buildable;
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };

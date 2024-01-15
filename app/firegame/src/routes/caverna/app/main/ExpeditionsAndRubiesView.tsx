@@ -28,7 +28,9 @@ function ExpeditionsElement() {
                 flexGrow: 1,
                 cursor: utils.canExpedition(a, me) ? "pointer" : undefined,
               }}
-              onClick={() => utils.expedition(a, me)}
+              onClick={() =>
+                utils.canExpedition(a, me) && utils.expedition(a, me)
+              }
             >
               <div>level: {ExpeditionActions[a].level}</div>
               <div style={{ width: 0 }}>{ExpeditionAction[a]}</div>
@@ -60,6 +62,7 @@ function RubiesElement() {
                 flexGrow: 1,
                 cursor: utils.canRubyTrade(a, me) ? "pointer" : undefined,
               }}
+              onClick={() => utils.rubyTrade(a, me)}
             >
               <div style={{ width: 0 }}>{RubyAction[a]}</div>
               {RubyActions[a].cost && (

@@ -68,7 +68,10 @@ function Player(
                   ? "pointer"
                   : undefined,
               }}
-              onClick={() => utils.payRubyOutOfOrder(props.p, i)}
+              onClick={() =>
+                utils.canPayRubyOutOfOrder(props.p, i) &&
+                utils.payRubyOutOfOrder(props.p, i)
+              }
             >
               {d}
             </span>
@@ -99,7 +102,22 @@ function Player(
             }))
             .filter(({ count }) => count > 0)
             .map(({ resourceName, count }, i) => (
-              <div key={i}>
+              <div
+                key={i}
+                style={{
+                  cursor: utils.doResource(
+                    props.p,
+                    props.selected,
+                    resourceName,
+                    false
+                  )
+                    ? "pointer"
+                    : undefined,
+                }}
+                onClick={() =>
+                  utils.doResource(props.p, props.selected, resourceName, true)
+                }
+              >
                 {resourceName}: {count}
               </div>
             ))}

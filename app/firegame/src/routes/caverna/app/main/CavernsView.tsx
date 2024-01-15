@@ -46,6 +46,7 @@ export default function CavernsView(props: {
                               position: "relative",
                             }}
                             onClick={() =>
+                              utils.canFurnish(t, me, props.selected!) &&
                               utils.furnish(t, me, props.selected!)
                             }
                           >

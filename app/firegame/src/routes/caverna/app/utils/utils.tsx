@@ -337,6 +337,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
 
+  rubyTrade(a: RubyAction, p: PlayerType) {
+    const ra = RubyActions[a];
+    this.addResourcesToPlayer(p, ra.cost || { rubies: -1 });
+    if (ra.action) ra.action(p);
+    if (ra.reward) this.addResourcesToPlayer(p, ra.reward);
+    store.update(`traded ruby for ${RubyAction[a]}`);
+  }
+
   canExpedition(a: ExpeditionAction, p: PlayerType): boolean {
     if (!utils.isMyTurn()) return false;
     const taskObj = this.getTask();
@@ -745,6 +753,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }[coords.join(".")] || {}
       )
     );
+  }
+
+  doResource(
+    p: PlayerType,
+    selected: [number, number, number] | undefined,
+    resourceName: keyof ResourcesType,
+    execute: boolean
+  ): boolean {
+    // TODO doResource
+    return true;
   }
 }
 
