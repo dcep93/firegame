@@ -4,15 +4,16 @@ import { ExpeditionAction } from "./ExpeditionActions";
 import { Tile } from "./Tiles";
 import utils, { store } from "./utils";
 
+// TODO Task
 export enum Task {
   action,
-  imitate,
   feed,
   finish_year,
-  furnish_dwelling,
-  furnish_cavern,
-  expedition,
   forge,
+  expedition,
+  imitate,
+  furnish_cavern,
+  furnish_dwelling,
   wish_for_children,
   sow,
   have_baby,
@@ -23,8 +24,11 @@ export enum Task {
   peaceful_cave,
   choose_excavation,
   beer_parlor,
+  weekly_market,
+  extension,
 }
 
+// TODO Buildable
 export enum Buildable {
   fence,
   double_fence,

@@ -124,8 +124,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     };
   }
 
-  addResourcesToPlayer(p: PlayerType, r: ResourcesType): PlayerType {
-    p.resources = this.addResources(p.resources || {}, r);
+  addResourcesToPlayer(p: PlayerType, r: ResourcesType): boolean {
+    const addedResources = this.addResources(p.resources || {}, r);
+    if (addedResources === undefined) return false;
+    p.resources = addedResources;
     if ((r.dogs || 0) > 0 && p.boughtTiles[Tile.dog_school])
       this.addResourcesToPlayer(p, { wood: r.dogs! });
     if (
@@ -134,7 +136,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       Object.values(r).filter((v) => v < 0).length === 0
     )
       this.addResourcesToPlayer(p, { ore: r.stone! });
-    return p;
+    return true;
   }
 
   addResources(
@@ -154,13 +156,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return undefined;
     }
     return addTo;
-  }
-
-  convert(p: PlayerType, conversion: ResourcesType): boolean {
-    const newResources = this.addResources(conversion, p.resources || {});
-    if (newResources === undefined) return false;
-    p.resources = newResources;
-    return true;
   }
 
   enrichAndReveal(g: GameType): GameType {
@@ -265,6 +260,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       delete store.gameW.game.actionBonuses![a];
     }
     const at = Actions[a];
+    if (at.foodCost !== undefined) {
+      utils.addResourcesToPlayer(p, { food: -at.foodCost });
+      utils.queueTasks([{ t: Task.imitate }]);
+    }
     if (at.action !== undefined) {
       at.action(p);
     }

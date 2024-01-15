@@ -73,6 +73,7 @@ export enum Action {
   extension,
 }
 
+// TODO actionTitles
 export type ActionType = {
   availability: [number, number];
   foodCost?: number;
@@ -291,15 +292,23 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.strip_mining]: {
     availability: [3, 3],
-    // TODO
+    enrichment: [{ ore: 1 }, { stone: 1 }],
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        wood: 2,
+      }),
   },
   [Action.forest_exploration_3]: {
     availability: [3, 3],
-    // TODO
+    enrichment: [{ wood: 1 }],
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, {
+        vegetables: 1,
+      }),
   },
   [Action.imitation_3]: {
     availability: [3, 3],
-    // TODO
+    foodCost: 4,
   },
   [Action.drift_mining_4_7]: {
     availability: [4, 7],
@@ -330,12 +339,6 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.imitation_4_7]: {
     availability: [4, 7],
     foodCost: 2,
-    action: (p: PlayerType) =>
-      utils.queueTasks([
-        {
-          t: Task.imitate,
-        },
-      ]),
   },
   [Action.logging_4_7]: {
     availability: [4, 7],
@@ -389,63 +392,112 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.depot_5]: {
     availability: [5, 5],
-    // TODO
+    enrichment: [{ wood: 1, ore: 1 }],
   },
   [Action.small_scale_drift_mining]: {
     availability: [5, 5],
-    // TODO
+    enrichment: [{ stone: 1 }],
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { toBuild: Buildable.cavern_tunnel } },
+      ]),
   },
   [Action.weekly_market_5]: {
     availability: [5, 5],
-    // TODO
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, { gold: 4 }) &&
+      utils.queueTasks([
+        { t: Task.weekly_market, d: { num: Action.weekly_market_5 } },
+      ]),
   },
   [Action.imitation_5]: {
     availability: [5, 5],
-    // TODO
+    foodCost: 4,
   },
   [Action.hardware_rental_5]: {
     availability: [5, 5],
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.expedition, d: { num: 2 } },
+        { t: Task.sow },
+      ]),
   },
   [Action.fence_building_5]: {
     availability: [5, 5],
-    // TODO
+    enrichment: [{ wood: 1 }],
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 2, toBuild: Buildable.fence } },
+        {
+          t: Task.build,
+          d: { num: 4, toBuild: Buildable.double_fence },
+        },
+      ]),
   },
   [Action.depot_6_7]: {
     availability: [6, 7],
-    // TODO
+    enrichment: [{ wood: 1, ore: 1 }],
   },
   [Action.drift_mining_6_7]: {
     availability: [6, 7],
-    // TODO
+    enrichment: [{ stone: 1 }],
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { toBuild: Buildable.cavern_tunnel } },
+      ]),
   },
   [Action.weekly_market_6_7]: {
     availability: [6, 7],
-    // TODO
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, { gold: 4 }) &&
+      utils.queueTasks([
+        { t: Task.weekly_market, d: { num: Action.weekly_market_6_7 } },
+      ]),
   },
   [Action.imitation_6_7]: {
     availability: [6, 7],
-    // TODO
+    foodCost: 1,
   },
   [Action.hardware_rental_6_7]: {
     availability: [6, 7],
-    // TODO
+    action: (p: PlayerType) =>
+      utils.addResourcesToPlayer(p, { wood: 2 }) &&
+      utils.queueTasks([
+        { t: Task.expedition, d: { num: 2 } },
+        { t: Task.sow },
+      ]),
   },
   [Action.fence_building_6_7]: {
     availability: [6, 7],
-    // TODO
+    enrichment: [{ wood: 2 }, { wood: 1 }],
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.build, d: { num: 2, toBuild: Buildable.fence } },
+        {
+          t: Task.build,
+          d: { num: 4, toBuild: Buildable.double_fence },
+        },
+      ]),
   },
   [Action.large_depot]: {
     availability: [7, 7],
-    // TODO
+    enrichment: [
+      { wood: 2, stone: 1, ore: 1 },
+      { wood: 1, stone: 1, ore: 1 },
+    ],
   },
   [Action.imitation_7]: {
     availability: [7, 7],
-    // TODO
+    foodCost: 0,
   },
   [Action.extension]: {
     availability: [7, 7],
-    // TODO
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        {
+          t: Task.extension,
+        },
+      ]),
   },
 };
 export default Actions;

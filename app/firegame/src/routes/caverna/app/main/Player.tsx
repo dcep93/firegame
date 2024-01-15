@@ -95,6 +95,7 @@ export default function Player(props: {
           <Grid
             p={props.p}
             title={"farm"}
+            // TODO render farm
             f={(i, j) => (
               <div>
                 {i}.{j}
@@ -110,6 +111,7 @@ export default function Player(props: {
           <Grid
             p={props.p}
             title={"cave"}
+            // TODO render cave
             f={(i, j) => (
               <div>
                 {i}.{j}
