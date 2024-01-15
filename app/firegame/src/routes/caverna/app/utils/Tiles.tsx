@@ -133,7 +133,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 1, ore: 1 },
     category: TileCategory.green,
     points: 1,
-    // TODO
+    // TODO you can keep 1 animal on each empty field
   },
   [Tile.work_room]: {
     cost: { stone: 1 },
@@ -144,13 +144,13 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 1, stone: 1 },
     category: TileCategory.green,
     points: 0,
-    // TODO
+    // TODO either/or becomes and/or
   },
   [Tile.office_room]: {
     cost: { stone: 1 },
     category: TileCategory.green,
     points: 0,
-    // TODO
+    // TODO overhang
   },
   [Tile.carpenter]: {
     cost: { stone: 1 },
@@ -213,7 +213,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 1 },
     category: TileCategory.green,
     points: 2,
-    // TODO
+    // TODO one stone per newborn donkey
   },
   [Tile.seam]: {
     cost: { wood: 2 },
@@ -246,7 +246,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { grain: 1, stone: 1 },
     category: TileCategory.green,
     points: 2,
-    // TODO
+    // TODO 1/2/3/5 food per newborn animal
   },
   [Tile.peaceful_cave]: {
     cost: { wood: 2, stone: 2 },
