@@ -703,7 +703,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         // TODO ore_mine
         break;
       case Buildable.ruby_mine:
-        // TODO ruby_mine
         if (
           caveTile?.isCavern !== false ||
           caveTile.isOreMine ||
@@ -734,8 +733,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return (
       this._buildHereBeforePaying(task, p, coords, execute) &&
       execute &&
-      this.addResourcesToPlayer(p, this.getBuildCost(task, p) || {})
-      // TODO build_bonus
+      this.addResourcesToPlayer(p, this.getBuildCost(task, p) || {}) &&
+      this.addResourcesToPlayer(
+        p,
+        {
+          "0.2.0": { boars: 1 },
+          "2.0.0": { boars: 1 },
+          "3.1.0": { food: 1 },
+          "0.2.1": { food: 1 },
+          "3.1.1": { food: 1 },
+        }[coords.join(".")] || {}
+      )
     );
   }
 }

@@ -187,7 +187,7 @@ function setPlayers(game: GameType): GameType {
 
       cave: {
         2: { 0: { isCavern: true } },
-        3: { 0: { tile: Cavern.starting_dwelling } },
+        3: { 0: { isCavern: true, tile: Cavern.starting_dwelling } },
       },
     }));
 
