@@ -156,21 +156,18 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { stone: 1 },
     category: TileCategory.green,
     points: 0,
-    // TODO
   },
   [Tile.stone_carver]: {
     cost: { wood: 1 },
     category: TileCategory.green,
     points: 1,
     onPurchase: (p: PlayerType) => utils.addResourcesToPlayer(p, { stone: 2 }),
-    // TODO
   },
   [Tile.blacksmith]: {
     cost: { wood: 1, stone: 2 },
     category: TileCategory.green,
     points: 3,
     onPurchase: (p: PlayerType) => utils.addResourcesToPlayer(p, { ore: 2 }),
-    // TODO
   },
   [Tile.miner]: {
     cost: { wood: 1, stone: 1 },
@@ -181,7 +178,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { stone: 1 },
     category: TileCategory.green,
     points: 3,
-    // TODO
   },
   [Tile.trader]: {
     cost: { wood: 1 },
@@ -240,7 +236,6 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 1, stone: 1 },
     category: TileCategory.green,
     points: 2,
-    // TODO
   },
   [Tile.mining_cave]: {
     cost: { wood: 3, stone: 2 },
@@ -298,7 +293,9 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 2 },
     category: TileCategory.yellow,
     points: 3,
-    // TODO
+    action: (p: PlayerType) =>
+      utils.convert(p, { grain: -2 }) &&
+      utils.queueTasks([{ t: Task.beer_parlor }]),
   },
   [Tile.blacksmithing_parlor]: {
     cost: { ore: 3 },

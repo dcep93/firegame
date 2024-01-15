@@ -156,10 +156,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return addTo;
   }
 
-  convert(p: PlayerType, conversion: ResourcesType) {
+  convert(p: PlayerType, conversion: ResourcesType): boolean {
     const newResources = this.addResources(conversion, p.resources || {});
-    if (newResources === undefined) return;
+    if (newResources === undefined) return false;
     p.resources = newResources;
+    return true;
   }
 
   enrichAndReveal(g: GameType): GameType {
@@ -270,6 +271,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.prepareNextTask(`action: ${Action[a]}`);
   }
 
+  furnishCost(t: Tile, p: PlayerType): ResourcesType {
+    var cost = Tiles[t].cost;
+    if (cost.wood !== undefined && p.boughtTiles[Tile.carpenter]) {
+      cost = this.addResources(cost, { wood: -1 })!;
+    }
+    if (cost.stone !== undefined && p.boughtTiles[Tile.stone_carver]) {
+      cost = this.addResources(cost, { stone: -1 })!;
+    }
+    return cost;
+  }
+
   canFurnish(
     t: Tile,
     p: PlayerType,
@@ -292,13 +304,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return false;
       }
     }
-    if (this.addResources(p.resources || {}, Tiles[t].cost) === undefined)
-      return false;
-    const task = this.getTask().t;
-    if (task === Task.furnish_dwelling) {
+    const cost = this.furnishCost(t, p);
+    if (this.addResources(p.resources || {}, cost) === undefined) return false;
+    const task = this.getTask();
+    if (task.d?.builderResource !== undefined) {
+      if ((cost[task.d?.builderResource] || 0) < 1) return false;
+    }
+    if (task.t === Task.furnish_dwelling) {
       return Tiles[t].category === TileCategory.dwelling;
     }
-    return task === Task.furnish_cavern;
+    return task.t === Task.furnish_cavern;
   }
 
   furnish(t: Tile, p: PlayerType, selected: [number, number, number]) {
@@ -306,7 +321,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (store.gameW.game.purchasedTiles === undefined)
       store.gameW.game.purchasedTiles = {};
     store.gameW.game.purchasedTiles[t] = p.index;
-    this.addResourcesToPlayer(p, Tiles[t].cost);
+    this.addResourcesToPlayer(p, this.furnishCost(t, p));
     p.boughtTiles[t] = true;
     p.cave[selected[0]]![selected[1]] = { tile: t };
     this.prepareNextTask(`furnished ${Tile[t]}`);
@@ -493,7 +508,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     const p = utils.getCurrent();
     if (task.t === Task.forge) {
-      return (p.resources?.ore || 0) > 0 && p.usedDwarves![0] === 0;
+      return (
+        p.usedDwarves![0] === 0 &&
+        (p.boughtTiles[Tile.blacksmith] || (p.resources?.ore || 0) > 0)
+      );
     }
     if (task.t === Task.expedition) {
       return utils.getCurrent().usedDwarves![0] !== 0;
@@ -558,13 +576,36 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   forge(p: PlayerType, level: number) {
     this.shiftTask();
     p.usedDwarves![0] = level;
-    this.addResourcesToPlayer(p, { ore: -level });
+    this.addResourcesToPlayer(p, {
+      ore: -level + (p.boughtTiles[Tile.blacksmith] ? 2 : 0),
+    });
     this.prepareNextTask(`forged ${level}`);
   }
 
   skipBuild() {
     const task = this.shiftTask();
     this.prepareNextTask(`skipped building ${Task[task.d!.toBuild!]}`);
+  }
+
+  workingCave(p: PlayerType, cost: ResourcesType, message: string) {
+    this.addResourcesToPlayer(p, { food: 2 });
+    this.addResourcesToPlayer(p, cost);
+    store.gameW.game.tasks[0].d = { num: 1 };
+    store.update(`ate ${message}`);
+  }
+
+  beerParlor(p: PlayerType, message: string, reward: ResourcesType) {
+    this.shiftTask();
+    this.addResourcesToPlayer(p, reward);
+    this.prepareNextTask(`earned ${message}`);
+  }
+
+  builderExchange(p: PlayerType, builderResource: keyof ResourcesType) {
+    this.addResourcesToPlayer(p, { [builderResource]: 1, ore: -1 });
+    store.gameW.game.tasks[0].d = {
+      builderResource,
+    };
+    store.update(`converted ore for ${builderResource}`);
   }
 }
 

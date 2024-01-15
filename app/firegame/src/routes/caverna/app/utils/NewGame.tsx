@@ -22,6 +22,7 @@ export enum Task {
   breed,
   peaceful_cave,
   choose_excavation,
+  beer_parlor,
 }
 
 export enum Buildable {
@@ -43,6 +44,7 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
+    builderResource?: keyof ResourcesType;
     toBuild?: Buildable;
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
   };
