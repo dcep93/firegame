@@ -1,5 +1,10 @@
-import { AnimalResourcesType, PlayerType, ResourcesType } from "./NewGame";
-import utils from "./utils";
+import {
+  AnimalResourcesType,
+  PlayerType,
+  ResourcesType,
+  Task,
+} from "./NewGame";
+import utils, { store } from "./utils";
 
 export enum Tile {
   starting_dwelling,
@@ -65,7 +70,7 @@ export type TileType = {
   points?: number;
   pointsF?: (p: PlayerType) => number;
   onPurchase?: (p: PlayerType) => void;
-  convert?: (p: PlayerType) => void;
+  action?: (p: PlayerType) => void;
   animalRoom?: (r: AnimalResourcesType, p: PlayerType) => boolean;
   supply?: ResourcesType;
 };
@@ -182,7 +187,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 1 },
     category: TileCategory.green,
     points: 2,
-    convert: (p: PlayerType) =>
+    action: (p: PlayerType) =>
       utils.convert(p, { gold: -2, wood: 1, ore: 1, stone: 1 }),
   },
   [Tile.wood_supplier]: {
@@ -228,7 +233,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { stone: 2 },
     category: TileCategory.green,
     points: 2,
-    convert: (p: PlayerType) =>
+    action: (p: PlayerType) =>
       utils.convert(p, { grain: -1, vegetables: -1, food: 5 }),
   },
   [Tile.working_cave]: {
@@ -252,7 +257,12 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 2, stone: 2 },
     category: TileCategory.green,
     points: 2,
-    // TODO
+    action: (p: PlayerType) => {
+      utils.isMyTurn() &&
+        Promise.resolve()
+          .then(() => utils.queueTasks([{ t: Task.peaceful_cave }]))
+          .then(() => store.update("activated peaceful_cave"));
+    },
   },
   [Tile.weaving_parlor]: {
     cost: { wood: 2, stone: 1 },
@@ -281,7 +291,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 2 },
     category: TileCategory.yellow,
     points: 1,
-    convert: (p: PlayerType) =>
+    action: (p: PlayerType) =>
       utils.convert(p, { boars: -2, gold: 2, food: 2 }),
   },
   [Tile.beer_parlor]: {
@@ -294,7 +304,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { ore: 3 },
     category: TileCategory.yellow,
     points: 2,
-    convert: (p: PlayerType) =>
+    action: (p: PlayerType) =>
       utils.convert(p, { ore: -1, rubies: -1, gold: 2, food: 1 }),
   },
   [Tile.stone_storage]: {
@@ -311,7 +321,7 @@ const Tiles: { [t in Tile]: TileType } = {
     cost: { wood: 2 },
     category: TileCategory.yellow,
     points: 0,
-    convert: (p: PlayerType) =>
+    action: (p: PlayerType) =>
       utils.convert(p, { wood: -1, stone: -1, ore: -1, gold: 2 }),
   },
   [Tile.main_storage]: {

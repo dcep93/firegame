@@ -31,12 +31,10 @@ function Current() {
                             .map(({ k }) => k)
                             .join(","),
                         },
-                    t.d.buildableOptions === undefined
+                    t.d.toBuild === undefined
                       ? null
                       : {
-                          buildableOptions: t.d.buildableOptions.map(
-                            (b) => Buildable[b]
-                          ),
+                          toBuild: Buildable[t.d.toBuild],
                         }
                   )
                 )}

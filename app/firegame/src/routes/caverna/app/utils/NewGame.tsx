@@ -20,13 +20,15 @@ export enum Task {
   build,
   growth,
   breed,
+  peaceful_cave,
+  choose_excavation,
 }
 
 export enum Buildable {
   fence,
   double_fence,
   stable,
-  farm_tle,
+  farm_tile,
   cavern_tunnel,
   double_cavern,
   tunnel,
@@ -41,8 +43,8 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
+    toBuild?: Buildable;
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
-    buildableOptions?: Buildable[];
   };
 };
 

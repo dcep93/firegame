@@ -1,4 +1,10 @@
-import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
+import {
+  Buildable,
+  CaveTileType,
+  PlayerType,
+  ResourcesType,
+  Task,
+} from "./NewGame";
 import utils, { store } from "./utils";
 
 export enum Action {
@@ -87,7 +93,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [-1, 0],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Buildable.ruby_mine] } },
+        { t: Task.build, d: { toBuild: Buildable.ruby_mine } },
         { t: Task.expedition, d: { num: 2 } },
       ]),
   },
@@ -96,12 +102,12 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ sheep: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 2, buildableOptions: [Buildable.fence] } },
+        { t: Task.build, d: { num: 2, toBuild: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, buildableOptions: [Buildable.double_fence] },
+          d: { num: 4, toBuild: Buildable.double_fence },
         },
-        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.stable] } },
+        { t: Task.build, d: { num: 1, toBuild: Buildable.stable } },
       ]),
   },
   [Action.wish_for_children]: {
@@ -113,7 +119,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [-2, 0],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Buildable.ruby_mine] } },
+        { t: Task.build, d: { toBuild: Buildable.ruby_mine } },
       ]),
   },
   [Action.donkey_farming]: {
@@ -121,12 +127,12 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ donkeys: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 2, buildableOptions: [Buildable.fence] } },
+        { t: Task.build, d: { num: 2, toBuild: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, buildableOptions: [Buildable.double_fence] },
+          d: { num: 4, toBuild: Buildable.double_fence },
         },
-        { t: Task.build, d: { num: 1, buildableOptions: [Buildable.stable] } },
+        { t: Task.build, d: { num: 1, toBuild: Buildable.stable } },
       ]),
   },
   [Action.exploration]: {
@@ -146,9 +152,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          Object.values(p.cave || {})
-            .flatMap((r) => Object.values(r))
-            .filter((t) => t.isMine).length,
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isMine).length,
       }),
   },
   [Action.ore_trading]: {
@@ -162,9 +166,8 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, {
         rubies:
-          Object.values(p.cave || {})
-            .flatMap((r) => Object.values(r))
-            .filter((t) => t.isRubyMine).length >= 2
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isRubyMine)
+            .length >= 2
             ? 1
             : 0,
       }),
@@ -184,9 +187,8 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, {
         rubies:
-          Object.values(p.cave || {})
-            .flatMap((r) => Object.values(r))
-            .filter((t) => t.isRubyMine).length >= 1
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isRubyMine)
+            .length >= 1
             ? 1
             : 0,
       }),
@@ -199,7 +201,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 7],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Buildable.farm_tle] } },
+        { t: Task.build, d: { toBuild: Buildable.farm_tile } },
         { t: Task.sow },
       ]),
   },
@@ -208,7 +210,7 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Buildable.cavern_tunnel] } },
+        { t: Task.build, d: { toBuild: Buildable.cavern_tunnel } },
       ]),
   },
   [Action.excavation_1_3]: {
@@ -217,13 +219,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         {
-          t: Task.build,
-          d: {
-            buildableOptions: [
-              Buildable.cavern_tunnel,
-              Buildable.double_cavern,
-            ],
-          },
+          t: Task.choose_excavation,
         },
       ]),
   },
@@ -263,9 +259,8 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, {
         ore:
-          Object.values(p.cave || {})
-            .flatMap((r) => Object.values(r))
-            .filter((t) => t.isMine).length * 2,
+          2 *
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isMine).length,
       }),
   },
   [Action.wood_gathering]: {
@@ -279,7 +274,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Buildable.farm_tle] },
+          d: { toBuild: Buildable.farm_tile },
         },
       ]),
   },
@@ -290,7 +285,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Buildable.farm_tle] },
+          d: { toBuild: Buildable.farm_tile },
         },
       ]),
   },
@@ -313,7 +308,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Buildable.cavern_tunnel] },
+          d: { toBuild: Buildable.cavern_tunnel },
         },
       ]),
   },
@@ -323,13 +318,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         {
-          t: Task.build,
-          d: {
-            buildableOptions: [
-              Buildable.cavern_tunnel,
-              Buildable.double_cavern,
-            ],
-          },
+          t: Task.choose_excavation,
         },
       ]),
   },
@@ -374,7 +363,7 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ wood: 2 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { buildableOptions: [Buildable.farm_tle] } },
+        { t: Task.build, d: { toBuild: Buildable.farm_tile } },
       ]),
   },
   [Action.ore_mining_4_7]: {
@@ -383,9 +372,8 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, {
         ore:
-          Object.values(p.cave || {})
-            .flatMap((r) => Object.values(r))
-            .filter((t) => t.isMine).length * 2,
+          2 *
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isMine).length,
       }),
   },
   [Action.sustenance_4_7]: {
@@ -395,7 +383,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { buildableOptions: [Buildable.farm_tle] },
+          d: { toBuild: Buildable.farm_tile },
         },
       ]),
   },
