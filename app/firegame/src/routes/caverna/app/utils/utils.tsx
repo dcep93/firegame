@@ -107,7 +107,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .map(({ t }) =>
             (t as CaveTileType).isRubyMine
               ? 4
-              : (t as CaveTileType).isMine
+              : (t as CaveTileType).isOreMine
               ? 3
               : 0
           )
@@ -196,7 +196,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .map(
             ({ t }) =>
               t.resources?.donkeys !== undefined &&
-              (t as CaveTileType).isMine &&
+              (t as CaveTileType).isOreMine &&
               !(t as CaveTileType).isRubyMine
           ).length,
       }))
@@ -298,7 +298,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (caveTile !== undefined) {
       if (
         caveTile.tile !== undefined ||
-        p.cave[selected[0]][selected[1]].isMine ||
+        p.cave[selected[0]][selected[1]].isOreMine ||
         (!p.cave[selected[0]][selected[1]].isCavern &&
           p.boughtTiles[Cavern.work_room] === undefined)
       ) {
@@ -446,7 +446,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           ? 0
           : this.getGrid(p).filter(
               ({ t }) =>
-                t.resources?.donkeys !== undefined && (t as CaveTileType).isMine
+                t.resources?.donkeys !== undefined &&
+                (t as CaveTileType).isOreMine
             ).length)
     );
   }
@@ -633,6 +634,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         const farmTile = t as FarmTileType;
         switch (task.d!.toBuild) {
           case Buildable.fence:
+            if (farmTile === undefined) return false;
             if (farmTile.isFence || !farmTile.isPasture) return false;
             if (execute) {
               farmTile.isFence = true;
@@ -642,6 +644,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             // TODO double_fence
             break;
           case Buildable.stable:
+            if (farmTile === undefined) {
+              if (execute) {
+                p.farm![coords[0]][coords[1]] = { isStable: true };
+              }
+              return true;
+            }
             if (farmTile.isStable) return false;
             if (execute) {
               farmTile.isStable = true;
@@ -651,15 +659,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             // TODO farm_tile
             break;
           case Buildable.pasture:
-            if (farmTile.isPasture || farmTile.isField) return false;
+            if (farmTile === undefined) {
+              if (execute) {
+                p.farm![coords[0]][coords[1]] = { isPasture: true };
+              }
+              return true;
+            }
+            if (farmTile.isPasture !== undefined) return false;
             if (execute) {
               farmTile.isPasture = true;
             }
             return true;
           case Buildable.field:
-            if (farmTile.isPasture || farmTile.isField) return false;
+            if (farmTile !== undefined) return false;
             if (execute) {
-              farmTile.isField = true;
+              p.farm![coords[0]][coords[1]] = { isPasture: false };
             }
             return true;
         }
@@ -676,16 +690,31 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Buildable.tunnel:
         if (caveTile !== undefined) return false;
         if (execute) {
-          // p.cave[coords[0]][coords[1]] = {}
+          p.cave[coords[0]][coords[1]] = { isCavern: false };
+        }
+        return true;
+      case Buildable.cavern:
+        if (caveTile !== undefined) return false;
+        if (execute) {
+          p.cave[coords[0]][coords[1]] = { isCavern: true };
+        }
+        return true;
+      case Buildable.ore_mine:
+        // TODO ore_mine
+        break;
+      case Buildable.ruby_mine:
+        // TODO ruby_mine
+        if (
+          caveTile?.isCavern !== false ||
+          caveTile.isOreMine ||
+          caveTile.isRubyMine
+        )
+          return false;
+        if (execute) {
+          caveTile.isRubyMine = true;
         }
         return true;
     }
-    // cavern_tunnel,
-    // double_cavern,
-    // tunnel,
-    // cavern,
-    // ore_mine,
-    // ruby_mine,
     return false;
   }
 
@@ -706,6 +735,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       this._buildHereBeforePaying(task, p, coords, execute) &&
       execute &&
       this.addResourcesToPlayer(p, this.getBuildCost(task, p) || {})
+      // TODO build_bonus
     );
   }
 }

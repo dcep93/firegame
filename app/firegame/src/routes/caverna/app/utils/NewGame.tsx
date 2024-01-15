@@ -83,7 +83,7 @@ export type CaveTileType = {
   tile?: Cavern;
   isCavern?: boolean;
   isOreTunnel?: boolean;
-  isMine?: boolean;
+  isOreMine?: boolean;
   isRubyMine?: boolean;
 };
 
@@ -91,7 +91,6 @@ export type FarmTileType = {
   resources?: ResourcesType;
   isStable?: boolean;
   isPasture?: boolean;
-  isField?: boolean;
   isFence?: boolean;
   doubleFenceAngleDeg?: number;
 };

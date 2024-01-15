@@ -153,7 +153,8 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isMine).length,
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isOreMine)
+            .length,
       }),
   },
   [Action.ore_trading]: {
@@ -261,7 +262,8 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isMine).length,
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isOreMine)
+            .length,
       }),
   },
   [Action.wood_gathering]: {
@@ -376,7 +378,8 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isMine).length,
+          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isOreMine)
+            .length,
       }),
   },
   [Action.sustenance__4_7]: {
