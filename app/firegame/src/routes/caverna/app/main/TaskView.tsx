@@ -124,6 +124,35 @@ function Special() {
       </div>
     );
   }
+  if (task.t === Task.eat_gold) {
+    if (state === null) updateState(1);
+    return (
+      <div className={styles.bubble}>
+        <input
+          type="range"
+          min={1}
+          max={Math.min(4, utils.getMe().resources?.gold || 0)}
+          value={state}
+          onChange={(event) => updateState(event.target.value)}
+          step={1}
+        />
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() =>
+                utils.addResourcesToPlayer(p, { gold: -state, food: state - 1 })
+              )
+              .then(() => utils.shiftTask() !== undefined)
+              .then(() =>
+                store.update(`ate ${state} gold for ${state - 1} food`)
+              )
+          }
+        >
+          eat {state} gold
+        </button>
+      </div>
+    );
+  }
   if (task.t === Task.build) {
     return (
       <div className={styles.bubble}>

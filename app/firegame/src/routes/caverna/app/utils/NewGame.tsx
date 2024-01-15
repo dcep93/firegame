@@ -4,6 +4,7 @@ import { Cavern } from "./Caverns";
 import { ExpeditionAction } from "./ExpeditionActions";
 import utils, { store } from "./utils";
 
+// TODO order enums
 export enum Task {
   action,
   forge,
@@ -14,8 +15,9 @@ export enum Task {
   build,
   beer_parlor,
   sow,
+  eat_gold,
 
-  // TODO Task
+  // TODO 0 Task
   feed,
   finish_year,
   wish_for_children,

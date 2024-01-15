@@ -602,8 +602,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "rubies":
         return false;
       case "gold":
-        // TODO eat gold
-        return false;
+        if (execute) {
+          utils.queueTasks([{ t: Task.eat_gold }]);
+          store.update(`is about to eat gold`);
+        }
+        return true;
       case "grain":
       case "vegetables":
         if (execute) {
@@ -723,7 +726,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   // GAME FLOW
 
-  // TODO cant finish turn if animals to slaughter
+  // TODO 2 cant finish turn if animals to slaughter
   finishTurn() {
     while (true) {
       utils.incrementPlayerTurn();
@@ -881,7 +884,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         .filter((t) => t.category === CavernCategory.yellow)
         .map(
           (tile) => (tile.points !== undefined ? tile.points : tile.pointsF!(p))
-          // TODO include resources on board
+          // TODO 1 include resources on board
         )
         .sum(),
       goldBegging: (p.resources || {}).gold || 0 - 3 * (p.begging || 0),
