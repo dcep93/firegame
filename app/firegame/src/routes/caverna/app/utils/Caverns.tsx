@@ -76,7 +76,6 @@ export type CavernType = {
   supply?: ResourcesType; // TODO cavern supply
 };
 
-// TODO cavern_titles
 const Caverns: { [t in Cavern]: CavernType } = {
   [Cavern.starting_dwelling]: {
     cost: {},
@@ -90,7 +89,6 @@ const Caverns: { [t in Cavern]: CavernType } = {
     cost: { wood: 4, stone: 3 },
     category: CavernCategory.dwelling,
     title: "room for 1 dwarf",
-    // TODO dwelling can't sell out
     points: 3,
   },
   [Cavern.simple_dwelling__4_2]: {

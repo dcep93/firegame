@@ -319,9 +319,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   furnish(t: Cavern, p: PlayerType, selected: [number, number, number]) {
     this.shiftTask();
-    if (store.gameW.game.purchasedTiles === undefined)
-      store.gameW.game.purchasedTiles = {};
-    store.gameW.game.purchasedTiles[t] = p.index;
+    if (t !== Cavern.dwelling) {
+      if (store.gameW.game.purchasedTiles === undefined)
+        store.gameW.game.purchasedTiles = {};
+      store.gameW.game.purchasedTiles[t] = p.index;
+    }
     this.addResourcesToPlayer(p, this.furnishCost(t, p));
     p.boughtTiles[t] = true;
     p.cave[selected[0]]![selected[1]] = { tile: t };
@@ -846,7 +848,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ) {
                 allowed = true;
               }
-              // TODO double_fence stable allowed animal
+              // TODO double_fence stable num allowed animal
             } else if (farmTile.isStable && t.resources === undefined) {
               allowed = true;
             }
