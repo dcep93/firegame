@@ -37,19 +37,19 @@ const RubyActions: {
   [RubyAction.pasture]: {
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, toBuild: Buildable.pasture } },
+        { t: Task.build, d: { num: 1, build: Buildable.pasture } },
       ]),
   },
   [RubyAction.field]: {
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, toBuild: Buildable.field } },
+        { t: Task.build, d: { num: 1, build: Buildable.field } },
       ]),
   },
   [RubyAction.tunnel]: {
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, toBuild: Buildable.tunnel } },
+        { t: Task.build, d: { num: 1, build: Buildable.tunnel } },
       ]),
   },
   [RubyAction.cow]: { reward: { cows: 1 }, cost: { rubies: -1, food: -1 } },
@@ -57,7 +57,7 @@ const RubyActions: {
     cost: { rubies: -2 },
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, toBuild: Buildable.cavern } },
+        { t: Task.build, d: { num: 1, build: Buildable.cavern } },
       ]),
   },
 };

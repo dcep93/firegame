@@ -64,14 +64,11 @@ function Player(
               key={i}
               style={{
                 padding: "0.5em",
-                cursor: utils.canPayRubyOutOfOrder(props.p, i)
+                cursor: utils.payRubyOutOfOrder(props.p, i, false)
                   ? "pointer"
                   : undefined,
               }}
-              onClick={() =>
-                utils.canPayRubyOutOfOrder(props.p, i) &&
-                utils.payRubyOutOfOrder(props.p, i)
-              }
+              onClick={() => utils.payRubyOutOfOrder(props.p, i, true)}
             >
               {d}
             </span>
@@ -125,8 +122,8 @@ function Player(
         <div>
           {props.p.userId !== utils.getMe().userId ? null : (
             <button
-              disabled={!utils.canSlaughter(props.p)}
-              onClick={() => utils.slaughter(props.p)}
+              disabled={!utils.slaughter(props.p, false)}
+              onClick={() => utils.slaughter(props.p, true)}
             >
               slaughter
             </button>

@@ -49,8 +49,8 @@ export type TaskType = {
   d?: {
     num?: number;
     resource?: keyof ResourcesType;
-    canSow?: ResourcesType;
-    toBuild?: Buildable;
+    sow?: ResourcesType;
+    build?: Buildable;
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
   };
 };

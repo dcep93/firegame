@@ -19,6 +19,8 @@ import RubyActions, { RubyAction } from "./RubyActions";
 
 const store: StoreType<GameType> = store_;
 
+// TODO check all execute updates and ensures turn
+
 class Utils extends SharedUtils<GameType, PlayerType> {
   getGrid(p: PlayerType): {
     i: number;
@@ -37,6 +39,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       )
     );
   }
+
   getScoreDict(p: PlayerType): { [k: string]: number } {
     const allResources = utils
       .getGrid(p)
@@ -220,6 +223,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return g;
   }
 
+  // TODO move
   chunk<T>(ts: T[], num: number): T[][] {
     return ts
       .reduce(
@@ -287,26 +291,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  furnishCost(t: Cavern, p: PlayerType): ResourcesType {
-    var cost = Caverns[t].cost;
-    if (cost.wood !== undefined && p.boughtTiles[Cavern.carpenter]) {
-      cost = utils.addResources(cost, { wood: -1 })!;
-    }
-    if (cost.stone !== undefined && p.boughtTiles[Cavern.stone_carver]) {
-      cost = utils.addResources(cost, { stone: -1 })!;
-    }
-    return cost;
-  }
-
-  canFurnish(
+  furnish(
     t: Cavern,
     p: PlayerType,
-    selected: [number, number, number]
+    selected: [number, number, number] | undefined,
+    execute: boolean
   ): boolean {
+    if (!utils.isMyTurn()) return false;
     if ((store.gameW.game.purchasedTiles || {})[t] !== undefined) {
       return false;
     }
-    if (!utils.isMyTurn()) return false;
+    if (selected === undefined) return false;
     if (selected[2] !== 1) return false;
     if (p.cave[selected[0]] === undefined) p.cave[selected[0]] = [];
     const caveTile = p.cave[selected[0]][selected[1]];
@@ -320,133 +315,145 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return false;
       }
     }
-    const cost = utils.furnishCost(t, p);
+
+    var cost = Caverns[t].cost;
+    if (cost.wood !== undefined && p.boughtTiles[Cavern.carpenter]) {
+      cost = utils.addResources(cost, { wood: -1 })!;
+    }
+    if (cost.stone !== undefined && p.boughtTiles[Cavern.stone_carver]) {
+      cost = utils.addResources(cost, { stone: -1 })!;
+    }
+
     if (utils.addResources(p.resources || {}, cost) === undefined) return false;
     const task = utils.getTask();
     if (task.d?.resource !== undefined) {
       if ((cost[task.d?.resource] || 0) < 1) return false;
     }
-    if (task.t === Task.furnish_dwelling) {
-      return Caverns[t].category === CavernCategory.dwelling;
+    switch (task.t) {
+      case Task.furnish_dwelling:
+        if (Caverns[t].category !== CavernCategory.dwelling) return false;
+        break;
+      case Task.furnish_cavern:
+        break;
+      default:
+        return false;
     }
-    return task.t === Task.furnish_cavern;
+    if (execute) {
+      utils.shiftTask();
+      if (t !== Cavern.dwelling) {
+        if (store.gameW.game.purchasedTiles === undefined)
+          store.gameW.game.purchasedTiles = {};
+        store.gameW.game.purchasedTiles[t] = p.index;
+      }
+      utils.addResourcesToPlayer(p, cost);
+      p.boughtTiles[t] = true;
+      const tt = { tile: t, supply: Caverns[t].supply || {} };
+      p.cave[selected[0]]![selected[1]] = tt;
+      utils.prepareNextTask(`furnished ${Cavern[t]}`);
+    }
+    return true;
   }
 
-  furnish(t: Cavern, p: PlayerType, selected: [number, number, number]) {
-    utils.shiftTask();
-    if (t !== Cavern.dwelling) {
-      if (store.gameW.game.purchasedTiles === undefined)
-        store.gameW.game.purchasedTiles = {};
-      store.gameW.game.purchasedTiles[t] = p.index;
-    }
-    utils.addResourcesToPlayer(p, utils.furnishCost(t, p));
-    p.boughtTiles[t] = true;
-    const tt = { tile: t, supply: Caverns[t].supply || {} };
-    p.cave[selected[0]]![selected[1]] = tt;
-    utils.prepareNextTask(`furnished ${Cavern[t]}`);
-  }
-
-  canRubyTrade(a: RubyAction, p: PlayerType): boolean {
-    return (
+  rubyTrade(a: RubyAction, p: PlayerType, execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
+    if (
       utils.addResources(
         p.resources || {},
         RubyActions[a].cost || { rubies: -1 }
-      ) !== undefined
-    );
+      ) === undefined
+    )
+      return false;
+    if (execute) {
+      const ra = RubyActions[a];
+      utils.addResourcesToPlayer(p, ra.cost || { rubies: -1 });
+      if (ra.action) ra.action(p);
+      if (ra.reward) utils.addResourcesToPlayer(p, ra.reward);
+      store.update(`traded ruby for ${RubyAction[a]}`);
+    }
+    return true;
   }
 
-  rubyTrade(a: RubyAction, p: PlayerType) {
-    const ra = RubyActions[a];
-    utils.addResourcesToPlayer(p, ra.cost || { rubies: -1 });
-    if (ra.action) ra.action(p);
-    if (ra.reward) utils.addResourcesToPlayer(p, ra.reward);
-    store.update(`traded ruby for ${RubyAction[a]}`);
-  }
-
-  canExpedition(a: ExpeditionAction, p: PlayerType): boolean {
+  expedition(a: ExpeditionAction, p: PlayerType, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
-    const taskObj = utils.getTask();
-    if (taskObj.t !== Task.expedition) return false;
-    if ((taskObj.d!.expeditionsTaken || {})[a] !== undefined) return false;
-    if (a === ExpeditionAction.strength && taskObj.d!.num !== 1) return false;
-    const e = ExpeditionActions[a];
-    return p.usedDwarves![0] >= e.level;
-  }
-
-  expedition(a: ExpeditionAction, p: PlayerType) {
     const t = utils.getTask();
-    if (--t.d!.num! === 0) {
-      utils.shiftTask();
-    } else {
-      if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
-      t.d!.expeditionsTaken[a] = true;
-    }
+    if (t.t !== Task.expedition) return false;
+    if ((t.d!.expeditionsTaken || {})[a] !== undefined) return false;
+    if (a === ExpeditionAction.strength && t.d!.num !== 1) return false;
     const e = ExpeditionActions[a];
-    if (e.reward !== undefined) {
-      utils.addResourcesToPlayer(p, e.reward);
+    if (p.usedDwarves![0] < e.level) return false;
+    if (execute) {
+      if (--t.d!.num! === 0) {
+        utils.shiftTask();
+      } else {
+        if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
+        t.d!.expeditionsTaken[a] = true;
+      }
+      const e = ExpeditionActions[a];
+      if (e.reward !== undefined) {
+        utils.addResourcesToPlayer(p, e.reward);
+      }
+      if (e.action !== undefined) {
+        e.action(p);
+      }
+      utils.prepareNextTask(`expedition: ${ExpeditionAction[a]}`);
     }
-    if (e.action !== undefined) {
-      e.action(p);
+    return true;
+  }
+
+  payRubyOutOfOrder(p: PlayerType, index: number, execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
+    if (index <= 0) return false;
+    if (p.availableDwarves![index] <= 0) return false;
+    if (p.resources?.rubies === undefined) return false;
+    if (execute) {
+      utils.addResourcesToPlayer(p, { rubies: -1 });
+      p.availableDwarves!.unshift(p.availableDwarves!.splice(index, 1)[0]);
+      store.update("paid a ruby to play out of order");
     }
-    utils.prepareNextTask(`expedition: ${ExpeditionAction[a]}`);
+    return true;
   }
 
-  canPayRubyOutOfOrder(p: PlayerType, index: number): boolean {
-    return (
-      index > 0 &&
-      p.availableDwarves![index] > 0 &&
-      ((p.resources || {}).rubies || 0) >= 1
-    );
-  }
-
-  payRubyOutOfOrder(p: PlayerType, index: number) {
-    p.availableDwarves!.unshift(p.availableDwarves!.splice(index, 1)[0]);
-    store.update("paid a ruby to play out of order");
-  }
-
-  _toSlaughter(p: PlayerType): AnimalResourcesType {
-    return Object.fromEntries(
+  slaughter(p: PlayerType, execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
+    const toSlaughter = Object.fromEntries(
       Object.entries(p.resources || {})
         .map(([r, c]) => ({ c, r: r as keyof ResourcesType }))
         .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
         .map(({ r, c }) => [r, -c])
     );
-  }
-
-  canSlaughter(p: PlayerType): boolean {
-    return Object.keys(utils._toSlaughter(p)).length > 0;
-  }
-
-  slaughter(p: PlayerType) {
-    const toSlaughter = utils._toSlaughter(p);
-    utils.addResourcesToPlayer(p, {
-      food:
-        Object.entries(toSlaughter)
-          .map(([r, c]) => ({
-            c: -c,
-            r: r as keyof AnimalResourcesType,
-          }))
-          .map(({ r, c }) => {
-            if (r === "sheep") {
-              return c;
-            }
-            if (r === "donkeys") {
-              return Math.floor(c * 1.5);
-            }
-            if (r === "boars") {
-              return c * 2;
-            }
-            if (r === "cows") {
-              return c * 3;
-            }
-            return 0;
-          })
-          .sum() +
-        (!p.boughtTiles[Cavern.slaughtering_cave]
-          ? 0
-          : -Object.values(toSlaughter).sum()),
-    });
-    utils.addResourcesToPlayer(p, toSlaughter);
+    if (Object.keys(toSlaughter).length === 0) return false;
+    if (execute) {
+      utils.addResourcesToPlayer(p, {
+        food:
+          Object.entries(toSlaughter)
+            .map(([r, c]) => ({
+              c: -c,
+              r: r as keyof AnimalResourcesType,
+            }))
+            .map(({ r, c }) => {
+              if (r === "sheep") {
+                return c;
+              }
+              if (r === "donkeys") {
+                return Math.floor(c * 1.5);
+              }
+              if (r === "boars") {
+                return c * 2;
+              }
+              if (r === "cows") {
+                return c * 3;
+              }
+              return 0;
+            })
+            .sum() +
+          (!p.boughtTiles[Cavern.slaughtering_cave]
+            ? 0
+            : -Object.values(toSlaughter).sum()),
+      });
+      utils.addResourcesToPlayer(p, toSlaughter);
+      store.update(`slaughtered ${JSON.stringify(toSlaughter)}`);
+    }
+    return true;
   }
 
   // TODO cant finish turn if animals to slaughter
@@ -465,8 +472,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
   }
 
-  _numToFeed(p: PlayerType): number {
-    return Math.max(
+  feed(p: PlayerType, execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
+    const numToFeed = Math.max(
       0,
       p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
         (!p.boughtTiles[Cavern.mining_cave]
@@ -479,48 +487,53 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                   (t as CaveTileType).isOreMine !== undefined
               ).length)
     );
-  }
-
-  canFeed(p: PlayerType): boolean {
-    return ((p.resources || {}).food || 0) >= utils._numToFeed(p);
-  }
-
-  feed(p: PlayerType) {
-    const numToFeed = utils._numToFeed(p);
-    utils.addResourcesToPlayer(p, { food: -numToFeed });
-    utils.incrementPlayerTurn();
-    if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
-      store.gameW.game.tasks = [{ t: Task.breed }];
+    if ((p.resources?.food || 0) < numToFeed) return false;
+    if (execute) {
+      utils.addResourcesToPlayer(p, { food: -numToFeed });
+      utils.incrementPlayerTurn();
+      if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
+        store.gameW.game.tasks = [{ t: Task.breed }];
+      }
+      store.update(`fed ${numToFeed}`);
+      // TODO feed
     }
-    store.update(`fed ${numToFeed}`);
+    return true;
   }
 
-  canHaveChild(p: PlayerType): boolean {
+  haveChild(p: PlayerType, execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
     const numDwarves = (p.availableDwarves || []).concat(
       p.usedDwarves || []
     ).length;
-    if (numDwarves === 5) {
-      return p.boughtTiles[Cavern.additional_dwelling] !== undefined;
-    }
     if (numDwarves > 5) {
       return false;
     }
-    const numDwellingSpaces = Object.keys(p.boughtTiles)
-      .map((t) => parseInt(t) as Cavern)
-      .filter((t) => Caverns[t].category === CavernCategory.dwelling)
-      .map(
-        (t) =>
-          ((
-            {
-              [Cavern.additional_dwelling]: 0,
-              [Cavern.couple_dwelling]: 2,
-              [Cavern.starting_dwelling]: 2,
-            } as { [c in Cavern]?: number }
-          )[t])
-      )
-      .map((space) => (space === undefined ? 1 : space))
-      .sum();
-    return numDwellingSpaces > numDwarves;
+    if (numDwarves === 5) {
+      if (!p.boughtTiles[Cavern.additional_dwelling]) return false;
+    } else {
+      const numDwellingSpaces = Object.keys(p.boughtTiles)
+        .map((t) => parseInt(t) as Cavern)
+        .filter((t) => Caverns[t].category === CavernCategory.dwelling)
+        .map(
+          (t) =>
+            ((
+              {
+                [Cavern.additional_dwelling]: 0,
+                [Cavern.couple_dwelling]: 2,
+                [Cavern.starting_dwelling]: 2,
+              } as { [c in Cavern]?: number }
+            )[t])
+        )
+        .map((space) => (space === undefined ? 1 : space))
+        .sum();
+      if (numDwellingSpaces <= numDwarves) return false;
+    }
+    if (execute) {
+      utils.shiftTask();
+      p.usedDwarves!.unshift(-1);
+      utils.prepareNextTask("had a baby");
+    }
+    return true;
   }
 
   queueTasks(ts: TaskType[]) {
@@ -557,7 +570,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (task.t === Task.sow) {
       return (
-        Object.entries(task.d!.canSow!).filter(
+        Object.entries(task.d!.sow!).filter(
           ([resourceName, count]) =>
             (p.resources || {})[resourceName as keyof ResourcesType]! * count >
             0
@@ -566,14 +579,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (task.t === Task.build) {
       if (
-        task.d!.toBuild === Buildable.stable &&
+        task.d!.build === Buildable.stable &&
         utils.getGrid(p).filter(({ t }) => (t as FarmTileType).isStable)
           .length === 3
       )
         return false;
       return (
         utils.addResources(
-          utils.getBuildCost(task, p) || {},
+          utils._getBuildCost(task, p) || {},
           p.resources || {}
         ) !== undefined
       );
@@ -581,8 +594,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  getBuildCost(task: TaskType, p: PlayerType): ResourcesType | undefined {
-    switch (task.d!.toBuild!) {
+  _getBuildCost(task: TaskType, p: PlayerType): ResourcesType | undefined {
+    switch (task.d!.build!) {
       case Buildable.fence:
       case Buildable.double_fence:
         return {
@@ -638,16 +651,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   skipBuild() {
     const task = utils.shiftTask();
-    utils.prepareNextTask(`skipped building ${Task[task.d!.toBuild!]}`);
-  }
-
-  workingCave(p: PlayerType, resourceName: keyof ResourcesType) {
-    utils.addResourcesToPlayer(p, {
-      food: 2,
-      [resourceName]: resourceName === "ore" ? -2 : -1,
-    });
-    store.gameW.game.tasks[0].d = { num: 1 };
-    store.update(`ate ${resourceName}`);
+    utils.prepareNextTask(`skipped building ${Task[task.d!.build!]}`);
   }
 
   beerParlor(p: PlayerType, message: string, reward: ResourcesType) {
@@ -664,7 +668,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.update(`converted ore for ${builderResource}`);
   }
 
-  _buildHereBeforePaying(
+  _buildHereHelper(
     task: TaskType,
     p: PlayerType,
     coords: [number, number, number],
@@ -674,7 +678,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const t = utils
       .getGrid(p)
       .find(({ i, j, k }) => utils.objEqual([i, j, k], coords));
-    switch (task.d!.toBuild) {
+    switch (task.d!.build) {
       case Buildable.fence:
       case Buildable.double_fence:
       case Buildable.stable:
@@ -683,7 +687,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Buildable.field:
         if (coords[2] !== 0) return false;
         const farmTile = t as FarmTileType;
-        switch (task.d!.toBuild) {
+        switch (task.d!.build) {
           case Buildable.fence:
             if (farmTile === undefined) return false;
             if (farmTile.isFence || !farmTile.isPasture) return false;
@@ -731,7 +735,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (coords[2] !== 1) return false;
     const caveTile = t as CaveTileType;
-    switch (task.d!.toBuild) {
+    switch (task.d!.build) {
       case Buildable.cavern_tunnel:
         // TODO Buildable cavern_tunnel
         break;
@@ -769,6 +773,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     coords: [number, number, number],
     execute: boolean
   ): boolean {
+    if (!utils.isMyTurn()) return false;
     if (execute) {
       p.farm = {};
       const g = [p.farm, p.cave][coords[2]];
@@ -777,21 +782,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
     }
     const task = utils.getTask();
-    return (
-      utils._buildHereBeforePaying(task, p, coords, execute) &&
-      execute &&
-      utils.addResourcesToPlayer(p, utils.getBuildCost(task, p) || {}) &&
-      utils.addResourcesToPlayer(
-        p,
-        {
-          "0.2.0": { boars: 1 },
-          "2.0.0": { boars: 1 },
-          "3.1.0": { food: 1 },
-          "0.2.1": { food: 1 },
-          "3.1.1": { food: 1 },
-        }[coords.join(".")] || {}
-      )
-    );
+    if (!utils._buildHereHelper(task, p, coords, execute)) return false;
+    if (execute) {
+      utils.shiftTask();
+      utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {}) &&
+        utils.addResourcesToPlayer(
+          p,
+          {
+            "0.2.0": { boars: 1 },
+            "2.0.0": { boars: 1 },
+            "3.1.0": { food: 1 },
+            "0.2.1": { food: 1 },
+            "3.1.1": { food: 1 },
+          }[coords.join(".")] || {}
+        );
+      utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
+    }
+    return true;
   }
 
   doResource(
@@ -800,6 +807,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     resourceName: keyof ResourcesType,
     execute: boolean
   ): boolean {
+    if (!utils.isMyTurn()) return false;
     const task = utils.getTask();
     const t = utils
       .getGrid(p)
@@ -815,15 +823,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "vegetables":
         if (execute) {
           if (
-            utils.isMyTurn() &&
             task.t === Task.sow &&
-            task.d!.canSow![resourceName] &&
+            task.d!.sow![resourceName] &&
             t !== undefined &&
             t.resources === undefined &&
             (t as FarmTileType).isPasture === false
           ) {
             t.resources = { [resourceName]: resourceName === "grain" ? 3 : 2 };
-            task.d!.canSow![resourceName]!--;
+            task.d!.sow![resourceName]!--;
             utils.prepareNextTask(`planted ${resourceName}`);
           } else {
             utils.addResourcesToPlayer(p, {
@@ -912,16 +919,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "wood":
       case "ore":
         if (
-          p.boughtTiles[Cavern.working_cave] &&
-          task.t === Task.feed &&
-          task.d?.num === undefined
-        ) {
-          if (execute) {
-            utils.workingCave(p, resourceName);
-          }
-          return true;
+          !p.boughtTiles[Cavern.working_cave] ||
+          task.t !== Task.feed ||
+          task.d?.num !== undefined
+        )
+          return false;
+        if (execute) {
+          utils.addResourcesToPlayer(p, {
+            food: 2,
+            [resourceName]: resourceName === "ore" ? -2 : -1,
+          });
+          store.gameW.game.tasks[0].d = { num: 1 };
+          store.update(`ate ${resourceName}`);
         }
-        return false;
+        return true;
     }
   }
 }

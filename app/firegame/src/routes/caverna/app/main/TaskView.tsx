@@ -32,10 +32,10 @@ function Current() {
                             .map(({ k }) => k)
                             .join(","),
                         },
-                    t.d.toBuild === undefined
+                    t.d.build === undefined
                       ? null
                       : {
-                          toBuild: Buildable[t.d.toBuild],
+                          toBuild: Buildable[t.d.build],
                         }
                   )
                 )}
@@ -93,7 +93,12 @@ function Special() {
   if (task.t === Task.feed) {
     return (
       <div className={styles.bubble}>
-        <button onClick={() => utils.feed(p)}>feed</button>
+        <button
+          disabled={!utils.feed(p, false)}
+          onClick={() => utils.feed(p, true)}
+        >
+          feed
+        </button>
       </div>
     );
   }

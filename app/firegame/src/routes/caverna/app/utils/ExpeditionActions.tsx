@@ -58,19 +58,19 @@ const ExpeditionActions: {
     level: 8,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 0, toBuild: Buildable.stable } },
+        { t: Task.build, d: { num: 0, build: Buildable.stable } },
       ]),
   },
   [ExpeditionAction.tunnel]: {
     level: 9,
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.build, d: { toBuild: Buildable.tunnel } }]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.tunnel } }]),
   },
   [ExpeditionAction.fence_1]: {
     level: 9,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, toBuild: Buildable.fence } },
+        { t: Task.build, d: { num: 1, build: Buildable.fence } },
       ]),
   },
   [ExpeditionAction.cow]: { level: 10, reward: { cows: 1 } },
@@ -80,7 +80,7 @@ const ExpeditionActions: {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { num: 2, toBuild: Buildable.double_fence },
+          d: { num: 2, build: Buildable.double_fence },
         },
       ]),
   },
@@ -88,7 +88,7 @@ const ExpeditionActions: {
     level: 11,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 1, toBuild: Buildable.pasture } },
+        { t: Task.build, d: { num: 1, build: Buildable.pasture } },
       ]),
   },
   [ExpeditionAction.dwelling_2_2]: {
@@ -98,7 +98,7 @@ const ExpeditionActions: {
   [ExpeditionAction.field]: {
     level: 12,
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.build, d: { toBuild: Buildable.field } }]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.field } }]),
   },
   [ExpeditionAction.sow]: {
     level: 12,
@@ -107,7 +107,7 @@ const ExpeditionActions: {
   [ExpeditionAction.cavern]: {
     level: 14,
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.build, d: { toBuild: Buildable.cavern } }]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.cavern } }]),
   },
   [ExpeditionAction.breed_2]: {
     level: 14,

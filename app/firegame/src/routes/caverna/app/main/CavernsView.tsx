@@ -40,17 +40,19 @@ export default function CavernsView(props: {
                               style={{
                                 display: "inline-block",
                                 width: "8em",
-                                cursor:
-                                  props.selected === undefined ||
-                                  !utils.canFurnish(t, me, props.selected!)
-                                    ? undefined
-                                    : "pointer",
+                                cursor: !utils.furnish(
+                                  t,
+                                  me,
+                                  props.selected,
+                                  false
+                                )
+                                  ? undefined
+                                  : "pointer",
                                 position: "relative",
                               }}
                               title={cavern.title}
                               onClick={() =>
-                                utils.canFurnish(t, me, props.selected!) &&
-                                utils.furnish(t, me, props.selected!)
+                                utils.furnish(t, me, props.selected, true)
                               }
                             >
                               {(store.gameW.game.purchasedTiles || {})[t] ===

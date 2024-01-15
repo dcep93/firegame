@@ -26,11 +26,9 @@ function ExpeditionsElement() {
               className={styles.bubble}
               style={{
                 flexGrow: 1,
-                cursor: utils.canExpedition(a, me) ? "pointer" : undefined,
+                cursor: utils.expedition(a, me, false) ? "pointer" : undefined,
               }}
-              onClick={() =>
-                utils.canExpedition(a, me) && utils.expedition(a, me)
-              }
+              onClick={() => utils.expedition(a, me, true)}
             >
               <div>level: {ExpeditionActions[a].level}</div>
               <div style={{ width: 0 }}>{ExpeditionAction[a]}</div>
@@ -60,9 +58,9 @@ function RubiesElement() {
               className={styles.bubble}
               style={{
                 flexGrow: 1,
-                cursor: utils.canRubyTrade(a, me) ? "pointer" : undefined,
+                cursor: utils.rubyTrade(a, me, false) ? "pointer" : undefined,
               }}
-              onClick={() => utils.rubyTrade(a, me)}
+              onClick={() => utils.rubyTrade(a, me, true)}
             >
               <div style={{ width: 0 }}>{RubyAction[a]}</div>
               {RubyActions[a].cost && (
