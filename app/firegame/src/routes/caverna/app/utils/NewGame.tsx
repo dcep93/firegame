@@ -86,6 +86,7 @@ export type CaveTileType = {
   isCavern?: boolean; // false for tunnel
   isOreTunnel?: boolean;
   isOreMine?: boolean; // false if ruby mine
+  supply?: ResourcesType;
 };
 
 export type FarmTileType = {

@@ -160,6 +160,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   enrichAndReveal(g: GameType): GameType {
+    g.currentPlayer = g.startingPlayer;
     g.tasks = [{ t: Task.action }];
     g.actions.push(
       utils
@@ -174,6 +175,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .map((d) => Math.max(d, 0))
           .sort((a, b) => a - b))
     );
+    g.players.forEach((p) =>
+      this.getGrid(p)
+        .map(({ t }) => t as CaveTileType)
+        .map((t) => ({ t, s: t.supply }))
+        .filter((s) => s !== undefined)
+        .map(({ t, s }) => ({ t, r: Object.keys(s!)[0] }))
+        .forEach(({ t, r }) => {
+          this.addResourcesToPlayer(p, { [r]: 1 });
+          t.supply = this.addResources(t.supply!, { [r]: -1 }) || {};
+        })
+    );
     if (g.actionBonuses === undefined) {
       g.actionBonuses = {};
     }
@@ -187,7 +199,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ? Object.assign({}, e![0])
               : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
       );
-    g.currentPlayer = g.startingPlayer;
 
     g.players
       .map((p) => ({
@@ -326,7 +337,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     this.addResourcesToPlayer(p, this.furnishCost(t, p));
     p.boughtTiles[t] = true;
-    p.cave[selected[0]]![selected[1]] = { tile: t };
+    const tt = { tile: t, supply: Caverns[t].supply || {} };
+    p.cave[selected[0]]![selected[1]] = tt;
     this.prepareNextTask(`furnished ${Cavern[t]}`);
   }
 
@@ -674,7 +686,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             }
             return true;
           case Buildable.double_fence:
-            // TODO double_fence
+            // TODO Buildable double_fence
             break;
           case Buildable.stable:
             if (farmTile === undefined) {
@@ -689,7 +701,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             }
             return true;
           case Buildable.farm_tile:
-            // TODO farm_tile
+            // TODO Buildable farm_tile
             break;
           case Buildable.pasture:
             if (farmTile === undefined) {
@@ -715,10 +727,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const caveTile = t as CaveTileType;
     switch (task.d!.toBuild) {
       case Buildable.cavern_tunnel:
-        // TODO cavern_tunnel
+        // TODO Buildable cavern_tunnel
         break;
       case Buildable.double_cavern:
-        // TODO double_cavern
+        // TODO Buildable double_cavern
         break;
       case Buildable.tunnel:
         if (caveTile !== undefined) return false;
@@ -733,7 +745,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         return true;
       case Buildable.ore_mine:
-        // TODO ore_mine
+        // TODO Buildable ore_mine
         break;
       case Buildable.ruby_mine:
         if (caveTile?.isCavern !== false || caveTile.isOreMine !== undefined)

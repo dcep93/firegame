@@ -73,7 +73,7 @@ export type CavernType = {
   onPurchase?: (p: PlayerType) => void;
   action?: (p: PlayerType) => void;
   animalRoom?: (r: AnimalResourcesType, p: PlayerType) => boolean;
-  supply?: ResourcesType; // TODO cavern supply
+  supply?: ResourcesType;
 };
 
 const Caverns: { [t in Cavern]: CavernType } = {
