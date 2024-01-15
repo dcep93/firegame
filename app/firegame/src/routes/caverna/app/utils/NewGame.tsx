@@ -13,9 +13,9 @@ export enum Task {
   furnish_dwelling,
   build,
   beer_parlor,
-  // TODO Task
   sow,
 
+  // TODO Task
   feed,
   finish_year,
   wish_for_children,

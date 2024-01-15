@@ -116,8 +116,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         .map((t) => parseInt(t) as Cavern)
         .map((t) => Caverns[t])
         .filter((t) => t.category === CavernCategory.yellow)
-        .map((tile) =>
-          tile.points !== undefined ? tile.points : tile.pointsF!(p)
+        .map(
+          (tile) => (tile.points !== undefined ? tile.points : tile.pointsF!(p))
+          // TODO include resources on board
         )
         .sum(),
       goldBegging: (p.resources || {}).gold || 0 - 3 * (p.begging || 0),
@@ -478,18 +479,26 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const numDwarves = (p.availableDwarves || []).concat(
       p.usedDwarves || []
     ).length;
+    if (numDwarves === 5) {
+      return p.boughtTiles[Cavern.additional_dwelling] !== undefined;
+    }
     if (numDwarves > 5) {
       return false;
-    }
-    if (numDwarves === 5) {
-      if (p.boughtTiles[Cavern.additional_dwelling] === undefined) return false;
     }
     const numDwellingSpaces = Object.keys(p.boughtTiles)
       .map((t) => parseInt(t) as Cavern)
       .filter((t) => Caverns[t].category === CavernCategory.dwelling)
-      .map((t) =>
-        [Cavern.couple_dwelling, Cavern.starting_dwelling].includes(t) ? 2 : 1
+      .map(
+        (t) =>
+          ((
+            {
+              [Cavern.additional_dwelling]: 0,
+              [Cavern.couple_dwelling]: 2,
+              [Cavern.starting_dwelling]: 2,
+            } as { [c in Cavern]?: number }
+          )[t])
       )
+      .map((space) => (space === undefined ? 1 : space))
       .sum();
     return numDwellingSpaces > numDwarves;
   }
