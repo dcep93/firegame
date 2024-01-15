@@ -29,53 +29,53 @@ export enum Action {
   housework,
   slash_and_burn,
   // 1-3
-  drift_mining_1_3,
-  excavation_1_3,
-  starting_player_1_3,
-  logging_1_3,
+  drift_mining__1_3,
+  excavation__1_3,
+  starting_player__1_3,
+  logging__1_3,
   supplies,
-  ore_mining_1_3,
+  ore_mining__1_3,
   wood_gathering,
-  clearing_1_3,
-  sustenance_1_3,
+  clearing__1_3,
+  sustenance__1_3,
   // 3
   strip_mining,
-  forest_exploration_3,
-  imitation_3,
+  forest_exploration__3,
+  imitation__3,
   // 4-7
-  drift_mining_4_7,
-  excavation_4_7,
-  starting_player_4_7,
-  imitation_4_7,
-  logging_4_7,
-  forest_exploration_4_7,
+  drift_mining__4_7,
+  excavation__4_7,
+  starting_player__4_7,
+  imitation__4_7,
+  logging__4_7,
+  forest_exploration__4_7,
   growth,
-  clearing_4_7,
-  ore_mining_4_7,
-  sustenance_4_7,
+  clearing__4_7,
+  ore_mining__4_7,
+  sustenance__4_7,
   // 5
   depot_5,
   small_scale_drift_mining,
-  weekly_market_5,
-  imitation_5,
-  hardware_rental_5,
-  fence_building_5,
+  weekly_market__5,
+  imitation__5,
+  hardware_rental__5,
+  fence_building__5,
   // 6-7
-  depot_6_7,
-  drift_mining_6_7,
-  weekly_market_6_7,
-  imitation_6_7,
-  hardware_rental_6_7,
-  fence_building_6_7,
+  depot__6_7,
+  drift_mining__6_7,
+  weekly_market__6_7,
+  imitation__6_7,
+  hardware_rental__6_7,
+  fence_building__6_7,
   // 7
   large_depot,
-  imitation_7,
+  imitation__7,
   extension,
 }
 
-// TODO action_titles
 export type ActionType = {
   availability: [number, number];
+  title?: string;
   foodCost?: number;
   enrichment?: ResourcesType[];
   action?: (p: PlayerType) => void;
@@ -206,7 +206,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.sow },
       ]),
   },
-  [Action.drift_mining_1_3]: {
+  [Action.drift_mining__1_3]: {
     availability: [1, 3],
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
@@ -214,7 +214,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.build, d: { toBuild: Buildable.cavern_tunnel } },
       ]),
   },
-  [Action.excavation_1_3]: {
+  [Action.excavation__1_3]: {
     availability: [1, 3],
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
@@ -224,7 +224,7 @@ const Actions: { [a in Action]: ActionType } = {
         },
       ]),
   },
-  [Action.starting_player_1_3]: {
+  [Action.starting_player__1_3]: {
     availability: [1, 3],
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => {
@@ -232,7 +232,7 @@ const Actions: { [a in Action]: ActionType } = {
       store.gameW.game.currentPlayer = utils.myIndex();
     },
   },
-  [Action.logging_1_3]: {
+  [Action.logging__1_3]: {
     availability: [1, 3],
     enrichment: [{ wood: 3 }, { wood: 1 }],
     action: (p: PlayerType) =>
@@ -254,7 +254,7 @@ const Actions: { [a in Action]: ActionType } = {
         gold: 2,
       }),
   },
-  [Action.ore_mining_1_3]: {
+  [Action.ore_mining__1_3]: {
     availability: [1, 3],
     enrichment: [{ ore: 2 }, { ore: 1 }],
     action: (p: PlayerType) =>
@@ -268,7 +268,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ wood: 1 }],
   },
-  [Action.clearing_1_3]: {
+  [Action.clearing__1_3]: {
     availability: [1, 3],
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
@@ -279,7 +279,7 @@ const Actions: { [a in Action]: ActionType } = {
         },
       ]),
   },
-  [Action.sustenance_1_3]: {
+  [Action.sustenance__1_3]: {
     availability: [1, 3],
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) =>
@@ -298,7 +298,7 @@ const Actions: { [a in Action]: ActionType } = {
         wood: 2,
       }),
   },
-  [Action.forest_exploration_3]: {
+  [Action.forest_exploration__3]: {
     availability: [3, 3],
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
@@ -306,11 +306,11 @@ const Actions: { [a in Action]: ActionType } = {
         vegetables: 1,
       }),
   },
-  [Action.imitation_3]: {
+  [Action.imitation__3]: {
     availability: [3, 3],
     foodCost: 4,
   },
-  [Action.drift_mining_4_7]: {
+  [Action.drift_mining__4_7]: {
     availability: [4, 7],
     enrichment: [{ stone: 2 }],
     action: (p: PlayerType) =>
@@ -321,7 +321,7 @@ const Actions: { [a in Action]: ActionType } = {
         },
       ]),
   },
-  [Action.excavation_4_7]: {
+  [Action.excavation__4_7]: {
     availability: [4, 7],
     enrichment: [{ stone: 2 }, { stone: 1 }],
     action: (p: PlayerType) =>
@@ -331,22 +331,22 @@ const Actions: { [a in Action]: ActionType } = {
         },
       ]),
   },
-  [Action.starting_player_4_7]: {
+  [Action.starting_player__4_7]: {
     availability: [4, 7],
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => utils.addResourcesToPlayer(p, { rubies: 1 }),
   },
-  [Action.imitation_4_7]: {
+  [Action.imitation__4_7]: {
     availability: [4, 7],
     foodCost: 2,
   },
-  [Action.logging_4_7]: {
+  [Action.logging__4_7]: {
     availability: [4, 7],
     enrichment: [{ wood: 3 }],
     action: (p: PlayerType) =>
       utils.queueTasks([{ t: Task.expedition, d: { num: 2 } }]),
   },
-  [Action.forest_exploration_4_7]: {
+  [Action.forest_exploration__4_7]: {
     availability: [4, 7],
     enrichment: [{ wood: 2 }, { wood: 1 }],
     action: (p: PlayerType) => utils.addResourcesToPlayer(p, { food: 2 }),
@@ -361,7 +361,7 @@ const Actions: { [a in Action]: ActionType } = {
       ]);
     },
   },
-  [Action.clearing_4_7]: {
+  [Action.clearing__4_7]: {
     availability: [4, 7],
     enrichment: [{ wood: 2 }],
     action: (p: PlayerType) =>
@@ -369,7 +369,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.build, d: { toBuild: Buildable.farm_tile } },
       ]),
   },
-  [Action.ore_mining_4_7]: {
+  [Action.ore_mining__4_7]: {
     availability: [4, 7],
     enrichment: [{ ore: 3 }, { ore: 2 }],
     action: (p: PlayerType) =>
@@ -379,7 +379,7 @@ const Actions: { [a in Action]: ActionType } = {
           utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isMine).length,
       }),
   },
-  [Action.sustenance_4_7]: {
+  [Action.sustenance__4_7]: {
     availability: [4, 7],
     enrichment: [{ grain: 1 }, { vegetables: 1 }],
     action: (p: PlayerType) =>
@@ -402,19 +402,19 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.build, d: { toBuild: Buildable.cavern_tunnel } },
       ]),
   },
-  [Action.weekly_market_5]: {
+  [Action.weekly_market__5]: {
     availability: [5, 5],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { gold: 4 }) &&
       utils.queueTasks([
-        { t: Task.weekly_market, d: { num: Action.weekly_market_5 } },
+        { t: Task.weekly_market, d: { num: Action.weekly_market__5 } },
       ]),
   },
-  [Action.imitation_5]: {
+  [Action.imitation__5]: {
     availability: [5, 5],
     foodCost: 4,
   },
-  [Action.hardware_rental_5]: {
+  [Action.hardware_rental__5]: {
     availability: [5, 5],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -422,7 +422,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.sow },
       ]),
   },
-  [Action.fence_building_5]: {
+  [Action.fence_building__5]: {
     availability: [5, 5],
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
@@ -434,11 +434,11 @@ const Actions: { [a in Action]: ActionType } = {
         },
       ]),
   },
-  [Action.depot_6_7]: {
+  [Action.depot__6_7]: {
     availability: [6, 7],
     enrichment: [{ wood: 1, ore: 1 }],
   },
-  [Action.drift_mining_6_7]: {
+  [Action.drift_mining__6_7]: {
     availability: [6, 7],
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
@@ -446,19 +446,19 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.build, d: { toBuild: Buildable.cavern_tunnel } },
       ]),
   },
-  [Action.weekly_market_6_7]: {
+  [Action.weekly_market__6_7]: {
     availability: [6, 7],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { gold: 4 }) &&
       utils.queueTasks([
-        { t: Task.weekly_market, d: { num: Action.weekly_market_6_7 } },
+        { t: Task.weekly_market, d: { num: Action.weekly_market__6_7 } },
       ]),
   },
-  [Action.imitation_6_7]: {
+  [Action.imitation__6_7]: {
     availability: [6, 7],
     foodCost: 1,
   },
-  [Action.hardware_rental_6_7]: {
+  [Action.hardware_rental__6_7]: {
     availability: [6, 7],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { wood: 2 }) &&
@@ -467,7 +467,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.sow },
       ]),
   },
-  [Action.fence_building_6_7]: {
+  [Action.fence_building__6_7]: {
     availability: [6, 7],
     enrichment: [{ wood: 2 }, { wood: 1 }],
     action: (p: PlayerType) =>
@@ -486,7 +486,7 @@ const Actions: { [a in Action]: ActionType } = {
       { wood: 1, stone: 1, ore: 1 },
     ],
   },
-  [Action.imitation_7]: {
+  [Action.imitation__7]: {
     availability: [7, 7],
     foodCost: 0,
   },

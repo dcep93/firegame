@@ -1,5 +1,5 @@
 import { useState } from "react";
-import BoardView from "./BoardView";
+import ActionsView from "./ActionsView";
 import CavernsView from "./CavernsView";
 import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
 import PlayersView from "./PlayersView";
@@ -12,7 +12,7 @@ export default function Main() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <TaskView />
-      <BoardView />
+      <ActionsView />
       <div style={{ alignSelf: "flex-end" }}>
         <PlayersView selected={selected} updateSelected={updateSelected} />
       </div>

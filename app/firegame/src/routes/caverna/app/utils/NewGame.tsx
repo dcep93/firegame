@@ -28,6 +28,7 @@ export enum Task {
   extension,
 }
 
+// TODO keyof Buildable
 // TODO Buildable
 export enum Buildable {
   fence,
