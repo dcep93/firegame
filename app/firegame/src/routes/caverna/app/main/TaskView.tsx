@@ -66,6 +66,13 @@ function Special() {
       </div>
     );
   }
+  if (task.t === Task.build) {
+    return (
+      <div className={styles.bubble}>
+        <button onClick={() => utils.skipBuild()}>skip</button>
+      </div>
+    );
+  }
   return null;
 }
 

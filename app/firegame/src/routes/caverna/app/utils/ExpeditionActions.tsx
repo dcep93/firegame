@@ -57,7 +57,9 @@ const ExpeditionActions: {
   [ExpeditionAction.stable]: {
     level: 8,
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.build, d: { toBuild: Buildable.stable } }]),
+      utils.queueTasks([
+        { t: Task.build, d: { num: 0, toBuild: Buildable.stable } },
+      ]),
   },
   [ExpeditionAction.tunnel]: {
     level: 9,

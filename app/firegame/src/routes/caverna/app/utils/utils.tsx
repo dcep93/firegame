@@ -473,8 +473,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.gameW.game.tasks.splice(0, 0, ...ts);
   }
 
-  shiftTask() {
-    store.gameW.game.tasks.shift();
+  shiftTask(): TaskType {
+    return store.gameW.game.tasks.shift()!;
   }
 
   prepareNextTask(toUpdate: string) {
@@ -499,12 +499,32 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return utils.getCurrent().usedDwarves![0] !== 0;
     }
     if (task.t === Task.build) {
-      switch (task.d!.toBuild) {
-        case Buildable.fence:
-          return false;
-      }
+      if (
+        task.d!.toBuild === Buildable.stable &&
+        this.getGrid(p).filter(({ t }) => (t as FarmTileType).isStable)
+          .length === 3
+      )
+        return false;
+      const cost = this.getBuildCost(task, p);
+      if (cost === undefined) return true;
+      return this.addResources(cost, p.resources || {}) !== undefined;
     }
     return true;
+  }
+
+  getBuildCost(task: TaskType, p: PlayerType): ResourcesType | undefined {
+    switch (task.d!.toBuild!) {
+      case Buildable.fence:
+      case Buildable.double_fence:
+        return { wood: task.d!.num! - (p.boughtTiles[Tile.carpenter] ? 1 : 0) };
+      case Buildable.stable:
+        return {
+          stone: Math.max(
+            0,
+            task.d!.num! - (p.boughtTiles[Tile.stone_carver] ? 1 : 0)
+          ),
+        };
+    }
   }
 
   getColor(index: number): string {
@@ -540,6 +560,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     p.usedDwarves![0] = level;
     this.addResourcesToPlayer(p, { ore: -level });
     this.prepareNextTask(`forged ${level}`);
+  }
+
+  skipBuild() {
+    const task = this.shiftTask();
+    this.prepareNextTask(`skipped building ${Task[task.d!.toBuild!]}`);
   }
 }
 
