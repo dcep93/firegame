@@ -811,8 +811,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "boars":
       case "cows":
         if (t === undefined) return false;
-        if (resourceName === "dogs" && !(t as FarmTileType).isPasture)
-          return false;
         var allowed = false;
         const cavern = (t as CaveTileType).tile;
         if (cavern !== undefined) {
@@ -830,7 +828,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           const farmTile = t as FarmTileType;
           if (farmTile.isPasture) {
             if (farmTile.isFence) {
-              // TODO fence allowed
+              if (
+                Object.keys(t.resources || {}).filter(
+                  (r) => !["dogs", resourceName].includes(r)
+                ).length === 0 &&
+                ((t.resources || {})[resourceName] || 0) <=
+                  (farmTile.isStable ? 3 : 1)
+              ) {
+                allowed = true;
+              }
+              // TODO double_fence stable allowed animal
             } else if (farmTile.isStable && t.resources === undefined) {
               allowed = true;
             }
