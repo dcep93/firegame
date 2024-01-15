@@ -254,7 +254,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       store.gameW.game.takenActions = {};
     store.gameW.game.takenActions![a] = {
       playerIndex: utils.myIndex(),
-      weaponLevel: p.usedDwarves![0],
+      dwarfIndex: p.usedDwarves.length,
     };
     const bonus = (store.gameW.game.actionBonuses || {})[a];
     if (bonus !== undefined) {
@@ -308,8 +308,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const cost = this.furnishCost(t, p);
     if (this.addResources(p.resources || {}, cost) === undefined) return false;
     const task = this.getTask();
-    if (task.d?.builderResource !== undefined) {
-      if ((cost[task.d?.builderResource] || 0) < 1) return false;
+    if (task.d?.resource !== undefined) {
+      if ((cost[task.d?.resource] || 0) < 1) return false;
     }
     if (task.t === Task.furnish_dwelling) {
       return Caverns[t].category === CavernCategory.dwelling;
@@ -600,11 +600,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.prepareNextTask(`skipped building ${Task[task.d!.toBuild!]}`);
   }
 
-  workingCave(p: PlayerType, cost: ResourcesType, message: string) {
-    this.addResourcesToPlayer(p, { food: 2 });
-    this.addResourcesToPlayer(p, cost);
+  workingCave(p: PlayerType, resourceName: keyof ResourcesType) {
+    this.addResourcesToPlayer(p, {
+      food: 2,
+      [resourceName]: resourceName === "ore" ? -2 : -1,
+    });
     store.gameW.game.tasks[0].d = { num: 1 };
-    store.update(`ate ${message}`);
+    store.update(`ate ${resourceName}`);
   }
 
   beerParlor(p: PlayerType, message: string, reward: ResourcesType) {
@@ -616,7 +618,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   builderExchange(p: PlayerType, builderResource: keyof ResourcesType) {
     this.addResourcesToPlayer(p, { [builderResource]: 1, ore: -1 });
     store.gameW.game.tasks[0].d = {
-      builderResource,
+      resource: builderResource,
     };
     store.update(`converted ore for ${builderResource}`);
   }
@@ -761,10 +763,40 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     resourceName: keyof ResourcesType,
     execute: boolean
   ): boolean {
+    const task = this.getTask();
+    if (
+      task.t === Task.feed &&
+      p.boughtTiles[Cavern.working_cave] &&
+      task.d?.num === undefined
+    ) {
+      if (execute) {
+        this.workingCave(p, resourceName);
+      }
+      return true;
+    }
     // TODO doResource
-    return true;
+    return false;
   }
 }
+
+// export type AnimalResourcesType = {
+//   dogs?: number;
+//   sheep?: number;
+//   donkeys?: number;
+//   boars?: number;
+//   cows?: number;
+// };
+
+// export type ResourcesType = {
+//   food?: number;
+//   stone?: number;
+//   wood?: number;
+//   ore?: number;
+//   rubies?: number;
+//   gold?: number;
+//   grain?: number;
+//   vegetables?: number;
+// } & AnimalResourcesType;
 
 const utils = new Utils();
 

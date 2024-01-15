@@ -94,26 +94,6 @@ function Special() {
     return (
       <div className={styles.bubble}>
         <button onClick={() => utils.feed(p)}>feed</button>
-        {!p.boughtTiles[Cavern.working_cave] ||
-        task.d?.num !== undefined ? null : (
-          <div>
-            {[
-              { message: "eat wood", cost: { wood: -1 } },
-              { message: "eat stone", cost: { stone: -1 } },
-              { message: "eat 2 ore", cost: { ore: -2 } },
-            ].map(({ message, cost }) => (
-              <button
-                key={message}
-                disabled={
-                  utils.addResources(p.resources || {}, cost) === undefined
-                }
-                onClick={() => utils.workingCave(p, cost, message)}
-              >
-                {message}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
     );
   }
@@ -140,7 +120,7 @@ function Special() {
   if (task.t === Task.build) {
     return (
       <div className={styles.bubble}>
-        <button onClick={() => utils.skipBuild()}>skip</button>
+        <button onClick={() => utils.skipBuild()}>skip build</button>
       </div>
     );
   }

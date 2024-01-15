@@ -48,8 +48,8 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
+    resource?: keyof ResourcesType;
     canSow?: ResourcesType;
-    builderResource?: keyof ResourcesType;
     toBuild?: Buildable;
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
   };
@@ -72,7 +72,7 @@ export type GameType = {
   actionBonuses?: { [a in Action]?: ResourcesType };
   takenActions?:
     | {
-        [a in Action]?: { playerIndex: number; weaponLevel: number };
+        [a in Action]?: { playerIndex: number; dwarfIndex: number };
       };
 };
 

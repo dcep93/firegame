@@ -26,7 +26,24 @@ export default function ActionsView() {
                   action: Actions[a],
                   takenAction: (store.gameW.game.takenActions || {})[a],
                 }))
-                .map(({ a, action, takenAction }, j) => (
+                .map((o) => ({
+                  ...o,
+                  usedDwarves:
+                    o.takenAction === undefined
+                      ? undefined
+                      : store.gameW.game.players[o.takenAction!.playerIndex]
+                          .usedDwarves!,
+                }))
+                .map((o) => ({
+                  ...o,
+                  weaponLevel:
+                    o.takenAction === undefined
+                      ? undefined
+                      : o.usedDwarves![
+                          o.usedDwarves!.length - o.takenAction!.dwarfIndex
+                        ],
+                }))
+                .map(({ a, action, takenAction, weaponLevel }, j) => (
                   <div key={a}>
                     <div
                       className={styles.bubble}
@@ -67,9 +84,7 @@ export default function ActionsView() {
                             ),
                           }}
                         >
-                          {takenAction.weaponLevel <= 0
-                            ? null
-                            : takenAction.weaponLevel}
+                          {weaponLevel! <= 0 ? null : weaponLevel}
                         </div>
                       )}
                       <pre style={{ width: 0, fontSize: "small" }}>
