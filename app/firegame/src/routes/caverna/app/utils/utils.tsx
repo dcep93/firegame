@@ -223,22 +223,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return g;
   }
 
-  // TODO move
-  chunk<T>(ts: T[], num: number): T[][] {
-    return ts
-      .reduce(
-        (prev, curr: T) => {
-          if (prev[0].length === num) {
-            prev.unshift([]);
-          }
-          prev[0].push(curr);
-          return prev;
-        },
-        [[]] as T[][]
-      )
-      .reverse();
-  }
-
   getTask(): TaskType {
     return store.gameW.game.tasks[0];
   }

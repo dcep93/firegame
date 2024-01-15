@@ -1,6 +1,7 @@
 import styles from "../../../../shared/styles.module.css";
 import Actions, { Action } from "../utils/Actions";
 import utils, { store } from "../utils/utils";
+import { chunk } from "./Main";
 
 export default function ActionsView() {
   return (
@@ -18,7 +19,7 @@ export default function ActionsView() {
           </div>
         </div>
         <div style={{ display: "flex" }}>
-          {utils.chunk(store.gameW.game.actions, 3).map((a2, i) => (
+          {chunk(store.gameW.game.actions, 3).map((a2, i) => (
             <div key={i}>
               {a2
                 .map((a) => ({

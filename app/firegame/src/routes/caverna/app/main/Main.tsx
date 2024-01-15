@@ -21,3 +21,18 @@ export default function Main() {
     </div>
   );
 }
+
+export function chunk<T>(ts: T[], num: number): T[][] {
+  return ts
+    .reduce(
+      (prev, curr: T) => {
+        if (prev[0].length === num) {
+          prev.unshift([]);
+        }
+        prev[0].push(curr);
+        return prev;
+      },
+      [[]] as T[][]
+    )
+    .reverse();
+}
