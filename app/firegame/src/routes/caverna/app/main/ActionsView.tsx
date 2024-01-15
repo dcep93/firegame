@@ -66,11 +66,9 @@ export default function ActionsView() {
                         width: "5em",
                         height: "4em",
                         position: "relative",
-                        cursor: utils.canAction(a) ? "pointer" : undefined,
+                        cursor: utils.action(a, false) ? "pointer" : undefined,
                       }}
-                      onClick={() =>
-                        utils.canAction(a) && utils.action(a, utils.getMe())
-                      }
+                      onClick={() => utils.action(a, true)}
                     >
                       {takenAction === undefined ? null : (
                         <div

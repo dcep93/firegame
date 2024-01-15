@@ -38,7 +38,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
   getScoreDict(p: PlayerType): { [k: string]: number } {
-    const allResources = this.getGrid(p)
+    const allResources = utils
+      .getGrid(p)
       .filter(({ t }) => t.resources !== undefined)
       .map(({ t }) => t.resources!)
       .concat(p.resources || {})
@@ -100,10 +101,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .map((tile) => tile.points!)
           .sum() +
         2 *
-          this.getGrid(p)
+          utils
+            .getGrid(p)
             .map(({ t }) => ((t as FarmTileType).isFence ? 2 : 0))
             .sum() +
-        this.getGrid(p)
+        utils
+          .getGrid(p)
           .map(({ t }) =>
             (t as CaveTileType).isOreMine === true
               ? 3
@@ -126,17 +129,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   addResourcesToPlayer(p: PlayerType, r: ResourcesType): boolean {
-    const addedResources = this.addResources(p.resources || {}, r);
+    const addedResources = utils.addResources(p.resources || {}, r);
     if (addedResources === undefined) return false;
     p.resources = addedResources;
     if ((r.dogs || 0) > 0 && p.boughtTiles[Cavern.dog_school])
-      this.addResourcesToPlayer(p, { wood: r.dogs! });
+      utils.addResourcesToPlayer(p, { wood: r.dogs! });
     if (
       (r.stone || 0) > 0 &&
       p.boughtTiles[Cavern.seam] &&
       Object.values(r).filter((v) => v < 0).length === 0
     )
-      this.addResourcesToPlayer(p, { ore: r.stone! });
+      utils.addResourcesToPlayer(p, { ore: r.stone! });
     return true;
   }
 
@@ -176,14 +179,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .sort((a, b) => a - b))
     );
     g.players.forEach((p) =>
-      this.getGrid(p)
+      utils
+        .getGrid(p)
         .map(({ t }) => t as CaveTileType)
         .map((t) => ({ t, s: t.supply }))
-        .filter((s) => s !== undefined)
+        .filter(({ s }) => s !== undefined)
         .map(({ t, s }) => ({ t, r: Object.keys(s!)[0] }))
         .forEach(({ t, r }) => {
-          this.addResourcesToPlayer(p, { [r]: 1 });
-          t.supply = this.addResources(t.supply!, { [r]: -1 }) || {};
+          utils.addResourcesToPlayer(p, { [r]: 1 });
+          t.supply = utils.addResources(t.supply!, { [r]: -1 }) || {};
         })
     );
     if (g.actionBonuses === undefined) {
@@ -212,7 +216,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           ).length,
       }))
       .filter(({ p, num }) => num > 0 && p.boughtTiles[Cavern.miner])
-      .forEach(({ p, num }) => this.addResourcesToPlayer(p, { ore: num }));
+      .forEach(({ p, num }) => utils.addResourcesToPlayer(p, { ore: num }));
     return g;
   }
 
@@ -235,61 +239,61 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return store.gameW.game.tasks[0];
   }
 
-  canAction(a: Action): boolean {
+  action(a: Action, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
+    const p = utils.getMe();
     const foodCost = Actions[a].foodCost;
     if (
       foodCost !== undefined &&
-      utils.addResources(utils.getCurrent().resources || {}, {
+      utils.addResources(p.resources || {}, {
         food: foodCost,
       }) === undefined
     )
       return false;
-    const task = this.getTask().t;
+    const task = utils.getTask().t;
     const playerIndex = (store.gameW.game.takenActions || {})[a]?.playerIndex;
-    if (task === Task.action) {
-      return playerIndex === undefined;
+    if (task === Task.action && playerIndex !== undefined) return false;
+    if (
+      task === Task.imitate &&
+      (playerIndex === undefined || playerIndex === p.index)
+    )
+      return false;
+    if (execute) {
+      utils.shiftTask();
+      p.usedDwarves = p
+        .availableDwarves!.splice(0, 1)
+        .concat(p.usedDwarves || []);
+      if (store.gameW.game.takenActions === undefined)
+        store.gameW.game.takenActions = {};
+      store.gameW.game.takenActions![a] = {
+        playerIndex: utils.myIndex(),
+        dwarfIndex: p.usedDwarves.length,
+      };
+      const bonus = (store.gameW.game.actionBonuses || {})[a];
+      if (bonus !== undefined) {
+        utils.addResourcesToPlayer(p, bonus);
+        delete store.gameW.game.actionBonuses![a];
+      }
+      const at = Actions[a];
+      if (at.foodCost !== undefined) {
+        utils.addResourcesToPlayer(p, { food: -at.foodCost });
+        utils.queueTasks([{ t: Task.imitate }]);
+      }
+      if (at.action !== undefined) {
+        at.action(p);
+      }
+      utils.prepareNextTask(`action: ${Action[a]}`);
     }
-    if (task === Task.imitate) {
-      return playerIndex !== undefined && playerIndex !== utils.myIndex();
-    }
-    return false;
-  }
-
-  action(a: Action, p: PlayerType) {
-    this.shiftTask();
-    p.usedDwarves = p
-      .availableDwarves!.splice(0, 1)
-      .concat(p.usedDwarves || []);
-    if (store.gameW.game.takenActions === undefined)
-      store.gameW.game.takenActions = {};
-    store.gameW.game.takenActions![a] = {
-      playerIndex: utils.myIndex(),
-      dwarfIndex: p.usedDwarves.length,
-    };
-    const bonus = (store.gameW.game.actionBonuses || {})[a];
-    if (bonus !== undefined) {
-      utils.addResourcesToPlayer(p, bonus);
-      delete store.gameW.game.actionBonuses![a];
-    }
-    const at = Actions[a];
-    if (at.foodCost !== undefined) {
-      utils.addResourcesToPlayer(p, { food: -at.foodCost });
-      utils.queueTasks([{ t: Task.imitate }]);
-    }
-    if (at.action !== undefined) {
-      at.action(p);
-    }
-    this.prepareNextTask(`action: ${Action[a]}`);
+    return true;
   }
 
   furnishCost(t: Cavern, p: PlayerType): ResourcesType {
     var cost = Caverns[t].cost;
     if (cost.wood !== undefined && p.boughtTiles[Cavern.carpenter]) {
-      cost = this.addResources(cost, { wood: -1 })!;
+      cost = utils.addResources(cost, { wood: -1 })!;
     }
     if (cost.stone !== undefined && p.boughtTiles[Cavern.stone_carver]) {
-      cost = this.addResources(cost, { stone: -1 })!;
+      cost = utils.addResources(cost, { stone: -1 })!;
     }
     return cost;
   }
@@ -316,9 +320,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return false;
       }
     }
-    const cost = this.furnishCost(t, p);
-    if (this.addResources(p.resources || {}, cost) === undefined) return false;
-    const task = this.getTask();
+    const cost = utils.furnishCost(t, p);
+    if (utils.addResources(p.resources || {}, cost) === undefined) return false;
+    const task = utils.getTask();
     if (task.d?.resource !== undefined) {
       if ((cost[task.d?.resource] || 0) < 1) return false;
     }
@@ -329,22 +333,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   furnish(t: Cavern, p: PlayerType, selected: [number, number, number]) {
-    this.shiftTask();
+    utils.shiftTask();
     if (t !== Cavern.dwelling) {
       if (store.gameW.game.purchasedTiles === undefined)
         store.gameW.game.purchasedTiles = {};
       store.gameW.game.purchasedTiles[t] = p.index;
     }
-    this.addResourcesToPlayer(p, this.furnishCost(t, p));
+    utils.addResourcesToPlayer(p, utils.furnishCost(t, p));
     p.boughtTiles[t] = true;
     const tt = { tile: t, supply: Caverns[t].supply || {} };
     p.cave[selected[0]]![selected[1]] = tt;
-    this.prepareNextTask(`furnished ${Cavern[t]}`);
+    utils.prepareNextTask(`furnished ${Cavern[t]}`);
   }
 
   canRubyTrade(a: RubyAction, p: PlayerType): boolean {
     return (
-      this.addResources(
+      utils.addResources(
         p.resources || {},
         RubyActions[a].cost || { rubies: -1 }
       ) !== undefined
@@ -353,15 +357,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   rubyTrade(a: RubyAction, p: PlayerType) {
     const ra = RubyActions[a];
-    this.addResourcesToPlayer(p, ra.cost || { rubies: -1 });
+    utils.addResourcesToPlayer(p, ra.cost || { rubies: -1 });
     if (ra.action) ra.action(p);
-    if (ra.reward) this.addResourcesToPlayer(p, ra.reward);
+    if (ra.reward) utils.addResourcesToPlayer(p, ra.reward);
     store.update(`traded ruby for ${RubyAction[a]}`);
   }
 
   canExpedition(a: ExpeditionAction, p: PlayerType): boolean {
     if (!utils.isMyTurn()) return false;
-    const taskObj = this.getTask();
+    const taskObj = utils.getTask();
     if (taskObj.t !== Task.expedition) return false;
     if ((taskObj.d!.expeditionsTaken || {})[a] !== undefined) return false;
     if (a === ExpeditionAction.strength && taskObj.d!.num !== 1) return false;
@@ -370,21 +374,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   expedition(a: ExpeditionAction, p: PlayerType) {
-    const t = this.getTask();
+    const t = utils.getTask();
     if (--t.d!.num! === 0) {
-      this.shiftTask();
+      utils.shiftTask();
     } else {
       if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
       t.d!.expeditionsTaken[a] = true;
     }
     const e = ExpeditionActions[a];
     if (e.reward !== undefined) {
-      this.addResourcesToPlayer(p, e.reward);
+      utils.addResourcesToPlayer(p, e.reward);
     }
     if (e.action !== undefined) {
       e.action(p);
     }
-    this.prepareNextTask(`expedition: ${ExpeditionAction[a]}`);
+    utils.prepareNextTask(`expedition: ${ExpeditionAction[a]}`);
   }
 
   canPayRubyOutOfOrder(p: PlayerType, index: number): boolean {
@@ -410,12 +414,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   canSlaughter(p: PlayerType): boolean {
-    return Object.keys(this._toSlaughter(p)).length > 0;
+    return Object.keys(utils._toSlaughter(p)).length > 0;
   }
 
   slaughter(p: PlayerType) {
-    const toSlaughter = this._toSlaughter(p);
-    this.addResourcesToPlayer(p, {
+    const toSlaughter = utils._toSlaughter(p);
+    utils.addResourcesToPlayer(p, {
       food:
         Object.entries(toSlaughter)
           .map(([r, c]) => ({
@@ -442,7 +446,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           ? 0
           : -Object.values(toSlaughter).sum()),
     });
-    this.addResourcesToPlayer(p, toSlaughter);
+    utils.addResourcesToPlayer(p, toSlaughter);
   }
 
   // TODO cant finish turn if animals to slaughter
@@ -450,12 +454,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     while (true) {
       utils.incrementPlayerTurn();
       if ((utils.getCurrent().availableDwarves || []).length > 0) {
-        this.queueTasks([{ t: Task.action }]);
+        utils.queueTasks([{ t: Task.action }]);
         return;
       }
       if (utils.isMyTurn()) {
         store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        this.queueTasks([{ t: Task.feed }]);
+        utils.queueTasks([{ t: Task.feed }]);
         return;
       }
     }
@@ -467,21 +471,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
         (!p.boughtTiles[Cavern.mining_cave]
           ? 0
-          : this.getGrid(p).filter(
-              ({ t }) =>
-                t.resources?.donkeys !== undefined &&
-                (t as CaveTileType).isOreMine !== undefined
-            ).length)
+          : utils
+              .getGrid(p)
+              .filter(
+                ({ t }) =>
+                  t.resources?.donkeys !== undefined &&
+                  (t as CaveTileType).isOreMine !== undefined
+              ).length)
     );
   }
 
   canFeed(p: PlayerType): boolean {
-    return ((p.resources || {}).food || 0) >= this._numToFeed(p);
+    return ((p.resources || {}).food || 0) >= utils._numToFeed(p);
   }
 
   feed(p: PlayerType) {
-    const numToFeed = this._numToFeed(p);
-    this.addResourcesToPlayer(p, { food: -numToFeed });
+    const numToFeed = utils._numToFeed(p);
+    utils.addResourcesToPlayer(p, { food: -numToFeed });
     utils.incrementPlayerTurn();
     if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
       store.gameW.game.tasks = [{ t: Task.breed }];
@@ -527,16 +533,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   prepareNextTask(toUpdate: string) {
     while (true) {
-      if (this.canUpcomingTask()) break;
-      this.shiftTask();
+      if (utils.canUpcomingTask()) break;
+      utils.shiftTask();
     }
     store.update(toUpdate);
   }
 
   canUpcomingTask(): boolean {
-    const task = this.getTask();
+    const task = utils.getTask();
     if (task === undefined) {
-      this.finishTurn();
+      utils.finishTurn();
       return true;
     }
     const p = utils.getCurrent();
@@ -561,13 +567,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (task.t === Task.build) {
       if (
         task.d!.toBuild === Buildable.stable &&
-        this.getGrid(p).filter(({ t }) => (t as FarmTileType).isStable)
+        utils.getGrid(p).filter(({ t }) => (t as FarmTileType).isStable)
           .length === 3
       )
         return false;
       return (
-        this.addResources(
-          this.getBuildCost(task, p) || {},
+        utils.addResources(
+          utils.getBuildCost(task, p) || {},
           p.resources || {}
         ) !== undefined
       );
@@ -605,9 +611,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   numAdjacentToStateParlor(p: PlayerType): number {
-    const coords = this.getGrid(p).find(
-      ({ t }) => (t as CaveTileType).tile === Cavern.state_parlor
-    )!;
+    const coords = utils
+      .getGrid(p)
+      .find(({ t }) => (t as CaveTileType).tile === Cavern.state_parlor)!;
     return [
       [-1, 0],
       [1, 0],
@@ -622,21 +628,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   forge(p: PlayerType, level: number) {
-    this.shiftTask();
+    utils.shiftTask();
     p.usedDwarves![0] = level;
-    this.addResourcesToPlayer(p, {
+    utils.addResourcesToPlayer(p, {
       ore: -level + (p.boughtTiles[Cavern.blacksmith] ? 2 : 0),
     });
-    this.prepareNextTask(`forged ${level}`);
+    utils.prepareNextTask(`forged ${level}`);
   }
 
   skipBuild() {
-    const task = this.shiftTask();
-    this.prepareNextTask(`skipped building ${Task[task.d!.toBuild!]}`);
+    const task = utils.shiftTask();
+    utils.prepareNextTask(`skipped building ${Task[task.d!.toBuild!]}`);
   }
 
   workingCave(p: PlayerType, resourceName: keyof ResourcesType) {
-    this.addResourcesToPlayer(p, {
+    utils.addResourcesToPlayer(p, {
       food: 2,
       [resourceName]: resourceName === "ore" ? -2 : -1,
     });
@@ -645,13 +651,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   beerParlor(p: PlayerType, message: string, reward: ResourcesType) {
-    this.shiftTask();
-    this.addResourcesToPlayer(p, reward);
-    this.prepareNextTask(`earned ${message}`);
+    utils.shiftTask();
+    utils.addResourcesToPlayer(p, reward);
+    utils.prepareNextTask(`earned ${message}`);
   }
 
   builderExchange(p: PlayerType, builderResource: keyof ResourcesType) {
-    this.addResourcesToPlayer(p, { [builderResource]: 1, ore: -1 });
+    utils.addResourcesToPlayer(p, { [builderResource]: 1, ore: -1 });
     store.gameW.game.tasks[0].d = {
       resource: builderResource,
     };
@@ -665,9 +671,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     execute: boolean
   ): boolean {
     if (task.t !== Task.build) return false;
-    const t = this.getGrid(p).find(({ i, j, k }) =>
-      this.objEqual([i, j, k], coords)
-    );
+    const t = utils
+      .getGrid(p)
+      .find(({ i, j, k }) => utils.objEqual([i, j, k], coords));
     switch (task.d!.toBuild) {
       case Buildable.fence:
       case Buildable.double_fence:
@@ -770,12 +776,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         g[coords[1]] = {};
       }
     }
-    const task = this.getTask();
+    const task = utils.getTask();
     return (
-      this._buildHereBeforePaying(task, p, coords, execute) &&
+      utils._buildHereBeforePaying(task, p, coords, execute) &&
       execute &&
-      this.addResourcesToPlayer(p, this.getBuildCost(task, p) || {}) &&
-      this.addResourcesToPlayer(
+      utils.addResourcesToPlayer(p, utils.getBuildCost(task, p) || {}) &&
+      utils.addResourcesToPlayer(
         p,
         {
           "0.2.0": { boars: 1 },
@@ -794,10 +800,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     resourceName: keyof ResourcesType,
     execute: boolean
   ): boolean {
-    const task = this.getTask();
-    const t = this.getGrid(p).find(({ i, j, k }) =>
-      this.objEqual([i, j, k], selected)
-    )?.t;
+    const task = utils.getTask();
+    const t = utils
+      .getGrid(p)
+      .find(({ i, j, k }) => utils.objEqual([i, j, k], selected))?.t;
     switch (resourceName) {
       case "food":
       case "rubies":
@@ -809,7 +815,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "vegetables":
         if (execute) {
           if (
-            this.isMyTurn() &&
+            utils.isMyTurn() &&
             task.t === Task.sow &&
             task.d!.canSow![resourceName] &&
             t !== undefined &&
@@ -818,9 +824,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           ) {
             t.resources = { [resourceName]: resourceName === "grain" ? 3 : 2 };
             task.d!.canSow![resourceName]!--;
-            this.prepareNextTask(`planted ${resourceName}`);
+            utils.prepareNextTask(`planted ${resourceName}`);
           } else {
-            this.addResourcesToPlayer(p, {
+            utils.addResourcesToPlayer(p, {
               food: resourceName === "vegetables" ? 2 : 1,
               [resourceName]: -1,
             });
@@ -841,7 +847,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           if (
             c.animalRoom !== undefined &&
             c.animalRoom(
-              this.addResources(t.resources || {}, { [resourceName]: 1 })!,
+              utils.addResources(t.resources || {}, { [resourceName]: 1 })!,
               p
             )
           ) {
@@ -898,7 +904,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (execute) {
           if (!t.resources) t.resources = {};
           t.resources[resourceName] = 1 + (t.resources[resourceName] || 0);
-          this.addResourcesToPlayer(p, { [resourceName]: -1 });
+          utils.addResourcesToPlayer(p, { [resourceName]: -1 });
           store.update(`moved ${resourceName}`);
         }
         return true;
@@ -911,7 +917,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           task.d?.num === undefined
         ) {
           if (execute) {
-            this.workingCave(p, resourceName);
+            utils.workingCave(p, resourceName);
           }
           return true;
         }
