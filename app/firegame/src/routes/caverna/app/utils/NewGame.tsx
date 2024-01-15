@@ -28,8 +28,6 @@ export enum Task {
   extension,
 }
 
-// TODO keyof Buildable
-// TODO Buildable
 export enum Buildable {
   fence,
   double_fence,
@@ -93,6 +91,7 @@ export type FarmTileType = {
   resources?: ResourcesType;
   isStable?: boolean;
   isPasture?: boolean;
+  isField?: boolean;
   isFence?: boolean;
   doubleFenceAngleDeg?: number;
 };

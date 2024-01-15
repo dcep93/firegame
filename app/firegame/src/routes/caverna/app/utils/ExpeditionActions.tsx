@@ -1,7 +1,6 @@
 import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
 import utils from "./utils";
 
-// TODO keyof ExpeditionAction
 export enum ExpeditionAction {
   strength,
   wood,

@@ -611,6 +611,103 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     };
     store.update(`converted ore for ${builderResource}`);
   }
+
+  _buildHereBeforePaying(
+    task: TaskType,
+    p: PlayerType,
+    coords: [number, number, number],
+    execute: boolean
+  ): boolean {
+    if (task.t !== Task.build) return false;
+    const t = this.getGrid(p).find(({ i, j, k }) =>
+      this.objEqual([i, j, k], coords)
+    );
+    switch (task.d!.toBuild) {
+      case Buildable.fence:
+      case Buildable.double_fence:
+      case Buildable.stable:
+      case Buildable.farm_tile:
+      case Buildable.pasture:
+      case Buildable.field:
+        if (coords[2] !== 0) return false;
+        const farmTile = t as FarmTileType;
+        switch (task.d!.toBuild) {
+          case Buildable.fence:
+            if (farmTile.isFence || !farmTile.isPasture) return false;
+            if (execute) {
+              farmTile.isFence = true;
+            }
+            return true;
+          case Buildable.double_fence:
+            // TODO double_fence
+            break;
+          case Buildable.stable:
+            if (farmTile.isStable) return false;
+            if (execute) {
+              farmTile.isStable = true;
+            }
+            return true;
+          case Buildable.farm_tile:
+            // TODO farm_tile
+            break;
+          case Buildable.pasture:
+            if (farmTile.isPasture || farmTile.isField) return false;
+            if (execute) {
+              farmTile.isPasture = true;
+            }
+            return true;
+          case Buildable.field:
+            if (farmTile.isPasture || farmTile.isField) return false;
+            if (execute) {
+              farmTile.isField = true;
+            }
+            return true;
+        }
+    }
+    if (coords[2] !== 1) return false;
+    const caveTile = t as CaveTileType;
+    switch (task.d!.toBuild) {
+      case Buildable.cavern_tunnel:
+        // TODO cavern_tunnel
+        break;
+      case Buildable.double_cavern:
+        // TODO double_cavern
+        break;
+      case Buildable.tunnel:
+        if (caveTile !== undefined) return false;
+        if (execute) {
+          // p.cave[coords[0]][coords[1]] = {}
+        }
+        return true;
+    }
+    // cavern_tunnel,
+    // double_cavern,
+    // tunnel,
+    // cavern,
+    // ore_mine,
+    // ruby_mine,
+    return false;
+  }
+
+  buildHere(
+    p: PlayerType,
+    coords: [number, number, number],
+    execute: boolean
+  ): boolean {
+    if (execute) {
+      p.farm = {};
+      const g = [p.farm, p.cave][coords[2]];
+      if (g[coords[1]] === undefined) {
+        g[coords[1]] = {};
+      }
+    }
+    const task = this.getTask();
+    return (
+      this._buildHereBeforePaying(task, p, coords, execute) &&
+      execute &&
+      this.addResourcesToPlayer(p, this.getBuildCost(task, p) || {})
+    );
+  }
 }
 
 const utils = new Utils();

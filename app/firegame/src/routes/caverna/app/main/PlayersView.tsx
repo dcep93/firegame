@@ -5,10 +5,12 @@ import utils, { store } from "../utils/utils";
 // click animal -> goes to slaughterhouse
 // select square -> click animal -> goes to square
 
-export default function PlayersView(props: {
+type SelectedPropsType = {
   selected: [number, number, number] | undefined;
   updateSelected: (s: [number, number, number] | undefined) => void;
-}) {
+};
+
+export default function PlayersView(props: SelectedPropsType) {
   return (
     <div>
       {store.gameW.game.players
@@ -20,27 +22,17 @@ export default function PlayersView(props: {
             ]
         )
         .map((p, i) => (
-          <Player
-            key={i}
-            p={p}
-            updateSelected={(s: [number, number, number]) =>
-              p.userId === store.me.userId &&
-              (JSON.stringify(props.selected) === JSON.stringify(s)
-                ? props.updateSelected(undefined)
-                : props.updateSelected(s))
-            }
-            selected={p.userId !== store.me.userId ? undefined : props.selected}
-          />
+          <Player key={i} p={p} {...props} />
         ))}
     </div>
   );
 }
 
-function Player(props: {
-  p: PlayerType;
-  selected: [number, number, number] | undefined;
-  updateSelected: (s: [number, number, number]) => void;
-}) {
+function Player(
+  props: {
+    p: PlayerType;
+  } & SelectedPropsType
+) {
   const scoreDict = utils.getScoreDict(props.p);
   return (
     <div>
@@ -124,36 +116,26 @@ function Player(props: {
         </div>
         <div style={{ display: "flex" }}>
           <Grid
-            p={props.p}
             title={"farm"}
+            selectedIndex={0}
             // TODO render farm
-            f={(i, j) => (
+            f={([i, j, k]) => (
               <div>
                 {i}.{j}
               </div>
             )}
-            selected={
-              (props.selected || [])[2] !== 0 ? undefined : props.selected
-            }
-            updateSelected={(i: number, j: number) =>
-              props.updateSelected([i, j, 0])
-            }
+            {...props}
           />
           <Grid
-            p={props.p}
             title={"cave"}
+            selectedIndex={1}
             // TODO render cave
-            f={(i, j) => (
+            f={([i, j, k]) => (
               <div>
                 {i}.{j}
               </div>
             )}
-            selected={
-              (props.selected || [])[2] !== 1 ? undefined : props.selected
-            }
-            updateSelected={(i: number, j: number) =>
-              props.updateSelected([i, j, 1])
-            }
+            {...props}
           />
         </div>
       </div>
@@ -161,39 +143,56 @@ function Player(props: {
   );
 }
 
-function Grid(props: {
-  p: PlayerType;
-  title: string;
-  f: (i: number, j: number) => JSX.Element;
-  selected: [number, number, number] | undefined;
-  updateSelected: (i: number, j: number) => void;
-}) {
+function Grid(
+  props: {
+    p: PlayerType;
+    title: string;
+    selectedIndex: number;
+    f: (coords: [number, number, number]) => JSX.Element;
+  } & SelectedPropsType
+) {
   return (
     <div className={styles.bubble}>
       <h4>{props.title}</h4>
       {utils.count(4).map((i) => (
         <div key={i} style={{ display: "flex" }}>
-          {utils.count(3).map((j) => (
-            <div
-              key={`${i}.${j}`}
-              style={{
-                border: "2px solid black",
-                width: "8em",
-                height: "4em",
-                backgroundColor:
-                  props.selected === undefined ||
-                  props.selected[0] !== i ||
-                  props.selected[1] !== j
+          {utils
+            .count(3)
+            .map((j) => [i, j, props.selectedIndex] as [number, number, number])
+            .map((coords) => (
+              <div
+                key={coords.join(".")}
+                style={{
+                  border: "2px solid black",
+                  width: "8em",
+                  height: "4em",
+                  backgroundColor: !utils.objEqual(coords, props.selected)
                     ? undefined
                     : "lightgrey",
-              }}
-              onClick={() => props.updateSelected(i, j)}
-            >
-              {props.f(i, j)}
-            </div>
-          ))}
+                  cursor: utils.buildHere(props.p, coords, false)
+                    ? "pointer"
+                    : undefined,
+                }}
+                onClick={() =>
+                  utils.buildHere(props.p, coords, true) ||
+                  props.updateSelected(
+                    utils.objEqual(coords, props.selected) ? undefined : coords
+                  )
+                }
+              >
+                {props.f(coords)}
+              </div>
+            ))}
         </div>
       ))}
     </div>
   );
 }
+
+// updateSelected={(s: [number, number, number]) =>
+//   p.userId === store.me.userId &&
+//   (JSON.stringify(props.selected) === JSON.stringify(s)
+//     ? props.updateSelected(undefined)
+//     : props.updateSelected(s))
+// }
+// selected={p.userId !== store.me.userId ? undefined : props.selected}
