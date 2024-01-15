@@ -1,8 +1,8 @@
 import { useState } from "react";
 import BoardView from "./BoardView";
+import CavernsView from "./CavernsView";
 import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
 import PlayersView from "./PlayersView";
-import CavernsView from "./StoreBoard";
 import TaskView from "./TaskView";
 
 export default function Main() {
