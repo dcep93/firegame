@@ -80,6 +80,8 @@ const Caverns: { [t in Cavern]: CavernType } = {
   [Cavern.starting_dwelling]: {
     cost: {},
     category: CavernCategory.dwelling,
+    animalRoom: (r: AnimalResourcesType, p: PlayerType) =>
+      Object.keys(r).length === 1 && Object.values(r)[0] <= 2,
     points: 0,
   },
   [Cavern.dwelling]: {
@@ -134,7 +136,6 @@ const Caverns: { [t in Cavern]: CavernType } = {
     cost: { wood: 1, ore: 1 },
     category: CavernCategory.green,
     points: 1,
-    // TODO you can keep 1 animal on each empty field
   },
   [Cavern.work_room]: {
     cost: { stone: 1 },

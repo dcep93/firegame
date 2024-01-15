@@ -83,16 +83,15 @@ export type Params = {
 export type CaveTileType = {
   resources?: ResourcesType;
   tile?: Cavern;
-  isCavern?: boolean;
+  isCavern?: boolean; // false for tunnel
   isOreTunnel?: boolean;
-  isOreMine?: boolean;
-  isRubyMine?: boolean;
+  isOreMine?: boolean; // false if ruby mine
 };
 
 export type FarmTileType = {
   resources?: ResourcesType;
   isStable?: boolean;
-  isPasture?: boolean;
+  isPasture?: boolean; // false for field
   isFence?: boolean;
   doubleFenceAngleDeg?: number;
 };

@@ -156,8 +156,9 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isOreMine)
-            .length,
+          utils
+            .getGrid(p)
+            .filter(({ t }) => (t as CaveTileType).isOreMine === true).length,
       }),
   },
   [Action.ore_trading]: {
@@ -171,7 +172,9 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, {
         rubies:
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isRubyMine)
+          utils
+            .getGrid(p)
+            .filter(({ t }) => (t as CaveTileType).isOreMine === false)
             .length >= 2
             ? 1
             : 0,
@@ -192,7 +195,9 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, {
         rubies:
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isRubyMine)
+          utils
+            .getGrid(p)
+            .filter(({ t }) => (t as CaveTileType).isOreMine === false)
             .length >= 1
             ? 1
             : 0,
@@ -265,8 +270,9 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isOreMine)
-            .length,
+          utils
+            .getGrid(p)
+            .filter(({ t }) => (t as CaveTileType).isOreMine === true).length,
       }),
   },
   [Action.wood_gathering]: {
@@ -381,8 +387,9 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils.getGrid(p).filter(({ t }) => (t as CaveTileType).isOreMine)
-            .length,
+          utils
+            .getGrid(p)
+            .filter(({ t }) => (t as CaveTileType).isOreMine === true).length,
       }),
   },
   [Action.sustenance__4_7]: {

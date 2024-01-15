@@ -105,10 +105,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             .sum() +
         this.getGrid(p)
           .map(({ t }) =>
-            (t as CaveTileType).isRubyMine
-              ? 4
-              : (t as CaveTileType).isOreMine
+            (t as CaveTileType).isOreMine === true
               ? 3
+              : (t as CaveTileType).isOreMine === false
+              ? 4
               : 0
           )
           .sum(),
@@ -196,8 +196,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .map(
             ({ t }) =>
               t.resources?.donkeys !== undefined &&
-              (t as CaveTileType).isOreMine &&
-              !(t as CaveTileType).isRubyMine
+              (t as CaveTileType).isOreMine === true
           ).length,
       }))
       .filter(({ p, num }) => num > 0 && p.boughtTiles[Cavern.miner])
@@ -431,6 +430,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.addResourcesToPlayer(p, toSlaughter);
   }
 
+  // TODO cant finish turn if animals to slaughter
   finishTurn() {
     while (true) {
       utils.incrementPlayerTurn();
@@ -455,7 +455,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           : this.getGrid(p).filter(
               ({ t }) =>
                 t.resources?.donkeys !== undefined &&
-                (t as CaveTileType).isOreMine
+                (t as CaveTileType).isOreMine !== undefined
             ).length)
     );
   }
@@ -526,6 +526,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (task.t === Task.expedition) {
       return utils.getCurrent().usedDwarves![0] !== 0;
     }
+    if (task.t === Task.sow) {
+      return (
+        Object.entries(task.d!.canSow!).filter(
+          ([resourceName, count]) =>
+            (p.resources || {})[resourceName as keyof ResourcesType]! * count >
+            0
+        ).length > 0
+      );
+    }
     if (task.t === Task.build) {
       if (
         task.d!.toBuild === Buildable.stable &&
@@ -533,9 +542,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .length === 3
       )
         return false;
-      const cost = this.getBuildCost(task, p);
-      if (cost === undefined) return true;
-      return this.addResources(cost, p.resources || {}) !== undefined;
+      return (
+        this.addResources(
+          this.getBuildCost(task, p) || {},
+          p.resources || {}
+        ) !== undefined
+      );
     }
     return true;
   }
@@ -713,14 +725,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         // TODO ore_mine
         break;
       case Buildable.ruby_mine:
-        if (
-          caveTile?.isCavern !== false ||
-          caveTile.isOreMine ||
-          caveTile.isRubyMine
-        )
+        if (caveTile?.isCavern !== false || caveTile.isOreMine !== undefined)
           return false;
         if (execute) {
-          caveTile.isRubyMine = true;
+          caveTile.isOreMine = false;
         }
         return true;
     }
@@ -764,39 +772,123 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     execute: boolean
   ): boolean {
     const task = this.getTask();
-    if (
-      task.t === Task.feed &&
-      p.boughtTiles[Cavern.working_cave] &&
-      task.d?.num === undefined
-    ) {
-      if (execute) {
-        this.workingCave(p, resourceName);
-      }
-      return true;
+    const t = this.getGrid(p).find(({ i, j, k }) =>
+      this.objEqual([i, j, k], selected)
+    )?.t;
+    switch (resourceName) {
+      case "food":
+      case "rubies":
+        return false;
+      case "gold":
+        // TODO eat gold
+        return false;
+      case "grain":
+      case "vegetables":
+        if (execute) {
+          if (
+            this.isMyTurn() &&
+            task.t === Task.sow &&
+            task.d!.canSow![resourceName] &&
+            t !== undefined &&
+            t.resources === undefined &&
+            (t as FarmTileType).isPasture === false
+          ) {
+            t.resources = { [resourceName]: resourceName === "grain" ? 3 : 2 };
+            task.d!.canSow![resourceName]!--;
+            this.prepareNextTask(`planted ${resourceName}`);
+          } else {
+            this.addResourcesToPlayer(p, {
+              food: resourceName === "vegetables" ? 2 : 1,
+              [resourceName]: -1,
+            });
+            store.update(`ate ${resourceName}`);
+          }
+        }
+        return true;
+      case "dogs":
+      case "sheep":
+      case "donkeys":
+      case "boars":
+      case "cows":
+        if (t === undefined) return false;
+        if (resourceName === "dogs" && !(t as FarmTileType).isPasture)
+          return false;
+        var allowed = false;
+        const cavern = (t as CaveTileType).tile;
+        if (cavern !== undefined) {
+          const c = Caverns[cavern];
+          if (
+            c.animalRoom !== undefined &&
+            c.animalRoom(
+              this.addResources(t.resources || {}, { [resourceName]: 1 })!,
+              p
+            )
+          ) {
+            allowed = true;
+          }
+        } else {
+          const farmTile = t as FarmTileType;
+          if (farmTile.isPasture) {
+            if (farmTile.isFence) {
+              // TODO fence allowed
+            } else if (farmTile.isStable && t.resources === undefined) {
+              allowed = true;
+            }
+          } else if (
+            p.boughtTiles[Cavern.stubble_room] &&
+            t.resources === undefined &&
+            farmTile.isPasture === false
+          ) {
+            allowed = true;
+          }
+        }
+        if (!allowed) {
+          switch (resourceName) {
+            case "dogs":
+              allowed = true;
+              break;
+            case "sheep":
+              allowed = (t.resources?.dogs || -1) >= (t.resources?.sheep || 0);
+              break;
+            case "donkeys":
+              allowed =
+                t.resources === undefined &&
+                (t as CaveTileType).isOreMine !== undefined;
+              break;
+            case "boars":
+              allowed =
+                t.resources === undefined &&
+                (t as FarmTileType).isStable === true;
+              break;
+            case "cows":
+              break;
+          }
+        }
+        if (!allowed) return false;
+        if (execute) {
+          if (!t.resources) t.resources = {};
+          t.resources[resourceName] = 1 + (t.resources[resourceName] || 0);
+          this.addResourcesToPlayer(p, { [resourceName]: -1 });
+          store.update(`moved ${resourceName}`);
+        }
+        return true;
+      case "stone":
+      case "wood":
+      case "ore":
+        if (
+          p.boughtTiles[Cavern.working_cave] &&
+          task.t === Task.feed &&
+          task.d?.num === undefined
+        ) {
+          if (execute) {
+            this.workingCave(p, resourceName);
+          }
+          return true;
+        }
+        return false;
     }
-    // TODO doResource
-    return false;
   }
 }
-
-// export type AnimalResourcesType = {
-//   dogs?: number;
-//   sheep?: number;
-//   donkeys?: number;
-//   boars?: number;
-//   cows?: number;
-// };
-
-// export type ResourcesType = {
-//   food?: number;
-//   stone?: number;
-//   wood?: number;
-//   ore?: number;
-//   rubies?: number;
-//   gold?: number;
-//   grain?: number;
-//   vegetables?: number;
-// } & AnimalResourcesType;
 
 const utils = new Utils();
 
