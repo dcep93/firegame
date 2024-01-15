@@ -19,8 +19,6 @@ import RubyActions, { RubyAction } from "./RubyActions";
 
 const store: StoreType<GameType> = store_;
 
-// TODO check all execute updates and ensures turn
-
 class Utils extends SharedUtils<GameType, PlayerType> {
   // HELPERS
 
