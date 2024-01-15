@@ -191,12 +191,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     g.players
       .map((p) => ({
         p,
-        num: this.getGrid(p).map(
-          ({ t }) =>
-            t.resources?.donkeys !== undefined &&
-            (t as CaveTileType).isMine &&
-            !(t as CaveTileType).isRubyMine
-        ).length,
+        num: utils
+          .getGrid(p)
+          .map(
+            ({ t }) =>
+              t.resources?.donkeys !== undefined &&
+              (t as CaveTileType).isMine &&
+              !(t as CaveTileType).isRubyMine
+          ).length,
       }))
       .filter(({ p, num }) => num > 0 && p.boughtTiles[Cavern.miner])
       .forEach(({ p, num }) => this.addResourcesToPlayer(p, { ore: num }));
