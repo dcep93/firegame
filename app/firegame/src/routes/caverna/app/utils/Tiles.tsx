@@ -184,7 +184,7 @@ const Tiles: { [t in Tile]: TileType } = {
     category: TileCategory.green,
     points: 2,
     action: (p: PlayerType) =>
-      utils.convert(p, { gold: -2, wood: 1, ore: 1, stone: 1 }),
+      utils.addResourcesToPlayer(p, { gold: -2, wood: 1, ore: 1, stone: 1 }),
   },
   [Tile.wood_supplier]: {
     cost: { stone: 1 },
@@ -230,7 +230,7 @@ const Tiles: { [t in Tile]: TileType } = {
     category: TileCategory.green,
     points: 2,
     action: (p: PlayerType) =>
-      utils.convert(p, { grain: -1, vegetables: -1, food: 5 }),
+      utils.addResourcesToPlayer(p, { grain: -1, vegetables: -1, food: 5 }),
   },
   [Tile.working_cave]: {
     cost: { wood: 1, stone: 1 },
@@ -287,14 +287,14 @@ const Tiles: { [t in Tile]: TileType } = {
     category: TileCategory.yellow,
     points: 1,
     action: (p: PlayerType) =>
-      utils.convert(p, { boars: -2, gold: 2, food: 2 }),
+      utils.addResourcesToPlayer(p, { boars: -2, gold: 2, food: 2 }),
   },
   [Tile.beer_parlor]: {
     cost: { wood: 2 },
     category: TileCategory.yellow,
     points: 3,
     action: (p: PlayerType) =>
-      utils.convert(p, { grain: -2 }) &&
+      utils.addResourcesToPlayer(p, { grain: -2 }) &&
       utils.queueTasks([{ t: Task.beer_parlor }]),
   },
   [Tile.blacksmithing_parlor]: {
@@ -302,7 +302,7 @@ const Tiles: { [t in Tile]: TileType } = {
     category: TileCategory.yellow,
     points: 2,
     action: (p: PlayerType) =>
-      utils.convert(p, { ore: -1, rubies: -1, gold: 2, food: 1 }),
+      utils.addResourcesToPlayer(p, { ore: -1, rubies: -1, gold: 2, food: 1 }),
   },
   [Tile.stone_storage]: {
     cost: { wood: 3, ore: 1 },
@@ -319,7 +319,7 @@ const Tiles: { [t in Tile]: TileType } = {
     category: TileCategory.yellow,
     points: 0,
     action: (p: PlayerType) =>
-      utils.convert(p, { wood: -1, stone: -1, ore: -1, gold: 2 }),
+      utils.addResourcesToPlayer(p, { wood: -1, stone: -1, ore: -1, gold: 2 }),
   },
   [Tile.main_storage]: {
     cost: { wood: 2, stone: 1 },
