@@ -1,6 +1,9 @@
 import styles from "../../../../shared/styles.module.css";
-import { PlayerType, ResourcesType, Task } from "../utils/NewGame";
-import utils, { store } from "../utils/utils";
+import { PlayerType, ResourcesType } from "../utils/NewGame";
+import utils from "../utils/utils";
+
+// click animal -> goes to slaughterhouse
+// select square -> click animal -> goes to square
 
 export default function Player(props: {
   p: PlayerType;
@@ -79,22 +82,14 @@ export default function Player(props: {
             ))}
         </div>
         <div>
-          <button
-            disabled={!utils.canSlaughter(props.p)}
-            onClick={() => utils.slaughter(props.p)}
-          >
-            slaughter
-          </button>
-          {store.gameW.game.tasks[0].t === Task.feed &&
-            props.p.userId === utils.getMe().userId &&
-            utils.isMyTurn() && (
-              <button
-                disabled={utils.canFeed(props.p)}
-                onClick={() => utils.feed(props.p)}
-              >
-                feed
-              </button>
-            )}
+          {props.p.userId !== utils.getMe().userId ? null : (
+            <button
+              disabled={!utils.canSlaughter(props.p)}
+              onClick={() => utils.slaughter(props.p)}
+            >
+              slaughter
+            </button>
+          )}
         </div>
         <div style={{ display: "flex" }}>
           <Grid

@@ -1,11 +1,10 @@
 import { useState } from "react";
-import styles from "../../../../shared/styles.module.css";
-import { Buildable, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import ActionsBoard from "./ActionsBoard";
 import CardActions from "./CardActions";
 import Player from "./Player";
 import StoreBoard from "./StoreBoard";
+import TaskView from "./TaskView";
 
 export default function Main() {
   const [selected, updateSelected] = useState<
@@ -13,34 +12,7 @@ export default function Main() {
   >(undefined);
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
-      <div>
-        <div className={styles.bubble}>
-          <div>current: {utils.getCurrent().userName}</div>
-          <div>
-            {store.gameW.game.tasks.map((t, i) => (
-              <div key={i}>
-                <div>{Task[t.t]}</div>
-                {t.d === undefined
-                  ? null
-                  : JSON.stringify(
-                      Object.assign(
-                        {},
-                        null,
-                        t.d,
-                        t.d.buildableOptions === undefined
-                          ? null
-                          : {
-                              buildableOptions: t.d.buildableOptions.map(
-                                (b) => Buildable[b]
-                              ),
-                            }
-                      )
-                    )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <TaskView />
       <ActionsBoard />
       <div style={{ alignSelf: "flex-end" }}>
         {store.gameW.game.players

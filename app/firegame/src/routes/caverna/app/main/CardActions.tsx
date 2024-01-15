@@ -19,6 +19,7 @@ function ExpeditionsElement() {
                 flexGrow: 1,
                 cursor: utils.canExpedition(a, me) ? "pointer" : undefined,
               }}
+              onClick={() => utils.expedition(a, me)}
             >
               <div>level: {ExpeditionActions[a].level}</div>
               <div style={{ width: 0 }}>{ExpeditionAction[a]}</div>

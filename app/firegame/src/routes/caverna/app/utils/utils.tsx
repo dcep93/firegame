@@ -203,6 +203,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .reverse();
   }
 
+  getTask(): TaskType {
+    return store.gameW.game.tasks[0];
+  }
+
   canAction(a: Action): boolean {
     if (!utils.isMyTurn()) return false;
     const foodCost = Actions[a].foodCost;
@@ -213,7 +217,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }) === undefined
     )
       return false;
-    const task = store.gameW.game.tasks[0].t;
+    const task = this.getTask().t;
     const playerIndex = (store.gameW.game.takenActions || {})[a]?.playerIndex;
     if (task === Task.action) {
       return playerIndex === undefined;
@@ -225,7 +229,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   action(a: Action, p: PlayerType) {
-    store.gameW.game.tasks.shift();
+    this.finishTask();
     p.usedDwarves = p
       .availableDwarves!.splice(0, 1)
       .concat(p.usedDwarves || []);
@@ -244,8 +248,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (at.action !== undefined) {
       at.action(p);
     }
-    this.prepareNextTask();
-    store.update(`action: ${Action[a]}`);
+    this.prepareNextTask(`action: ${Action[a]}`);
   }
 
   canFurnish(
@@ -272,7 +275,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (this.addResources(p.resources || {}, Tiles[t].cost) === undefined)
       return false;
-    const task = store.gameW.game.tasks[0].t;
+    const task = this.getTask().t;
     if (task === Task.furnish_dwelling) {
       return Tiles[t].category === TileCategory.dwelling;
     }
@@ -280,14 +283,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   furnish(t: Tile, p: PlayerType, selected: [number, number, number]) {
+    this.finishTask();
     if (store.gameW.game.purchasedTiles === undefined)
       store.gameW.game.purchasedTiles = {};
     store.gameW.game.purchasedTiles[t] = p.index;
     this.addResourcesToPlayer(p, Tiles[t].cost);
     p.boughtTiles[t] = true;
     p.cave[selected[0]]![selected[1]] = { tile: t };
-    this.completeTask();
-    store.update(`furnished ${Tile[t]}`);
+    this.prepareNextTask(`furnished ${Tile[t]}`);
   }
 
   canRubyTrade(a: RubyAction, p: PlayerType): boolean {
@@ -301,12 +304,30 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   canExpedition(a: ExpeditionAction, p: PlayerType): boolean {
     if (!utils.isMyTurn()) return false;
-    const taskObj = store.gameW.game.tasks[0];
+    const taskObj = this.getTask();
     if (taskObj.t !== Task.expedition) return false;
+    if ((taskObj.d!.expeditionsTaken || {})[a] !== undefined) return false;
     if (a === ExpeditionAction.strength && taskObj.d!.num !== 1) return false;
     const e = ExpeditionActions[a];
-    if ((taskObj.d!.expeditionsTaken || {})[a] !== undefined) return false;
-    return p.usedDwarves![p.usedDwarves!.length - 1] >= e.level;
+    return p.usedDwarves![0] >= e.level;
+  }
+
+  expedition(a: ExpeditionAction, p: PlayerType) {
+    const t = this.getTask();
+    if (--t.d!.num! === 0) {
+      this.finishTask();
+    } else {
+      if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
+      t.d!.expeditionsTaken[a] = true;
+    }
+    const e = ExpeditionActions[a];
+    if (e.reward !== undefined) {
+      this.addResourcesToPlayer(p, e.reward);
+    }
+    if (e.action !== undefined) {
+      e.action(p);
+    }
+    this.prepareNextTask(`expedition: ${ExpeditionAction[a]}`);
   }
 
   canPayRubyOutOfOrder(p: PlayerType, index: number): boolean {
@@ -371,12 +392,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     while (true) {
       utils.incrementPlayerTurn();
       if ((utils.getCurrent().availableDwarves || []).length > 0) {
-        store.gameW.game.tasks = [{ t: Task.action }];
+        this.queueTasks([{ t: Task.action }]);
         return;
       }
       if (utils.isMyTurn()) {
         store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        store.gameW.game.tasks = [{ t: Task.feed }];
+        this.queueTasks([{ t: Task.feed }]);
         return;
       }
     }
@@ -431,31 +452,32 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   queueTasks(ts: TaskType[]) {
     store.gameW.game.tasks.splice(0, 0, ...ts);
-    this.prepareNextTask();
   }
 
-  completeTask() {
-    const tasks = store.gameW.game.tasks;
-    const completedTask = tasks.shift()!;
-    this.prepareNextTask();
-    if (tasks.length > 0) return;
-    alert(`finished ${completedTask}`);
+  finishTask() {
+    store.gameW.game.tasks.shift();
   }
 
-  prepareNextTask() {
+  prepareNextTask(toUpdate: string) {
     while (true) {
-      if (this.canUpcomingTask()) return;
-      this.completeTask();
+      if (this.canUpcomingTask()) break;
+      this.finishTask();
     }
+    store.update(toUpdate);
   }
 
   canUpcomingTask(): boolean {
-    const task = store.gameW.game.tasks[0];
+    const task = this.getTask();
     if (task === undefined) {
+      this.finishTurn();
       return true;
     }
     if (task.t === Task.forge) {
-      return utils.getCurrent().usedDwarves![0] === 0;
+      const c = utils.getCurrent();
+      return (c.resources?.ore || 0) > 0 && c.usedDwarves![0] === 0;
+    }
+    if (task.t === Task.expedition) {
+      return utils.getCurrent().usedDwarves![0] !== 0;
     }
     return true;
   }
@@ -492,6 +514,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .filter(
         (t) => t !== undefined && Tiles[t]?.category === TileCategory.dwelling
       ).length;
+  }
+
+  forge(p: PlayerType, level: number) {
+    this.finishTask();
+    p.usedDwarves![0] = level;
+    this.addResourcesToPlayer(p, { ore: -level });
+    this.prepareNextTask(`forged ${level}`);
   }
 }
 

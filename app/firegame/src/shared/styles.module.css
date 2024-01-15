@@ -49,6 +49,7 @@
 }
 
 .resizeable {
+  height: 90%;
   display: table;
   border: 2px solid black;
 }

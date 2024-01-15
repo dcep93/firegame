@@ -41,7 +41,7 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
-    expeditionsTaken?: { [e in ExpeditionAction]: boolean };
+    expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
     buildableOptions?: Buildable[];
   };
 };
