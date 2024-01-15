@@ -2,7 +2,7 @@ import styles from "../../../../shared/styles.module.css";
 import { Action } from "../utils/Actions";
 import utils, { store } from "../utils/utils";
 
-export default function ActionsBoard() {
+export default function BoardView() {
   return (
     <div>
       <div className={styles.bubble}>

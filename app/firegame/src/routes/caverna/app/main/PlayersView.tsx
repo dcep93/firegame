@@ -1,11 +1,42 @@
 import styles from "../../../../shared/styles.module.css";
 import { PlayerType, ResourcesType } from "../utils/NewGame";
-import utils from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 // click animal -> goes to slaughterhouse
 // select square -> click animal -> goes to square
 
-export default function Player(props: {
+export default function PlayersView(props: {
+  selected: [number, number, number] | undefined;
+  updateSelected: (s: [number, number, number] | undefined) => void;
+}) {
+  return (
+    <div>
+      {store.gameW.game.players
+        .map(
+          (_, i) =>
+            store.gameW.game.players[
+              (i + store.gameW.game.players.length - utils.myIndex()) %
+                store.gameW.game.players.length
+            ]
+        )
+        .map((p, i) => (
+          <Player
+            key={i}
+            p={p}
+            updateSelected={(s: [number, number, number]) =>
+              p.userId === store.me.userId &&
+              (JSON.stringify(props.selected) === JSON.stringify(s)
+                ? props.updateSelected(undefined)
+                : props.updateSelected(s))
+            }
+            selected={p.userId !== store.me.userId ? undefined : props.selected}
+          />
+        ))}
+    </div>
+  );
+}
+
+function Player(props: {
   p: PlayerType;
   selected: [number, number, number] | undefined;
   updateSelected: (s: [number, number, number]) => void;

@@ -5,6 +5,15 @@ import ExpeditionActions, {
 import RubyActions, { RubyAction } from "../utils/RubyActions";
 import utils from "../utils/utils";
 
+export default function ExpeditionsAndRubiesView() {
+  return (
+    <div style={{ display: "flex", alignItems: "flex-start" }}>
+      <ExpeditionsElement />
+      <RubiesElement />
+    </div>
+  );
+}
+
 function ExpeditionsElement() {
   const me = utils.getMe();
   return (
@@ -60,15 +69,6 @@ function RubiesElement() {
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-export default function CardActions() {
-  return (
-    <div style={{ display: "flex", alignItems: "flex-start" }}>
-      <ExpeditionsElement />
-      <RubiesElement />
     </div>
   );
 }

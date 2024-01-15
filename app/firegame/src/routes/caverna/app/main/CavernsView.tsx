@@ -2,7 +2,7 @@ import styles from "../../../../shared/styles.module.css";
 import { Cavern } from "../utils/Caverns";
 import utils, { store } from "../utils/utils";
 
-export default function StoreBoard(props: {
+export default function CavernsView(props: {
   selected: [number, number, number] | undefined;
 }) {
   const me = utils.getMe();

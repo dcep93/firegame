@@ -1,9 +1,8 @@
 import { useState } from "react";
-import utils, { store } from "../utils/utils";
-import ActionsBoard from "./ActionsBoard";
-import CardActions from "./CardActions";
-import Player from "./Player";
-import StoreBoard from "./StoreBoard";
+import BoardView from "./BoardView";
+import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
+import PlayersView from "./PlayersView";
+import CavernsView from "./StoreBoard";
 import TaskView from "./TaskView";
 
 export default function Main() {
@@ -13,32 +12,12 @@ export default function Main() {
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
       <TaskView />
-      <ActionsBoard />
+      <BoardView />
       <div style={{ alignSelf: "flex-end" }}>
-        {store.gameW.game.players
-          .map(
-            (_, i) =>
-              store.gameW.game.players[
-                (i + store.gameW.game.players.length - utils.myIndex()) %
-                  store.gameW.game.players.length
-              ]
-          )
-          .map((p, i) => (
-            <Player
-              key={i}
-              p={p}
-              updateSelected={(s: [number, number, number]) =>
-                p.userId === store.me.userId &&
-                (JSON.stringify(selected) === JSON.stringify(s)
-                  ? updateSelected(undefined)
-                  : updateSelected(s))
-              }
-              selected={p.userId !== store.me.userId ? undefined : selected}
-            />
-          ))}
+        <PlayersView selected={selected} updateSelected={updateSelected} />
       </div>
-      <CardActions />
-      <StoreBoard selected={selected} />
+      <ExpeditionsAndRubiesView />
+      <CavernsView selected={selected} />
     </div>
   );
 }
