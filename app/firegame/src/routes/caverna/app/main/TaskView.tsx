@@ -118,14 +118,24 @@ function Special() {
           onChange={(event) => updateState(event.target.value)}
           step={1}
         />
-        <button onClick={() => utils.forge(p, state)}>forge {state}</button>
+        <button onClick={() => utils.forge(p, state, true)}>
+          forge {state}
+        </button>
       </div>
     );
   }
   if (task.t === Task.build) {
     return (
       <div className={styles.bubble}>
-        <button onClick={() => utils.skipBuild()}>skip build</button>
+        <button
+          onClick={() =>
+            utils.prepareNextTask(
+              `skipped building ${Task[utils.shiftTask().d!.build!]}`
+            )
+          }
+        >
+          skip build
+        </button>
       </div>
     );
   }

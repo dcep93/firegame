@@ -22,129 +22,7 @@ const store: StoreType<GameType> = store_;
 // TODO check all execute updates and ensures turn
 
 class Utils extends SharedUtils<GameType, PlayerType> {
-  getGrid(p: PlayerType): {
-    i: number;
-    j: number;
-    k: number;
-    t: CaveTileType | FarmTileType;
-  }[] {
-    return [p.cave, p.farm || {}].flatMap((g, k) =>
-      Object.entries(g).flatMap(([i, r]) =>
-        Object.entries(r).flatMap(([j, t]) => ({
-          i: parseInt(i),
-          j: parseInt(j),
-          k,
-          t: t as CaveTileType | FarmTileType,
-        }))
-      )
-    );
-  }
-
-  getScoreDict(p: PlayerType): { [k: string]: number } {
-    const allResources = utils
-      .getGrid(p)
-      .filter(({ t }) => t.resources !== undefined)
-      .map(({ t }) => t.resources!)
-      .concat(p.resources || {})
-      .reduce(
-        (prev, curr) => utils.addResources(prev, curr)!,
-        {} as ResourcesType
-      );
-    return {
-      animal: Object.entries(allResources)
-        .map(([r, c]) => ({ r: r as keyof ResourcesType, c }))
-        .filter(({ r }) =>
-          (
-            [
-              "dogs",
-              "sheep",
-              "donkeys",
-              "boars",
-              "cows",
-            ] as (keyof ResourcesType)[]
-          ).includes(r)
-        )
-        .map(({ c }) => c)
-        .sum(),
-      grain: Math.ceil((allResources.grain || 0) / 2),
-      vegetables: allResources.vegetables || 0,
-      rubies: allResources.rubies || 0,
-      dwarves: (p.availableDwarves || []).concat(p.usedDwarves || []).length,
-      unusedSpaceMissingAnimal: Math.min(
-        0,
-        ((p.boughtTiles || {})[Cavern.writing_chamber] ? 7 : 0) +
-          -2 *
-            (4 -
-              Object.keys(allResources)
-                .map((r) => r as keyof ResourcesType)
-                .filter((r) =>
-                  (
-                    [
-                      "sheep",
-                      "donkeys",
-                      "boars",
-                      "cows",
-                    ] as (keyof ResourcesType)[]
-                  ).includes(r)
-                ).length) -
-          [p.cave, p.farm]
-            .flatMap((g) =>
-              utils
-                .count(4)
-                .flatMap((r) => utils.count(3).map((c) => ({ g, r, c })))
-            )
-            .filter(({ g, r, c }) => ((g || {})[r] || {})[c] === undefined)
-            .length
-      ),
-      furnishingPasturesMines:
-        Object.keys(p.boughtTiles || {})
-          .map((t) => parseInt(t) as Cavern)
-          .map((t) => Caverns[t])
-          .filter((t) => t.category !== CavernCategory.yellow)
-          .map((tile) => tile.points!)
-          .sum() +
-        2 *
-          utils
-            .getGrid(p)
-            .map(({ t }) => ((t as FarmTileType).isFence ? 2 : 0))
-            .sum() +
-        utils
-          .getGrid(p)
-          .map(({ t }) =>
-            (t as CaveTileType).isOreMine === true
-              ? 3
-              : (t as CaveTileType).isOreMine === false
-              ? 4
-              : 0
-          )
-          .sum(),
-      parlorsStoragesChambers: Object.keys(p.boughtTiles || {})
-        .map((t) => parseInt(t) as Cavern)
-        .map((t) => Caverns[t])
-        .filter((t) => t.category === CavernCategory.yellow)
-        .map(
-          (tile) => (tile.points !== undefined ? tile.points : tile.pointsF!(p))
-          // TODO include resources on board
-        )
-        .sum(),
-      goldBegging: (p.resources || {}).gold || 0 - 3 * (p.begging || 0),
-    };
-  }
-
-  addResourcesToPlayer(p: PlayerType, r: ResourcesType): boolean {
-    const addedResources = utils.addResources(p.resources || {}, r);
-    if (addedResources === undefined) return false;
-    p.resources = addedResources;
-    if ((r.dogs || 0) > 0 && p.boughtTiles[Cavern.dog_school])
-      utils.addResourcesToPlayer(p, { wood: r.dogs! });
-    if (
-      (r.stone || 0) > 0 &&
-      p.boughtTiles[Cavern.seam] &&
-      Object.values(r).filter((v) => v < 0).length === 0
-    )
-      utils.addResourcesToPlayer(p, { ore: r.stone! });
-    return true;
-  }
+  // HELPERS
 
   addResources(
     _addTo: ResourcesType,
@@ -165,67 +43,104 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return addTo;
   }
 
-  enrichAndReveal(g: GameType): GameType {
-    g.currentPlayer = g.startingPlayer;
-    g.tasks = [{ t: Task.action }];
-    g.actions.push(
-      utils
-        .shuffle(g.upcomingActions!)
-        .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
-        .pop()!
-    );
-    g.players.forEach(
-      (p) =>
-        (p.availableDwarves = p
-          .usedDwarves!.splice(0)
-          .map((d) => Math.max(d, 0))
-          .sort((a, b) => a - b))
-    );
-    g.players.forEach((p) =>
-      utils
-        .getGrid(p)
-        .map(({ t }) => t as CaveTileType)
-        .map((t) => ({ t, s: t.supply }))
-        .filter(({ s }) => s !== undefined)
-        .map(({ t, s }) => ({ t, r: Object.keys(s!)[0] }))
-        .forEach(({ t, r }) => {
-          utils.addResourcesToPlayer(p, { [r]: 1 });
-          t.supply = utils.addResources(t.supply!, { [r]: -1 }) || {};
-        })
-    );
-    if (g.actionBonuses === undefined) {
-      g.actionBonuses = {};
-    }
-    g.actions
-      .map((a) => ({ a, e: Actions[a].enrichment }))
-      .filter(({ e }) => e)
-      .forEach(
-        ({ a, e }) =>
-          (g.actionBonuses![a] =
-            g.actionBonuses![a] === undefined
-              ? Object.assign({}, e![0])
-              : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
-      );
-
-    g.players
-      .map((p) => ({
-        p,
-        num: utils
-          .getGrid(p)
-          .map(
-            ({ t }) =>
-              t.resources?.donkeys !== undefined &&
-              (t as CaveTileType).isOreMine === true
-          ).length,
-      }))
-      .filter(({ p, num }) => num > 0 && p.boughtTiles[Cavern.miner])
-      .forEach(({ p, num }) => utils.addResourcesToPlayer(p, { ore: num }));
-    return g;
+  addResourcesToPlayer(p: PlayerType, r: ResourcesType): boolean {
+    const addedResources = utils.addResources(p.resources || {}, r);
+    if (addedResources === undefined) return false;
+    p.resources = addedResources;
+    if ((r.dogs || 0) > 0 && p.boughtTiles[Cavern.dog_school])
+      utils.addResourcesToPlayer(p, { wood: r.dogs! });
+    if (
+      (r.stone || 0) > 0 &&
+      p.boughtTiles[Cavern.seam] &&
+      Object.values(r).filter((v) => v < 0).length === 0
+    )
+      utils.addResourcesToPlayer(p, { ore: r.stone! });
+    return true;
   }
+
+  getGrid(p: PlayerType): {
+    i: number;
+    j: number;
+    k: number;
+    t: CaveTileType | FarmTileType;
+  }[] {
+    return [p.cave, p.farm || {}].flatMap((g, k) =>
+      Object.entries(g).flatMap(([i, r]) =>
+        Object.entries(r).flatMap(([j, t]) => ({
+          i: parseInt(i),
+          j: parseInt(j),
+          k,
+          t: t as CaveTileType | FarmTileType,
+        }))
+      )
+    );
+  }
+
+  // TASKS
 
   getTask(): TaskType {
     return store.gameW.game.tasks[0];
   }
+
+  queueTasks(ts: TaskType[]) {
+    store.gameW.game.tasks.splice(0, 0, ...ts);
+  }
+
+  shiftTask(): TaskType {
+    return store.gameW.game.tasks.shift()!;
+  }
+
+  prepareNextTask(toUpdate: string) {
+    while (true) {
+      if (utils.canUpcomingTask()) break;
+      utils.shiftTask();
+    }
+    store.update(toUpdate);
+  }
+
+  canUpcomingTask(): boolean {
+    const task = utils.getTask();
+    if (task === undefined) {
+      utils.finishTurn();
+      return true;
+    }
+    const p = utils.getCurrent();
+    if (task.t === Task.forge) {
+      return (
+        p.usedDwarves![0] === 0 &&
+        (p.boughtTiles[Cavern.blacksmith] || (p.resources?.ore || 0) > 0)
+      );
+    }
+    if (task.t === Task.expedition) {
+      return utils.getCurrent().usedDwarves![0] !== 0;
+    }
+    if (task.t === Task.sow) {
+      return (
+        Object.entries(task.d!.sow!).filter(
+          ([resourceName, count]) =>
+            (p.resources || {})[resourceName as keyof ResourcesType]! * count >
+            0
+        ).length > 0
+      );
+    }
+    if (task.t === Task.build) {
+      if (
+        task.d!.build === Buildable.stable &&
+        utils.getGrid(p).filter(({ t }) => (t as FarmTileType).isStable)
+          .length === 3
+      )
+        return false;
+      return (
+        utils.addResources(
+          utils._getBuildCost(task, p) || {},
+          p.resources || {}
+        ) !== undefined
+      );
+    }
+    return true;
+  }
+
+  // EXECUTABLES
 
   action(a: Action, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
@@ -440,22 +355,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  // TODO cant finish turn if animals to slaughter
-  finishTurn() {
-    while (true) {
-      utils.incrementPlayerTurn();
-      if ((utils.getCurrent().availableDwarves || []).length > 0) {
-        utils.queueTasks([{ t: Task.action }]);
-        return;
-      }
-      if (utils.isMyTurn()) {
-        store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        utils.queueTasks([{ t: Task.feed }]);
-        return;
-      }
-    }
-  }
-
   feed(p: PlayerType, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
     const numToFeed = Math.max(
@@ -520,136 +419,54 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  queueTasks(ts: TaskType[]) {
-    store.gameW.game.tasks.splice(0, 0, ...ts);
-  }
-
-  shiftTask(): TaskType {
-    return store.gameW.game.tasks.shift()!;
-  }
-
-  prepareNextTask(toUpdate: string) {
-    while (true) {
-      if (utils.canUpcomingTask()) break;
+  forge(p: PlayerType, level: number, execute: boolean) {
+    if (!utils.isMyTurn()) return false;
+    const ore = -level + (p.boughtTiles[Cavern.blacksmith] ? 2 : 0);
+    if ((p.resources?.ore || 0) < ore) return false;
+    if (execute) {
       utils.shiftTask();
-    }
-    store.update(toUpdate);
-  }
-
-  canUpcomingTask(): boolean {
-    const task = utils.getTask();
-    if (task === undefined) {
-      utils.finishTurn();
-      return true;
-    }
-    const p = utils.getCurrent();
-    if (task.t === Task.forge) {
-      return (
-        p.usedDwarves![0] === 0 &&
-        (p.boughtTiles[Cavern.blacksmith] || (p.resources?.ore || 0) > 0)
-      );
-    }
-    if (task.t === Task.expedition) {
-      return utils.getCurrent().usedDwarves![0] !== 0;
-    }
-    if (task.t === Task.sow) {
-      return (
-        Object.entries(task.d!.sow!).filter(
-          ([resourceName, count]) =>
-            (p.resources || {})[resourceName as keyof ResourcesType]! * count >
-            0
-        ).length > 0
-      );
-    }
-    if (task.t === Task.build) {
-      if (
-        task.d!.build === Buildable.stable &&
-        utils.getGrid(p).filter(({ t }) => (t as FarmTileType).isStable)
-          .length === 3
-      )
-        return false;
-      return (
-        utils.addResources(
-          utils._getBuildCost(task, p) || {},
-          p.resources || {}
-        ) !== undefined
-      );
+      p.usedDwarves![0] = level;
+      utils.addResourcesToPlayer(p, {
+        ore,
+      });
+      utils.prepareNextTask(`forged ${level}`);
     }
     return true;
   }
 
-  _getBuildCost(task: TaskType, p: PlayerType): ResourcesType | undefined {
-    switch (task.d!.build!) {
-      case Buildable.fence:
-      case Buildable.double_fence:
-        return {
-          wood: task.d!.num! - (p.boughtTiles[Cavern.carpenter] ? 1 : 0),
-        };
-      case Buildable.stable:
-        return {
-          stone: Math.max(
-            0,
-            task.d!.num! - (p.boughtTiles[Cavern.stone_carver] ? 1 : 0)
-          ),
-        };
+  // BUILD
+
+  buildHere(
+    p: PlayerType,
+    coords: [number, number, number],
+    execute: boolean
+  ): boolean {
+    if (!utils.isMyTurn()) return false;
+    if (execute) {
+      p.farm = {};
+      const g = [p.farm, p.cave][coords[2]];
+      if (g[coords[1]] === undefined) {
+        g[coords[1]] = {};
+      }
     }
-  }
-
-  getColor(index: number): string {
-    return [
-      "pink",
-      "lightblue",
-      "lightgreen",
-      "yellow",
-      "violet",
-      "lightcoral",
-      "lightsalmon",
-    ][index];
-  }
-
-  numAdjacentToStateParlor(p: PlayerType): number {
-    const coords = utils
-      .getGrid(p)
-      .find(({ t }) => (t as CaveTileType).tile === Cavern.state_parlor)!;
-    return [
-      [-1, 0],
-      [1, 0],
-      [0, -1],
-      [0, 1],
-    ]
-      .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.tile)
-      .filter(
-        (t) =>
-          t !== undefined && Caverns[t]?.category === CavernCategory.dwelling
-      ).length;
-  }
-
-  forge(p: PlayerType, level: number) {
-    utils.shiftTask();
-    p.usedDwarves![0] = level;
-    utils.addResourcesToPlayer(p, {
-      ore: -level + (p.boughtTiles[Cavern.blacksmith] ? 2 : 0),
-    });
-    utils.prepareNextTask(`forged ${level}`);
-  }
-
-  skipBuild() {
-    const task = utils.shiftTask();
-    utils.prepareNextTask(`skipped building ${Task[task.d!.build!]}`);
-  }
-
-  beerParlor(p: PlayerType, message: string, reward: ResourcesType) {
-    utils.shiftTask();
-    utils.addResourcesToPlayer(p, reward);
-    utils.prepareNextTask(`earned ${message}`);
-  }
-
-  builderExchange(p: PlayerType, builderResource: keyof ResourcesType) {
-    utils.addResourcesToPlayer(p, { [builderResource]: 1, ore: -1 });
-    store.gameW.game.tasks[0].d = {
-      resource: builderResource,
-    };
-    store.update(`converted ore for ${builderResource}`);
+    const task = utils.getTask();
+    if (!utils._buildHereHelper(task, p, coords, execute)) return false;
+    if (execute) {
+      utils.shiftTask();
+      utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {}) &&
+        utils.addResourcesToPlayer(
+          p,
+          {
+            "0.2.0": { boars: 1 },
+            "2.0.0": { boars: 1 },
+            "3.1.0": { food: 1 },
+            "0.2.1": { food: 1 },
+            "3.1.1": { food: 1 },
+          }[coords.join(".")] || {}
+        );
+      utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
+    }
+    return true;
   }
 
   _buildHereHelper(
@@ -752,38 +569,24 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  buildHere(
-    p: PlayerType,
-    coords: [number, number, number],
-    execute: boolean
-  ): boolean {
-    if (!utils.isMyTurn()) return false;
-    if (execute) {
-      p.farm = {};
-      const g = [p.farm, p.cave][coords[2]];
-      if (g[coords[1]] === undefined) {
-        g[coords[1]] = {};
-      }
+  _getBuildCost(task: TaskType, p: PlayerType): ResourcesType | undefined {
+    switch (task.d!.build!) {
+      case Buildable.fence:
+      case Buildable.double_fence:
+        return {
+          wood: task.d!.num! - (p.boughtTiles[Cavern.carpenter] ? 1 : 0),
+        };
+      case Buildable.stable:
+        return {
+          stone: Math.max(
+            0,
+            task.d!.num! - (p.boughtTiles[Cavern.stone_carver] ? 1 : 0)
+          ),
+        };
     }
-    const task = utils.getTask();
-    if (!utils._buildHereHelper(task, p, coords, execute)) return false;
-    if (execute) {
-      utils.shiftTask();
-      utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {}) &&
-        utils.addResourcesToPlayer(
-          p,
-          {
-            "0.2.0": { boars: 1 },
-            "2.0.0": { boars: 1 },
-            "3.1.0": { food: 1 },
-            "0.2.1": { food: 1 },
-            "3.1.1": { food: 1 },
-          }[coords.join(".")] || {}
-        );
-      utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
-    }
-    return true;
   }
+
+  // RESOURCE
 
   doResource(
     p: PlayerType,
@@ -918,6 +721,218 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         return true;
     }
+  }
+
+  // GAME FLOW
+
+  // TODO cant finish turn if animals to slaughter
+  finishTurn() {
+    while (true) {
+      utils.incrementPlayerTurn();
+      if ((utils.getCurrent().availableDwarves || []).length > 0) {
+        utils.queueTasks([{ t: Task.action }]);
+        return;
+      }
+      if (utils.isMyTurn()) {
+        store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
+        utils.queueTasks([{ t: Task.feed }]);
+        return;
+      }
+    }
+  }
+
+  enrichAndReveal(g: GameType): GameType {
+    g.currentPlayer = g.startingPlayer;
+    g.tasks = [{ t: Task.action }];
+    g.actions.push(
+      utils
+        .shuffle(g.upcomingActions!)
+        .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
+        .pop()!
+    );
+    g.players.forEach(
+      (p) =>
+        (p.availableDwarves = p
+          .usedDwarves!.splice(0)
+          .map((d) => Math.max(d, 0))
+          .sort((a, b) => a - b))
+    );
+    g.players.forEach((p) =>
+      utils
+        .getGrid(p)
+        .map(({ t }) => t as CaveTileType)
+        .map((t) => ({ t, s: t.supply }))
+        .filter(({ s }) => s !== undefined)
+        .map(({ t, s }) => ({ t, r: Object.keys(s!)[0] }))
+        .forEach(({ t, r }) => {
+          utils.addResourcesToPlayer(p, { [r]: 1 });
+          t.supply = utils.addResources(t.supply!, { [r]: -1 }) || {};
+        })
+    );
+    if (g.actionBonuses === undefined) {
+      g.actionBonuses = {};
+    }
+    g.actions
+      .map((a) => ({ a, e: Actions[a].enrichment }))
+      .filter(({ e }) => e)
+      .forEach(
+        ({ a, e }) =>
+          (g.actionBonuses![a] =
+            g.actionBonuses![a] === undefined
+              ? Object.assign({}, e![0])
+              : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
+      );
+
+    g.players
+      .map((p) => ({
+        p,
+        num: utils
+          .getGrid(p)
+          .map(
+            ({ t }) =>
+              t.resources?.donkeys !== undefined &&
+              (t as CaveTileType).isOreMine === true
+          ).length,
+      }))
+      .filter(({ p, num }) => num > 0 && p.boughtTiles[Cavern.miner])
+      .forEach(({ p, num }) => utils.addResourcesToPlayer(p, { ore: num }));
+    return g;
+  }
+
+  getScoreDict(p: PlayerType): { [k: string]: number } {
+    const allResources = utils
+      .getGrid(p)
+      .filter(({ t }) => t.resources !== undefined)
+      .map(({ t }) => t.resources!)
+      .concat(p.resources || {})
+      .reduce(
+        (prev, curr) => utils.addResources(prev, curr)!,
+        {} as ResourcesType
+      );
+    return {
+      animal: Object.entries(allResources)
+        .map(([r, c]) => ({ r: r as keyof ResourcesType, c }))
+        .filter(({ r }) =>
+          (
+            [
+              "dogs",
+              "sheep",
+              "donkeys",
+              "boars",
+              "cows",
+            ] as (keyof ResourcesType)[]
+          ).includes(r)
+        )
+        .map(({ c }) => c)
+        .sum(),
+      grain: Math.ceil((allResources.grain || 0) / 2),
+      vegetables: allResources.vegetables || 0,
+      rubies: allResources.rubies || 0,
+      dwarves: (p.availableDwarves || []).concat(p.usedDwarves || []).length,
+      unusedSpaceMissingAnimal: Math.min(
+        0,
+        ((p.boughtTiles || {})[Cavern.writing_chamber] ? 7 : 0) +
+          -2 *
+            (4 -
+              Object.keys(allResources)
+                .map((r) => r as keyof ResourcesType)
+                .filter((r) =>
+                  (
+                    [
+                      "sheep",
+                      "donkeys",
+                      "boars",
+                      "cows",
+                    ] as (keyof ResourcesType)[]
+                  ).includes(r)
+                ).length) -
+          [p.cave, p.farm]
+            .flatMap((g) =>
+              utils
+                .count(4)
+                .flatMap((r) => utils.count(3).map((c) => ({ g, r, c })))
+            )
+            .filter(({ g, r, c }) => ((g || {})[r] || {})[c] === undefined)
+            .length
+      ),
+      furnishingPasturesMines:
+        Object.keys(p.boughtTiles || {})
+          .map((t) => parseInt(t) as Cavern)
+          .map((t) => Caverns[t])
+          .filter((t) => t.category !== CavernCategory.yellow)
+          .map((tile) => tile.points!)
+          .sum() +
+        2 *
+          utils
+            .getGrid(p)
+            .map(({ t }) => ((t as FarmTileType).isFence ? 2 : 0))
+            .sum() +
+        utils
+          .getGrid(p)
+          .map(({ t }) =>
+            (t as CaveTileType).isOreMine === true
+              ? 3
+              : (t as CaveTileType).isOreMine === false
+              ? 4
+              : 0
+          )
+          .sum(),
+      parlorsStoragesChambers: Object.keys(p.boughtTiles || {})
+        .map((t) => parseInt(t) as Cavern)
+        .map((t) => Caverns[t])
+        .filter((t) => t.category === CavernCategory.yellow)
+        .map(
+          (tile) => (tile.points !== undefined ? tile.points : tile.pointsF!(p))
+          // TODO include resources on board
+        )
+        .sum(),
+      goldBegging: (p.resources || {}).gold || 0 - 3 * (p.begging || 0),
+    };
+  }
+
+  getColor(index: number): string {
+    return [
+      "pink",
+      "lightblue",
+      "lightgreen",
+      "yellow",
+      "violet",
+      "lightcoral",
+      "lightsalmon",
+    ][index];
+  }
+
+  // CAVERN SPECIFIC
+
+  numAdjacentToStateParlor(p: PlayerType): number {
+    const coords = utils
+      .getGrid(p)
+      .find(({ t }) => (t as CaveTileType).tile === Cavern.state_parlor)!;
+    return [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ]
+      .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.tile)
+      .filter(
+        (t) =>
+          t !== undefined && Caverns[t]?.category === CavernCategory.dwelling
+      ).length;
+  }
+
+  beerParlor(p: PlayerType, message: string, reward: ResourcesType) {
+    utils.shiftTask();
+    utils.addResourcesToPlayer(p, reward);
+    utils.prepareNextTask(`earned ${message}`);
+  }
+
+  builderExchange(p: PlayerType, builderResource: keyof ResourcesType) {
+    utils.addResourcesToPlayer(p, { [builderResource]: 1, ore: -1 });
+    store.gameW.game.tasks[0].d = {
+      resource: builderResource,
+    };
+    store.update(`converted ore for ${builderResource}`);
   }
 }
 
