@@ -1,7 +1,7 @@
 import { LobbyType } from "../../../../shared/store";
 import Actions, { Action } from "./Actions";
+import { Cavern } from "./Caverns";
 import { ExpeditionAction } from "./ExpeditionActions";
-import { Tile } from "./Tiles";
 import utils, { store } from "./utils";
 
 // TODO Task
@@ -64,7 +64,7 @@ export type GameType = {
   startingPlayer: number;
   remainingHarvests?: boolean[];
 
-  purchasedTiles?: { [t in Tile]?: number };
+  purchasedTiles?: { [t in Cavern]?: number };
 
   actions: Action[];
   upcomingActions?: Action[];
@@ -81,7 +81,7 @@ export type Params = {
 
 export type CaveTileType = {
   resources?: ResourcesType;
-  tile?: Tile;
+  tile?: Cavern;
   isCavern?: boolean;
   isOreTunnel?: boolean;
   isMine?: boolean;
@@ -110,7 +110,7 @@ export type PlayerType = {
 
   begging?: number;
 
-  boughtTiles: { [t in Tile]?: boolean };
+  boughtTiles: { [t in Cavern]?: boolean };
 
   cave: {
     [row: number]: {
@@ -184,11 +184,11 @@ function setPlayers(game: GameType): GameType {
 
       resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
 
-      boughtTiles: { [Tile.starting_dwelling]: true },
+      boughtTiles: { [Cavern.starting_dwelling]: true },
 
       cave: {
         2: { 0: { isCavern: true } },
-        3: { 0: { tile: Tile.starting_dwelling } },
+        3: { 0: { tile: Cavern.starting_dwelling } },
       },
     }));
 

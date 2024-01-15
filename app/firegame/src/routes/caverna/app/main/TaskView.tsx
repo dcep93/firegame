@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
+import { Cavern } from "../utils/Caverns";
 import { ExpeditionAction } from "../utils/ExpeditionActions";
 import { Buildable, ResourcesType, Task } from "../utils/NewGame";
-import { Tile } from "../utils/Tiles";
 import utils, { store } from "../utils/utils";
 
 function Current() {
@@ -52,7 +52,7 @@ function Special() {
   const p = utils.getCurrent()!;
   if (
     task.d?.num === undefined &&
-    p.boughtTiles[Tile.builder] &&
+    p.boughtTiles[Cavern.builder] &&
     (task.t === Task.furnish_dwelling || task.t === Task.furnish_cavern)
   ) {
     return (
@@ -97,7 +97,7 @@ function Special() {
     return (
       <div className={styles.bubble}>
         <button onClick={() => utils.feed(p)}>feed</button>
-        {!p.boughtTiles[Tile.working_cave] ||
+        {!p.boughtTiles[Cavern.working_cave] ||
         task.d?.num !== undefined ? null : (
           <div>
             {[
@@ -121,7 +121,7 @@ function Special() {
     );
   }
   if (task.t === Task.forge) {
-    const blacksmithDiscount = p.boughtTiles[Tile.blacksmith] ? 2 : 0;
+    const blacksmithDiscount = p.boughtTiles[Cavern.blacksmith] ? 2 : 0;
     if (state === null) updateState(1);
     return (
       <div className={styles.bubble}>

@@ -1,5 +1,5 @@
 import styles from "../../../../shared/styles.module.css";
-import { Tile } from "../utils/Tiles";
+import { Cavern } from "../utils/Caverns";
 import utils, { store } from "../utils/utils";
 
 export default function StoreBoard(props: {
@@ -15,7 +15,9 @@ export default function StoreBoard(props: {
         <div>
           {utils
             .chunk(
-              utils.enumArray(Tile).filter((t) => t !== Tile.starting_dwelling),
+              utils
+                .enumArray(Cavern)
+                .filter((t) => t !== Cavern.starting_dwelling),
               12
             )
             .map((t4, i) => (
@@ -61,7 +63,7 @@ export default function StoreBoard(props: {
                                 }}
                               ></div>
                             )}
-                            <pre>{Tile[t].replaceAll("_", "\n")}</pre>
+                            <pre>{Cavern[t].replaceAll("_", "\n")}</pre>
                           </div>
                         ))}
                       </div>

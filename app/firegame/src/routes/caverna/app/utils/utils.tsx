@@ -3,6 +3,7 @@ import store_, { StoreType } from "../../../../shared/store";
 import Actions, { Action } from "./Actions";
 import ExpeditionActions, { ExpeditionAction } from "./ExpeditionActions";
 
+import Caverns, { Cavern, CavernCategory } from "./Caverns";
 import {
   AnimalResourcesType,
   Buildable,
@@ -15,7 +16,6 @@ import {
   TaskType,
 } from "./NewGame";
 import RubyActions, { RubyAction } from "./RubyActions";
-import Tiles, { Tile, TileCategory } from "./Tiles";
 
 const store: StoreType<GameType> = store_;
 
@@ -68,7 +68,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       dwarves: (p.availableDwarves || []).concat(p.usedDwarves || []).length,
       unusedSpaceMissingAnimal: Math.min(
         0,
-        ((p.boughtTiles || {})[Tile.writing_chamber] ? 7 : 0) +
+        ((p.boughtTiles || {})[Cavern.writing_chamber] ? 7 : 0) +
           -2 *
             (4 -
               Object.keys(allResources)
@@ -94,9 +94,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       ),
       furnishingPasturesMines:
         Object.keys(p.boughtTiles || {})
-          .map((t) => parseInt(t) as Tile)
-          .map((t) => Tiles[t])
-          .filter((t) => t.category !== TileCategory.yellow)
+          .map((t) => parseInt(t) as Cavern)
+          .map((t) => Caverns[t])
+          .filter((t) => t.category !== CavernCategory.yellow)
           .map((tile) => tile.points!)
           .sum() +
         2 *
@@ -113,9 +113,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           )
           .sum(),
       parlorsStoragesChambers: Object.keys(p.boughtTiles || {})
-        .map((t) => parseInt(t) as Tile)
-        .map((t) => Tiles[t])
-        .filter((t) => t.category === TileCategory.yellow)
+        .map((t) => parseInt(t) as Cavern)
+        .map((t) => Caverns[t])
+        .filter((t) => t.category === CavernCategory.yellow)
         .map((tile) =>
           tile.points !== undefined ? tile.points : tile.pointsF!(p)
         )
@@ -128,11 +128,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const addedResources = this.addResources(p.resources || {}, r);
     if (addedResources === undefined) return false;
     p.resources = addedResources;
-    if ((r.dogs || 0) > 0 && p.boughtTiles[Tile.dog_school])
+    if ((r.dogs || 0) > 0 && p.boughtTiles[Cavern.dog_school])
       this.addResourcesToPlayer(p, { wood: r.dogs! });
     if (
       (r.stone || 0) > 0 &&
-      p.boughtTiles[Tile.seam] &&
+      p.boughtTiles[Cavern.seam] &&
       Object.values(r).filter((v) => v < 0).length === 0
     )
       this.addResourcesToPlayer(p, { ore: r.stone! });
@@ -198,7 +198,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             !(t as CaveTileType).isRubyMine
         ).length,
       }))
-      .filter(({ p, num }) => num > 0 && p.boughtTiles[Tile.miner])
+      .filter(({ p, num }) => num > 0 && p.boughtTiles[Cavern.miner])
       .forEach(({ p, num }) => this.addResourcesToPlayer(p, { ore: num }));
     return g;
   }
@@ -270,19 +270,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.prepareNextTask(`action: ${Action[a]}`);
   }
 
-  furnishCost(t: Tile, p: PlayerType): ResourcesType {
-    var cost = Tiles[t].cost;
-    if (cost.wood !== undefined && p.boughtTiles[Tile.carpenter]) {
+  furnishCost(t: Cavern, p: PlayerType): ResourcesType {
+    var cost = Caverns[t].cost;
+    if (cost.wood !== undefined && p.boughtTiles[Cavern.carpenter]) {
       cost = this.addResources(cost, { wood: -1 })!;
     }
-    if (cost.stone !== undefined && p.boughtTiles[Tile.stone_carver]) {
+    if (cost.stone !== undefined && p.boughtTiles[Cavern.stone_carver]) {
       cost = this.addResources(cost, { stone: -1 })!;
     }
     return cost;
   }
 
   canFurnish(
-    t: Tile,
+    t: Cavern,
     p: PlayerType,
     selected: [number, number, number]
   ): boolean {
@@ -298,7 +298,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         caveTile.tile !== undefined ||
         p.cave[selected[0]][selected[1]].isMine ||
         (!p.cave[selected[0]][selected[1]].isCavern &&
-          p.boughtTiles[Tile.work_room] === undefined)
+          p.boughtTiles[Cavern.work_room] === undefined)
       ) {
         return false;
       }
@@ -310,12 +310,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       if ((cost[task.d?.builderResource] || 0) < 1) return false;
     }
     if (task.t === Task.furnish_dwelling) {
-      return Tiles[t].category === TileCategory.dwelling;
+      return Caverns[t].category === CavernCategory.dwelling;
     }
     return task.t === Task.furnish_cavern;
   }
 
-  furnish(t: Tile, p: PlayerType, selected: [number, number, number]) {
+  furnish(t: Cavern, p: PlayerType, selected: [number, number, number]) {
     this.shiftTask();
     if (store.gameW.game.purchasedTiles === undefined)
       store.gameW.game.purchasedTiles = {};
@@ -323,7 +323,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.addResourcesToPlayer(p, this.furnishCost(t, p));
     p.boughtTiles[t] = true;
     p.cave[selected[0]]![selected[1]] = { tile: t };
-    this.prepareNextTask(`furnished ${Tile[t]}`);
+    this.prepareNextTask(`furnished ${Cavern[t]}`);
   }
 
   canRubyTrade(a: RubyAction, p: PlayerType): boolean {
@@ -414,7 +414,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             return 0;
           })
           .sum() +
-        (!p.boughtTiles[Tile.slaughtering_cave]
+        (!p.boughtTiles[Cavern.slaughtering_cave]
           ? 0
           : -Object.values(toSlaughter).sum()),
     });
@@ -440,7 +440,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return Math.max(
       0,
       p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
-        (!p.boughtTiles[Tile.mining_cave]
+        (!p.boughtTiles[Cavern.mining_cave]
           ? 0
           : this.getGrid(p).filter(
               ({ t }) =>
@@ -471,13 +471,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return false;
     }
     if (numDwarves === 5) {
-      if (p.boughtTiles[Tile.additional_dwelling] === undefined) return false;
+      if (p.boughtTiles[Cavern.additional_dwelling] === undefined) return false;
     }
     const numDwellingSpaces = Object.keys(p.boughtTiles)
-      .map((t) => parseInt(t) as Tile)
-      .filter((t) => Tiles[t].category === TileCategory.dwelling)
+      .map((t) => parseInt(t) as Cavern)
+      .filter((t) => Caverns[t].category === CavernCategory.dwelling)
       .map((t) =>
-        [Tile.couple_dwelling, Tile.starting_dwelling].includes(t) ? 2 : 1
+        [Cavern.couple_dwelling, Cavern.starting_dwelling].includes(t) ? 2 : 1
       )
       .sum();
     return numDwellingSpaces > numDwarves;
@@ -509,7 +509,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (task.t === Task.forge) {
       return (
         p.usedDwarves![0] === 0 &&
-        (p.boughtTiles[Tile.blacksmith] || (p.resources?.ore || 0) > 0)
+        (p.boughtTiles[Cavern.blacksmith] || (p.resources?.ore || 0) > 0)
       );
     }
     if (task.t === Task.expedition) {
@@ -533,12 +533,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     switch (task.d!.toBuild!) {
       case Buildable.fence:
       case Buildable.double_fence:
-        return { wood: task.d!.num! - (p.boughtTiles[Tile.carpenter] ? 1 : 0) };
+        return {
+          wood: task.d!.num! - (p.boughtTiles[Cavern.carpenter] ? 1 : 0),
+        };
       case Buildable.stable:
         return {
           stone: Math.max(
             0,
-            task.d!.num! - (p.boughtTiles[Tile.stone_carver] ? 1 : 0)
+            task.d!.num! - (p.boughtTiles[Cavern.stone_carver] ? 1 : 0)
           ),
         };
     }
@@ -558,7 +560,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   numAdjacentToStateParlor(p: PlayerType): number {
     const coords = this.getGrid(p).find(
-      ({ t }) => (t as CaveTileType).tile === Tile.state_parlor
+      ({ t }) => (t as CaveTileType).tile === Cavern.state_parlor
     )!;
     return [
       [-1, 0],
@@ -568,7 +570,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     ]
       .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.tile)
       .filter(
-        (t) => t !== undefined && Tiles[t]?.category === TileCategory.dwelling
+        (t) =>
+          t !== undefined && Caverns[t]?.category === CavernCategory.dwelling
       ).length;
   }
 
@@ -576,7 +579,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.shiftTask();
     p.usedDwarves![0] = level;
     this.addResourcesToPlayer(p, {
-      ore: -level + (p.boughtTiles[Tile.blacksmith] ? 2 : 0),
+      ore: -level + (p.boughtTiles[Cavern.blacksmith] ? 2 : 0),
     });
     this.prepareNextTask(`forged ${level}`);
   }

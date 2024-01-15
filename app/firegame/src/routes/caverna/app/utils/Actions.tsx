@@ -73,7 +73,7 @@ export enum Action {
   extension,
 }
 
-// TODO actionTitles
+// TODO action_titles
 export type ActionType = {
   availability: [number, number];
   foodCost?: number;
