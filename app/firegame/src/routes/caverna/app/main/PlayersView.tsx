@@ -261,9 +261,10 @@ function Grid<T>(
                             )
                             .then(
                               () =>
-                                t.resources![
-                                  resourceName as keyof ResourcesType
-                                ]!--
+                                (t.resources = utils.addResources(
+                                  t.resources!,
+                                  { [resourceName]: -1 }
+                                ))
                             )
                             .then(() =>
                               utils.prepareNextTask(`moved up ${resourceName}`)
