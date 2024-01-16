@@ -86,12 +86,26 @@ export default function ActionsView() {
                           {weaponLevel! <= 0 ? null : weaponLevel}
                         </div>
                       )}
-                      <pre style={{ width: 0, fontSize: "small" }}>
+                      <pre
+                        style={{
+                          width: 0,
+                          fontSize: "small",
+                          position: "absolute",
+                          top: 0,
+                        }}
+                      >
                         {Action[a].split("__")[0].replaceAll("_", "\n")}
                       </pre>
-                      {JSON.stringify(
-                        (store.gameW.game.actionBonuses || {})[a]
-                      )}
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: 0,
+                        }}
+                      >
+                        {JSON.stringify(
+                          (store.gameW.game.actionBonuses || {})[a]
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
