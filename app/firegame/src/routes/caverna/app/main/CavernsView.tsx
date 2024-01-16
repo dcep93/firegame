@@ -58,7 +58,9 @@ export default function CavernsView(props: {
                                 utils.furnish(t, me, props.selected, true)
                               }
                             >
-                              <pre style={{ fontSize: "small" }}>
+                              <pre
+                                style={{ fontSize: "small", margin: "0.1em" }}
+                              >
                                 {JSON.stringify(cavern.cost, null, 2)
                                   ?.split("\n")
                                   ?.slice(1, -1)
@@ -69,9 +71,6 @@ export default function CavernsView(props: {
                                 <div
                                   className={styles.bubble}
                                   style={{
-                                    position: "absolute",
-                                    right: 0,
-                                    bottom: 0,
                                     backgroundColor: utils.getColor(
                                       store.gameW.game.purchasedTiles![t]!
                                     ),

@@ -55,7 +55,7 @@ export default function ActionsView() {
                     }
                     style={{
                       width: "6em",
-                      height: "6em",
+                      height: "8em",
                       margin: "1em",
                     }}
                   >

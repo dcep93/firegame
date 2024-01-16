@@ -247,7 +247,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       delete task.d!.num;
       utils.addResourcesToPlayer(p, { food: -numToFeed });
 
-      // TODO 6 slaughter after breed
+      // TODO 0 slaughter after breed
 
       utils.incrementPlayerTurn();
       if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
@@ -588,7 +588,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             }
             return true;
           case Buildable.double_fence:
-            // TODO 11 Buildable double_fence
+            // TODO 5 Buildable double_fence
             break;
           case Buildable.stable:
             if (farmTile === undefined) {
@@ -603,7 +603,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             }
             return true;
           case Buildable.farm_tile:
-            // TODO 9 Buildable farm_tile
+            // TODO 3 Buildable farm_tile
             break;
           case Buildable.pasture:
             if (farmTile === undefined) {
@@ -629,10 +629,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const caveTile = t as CaveTileType;
     switch (task.d!.build) {
       case Buildable.cavern_tunnel:
-        // TODO 8 Buildable cavern_tunnel
+        // TODO 2 Buildable cavern_tunnel
         break;
       case Buildable.double_cavern:
-        // TODO 7 Buildable double_cavern
+        // TODO 1 Buildable double_cavern
         break;
       case Buildable.tunnel:
         if (caveTile !== undefined) return false;
@@ -647,7 +647,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         return true;
       case Buildable.ore_mine:
-        // TODO 10 Buildable ore_mine
+        // TODO 4 Buildable ore_mine
         break;
       case Buildable.ruby_mine:
         if (caveTile?.isCavern !== false || caveTile.isRubyMine !== undefined)
@@ -761,7 +761,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ) {
                 allowed = true;
               }
-              // TODO 13 double_fence stable num allowed animal
+              // TODO 7 double_fence stable num allowed animal
             } else if (farmTile.isStable && t.resources === undefined) {
               allowed = true;
             }
