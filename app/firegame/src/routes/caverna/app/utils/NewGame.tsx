@@ -125,6 +125,10 @@ export type PlayerType = {
       [column: number]: FarmTileType;
     };
   };
+
+  tileBonuses?: {
+    [k: string]: ResourcesType;
+  };
 };
 
 export type AnimalResourcesType = {
@@ -191,6 +195,14 @@ function setPlayers(game: GameType): GameType {
       cave: {
         2: { 0: { isCavern: true } },
         3: { 0: { isCavern: true, tile: Cavern.starting_dwelling } },
+      },
+
+      tileBonuses: {
+        "0.2.0": { boars: 1 },
+        "2.0.0": { boars: 1 },
+        "3.1.0": { food: 1 },
+        "0.2.1": { food: 1 },
+        "3.1.1": { food: 1 },
       },
     }));
 

@@ -456,17 +456,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils._buildHereHelper(task, p, coords, execute)) return false;
     if (execute) {
       utils.shiftTask();
-      utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {}) &&
-        utils.addResourcesToPlayer(
-          p,
-          {
-            "0.2.0": { boars: 1 },
-            "2.0.0": { boars: 1 },
-            "3.1.0": { food: 1 },
-            "0.2.1": { food: 1 },
-            "3.1.1": { food: 1 },
-          }[coords.join(".")] || {}
-        );
+      utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {});
+      if (task.d!.build! !== Buildable.stable) {
+        const c = coords.join(".");
+        if ((p.tileBonuses || {})[c] !== undefined) {
+          utils.addResourcesToPlayer(p, p.tileBonuses![c]);
+          delete p.tileBonuses![c];
+        }
+      }
       utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
     }
     return true;
