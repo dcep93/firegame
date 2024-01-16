@@ -52,14 +52,20 @@ function RubiesElement() {
   return (
     <div className={styles.bubble}>
       <h3>ruby trader</h3>
-      <div style={{ display: "flex", flexWrap: "wrap", width: "16em" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          width: "16em",
+        }}
+      >
         {utils.enumArray(RubyAction).map((a) => (
           <div
             key={a}
             style={{
-              flexBasis: RubyActions[a].cost ? "100%" : "49%",
-              display: "flex",
-              height: "3em",
+              flexBasis: RubyActions[a].cost ? "100%" : "40%",
+              height: "4em",
             }}
           >
             <Button

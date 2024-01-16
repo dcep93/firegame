@@ -27,7 +27,7 @@ export default function Button(props: {
           disabled={props.disabled}
           style={{
             position: "absolute",
-            top: "50%",
+            top: "60%",
             transform: "translate(0, -100%)",
           }}
           onClick={() => !props.disabled && props.onClick()}
@@ -38,7 +38,7 @@ export default function Button(props: {
       <div
         style={{
           position: "absolute",
-          bottom: "50%",
+          bottom: "40%",
           transform: "translate(0, 100%)",
         }}
       >
