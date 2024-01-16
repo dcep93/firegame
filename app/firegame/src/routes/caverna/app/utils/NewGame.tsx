@@ -83,11 +83,11 @@ export type Params = {
 
 export type CaveTileType = {
   resources?: ResourcesType;
-  tile?: Cavern;
   isCavern?: boolean; // false for tunnel
-  isOreTunnel?: boolean;
-  isOreMine?: boolean; // false if ruby mine
+  tile?: Cavern;
   supply?: ResourcesType;
+  isOreTunnel?: boolean;
+  isRubyMine?: boolean; // false if ore mine
 };
 
 export type FarmTileType = {
@@ -198,11 +198,11 @@ function setPlayers(game: GameType): GameType {
       },
 
       tileBonuses: {
-        "0.2.0": { boars: 1 },
-        "2.0.0": { boars: 1 },
-        "3.1.0": { food: 1 },
-        "0.2.1": { food: 1 },
-        "3.1.1": { food: 1 },
+        "0_2_0": { boars: 1 },
+        "2_0_0": { boars: 1 },
+        "3_1_0": { food: 1 },
+        "0_2_1": { food: 1 },
+        "3_1_1": { food: 1 },
       },
     }));
 

@@ -35,7 +35,7 @@ function Current() {
                     t.d.build === undefined
                       ? null
                       : {
-                          toBuild: Buildable[t.d.build],
+                          build: Buildable[t.d.build],
                         }
                   )
                 )}
@@ -112,7 +112,7 @@ function Special() {
                     })
                 )
                 .then(() =>
-                  store.update(`converted ore for ${builderResource}`)
+                  utils.prepareNextTask(`converted ore for ${builderResource}`)
                 )
             }
           >
@@ -304,7 +304,7 @@ function Special() {
               )
               .then(() => utils.shiftTask())
               .then(() =>
-                store.update(`ate ${state} gold for ${state - 1} food`)
+                utils.prepareNextTask(`ate ${state} gold for ${state - 1} food`)
               )
           }
         >

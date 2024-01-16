@@ -62,7 +62,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     k: number;
     t: CaveTileType | FarmTileType;
   }[] {
-    return [p.cave, p.farm || {}].flatMap((g, k) =>
+    return [p.farm || {}, p.cave].flatMap((g, k) =>
       Object.entries(g).flatMap(([i, r]) =>
         Object.entries(r).flatMap(([j, t]) => ({
           i: parseInt(i),
@@ -214,7 +214,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (caveTile !== undefined) {
       if (
         caveTile.tile !== undefined ||
-        p.cave[selected[0]][selected[1]].isOreMine ||
+        p.cave[selected[0]][selected[1]].isRubyMine !== undefined ||
         (!p.cave[selected[0]][selected[1]].isCavern &&
           p.boughtTiles[Cavern.work_room] === undefined)
       ) {
@@ -274,7 +274,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.addResourcesToPlayer(p, ra.cost || { rubies: -1 });
       if (ra.action) ra.action(p);
       if (ra.reward) utils.addResourcesToPlayer(p, ra.reward);
-      store.update(`traded ruby for ${RubyAction[a]}`);
+      utils.prepareNextTask(`traded ruby for ${RubyAction[a]}`);
     }
     return true;
   }
@@ -310,7 +310,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (execute) {
       utils.addResourcesToPlayer(p, { rubies: -1 });
       p.availableDwarves!.unshift(p.availableDwarves!.splice(index, 1)[0]);
-      store.update("paid a ruby to play out of order");
+      utils.prepareNextTask("paid a ruby to play out of order");
     }
     return true;
   }
@@ -357,7 +357,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             : -Object.values(toSlaughter).sum()),
       });
       utils.addResourcesToPlayer(p, toSlaughter);
-      store.update(`slaughtered ${JSON.stringify(toSlaughter)}`);
+      utils.prepareNextTask(`slaughtered ${JSON.stringify(toSlaughter)}`);
     }
     return true;
   }
@@ -374,7 +374,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               .filter(
                 ({ t }) =>
                   t.resources?.donkeys !== undefined &&
-                  (t as CaveTileType).isOreMine !== undefined
+                  (t as CaveTileType).isRubyMine !== undefined
               ).length)
     );
     if ((p.resources?.food || 0) < numToFeed) return false;
@@ -458,7 +458,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.shiftTask();
       utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {});
       if (task.d!.build! !== Buildable.stable) {
-        const c = coords.join(".");
+        const c = coords.join("_");
         if ((p.tileBonuses || {})[c] !== undefined) {
           utils.addResourcesToPlayer(p, p.tileBonuses![c]);
           delete p.tileBonuses![c];
@@ -559,10 +559,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         // TODO Buildable ore_mine
         break;
       case Buildable.ruby_mine:
-        if (caveTile?.isCavern !== false || caveTile.isOreMine !== undefined)
+        if (caveTile?.isCavern !== false || caveTile.isRubyMine !== undefined)
           return false;
         if (execute) {
-          caveTile.isOreMine = false;
+          caveTile.isRubyMine = true;
         }
         return true;
     }
@@ -574,13 +574,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Buildable.fence:
       case Buildable.double_fence:
         return {
-          wood: task.d!.num! - (p.boughtTiles[Cavern.carpenter] ? 1 : 0),
+          wood: -task.d!.num! + (p.boughtTiles[Cavern.carpenter] ? 1 : 0),
         };
       case Buildable.stable:
         return {
-          stone: Math.max(
+          stone: Math.min(
             0,
-            task.d!.num! - (p.boughtTiles[Cavern.stone_carver] ? 1 : 0)
+            -task.d!.num! + (p.boughtTiles[Cavern.stone_carver] ? 1 : 0)
           ),
         };
     }
@@ -606,7 +606,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "gold":
         if (execute) {
           utils.queueTasks([{ t: Task.eat_gold }]);
-          store.update(`is about to eat gold`);
+          utils.prepareNextTask(`is about to eat gold`);
         }
         return true;
       case "grain":
@@ -627,7 +627,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               food: resourceName === "vegetables" ? 2 : 1,
               [resourceName]: -1,
             });
-            store.update(`ate ${resourceName}`);
+            utils.prepareNextTask(`ate ${resourceName}`);
           }
         }
         return true;
@@ -686,7 +686,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             case "donkeys":
               allowed =
                 t.resources === undefined &&
-                (t as CaveTileType).isOreMine !== undefined;
+                (t as CaveTileType).isRubyMine !== undefined;
               break;
             case "boars":
               allowed =
@@ -702,7 +702,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           if (!t.resources) t.resources = {};
           t.resources[resourceName] = 1 + (t.resources[resourceName] || 0);
           utils.addResourcesToPlayer(p, { [resourceName]: -1 });
-          store.update(`moved ${resourceName}`);
+          utils.prepareNextTask(`moved down ${resourceName}`);
         }
         return true;
       case "stone":
@@ -720,7 +720,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             [resourceName]: resourceName === "ore" ? -2 : -1,
           });
           store.gameW.game.tasks[0].d = { num: 1 };
-          store.update(`ate ${resourceName}`);
+          utils.prepareNextTask(`ate ${resourceName}`);
         }
         return true;
     }
@@ -799,7 +799,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .map(
             ({ t }) =>
               t.resources?.donkeys !== undefined &&
-              (t as CaveTileType).isOreMine === true
+              (t as CaveTileType).isRubyMine === false
           ).length,
       }))
       .filter(({ p, num }) => num > 0 && p.boughtTiles[Cavern.miner])
@@ -882,10 +882,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         utils
           .getGrid(p)
           .map(({ t }) =>
-            (t as CaveTileType).isOreMine === true
-              ? 3
-              : (t as CaveTileType).isOreMine === false
+            (t as CaveTileType).isRubyMine === true
               ? 4
+              : (t as CaveTileType).isRubyMine === false
+              ? 3
               : 0
           )
           .sum(),

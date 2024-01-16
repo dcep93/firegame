@@ -1,5 +1,11 @@
 import styles from "../../../../shared/styles.module.css";
-import { PlayerType, ResourcesType } from "../utils/NewGame";
+import Caverns, { Cavern } from "../utils/Caverns";
+import {
+  CaveTileType,
+  FarmTileType,
+  PlayerType,
+  ResourcesType,
+} from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 // click animal -> goes to slaughterhouse
@@ -134,9 +140,20 @@ function Player(
             title={"farm"}
             selectedIndex={0}
             // TODO render farm
-            f={([i, j, k]) => (
+            f={(t: FarmTileType, [i, j, k]) => (
               <div>
-                {i}.{j}
+                <div>
+                  {!t.isStable ? null : "stable"}
+                  {t.doubleFenceAngleDeg !== undefined
+                    ? t.doubleFenceAngleDeg
+                    : t.isFence
+                    ? "fence"
+                    : t.resources !== undefined
+                    ? null
+                    : t.isPasture
+                    ? "pasture"
+                    : "field"}
+                </div>
               </div>
             )}
             {...props}
@@ -144,10 +161,41 @@ function Player(
           <Grid
             title={"cave"}
             selectedIndex={1}
-            // TODO render cave
-            f={([i, j, k]) => (
+            f={(t: CaveTileType, [i, j, k]) => (
               <div>
-                {i}.{j}
+                {t.tile !== undefined ? (
+                  <div
+                    title={Caverns[t.tile].title}
+                    style={{
+                      cursor:
+                        Caverns[t.tile!].action === undefined
+                          ? undefined
+                          : "pointer",
+                    }}
+                    onClick={() =>
+                      Caverns[t.tile!].action !== undefined &&
+                      Caverns[t.tile!].action!(props.p)
+                    }
+                  >
+                    (
+                    {Caverns[t.tile].points !== undefined
+                      ? Caverns[t.tile].points
+                      : Caverns[t.tile].pointsF!(props.p)}
+                    ) {Cavern[t.tile]} {JSON.stringify(Caverns[t.tile!].supply)}
+                  </div>
+                ) : (
+                  <div>
+                    {t.isCavern
+                      ? "CAVERN"
+                      : t.isRubyMine
+                      ? "RUBY_MINE"
+                      : t.isRubyMine === false
+                      ? "ORE_MINE"
+                      : t.isOreTunnel
+                      ? "ORE_TUNNEL"
+                      : "TUNNEL"}
+                  </div>
+                )}
               </div>
             )}
             {...props}
@@ -158,12 +206,12 @@ function Player(
   );
 }
 
-function Grid(
+function Grid<T>(
   props: {
     p: PlayerType;
     title: string;
     selectedIndex: number;
-    f: (coords: [number, number, number]) => JSX.Element;
+    f: (t: T, coords: [number, number, number]) => JSX.Element | null;
   } & SelectedPropsType
 ) {
   return (
@@ -173,8 +221,12 @@ function Grid(
         <div key={i} style={{ display: "flex" }}>
           {utils
             .count(3)
-            .map((j) => [i, j, props.selectedIndex] as [number, number, number])
-            .map((coords) => (
+            .map((j) => ({
+              t: (([props.p.farm || {}, props.p.cave][props.selectedIndex] ||
+                {})[i] || {})[j],
+              coords: [i, j, props.selectedIndex] as [number, number, number],
+            }))
+            .map(({ t, coords }) => (
               <div
                 key={coords.join(".")}
                 style={{
@@ -195,7 +247,33 @@ function Grid(
                   )
                 }
               >
-                {props.f(coords)}
+                {t === undefined ? null : props.f(t as T, coords)}
+                {t?.resources === undefined
+                  ? null
+                  : Object.entries(t.resources).map(([resourceName, count]) => (
+                      <div
+                        key={resourceName}
+                        onClick={() =>
+                          Promise.resolve()
+                            .then(() =>
+                              utils.addResourcesToPlayer(props.p, {
+                                [resourceName]: 1,
+                              })
+                            )
+                            .then(
+                              () =>
+                                t.resources![
+                                  resourceName as keyof ResourcesType
+                                ]!--
+                            )
+                            .then(() =>
+                              utils.prepareNextTask(`moved up ${resourceName}`)
+                            )
+                        }
+                      >
+                        {resourceName}: {count}
+                      </div>
+                    ))}
               </div>
             ))}
         </div>
@@ -203,11 +281,3 @@ function Grid(
     </div>
   );
 }
-
-// updateSelected={(s: [number, number, number]) =>
-//   p.userId === store.me.userId &&
-//   (JSON.stringify(props.selected) === JSON.stringify(s)
-//     ? props.updateSelected(undefined)
-//     : props.updateSelected(s))
-// }
-// selected={p.userId !== store.me.userId ? undefined : props.selected}

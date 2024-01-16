@@ -5,7 +5,7 @@ import {
   ResourcesType,
   Task,
 } from "./NewGame";
-import utils, { store } from "./utils";
+import utils from "./utils";
 
 export enum Cavern {
   starting_dwelling,
@@ -292,7 +292,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
       utils.isMyTurn() &&
         Promise.resolve()
           .then(() => utils.queueTasks([{ t: Task.peaceful_cave }]))
-          .then(() => store.update("activated peaceful_cave"));
+          .then(() => utils.prepareNextTask("activated peaceful_cave"));
     },
   },
   [Cavern.weaving_parlor]: {
