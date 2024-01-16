@@ -56,21 +56,32 @@ export type TaskType = {
   };
 };
 
+export enum Harvest {
+  nothing,
+  harvest,
+  one_per,
+  random,
+  green,
+  red,
+}
+
 export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
 
+  startingPlayer: number;
+
   tasks: TaskType[];
 
-  startingPlayer: number;
-  remainingHarvests?: boolean[];
+  remainingHarvests?: Harvest[];
+  upcomingHarvests?: Harvest[];
 
   purchasedTiles?: { [t in Cavern]?: number };
 
   actions: Action[];
-  upcomingActions?: Action[];
   actionBonuses?: { [a in Action]?: ResourcesType };
+  upcomingActions?: Action[];
   takenActions?:
     | {
         [a in Action]?: { playerIndex: number; dwarfIndex: number };
@@ -159,7 +170,29 @@ function NewGame(params: Params): PromiseLike<GameType> {
     tasks: [],
 
     startingPlayer: 0,
-    remainingHarvests: [true, true, true, true, false, false, false],
+    remainingHarvests: [
+      Harvest.green,
+      Harvest.green,
+      Harvest.green,
+      Harvest.green,
+      Harvest.red,
+      Harvest.red,
+      Harvest.red,
+    ],
+    upcomingHarvests: [
+      Harvest.nothing,
+      Harvest.nothing,
+      Harvest.harvest,
+      Harvest.one_per,
+      Harvest.harvest,
+      Harvest.random,
+      Harvest.random,
+      Harvest.random,
+      Harvest.random,
+      Harvest.random,
+      Harvest.random,
+      Harvest.random,
+    ],
     actions: utils
       .enumArray(Action)
       .map((a) => ({ a, o: Actions[a] }))

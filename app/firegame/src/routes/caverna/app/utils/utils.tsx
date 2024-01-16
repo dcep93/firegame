@@ -729,7 +729,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   // GAME FLOW
 
   finishTurn(p: PlayerType) {
-    if (!p.resources) p.resources = {};
     if (Object.keys(utils._toSlaughter(p)).length > 0) {
       utils.queueTasks([{ t: Task.slaughter }]);
       return;

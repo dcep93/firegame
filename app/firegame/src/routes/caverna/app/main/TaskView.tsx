@@ -2,45 +2,67 @@ import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
 import { Cavern } from "../utils/Caverns";
 import { ExpeditionAction } from "../utils/ExpeditionActions";
-import { Buildable, ResourcesType, Task } from "../utils/NewGame";
+import { Buildable, Harvest, ResourcesType, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 function Current() {
   return (
     <div className={styles.bubble}>
-      <div>current: {utils.getCurrent().userName}</div>
       <div>
-        {store.gameW.game.tasks.map((t, i) => (
-          <div key={i} style={{ display: "flex" }}>
-            <div>{Task[t.t]}</div>
-            {t.d === undefined
-              ? null
-              : JSON.stringify(
-                  Object.assign(
-                    {},
-                    null,
-                    t.d,
-                    t.d.expeditionsTaken === undefined
-                      ? null
-                      : {
-                          expeditionsTaken: Object.entries(t.d.expeditionsTaken)
-                            .map(([k, v]) => ({
-                              k: ExpeditionAction[parseInt(k)],
-                              v,
-                            }))
-                            .filter(({ v }) => v)
-                            .map(({ k }) => k)
-                            .join(","),
-                        },
-                    t.d.build === undefined
-                      ? null
-                      : {
-                          build: Buildable[t.d.build],
-                        }
-                  )
-                )}
-          </div>
-        ))}
+        <div>current: {utils.getCurrent().userName}</div>
+        <div>
+          {store.gameW.game.tasks.map((t, i) => (
+            <div key={i} style={{ display: "flex" }}>
+              <div>{Task[t.t]}</div>
+              {t.d === undefined
+                ? null
+                : JSON.stringify(
+                    Object.assign(
+                      {},
+                      null,
+                      t.d,
+                      t.d.expeditionsTaken === undefined
+                        ? null
+                        : {
+                            expeditionsTaken: Object.entries(
+                              t.d.expeditionsTaken
+                            )
+                              .map(([k, v]) => ({
+                                k: ExpeditionAction[parseInt(k)],
+                                v,
+                              }))
+                              .filter(({ v }) => v)
+                              .map(({ k }) => k)
+                              .join(","),
+                          },
+                      t.d.build === undefined
+                        ? null
+                        : {
+                            build: Buildable[t.d.build],
+                          }
+                    )
+                  )}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <div>
+          starting player:{" "}
+          {store.gameW.game.players[store.gameW.game.startingPlayer].userName}
+        </div>
+        <div>
+          remaining harvests:{" "}
+          {(store.gameW.game.remainingHarvests || [])
+            .map((h) => Harvest[h])
+            .join(",")}
+        </div>
+        <div>
+          upcoming harvests:{" "}
+          {(store.gameW.game.upcomingHarvests || [])
+            .map((h) => Harvest[h])
+            .join(",")}
+        </div>
       </div>
     </div>
   );

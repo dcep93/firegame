@@ -9,16 +9,6 @@ export default function ActionsView() {
     <div>
       <div className={styles.bubble}>
         <h3>actions</h3>
-        <div>
-          <div>
-            remaining harvests:{" "}
-            {(store.gameW.game.remainingHarvests || []).join(",")}
-          </div>
-          <div>
-            starting player:{" "}
-            {store.gameW.game.players[store.gameW.game.startingPlayer].userName}
-          </div>
-        </div>
         <div style={{ display: "flex" }}>
           {chunk(store.gameW.game.actions, 3).map((a2, i) => (
             <div key={i}>
