@@ -537,7 +537,9 @@ function Special() {
 export default function TaskView() {
   return (
     <div>
-      <Current />
+      <div>
+        <Current />
+      </div>
       {utils.isMyTurn() && <Special />}
     </div>
   );

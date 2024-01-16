@@ -5,6 +5,7 @@ import {
   FarmTileType,
   PlayerType,
   ResourcesType,
+  Task,
 } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
@@ -211,6 +212,7 @@ function Grid<T>(
     f: (t: T, coords: [number, number, number]) => JSX.Element | null;
   } & SelectedPropsType
 ) {
+  const isBuilding = utils.getTask().t === Task.build;
   return (
     <div className={styles.bubble}>
       <h4>{props.title}</h4>
@@ -230,16 +232,23 @@ function Grid<T>(
                   border: "2px solid black",
                   width: "8em",
                   height: "4em",
-                  backgroundColor: !utils.objEqual(coords, props.selected)
-                    ? undefined
-                    : "lightgrey",
-                  cursor: "pointer",
+                  backgroundColor:
+                    isBuilding || !utils.objEqual(coords, props.selected)
+                      ? undefined
+                      : "lightgrey",
+                  cursor:
+                    !isBuilding || utils.build(props.p, coords, false)
+                      ? "pointer"
+                      : undefined,
                 }}
                 onClick={() =>
-                  utils.build(props.p, coords, true) ||
-                  props.updateSelected(
-                    utils.objEqual(coords, props.selected) ? undefined : coords
-                  )
+                  isBuilding
+                    ? utils.build(props.p, coords, true)
+                    : props.updateSelected(
+                        utils.objEqual(coords, props.selected)
+                          ? undefined
+                          : coords
+                      )
                 }
               >
                 {t === undefined ? null : props.f(t as T, coords)}
