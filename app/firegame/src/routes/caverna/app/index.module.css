@@ -1,0 +1,7 @@
+button {
+  color: initial;
+}
+
+button:enabled {
+  cursor: pointer;
+}

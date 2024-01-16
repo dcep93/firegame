@@ -39,7 +39,7 @@ export default function CavernsView(props: {
                             style={{
                               width: "8em",
                               height: "8em",
-                              margin: "1em",
+                              margin: "0.5em",
                             }}
                             title={cavern.title}
                           >

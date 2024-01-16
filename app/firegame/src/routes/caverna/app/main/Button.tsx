@@ -26,13 +26,11 @@ export default function Button(props: {
         <button
           disabled={props.disabled}
           style={{
-            color: "initial",
             position: "absolute",
             top: "50%",
             transform: "translate(0, -100%)",
-            cursor: props.disabled ? undefined : "pointer",
           }}
-          onClick={() => props.onClick()}
+          onClick={() => !props.disabled && props.onClick()}
         >
           <pre style={{ margin: "0.2em -0.05em" }}>{props.text}</pre>
         </button>

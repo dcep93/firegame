@@ -66,22 +66,20 @@ function Player(
         <div>
           ready dwarves:{" "}
           {(props.p.availableDwarves || []).map((d, i) => (
-            <span
+            <button
               key={i}
+              disabled={!utils.payRubyOutOfOrder(props.p, i, false)}
               style={{
                 padding: "0.5em",
-                cursor: utils.payRubyOutOfOrder(props.p, i, false)
-                  ? "pointer"
-                  : undefined,
               }}
               onClick={() => utils.payRubyOutOfOrder(props.p, i, true)}
             >
               {d}
-            </span>
+            </button>
           ))}
         </div>
         {props.p.begging !== undefined && <div>begging: {props.p.begging}</div>}
-        <div>
+        <div className={styles.bubble}>
           {(
             [
               "dogs",
@@ -105,23 +103,27 @@ function Player(
             }))
             .filter(({ count }) => count > 0)
             .map(({ resourceName, count }, i) => (
-              <div
-                key={i}
-                style={{
-                  cursor: utils.doResource(
-                    props.p,
-                    props.selected,
-                    resourceName,
-                    false
-                  )
-                    ? "pointer"
-                    : undefined,
-                }}
-                onClick={() =>
-                  utils.doResource(props.p, props.selected, resourceName, true)
-                }
-              >
-                {resourceName}: {count}
+              <div key={i}>
+                <button
+                  disabled={
+                    !utils.doResource(
+                      props.p,
+                      props.selected,
+                      resourceName,
+                      false
+                    )
+                  }
+                  onClick={() =>
+                    utils.doResource(
+                      props.p,
+                      props.selected,
+                      resourceName,
+                      true
+                    )
+                  }
+                >
+                  {resourceName}: {count}
+                </button>
               </div>
             ))}
         </div>
@@ -163,14 +165,9 @@ function Player(
             f={(t: CaveTileType, [i, j, k]) => (
               <div>
                 {t.tile !== undefined ? (
-                  <div
+                  <button
                     title={Caverns[t.tile].title}
-                    style={{
-                      cursor:
-                        Caverns[t.tile!].action === undefined
-                          ? undefined
-                          : "pointer",
-                    }}
+                    disabled={Caverns[t.tile!].action === undefined}
                     onClick={() =>
                       Caverns[t.tile!].action !== undefined &&
                       Caverns[t.tile!].action!(props.p)
@@ -180,8 +177,9 @@ function Player(
                     {Caverns[t.tile].points !== undefined
                       ? Caverns[t.tile].points
                       : Caverns[t.tile].pointsF!(props.p)}
-                    ) {Cavern[t.tile]} {JSON.stringify(Caverns[t.tile!].supply)}
-                  </div>
+                    ) {Cavern[t.tile].replaceAll("_", "\n")}{" "}
+                    {JSON.stringify(Caverns[t.tile!].supply)}
+                  </button>
                 ) : (
                   <div>
                     {t.isCavern
@@ -235,9 +233,7 @@ function Grid<T>(
                   backgroundColor: !utils.objEqual(coords, props.selected)
                     ? undefined
                     : "lightgrey",
-                  cursor: utils.buildHere(props.p, coords, false)
-                    ? "pointer"
-                    : undefined,
+                  cursor: "pointer",
                 }}
                 onClick={() =>
                   utils.buildHere(props.p, coords, true) ||
@@ -250,7 +246,7 @@ function Grid<T>(
                 {t?.resources === undefined
                   ? null
                   : Object.entries(t.resources).map(([resourceName, count]) => (
-                      <div
+                      <button
                         key={resourceName}
                         onClick={() =>
                           Promise.resolve()
@@ -272,7 +268,7 @@ function Grid<T>(
                         }
                       >
                         {resourceName}: {count}
-                      </div>
+                      </button>
                     ))}
               </div>
             ))}

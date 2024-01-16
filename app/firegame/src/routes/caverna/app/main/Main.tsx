@@ -1,4 +1,5 @@
 import { useState } from "react";
+import css from "../index.module.css";
 import ActionsView from "./ActionsView";
 import CavernsView from "./CavernsView";
 import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
@@ -10,7 +11,10 @@ export default function Main() {
     [number, number, number] | undefined
   >(undefined);
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+    <div
+      className={css.main}
+      style={{ width: "100%", display: "flex", flexDirection: "column" }}
+    >
       <TaskView />
       <ActionsView />
       <div style={{ alignSelf: "flex-end" }}>
