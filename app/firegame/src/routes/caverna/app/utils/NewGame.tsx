@@ -77,6 +77,7 @@ export type GameType = {
   players: PlayerType[];
 
   startingPlayer: number;
+  isHarvest: boolean;
 
   tasks: TaskType[];
 
@@ -172,6 +173,8 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
+
+    isHarvest: false,
 
     tasks: [],
 

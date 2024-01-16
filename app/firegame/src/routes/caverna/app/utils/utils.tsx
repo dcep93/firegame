@@ -250,19 +250,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
       delete task.d!.num;
       utils.addResourcesToPlayer(p, { food: -numToFeed });
-
-      // TODO 0 slaughter after breed
-
-      utils.incrementPlayerTurn();
-      if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
-        if (store.gameW.game.upcomingHarvests === undefined) {
-          utils.queueTasks([{ t: Task.game_end }]);
-        } else {
-          utils.enrichAndReveal(store.gameW.game);
-        }
-      }
-
-      store.update(`fed ${numToFeed}`);
+      utils.shiftTask();
+      utils.prepareNextTask(`fed ${numToFeed}`);
     }
     return true;
   }
@@ -834,6 +823,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.queueTasks([{ t: Task.slaughter }]);
       return;
     }
+    if (store.gameW.game.isHarvest) {
+      utils.incrementPlayerTurn();
+      if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
+        if (store.gameW.game.upcomingHarvests === undefined) {
+          utils.queueTasks([{ t: Task.game_end }]);
+        } else {
+          store.gameW.game.isHarvest = false;
+          utils.enrichAndReveal(store.gameW.game);
+        }
+      }
+      return;
+    }
     while (true) {
       utils.incrementPlayerTurn();
       if ((utils.getCurrent().availableDwarves || []).length > 0) {
@@ -852,6 +853,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (h === Harvest.nothing) {
           utils.enrichAndReveal(store.gameW.game);
         } else {
+          store.gameW.game.isHarvest = true;
           utils.queueTasks([{ t: Task.harvest, d: { harvest: h } }]);
         }
         break;
