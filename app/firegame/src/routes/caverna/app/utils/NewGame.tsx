@@ -21,12 +21,13 @@ export enum Task {
   choose_excavation,
   extension,
 
-  // TODO Task
-  feed_tmp,
-  finish_year_tmp,
-  wish_for_children,
-  growth,
-  weekly_market,
+  feed_tmp, // TODO
+  finish_year_tmp, // TODO
+  wish_for_children, // TODO
+  growth, // TODO
+  weekly_market, // TODO
+  breed_2, // TODO
+  family_life, // TODO
 }
 
 export enum Buildable {

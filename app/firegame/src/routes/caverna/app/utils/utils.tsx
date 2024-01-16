@@ -103,6 +103,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.finishTurn(p);
       return true;
     }
+    if (task.t === Task.breed_2) {
+      return task.d!.num! > 0;
+    }
     if (task.t === Task.ore_trading) {
       return task.d!.num! > 0 && (p.resources?.ore || 0) >= 2;
     }

@@ -111,9 +111,8 @@ const ExpeditionActions: {
   },
   [ExpeditionAction.breed_2]: {
     level: 14,
-    // TODO breed 2
-    // action: (p: PlayerType) =>
-    //   utils.queueTasks([{ t: Task.breed, d: { num: 2 } }]),
+    action: (p: PlayerType) =>
+      utils.queueTasks([{ t: Task.breed_2, d: { num: 2 } }]),
   },
 };
 
