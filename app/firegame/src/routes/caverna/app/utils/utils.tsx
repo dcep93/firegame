@@ -188,9 +188,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if ((p.resources?.food || 0) < numToFeed) return false;
     if (execute) {
       if (task.d!.harvest !== Harvest.one_per && task.d!.num !== 1) {
-        utils
-          .getBreedables(p)
-          .forEach((r) => utils.addResourcesToPlayer(p, { [r]: 1 }));
+        const bs = utils.getBreedables(p);
+        bs.forEach((r) => utils.addResourcesToPlayer(p, { [r]: 1 }));
+        if (p.boughtTiles[Cavern.breeding_cave]) {
+          utils.addResourcesToPlayer(p, { food: [0, 1, 2, 3, 5][bs.length] });
+        }
+        if (p.boughtTiles[Cavern.quarry] && bs.includes("donkeys")) {
+          utils.addResourcesToPlayer(p, { stone: 1 });
+        }
       }
       delete task.d!.num;
       utils.addResourcesToPlayer(p, { food: -numToFeed });

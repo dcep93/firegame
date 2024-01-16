@@ -133,6 +133,17 @@ function Special() {
             onClick={() =>
               Promise.resolve()
                 .then(() => utils.addResourcesToPlayer(p, { [r]: 1 }))
+                .then(
+                  () =>
+                    p.boughtTiles[Cavern.breeding_cave] &&
+                    utils.addResourcesToPlayer(p, { food: 1 })
+                )
+                .then(
+                  () =>
+                    p.boughtTiles[Cavern.quarry] &&
+                    r === "donkeys" &&
+                    utils.addResourcesToPlayer(p, { stone: 1 })
+                )
                 .then(() => task.d!.num!--)
                 .then(() => (task.d!.resource = r))
                 .then(() => utils.prepareNextTask(`bred ${r}`))
