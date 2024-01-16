@@ -251,9 +251,13 @@ function Grid<T>(
                         onClick={() =>
                           Promise.resolve()
                             .then(() =>
-                              utils.addResourcesToPlayer(props.p, {
-                                [resourceName]: 1,
-                              })
+                              utils.addResourcesToPlayer(
+                                props.p,
+                                {
+                                  [resourceName]: 1,
+                                },
+                                true
+                              )
                             )
                             .then(
                               () =>

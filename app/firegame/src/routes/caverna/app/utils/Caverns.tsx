@@ -163,7 +163,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
   [Cavern.office_room]: {
     cost: { stone: 1 },
     category: CavernCategory.green,
-    title: "TODO twin tiles may overhang\nevery time you do score 2 [gold]",
+    title: "TODO 12 twin tiles may overhang\nevery time you do score 2 [gold]",
     points: 0,
   },
   [Cavern.carpenter]: {

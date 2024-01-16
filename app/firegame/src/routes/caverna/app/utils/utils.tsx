@@ -42,8 +42,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return addTo;
   }
 
-  addResourcesToPlayer(p: PlayerType, r: ResourcesType): boolean {
-    // TODO when getting an animal, try to put it on the map, but not if it came from the map
+  addResourcesToPlayer(
+    p: PlayerType,
+    r: ResourcesType,
+    isMoving: boolean = false
+  ): boolean {
     const addedResources = utils.addResources(p.resources || {}, r);
     if (addedResources === undefined) return false;
     p.resources = addedResources;
@@ -55,6 +58,40 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       Object.values(r).filter((v) => v < 0).length === 0
     )
       utils.addResourcesToPlayer(p, { ore: r.stone! });
+    if (!isMoving) {
+      Object.keys(utils._toSlaughter(p))
+        .map((r) => r as keyof ResourcesType)
+        .forEach((r) => {
+          while (true) {
+            if (p.resources![r] === undefined) break;
+            const destinations = utils
+              .getGrid(p)
+              .filter(({ i, j, k }) => utils.doResource(p, [i, j, k], r, false))
+              .map((o) => ({
+                ...o,
+                rank: [
+                  o.k * 1000, // 1000 points if cave
+                  Caverns[(o.t as CaveTileType).tile!]?.category ===
+                  CavernCategory.dwelling
+                    ? -100
+                    : 0, // -100 points for dwelling
+                  (o.t as FarmTileType).doubleFenceAngleDeg !== undefined
+                    ? 100
+                    : 0, // 100 points for double fence
+                  (o.t as FarmTileType).isPasture ? 500 : 0, // 500 points for pasture
+                  Object.values(o.t.resources || {}).sum(), // points for existing resources
+                ].sum(),
+              }))
+              .sort((a, b) => b.rank - a.rank);
+            if (destinations.length === 0) break;
+            destinations[0].t.resources = utils.addResources(
+              destinations[0].t.resources || {},
+              { [r]: 1 }
+            );
+            utils.addResourcesToPlayer(p, { [r]: -1 }, true);
+          }
+        });
+    }
     return true;
   }
 
@@ -210,7 +247,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       delete task.d!.num;
       utils.addResourcesToPlayer(p, { food: -numToFeed });
 
-      // TODO 9 slaughter after breed
+      // TODO 6 slaughter after breed
 
       utils.incrementPlayerTurn();
       if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
@@ -551,7 +588,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             }
             return true;
           case Buildable.double_fence:
-            // TODO Buildable double_fence
+            // TODO 11 Buildable double_fence
             break;
           case Buildable.stable:
             if (farmTile === undefined) {
@@ -566,7 +603,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             }
             return true;
           case Buildable.farm_tile:
-            // TODO Buildable farm_tile
+            // TODO 9 Buildable farm_tile
             break;
           case Buildable.pasture:
             if (farmTile === undefined) {
@@ -610,7 +647,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         return true;
       case Buildable.ore_mine:
-        // TODO Buildable ore_mine
+        // TODO 10 Buildable ore_mine
         break;
       case Buildable.ruby_mine:
         if (caveTile?.isCavern !== false || caveTile.isRubyMine !== undefined)
@@ -724,7 +761,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ) {
                 allowed = true;
               }
-              // TODO double_fence stable num allowed animal
+              // TODO 13 double_fence stable num allowed animal
             } else if (farmTile.isStable && t.resources === undefined) {
               allowed = true;
             }
@@ -762,7 +799,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (execute) {
           if (!t.resources) t.resources = {};
           t.resources[resourceName] = 1 + (t.resources[resourceName] || 0);
-          utils.addResourcesToPlayer(p, { [resourceName]: -1 });
+          utils.addResourcesToPlayer(p, { [resourceName]: -1 }, true);
           utils.prepareNextTask(`moved down ${resourceName}`);
         }
         return true;
