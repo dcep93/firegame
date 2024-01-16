@@ -98,11 +98,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   canUpcomingTask(): boolean {
     const task = utils.getTask();
+    const p = utils.getCurrent();
     if (task === undefined) {
-      utils.finishTurn();
+      utils.finishTurn(p);
       return true;
     }
-    const p = utils.getCurrent();
+    if (task.t === Task.slaughter) {
+      return Object.keys(utils._toSlaughter(p)).length > 0;
+    }
     if (task.t === Task.forge) {
       return (
         p.usedDwarves![0] === 0 &&
@@ -310,14 +313,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  slaughter(p: PlayerType, execute: boolean): boolean {
-    if (!utils.isMyTurn()) return false;
-    const toSlaughter = Object.fromEntries(
+  _toSlaughter(p: PlayerType): AnimalResourcesType {
+    return Object.fromEntries(
       Object.entries(p.resources || {})
         .map(([r, c]) => ({ c, r: r as keyof ResourcesType }))
         .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
         .map(({ r, c }) => [r, -c])
     );
+  }
+
+  slaughter(p: PlayerType, execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
+    const toSlaughter = utils._toSlaughter(p);
     if (Object.keys(toSlaughter).length === 0) return false;
     if (execute) {
       utils.addResourcesToPlayer(p, {
@@ -376,7 +383,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         store.gameW.game.tasks = [{ t: Task.breed }];
       }
       store.update(`fed ${numToFeed}`);
-      // TODO feed
+      // TODO feed/breed
     }
     return true;
   }
@@ -726,8 +733,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   // GAME FLOW
 
-  // TODO 2 cant finish turn if animals to slaughter
-  finishTurn() {
+  finishTurn(p: PlayerType) {
+    if (!p.resources) p.resources = {};
+    if (Object.keys(utils._toSlaughter(p)).length > 0) {
+      utils.queueTasks([{ t: Task.slaughter }]);
+      return;
+    }
     while (true) {
       utils.incrementPlayerTurn();
       if ((utils.getCurrent().availableDwarves || []).length > 0) {
@@ -800,8 +811,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return g;
   }
 
-  getScoreDict(p: PlayerType): { [k: string]: number } {
-    const allResources = utils
+  getAllResources(p: PlayerType): ResourcesType {
+    return utils
       .getGrid(p)
       .filter(({ t }) => t.resources !== undefined)
       .map(({ t }) => t.resources!)
@@ -810,6 +821,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         (prev, curr) => utils.addResources(prev, curr)!,
         {} as ResourcesType
       );
+  }
+
+  getScoreDict(p: PlayerType): { [k: string]: number } {
+    const allResources = this.getAllResources(p);
     return {
       animal: Object.entries(allResources)
         .map(([r, c]) => ({ r: r as keyof ResourcesType, c }))
@@ -882,9 +897,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         .map((t) => parseInt(t) as Cavern)
         .map((t) => Caverns[t])
         .filter((t) => t.category === CavernCategory.yellow)
-        .map(
-          (tile) => (tile.points !== undefined ? tile.points : tile.pointsF!(p))
-          // TODO 1 include resources on board
+        .map((tile) =>
+          tile.points !== undefined ? tile.points : tile.pointsF!(p)
         )
         .sum(),
       goldBegging: (p.resources || {}).gold || 0 - 3 * (p.begging || 0),

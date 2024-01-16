@@ -18,6 +18,7 @@ export enum Task {
   eat_gold,
 
   // TODO 0 Task
+  slaughter,
   feed,
   finish_year,
   wish_for_children,

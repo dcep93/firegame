@@ -298,17 +298,22 @@ const Caverns: { [t in Cavern]: CavernType } = {
     cost: { wood: 2, stone: 1 },
     category: CavernCategory.yellow,
     title: "immediately 1 [food] per [sheep]\n1 point per 2 [sheep]",
-    pointsF: (p: PlayerType) => Math.floor((p.resources?.sheep || 0) / 2),
+    pointsF: (p: PlayerType) =>
+      Math.floor((utils.getAllResources(p).sheep || 0) / 2),
     onPurchase: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, { food: p.resources?.sheep || 0 }),
+      utils.addResourcesToPlayer(p, {
+        food: utils.getAllResources(p).sheep || 0,
+      }),
   },
   [Cavern.milking_parlor]: {
     cost: { wood: 2, stone: 2 },
     category: CavernCategory.yellow,
     title: "immediately 1 [food] per [cow]\n1 point per [cow]",
-    pointsF: (p: PlayerType) => p.resources?.cows || 0,
+    pointsF: (p: PlayerType) => utils.getAllResources(p).cows || 0,
     onPurchase: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, { food: p.resources?.cows || 0 }),
+      utils.addResourcesToPlayer(p, {
+        food: utils.getAllResources(p).cows || 0,
+      }),
   },
   [Cavern.state_parlor]: {
     cost: { gold: 5, stone: 3 },
@@ -417,7 +422,11 @@ const Caverns: { [t in Cavern]: CavernType } = {
     category: CavernCategory.yellow,
     title: "2 point per [grain] + [vegetable]",
     pointsF: (p: PlayerType) =>
-      2 * Math.min(p.resources?.grain || 0, p.resources?.vegetables || 0),
+      2 *
+      Math.min(
+        utils.getAllResources(p).grain || 0,
+        utils.getAllResources(p).vegetables || 0
+      ),
   },
   [Cavern.prayer_chamber]: {
     cost: { wood: 2 },
@@ -443,11 +452,20 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "1 point per 3 farm animals",
     pointsF: (p: PlayerType) =>
       Math.floor(
-        ((p.resources?.sheep || 0) +
-          (p.resources?.donkeys || 0) +
-          (p.resources?.boars || 0) +
-          (p.resources?.cows || 0)) /
-          3
+        Object.entries(utils.getAllResources(p))
+          .map(([k, v]) => ({ k, v }))
+          .filter(({ k }) =>
+            (
+              [
+                "sheep",
+                "donkeys",
+                "boars",
+                "cows",
+              ] as (keyof AnimalResourcesType)[]
+            ).includes(k as keyof AnimalResourcesType)
+          )
+          .map(({ v }) => v)
+          .sum() / 3
       ),
   },
 };
