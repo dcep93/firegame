@@ -236,7 +236,7 @@ function Grid<T>(
                   cursor: "pointer",
                 }}
                 onClick={() =>
-                  utils.buildHere(props.p, coords, true) ||
+                  utils.build(props.p, coords, true) ||
                   props.updateSelected(
                     utils.objEqual(coords, props.selected) ? undefined : coords
                   )

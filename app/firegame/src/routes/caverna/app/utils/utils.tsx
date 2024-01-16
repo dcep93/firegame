@@ -161,6 +161,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.finishTurn(p);
       return true;
     }
+    if (task.t === Task.resource) {
+      utils.addResourcesToPlayer(p, task.d!.rs!);
+      return false;
+    }
     if (task.t === Task.have_baby) {
       return utils.haveChild(p, false);
     }
@@ -528,7 +532,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   // BUILD
 
-  buildHere(
+  build(
     p: PlayerType,
     coords: [number, number, number],
     execute: boolean
@@ -545,8 +549,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils._buildHereHelper(task, p, coords, execute)) return false;
     if (execute) {
       utils.shiftTask();
-      if (task.d!.r !== undefined)
-        utils.addResourcesToPlayer(p, { [task.d!.r]: 1 });
       utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {});
       if (task.d!.build! !== Buildable.stable) {
         const c = coords.join("_");

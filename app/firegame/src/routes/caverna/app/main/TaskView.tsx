@@ -114,6 +114,54 @@ function Special() {
       </div>
     );
   }
+  if (task.t === Task.furnish) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask("skipped furnishing"))
+          }
+        >
+          skip furnish
+        </button>
+        {task.d?.num !== undefined || !p.caverns[Cavern.builder]
+          ? null
+          : ["wood", "stone"].map((builderResource) => (
+              <button
+                key={builderResource}
+                disabled={
+                  utils.addResources(p.resources || {}, { ore: -1 }) ===
+                  undefined
+                }
+                onClick={() =>
+                  Promise.resolve()
+                    .then(() =>
+                      utils.addResourcesToPlayer(p, {
+                        [builderResource]: 1,
+                        ore: -1,
+                      })
+                    )
+                    .then(
+                      () =>
+                        (store.gameW.game.tasks[0].d = {
+                          r: builderResource as keyof ResourcesType,
+                        })
+                    )
+                    .then(() =>
+                      utils.prepareNextTask(
+                        `converted ore for ${builderResource}`
+                      )
+                    )
+                }
+              >
+                ore for {builderResource}
+              </button>
+            ))}
+      </div>
+    );
+  }
   if (task.t === Task.wish_for_children) {
     return (
       <div className={styles.bubble}>
@@ -282,44 +330,6 @@ function Special() {
       </div>
     );
   }
-  if (
-    task.t === Task.furnish &&
-    task.d?.num === undefined &&
-    p.caverns[Cavern.builder]
-  ) {
-    return (
-      <div className={styles.bubble}>
-        {["wood", "stone"].map((builderResource) => (
-          <button
-            key={builderResource}
-            disabled={
-              utils.addResources(p.resources || {}, { ore: -1 }) === undefined
-            }
-            onClick={() =>
-              Promise.resolve()
-                .then(() =>
-                  utils.addResourcesToPlayer(p, {
-                    [builderResource]: 1,
-                    ore: -1,
-                  })
-                )
-                .then(
-                  () =>
-                    (store.gameW.game.tasks[0].d = {
-                      r: builderResource as keyof ResourcesType,
-                    })
-                )
-                .then(() =>
-                  utils.prepareNextTask(`converted ore for ${builderResource}`)
-                )
-            }
-          >
-            ore for {builderResource}
-          </button>
-        ))}
-      </div>
-    );
-  }
   if (task.t === Task.ore_trading) {
     return (
       <div className={styles.bubble}>
@@ -360,7 +370,11 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.farm_tile, r: "wood" },
+                    d: { build: Buildable.farm_tile },
+                  },
+                  {
+                    t: Task.resource,
+                    d: { rs: { wood: 1 } },
                   },
                 ])
               )
@@ -377,7 +391,11 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.cavern_tunnel, r: "stone" },
+                    d: { build: Buildable.cavern_tunnel },
+                  },
+                  {
+                    t: Task.resource,
+                    d: { rs: { stone: 1 } },
                   },
                 ])
               )

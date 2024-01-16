@@ -20,6 +20,7 @@ export enum Task {
   choose_excavation,
   eat_gold,
   breed_2,
+  resource,
 
   wish_for_children,
   ruby_mine_construction,

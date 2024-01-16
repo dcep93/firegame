@@ -240,7 +240,11 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.housework]: {
     availability: [1, 7],
-    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish }]),
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.furnish },
+        { t: Task.resource, d: { rs: { dogs: 1 } } },
+      ]),
   },
   [Action.slash_and_burn]: {
     availability: [1, 7],
