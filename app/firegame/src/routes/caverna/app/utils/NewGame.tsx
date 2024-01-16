@@ -22,8 +22,8 @@ export enum Task {
   extension,
   breed_2,
   have_baby,
-
-  harvest_tmp, // TODO 0
+  harvest,
+  game_end,
 
   wish_for_children, // TODO 6
   growth, // TODO 3
@@ -60,7 +60,7 @@ export type TaskType = {
 export enum Harvest {
   nothing,
   one_per,
-  havest_skip_one,
+  skip_one,
   harvest,
   random,
 }
@@ -177,7 +177,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
       Harvest.harvest,
       Harvest.nothing,
       Harvest.one_per,
-      Harvest.havest_skip_one,
+      Harvest.skip_one,
     ],
     upcomingHarvests: [
       Harvest.nothing,

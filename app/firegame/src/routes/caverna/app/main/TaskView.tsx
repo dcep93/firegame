@@ -77,6 +77,28 @@ function Special() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
   const p = utils.getCurrent()!;
+  if (
+    task.t === Task.harvest &&
+    task.d!.harvest === Harvest.skip_one &&
+    task.d!.num === undefined
+  ) {
+    return (
+      <div className={styles.bubble}>
+        {["skip pulling off fields", "skip breeding"].map((text, i) => (
+          <button
+            onClick={() =>
+              Promise.resolve()
+                .then(() => (task.d!.num = i))
+                .then(() => i === 1 && utils.pullOffFields(p))
+                .then(() => utils.prepareNextTask(`chose to ${text}`))
+            }
+          >
+            {text}
+          </button>
+        ))}
+      </div>
+    );
+  }
   if (task.t === Task.have_baby) {
     return (
       <div className={styles.bubble}>

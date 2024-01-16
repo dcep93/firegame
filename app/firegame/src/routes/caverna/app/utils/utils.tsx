@@ -43,6 +43,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   addResourcesToPlayer(p: PlayerType, r: ResourcesType): boolean {
+    // TODO when getting an animal, try to put it on the map
     const addedResources = utils.addResources(p.resources || {}, r);
     if (addedResources === undefined) return false;
     p.resources = addedResources;
@@ -161,6 +162,54 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   // EXECUTABLES
+
+  harvest(p: PlayerType, execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
+    const task = utils.getTask();
+    if (task.t !== Task.harvest) return false;
+    if (task.d!.harvest === Harvest.skip_one && task.d!.num === undefined)
+      return false;
+    const numToFeed =
+      task.d!.harvest === Harvest.one_per
+        ? p.usedDwarves!.length
+        : Math.max(
+            0,
+            p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
+              (!p.boughtTiles[Cavern.mining_cave]
+                ? 0
+                : utils
+                    .getGrid(p)
+                    .filter(
+                      ({ t }) =>
+                        t.resources?.donkeys !== undefined &&
+                        (t as CaveTileType).isRubyMine !== undefined
+                    ).length)
+          );
+    if ((p.resources?.food || 0) < numToFeed) return false;
+    if (execute) {
+      if (task.d!.harvest !== Harvest.one_per && task.d!.num !== 1) {
+        utils
+          .getBreedables(p)
+          .forEach((r) => utils.addResourcesToPlayer(p, { [r]: 1 }));
+      }
+      delete task.d!.num;
+      utils.addResourcesToPlayer(p, { food: -numToFeed });
+
+      // TODO 9 slaughter after breed
+
+      utils.incrementPlayerTurn();
+      if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
+        if (store.gameW.game.upcomingHarvests === undefined) {
+          utils.queueTasks([{ t: Task.game_end }]);
+        } else {
+          utils.enrichAndReveal(store.gameW.game);
+        }
+      }
+
+      store.update(`fed ${numToFeed}`);
+    }
+    return true;
+  }
 
   action(a: Action, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
@@ -371,29 +420,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       });
       utils.addResourcesToPlayer(p, toSlaughter);
       utils.prepareNextTask(`slaughtered ${JSON.stringify(toSlaughter)}`);
-    }
-    return true;
-  }
-
-  feed(p: PlayerType, execute: boolean): boolean {
-    if (!utils.isMyTurn()) return false;
-    const numToFeed = Math.max(
-      0,
-      p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
-        (!p.boughtTiles[Cavern.mining_cave]
-          ? 0
-          : utils
-              .getGrid(p)
-              .filter(
-                ({ t }) =>
-                  t.resources?.donkeys !== undefined &&
-                  (t as CaveTileType).isRubyMine !== undefined
-              ).length)
-    );
-    if ((p.resources?.food || 0) < numToFeed) return false;
-    if (execute) {
-      utils.addResourcesToPlayer(p, { food: -numToFeed });
-      store.update(`fed ${numToFeed}`);
     }
     return true;
   }
@@ -611,6 +637,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .find(({ i, j, k }) => utils.objEqual([i, j, k], selected))?.t;
     switch (resourceName) {
       case "food":
+        return utils.harvest(p, execute);
       case "rubies":
         return false;
       case "gold":
@@ -718,24 +745,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "stone":
       case "wood":
       case "ore":
-        return false;
-      // TODO 2 working_cave eat stone/wood/ore
-      // if (
-      //   !p.boughtTiles[Cavern.working_cave] ||
-      //   task.t !== Task.harvest_tmp ||
-      //   task.d?.resource !== undefined ||
-      //   task.d?.num !== undefined
-      // )
-      //   return false;
-      // if (execute) {
-      //   utils.addResourcesToPlayer(p, {
-      //     food: 2,
-      //     [resourceName]: resourceName === "ore" ? -2 : -1,
-      //   });
-      //   store.gameW.game.tasks[0].d!.resource = resourceName;
-      //   utils.prepareNextTask(`ate ${resourceName}`);
-      // }
-      // return true;
+        if (
+          !p.boughtTiles[Cavern.working_cave] ||
+          task.t !== Task.harvest ||
+          task.d!.harvest === Harvest.one_per ||
+          task.d?.resource !== undefined
+        )
+          return false;
+        if (execute) {
+          utils.addResourcesToPlayer(p, {
+            food: 2,
+            [resourceName]: resourceName === "ore" ? -2 : -1,
+          });
+          store.gameW.game.tasks[0].d!.resource = resourceName;
+          utils.prepareNextTask(`ate ${resourceName}`);
+        }
+        return true;
     }
   }
 
@@ -750,19 +775,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.incrementPlayerTurn();
       if ((utils.getCurrent().availableDwarves || []).length > 0) {
         utils.queueTasks([{ t: Task.action }]);
-        return;
+        break;
       }
       if (utils.isMyTurn()) {
         store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        var h = store.gameW.game.upcomingHarvests!.shift()!;
+        var h = store.gameW.game.upcomingHarvests!.shift();
         if (h === Harvest.random) {
           const hs = utils.shuffle(store.gameW.game.randomHarvests!);
           if (hs[0] < Harvest.harvest) hs.sort((a, b) => a - b);
           h = hs.shift()!;
           hs.sort((a, b) => a - b);
         }
-        utils.queueTasks([{ t: Task.harvest_tmp, d: { harvest: h } }]);
-        return;
+        if (h === Harvest.nothing) {
+          utils.enrichAndReveal(store.gameW.game);
+        } else {
+          utils.queueTasks([{ t: Task.harvest, d: { harvest: h } }]);
+        }
+        break;
       }
     }
   }
@@ -929,6 +958,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       "lightcoral",
       "lightsalmon",
     ][index];
+  }
+
+  pullOffFields(p: PlayerType) {
+    utils
+      .getGrid(p)
+      .filter(
+        ({ t }) =>
+          t.resources?.grain !== undefined ||
+          t.resources?.vegetables !== undefined
+      )
+      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
+      .forEach(({ t, r }) => {
+        utils.addResourcesToPlayer(p, { [r]: 1 });
+        t.resources = utils.addResources(t.resources!, { [r]: -1 });
+      });
   }
 }
 

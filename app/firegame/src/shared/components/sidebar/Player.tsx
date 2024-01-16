@@ -73,7 +73,7 @@ class PlayerTimer extends React.Component<{
 
   render() {
     const times = getTimes(this.props.userId);
-    this.props.update(times.length);
+    // this.props.update(times.length);
     const totalTime = Math.floor(times.map((obj) => obj.duration).sum());
     const seconds = totalTime % 60;
     const minutes = (totalTime - seconds) / 60;
