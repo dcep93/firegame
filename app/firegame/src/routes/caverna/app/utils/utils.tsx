@@ -10,6 +10,7 @@ import {
   CaveTileType,
   FarmTileType,
   GameType,
+  Harvest,
   PlayerType,
   ResourcesType,
   Task,
@@ -708,21 +709,24 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "stone":
       case "wood":
       case "ore":
-        if (
-          !p.boughtTiles[Cavern.working_cave] ||
-          task.t !== Task.finish_year_tmp ||
-          task.d?.num !== undefined
-        )
-          return false;
-        if (execute) {
-          utils.addResourcesToPlayer(p, {
-            food: 2,
-            [resourceName]: resourceName === "ore" ? -2 : -1,
-          });
-          store.gameW.game.tasks[0].d = { num: 1 };
-          utils.prepareNextTask(`ate ${resourceName}`);
-        }
-        return true;
+        return false;
+      // TODO working_cave eat stone/wood/ore
+      // if (
+      //   !p.boughtTiles[Cavern.working_cave] ||
+      //   task.t !== Task.harvest_tmp ||
+      //   task.d?.resource !== undefined ||
+      //   task.d?.num !== undefined
+      // )
+      //   return false;
+      // if (execute) {
+      //   utils.addResourcesToPlayer(p, {
+      //     food: 2,
+      //     [resourceName]: resourceName === "ore" ? -2 : -1,
+      //   });
+      //   store.gameW.game.tasks[0].d!.resource = resourceName;
+      //   utils.prepareNextTask(`ate ${resourceName}`);
+      // }
+      // return true;
     }
   }
 
@@ -741,8 +745,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
       if (utils.isMyTurn()) {
         store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        // TODO harvest
-        utils.queueTasks([{ t: Task.finish_year_tmp }]);
+        var h = store.gameW.game.upcomingHarvests!.shift()!;
+        if (h === Harvest.random) {
+          const hs = utils.shuffle(store.gameW.game.randomHarvests!);
+          if (hs[0] < Harvest.harvest) hs.sort((a, b) => a - b);
+          h = hs.shift()!;
+          hs.sort((a, b) => a - b);
+        }
+        utils.queueTasks([{ t: Task.harvest_tmp, d: { harvest: h } }]);
         return;
       }
     }

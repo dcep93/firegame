@@ -21,13 +21,13 @@ export enum Task {
   choose_excavation,
   extension,
 
-  feed_tmp, // TODO
-  finish_year_tmp, // TODO
+  breed_2, // TODO
+  family_life, // TODO
+
+  harvest_tmp, // TODO
   wish_for_children, // TODO
   growth, // TODO
   weekly_market, // TODO
-  breed_2, // TODO
-  family_life, // TODO
 }
 
 export enum Buildable {
@@ -49,6 +49,7 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
+    harvest?: Harvest;
     resource?: keyof ResourcesType;
     sow?: ResourcesType;
     build?: Buildable;
@@ -58,11 +59,10 @@ export type TaskType = {
 
 export enum Harvest {
   nothing,
-  harvest,
   one_per,
+  havest_skip_one,
+  harvest,
   random,
-  green,
-  red,
 }
 
 export type GameType = {
@@ -74,7 +74,7 @@ export type GameType = {
 
   tasks: TaskType[];
 
-  remainingHarvests?: Harvest[];
+  randomHarvests?: Harvest[];
   upcomingHarvests?: Harvest[];
 
   purchasedTiles?: { [t in Cavern]?: number };
@@ -170,14 +170,14 @@ function NewGame(params: Params): PromiseLike<GameType> {
     tasks: [],
 
     startingPlayer: 0,
-    remainingHarvests: [
-      Harvest.green,
-      Harvest.green,
-      Harvest.green,
-      Harvest.green,
-      Harvest.red,
-      Harvest.red,
-      Harvest.red,
+    randomHarvests: [
+      Harvest.harvest,
+      Harvest.harvest,
+      Harvest.harvest,
+      Harvest.harvest,
+      Harvest.nothing,
+      Harvest.one_per,
+      Harvest.havest_skip_one,
     ],
     upcomingHarvests: [
       Harvest.nothing,

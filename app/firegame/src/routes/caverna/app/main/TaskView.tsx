@@ -52,8 +52,8 @@ function Current() {
           {store.gameW.game.players[store.gameW.game.startingPlayer].userName}
         </div>
         <div>
-          remaining harvests:{" "}
-          {(store.gameW.game.remainingHarvests || [])
+          random harvests:{" "}
+          {(store.gameW.game.randomHarvests || [])
             .map((h) => Harvest[h])
             .join(",")}
         </div>
@@ -271,18 +271,6 @@ function Special() {
           </button>
         ))}
     </div>;
-  }
-  if (task.t === Task.feed_tmp) {
-    return (
-      <div className={styles.bubble}>
-        <button
-          disabled={!utils.feed(p, false)}
-          onClick={() => utils.feed(p, true)}
-        >
-          feed
-        </button>
-      </div>
-    );
   }
   if (task.t === Task.forge) {
     const blacksmithDiscount = p.boughtTiles[Cavern.blacksmith] ? 2 : 0;
