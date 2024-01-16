@@ -115,12 +115,30 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.wish_for_children]: {
     availability: [-1.5, 0],
     action: (p: PlayerType) =>
-      p.boughtTiles[Cavern.guest_room]
+      store.gameW.game.actions.includes(Action.family_life)
+        ? // urgent wish
+          p.boughtTiles[Cavern.guest_room]
+          ? Promise.resolve()
+              .then(() => utils.addResourcesToPlayer(p, { gold: 3 }))
+              .then(() =>
+                utils.queueTasks([
+                  { t: Task.furnish, d: { build: Buildable.dwelling } },
+                  { t: Task.have_baby },
+                ])
+              )
+          : utils.queueTasks([{ t: Task.wish_for_children }])
+        : // wish
+        p.boughtTiles[Cavern.guest_room]
         ? utils.queueTasks([
             { t: Task.furnish, d: { build: Buildable.dwelling } },
             { t: Task.have_baby },
           ])
-        : utils.queueTasks([{ t: Task.wish_for_children }]),
+        : utils.haveChild(p, false)
+        ? utils.queueTasks([{ t: Task.wish_for_children }])
+        : // no room for a baby, must build dwelling
+          utils.queueTasks([
+            { t: Task.furnish, d: { build: Buildable.dwelling } },
+          ]),
   },
   [Action.ruby_mine_construction]: {
     availability: [-2, 0],

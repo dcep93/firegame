@@ -21,6 +21,7 @@ export enum Task {
   eat_gold,
   breed_2,
 
+  wish_for_children,
   ruby_mine_construction,
   ore_trading,
   extension,
@@ -28,7 +29,6 @@ export enum Task {
   beer_parlor,
   peaceful_cave,
 
-  wish_for_children, // TODO 6
   weekly_market, // TODO
 }
 

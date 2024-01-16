@@ -77,6 +77,36 @@ function Special() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
   const p = utils.getCurrent()!;
+  if (task.t === Task.wish_for_children) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() =>
+                utils.queueTasks([
+                  { t: Task.furnish, d: { build: Buildable.dwelling } },
+                ])
+              )
+              .then(() => utils.prepareNextTask("will furnish dwelling"))
+          }
+        >
+          get {JSON.stringify(utils.growthRewards())}
+        </button>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() => utils.haveChild(p, true))
+              .then(() => utils.prepareNextTask("had a baby"))
+          }
+        >
+          have baby
+        </button>
+      </div>
+    );
+  }
   if (task.t === Task.growth) {
     return (
       <div className={styles.bubble}>
