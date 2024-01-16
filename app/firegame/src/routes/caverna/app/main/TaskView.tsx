@@ -50,6 +50,40 @@ function Special() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
   const p = utils.getCurrent()!;
+  if (task.t === Task.choose_excavation) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() =>
+                utils.queueTasks([
+                  { t: Task.build, d: { build: Buildable.double_cavern } },
+                ])
+              )
+              .then(() => utils.prepareNextTask("will build double_cavern"))
+          }
+        >
+          build double cavern
+        </button>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() =>
+                utils.queueTasks([
+                  { t: Task.build, d: { build: Buildable.cavern_tunnel } },
+                ])
+              )
+              .then(() => utils.prepareNextTask("will build cavern_tunnel"))
+          }
+        >
+          build cavern/tunnel
+        </button>
+      </div>
+    );
+  }
   if (
     (task.t === Task.furnish_dwelling || task.t === Task.furnish_cavern) &&
     task.d?.num === undefined &&
@@ -113,6 +147,42 @@ function Special() {
           }
         >
           finish trading
+        </button>
+      </div>
+    );
+  }
+  if (task.t === Task.extension) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() =>
+                utils.queueTasks([
+                  { t: Task.build, d: { build: Buildable.farm_tile } },
+                ])
+              )
+              .then(() => utils.addResourcesToPlayer(p, { wood: 1 }))
+              .then(() => utils.prepareNextTask("will build farm_tile"))
+          }
+        >
+          farm_tile + wood
+        </button>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() =>
+                utils.queueTasks([
+                  { t: Task.build, d: { build: Buildable.cavern_tunnel } },
+                ])
+              )
+              .then(() => utils.addResourcesToPlayer(p, { stone: 1 }))
+              .then(() => utils.prepareNextTask("will build cavern_tunnel"))
+          }
+        >
+          cavern_tunnel + stone
         </button>
       </div>
     );
@@ -233,7 +303,7 @@ function Special() {
               .then(() =>
                 utils.addResourcesToPlayer(p, { gold: -state, food: state - 1 })
               )
-              .then(() => utils.shiftTask() !== undefined)
+              .then(() => utils.shiftTask())
               .then(() =>
                 store.update(`ate ${state} gold for ${state - 1} food`)
               )

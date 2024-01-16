@@ -18,15 +18,15 @@ export enum Task {
   slaughter,
   ore_trading,
   peaceful_cave,
+  choose_excavation,
+  extension,
 
   // TODO Task
   feed_tmp,
   finish_year_tmp,
   wish_for_children,
   growth,
-  choose_excavation,
   weekly_market,
-  extension,
 }
 
 export enum Buildable {
