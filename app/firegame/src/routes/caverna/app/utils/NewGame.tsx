@@ -25,11 +25,10 @@ export enum Task {
   ruby_mine_construction,
   ore_trading,
   extension,
+  weekly_market,
 
   beer_parlor,
   peaceful_cave,
-
-  weekly_market, // TODO
 }
 
 export enum Buildable {
@@ -56,8 +55,8 @@ export type TaskType = {
   d?: {
     num?: number;
     harvest?: Harvest;
-    resource?: keyof ResourcesType;
-    sow?: ResourcesType;
+    r?: keyof ResourcesType;
+    rs?: ResourcesType;
     build?: Buildable;
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
   };
@@ -129,7 +128,7 @@ export type PlayerType = {
 
   begging?: number;
 
-  boughtTiles: { [t in Cavern]?: boolean };
+  caverns: { [t in Cavern]?: boolean };
 
   cave: {
     [row: number]: {
@@ -229,7 +228,7 @@ function setPlayers(game: GameType): GameType {
 
       resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
 
-      boughtTiles: { [Cavern.starting_dwelling]: true },
+      caverns: { [Cavern.starting_dwelling]: true },
 
       cave: {
         2: { 0: { isCavern: true } },

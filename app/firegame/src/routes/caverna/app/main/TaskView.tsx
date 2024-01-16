@@ -77,6 +77,43 @@ function Special() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
   const p = utils.getCurrent()!;
+  if (task.t === Task.weekly_market) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask("finished weekly market"))
+          }
+        >
+          finish
+        </button>
+        {Object.entries(task.d!.rs!)
+          .map(([r, gold]) => ({
+            r,
+            gold,
+            cost: { gold: -gold, [r as keyof ResourcesType]: 1 },
+          }))
+          .map(({ r, cost, gold }) => (
+            <button
+              key={r}
+              disabled={
+                utils.addResources(p.resources || {}, cost) === undefined
+              }
+              onClick={() =>
+                Promise.resolve()
+                  .then(() => delete task.d!.rs![r as keyof ResourcesType])
+                  .then(() => utils.addResourcesToPlayer(p, cost))
+                  .then(() => utils.prepareNextTask(`bought ${r}`))
+              }
+            >
+              {gold}: {r}
+            </button>
+          ))}
+      </div>
+    );
+  }
   if (task.t === Task.wish_for_children) {
     return (
       <div className={styles.bubble}>
@@ -191,17 +228,17 @@ function Special() {
                 .then(() => utils.addResourcesToPlayer(p, { [r]: 1 }))
                 .then(
                   () =>
-                    p.boughtTiles[Cavern.breeding_cave] &&
+                    p.caverns[Cavern.breeding_cave] &&
                     utils.addResourcesToPlayer(p, { food: 1 })
                 )
                 .then(
                   () =>
-                    p.boughtTiles[Cavern.quarry] &&
+                    p.caverns[Cavern.quarry] &&
                     r === "donkeys" &&
                     utils.addResourcesToPlayer(p, { stone: 1 })
                 )
                 .then(() => task.d!.num!--)
-                .then(() => (task.d!.resource = r))
+                .then(() => (task.d!.r = r))
                 .then(() => utils.prepareNextTask(`bred ${r}`))
             }
           >
@@ -248,7 +285,7 @@ function Special() {
   if (
     task.t === Task.furnish &&
     task.d?.num === undefined &&
-    p.boughtTiles[Cavern.builder]
+    p.caverns[Cavern.builder]
   ) {
     return (
       <div className={styles.bubble}>
@@ -269,7 +306,7 @@ function Special() {
                 .then(
                   () =>
                     (store.gameW.game.tasks[0].d = {
-                      resource: builderResource as keyof ResourcesType,
+                      r: builderResource as keyof ResourcesType,
                     })
                 )
                 .then(() =>
@@ -323,7 +360,7 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.farm_tile, resource: "wood" },
+                    d: { build: Buildable.farm_tile, r: "wood" },
                   },
                 ])
               )
@@ -340,7 +377,7 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.cavern_tunnel, resource: "stone" },
+                    d: { build: Buildable.cavern_tunnel, r: "stone" },
                   },
                 ])
               )
@@ -416,7 +453,7 @@ function Special() {
     </div>;
   }
   if (task.t === Task.forge) {
-    const blacksmithDiscount = p.boughtTiles[Cavern.blacksmith] ? 2 : 0;
+    const blacksmithDiscount = p.caverns[Cavern.blacksmith] ? 2 : 0;
     if (state === null) updateState(1);
     return (
       <div className={styles.bubble}>

@@ -117,7 +117,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       store.gameW.game.actions.includes(Action.family_life)
         ? // urgent wish
-          p.boughtTiles[Cavern.guest_room]
+          p.caverns[Cavern.guest_room]
           ? Promise.resolve()
               .then(() => utils.addResourcesToPlayer(p, { gold: 3 }))
               .then(() =>
@@ -128,7 +128,7 @@ const Actions: { [a in Action]: ActionType } = {
               )
           : utils.queueTasks([{ t: Task.wish_for_children }])
         : // wish
-        p.boughtTiles[Cavern.guest_room]
+        p.caverns[Cavern.guest_room]
         ? utils.queueTasks([
             { t: Task.furnish, d: { build: Buildable.dwelling } },
             { t: Task.have_baby },
@@ -143,15 +143,15 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.ruby_mine_construction]: {
     availability: [-2, 0],
     action: (p: PlayerType) =>
-      p.boughtTiles[Cavern.guest_room]
+      p.caverns[Cavern.guest_room]
         ? utils.queueTasks([
             {
               t: Task.build,
-              d: { build: Buildable.ruby_mine, resource: "stone" },
+              d: { build: Buildable.ruby_mine, r: "stone" },
             },
             {
               t: Task.build,
-              d: { build: Buildable.ruby_mine, resource: "ore" },
+              d: { build: Buildable.ruby_mine, r: "ore" },
             },
           ])
         : utils.queueTasks([
@@ -181,7 +181,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.have_baby },
-        { t: Task.sow, d: { sow: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.ore_delivery]: {
@@ -247,7 +247,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.build, d: { build: Buildable.farm_tile } },
-        { t: Task.sow, d: { sow: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.drift_mining__1_3]: {
@@ -400,7 +400,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.growth]: {
     availability: [4, 7],
     action: (p: PlayerType) =>
-      p.boughtTiles[Cavern.guest_room]
+      p.caverns[Cavern.guest_room]
         ? Promise.resolve()
             .then(() => utils.addResourcesToPlayer(p, utils.growthRewards()))
             .then(() =>
@@ -464,7 +464,23 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { gold: 4 }) &&
       utils.queueTasks([
-        { t: Task.weekly_market, d: { num: Action.weekly_market__5 } },
+        {
+          t: Task.weekly_market,
+          d: {
+            rs: {
+              dogs: 2,
+              sheep: 1,
+              donkeys: 1,
+              boars: 2,
+              cows: 3,
+              wood: 1,
+              stone: 1,
+              ore: 1,
+              grain: 1,
+              vegetables: 2,
+            },
+          },
+        },
       ]),
   },
   [Action.imitation__5]: {
@@ -476,7 +492,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.expedition, d: { num: 2 } },
-        { t: Task.sow, d: { sow: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.fence_building__5]: {
@@ -508,7 +524,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { gold: 4 }) &&
       utils.queueTasks([
-        { t: Task.weekly_market, d: { num: Action.weekly_market__6_7 } },
+        { t: Task.weekly_market, d: { num: Action.weekly_market__6_7 } }, // TODO different weekly market
       ]),
   },
   [Action.imitation__6_7]: {
@@ -521,7 +537,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, { wood: 2 }) &&
       utils.queueTasks([
         { t: Task.expedition, d: { num: 2 } },
-        { t: Task.sow, d: { sow: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.fence_building__6_7]: {
@@ -550,15 +566,15 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.extension]: {
     availability: [7, 7],
     action: (p: PlayerType) =>
-      p.boughtTiles[Cavern.guest_room]
+      p.caverns[Cavern.guest_room]
         ? utils.queueTasks([
             {
               t: Task.build,
-              d: { build: Buildable.farm_tile, resource: "wood" },
+              d: { build: Buildable.farm_tile, r: "wood" },
             },
             {
               t: Task.build,
-              d: { build: Buildable.cavern_tunnel, resource: "stone" },
+              d: { build: Buildable.cavern_tunnel, r: "stone" },
             },
           ])
         : utils.queueTasks([

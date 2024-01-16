@@ -378,7 +378,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "2 points per yellow cavern",
     pointsF: (p: PlayerType) =>
       2 *
-      Object.keys(p.boughtTiles)
+      Object.keys(p.caverns)
         .map((t) => Caverns[parseInt(t) as Cavern])
         .filter((t) => t.category === CavernCategory.yellow).length,
   },
