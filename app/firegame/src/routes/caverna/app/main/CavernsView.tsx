@@ -1,6 +1,7 @@
 import styles from "../../../../shared/styles.module.css";
 import Caverns, { Cavern } from "../utils/Caverns";
 import utils, { store } from "../utils/utils";
+import Button from "./Button";
 import { chunk } from "./Main";
 
 export default function CavernsView(props: {
@@ -35,49 +36,49 @@ export default function CavernsView(props: {
                         .map(({ t, cavern }, l) => (
                           <div
                             key={`${i}.${j}.${k}.${l}`}
-                            className={styles.bubble}
                             style={{
-                              display: "inline-block",
                               width: "8em",
-                              cursor: !utils.furnish(
-                                t,
-                                me,
-                                props.selected,
-                                false
-                              )
-                                ? undefined
-                                : "pointer",
-                              position: "relative",
+                              height: "8em",
+                              margin: "1em",
                             }}
                             title={cavern.title}
-                            onClick={() =>
-                              utils.furnish(t, me, props.selected, true)
-                            }
                           >
-                            {(store.gameW.game.purchasedTiles || {})[t] ===
-                            undefined ? null : (
-                              <div
-                                className={styles.bubble}
-                                style={{
-                                  position: "absolute",
-                                  right: 0,
-                                  bottom: 0,
-                                  backgroundColor: utils.getColor(
-                                    store.gameW.game.purchasedTiles![t]!
-                                  ),
-                                }}
-                              ></div>
-                            )}
-                            <pre>
-                              (
-                              {cavern.points === undefined
-                                ? "*"
-                                : cavern.points}
-                              ) {Cavern[t].split("__")[0].replaceAll("_", "\n")}
-                            </pre>
-                            <div style={{ fontSize: "small" }}>
-                              {JSON.stringify(cavern.cost)}
-                            </div>
+                            <Button
+                              text={`(${
+                                cavern.points === undefined
+                                  ? "*"
+                                  : cavern.points
+                              }) ${Cavern[t]
+                                .split("__")[0]
+                                .replaceAll("_", "\n")}`}
+                              disabled={
+                                !utils.furnish(t, me, props.selected, false)
+                              }
+                              onClick={() =>
+                                utils.furnish(t, me, props.selected, true)
+                              }
+                            >
+                              <pre style={{ fontSize: "small" }}>
+                                {JSON.stringify(cavern.cost, null, 2)
+                                  ?.split("\n")
+                                  ?.slice(1, -1)
+                                  ?.join("\n")}
+                              </pre>
+                              {(store.gameW.game.purchasedTiles || {})[t] ===
+                              undefined ? null : (
+                                <div
+                                  className={styles.bubble}
+                                  style={{
+                                    position: "absolute",
+                                    right: 0,
+                                    bottom: 0,
+                                    backgroundColor: utils.getColor(
+                                      store.gameW.game.purchasedTiles![t]!
+                                    ),
+                                  }}
+                                ></div>
+                              )}
+                            </Button>
                           </div>
                         ))}
                     </div>

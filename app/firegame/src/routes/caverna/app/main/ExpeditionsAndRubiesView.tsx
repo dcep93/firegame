@@ -4,6 +4,7 @@ import ExpeditionActions, {
 } from "../utils/ExpeditionActions";
 import RubyActions, { RubyAction } from "../utils/RubyActions";
 import utils from "../utils/utils";
+import Button from "./Button";
 
 export default function ExpeditionsAndRubiesView() {
   return (
@@ -23,15 +24,21 @@ function ExpeditionsElement() {
         {utils.enumArray(ExpeditionAction).map((a) => (
           <div key={a} style={{ flexBasis: "33%", display: "flex" }}>
             <div
-              className={styles.bubble}
               style={{
                 flexGrow: 1,
-                cursor: utils.expedition(a, me, false) ? "pointer" : undefined,
+                height: "4em",
+                margin: "0.5em",
               }}
-              onClick={() => utils.expedition(a, me, true)}
             >
-              <div>level: {ExpeditionActions[a].level}</div>
-              <div style={{ width: 0 }}>{ExpeditionAction[a]}</div>
+              <Button
+                text={ExpeditionAction[a]}
+                disabled={!utils.expedition(a, me, false)}
+                onClick={() => utils.expedition(a, me, true)}
+              >
+                <div style={{ padding: "0.2em" }}>
+                  level: {ExpeditionActions[a].level}
+                </div>
+              </Button>
             </div>
           </div>
         ))}
@@ -50,23 +57,20 @@ function RubiesElement() {
           <div
             key={a}
             style={{
-              flexBasis: RubyActions[a].cost ? "52%" : "49%",
+              flexBasis: RubyActions[a].cost ? "100%" : "49%",
               display: "flex",
+              height: "3em",
             }}
           >
-            <div
-              className={styles.bubble}
-              style={{
-                flexGrow: 1,
-                cursor: utils.rubyTrade(a, me, false) ? "pointer" : undefined,
-              }}
+            <Button
+              disabled={!utils.rubyTrade(a, me, false)}
+              text={RubyAction[a]}
               onClick={() => utils.rubyTrade(a, me, true)}
             >
-              <div style={{ width: 0 }}>{RubyAction[a]}</div>
               {RubyActions[a].cost && (
                 <div>cost: {JSON.stringify(RubyActions[a].cost!)}</div>
               )}
-            </div>
+            </Button>
           </div>
         ))}
       </div>

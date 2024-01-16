@@ -1,0 +1,51 @@
+import { ReactNode } from "react";
+import styles from "../../../../shared/styles.module.css";
+
+export default function Button(props: {
+  text: string;
+  children: ReactNode;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={styles.bubble}
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        padding: 0,
+        margin: 0,
+      }}
+    >
+      <div
+        style={{
+          width: 0,
+        }}
+      >
+        <button
+          disabled={props.disabled}
+          style={{
+            color: "initial",
+            position: "absolute",
+            top: "50%",
+            transform: "translate(0, -100%)",
+            cursor: props.disabled ? undefined : "pointer",
+          }}
+          onClick={() => props.onClick()}
+        >
+          <pre style={{ margin: "0.2em -0.05em" }}>{props.text}</pre>
+        </button>
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "50%",
+          transform: "translate(0, 100%)",
+        }}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+}

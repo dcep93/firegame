@@ -1,6 +1,7 @@
 import styles from "../../../../shared/styles.module.css";
 import Actions, { Action } from "../utils/Actions";
 import utils, { store } from "../utils/utils";
+import Button from "./Button";
 import { chunk } from "./Main";
 
 export default function ActionsView() {
@@ -45,39 +46,42 @@ export default function ActionsView() {
                         ],
                 }))
                 .map(({ a, action, takenAction, weaponLevel }, j) => (
-                  <div key={a}>
-                    <div
-                      className={styles.bubble}
-                      title={
-                        action.title ||
-                        [
-                          action.foodCost === undefined
-                            ? null
-                            : `food cost: ${action.foodCost}`,
-                          action.enrichment === undefined
-                            ? null
-                            : `enrichment: ${action.enrichment
-                                .map((e) => JSON.stringify(e))
-                                .join("->")}`,
-                        ]
-                          .filter((s) => s !== null)
-                          .join("\n")
-                      }
-                      style={{
-                        width: "5em",
-                        height: "4em",
-                        position: "relative",
-                        cursor: utils.action(a, false) ? "pointer" : undefined,
-                      }}
+                  <div
+                    key={a}
+                    title={
+                      action.title ||
+                      [
+                        action.foodCost === undefined
+                          ? null
+                          : `food cost: ${action.foodCost}`,
+                        action.enrichment === undefined
+                          ? null
+                          : `enrichment: ${action.enrichment
+                              .map((e) => JSON.stringify(e))
+                              .join("->")}`,
+                      ]
+                        .filter((s) => s !== null)
+                        .join("\n")
+                    }
+                    style={{
+                      width: "6em",
+                      height: "6em",
+                      margin: "1em",
+                    }}
+                  >
+                    <Button
+                      text={Action[a].split("__")[0].replaceAll("_", "\n")}
+                      disabled={!utils.action(a, false)}
                       onClick={() => utils.action(a, true)}
                     >
-                      {takenAction === undefined ? null : (
+                      {takenAction === undefined ? (
+                        JSON.stringify(
+                          (store.gameW.game.actionBonuses || {})[a]
+                        )?.slice(1, -1)
+                      ) : (
                         <div
                           className={styles.bubble}
                           style={{
-                            position: "absolute",
-                            right: 0,
-                            bottom: 0,
                             backgroundColor: utils.getColor(
                               takenAction.playerIndex
                             ),
@@ -86,27 +90,7 @@ export default function ActionsView() {
                           {weaponLevel! <= 0 ? null : weaponLevel}
                         </div>
                       )}
-                      <pre
-                        style={{
-                          width: 0,
-                          fontSize: "small",
-                          position: "absolute",
-                          top: 0,
-                        }}
-                      >
-                        {Action[a].split("__")[0].replaceAll("_", "\n")}
-                      </pre>
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: 0,
-                        }}
-                      >
-                        {JSON.stringify(
-                          (store.gameW.game.actionBonuses || {})[a]
-                        )}
-                      </div>
-                    </div>
+                    </Button>
                   </div>
                 ))}
             </div>
