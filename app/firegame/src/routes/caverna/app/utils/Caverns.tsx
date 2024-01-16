@@ -157,7 +157,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
   [Cavern.guest_room]: {
     cost: { wood: 1, stone: 1 },
     category: CavernCategory.green,
-    title: "TODO either/or becomes and/or",
+    title: "TODO 4 either/or becomes and/or",
     points: 0,
   },
   [Cavern.office_room]: {
@@ -241,7 +241,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
   [Cavern.quarry]: {
     cost: { wood: 1 },
     category: CavernCategory.green,
-    title: "TODO for each newborn [donkey]\n1 [stone]",
+    title: "TODO 1 for each newborn [donkey]\n1 [stone]",
     points: 2,
   },
   [Cavern.seam]: {
@@ -279,7 +279,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
   [Cavern.breeding_cave]: {
     cost: { grain: 1, stone: 1 },
     category: CavernCategory.green,
-    title: "TODO for 1/2/3/4 newborn animals\n1/2/3/5 [food]",
+    title: "TODO 1 for 1/2/3/4 newborn animals\n1/2/3/5 [food]",
     points: 2,
   },
   [Cavern.peaceful_cave]: {

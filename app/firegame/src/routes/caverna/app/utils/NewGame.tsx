@@ -20,13 +20,13 @@ export enum Task {
   peaceful_cave,
   choose_excavation,
   extension,
+  breed_2,
+  have_baby,
 
-  breed_2, // TODO
-  family_life, // TODO
+  harvest_tmp, // TODO 0
 
-  harvest_tmp, // TODO
-  wish_for_children, // TODO
-  growth, // TODO
+  wish_for_children, // TODO 6
+  growth, // TODO 3
   weekly_market, // TODO
 }
 

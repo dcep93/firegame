@@ -141,7 +141,11 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.family_life]: {
     availability: [-3, 0],
-    action: (p: PlayerType) => utils.queueTasks([{ t: Task.family_life }]),
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.have_baby },
+        { t: Task.sow, d: { sow: { grain: 2, vegetables: 2 } } },
+      ]),
   },
   [Action.ore_delivery]: {
     availability: [-3, 0],

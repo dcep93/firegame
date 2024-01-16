@@ -39,6 +39,11 @@ function Current() {
                         ? null
                         : {
                             build: Buildable[t.d.build],
+                          },
+                      t.d.harvest === undefined
+                        ? null
+                        : {
+                            build: Harvest[t.d.harvest],
                           }
                     )
                   )}
@@ -72,6 +77,51 @@ function Special() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
   const p = utils.getCurrent()!;
+  if (task.t === Task.have_baby) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask("aborted the baby"))
+          }
+        >
+          abort the baby
+        </button>
+        <button
+          onClick={() =>
+            Promise.resolve(() => utils.haveChild(p, true))
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask("had a baby"))
+          }
+        >
+          have the baby
+        </button>
+      </div>
+    );
+  }
+  if (task.t === Task.breed_2) {
+    const breedables = utils.getBreedables(p);
+    return (
+      <div className={styles.bubble}>
+        {breedables.map((r) => (
+          <button
+            key={r}
+            onClick={() =>
+              Promise.resolve()
+                .then(() => utils.addResourcesToPlayer(p, { [r]: 1 }))
+                .then(() => task.d!.num!--)
+                .then(() => (task.d!.resource = r))
+                .then(() => utils.prepareNextTask(`bred ${r}`))
+            }
+          >
+            {r}
+          </button>
+        ))}
+      </div>
+    );
+  }
   if (task.t === Task.choose_excavation) {
     return (
       <div className={styles.bubble}>

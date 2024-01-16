@@ -75,6 +75,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
 
+  getBreedables(p: PlayerType): (keyof AnimalResourcesType)[] {
+    return Object.entries(utils.getAllResources(p))
+      .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
+      .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
+      .filter(({ r }) => r !== utils.getTask()!.d!.resource)
+      .filter(({ c }) => c >= 2)
+      .map(({ r }) => r);
+  }
+
   // TASKS
 
   getTask(): TaskType {
@@ -104,8 +113,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.finishTurn(p);
       return true;
     }
+    if (task.t === Task.have_baby) {
+      return utils.haveChild(p, false);
+    }
     if (task.t === Task.breed_2) {
-      return task.d!.num! > 0;
+      return task.d!.num! > 0 && utils.getBreedables(p).length > 0;
     }
     if (task.t === Task.ore_trading) {
       return task.d!.num! > 0 && (p.resources?.ore || 0) >= 2;
@@ -382,7 +394,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (execute) {
       utils.addResourcesToPlayer(p, { food: -numToFeed });
       store.update(`fed ${numToFeed}`);
-      // TODO feed/breed
     }
     return true;
   }
@@ -416,9 +427,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       if (numDwellingSpaces <= numDwarves) return false;
     }
     if (execute) {
-      utils.shiftTask();
       p.usedDwarves!.unshift(-1);
-      utils.prepareNextTask("had a baby");
     }
     return true;
   }
@@ -539,10 +548,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const caveTile = t as CaveTileType;
     switch (task.d!.build) {
       case Buildable.cavern_tunnel:
-        // TODO Buildable cavern_tunnel
+        // TODO 8 Buildable cavern_tunnel
         break;
       case Buildable.double_cavern:
-        // TODO Buildable double_cavern
+        // TODO 7 Buildable double_cavern
         break;
       case Buildable.tunnel:
         if (caveTile !== undefined) return false;
@@ -710,7 +719,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "wood":
       case "ore":
         return false;
-      // TODO working_cave eat stone/wood/ore
+      // TODO 2 working_cave eat stone/wood/ore
       // if (
       //   !p.boughtTiles[Cavern.working_cave] ||
       //   task.t !== Task.harvest_tmp ||
