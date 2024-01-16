@@ -24,9 +24,9 @@ export enum Task {
   have_baby,
   harvest,
   game_end,
+  growth,
 
   wish_for_children, // TODO 6
-  growth, // TODO 3
   weekly_market, // TODO
 }
 

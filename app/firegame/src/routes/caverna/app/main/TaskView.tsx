@@ -77,6 +77,32 @@ function Special() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
   const p = utils.getCurrent()!;
+  if (task.t === Task.growth) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.addResourcesToPlayer(p, utils.growthRewards()))
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask("got resources"))
+          }
+        >
+          get {JSON.stringify(utils.growthRewards())}
+        </button>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.haveChild(p, true))
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask("had a baby"))
+          }
+        >
+          have baby
+        </button>
+      </div>
+    );
+  }
   if (
     task.t === Task.harvest &&
     task.d!.harvest === Harvest.skip_one &&

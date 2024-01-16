@@ -85,6 +85,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .map(({ r }) => r);
   }
 
+  growthRewards() {
+    return {
+      wood: 1,
+      stone: 1,
+      ore: 1,
+      food: 1,
+      gold: 2,
+    };
+  }
+
   // TASKS
 
   getTask(): TaskType {

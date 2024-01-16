@@ -1,3 +1,4 @@
+import { Cavern } from "./Caverns";
 import {
   Buildable,
   CaveTileType,
@@ -362,13 +363,24 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.growth]: {
     availability: [4, 7],
-    action: (p: PlayerType) => {
-      utils.queueTasks([
-        {
-          t: Task.growth,
-        },
-      ]);
-    },
+    action: (p: PlayerType) =>
+      p.boughtTiles[Cavern.guest_room]
+        ? Promise.resolve()
+            .then(() => utils.addResourcesToPlayer(p, utils.growthRewards()))
+            .then(() =>
+              utils.queueTasks([
+                {
+                  t: Task.have_baby,
+                },
+              ])
+            )
+        : utils.haveChild(p, false)
+        ? utils.queueTasks([
+            {
+              t: Task.growth,
+            },
+          ])
+        : utils.addResourcesToPlayer(p, utils.growthRewards()),
   },
   [Action.clearing__4_7]: {
     availability: [4, 7],

@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import styles from "../../../../shared/styles.module.css";
 
 export default function Button(props: {
   text: string;
@@ -9,7 +8,6 @@ export default function Button(props: {
 }) {
   return (
     <div
-      className={styles.bubble}
       style={{
         width: "100%",
         height: "100%",
