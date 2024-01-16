@@ -43,7 +43,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   addResourcesToPlayer(p: PlayerType, r: ResourcesType): boolean {
-    // TODO when getting an animal, try to put it on the map
+    // TODO when getting an animal, try to put it on the map, but not if it came from the map
     const addedResources = utils.addResources(p.resources || {}, r);
     if (addedResources === undefined) return false;
     p.resources = addedResources;
@@ -299,7 +299,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
     }
 
-    var cost = Caverns[t].cost;
+    const task = utils.getTask();
+    if (
+      task.d?.build === Buildable.dwelling &&
+      Caverns[t].category !== CavernCategory.dwelling
+    )
+      return false;
+    if (task.d?.build === Buildable.dwelling_2_2 && t !== Cavern.dwelling)
+      return false;
+    var cost =
+      task.d?.build === Buildable.dwelling_2_2
+        ? { stone: 2, wood: 2 }
+        : Caverns[t].cost;
     if (cost.wood !== undefined && p.boughtTiles[Cavern.carpenter]) {
       cost = utils.addResources(cost, { wood: -1 })!;
     }
@@ -308,18 +319,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
 
     if (utils.addResources(p.resources || {}, cost) === undefined) return false;
-    const task = utils.getTask();
     if (task.d?.resource !== undefined) {
       if ((cost[task.d?.resource] || 0) < 1) return false;
-    }
-    switch (task.t) {
-      case Task.furnish_dwelling:
-        if (Caverns[t].category !== CavernCategory.dwelling) return false;
-        break;
-      case Task.furnish_cavern:
-        break;
-      default:
-        return false;
     }
     if (execute) {
       utils.shiftTask();
@@ -507,6 +508,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils._buildHereHelper(task, p, coords, execute)) return false;
     if (execute) {
       utils.shiftTask();
+      if (task.d!.resource !== undefined)
+        utils.addResourcesToPlayer(p, { [task.d!.resource]: 1 });
       utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {});
       if (task.d!.build! !== Buildable.stable) {
         const c = coords.join("_");
@@ -612,7 +615,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Buildable.ruby_mine:
         if (caveTile?.isCavern !== false || caveTile.isRubyMine !== undefined)
           return false;
+        if (task.d!.resource !== undefined) {
+          if ((caveTile.isOreTunnel === true) !== (task.d!.resource === "ore"))
+            return false;
+        }
         if (execute) {
+          if (caveTile.isOreTunnel)
+            utils.addResourcesToPlayer(p, { rubies: 1 });
           caveTile.isRubyMine = true;
         }
         return true;

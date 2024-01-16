@@ -52,7 +52,7 @@ const ExpeditionActions: {
   [ExpeditionAction.gold_2]: { level: 6, reward: { gold: 2 } },
   [ExpeditionAction.furnish]: {
     level: 7,
-    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish_cavern }]),
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish }]),
   },
   [ExpeditionAction.stable]: {
     level: 8,
@@ -93,7 +93,10 @@ const ExpeditionActions: {
   },
   [ExpeditionAction.dwelling_2_2]: {
     level: 11,
-    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish_dwelling }]),
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.furnish, d: { build: Buildable.dwelling_2_2 } },
+      ]),
   },
   [ExpeditionAction.field]: {
     level: 12,

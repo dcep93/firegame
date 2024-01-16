@@ -157,7 +157,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
   [Cavern.guest_room]: {
     cost: { wood: 1, stone: 1 },
     category: CavernCategory.green,
-    title: "TODO either/or becomes and/or",
+    title: "either/or becomes and/or",
     points: 0,
   },
   [Cavern.office_room]: {

@@ -95,7 +95,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [-1, 0],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { build: Buildable.ruby_mine } },
+        { t: Task.build, d: { build: Buildable.ore_mine } },
         { t: Task.expedition, d: { num: 2 } },
       ]),
   },
@@ -115,12 +115,30 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.wish_for_children]: {
     availability: [-1.5, 0],
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.wish_for_children }]),
+      p.boughtTiles[Cavern.guest_room]
+        ? utils.queueTasks([
+            { t: Task.furnish, d: { build: Buildable.dwelling } },
+            { t: Task.have_baby },
+          ])
+        : utils.queueTasks([{ t: Task.wish_for_children }]),
   },
   [Action.ruby_mine_construction]: {
     availability: [-2, 0],
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.build, d: { build: Buildable.ruby_mine } }]),
+      p.boughtTiles[Cavern.guest_room]
+        ? utils.queueTasks([
+            {
+              t: Task.build,
+              d: { build: Buildable.ruby_mine, resource: "stone" },
+            },
+            {
+              t: Task.build,
+              d: { build: Buildable.ruby_mine, resource: "ore" },
+            },
+          ])
+        : utils.queueTasks([
+            { t: Task.build, d: { build: Buildable.ruby_mine } },
+          ]),
   },
   [Action.donkey_farming]: {
     availability: [-2, 0],
@@ -204,7 +222,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.housework]: {
     availability: [1, 7],
-    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish_cavern }]),
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.furnish }]),
   },
   [Action.slash_and_burn]: {
     availability: [1, 7],
@@ -514,11 +532,22 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.extension]: {
     availability: [7, 7],
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        {
-          t: Task.extension,
-        },
-      ]),
+      p.boughtTiles[Cavern.guest_room]
+        ? utils.queueTasks([
+            {
+              t: Task.build,
+              d: { build: Buildable.farm_tile, resource: "wood" },
+            },
+            {
+              t: Task.build,
+              d: { build: Buildable.cavern_tunnel, resource: "stone" },
+            },
+          ])
+        : utils.queueTasks([
+            {
+              t: Task.extension,
+            },
+          ]),
   },
 };
 export default Actions;

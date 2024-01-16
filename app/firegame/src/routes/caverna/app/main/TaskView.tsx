@@ -216,7 +216,7 @@ function Special() {
     );
   }
   if (
-    (task.t === Task.furnish_dwelling || task.t === Task.furnish_cavern) &&
+    task.t === Task.furnish &&
     task.d?.num === undefined &&
     p.boughtTiles[Cavern.builder]
   ) {
@@ -291,10 +291,12 @@ function Special() {
               .then(() => utils.shiftTask())
               .then(() =>
                 utils.queueTasks([
-                  { t: Task.build, d: { build: Buildable.farm_tile } },
+                  {
+                    t: Task.build,
+                    d: { build: Buildable.farm_tile, resource: "wood" },
+                  },
                 ])
               )
-              .then(() => utils.addResourcesToPlayer(p, { wood: 1 }))
               .then(() => utils.prepareNextTask("will build farm_tile"))
           }
         >
@@ -306,10 +308,12 @@ function Special() {
               .then(() => utils.shiftTask())
               .then(() =>
                 utils.queueTasks([
-                  { t: Task.build, d: { build: Buildable.cavern_tunnel } },
+                  {
+                    t: Task.build,
+                    d: { build: Buildable.cavern_tunnel, resource: "stone" },
+                  },
                 ])
               )
-              .then(() => utils.addResourcesToPlayer(p, { stone: 1 }))
               .then(() => utils.prepareNextTask("will build cavern_tunnel"))
           }
         >

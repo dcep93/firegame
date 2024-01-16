@@ -5,26 +5,28 @@ import { ExpeditionAction } from "./ExpeditionActions";
 import utils, { store } from "./utils";
 
 export enum Task {
+  game_end,
   action,
   forge,
   expedition,
-  imitate,
-  furnish_cavern,
-  furnish_dwelling,
+  furnish,
   build,
-  beer_parlor,
   sow,
-  eat_gold,
   slaughter,
-  ore_trading,
-  peaceful_cave,
-  choose_excavation,
-  extension,
-  breed_2,
+  imitate,
   have_baby,
   harvest,
-  game_end,
   growth,
+  choose_excavation,
+  eat_gold,
+  breed_2,
+
+  ruby_mine_construction,
+  ore_trading,
+  extension,
+
+  beer_parlor,
+  peaceful_cave,
 
   wish_for_children, // TODO 6
   weekly_market, // TODO
@@ -35,14 +37,18 @@ export enum Buildable {
   double_fence,
   stable,
   farm_tile,
+  pasture,
+  field,
+
   cavern_tunnel,
   double_cavern,
   tunnel,
-  pasture,
-  field,
   cavern,
   ore_mine,
   ruby_mine,
+
+  dwelling_2_2,
+  dwelling,
 }
 
 export type TaskType = {
