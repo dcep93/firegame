@@ -220,7 +220,6 @@ function Special() {
               Promise.resolve(p.usedDwarves![i]).then((food) =>
                 Promise.resolve()
                   .then(() => (p.usedDwarves![i] = 0))
-                  .then(() => p.usedDwarves!.sort((a, b) => a - b))
                   .then(() => utils.addResourcesToPlayer(p, { food }))
                   .then(() => utils.shiftTask())
                   .then(() => utils.prepareNextTask(`traded used ${food}`))
