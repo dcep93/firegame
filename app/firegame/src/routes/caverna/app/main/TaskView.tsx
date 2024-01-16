@@ -39,11 +39,6 @@ function Current() {
                         ? null
                         : {
                             build: Buildable[t.d.build],
-                          },
-                      t.d.harvest === undefined
-                        ? null
-                        : {
-                            build: Harvest[t.d.harvest],
                           }
                     )
                   )}
@@ -220,7 +215,7 @@ function Special() {
   }
   if (
     task.t === Task.harvest &&
-    task.d!.harvest === Harvest.skip_one &&
+    store.gameW.game.harvest === Harvest.skip_one &&
     task.d!.num === undefined
   ) {
     return (
@@ -229,7 +224,7 @@ function Special() {
           <button
             onClick={() =>
               Promise.resolve()
-                .then(() => (task.d!.num = i))
+                .then(() => (task.d = { num: i }))
                 .then(() => i === 1 && utils.pullOffFields(p))
                 .then(() => utils.prepareNextTask(`chose to ${text}`))
             }

@@ -218,10 +218,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) return false;
     const task = utils.getTask();
     if (task.t !== Task.harvest) return false;
-    if (task.d!.harvest === Harvest.skip_one && task.d!.num === undefined)
+    if (
+      store.gameW.game.harvest === Harvest.skip_one &&
+      task.d?.num === undefined
+    )
       return false;
     const numToFeed =
-      task.d!.harvest === Harvest.one_per
+      store.gameW.game.harvest === Harvest.one_per
         ? p.usedDwarves!.length
         : Math.max(
             0,
@@ -238,7 +241,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           );
     if ((p.resources?.food || 0) < numToFeed) return false;
     if (execute) {
-      if (task.d!.harvest !== Harvest.one_per && task.d!.num !== 1) {
+      if (store.gameW.game.harvest !== Harvest.one_per && task.d?.num !== 1) {
         const bs = utils.getBreedables(p);
         bs.forEach((r) => utils.addResourcesToPlayer(p, { [r]: 1 }));
         if (p.caverns[Cavern.breeding_cave]) {
@@ -800,7 +803,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (
           !p.caverns[Cavern.working_cave] ||
           task.t !== Task.harvest ||
-          task.d!.harvest === Harvest.one_per ||
+          store.gameW.game.harvest === Harvest.one_per ||
           task.d?.r !== undefined
         )
           return false;
@@ -819,17 +822,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   // GAME FLOW
 
   finishTurn(p: PlayerType) {
+    // TODO continue harvest after slaughter
     if (Object.keys(utils._toSlaughter(p)).length > 0) {
       utils.queueTasks([{ t: Task.slaughter }]);
       return;
     }
-    if (store.gameW.game.isHarvest) {
+    if (store.gameW.game.harvest !== undefined) {
       utils.incrementPlayerTurn();
       if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
         if (store.gameW.game.upcomingHarvests === undefined) {
           utils.queueTasks([{ t: Task.game_end }]);
         } else {
-          store.gameW.game.isHarvest = false;
+          delete store.gameW.game.harvest;
           utils.enrichAndReveal(store.gameW.game);
         }
       }
@@ -853,8 +857,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (h === Harvest.nothing) {
           utils.enrichAndReveal(store.gameW.game);
         } else {
-          store.gameW.game.isHarvest = true;
-          utils.queueTasks([{ t: Task.harvest, d: { harvest: h } }]);
+          store.gameW.game.harvest = h;
+          utils.queueTasks([{ t: Task.harvest }]);
         }
         break;
       }

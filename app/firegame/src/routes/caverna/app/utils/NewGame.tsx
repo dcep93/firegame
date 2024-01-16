@@ -55,7 +55,6 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
-    harvest?: Harvest;
     r?: keyof ResourcesType;
     rs?: ResourcesType;
     build?: Buildable;
@@ -77,7 +76,7 @@ export type GameType = {
   players: PlayerType[];
 
   startingPlayer: number;
-  isHarvest: boolean;
+  harvest?: Harvest;
 
   tasks: TaskType[];
 
@@ -173,8 +172,6 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
-
-    isHarvest: false,
 
     tasks: [],
 
