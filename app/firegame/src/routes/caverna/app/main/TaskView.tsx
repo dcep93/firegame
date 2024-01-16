@@ -64,12 +64,56 @@ function Special() {
               utils.addResources(p.resources || {}, { ore: -1 }) === undefined
             }
             onClick={() =>
-              utils.builderExchange(p, builderResource as keyof ResourcesType)
+              Promise.resolve()
+                .then(() =>
+                  utils.addResourcesToPlayer(p, {
+                    [builderResource]: 1,
+                    ore: -1,
+                  })
+                )
+                .then(
+                  () =>
+                    (store.gameW.game.tasks[0].d = {
+                      resource: builderResource as keyof ResourcesType,
+                    })
+                )
+                .then(() =>
+                  store.update(`converted ore for ${builderResource}`)
+                )
             }
           >
             ore for {builderResource}
           </button>
         ))}
+      </div>
+    );
+  }
+  if (task.t === Task.ore_trading) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => task.d!.num!--)
+              .then(() =>
+                utils.addResourcesToPlayer(p, { ore: -2, gold: 2, food: 1 })
+              )
+              .then(() =>
+                utils.prepareNextTask("traded 2 ore for 2 [gold] and 1 [food]")
+              )
+          }
+        >
+          trade 2 ore
+        </button>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask("finished trading"))
+          }
+        >
+          finish trading
+        </button>
       </div>
     );
   }
@@ -82,7 +126,12 @@ function Special() {
         ].map(({ message, reward }) => (
           <button
             key={message}
-            onClick={() => utils.beerParlor(p, message, reward)}
+            onClick={() =>
+              Promise.resolve()
+                .then(() => utils.shiftTask())
+                .then(() => utils.addResourcesToPlayer(p, reward))
+                .then(() => utils.prepareNextTask(`earned ${message}`))
+            }
           >
             {message}
           </button>
@@ -90,7 +139,49 @@ function Special() {
       </div>
     );
   }
-  if (task.t === Task.feed) {
+  if (task.t === Task.peaceful_cave) {
+    <div className={styles.bubble}>
+      {(p.usedDwarves || [])
+        .filter((d) => d > 0)
+        .map((d, i) => (
+          <button
+            key={i}
+            onClick={() =>
+              Promise.resolve(p.usedDwarves![i]).then((food) =>
+                Promise.resolve()
+                  .then(() => (p.usedDwarves![i] = 0))
+                  .then(() => p.usedDwarves!.sort((a, b) => a - b))
+                  .then(() => utils.addResourcesToPlayer(p, { food }))
+                  .then(() => utils.shiftTask())
+                  .then(() => utils.prepareNextTask(`traded used ${food}`))
+              )
+            }
+          >
+            eat used {d}
+          </button>
+        ))}
+      {(p.availableDwarves || [])
+        .filter((d) => d > 0)
+        .map((d, i) => (
+          <button
+            key={i}
+            onClick={() =>
+              Promise.resolve(p.availableDwarves![i]).then((food) =>
+                Promise.resolve()
+                  .then(() => (p.availableDwarves![i] = 0))
+                  .then(() => p.availableDwarves!.sort((a, b) => a - b))
+                  .then(() => utils.addResourcesToPlayer(p, { food }))
+                  .then(() => utils.shiftTask())
+                  .then(() => utils.prepareNextTask(`traded available ${food}`))
+              )
+            }
+          >
+            eat available {d}
+          </button>
+        ))}
+    </div>;
+  }
+  if (task.t === Task.feed_tmp) {
     return (
       <div className={styles.bubble}>
         <button

@@ -103,6 +103,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.finishTurn(p);
       return true;
     }
+    if (task.t === Task.ore_trading) {
+      return task.d!.num! > 0 && (p.resources?.ore || 0) >= 2;
+    }
     if (task.t === Task.slaughter) {
       return Object.keys(utils._toSlaughter(p)).length > 0;
     }
@@ -113,7 +116,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       );
     }
     if (task.t === Task.expedition) {
-      return utils.getCurrent().usedDwarves![0] !== 0;
+      return task.d!.num! > 0 && p.usedDwarves![0] !== 0;
     }
     if (task.t === Task.sow) {
       return (
@@ -282,12 +285,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const e = ExpeditionActions[a];
     if (p.usedDwarves![0] < e.level) return false;
     if (execute) {
-      if (--t.d!.num! === 0) {
-        utils.shiftTask();
-      } else {
-        if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
-        t.d!.expeditionsTaken[a] = true;
-      }
+      if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
+      t.d!.expeditionsTaken[a] = true;
       const e = ExpeditionActions[a];
       if (e.reward !== undefined) {
         utils.addResourcesToPlayer(p, e.reward);
@@ -378,10 +377,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if ((p.resources?.food || 0) < numToFeed) return false;
     if (execute) {
       utils.addResourcesToPlayer(p, { food: -numToFeed });
-      utils.incrementPlayerTurn();
-      if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
-        store.gameW.game.tasks = [{ t: Task.breed }];
-      }
       store.update(`fed ${numToFeed}`);
       // TODO feed/breed
     }
@@ -715,7 +710,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "ore":
         if (
           !p.boughtTiles[Cavern.working_cave] ||
-          task.t !== Task.feed ||
+          task.t !== Task.finish_year_tmp ||
           task.d?.num !== undefined
         )
           return false;
@@ -747,7 +742,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
       if (utils.isMyTurn()) {
         store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        utils.queueTasks([{ t: Task.feed }]);
+        // TODO reveal harvest
+        // TODO pull off fields
+        utils.queueTasks([{ t: Task.finish_year_tmp }]);
         return;
       }
     }
@@ -915,39 +912,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       "lightcoral",
       "lightsalmon",
     ][index];
-  }
-
-  // CAVERN SPECIFIC
-
-  numAdjacentToStateParlor(p: PlayerType): number {
-    const coords = utils
-      .getGrid(p)
-      .find(({ t }) => (t as CaveTileType).tile === Cavern.state_parlor)!;
-    return [
-      [-1, 0],
-      [1, 0],
-      [0, -1],
-      [0, 1],
-    ]
-      .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.tile)
-      .filter(
-        (t) =>
-          t !== undefined && Caverns[t]?.category === CavernCategory.dwelling
-      ).length;
-  }
-
-  beerParlor(p: PlayerType, message: string, reward: ResourcesType) {
-    utils.shiftTask();
-    utils.addResourcesToPlayer(p, reward);
-    utils.prepareNextTask(`earned ${message}`);
-  }
-
-  builderExchange(p: PlayerType, builderResource: keyof ResourcesType) {
-    utils.addResourcesToPlayer(p, { [builderResource]: 1, ore: -1 });
-    store.gameW.game.tasks[0].d = {
-      resource: builderResource,
-    };
-    store.update(`converted ore for ${builderResource}`);
   }
 }
 

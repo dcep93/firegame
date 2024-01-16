@@ -1,5 +1,6 @@
 import {
   AnimalResourcesType,
+  CaveTileType,
   PlayerType,
   ResourcesType,
   Task,
@@ -320,10 +321,10 @@ const Caverns: { [t in Cavern]: CavernType } = {
     category: CavernCategory.yellow,
     title:
       "immediately 2 [food] per adjacent dwelling\n4 points per adjacent dwelling",
-    pointsF: (p: PlayerType) => 4 * utils.numAdjacentToStateParlor(p),
+    pointsF: (p: PlayerType) => 4 * numAdjacentToStateParlor(p),
     onPurchase: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, {
-        food: 2 * utils.numAdjacentToStateParlor(p),
+        food: 2 * numAdjacentToStateParlor(p),
       }),
   },
   [Cavern.hunting_parlor]: {
@@ -469,5 +470,21 @@ const Caverns: { [t in Cavern]: CavernType } = {
       ),
   },
 };
+
+function numAdjacentToStateParlor(p: PlayerType): number {
+  const coords = utils
+    .getGrid(p)
+    .find(({ t }) => (t as CaveTileType).tile === Cavern.state_parlor)!;
+  return [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+  ]
+    .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.tile)
+    .filter(
+      (t) => t !== undefined && Caverns[t]?.category === CavernCategory.dwelling
+    ).length;
+}
 
 export default Caverns;
