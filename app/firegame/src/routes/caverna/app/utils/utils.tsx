@@ -742,8 +742,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
       if (utils.isMyTurn()) {
         store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        // TODO reveal harvest
-        // TODO pull off fields
+        // TODO harvest
         utils.queueTasks([{ t: Task.finish_year_tmp }]);
         return;
       }
