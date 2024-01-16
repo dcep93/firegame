@@ -139,7 +139,6 @@ function Player(
           <Grid
             title={"farm"}
             selectedIndex={0}
-            // TODO render farm
             f={(t: FarmTileType, [i, j, k]) => (
               <div>
                 <div>
