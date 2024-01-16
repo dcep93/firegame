@@ -822,7 +822,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   // GAME FLOW
 
   finishTurn(p: PlayerType) {
-    // TODO continue harvest after slaughter
     if (Object.keys(utils._toSlaughter(p)).length > 0) {
       utils.queueTasks([{ t: Task.slaughter }]);
       return;
@@ -836,6 +835,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           delete store.gameW.game.harvest;
           utils.enrichAndReveal(store.gameW.game);
         }
+      } else {
+        utils.queueTasks([{ t: Task.harvest }]);
       }
       return;
     }
