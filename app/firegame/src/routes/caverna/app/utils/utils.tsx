@@ -798,7 +798,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ) {
                 allowed = true;
               }
-              // TODO double_fence stable num allowed animal
+              // TODO 3 double_fence stable num allowed animal
             } else if (farmTile.isStable && t.resources === undefined) {
               allowed = true;
             }

@@ -116,7 +116,7 @@ export type FarmTileType = {
   isStable?: boolean;
   isPasture?: boolean; // false for field
   isFence?: boolean;
-  doubleFenceAngleDeg?: number; // TODO double_fence
+  doubleFenceAngleDeg?: number; // TODO 2 double_fence
 };
 
 export type PlayerType = {

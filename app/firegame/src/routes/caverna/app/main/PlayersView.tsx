@@ -14,7 +14,7 @@ type SelectedPropsType = {
   updateSelected: (s: [number, number, number] | undefined) => void;
 };
 
-// TODO render office room
+// TODO 4 render office room
 export default function PlayersView(props: SelectedPropsType) {
   return (
     <div>
