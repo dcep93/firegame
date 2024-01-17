@@ -548,13 +548,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) return false;
     const task = utils.getTask();
     if (task.t !== Task.build) return false;
-    if (execute) {
-      p.farm = {};
-      const g = [p.farm, p.cave][coords[2]];
-      if (g[coords[1]] === undefined) {
-        g[coords[1]] = {};
-      }
-    }
 
     if (task.d!.buildData !== undefined) {
       const [b1, b2, k, j] = task.d!.buildData;
@@ -570,13 +563,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.shiftTask();
       if (task.d?.rs !== undefined) utils.addResourcesToPlayer(p, task.d!.rs);
       utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {});
-      if (task.d!.build! !== Buildable.stable) {
-        const c = coords.join("_");
-        if ((p.tileBonuses || {})[c] !== undefined) {
-          utils.addResourcesToPlayer(p, p.tileBonuses![c]);
-          delete p.tileBonuses![c];
-        }
-      }
       utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
     }
     return true;
@@ -590,6 +576,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     coords: [number, number, number],
     execute: boolean
   ): boolean {
+    p.farm = {};
+    const g = [p.farm, p.cave][coords[2]];
+    if (g[coords[1]] === undefined) {
+      g[coords[1]] = {};
+    }
+    if (execute) {
+      if (b !== Buildable.stable) {
+        const c = coords.join("_");
+        if ((p.tileBonuses || {})[c] !== undefined) {
+          utils.addResourcesToPlayer(p, p.tileBonuses![c]);
+          delete p.tileBonuses![c];
+        }
+      }
+    }
     const t = utils
       .getGrid(p)
       .find(({ i, j, k }) => utils.objEqual([i, j, k], coords));
