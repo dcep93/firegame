@@ -474,14 +474,14 @@ const Caverns: { [t in Cavern]: CavernType } = {
 function numAdjacentToStateParlor(p: PlayerType): number {
   const coords = utils
     .getGrid(p)
-    .find(({ t }) => (t as CaveTileType).tile === Cavern.state_parlor)!;
+    .find(({ t }) => (t as CaveTileType).cavern === Cavern.state_parlor)!;
   return [
     [-1, 0],
     [1, 0],
     [0, -1],
     [0, 1],
   ]
-    .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.tile)
+    .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.cavern)
     .filter(
       (t) => t !== undefined && Caverns[t]?.category === CavernCategory.dwelling
     ).length;

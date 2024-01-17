@@ -75,7 +75,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                 ...o,
                 rank: [
                   o.k * 1000, // 1000 points if cave
-                  Caverns[(o.t as CaveTileType).tile!]?.category ===
+                  Caverns[(o.t as CaveTileType).cavern!]?.category ===
                   CavernCategory.dwelling
                     ? -100
                     : 0, // -100 points for dwelling
@@ -124,6 +124,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .filter(({ r }) => r !== utils.getTask()!.d!.r)
       .filter(({ c }) => c >= 2)
       .map(({ r }) => r);
+  }
+
+  pullOffFields(p: PlayerType) {
+    utils
+      .getGrid(p)
+      .filter(
+        ({ t }) =>
+          t.resources?.grain !== undefined ||
+          t.resources?.vegetables !== undefined
+      )
+      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
+      .forEach(({ t, r }) => {
+        utils.addResourcesToPlayer(p, { [r]: 1 });
+        t.resources = utils.addResources(t.resources!, { [r]: -1 });
+      });
   }
 
   growthRewards() {
@@ -327,7 +342,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const caveTile = p.cave[selected[0]][selected[1]];
     if (caveTile !== undefined) {
       if (
-        caveTile.tile !== undefined ||
+        caveTile.cavern !== undefined ||
         p.cave[selected[0]][selected[1]].isRubyMine !== undefined ||
         (!p.cave[selected[0]][selected[1]].isCavern &&
           p.caverns[Cavern.work_room] === undefined)
@@ -531,6 +546,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     execute: boolean
   ): boolean {
     if (!utils.isMyTurn()) return false;
+    const task = utils.getTask();
+    if (task.t !== Task.build) return false;
     if (execute) {
       p.farm = {};
       const g = [p.farm, p.cave][coords[2]];
@@ -538,10 +555,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         g[coords[1]] = {};
       }
     }
-    const task = utils.getTask();
-    if (!utils._buildHereHelper(task, p, coords, execute)) return false;
+
+    if (task.d!.buildData !== undefined) {
+      const [b1, b2, k, j] = task.d!.buildData;
+      const cs = [coords.slice(), coords.slice] as [number, number, number][];
+      cs[1 - j][1 - k] += j === 0 ? 1 : -1;
+      if (!utils._buildHereHelper(b1, p, cs[0], execute)) return false;
+      if (!utils._buildHereHelper(b2, p, cs[1], execute)) return false;
+    } else {
+      if (!utils._buildHereHelper(task.d!.build!, p, coords, execute))
+        return false;
+    }
     if (execute) {
       utils.shiftTask();
+      if (task.d?.rs !== undefined) utils.addResourcesToPlayer(p, task.d!.rs);
       utils.addResourcesToPlayer(p, utils._getBuildCost(task, p) || {});
       if (task.d!.build! !== Buildable.stable) {
         const c = coords.join("_");
@@ -557,16 +584,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   // TODO can only build if connected to home
   _buildHereHelper(
-    task: TaskType,
+    b: Buildable,
     p: PlayerType,
     coords: [number, number, number],
     execute: boolean
   ): boolean {
-    if (task.t !== Task.build) return false;
     const t = utils
       .getGrid(p)
       .find(({ i, j, k }) => utils.objEqual([i, j, k], coords));
-    switch (task.d!.build) {
+    switch (b) {
       case Buildable.fence:
       case Buildable.double_fence:
       case Buildable.stable:
@@ -575,7 +601,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Buildable.field:
         if (coords[2] !== 0) return false;
         const farmTile = t as FarmTileType;
-        switch (task.d!.build) {
+        switch (b) {
           case Buildable.fence:
             if (farmTile === undefined) return false;
             if (farmTile.isFence || !farmTile.isPasture) return false;
@@ -623,12 +649,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (coords[2] !== 1) return false;
     const caveTile = t as CaveTileType;
-    switch (task.d!.build) {
+    switch (b) {
       case Buildable.cavern_tunnel:
         // TODO 2 Buildable cavern_tunnel
         break;
-      case Buildable.double_cavern:
-        // TODO 1 Buildable double_cavern
+      case Buildable.excavation:
+        // TODO 1 Buildable excavation
         break;
       case Buildable.tunnel:
         if (caveTile !== undefined) return false;
@@ -642,15 +668,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           p.cave[coords[0]][coords[1]] = { isCavern: true };
         }
         return true;
-      case Buildable.ore_mine:
-        // TODO 4 Buildable ore_mine
+      case Buildable.ore_mine_construction:
+        // TODO 4 Buildable ore_mine_construction
         break;
       case Buildable.ruby_mine:
         if (caveTile?.isCavern !== false || caveTile.isRubyMine !== undefined)
           return false;
-        if (task.d!.r !== undefined) {
-          if ((caveTile.isOreTunnel === true) !== (task.d!.r === "ore"))
-            return false;
+        const r = utils.getTask().d!.r;
+        if (r !== undefined) {
+          if ((caveTile.isOreTunnel === true) !== (r === "ore")) return false;
         }
         if (execute) {
           if (caveTile.isOreTunnel)
@@ -732,7 +758,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "cows":
         if (t === undefined) return false;
         var allowed = false;
-        const cavern = (t as CaveTileType).tile;
+        const cavern = (t as CaveTileType).cavern;
         if (cavern !== undefined) {
           const c = Caverns[cavern];
           if (
@@ -1030,21 +1056,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       "lightcoral",
       "lightsalmon",
     ][index];
-  }
-
-  pullOffFields(p: PlayerType) {
-    utils
-      .getGrid(p)
-      .filter(
-        ({ t }) =>
-          t.resources?.grain !== undefined ||
-          t.resources?.vegetables !== undefined
-      )
-      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
-      .forEach(({ t, r }) => {
-        utils.addResourcesToPlayer(p, { [r]: 1 });
-        t.resources = utils.addResources(t.resources!, { [r]: -1 });
-      });
   }
 }
 

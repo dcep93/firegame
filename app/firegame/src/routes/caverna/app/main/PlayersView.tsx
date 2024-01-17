@@ -165,21 +165,21 @@ function Player(
             selectedIndex={1}
             f={(t: CaveTileType, [i, j, k]) => (
               <div>
-                {t.tile !== undefined ? (
+                {t.cavern !== undefined ? (
                   <button
-                    title={Caverns[t.tile].title}
-                    disabled={Caverns[t.tile!].action === undefined}
+                    title={Caverns[t.cavern].title}
+                    disabled={Caverns[t.cavern!].action === undefined}
                     onClick={() =>
-                      Caverns[t.tile!].action !== undefined &&
-                      Caverns[t.tile!].action!(props.p)
+                      Caverns[t.cavern!].action !== undefined &&
+                      Caverns[t.cavern!].action!(props.p)
                     }
                   >
                     (
-                    {Caverns[t.tile].points !== undefined
-                      ? Caverns[t.tile].points
-                      : Caverns[t.tile].pointsF!(props.p)}
-                    ) {Cavern[t.tile].replaceAll("_", "\n")}{" "}
-                    {JSON.stringify(Caverns[t.tile!].supply)}
+                    {Caverns[t.cavern].points !== undefined
+                      ? Caverns[t.cavern].points
+                      : Caverns[t.cavern].pointsF!(props.p)}
+                    ) {Cavern[t.cavern].replaceAll("_", "\n")}{" "}
+                    {JSON.stringify(Caverns[t.cavern!].supply)}
                   </button>
                 ) : (
                   <div>

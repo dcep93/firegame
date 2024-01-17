@@ -95,7 +95,10 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [-1, 0],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { build: Buildable.ore_mine } },
+        {
+          t: Task.build,
+          d: { build: Buildable.ore_mine_construction, rs: { ore: 3 } },
+        },
         { t: Task.expedition, d: { num: 2 } },
       ]),
   },
@@ -266,11 +269,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        {
-          t: Task.choose_excavation,
-        },
-      ]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.excavation } }]),
   },
   [Action.starting_player__1_3]: {
     availability: [1, 3],
@@ -574,11 +573,11 @@ const Actions: { [a in Action]: ActionType } = {
         ? utils.queueTasks([
             {
               t: Task.build,
-              d: { build: Buildable.farm_tile, r: "wood" },
+              d: { build: Buildable.farm_tile, rs: { wood: 1 } },
             },
             {
               t: Task.build,
-              d: { build: Buildable.cavern_tunnel, r: "stone" },
+              d: { build: Buildable.cavern_tunnel, rs: { stone: 1 } },
             },
           ])
         : utils.queueTasks([

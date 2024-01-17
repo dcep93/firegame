@@ -34,18 +34,21 @@ export enum Task {
 
 export enum Buildable {
   fence,
-  double_fence,
   stable,
-  farm_tile,
   pasture,
   field,
 
-  cavern_tunnel,
-  double_cavern,
   tunnel,
   cavern,
+  ore_tunnel,
   ore_mine,
   ruby_mine,
+
+  farm_tile,
+  double_fence,
+  cavern_tunnel,
+  excavation,
+  ore_mine_construction,
 
   dwelling_2_2,
   dwelling,
@@ -58,6 +61,7 @@ export type TaskType = {
     r?: keyof ResourcesType;
     rs?: ResourcesType;
     build?: Buildable;
+    buildData?: number[];
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
   };
 };
@@ -98,10 +102,11 @@ export type Params = {
   lobby: LobbyType;
 };
 
+// TODO buildable
 export type CaveTileType = {
   resources?: ResourcesType;
   isCavern?: boolean; // false for tunnel
-  tile?: Cavern;
+  cavern?: Cavern;
   supply?: ResourcesType;
   isOreTunnel?: boolean;
   isRubyMine?: boolean; // false if ore mine

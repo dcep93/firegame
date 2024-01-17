@@ -4,6 +4,7 @@ import { Cavern } from "../utils/Caverns";
 import { ExpeditionAction } from "../utils/ExpeditionActions";
 import { Buildable, Harvest, ResourcesType, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
+import BuildSelector from "./BuildSelector";
 
 function Current() {
   return (
@@ -299,40 +300,6 @@ function Special() {
       </div>
     );
   }
-  if (task.t === Task.choose_excavation) {
-    return (
-      <div className={styles.bubble}>
-        <button
-          onClick={() =>
-            Promise.resolve()
-              .then(() => utils.shiftTask())
-              .then(() =>
-                utils.queueTasks([
-                  { t: Task.build, d: { build: Buildable.double_cavern } },
-                ])
-              )
-              .then(() => utils.prepareNextTask("will build double_cavern"))
-          }
-        >
-          build double cavern
-        </button>
-        <button
-          onClick={() =>
-            Promise.resolve()
-              .then(() => utils.shiftTask())
-              .then(() =>
-                utils.queueTasks([
-                  { t: Task.build, d: { build: Buildable.cavern_tunnel } },
-                ])
-              )
-              .then(() => utils.prepareNextTask("will build cavern_tunnel"))
-          }
-        >
-          build cavern/tunnel
-        </button>
-      </div>
-    );
-  }
   if (task.t === Task.ore_trading) {
     return (
       <div className={styles.bubble}>
@@ -373,11 +340,7 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.farm_tile },
-                  },
-                  {
-                    t: Task.resource,
-                    d: { rs: { wood: 1 } },
+                    d: { build: Buildable.farm_tile, rs: { wood: 1 } },
                   },
                 ])
               )
@@ -394,11 +357,7 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.cavern_tunnel },
-                  },
-                  {
-                    t: Task.resource,
-                    d: { rs: { stone: 1 } },
+                    d: { build: Buildable.cavern_tunnel, rs: { stone: 1 } },
                   },
                 ])
               )
@@ -528,15 +487,18 @@ function Special() {
   if (task.t === Task.build) {
     return (
       <div className={styles.bubble}>
-        <button
-          onClick={() =>
-            utils.prepareNextTask(
-              `skipped building ${Task[utils.shiftTask().d!.build!]}`
-            )
-          }
-        >
-          skip build
-        </button>
+        <div>
+          <button
+            onClick={() =>
+              utils.prepareNextTask(
+                `skipped building ${Task[utils.shiftTask().d!.build!]}`
+              )
+            }
+          >
+            skip build
+          </button>
+        </div>
+        <BuildSelector />
       </div>
     );
   }
