@@ -23,6 +23,10 @@ const store: StoreType<GameType> = store_;
 class Utils extends SharedUtils<GameType, PlayerType> {
   // HELPERS
 
+  flipResources(rs: ResourcesType): ResourcesType {
+    return Object.fromEntries(Object.entries(rs).map(([k, v]) => [k, -v]));
+  }
+
   addResources(
     _addTo: ResourcesType,
     addFrom: ResourcesType
@@ -333,6 +337,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
 
     const task = utils.getTask();
+    if (task.t !== Task.furnish) return false;
     if (
       task.d?.build === Buildable.dwelling &&
       Caverns[t].category !== CavernCategory.dwelling
@@ -373,16 +378,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   rubyTrade(a: RubyAction, p: PlayerType, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
-    if (
-      utils.addResources(
-        p.resources || {},
-        RubyActions[a].cost || { rubies: -1 }
-      ) === undefined
-    )
-      return false;
+    const cost = utils.flipResources(RubyActions[a].cost || { rubies: 1 });
+    if (utils.addResources(p.resources || {}, cost) === undefined) return false;
     if (execute) {
       const ra = RubyActions[a];
-      utils.addResourcesToPlayer(p, ra.cost || { rubies: -1 });
+      utils.addResourcesToPlayer(p, cost);
       if (ra.action) ra.action(p);
       if (ra.reward) utils.addResourcesToPlayer(p, ra.reward);
       utils.prepareNextTask(`traded ruby for ${RubyAction[a]}`);

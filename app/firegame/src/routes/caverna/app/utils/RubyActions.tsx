@@ -52,9 +52,9 @@ const RubyActions: {
         { t: Task.build, d: { num: 1, build: Buildable.tunnel } },
       ]),
   },
-  [RubyAction.cow]: { reward: { cows: 1 }, cost: { rubies: -1, food: -1 } },
+  [RubyAction.cow]: { reward: { cows: 1 }, cost: { rubies: 1, food: 1 } },
   [RubyAction.cavern]: {
-    cost: { rubies: -2 },
+    cost: { rubies: 2 },
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.build, d: { num: 1, build: Buildable.cavern } },
