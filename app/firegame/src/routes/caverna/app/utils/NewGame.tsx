@@ -116,8 +116,8 @@ export type FarmTileType = {
   resources?: ResourcesType;
   isStable?: boolean;
   isPasture?: boolean; // false for field
-  isFence?: boolean;
-  isDoubleFence?: [number, number, number] | null;
+  isFence?: boolean; // false for backup fence
+  isDoubleFence?: [number, number, number];
 };
 
 export type PlayerType = {

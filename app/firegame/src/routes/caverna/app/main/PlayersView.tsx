@@ -146,10 +146,10 @@ function Player(
                   {!t.isStable ? null : "stable"}
                   {t.isDoubleFence
                     ? "double_fence"
-                    : t.isDoubleFence === null
-                    ? "backup_fence"
                     : t.isFence
                     ? "fence"
+                    : t.isFence === false
+                    ? "backup_fence"
                     : t.resources !== undefined
                     ? null
                     : t.isPasture

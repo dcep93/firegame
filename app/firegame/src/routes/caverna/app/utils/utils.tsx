@@ -559,13 +559,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       cs[1 - j][1 - k] += j === 0 ? 1 : -1;
       if (!utils._buildHereHelper(b1, p, cs[0], execute)) return false;
       if (!utils._buildHereHelper(b2, p, cs[1], execute)) return false;
-      if (task.d!.build === Buildable.fence_2) {
-        (this.getTile(p, cs[0]) as FarmTileType).isDoubleFence = cs[1];
-        const tt = utils.getTile(p, cs[1]) as FarmTileType;
-        tt.isDoubleFence = null;
-        if (tt.resources !== undefined) {
-          utils.addResourcesToPlayer(p, tt.resources);
-          delete tt.resources;
+      if (execute) {
+        if (task.d!.build === Buildable.fence_2) {
+          (this.getTile(p, cs[0]) as FarmTileType).isDoubleFence = cs[1];
+          const tt = utils.getTile(p, cs[1]) as FarmTileType;
+          if (tt.resources !== undefined) {
+            utils.addResourcesToPlayer(p, tt.resources);
+            delete tt.resources;
+          }
         }
       }
     } else {
@@ -656,9 +657,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             if (farmTile === undefined) return false;
             if (farmTile.isFence || !farmTile.isPasture) return false;
             if (execute) {
-              if (b === Buildable.fence) {
-                farmTile.isFence = true;
-              }
+              farmTile.isFence = b === Buildable.fence;
             }
             return true;
           case Buildable.stable:
