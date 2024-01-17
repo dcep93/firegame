@@ -237,16 +237,16 @@ function setPlayers(game: GameType): GameType {
       caverns: { [Cavern.starting_dwelling]: true },
 
       cave: {
-        2: { 0: { isCavern: true } },
-        3: { 0: { isCavern: true, cavern: Cavern.starting_dwelling } },
+        0: { 0: { isCavern: true, cavern: Cavern.starting_dwelling } },
+        1: { 0: { isCavern: true } },
       },
 
       tileBonuses: {
-        "0_2_0": { boars: 1 },
-        "2_0_0": { boars: 1 },
-        "3_1_0": { food: 1 },
-        "0_2_1": { food: 1 },
-        "3_1_1": { food: 1 },
+        "3_0_0": { boars: 1 },
+        "1_2_0": { boars: 1 },
+        "0_1_0": { food: 1 },
+        "0_1_1": { food: 1 },
+        "3_2_1": { food: 2 },
       },
     }));
 

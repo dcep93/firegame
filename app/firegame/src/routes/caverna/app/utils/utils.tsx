@@ -563,7 +563,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (task.d!.build === Buildable.fence_2) {
           (this.getTile(p, cs[0]) as FarmTileType).isDoubleFence = cs[1];
           const tt = utils.getTile(p, cs[1]) as FarmTileType;
-          delete tt.isFence;
+          tt.isFence = false;
           if (tt.resources !== undefined) {
             utils.addResourcesToPlayer(p, tt.resources);
             delete tt.resources;
