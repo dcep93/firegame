@@ -547,6 +547,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     execute: boolean
   ): boolean {
     if (!utils.isMyTurn()) return false;
+    if (p.farm === undefined) p.farm = {};
+    if (utils._notConnectedToHome(p, coords)) return false;
     const task = utils.getTask();
     if (task.t !== Task.build) return false;
 
@@ -569,7 +571,28 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  // TODO can only build if connected to home
+  _notConnectedToHome(
+    p: PlayerType,
+    coords: [number, number, number]
+  ): boolean {
+    return (
+      [
+        [-1, 0],
+        [1, 0],
+        [0, 1],
+        [0, -1],
+      ]
+        .map(([i, j]) => [coords[0] + i, coords[1] + j])
+        .map(([i, j]) => ([p.farm!, p.cave][coords[2]][i] || {})[j])
+        .find(
+          (t) =>
+            t !== undefined &&
+            ((t as FarmTileType).isPasture !== undefined ||
+              (t as CaveTileType).isCavern !== undefined)
+        ) === undefined
+    );
+  }
+
   _buildHereHelper(
     b: Buildable,
     p: PlayerType,
@@ -585,8 +608,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return false;
       }
     }
-    p.farm = {};
-    const g = [p.farm, p.cave][coords[2]];
+    const g = [p.farm!, p.cave][coords[2]];
     if (g[coords[1]] === undefined) {
       g[coords[1]] = {};
     }
