@@ -47,95 +47,6 @@ function Player(
           utils.getCurrent().userId === props.p.userId && styles.blue,
         ].join(" ")}
       >
-        <div style={{ position: "relative" }}>
-          <h2>{props.p.userName}</h2>
-          <h4 title={JSON.stringify(scoreDict, null, 2)}>
-            score: {Object.values(scoreDict).sum()}
-          </h4>
-          <div
-            className={styles.bubble}
-            style={{
-              position: "absolute",
-              right: 0,
-              bottom: 0,
-              backgroundColor: utils.getColor(props.p.index),
-            }}
-          ></div>
-        </div>
-        <div>
-          ready dwarves:{" "}
-          {(props.p.availableDwarves || []).map((d, i) => (
-            <button
-              key={i}
-              disabled={!utils.payRubyOutOfOrder(props.p, i, false)}
-              style={{
-                padding: "0.5em",
-              }}
-              onClick={() => utils.payRubyOutOfOrder(props.p, i, true)}
-            >
-              {d}
-            </button>
-          ))}
-        </div>
-        {props.p.begging !== undefined && <div>begging: {props.p.begging}</div>}
-        <div className={styles.bubble}>
-          {(
-            [
-              "dogs",
-              "sheep",
-              "donkeys",
-              "boars",
-              "cows",
-              "food",
-              "stone",
-              "wood",
-              "ore",
-              "rubies",
-              "gold",
-              "grain",
-              "vegetables",
-            ] as (keyof ResourcesType)[]
-          )
-            .map((resourceName) => ({
-              resourceName,
-              count: (props.p.resources || {})[resourceName] || 0,
-            }))
-            .filter(({ count }) => count > 0)
-            .map(({ resourceName, count }, i) => (
-              <div key={i}>
-                <button
-                  disabled={
-                    !utils.doResource(
-                      props.p,
-                      props.selected,
-                      resourceName,
-                      false
-                    )
-                  }
-                  onClick={() =>
-                    utils.doResource(
-                      props.p,
-                      props.selected,
-                      resourceName,
-                      true
-                    )
-                  }
-                >
-                  {resourceName}: {count}
-                </button>
-              </div>
-            ))}
-        </div>
-        <div>
-          {props.p.userId !== store.me.userId ? null : (
-            <button
-              disabled={!utils.slaughter(props.p, false)}
-              onClick={() => utils.slaughter(props.p, true)}
-            >
-              slaughter
-            </button>
-          )}
-        </div>
         <div style={{ display: "flex" }}>
           <Grid
             title={"farm"}
@@ -198,6 +109,103 @@ function Player(
             )}
             {...props}
           />
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>
+            {props.p.begging !== undefined && (
+              <div>begging: {props.p.begging}</div>
+            )}
+            <div>
+              ready dwarves:{" "}
+              {(props.p.availableDwarves || []).map((d, i) => (
+                <button
+                  key={i}
+                  disabled={!utils.payRubyOutOfOrder(props.p, i, false)}
+                  style={{
+                    padding: "0.5em",
+                  }}
+                  onClick={() => utils.payRubyOutOfOrder(props.p, i, true)}
+                >
+                  {d}
+                </button>
+              ))}
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                className={styles.bubble}
+                style={{
+                  backgroundColor: utils.getColor(props.p.index),
+                }}
+              ></div>
+              <h4
+                style={{ display: "inline-block", margin: 0 }}
+                title={JSON.stringify(scoreDict, null, 2)}
+              >
+                score: {Object.values(scoreDict).sum()}
+              </h4>
+            </div>
+            <h2>{props.p.userName}</h2>
+          </div>
+          <div>
+            {props.p.userId !== store.me.userId ? null : (
+              <div className={styles.bubble}>
+                <button
+                  disabled={!utils.slaughter(props.p, false)}
+                  onClick={() => utils.slaughter(props.p, true)}
+                >
+                  slaughter
+                </button>
+              </div>
+            )}
+            <div className={styles.bubble}>
+              {(
+                [
+                  "dogs",
+                  "sheep",
+                  "donkeys",
+                  "boars",
+                  "cows",
+                  "food",
+                  "stone",
+                  "wood",
+                  "ore",
+                  "rubies",
+                  "gold",
+                  "grain",
+                  "vegetables",
+                ] as (keyof ResourcesType)[]
+              )
+                .map((resourceName) => ({
+                  resourceName,
+                  count: (props.p.resources || {})[resourceName] || 0,
+                }))
+                .filter(({ count }) => count > 0)
+                .map(({ resourceName, count }, i) => (
+                  <div key={i}>
+                    <button
+                      disabled={
+                        !utils.doResource(
+                          props.p,
+                          props.selected,
+                          resourceName,
+                          false
+                        )
+                      }
+                      onClick={() =>
+                        utils.doResource(
+                          props.p,
+                          props.selected,
+                          resourceName,
+                          true
+                        )
+                      }
+                    >
+                      {resourceName}: {count}
+                    </button>
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
