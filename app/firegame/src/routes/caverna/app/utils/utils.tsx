@@ -21,6 +21,8 @@ import RubyActions, { RubyAction } from "./RubyActions";
 const store: StoreType<GameType> = store_;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
+  numRows = 4;
+  numCols = 3;
   // HELPERS
 
   flipResources(rs: ResourcesType): ResourcesType {
@@ -1057,8 +1059,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           [p.cave, p.farm]
             .flatMap((g) =>
               utils
-                .count(4)
-                .flatMap((r) => utils.count(3).map((c) => ({ g, r, c })))
+                .count(utils.numRows)
+                .flatMap((r) =>
+                  utils.count(utils.numCols).map((c) => ({ g, r, c }))
+                )
             )
             .filter(({ g, r, c }) => ((g || {})[r] || {})[c] === undefined)
             .length

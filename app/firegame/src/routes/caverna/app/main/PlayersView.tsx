@@ -217,13 +217,13 @@ function Grid<T>(
     <div className={styles.bubble}>
       <h4>{props.title}</h4>
       {utils
-        .count(4)
+        .count(utils.numRows)
         .reverse()
         .map((i) => (
           <div key={i} style={{ display: "flex" }}>
             {(props.selectedIndex === 0
-              ? utils.count(3).reverse()
-              : utils.count(3)
+              ? utils.count(utils.numCols).reverse()
+              : utils.count(utils.numCols)
             )
               .map((j) => ({
                 t: (([props.p.farm || {}, props.p.cave][props.selectedIndex] ||
