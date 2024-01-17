@@ -415,6 +415,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const e = ExpeditionActions[a];
     if (p.usedDwarves![0] < e.level) return false;
     if (execute) {
+      t.d!.num!--;
       if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
       t.d!.expeditionsTaken[a] = true;
       const e = ExpeditionActions[a];
@@ -846,7 +847,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (store.gameW.game.upcomingHarvests === undefined) {
           utils.queueTasks([{ t: Task.game_end }]);
         } else {
-          delete store.gameW.game.harvest;
           utils.enrichAndReveal(store.gameW.game);
         }
       } else {
@@ -882,13 +882,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   enrichAndReveal(g: GameType): GameType {
     g.currentPlayer = g.startingPlayer;
-    g.tasks = [{ t: Task.action }];
-    g.actions.push(
-      utils
-        .shuffle(g.upcomingActions!)
-        .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
-        .pop()!
-    );
+    delete store.gameW.game.harvest;
+    delete g.takenActions;
     g.players.forEach(
       (p) =>
         (p.availableDwarves = p
@@ -908,6 +903,27 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           t.supply = utils.addResources(t.supply!, { [r]: -1 }) || {};
         })
     );
+    g.players
+      .map((p) => ({
+        p,
+        num: utils
+          .getGrid(p)
+          .map(
+            ({ t }) =>
+              t.resources?.donkeys !== undefined &&
+              (t as CaveTileType).isRubyMine === false
+          ).length,
+      }))
+      .filter(({ p, num }) => num > 0 && p.caverns[Cavern.miner])
+      .forEach(({ p, num }) => utils.addResourcesToPlayer(p, { ore: num }));
+
+    g.tasks = [{ t: Task.action }];
+    g.actions.push(
+      utils
+        .shuffle(g.upcomingActions!)
+        .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
+        .pop()!
+    );
     if (g.actionBonuses === undefined) {
       g.actionBonuses = {};
     }
@@ -922,19 +938,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
       );
 
-    g.players
-      .map((p) => ({
-        p,
-        num: utils
-          .getGrid(p)
-          .map(
-            ({ t }) =>
-              t.resources?.donkeys !== undefined &&
-              (t as CaveTileType).isRubyMine === false
-          ).length,
-      }))
-      .filter(({ p, num }) => num > 0 && p.caverns[Cavern.miner])
-      .forEach(({ p, num }) => utils.addResourcesToPlayer(p, { ore: num }));
     return g;
   }
 
