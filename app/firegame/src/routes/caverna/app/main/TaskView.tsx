@@ -75,6 +75,20 @@ function Current() {
   );
 }
 
+function Skip() {
+  return !utils.getTask()?.d?.canSkip ? null : (
+    <div>
+      <button
+        onClick={() =>
+          utils.prepareNextTask(`skipped ${Task[utils.shiftTask().t]}`)
+        }
+      >
+        skip
+      </button>
+    </div>
+  );
+}
+
 function Special() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
@@ -116,53 +130,41 @@ function Special() {
       </div>
     );
   }
-  if (task.t === Task.furnish) {
+  if (
+    task.t === Task.furnish &&
+    task.d?.num === undefined &&
+    p.caverns[Cavern.builder]
+  ) {
     return (
       <div className={styles.bubble}>
-        {task.d?.num !== undefined ? null : (
+        {["wood", "stone"].map((builderResource) => (
           <button
+            key={builderResource}
+            disabled={
+              utils.addResources(p.resources || {}, { ore: -1 }) === undefined
+            }
             onClick={() =>
               Promise.resolve()
-                .then(() => utils.shiftTask())
-                .then(() => utils.prepareNextTask("skipped furnishing"))
+                .then(() =>
+                  utils.addResourcesToPlayer(p, {
+                    [builderResource]: 1,
+                    ore: -1,
+                  })
+                )
+                .then(
+                  () =>
+                    (store.gameW.game.tasks[0].d = {
+                      r: builderResource as keyof ResourcesType,
+                    })
+                )
+                .then(() =>
+                  utils.prepareNextTask(`converted ore for ${builderResource}`)
+                )
             }
           >
-            skip furnish
+            ore for {builderResource}
           </button>
-        )}
-        {task.d?.num !== undefined || !p.caverns[Cavern.builder]
-          ? null
-          : ["wood", "stone"].map((builderResource) => (
-              <button
-                key={builderResource}
-                disabled={
-                  utils.addResources(p.resources || {}, { ore: -1 }) ===
-                  undefined
-                }
-                onClick={() =>
-                  Promise.resolve()
-                    .then(() =>
-                      utils.addResourcesToPlayer(p, {
-                        [builderResource]: 1,
-                        ore: -1,
-                      })
-                    )
-                    .then(
-                      () =>
-                        (store.gameW.game.tasks[0].d = {
-                          r: builderResource as keyof ResourcesType,
-                        })
-                    )
-                    .then(() =>
-                      utils.prepareNextTask(
-                        `converted ore for ${builderResource}`
-                      )
-                    )
-                }
-              >
-                ore for {builderResource}
-              </button>
-            ))}
+        ))}
       </div>
     );
   }
@@ -483,24 +485,8 @@ function Special() {
       </div>
     );
   }
-  // TODO 1 specific skippable builds
   if (task.t === Task.build) {
-    return (
-      <div className={styles.bubble}>
-        <div>
-          <button
-            onClick={() =>
-              utils.prepareNextTask(
-                `skipped building ${Task[utils.shiftTask().d!.build!]}`
-              )
-            }
-          >
-            skip build
-          </button>
-        </div>
-        <BuildSelector />
-      </div>
-    );
+    return <BuildSelector />;
   }
   return null;
 }
@@ -510,6 +496,9 @@ export default function TaskView() {
     <div>
       <div>
         <Current />
+      </div>
+      <div>
+        <Skip />
       </div>
       {utils.isMyTurn() && <Special />}
     </div>

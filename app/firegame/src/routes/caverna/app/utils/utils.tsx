@@ -221,12 +221,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           .length === 3
       )
         return false;
-      return (
+      if (
+        task.d?.canSkip &&
         utils.addResources(
           utils._getBuildCost(task, p) || {},
           p.resources || {}
-        ) !== undefined
-      );
+        ) === undefined
+      )
+        return false;
     }
     return true;
   }

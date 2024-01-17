@@ -20,48 +20,52 @@ export default function BuildSelector() {
   const choices = allChoices[d.build!];
   if (choices === undefined) return null;
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      {choices
-        .flatMap(([c1, c2]) =>
-          c1 === c2
-            ? [[c1, c2]]
-            : [
-                [c1, c2],
-                [c2, c1],
-              ]
-        )
-        .flatMap((cs) =>
-          (["row", "column"] as ("row" | "column")[]).map(
-            (flexDirection, k) => ({
-              flexDirection,
-              cs: cs as [Buildable, Buildable],
-              k,
-            })
+    <div className={styles.bubble}>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {choices
+          .flatMap(([c1, c2]) =>
+            c1 === c2
+              ? [[c1, c2]]
+              : [
+                  [c1, c2],
+                  [c2, c1],
+                ]
           )
-        )
-        .map(({ cs, flexDirection, k }, i) => (
-          <div
-            key={i}
-            style={{ border: 0, display: "flex", flexDirection }}
-            className={styles.bubble}
-          >
-            {cs.map((c, j) => (
-              <button
-                key={j}
-                style={{ height: "4em", width: "4em" }}
-                onClick={() =>
-                  Promise.resolve()
-                    .then(() => (d.buildData = [cs[0], cs[1], k, j]))
-                    .then(() =>
-                      utils.prepareNextTask(`oriented: ${Buildable[d.build!]}`)
-                    )
-                }
-              >
-                {Buildable[c]}
-              </button>
-            ))}
-          </div>
-        ))}
+          .flatMap((cs) =>
+            (["row", "column"] as ("row" | "column")[]).map(
+              (flexDirection, k) => ({
+                flexDirection,
+                cs: cs as [Buildable, Buildable],
+                k,
+              })
+            )
+          )
+          .map(({ cs, flexDirection, k }, i) => (
+            <div
+              key={i}
+              style={{ border: 0, display: "flex", flexDirection }}
+              className={styles.bubble}
+            >
+              {cs.map((c, j) => (
+                <button
+                  key={j}
+                  style={{ height: "4em", width: "4em" }}
+                  onClick={() =>
+                    Promise.resolve()
+                      .then(() => (d.buildData = [cs[0], cs[1], k, j]))
+                      .then(() =>
+                        utils.prepareNextTask(
+                          `oriented: ${Buildable[d.build!]}`
+                        )
+                      )
+                  }
+                >
+                  {Buildable[c]}
+                </button>
+              ))}
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

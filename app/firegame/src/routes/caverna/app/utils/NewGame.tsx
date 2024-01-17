@@ -58,6 +58,7 @@ export type TaskType = {
   t: Task;
   d?: {
     num?: number;
+    canSkip?: boolean;
     r?: keyof ResourcesType;
     rs?: ResourcesType;
     build?: Buildable;
