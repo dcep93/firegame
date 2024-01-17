@@ -555,6 +555,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
+  // TODO can only build if connected to home
   _buildHereHelper(
     task: TaskType,
     p: PlayerType,
