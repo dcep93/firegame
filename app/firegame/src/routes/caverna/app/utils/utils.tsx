@@ -345,20 +345,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return false;
     if (task.d?.build === Buildable.dwelling_2_2 && t !== Cavern.dwelling)
       return false;
-    var cost =
+    var oppCost =
       task.d?.build === Buildable.dwelling_2_2
         ? { stone: 2, wood: 2 }
         : Caverns[t].cost;
-    if (cost.wood !== undefined && p.caverns[Cavern.carpenter]) {
-      cost = utils.addResources(cost, { wood: -1 })!;
+    if (oppCost.wood !== undefined && p.caverns[Cavern.carpenter]) {
+      oppCost = utils.addResources(oppCost, { wood: -1 })!;
     }
-    if (cost.stone !== undefined && p.caverns[Cavern.stone_carver]) {
-      cost = utils.addResources(cost, { stone: -1 })!;
+    if (oppCost.stone !== undefined && p.caverns[Cavern.stone_carver]) {
+      oppCost = utils.addResources(oppCost, { stone: -1 })!;
     }
 
+    const cost = utils.flipResources(oppCost);
     if (utils.addResources(p.resources || {}, cost) === undefined) return false;
     if (task.d?.r !== undefined) {
-      if ((cost[task.d?.r] || 0) < 1) return false;
+      if (cost[task.d?.r] === undefined) return false;
     }
     if (execute) {
       utils.shiftTask();
