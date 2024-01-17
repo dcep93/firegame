@@ -570,13 +570,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   // TODO can only build if connected to home
-  // TODO cant build off board
   _buildHereHelper(
     b: Buildable,
     p: PlayerType,
     coords: [number, number, number],
     execute: boolean
   ): boolean {
+    if (coords[0] < 0 || coords[0] > 3 || coords[1] < 0 || coords[1] > 2) {
+      if (p.caverns[Cavern.office_room]) {
+        if (execute) {
+          utils.addResourcesToPlayer(p, { gold: 2 });
+        }
+      } else {
+        return false;
+      }
+    }
     p.farm = {};
     const g = [p.farm, p.cave][coords[2]];
     if (g[coords[1]] === undefined) {
@@ -768,7 +776,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ) {
                 allowed = true;
               }
-              // TODO 7 double_fence stable num allowed animal
+              // TODO double_fence stable num allowed animal
             } else if (farmTile.isStable && t.resources === undefined) {
               allowed = true;
             }

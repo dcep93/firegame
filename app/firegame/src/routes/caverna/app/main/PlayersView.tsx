@@ -9,14 +9,12 @@ import {
 } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
-// click animal -> goes to slaughterhouse
-// select square -> click animal -> goes to square
-
 type SelectedPropsType = {
   selected: [number, number, number] | undefined;
   updateSelected: (s: [number, number, number] | undefined) => void;
 };
 
+// TODO render office room
 export default function PlayersView(props: SelectedPropsType) {
   return (
     <div>

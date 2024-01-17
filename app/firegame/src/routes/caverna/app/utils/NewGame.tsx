@@ -102,7 +102,6 @@ export type Params = {
   lobby: LobbyType;
 };
 
-// TODO buildable
 export type CaveTileType = {
   resources?: ResourcesType;
   isCavern?: boolean; // false for tunnel
