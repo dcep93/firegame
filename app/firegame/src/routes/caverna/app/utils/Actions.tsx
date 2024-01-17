@@ -122,7 +122,7 @@ const Actions: { [a in Action]: ActionType } = {
               .then(() => utils.addResourcesToPlayer(p, { gold: 3 }))
               .then(() =>
                 utils.queueTasks([
-                  { t: Task.furnish, d: { build: Buildable.dwelling } },
+                  { t: Task.furnish, d: { build: Buildable.dwelling, num: 0 } },
                   { t: Task.have_baby },
                 ])
               )
@@ -130,7 +130,7 @@ const Actions: { [a in Action]: ActionType } = {
         : // wish
         p.caverns[Cavern.guest_room]
         ? utils.queueTasks([
-            { t: Task.furnish, d: { build: Buildable.dwelling } },
+            { t: Task.furnish, d: { build: Buildable.dwelling, num: 0 } },
             { t: Task.have_baby },
           ])
         : utils.haveChild(p, false)

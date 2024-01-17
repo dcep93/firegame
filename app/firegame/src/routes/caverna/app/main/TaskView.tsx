@@ -112,15 +112,17 @@ function Special() {
   if (task.t === Task.furnish) {
     return (
       <div className={styles.bubble}>
-        <button
-          onClick={() =>
-            Promise.resolve()
-              .then(() => utils.shiftTask())
-              .then(() => utils.prepareNextTask("skipped furnishing"))
-          }
-        >
-          skip furnish
-        </button>
+        {task.d?.num !== undefined ? null : (
+          <button
+            onClick={() =>
+              Promise.resolve()
+                .then(() => utils.shiftTask())
+                .then(() => utils.prepareNextTask("skipped furnishing"))
+            }
+          >
+            skip furnish
+          </button>
+        )}
         {task.d?.num !== undefined || !p.caverns[Cavern.builder]
           ? null
           : ["wood", "stone"].map((builderResource) => (
@@ -516,6 +518,7 @@ function Special() {
       </div>
     );
   }
+  // TODO specific skippable builds
   if (task.t === Task.build) {
     return (
       <div className={styles.bubble}>

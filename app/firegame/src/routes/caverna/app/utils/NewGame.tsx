@@ -70,6 +70,7 @@ export enum Harvest {
   random,
 }
 
+// TODO restart turn
 export type GameType = {
   params: Params;
   currentPlayer: number;
