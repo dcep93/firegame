@@ -1,7 +1,13 @@
 button {
   color: initial;
+  font-family: "Courier New", Courier, monospace;
 }
 
 button:enabled {
   cursor: pointer;
+}
+
+button:disabled {
+  font-style: italic;
+  background-color: rgba(0, 0, 0, 0.01);
 }

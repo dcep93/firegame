@@ -79,10 +79,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                   CavernCategory.dwelling
                     ? -100
                     : 0, // -100 points for dwelling
-                  (o.t as FarmTileType).doubleFenceAngleDeg !== undefined
-                    ? 100
-                    : 0, // 100 points for double fence
+                  (o.t as FarmTileType).isDoubleFence ? 100 : 0, // 100 points for double fence
                   (o.t as FarmTileType).isPasture ? 500 : 0, // 500 points for pasture
+                  10 * (o.t.resources?.sheep || 0), // 10 points for sheep
                   Object.values(o.t.resources || {}).sum(), // points for existing resources
                 ].sum(),
               }))
@@ -560,6 +559,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       cs[1 - j][1 - k] += j === 0 ? 1 : -1;
       if (!utils._buildHereHelper(b1, p, cs[0], execute)) return false;
       if (!utils._buildHereHelper(b2, p, cs[1], execute)) return false;
+      if (task.d!.build === Buildable.fence_2) {
+        (this.getTile(p, cs[0]) as FarmTileType).isDoubleFence = cs[1];
+        const tt = utils.getTile(p, cs[1]) as FarmTileType;
+        tt.isDoubleFence = null;
+        if (tt.resources !== undefined) {
+          utils.addResourcesToPlayer(p, tt.resources);
+          delete tt.resources;
+        }
+      }
     } else {
       if (!utils._buildHereHelper(task.d!.build!, p, coords, execute))
         return false;
@@ -573,10 +581,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
+  getTile(
+    p: PlayerType,
+    coords: [number, number, number]
+  ): FarmTileType | CaveTileType | undefined {
+    return (([p.farm, p.cave][coords[2]] || {})[coords[0]] || {})[coords[1]];
+  }
+
   _notConnectedToHome(
     p: PlayerType,
     coords: [number, number, number]
   ): boolean {
+    if (coords[0] === 3 && coords[1] === 2 && coords[2] === 0) return false;
     return (
       [
         [-1, 0],
@@ -611,8 +627,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
     }
     const g = [p.farm!, p.cave][coords[2]];
-    if (g[coords[1]] === undefined) {
-      g[coords[1]] = {};
+    if (g[coords[0]] === undefined) {
+      g[coords[0]] = {};
     }
     if (execute) {
       if (b !== Buildable.stable) {
@@ -625,8 +641,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     const t = utils
       .getGrid(p)
-      .find(({ i, j, k }) => utils.objEqual([i, j, k], coords));
+      .find(({ i, j, k }) => utils.objEqual([i, j, k], coords))?.t;
     switch (b) {
+      case Buildable.fence_2:
       case Buildable.fence:
       case Buildable.stable:
       case Buildable.pasture:
@@ -634,11 +651,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (coords[2] !== 0) return false;
         const farmTile = t as FarmTileType;
         switch (b) {
+          case Buildable.fence_2:
           case Buildable.fence:
             if (farmTile === undefined) return false;
             if (farmTile.isFence || !farmTile.isPasture) return false;
             if (execute) {
-              farmTile.isFence = true;
+              if (b === Buildable.fence) {
+                farmTile.isFence = true;
+              }
             }
             return true;
           case Buildable.stable:
@@ -708,7 +728,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   _getBuildCost(task: TaskType, p: PlayerType): ResourcesType | undefined {
     switch (task.d!.build!) {
       case Buildable.fence:
-      case Buildable.double_fence:
+      case Buildable.fence_2:
         return {
           wood: -task.d!.num! + (p.caverns[Cavern.carpenter] ? 1 : 0),
         };
@@ -774,6 +794,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "boars":
       case "cows":
         if (t === undefined) return false;
+        if (
+          Object.keys(t.resources || {}).filter(
+            (r) => !["dogs", resourceName].includes(r)
+          ).length !== 0
+        )
+          return false;
         var allowed = false;
         const cavern = (t as CaveTileType).cavern;
         if (cavern !== undefined) {
@@ -791,16 +817,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           const farmTile = t as FarmTileType;
           if (farmTile.isPasture) {
             if (farmTile.isFence) {
-              if (
-                Object.keys(t.resources || {}).filter(
-                  (r) => !["dogs", resourceName].includes(r)
-                ).length === 0 &&
-                ((t.resources || {})[resourceName] || 0) <=
-                  (farmTile.isStable ? 3 : 1)
-              ) {
-                allowed = true;
+              var numAllowed = 2;
+              if (farmTile.isStable) numAllowed *= 2;
+              if (farmTile.isDoubleFence) {
+                numAllowed *= 2;
+                if (
+                  (utils.getTile(p, farmTile.isDoubleFence) as FarmTileType)
+                    .isStable
+                )
+                  numAllowed *= 2;
               }
-              // TODO 3 double_fence stable num allowed animal
+              if (numAllowed > ((t.resources || {})[resourceName] || 0))
+                allowed = true;
             } else if (farmTile.isStable && t.resources === undefined) {
               allowed = true;
             }
@@ -1041,7 +1069,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         2 *
           utils
             .getGrid(p)
-            .map(({ t }) => ((t as FarmTileType).isFence ? 2 : 0))
+            .map(({ t }) =>
+              (t as FarmTileType).isDoubleFence
+                ? 4
+                : (t as FarmTileType).isFence
+                ? 2
+                : 0
+            )
             .sum() +
         utils
           .getGrid(p)

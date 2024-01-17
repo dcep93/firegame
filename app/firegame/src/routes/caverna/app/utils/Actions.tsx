@@ -117,7 +117,7 @@ const Actions: { [a in Action]: ActionType } = {
         },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.double_fence },
+          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
         },
         {
           t: Task.build,
@@ -185,7 +185,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.build, d: { num: 2, canSkip: true, build: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.double_fence },
+          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
         },
         {
           t: Task.build,
@@ -525,7 +525,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.build, d: { num: 2, canSkip: true, build: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.double_fence },
+          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
         },
       ]),
   },
@@ -570,7 +570,7 @@ const Actions: { [a in Action]: ActionType } = {
         { t: Task.build, d: { num: 2, canSkip: true, build: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.double_fence },
+          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
         },
       ]),
   },

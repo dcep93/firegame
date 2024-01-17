@@ -45,7 +45,7 @@ export enum Buildable {
   ruby_mine,
 
   farm_tile,
-  double_fence,
+  fence_2,
   cavern_tunnel,
   excavation,
   ore_mine_construction,
@@ -117,7 +117,7 @@ export type FarmTileType = {
   isStable?: boolean;
   isPasture?: boolean; // false for field
   isFence?: boolean;
-  doubleFenceAngleDeg?: number; // TODO 2 double_fence
+  isDoubleFence?: [number, number, number] | null;
 };
 
 export type PlayerType = {

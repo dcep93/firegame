@@ -11,7 +11,7 @@ export default function BuildSelector() {
       [Buildable.cavern, Buildable.cavern],
       [Buildable.cavern, Buildable.tunnel],
     ],
-    [Buildable.double_fence]: [[Buildable.fence, Buildable.fence]],
+    [Buildable.fence_2]: [[Buildable.fence_2, Buildable.fence_2]],
     [Buildable.farm_tile]: [[Buildable.pasture, Buildable.field]],
     [Buildable.ore_mine_construction]: [
       [Buildable.ore_mine, Buildable.ore_tunnel],

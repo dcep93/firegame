@@ -144,8 +144,10 @@ function Player(
               <div>
                 <div>
                   {!t.isStable ? null : "stable"}
-                  {t.doubleFenceAngleDeg !== undefined
-                    ? t.doubleFenceAngleDeg
+                  {t.isDoubleFence
+                    ? "double_fence"
+                    : t.isDoubleFence === null
+                    ? "backup_fence"
                     : t.isFence
                     ? "fence"
                     : t.resources !== undefined

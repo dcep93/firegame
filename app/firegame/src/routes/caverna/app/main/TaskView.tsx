@@ -77,7 +77,7 @@ function Current() {
 
 function Skip() {
   return !utils.getTask()?.d?.canSkip ? null : (
-    <div>
+    <div className={styles.bubble}>
       <button
         onClick={() =>
           utils.prepareNextTask(`skipped ${Task[utils.shiftTask().t]}`)

@@ -80,7 +80,7 @@ const ExpeditionActions: {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { num: 2, build: Buildable.double_fence },
+          d: { num: 2, build: Buildable.fence_2 },
         },
       ]),
   },
