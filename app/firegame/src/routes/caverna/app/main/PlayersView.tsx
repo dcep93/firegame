@@ -254,7 +254,7 @@ function Grid<T>(
                   style={{
                     border: oob ? undefined : "2px solid black",
                     width: "8em",
-                    height: "4em",
+                    height: "6em",
                     backgroundColor:
                       isBuilding || !utils.objEqual(coords, props.selected)
                         ? undefined

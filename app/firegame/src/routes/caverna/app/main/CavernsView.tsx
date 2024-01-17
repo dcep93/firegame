@@ -26,7 +26,7 @@ export default function CavernsView(props: {
                 <div
                   key={`${i}.${j}`}
                   style={{
-                    margin: "1em",
+                    margin: "2em",
                   }}
                 >
                   {chunk(t3, 3).map((t2, k) => (

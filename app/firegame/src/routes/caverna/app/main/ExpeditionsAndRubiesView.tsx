@@ -21,8 +21,8 @@ function ExpeditionsElement() {
     <div className={styles.bubble}>
       <h3>expeditions</h3>
       <div style={{ display: "flex", flexWrap: "wrap", width: "30em" }}>
-        {utils.enumArray(ExpeditionAction).map((a) => (
-          <div key={a} style={{ flexBasis: "33%", display: "flex" }}>
+        {[-1].concat(utils.enumArray(ExpeditionAction)).map((a) => (
+          <div key={a} style={{ flexBasis: "24%", display: "flex" }}>
             <div
               style={{
                 flexGrow: 1,
@@ -30,15 +30,17 @@ function ExpeditionsElement() {
                 margin: "0.5em",
               }}
             >
-              <Button
-                text={ExpeditionAction[a]}
-                disabled={!utils.expedition(a, p, false)}
-                onClick={() => utils.expedition(a, p, true)}
-              >
-                <div style={{ padding: "0.2em" }}>
-                  level: {ExpeditionActions[a].level}
-                </div>
-              </Button>
+              {a < 0 ? null : (
+                <Button
+                  text={ExpeditionAction[a]}
+                  disabled={!utils.expedition(a, p, false)}
+                  onClick={() => utils.expedition(a, p, true)}
+                >
+                  <div style={{ padding: "0.2em" }}>
+                    level: {ExpeditionActions[a as ExpeditionAction].level}
+                  </div>
+                </Button>
+              )}
             </div>
           </div>
         ))}
