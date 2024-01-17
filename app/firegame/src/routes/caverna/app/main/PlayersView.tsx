@@ -143,7 +143,6 @@ function Player(
             f={(t: FarmTileType, [i, j, k]) => (
               <div>
                 <div>
-                  {!t.isStable ? null : "stable"}
                   {t.isDoubleFence
                     ? "double_fence"
                     : t.isFence
@@ -156,6 +155,7 @@ function Player(
                     ? "pasture"
                     : "field"}
                 </div>
+                <div>{!t.isStable ? null : "stable"}</div>
               </div>
             )}
             {...props}
