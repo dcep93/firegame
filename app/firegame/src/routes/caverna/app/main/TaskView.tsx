@@ -46,6 +46,12 @@ function Current() {
           ))}
         </div>
       </div>
+      <button
+        onClick={() => window.undo()}
+        disabled={store.me?.userId !== store.gameW.info.playerId}
+      >
+        undo
+      </button>
       <div style={{ textAlign: "right" }}>
         <div>
           starting player:{" "}
@@ -477,7 +483,7 @@ function Special() {
           min={1 + blacksmithDiscount}
           max={Math.min(
             8,
-            (utils.getMe().resources?.ore || 0) + blacksmithDiscount
+            (utils.getCurrent().resources?.ore || 0) + blacksmithDiscount
           )}
           value={state}
           onChange={(event) => updateState(event.target.value)}
@@ -496,7 +502,7 @@ function Special() {
         <input
           type="range"
           min={1}
-          max={Math.min(4, utils.getMe().resources?.gold || 0)}
+          max={Math.min(4, utils.getCurrent().resources?.gold || 0)}
           value={state}
           onChange={(event) => updateState(event.target.value)}
           step={1}

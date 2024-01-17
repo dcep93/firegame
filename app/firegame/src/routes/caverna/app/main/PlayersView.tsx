@@ -129,7 +129,7 @@ function Player(
             ))}
         </div>
         <div>
-          {props.p.userId !== utils.getMe().userId ? null : (
+          {props.p.userId !== store.me.userId ? null : (
             <button
               disabled={!utils.slaughter(props.p, false)}
               onClick={() => utils.slaughter(props.p, true)}

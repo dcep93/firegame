@@ -7,7 +7,7 @@ import { chunk } from "./Main";
 export default function CavernsView(props: {
   selected: [number, number, number] | undefined;
 }) {
-  const me = utils.getMe();
+  const p = utils.getCurrent();
   return (
     <div>
       <div className={styles.bubble}>
@@ -52,10 +52,10 @@ export default function CavernsView(props: {
                                 .split("__")[0]
                                 .replaceAll("_", "\n")}`}
                               disabled={
-                                !utils.furnish(t, me, props.selected, false)
+                                !utils.furnish(t, p, props.selected, false)
                               }
                               onClick={() =>
-                                utils.furnish(t, me, props.selected, true)
+                                utils.furnish(t, p, props.selected, true)
                               }
                             >
                               <pre

@@ -265,7 +265,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   action(a: Action, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
-    const p = utils.getMe();
+    const p = utils.getCurrent();
     const foodCost = Actions[a].foodCost;
     if (
       foodCost !== undefined &&
