@@ -6,6 +6,7 @@ import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
 import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
+// todo farm offscreen
 export default function Main() {
   const [selected, updateSelected] = useState<
     [number, number, number] | undefined

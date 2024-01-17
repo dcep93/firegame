@@ -58,9 +58,7 @@ export default function CavernsView(props: {
                                 utils.furnish(t, p, props.selected, true)
                               }
                             >
-                              <pre
-                                style={{ fontSize: "small", margin: "0.1em" }}
-                              >
+                              <pre style={{ margin: "0.1em" }}>
                                 {JSON.stringify(cavern.cost, null, 2)
                                   ?.split("\n")
                                   ?.slice(1, -1)

@@ -389,8 +389,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
       utils.addResourcesToPlayer(p, cost);
       p.caverns[t] = true;
-      const tt = { tile: t, supply: Caverns[t].supply || {} };
-      p.cave[selected[0]]![selected[1]] = tt;
+      if (!p.cave[selected[0]]![selected[1]])
+        p.cave[selected[0]]![selected[1]] = {};
+      Object.assign(p.cave[selected[0]]![selected[1]], {
+        cavern: t,
+        supply: Caverns[t].supply || {},
+      });
       utils.prepareNextTask(`furnished ${Cavern[t]}`);
     }
     return true;
@@ -616,13 +620,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
 
+  isOutOfBounds(coords: [number, number, number]): boolean {
+    return coords[0] < 0 || coords[0] > 3 || coords[1] < 0 || coords[1] > 2;
+  }
+
   _buildHereHelper(
     b: Buildable,
     p: PlayerType,
     coords: [number, number, number],
     execute: boolean
   ): boolean {
-    if (coords[0] < 0 || coords[0] > 3 || coords[1] < 0 || coords[1] > 2) {
+    if (utils.isOutOfBounds(coords)) {
       if (p.caverns[Cavern.office_room]) {
         if (execute) {
           utils.addResourcesToPlayer(p, { gold: 2 });

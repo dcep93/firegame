@@ -225,14 +225,19 @@ function Grid<T>(
     <div className={styles.bubble}>
       <h4>{props.title}</h4>
       {utils
-        .count(utils.numRows)
+        .count(utils.numRows + 2)
+        .map((i) => i - 1)
         .reverse()
         .map((i) => (
-          <div key={i} style={{ display: "flex" }}>
-            {(props.selectedIndex === 0
-              ? utils.count(utils.numCols).reverse()
-              : utils.count(utils.numCols)
-            )
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              flexDirection: props.selectedIndex === 1 ? "row" : "row-reverse",
+            }}
+          >
+            {utils
+              .count(utils.numCols + 1)
               .map((j) => ({
                 t: (([props.p.farm || {}, props.p.cave][props.selectedIndex] ||
                   {})[i] || {})[j],
@@ -241,12 +246,13 @@ function Grid<T>(
               .map((o) => ({
                 ...o,
                 bonuses: (props.p.tileBonuses || {})[o.coords.join("_")],
+                oob: utils.isOutOfBounds(o.coords),
               }))
-              .map(({ t, coords, bonuses }) => (
+              .map(({ t, coords, bonuses, oob }) => (
                 <div
                   key={coords.join(".")}
                   style={{
-                    border: "2px solid black",
+                    border: oob ? undefined : "2px solid black",
                     width: "8em",
                     height: "4em",
                     backgroundColor:
