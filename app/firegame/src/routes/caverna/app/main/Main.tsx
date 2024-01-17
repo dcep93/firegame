@@ -6,7 +6,6 @@ import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
 import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
-// todo farm offscreen
 export default function Main() {
   const [selected, updateSelected] = useState<
     [number, number, number] | undefined
@@ -18,8 +17,10 @@ export default function Main() {
     >
       <TaskView />
       <ActionsView />
-      <div style={{ alignSelf: "flex-end" }}>
-        <PlayersView selected={selected} updateSelected={updateSelected} />
+      <div style={{ alignSelf: "flex-end", maxWidth: "100%" }}>
+        <div style={{ overflow: "scroll" }}>
+          <PlayersView selected={selected} updateSelected={updateSelected} />
+        </div>
       </div>
       <ExpeditionsAndRubiesView />
       <CavernsView selected={selected} />

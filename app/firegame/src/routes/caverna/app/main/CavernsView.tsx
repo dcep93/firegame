@@ -21,12 +21,12 @@ export default function CavernsView(props: {
               .filter((t) => t !== Cavern.starting_dwelling),
             12
           ).map((t4, i) => (
-            <div key={i} style={{ display: "flex" }}>
+            <div key={i} style={{ display: "flex", margin: "-2em" }}>
               {chunk(t4, 6).map((t3, j) => (
                 <div
                   key={`${i}.${j}`}
                   style={{
-                    margin: "2em",
+                    margin: "4em 2em",
                   }}
                 >
                   {chunk(t3, 3).map((t2, k) => (
@@ -38,7 +38,7 @@ export default function CavernsView(props: {
                             key={`${i}.${j}.${k}.${l}`}
                             style={{
                               width: "8em",
-                              height: "8em",
+                              height: "6em",
                               margin: "0.5em",
                             }}
                             title={cavern.title}
@@ -59,10 +59,9 @@ export default function CavernsView(props: {
                               }
                             >
                               <pre style={{ margin: "0.1em" }}>
-                                {JSON.stringify(cavern.cost, null, 2)
-                                  ?.split("\n")
-                                  ?.slice(1, -1)
-                                  ?.join("\n")}
+                                {Object.entries(cavern.cost)
+                                  .map(([k, v]) => `${k}: ${v}`)
+                                  .join("\n")}
                               </pre>
                               {(store.gameW.game.purchasedTiles || {})[t] ===
                               undefined ? null : (
