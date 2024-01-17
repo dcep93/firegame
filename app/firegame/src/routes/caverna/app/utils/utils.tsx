@@ -558,7 +558,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
     if (task.d!.buildData !== undefined) {
       const [b1, b2, k, j] = task.d!.buildData;
-      const cs = [coords.slice(), coords.slice] as [number, number, number][];
+      const cs = [coords.slice(), coords.slice()] as [number, number, number][];
       cs[1 - j][1 - k] += j === 0 ? 1 : -1;
       if (!utils._buildHereHelper(b1, p, cs[0], execute)) return false;
       if (!utils._buildHereHelper(b2, p, cs[1], execute)) return false;
@@ -583,6 +583,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   // TODO can only build if connected to home
+  // TODO cant build off board
   _buildHereHelper(
     b: Buildable,
     p: PlayerType,
