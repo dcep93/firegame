@@ -283,21 +283,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   action(a: Action, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
-    const p = utils.getCurrent();
+    const p = utils.getMe();
+    const task = utils.getTask().t;
+    const playerIndex = (store.gameW.game.takenActions || {})[a]?.playerIndex;
+    if (task === Task.action) {
+      if (playerIndex !== undefined) return false;
+    } else if (task === Task.imitate) {
+      if (playerIndex === undefined || playerIndex === p.index) return false;
+    } else {
+      return false;
+    }
     const foodCost = Actions[a].foodCost;
     if (
       foodCost !== undefined &&
       utils.addResources(p.resources || {}, {
         food: foodCost,
       }) === undefined
-    )
-      return false;
-    const task = utils.getTask().t;
-    const playerIndex = (store.gameW.game.takenActions || {})[a]?.playerIndex;
-    if (task === Task.action && playerIndex !== undefined) return false;
-    if (
-      task === Task.imitate &&
-      (playerIndex === undefined || playerIndex === p.index)
     )
       return false;
     if (execute) {
