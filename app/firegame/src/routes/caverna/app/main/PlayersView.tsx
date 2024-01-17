@@ -270,8 +270,8 @@ function Grid<T>(
                         ([resourceName, count]) => (
                           <button
                             key={resourceName}
-                            onClick={() =>
-                              Promise.resolve()
+                            onClick={(event) =>
+                              Promise.resolve(event.stopPropagation())
                                 .then(() =>
                                   utils.addResourcesToPlayer(
                                     props.p,

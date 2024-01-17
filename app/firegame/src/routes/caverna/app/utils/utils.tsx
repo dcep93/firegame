@@ -558,7 +558,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (task.d!.buildData !== undefined) {
       const [b1, b2, k, j] = task.d!.buildData;
       const cs = [coords.slice(), coords.slice()] as [number, number, number][];
-      cs[1 - j][1 - k] += j === 0 ? 1 : -1;
+      cs[1 - j][1 - k] += j === 0 ? -1 : 1;
       if (!utils._buildHereHelper(b1, p, cs[0], execute)) return false;
       if (!utils._buildHereHelper(b2, p, cs[1], execute)) return false;
       if (execute) {
@@ -596,7 +596,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     p: PlayerType,
     coords: [number, number, number]
   ): boolean {
-    if (coords[0] === 3 && coords[1] === 2 && coords[2] === 0) return false;
+    if (coords[0] === 0 && coords[1] === 0 && coords[2] === 0) return false;
     return (
       [
         [-1, 0],
