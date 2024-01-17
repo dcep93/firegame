@@ -1,4 +1,5 @@
 import React from "react";
+import { firebaseUndo } from "../../../firegame/firebase";
 import { recorded_sha } from "../../../recorded_sha";
 import styles from "../../../shared/styles.module.css";
 import SharedUtils from "../../shared";
@@ -45,7 +46,18 @@ abstract class SharedSidebar<T> extends React.Component {
   renderStartNewGame() {
     return (
       <div>
-        <button onClick={this.startNewGame.bind(this)}>New Game</button>
+        <div>
+          <button onClick={this.startNewGame.bind(this)}>New Game</button>
+        </div>
+        <div>
+          <button
+            onClick={() => firebaseUndo()}
+            disabled={store.me?.userId !== store.gameW.info.playerId}
+          >
+            undo
+          </button>
+        </div>
+
         {this.rules && (
           <h4>
             <a href={this.rules}>Rules</a>

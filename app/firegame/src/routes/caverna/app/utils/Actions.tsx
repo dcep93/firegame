@@ -546,7 +546,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer(p, { gold: 4 }) &&
       utils.queueTasks([
-        { t: Task.weekly_market, d: { num: Action.weekly_market__6_7 } }, // TODO different weekly market
+        { t: Task.weekly_market, d: { num: Action.weekly_market__6_7 } },
       ]),
   },
   [Action.imitation__6_7]: {

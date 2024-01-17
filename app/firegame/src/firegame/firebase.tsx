@@ -25,6 +25,10 @@ declare global {
   }
 }
 
+export function firebaseUndo() {
+  f_set(ref(database, `${gamePath()}/${latest}`), {});
+}
+
 var database: Database;
 type ResultType = { val: () => BlobType | null };
 type BlobType = any;
@@ -36,9 +40,7 @@ function init(): void {
   initialized = true;
   var app = initializeApp(config);
   database = getDatabase(app);
-  window.undo = () => {
-    f_set(ref(database, `${gamePath()}/${latest}`), {});
-  };
+  window.undo = firebaseUndo;
   window.clear = () => f_set(ref(database, namespace()), {});
   onValue(ref(database, ".info/serverTimeOffset"), (snap: ResultType) => {
     offset = snap.val();

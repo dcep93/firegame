@@ -19,7 +19,6 @@ type ExtraPropsType<T> = PlayersPropsType & {
   f: (t: T, coords: [number, number, number]) => JSX.Element | null;
 };
 
-// TODO render office room
 export default function PlayersView(props: PlayersPropsType) {
   return (
     <div>
@@ -254,6 +253,27 @@ function Grid<T>(
                 <div style={{ width: "5em" }}></div>
               </div>
             ))}
+          <div style={{ position: "relative" }}>
+            {utils
+              .getGrid(props.p)
+              .filter(
+                ({ i, j, k }) =>
+                  k === props.selectedIndex && utils.isOutOfBounds([i, j, k])
+              )
+              .map(({ i, j, k }) => (
+                <div
+                  key={`${i},${j},${k}`}
+                  style={{
+                    position: "absolute",
+                    right: undefined,
+                    bottom: "0",
+                    transform: `translate(${100 * j}%, ${100 * -i}%)`,
+                  }}
+                >
+                  <Cell {...props} coords={[i, j, k]} />
+                </div>
+              ))}
+          </div>
         </div>
         <div style={{ height: "4em" }}></div>
       </div>

@@ -47,12 +47,6 @@ function Current() {
           ))}
         </div>
       </div>
-      <button
-        onClick={() => window.undo()}
-        disabled={store.me?.userId !== store.gameW.info.playerId}
-      >
-        undo
-      </button>
       <div style={{ textAlign: "right" }}>
         <div>
           starting player:{" "}
