@@ -596,9 +596,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .find(({ i, j, k }) => utils.objEqual([i, j, k], coords));
     switch (b) {
       case Buildable.fence:
-      case Buildable.double_fence:
       case Buildable.stable:
-      case Buildable.farm_tile:
       case Buildable.pasture:
       case Buildable.field:
         if (coords[2] !== 0) return false;
