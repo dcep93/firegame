@@ -631,7 +631,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     execute: boolean
   ): boolean {
     if (utils.isOutOfBounds(coords)) {
-      if (p.caverns[Cavern.office_room]) {
+      if (p.caverns[Cavern.office_room] && coords[1] >= 0) {
         if (execute) {
           utils.addResourcesToPlayer(p, { gold: 2 });
         }
@@ -955,7 +955,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   enrichAndReveal(g: GameType): GameType {
     g.currentPlayer = g.startingPlayer;
-    delete store.gameW.game.harvest;
+    delete g.harvest;
     delete g.takenActions;
     g.players.forEach(
       (p) =>

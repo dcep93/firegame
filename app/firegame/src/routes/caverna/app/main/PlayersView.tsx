@@ -9,13 +9,18 @@ import {
 } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
-type SelectedPropsType = {
+type PlayersPropsType = {
   selected: [number, number, number] | undefined;
   updateSelected: (s: [number, number, number] | undefined) => void;
 };
 
+type ExtraPropsType<T> = PlayersPropsType & {
+  p: PlayerType;
+  f: (t: T, coords: [number, number, number]) => JSX.Element | null;
+};
+
 // TODO render office room
-export default function PlayersView(props: SelectedPropsType) {
+export default function PlayersView(props: PlayersPropsType) {
   return (
     <div>
       {store.gameW.game.players
@@ -34,9 +39,9 @@ export default function PlayersView(props: SelectedPropsType) {
 }
 
 function Player(
-  props: {
+  props: PlayersPropsType & {
     p: PlayerType;
-  } & SelectedPropsType
+  }
 ) {
   const scoreDict = utils.getScoreDict(props.p);
   return (
@@ -78,6 +83,7 @@ function Player(
               <div>
                 {t.cavern !== undefined ? (
                   <button
+                    style={{ width: "100%" }}
                     title={Caverns[t.cavern].title}
                     disabled={Caverns[t.cavern!].action === undefined}
                     onClick={() =>
@@ -213,110 +219,110 @@ function Player(
 }
 
 function Grid<T>(
-  props: {
-    p: PlayerType;
+  props: ExtraPropsType<T> & {
     title: string;
     selectedIndex: number;
-    f: (t: T, coords: [number, number, number]) => JSX.Element | null;
-  } & SelectedPropsType
+  }
 ) {
-  const isBuilding = utils.getTask().t === Task.build;
   return (
     <div className={styles.bubble}>
       <h4>{props.title}</h4>
-      {utils
-        .count(utils.numRows + 2)
-        .map((i) => i - 1)
-        .reverse()
-        .map((i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              flexDirection: props.selectedIndex === 1 ? "row" : "row-reverse",
-            }}
-          >
-            {utils
-              .count(utils.numCols + 1)
-              .map((j) => ({
-                t: (([props.p.farm || {}, props.p.cave][props.selectedIndex] ||
-                  {})[i] || {})[j],
-                coords: [i, j, props.selectedIndex] as [number, number, number],
-              }))
-              .map((o) => ({
-                ...o,
-                bonuses: (props.p.tileBonuses || {})[o.coords.join("_")],
-                oob: utils.isOutOfBounds(o.coords),
-              }))
-              .map(({ t, coords, bonuses, oob }) => (
-                <div
-                  key={coords.join(".")}
-                  style={{
-                    border: oob ? undefined : "2px solid black",
-                    width: "8em",
-                    height: "6em",
-                    backgroundColor:
-                      isBuilding || !utils.objEqual(coords, props.selected)
-                        ? undefined
-                        : "lightgrey",
-                    cursor:
-                      !isBuilding || utils.build(props.p, coords, false)
-                        ? "pointer"
-                        : undefined,
-                  }}
-                  onClick={() =>
-                    isBuilding
-                      ? utils.build(props.p, coords, true)
-                      : props.updateSelected(
-                          utils.objEqual(coords, props.selected)
-                            ? undefined
-                            : coords
-                        )
-                  }
-                >
-                  {bonuses === undefined ? null : (
-                    <div>+: {JSON.stringify(bonuses)}</div>
-                  )}
-                  {t === undefined ? null : props.f(t as T, coords)}
-                  {t?.resources === undefined
-                    ? null
-                    : Object.entries(t.resources).map(
-                        ([resourceName, count]) => (
-                          <button
-                            key={resourceName}
-                            onClick={(event) =>
-                              Promise.resolve(event.stopPropagation())
-                                .then(() =>
-                                  utils.addResourcesToPlayer(
-                                    props.p,
-                                    {
-                                      [resourceName]: 1,
-                                    },
-                                    true
-                                  )
-                                )
-                                .then(
-                                  () =>
-                                    (t.resources = utils.addResources(
-                                      t.resources!,
-                                      { [resourceName]: -1 }
-                                    ))
-                                )
-                                .then(() =>
-                                  utils.prepareNextTask(
-                                    `moved up ${resourceName}`
-                                  )
-                                )
-                            }
-                          >
-                            {resourceName}: {count}
-                          </button>
-                        )
-                      )}
-                </div>
-              ))}
-          </div>
-        ))}
+      <div>
+        <div style={{ height: "2em" }}></div>
+        <div>
+          {utils
+            .count(utils.numRows)
+            .reverse()
+            .map((i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  flexDirection:
+                    props.selectedIndex === 1 ? "row" : "row-reverse",
+                }}
+              >
+                {utils
+                  .count(utils.numCols)
+                  .map(
+                    (j) =>
+                      [i, j, props.selectedIndex] as [number, number, number]
+                  )
+                  .map((coords, j) => (
+                    <Cell key={j} coords={coords} {...props} />
+                  ))}
+                <div style={{ width: "5em" }}></div>
+              </div>
+            ))}
+        </div>
+        <div style={{ height: "4em" }}></div>
+      </div>
+    </div>
+  );
+}
+
+function Cell<T>(
+  props: ExtraPropsType<T> & { coords: [number, number, number] }
+) {
+  const isBuilding = utils.getTask().t === Task.build;
+  const t = utils.getTile(props.p, props.coords);
+  const bonuses = (props.p.tileBonuses || {})[props.coords.join("_")];
+  return (
+    <div
+      key={props.coords.join(".")}
+      style={{
+        border: "2px solid black",
+        width: "7em",
+        height: "5em",
+        backgroundColor:
+          isBuilding || !utils.objEqual(props.coords, props.selected)
+            ? undefined
+            : "lightgrey",
+        cursor:
+          !isBuilding || utils.build(props.p, props.coords, false)
+            ? "pointer"
+            : undefined,
+      }}
+      onClick={() =>
+        isBuilding
+          ? utils.build(props.p, props.coords, true)
+          : props.updateSelected(
+              utils.objEqual(props.coords, props.selected)
+                ? undefined
+                : props.coords
+            )
+      }
+    >
+      {bonuses === undefined ? null : <div>+: {JSON.stringify(bonuses)}</div>}
+      {t === undefined ? null : props.f(t as T, props.coords)}
+      {t?.resources === undefined
+        ? null
+        : Object.entries(t.resources).map(([resourceName, count]) => (
+            <button
+              key={resourceName}
+              onClick={(event) =>
+                Promise.resolve(event.stopPropagation())
+                  .then(() =>
+                    utils.addResourcesToPlayer(
+                      props.p,
+                      {
+                        [resourceName]: 1,
+                      },
+                      true
+                    )
+                  )
+                  .then(
+                    () =>
+                      (t.resources = utils.addResources(t.resources!, {
+                        [resourceName]: -1,
+                      }))
+                  )
+                  .then(() => utils.prepareNextTask(`moved up ${resourceName}`))
+              }
+            >
+              {resourceName}: {count}
+            </button>
+          ))}
     </div>
   );
 }
