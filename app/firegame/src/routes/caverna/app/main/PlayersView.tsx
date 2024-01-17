@@ -225,7 +225,11 @@ function Grid<T>(
                 {})[i] || {})[j],
               coords: [i, j, props.selectedIndex] as [number, number, number],
             }))
-            .map(({ t, coords }) => (
+            .map((o) => ({
+              ...o,
+              bonuses: (props.p.tileBonuses || {})[o.coords.join("_")],
+            }))
+            .map(({ t, coords, bonuses }) => (
               <div
                 key={coords.join(".")}
                 style={{
@@ -251,6 +255,9 @@ function Grid<T>(
                       )
                 }
               >
+                {bonuses === undefined ? null : (
+                  <div>+: {JSON.stringify(bonuses)}</div>
+                )}
                 {t === undefined ? null : props.f(t as T, coords)}
                 {t?.resources === undefined
                   ? null

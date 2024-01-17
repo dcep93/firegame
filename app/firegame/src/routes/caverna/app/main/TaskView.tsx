@@ -33,7 +33,7 @@ function Current() {
                               }))
                               .filter(({ v }) => v)
                               .map(({ k }) => k)
-                              .join(","),
+                              .join("/"),
                           },
                       t.d.build === undefined
                         ? null
@@ -61,13 +61,13 @@ function Current() {
           random harvests:{" "}
           {(store.gameW.game.randomHarvests || [])
             .map((h) => Harvest[h])
-            .join(",")}
+            .join("/")}
         </div>
         <div>
           upcoming harvests:{" "}
           {(store.gameW.game.upcomingHarvests || [])
             .map((h) => Harvest[h])
-            .join(",")}
+            .join("/")}
         </div>
       </div>
     </div>
