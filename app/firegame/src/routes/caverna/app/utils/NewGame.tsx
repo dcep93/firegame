@@ -21,12 +21,13 @@ export enum Task {
   eat_gold,
   breed_2,
 
+  resource,
+
   wish_for_children,
   ruby_mine_construction,
   ore_trading,
   extension,
   weekly_market,
-  housework_dog,
 
   beer_parlor,
   peaceful_cave,
@@ -61,7 +62,7 @@ export type TaskType = {
     magicBoolean?: boolean; // Buildable.ruby_mine | Harvest.skip_one
     remaining?: number; // Action.ore_trading | Task.expedition
     canSkip?: boolean; //  Cavern.guest_room | Action.housework | Task.build(Action.slash_and_burn | Action.sheep/donkey_farming | Action.fence_building)
-    availableResources?: ResourcesType; // Task.weekly_market | Task.sow | Cavern.builder | Task.breed_2
+    availableResources?: ResourcesType; // Task.resource(Action.housework | ) | Task.weekly_market | Task.sow | Cavern.builder | Task.breed_2
     build?: Buildable; // Task.build | Task.furnish
     buildReward?: ResourcesType; // Task.extension | Task.ore_mine_construction
     buildData?: [number, number, number, number]; // [BuildableA, BuildableB, isRow ? 0 : 1, isBuildableA ? 0 : 1]

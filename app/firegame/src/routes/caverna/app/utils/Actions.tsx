@@ -139,17 +139,14 @@ const Actions: { [a in Action]: ActionType } = {
       store.gameW.game.actions.includes(Action.family_life)
         ? // urgent wish
           p.caverns[Cavern.guest_room]
-          ? Promise.resolve()
-              .then(() => utils.addResourcesToPlayer({ gold: 3 }))
-              .then(() =>
-                utils.queueTasks([
-                  {
-                    t: Task.furnish,
-                    d: { build: Buildable.wish_for_children, canSkip: true },
-                  },
-                  { t: Task.have_baby },
-                ])
-              )
+          ? utils.queueTasks([
+              { t: Task.resource, d: { availableResources: { gold: 3 } } },
+              {
+                t: Task.furnish,
+                d: { build: Buildable.wish_for_children, canSkip: true },
+              },
+              { t: Task.have_baby },
+            ])
           : utils.queueTasks([{ t: Task.wish_for_children }])
         : // wish
         p.caverns[Cavern.guest_room]
@@ -292,7 +289,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.furnish, d: { canSkip: true } },
-        { t: Task.housework_dog },
+        { t: Task.resource, d: { availableResources: { dogs: 1 } } },
       ]),
   },
   [Action.slash_and_burn]: {
@@ -475,15 +472,12 @@ const Actions: { [a in Action]: ActionType } = {
     ].join("\n"),
     action: (p: PlayerType) =>
       p.caverns[Cavern.guest_room]
-        ? Promise.resolve()
-            .then(() => utils.addResourcesToPlayer(growthRewards))
-            .then(() =>
-              utils.queueTasks([
-                {
-                  t: Task.have_baby,
-                },
-              ])
-            )
+        ? utils.queueTasks([
+            { t: Task.resource, d: { availableResources: growthRewards } },
+            {
+              t: Task.have_baby,
+            },
+          ])
         : utils.haveChild(false)
         ? utils.queueTasks([
             {
@@ -541,29 +535,26 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [5, 5],
     title: "+4 gold\ngo to market!",
     action: (p: PlayerType) =>
-      Promise.resolve()
-        .then(() => utils.addResourcesToPlayer({ gold: 4 }))
-        .then(() =>
-          utils.queueTasks([
-            {
-              t: Task.weekly_market,
-              d: {
-                availableResources: {
-                  dogs: 2,
-                  sheep: 1,
-                  donkeys: 1,
-                  boars: 2,
-                  cows: 3,
-                  wood: 1,
-                  stone: 1,
-                  ore: 1,
-                  grain: 1,
-                  vegetables: 2,
-                },
-              },
+      utils.queueTasks([
+        { t: Task.resource, d: { availableResources: { gold: 4 } } },
+        {
+          t: Task.weekly_market,
+          d: {
+            availableResources: {
+              dogs: 2,
+              sheep: 1,
+              donkeys: 1,
+              boars: 2,
+              cows: 3,
+              wood: 1,
+              stone: 1,
+              ore: 1,
+              grain: 1,
+              vegetables: 2,
             },
-          ])
-        ),
+          },
+        },
+      ]),
   },
   [Action.imitation__5]: {
     availability: [5, 5],
@@ -610,29 +601,26 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [6, 7],
     title: "+4 gold\ngo to market!",
     action: (p: PlayerType) =>
-      Promise.resolve()
-        .then(() => utils.addResourcesToPlayer({ gold: 4 }))
-        .then(() =>
-          utils.queueTasks([
-            {
-              t: Task.weekly_market,
-              d: {
-                availableResources: {
-                  dogs: 2,
-                  sheep: 1,
-                  donkeys: 1,
-                  boars: 2,
-                  cows: 3,
-                  wood: 1,
-                  stone: 1,
-                  ore: 1,
-                  grain: 1,
-                  vegetables: 2,
-                },
-              },
+      utils.queueTasks([
+        { t: Task.resource, d: { availableResources: { gold: 4 } } },
+        {
+          t: Task.weekly_market,
+          d: {
+            availableResources: {
+              dogs: 2,
+              sheep: 1,
+              donkeys: 1,
+              boars: 2,
+              cows: 3,
+              wood: 1,
+              stone: 1,
+              ore: 1,
+              grain: 1,
+              vegetables: 2,
             },
-          ])
-        ),
+          },
+        },
+      ]),
   },
   [Action.imitation__6_7]: {
     availability: [6, 7],
@@ -643,17 +631,13 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [6, 7],
     title: "+2 wood\nx2 expedition\nsow",
     action: (p: PlayerType) =>
-      // TODO go back to Task.resource
-      Promise.resolve()
-        .then(() => utils.addResourcesToPlayer({ wood: 2 }))
-        .then(() =>
-          utils.queueTasks([
-            {
-              t: Task.sow,
-              d: { availableResources: { grain: 2, vegetables: 2 } },
-            },
-          ])
-        ),
+      utils.queueTasks([
+        { t: Task.resource, d: { availableResources: { wood: 2 } } },
+        {
+          t: Task.sow,
+          d: { availableResources: { grain: 2, vegetables: 2 } },
+        },
+      ]),
   },
   [Action.fence_building__6_7]: {
     availability: [6, 7],

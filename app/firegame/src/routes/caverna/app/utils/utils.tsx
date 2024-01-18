@@ -148,8 +148,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         (p.resources?.gold || 0)
       );
     }
-    if (task.t === Task.housework_dog) {
-      utils.addResourcesToPlayer({ dogs: 1 });
+    if (task.t === Task.resource) {
+      utils.addResourcesToPlayer(task.d!.availableResources!);
       return false;
     }
     if (task.t === Task.have_baby) {
@@ -666,11 +666,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     switch (b) {
       case Buildable.fence:
       case Buildable.fence_2:
-        return {
+        return utils.log({
           wood:
             (b === Buildable.fence ? -2 : -4) +
             (p.caverns[Cavern.carpenter] ? 1 : 0),
-        };
+        });
       case Buildable.stable:
         if (
           utils.getGrid(p).filter(({ t }) => (t.built || {})[Buildable.stable])
