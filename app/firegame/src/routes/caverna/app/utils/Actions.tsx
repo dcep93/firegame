@@ -94,7 +94,7 @@ const Actions: { [a in Action]: ActionType } = {
           d: {
             canSkip: true,
             build: Buildable.ore_mine_construction,
-            rs: { ore: 3 },
+            buildReward: { ore: 3 },
           },
         },
         { t: Task.expedition, d: { num: 2 } },
@@ -587,14 +587,18 @@ const Actions: { [a in Action]: ActionType } = {
         ? utils.queueTasks([
             {
               t: Task.build,
-              d: { canSkip: true, build: Buildable.farm_tile, rs: { wood: 1 } },
+              d: {
+                canSkip: true,
+                build: Buildable.farm_tile,
+                buildReward: { wood: 1 },
+              },
             },
             {
               t: Task.build,
               d: {
                 canSkip: true,
                 build: Buildable.cavern_tunnel,
-                rs: { stone: 1 },
+                buildReward: { stone: 1 },
               },
             },
           ])

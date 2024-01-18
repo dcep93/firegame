@@ -541,7 +541,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (execute) {
       utils.shiftTask();
-      if (task.d?.rs !== undefined) utils.addResourcesToPlayer(task.d!.rs);
+      if (task.d?.buildReward !== undefined)
+        utils.addResourcesToPlayer(task.d!.buildReward);
       utils.addResourcesToPlayer(utils._getBuildCost(task) || {});
       utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
     }

@@ -337,7 +337,7 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.farm_tile, rs: { wood: 1 } },
+                    d: { build: Buildable.farm_tile, buildReward: { wood: 1 } },
                   },
                 ])
               )
@@ -354,7 +354,10 @@ function Special() {
                 utils.queueTasks([
                   {
                     t: Task.build,
-                    d: { build: Buildable.cavern_tunnel, rs: { stone: 1 } },
+                    d: {
+                      build: Buildable.cavern_tunnel,
+                      buildReward: { stone: 1 },
+                    },
                   },
                 ])
               )
