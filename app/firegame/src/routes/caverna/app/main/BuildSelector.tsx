@@ -49,7 +49,7 @@ export default function BuildSelector() {
               {cs.map((c, tileIndex) => (
                 <button
                   key={tileIndex}
-                  style={{ height: "4em", width: "4em" }}
+                  style={{ height: "8em", width: "8em" }}
                   onClick={() =>
                     Promise.resolve()
                       .then(

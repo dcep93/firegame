@@ -927,13 +927,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   getBreedables(): (keyof AnimalResourcesType)[] {
     const p = utils.getMe();
+    const available = utils.getTask().d?.availableResources || {};
     return Object.entries(utils.getAllResources(p))
       .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
       .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
-      .filter(
-        ({ r }) =>
-          (utils.getTask()!.d!.availableResources || {})[r] === undefined
-      )
+      .filter(({ r }) => available !== undefined || available[r] !== undefined)
       .filter(({ c }) => c >= 2)
       .map(({ r }) => r);
   }
@@ -1172,7 +1170,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   stringify(
     o: { [k: string]: number } | undefined,
-    delimiter = " "
+    delimiter = " / "
   ): string | undefined {
     return o === undefined
       ? undefined
