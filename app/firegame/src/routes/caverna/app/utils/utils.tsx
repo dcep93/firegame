@@ -380,7 +380,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (execute) {
       const ra = RubyActions[a];
       utils.addResourcesToPlayer(cost);
-      if (ra.action) ra.action(p);
+      if (ra.action) ra.action();
       if (ra.reward) utils.addResourcesToPlayer(ra.reward);
       utils.prepareNextTask(`traded ruby for ${RubyAction[a]}`);
     }
@@ -405,7 +405,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         utils.addResourcesToPlayer(e.reward);
       }
       if (e.action !== undefined) {
-        e.action(p);
+        e.action();
       }
       utils.prepareNextTask(`expedition: ${ExpeditionAction[a]}`);
     }
