@@ -29,7 +29,7 @@ function Current() {
                               expeditionsTaken: Object.keys(
                                 t.d.expeditionsTaken
                               )
-                                .filter((k) => ExpeditionAction[parseInt(k)])
+                                .map((k) => ExpeditionAction[parseInt(k)])
                                 .join("/"),
                             },
                         t.d.build === undefined
@@ -41,6 +41,13 @@ function Current() {
                           ? null
                           : {
                               buildReward: utils.stringify(t.d.buildReward),
+                            },
+                        t.d.availableResources === undefined
+                          ? null
+                          : {
+                              availableResources: utils.stringify(
+                                t.d.availableResources
+                              ),
                             }
                       )
                     )}

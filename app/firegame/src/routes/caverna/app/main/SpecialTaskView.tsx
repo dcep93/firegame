@@ -380,7 +380,7 @@ export default function SpecialTaskView() {
             (utils.getCurrent().resources?.ore || 0) + blacksmithDiscount
           )}
           value={state}
-          onChange={(event) => updateState(event.target.value)}
+          onChange={(event) => updateState(parseInt(event.target.value))}
           step={1}
         />
         <button onClick={() => utils.forge(state, true)}>forge {state}</button>
