@@ -16,7 +16,6 @@ export default function ExpeditionsAndRubiesView() {
 }
 
 function ExpeditionsElement() {
-  const p = utils.getCurrent();
   return (
     <div className={styles.bubble}>
       <h3>expeditions</h3>
@@ -33,8 +32,8 @@ function ExpeditionsElement() {
               {a < 0 ? null : (
                 <Button
                   text={ExpeditionAction[a]}
-                  disabled={!utils.expedition(a, p, false)}
-                  onClick={() => utils.expedition(a, p, true)}
+                  disabled={!utils.expedition(a, false)}
+                  onClick={() => utils.expedition(a, true)}
                 >
                   <div style={{ padding: "0.2em" }}>
                     level: {ExpeditionActions[a as ExpeditionAction].level}
@@ -50,7 +49,6 @@ function ExpeditionsElement() {
 }
 
 function RubiesElement() {
-  const p = utils.getCurrent();
   return (
     <div className={styles.bubble}>
       <h3>ruby trader</h3>
@@ -71,9 +69,9 @@ function RubiesElement() {
             }}
           >
             <Button
-              disabled={!utils.rubyTrade(a, p, false)}
+              disabled={!utils.rubyTrade(a, false)}
               text={RubyAction[a]}
-              onClick={() => utils.rubyTrade(a, p, true)}
+              onClick={() => utils.rubyTrade(a, true)}
             >
               {RubyActions[a].cost && (
                 <div>cost: {JSON.stringify(RubyActions[a].cost!)}</div>

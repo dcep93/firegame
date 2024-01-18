@@ -20,6 +20,7 @@ type ExtraPropsType = PlayersPropsType & {
   f: (t: TileType) => JSX.Element | null;
 };
 
+// TODO check I can't interact with other players board
 export default function PlayersView(props: PlayersPropsType) {
   return (
     <div>
@@ -126,11 +127,11 @@ function Player(
               {(props.p.availableDwarves || []).map((d, i) => (
                 <button
                   key={i}
-                  disabled={!utils.payRubyOutOfOrder(props.p, i, false)}
+                  disabled={!utils.payRubyOutOfOrder(i, false)}
                   style={{
                     padding: "0.5em",
                   }}
-                  onClick={() => utils.payRubyOutOfOrder(props.p, i, true)}
+                  onClick={() => utils.payRubyOutOfOrder(i, true)}
                 >
                   {d}
                 </button>
@@ -156,8 +157,8 @@ function Player(
             {props.p.userId !== store.me.userId ? null : (
               <div className={styles.bubble}>
                 <button
-                  disabled={!utils.slaughter(props.p, false)}
-                  onClick={() => utils.slaughter(props.p, true)}
+                  disabled={!utils.slaughter(false)}
+                  onClick={() => utils.slaughter(true)}
                 >
                   slaughter
                 </button>
@@ -191,19 +192,13 @@ function Player(
                     <button
                       disabled={
                         !utils.playerResource(
-                          props.p,
                           props.selected,
                           resourceName,
                           false
                         )
                       }
                       onClick={() =>
-                        utils.playerResource(
-                          props.p,
-                          props.selected,
-                          resourceName,
-                          true
-                        )
+                        utils.playerResource(props.selected, resourceName, true)
                       }
                     >
                       {resourceName}: {count}
@@ -277,7 +272,7 @@ function Grid(
 
 function Cell(props: ExtraPropsType & { coords: Coords }) {
   const isBuilding = utils.getTask().t === Task.build;
-  const t = utils.getTile(props.p, props.coords);
+  const t = utils.getTile(props.coords, props.p);
   const coordsKey = utils.coordsToKey(props.coords);
   const bonuses = (props.p.tileBonuses || {})[coordsKey];
   return (
@@ -292,13 +287,13 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
             ? undefined
             : "lightgrey",
         cursor:
-          !isBuilding || utils.build(props.p, props.coords, false)
+          !isBuilding || utils.build(props.coords, false)
             ? "pointer"
             : undefined,
       }}
       onClick={() =>
         isBuilding
-          ? utils.build(props.p, props.coords, true)
+          ? utils.build(props.coords, true)
           : props.updateSelected(
               utils.objEqual(props.coords, props.selected)
                 ? undefined
@@ -316,13 +311,9 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
               onClick={(event) =>
                 Promise.resolve(event.stopPropagation())
                   .then(() =>
-                    utils.addResourcesToPlayer(
-                      props.p,
-                      {
-                        [resourceName]: 1,
-                      },
-                      true
-                    )
+                    utils.moveResources({
+                      [resourceName]: 1,
+                    })
                   )
                   .then(
                     () =>

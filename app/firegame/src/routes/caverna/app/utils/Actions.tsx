@@ -126,7 +126,7 @@ const Actions: { [a in Action]: ActionType } = {
         ? // urgent wish
           p.caverns[Cavern.guest_room]
           ? Promise.resolve()
-              .then(() => utils.addResourcesToPlayer(p, { gold: 3 }))
+              .then(() => utils.addResourcesToPlayer({ gold: 3 }))
               .then(() =>
                 utils.queueTasks([
                   {
@@ -146,7 +146,7 @@ const Actions: { [a in Action]: ActionType } = {
             },
             { t: Task.have_baby },
           ])
-        : utils.haveChild(p, false)
+        : utils.haveChild(false)
         ? utils.queueTasks([{ t: Task.wish_for_children }])
         : // no room for a baby, must build dwelling
           utils.queueTasks([
@@ -204,7 +204,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [-3, 0],
     enrichment: [{ stone: 1, ore: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         ore:
           2 *
           utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])
@@ -220,7 +220,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [-4, 0],
     enrichment: [{ rubies: 2 }, { rubies: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         rubies:
           utils
             .getGrid(p)
@@ -243,7 +243,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 7],
     enrichment: [{ rubies: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         rubies:
           utils
             .getGrid(p)
@@ -287,7 +287,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => {
-      utils.addResourcesToPlayer(p, { ore: 2 });
+      utils.addResourcesToPlayer({ ore: 2 });
       store.gameW.game.currentPlayer = utils.myIndex();
     },
   },
@@ -305,7 +305,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.supplies]: {
     availability: [1, 3],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         wood: 1,
         stone: 1,
         ore: 1,
@@ -317,7 +317,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [1, 3],
     enrichment: [{ ore: 2 }, { ore: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         ore:
           2 *
           utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])
@@ -354,7 +354,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [3, 3],
     enrichment: [{ ore: 1 }, { stone: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         wood: 2,
       }),
   },
@@ -362,7 +362,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [3, 3],
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         vegetables: 1,
       }),
   },
@@ -394,7 +394,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.starting_player__4_7]: {
     availability: [4, 7],
     enrichment: [{ food: 1 }],
-    action: (p: PlayerType) => utils.addResourcesToPlayer(p, { rubies: 1 }),
+    action: (p: PlayerType) => utils.addResourcesToPlayer({ rubies: 1 }),
   },
   [Action.imitation__4_7]: {
     availability: [4, 7],
@@ -409,14 +409,14 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.forest_exploration__4_7]: {
     availability: [4, 7],
     enrichment: [{ wood: 2 }, { wood: 1 }],
-    action: (p: PlayerType) => utils.addResourcesToPlayer(p, { food: 2 }),
+    action: (p: PlayerType) => utils.addResourcesToPlayer({ food: 2 }),
   },
   [Action.growth]: {
     availability: [4, 7],
     action: (p: PlayerType) =>
       p.caverns[Cavern.guest_room]
         ? Promise.resolve()
-            .then(() => utils.addResourcesToPlayer(p, utils.growthRewards()))
+            .then(() => utils.addResourcesToPlayer(utils.growthRewards()))
             .then(() =>
               utils.queueTasks([
                 {
@@ -424,13 +424,13 @@ const Actions: { [a in Action]: ActionType } = {
                 },
               ])
             )
-        : utils.haveChild(p, false)
+        : utils.haveChild(false)
         ? utils.queueTasks([
             {
               t: Task.growth,
             },
           ])
-        : utils.addResourcesToPlayer(p, utils.growthRewards()),
+        : utils.addResourcesToPlayer(utils.growthRewards()),
   },
   [Action.clearing__4_7]: {
     availability: [4, 7],
@@ -442,7 +442,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     enrichment: [{ ore: 3 }, { ore: 2 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, {
+      utils.addResourcesToPlayer({
         ore:
           2 *
           utils.getGrid(p).filter(({ t }) => t.built[Buildable.ruby_mine])
@@ -475,7 +475,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.weekly_market__5]: {
     availability: [5, 5],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, { gold: 4 }) &&
+      utils.addResourcesToPlayer({ gold: 4 }) &&
       utils.queueTasks([
         {
           t: Task.weekly_market,
@@ -535,7 +535,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.weekly_market__6_7]: {
     availability: [6, 7],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, { gold: 4 }) &&
+      utils.addResourcesToPlayer({ gold: 4 }) &&
       utils.queueTasks([
         { t: Task.weekly_market, d: { num: Action.weekly_market__6_7 } },
       ]),
@@ -547,7 +547,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.hardware_rental__6_7]: {
     availability: [6, 7],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer(p, { wood: 2 }) &&
+      utils.addResourcesToPlayer({ wood: 2 }) &&
       utils.queueTasks([
         { t: Task.expedition, d: { num: 2 } },
         { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },

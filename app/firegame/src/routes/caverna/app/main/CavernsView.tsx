@@ -6,7 +6,6 @@ import Button from "./Button";
 import { chunk } from "./Main";
 
 export default function CavernsView(props: { selected: Coords | undefined }) {
-  const p = utils.getCurrent();
   return (
     <div>
       <div className={styles.bubble}>
@@ -51,10 +50,10 @@ export default function CavernsView(props: { selected: Coords | undefined }) {
                                 .split("__")[0]
                                 .replaceAll("_", "\n")}`}
                               disabled={
-                                !utils.furnish(t, p, props.selected, false)
+                                !utils.furnish(t, props.selected, false)
                               }
                               onClick={() =>
-                                utils.furnish(t, p, props.selected, true)
+                                utils.furnish(t, props.selected, true)
                               }
                             >
                               <pre style={{ margin: "0.1em" }}>

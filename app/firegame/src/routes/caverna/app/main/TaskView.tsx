@@ -114,7 +114,7 @@ function Special() {
               onClick={() =>
                 Promise.resolve()
                   .then(() => delete task.d!.rs![r as keyof ResourcesType])
-                  .then(() => utils.addResourcesToPlayer(p, cost))
+                  .then(() => utils.addResourcesToPlayer(cost))
                   .then(() => utils.prepareNextTask(`bought ${r}`))
               }
             >
@@ -140,7 +140,7 @@ function Special() {
             onClick={() =>
               Promise.resolve()
                 .then(() =>
-                  utils.addResourcesToPlayer(p, {
+                  utils.addResourcesToPlayer({
                     [builderResource]: 1,
                     ore: -1,
                   })
@@ -183,7 +183,7 @@ function Special() {
           onClick={() =>
             Promise.resolve()
               .then(() => utils.shiftTask())
-              .then(() => utils.haveChild(p, true))
+              .then(() => utils.haveChild(true))
               .then(() => utils.prepareNextTask("had a baby"))
           }
         >
@@ -198,7 +198,7 @@ function Special() {
         <button
           onClick={() =>
             Promise.resolve()
-              .then(() => utils.addResourcesToPlayer(p, utils.growthRewards()))
+              .then(() => utils.addResourcesToPlayer(utils.growthRewards()))
               .then(() => utils.shiftTask())
               .then(() => utils.prepareNextTask("got resources"))
           }
@@ -208,7 +208,7 @@ function Special() {
         <button
           onClick={() =>
             Promise.resolve()
-              .then(() => utils.haveChild(p, true))
+              .then(() => utils.haveChild(true))
               .then(() => utils.shiftTask())
               .then(() => utils.prepareNextTask("had a baby"))
           }
@@ -254,7 +254,7 @@ function Special() {
         </button>
         <button
           onClick={() =>
-            Promise.resolve(() => utils.haveChild(p, true))
+            Promise.resolve(() => utils.haveChild(true))
               .then(() => utils.shiftTask())
               .then(() => utils.prepareNextTask("had a baby"))
           }
@@ -265,7 +265,7 @@ function Special() {
     );
   }
   if (task.t === Task.breed_2) {
-    const breedables = utils.getBreedables(p);
+    const breedables = utils.getBreedables();
     return (
       <div className={styles.bubble}>
         {breedables.map((r) => (
@@ -273,17 +273,17 @@ function Special() {
             key={r}
             onClick={() =>
               Promise.resolve()
-                .then(() => utils.addResourcesToPlayer(p, { [r]: 1 }))
+                .then(() => utils.addResourcesToPlayer({ [r]: 1 }))
                 .then(
                   () =>
                     p.caverns[Cavern.breeding_cave] &&
-                    utils.addResourcesToPlayer(p, { food: 1 })
+                    utils.addResourcesToPlayer({ food: 1 })
                 )
                 .then(
                   () =>
                     p.caverns[Cavern.quarry] &&
                     r === "donkeys" &&
-                    utils.addResourcesToPlayer(p, { stone: 1 })
+                    utils.addResourcesToPlayer({ stone: 1 })
                 )
                 .then(() => task.d!.num!--)
                 .then(() => (task.d!.r = r))
@@ -304,7 +304,7 @@ function Special() {
             Promise.resolve()
               .then(() => task.d!.num!--)
               .then(() =>
-                utils.addResourcesToPlayer(p, { ore: -2, gold: 2, food: 1 })
+                utils.addResourcesToPlayer({ ore: -2, gold: 2, food: 1 })
               )
               .then(() =>
                 utils.prepareNextTask("traded 2 ore for 2 [gold] and 1 [food]")
@@ -377,7 +377,7 @@ function Special() {
             onClick={() =>
               Promise.resolve()
                 .then(() => utils.shiftTask())
-                .then(() => utils.addResourcesToPlayer(p, reward))
+                .then(() => utils.addResourcesToPlayer(reward))
                 .then(() => utils.prepareNextTask(`earned ${message}`))
             }
           >
@@ -398,7 +398,7 @@ function Special() {
               Promise.resolve(p.usedDwarves![i]).then((food) =>
                 Promise.resolve()
                   .then(() => (p.usedDwarves![i] = 0))
-                  .then(() => utils.addResourcesToPlayer(p, { food }))
+                  .then(() => utils.addResourcesToPlayer({ food }))
                   .then(() => utils.shiftTask())
                   .then(() => utils.prepareNextTask(`traded used ${food}`))
               )
@@ -417,7 +417,7 @@ function Special() {
                 Promise.resolve()
                   .then(() => (p.availableDwarves![i] = 0))
                   .then(() => p.availableDwarves!.sort((a, b) => a - b))
-                  .then(() => utils.addResourcesToPlayer(p, { food }))
+                  .then(() => utils.addResourcesToPlayer({ food }))
                   .then(() => utils.shiftTask())
                   .then(() => utils.prepareNextTask(`traded available ${food}`))
               )
@@ -444,9 +444,7 @@ function Special() {
           onChange={(event) => updateState(event.target.value)}
           step={1}
         />
-        <button onClick={() => utils.forge(p, state, true)}>
-          forge {state}
-        </button>
+        <button onClick={() => utils.forge(state, true)}>forge {state}</button>
       </div>
     );
   }
@@ -466,7 +464,7 @@ function Special() {
           onClick={() =>
             Promise.resolve()
               .then(() =>
-                utils.addResourcesToPlayer(p, { gold: -state, food: state - 1 })
+                utils.addResourcesToPlayer({ gold: -state, food: state - 1 })
               )
               .then(() => utils.shiftTask())
               .then(() =>
