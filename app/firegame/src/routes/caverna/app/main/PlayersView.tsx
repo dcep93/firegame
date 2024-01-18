@@ -54,8 +54,7 @@ function Player(
       >
         <div style={{ display: "flex" }}>
           <Grid
-            title={"farm"}
-            selectedIndex={0}
+            isFarm={true}
             f={(t: TileType) => (
               <div>
                 <div>
@@ -79,8 +78,7 @@ function Player(
             {...props}
           />
           <Grid
-            title={"cave"}
-            selectedIndex={1}
+            isFarm={false}
             f={(t: TileType) => (
               <div>
                 {t.cavern !== undefined ? (
@@ -222,13 +220,12 @@ function Player(
 
 function Grid(
   props: ExtraPropsType & {
-    title: string;
-    selectedIndex: number;
+    isFarm: boolean;
   }
 ) {
   return (
     <div className={styles.bubble}>
-      <h4>{props.title}</h4>
+      <h4>{props.isFarm ? "FARM" : "CAVE"}</h4>
       <div>
         <div style={{ height: "2em" }}></div>
         <div>
@@ -240,13 +237,12 @@ function Grid(
                 key={i}
                 style={{
                   display: "flex",
-                  flexDirection:
-                    props.selectedIndex === 1 ? "row" : "row-reverse",
+                  flexDirection: props.isFarm ? "row-reverse" : "row",
                 }}
               >
                 {utils
                   .count(utils.numCols)
-                  .map((j) => ({ i, j, k: props.selectedIndex }))
+                  .map((j) => ({ i, j, k: props.isFarm ? 0 : 1 }))
                   .map((coords, j) => (
                     <Cell key={j} coords={coords} {...props} />
                   ))}
@@ -256,9 +252,8 @@ function Grid(
           <div style={{ position: "relative" }}>
             {utils
               .getGrid(props.p)
-              .filter(
-                ({ c }) => c.k === props.selectedIndex && utils.isOutOfBounds(c)
-              )
+              .filter(({ c }) => utils.isOutOfBounds(c))
+              .filter(({ c }) => utils.isFarm(c) === props.isFarm)
               .map(({ c }) => (
                 <div
                   key={utils.coordsToKey(c)}

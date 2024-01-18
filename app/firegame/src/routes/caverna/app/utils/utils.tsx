@@ -304,7 +304,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return false;
     }
     if (selected === undefined) return false;
-    if (selected.k !== 1) return false;
+    if (utils.isFarm(selected)) return false;
     const tile = utils.getTile(p, selected);
     if (tile === undefined) return false;
     if (tile.cavern !== undefined) return false;

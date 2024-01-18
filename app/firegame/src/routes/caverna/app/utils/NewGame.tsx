@@ -213,7 +213,7 @@ function setPlayers(game: GameType): GameType {
       userName,
       index,
 
-      availableDwarves: [0, 0],
+      usedDwarves: [0, 0],
 
       resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
 
