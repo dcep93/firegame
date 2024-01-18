@@ -142,8 +142,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.finishTurn();
       return true;
     }
-    if (task.t === Task.resource) {
-      utils.addResourcesToPlayer(task.d!.rs!);
+    if (task.t === Task.housework_dog) {
+      utils.addResourcesToPlayer({ dogs: 1 });
       return false;
     }
     if (task.t === Task.have_baby) {
@@ -221,7 +221,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                     .filter(
                       ({ t }) =>
                         t.resources?.donkeys !== undefined &&
-                        t.built[Buildable.ruby_mine] !== undefined
+                        (t.built[Buildable.ruby_mine] ||
+                          t.built[Buildable.ore_mine])
                     ).length)
           );
     if ((p.resources?.food || 0) < numToFeed) return false;
@@ -522,8 +523,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       const cs = utils.count(2).map(() => Object.assign({}, coords));
       cs[1 - rowColumn][1 - tileIndex === 0 ? "i" : "j"] +=
         rowColumn === 0 ? -1 : 1;
-      if (!utils._buildHereHelper(b1, cs[0], execute)) return false;
-      if (!utils._buildHereHelper(b2, cs[1], execute)) return false;
+      if (!utils._buildHelper(b1, cs[0], execute)) return false;
+      if (!utils._buildHelper(b2, cs[1], execute)) return false;
       if (execute) {
         // TODO can I build double fence
         if (task.d!.build === Buildable.fence_2) {
@@ -536,8 +537,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
       }
     } else {
-      if (!utils._buildHereHelper(task.d!.build!, coords, execute))
-        return false;
+      if (!utils._buildHelper(task.d!.build!, coords, execute)) return false;
     }
     if (execute) {
       utils.shiftTask();
@@ -548,7 +548,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  _buildHereHelper(
+  _buildHelper(
     buildable: Buildable,
     coords: Coords,
     execute: boolean
@@ -583,6 +583,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
       return true;
     }
+    return utils._canBuild(t, buildable, coords);
+  }
+
+  _canBuild(
+    tile: TileType | undefined,
+    buildable: Buildable,
+    coords: Coords
+  ): boolean {
     switch (buildable) {
       case Buildable.fence_2:
       case Buildable.fence:
@@ -590,49 +598,43 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Buildable.pasture:
       case Buildable.field:
         if (!utils.isFarm(coords)) return false;
-        const farmTile = t;
         switch (buildable) {
           case Buildable.fence_2:
           case Buildable.fence:
-            if (farmTile === undefined) return false;
-            if (!farmTile.built[Buildable.pasture]) return false;
+            if (tile === undefined) return false;
+            if (!tile.built[Buildable.pasture]) return false;
             return true;
           case Buildable.stable:
             return true;
           case Buildable.pasture:
-            if (farmTile !== undefined) {
-              const numBuilt = Object.keys(farmTile.built).length;
-              if (numBuilt === 1 && farmTile.built[Buildable.stable]) {
+            if (tile !== undefined) {
+              const numBuilt = Object.keys(tile.built).length;
+              if (numBuilt === 1 && tile.built[Buildable.stable]) {
                 return true;
               }
               return false;
             }
             return true;
           case Buildable.field:
-            if (farmTile !== undefined) return false;
+            if (tile !== undefined) return false;
             return true;
         }
     }
     if (utils.isFarm(coords)) return false;
-    const caveTile = t;
     switch (buildable) {
       case Buildable.tunnel:
-        if (caveTile !== undefined) return false;
+        if (tile !== undefined) return false;
         return true;
       case Buildable.cavern:
-        if (caveTile !== undefined) return false;
+        if (tile !== undefined) return false;
         return true;
       case Buildable.ruby_mine:
-        if (caveTile === undefined) return false;
-        if (
-          !caveTile.built[Buildable.tunnel] ||
-          caveTile.built[Buildable.ore_mine]
-        )
+        if (tile === undefined) return false;
+        if (!tile.built[Buildable.tunnel] || tile.built[Buildable.ore_mine])
           return false;
         const num = utils.getTask().d!.num;
         if (num !== undefined) {
-          // TODO do I get a ruby?
-          if ((caveTile.built[Buildable.ore_tunnel] || false) !== (num === 1))
+          if ((tile.built[Buildable.ore_tunnel] || false) !== (num === 1))
             return false;
         }
         return true;
@@ -747,7 +749,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) return false;
     const p = utils.getMe();
     const task = utils.getTask();
-    const t = selected === undefined ? undefined : utils.getTile(selected, p);
+    const tile =
+      selected === undefined ? undefined : utils.getTile(selected, p);
     switch (resourceName) {
       case "food":
         return utils.harvest(execute);
@@ -765,11 +768,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           if (
             task.t === Task.sow &&
             task.d!.rs![resourceName] &&
-            t !== undefined &&
-            t.resources === undefined &&
-            !t.built[Buildable.pasture]
+            tile !== undefined &&
+            tile.resources === undefined &&
+            !tile.built[Buildable.pasture]
           ) {
-            t.resources = { [resourceName]: resourceName === "grain" ? 3 : 2 };
+            tile.resources = {
+              [resourceName]: resourceName === "grain" ? 3 : 2,
+            };
             task.d!.rs![resourceName]!--;
             utils.prepareNextTask(`planted ${resourceName}`);
           } else {
@@ -786,54 +791,53 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "donkeys":
       case "boars":
       case "cows":
-        if (t === undefined) return false;
+        if (tile === undefined) return false;
         if (
-          Object.keys(t.resources || {}).filter(
+          Object.keys(tile.resources || {}).filter(
             (r) => !["dogs", resourceName].includes(r)
           ).length !== 0
         )
           return false;
         var allowed = false;
-        const cavern = t.cavern;
+        const cavern = tile.cavern;
         if (cavern !== undefined) {
           const c = Caverns[cavern];
           if (
             c.animalRoom !== undefined &&
             c.animalRoom(
-              utils.addResources(t.resources || {}, { [resourceName]: 1 })!,
+              utils.addResources(tile.resources || {}, { [resourceName]: 1 })!,
               p
             )
           ) {
             allowed = true;
           }
         } else {
-          const farmTile = t;
-          if (farmTile.built[Buildable.pasture]) {
-            if (farmTile.built[Buildable.fence]) {
+          if (tile.built[Buildable.pasture]) {
+            if (tile.built[Buildable.fence]) {
               var numAllowed = 2;
-              if (farmTile.built[Buildable.stable]) numAllowed *= 2;
-              if (farmTile.built[Buildable.fence_2]) {
+              if (tile.built[Buildable.stable]) numAllowed *= 2;
+              if (tile.built[Buildable.fence_2]) {
                 numAllowed *= 2;
-                if (farmTile.doubleFenceCoords === undefined) return false;
+                if (tile.doubleFenceCoords === undefined) return false;
                 if (
-                  utils.getTile(farmTile.doubleFenceCoords, p)!.built[
+                  utils.getTile(tile.doubleFenceCoords, p)!.built[
                     Buildable.stable
                   ]
                 )
                   numAllowed *= 2;
               }
-              if (numAllowed > ((t.resources || {})[resourceName] || 0))
+              if (numAllowed > ((tile.resources || {})[resourceName] || 0))
                 allowed = true;
             } else if (
-              farmTile.built[Buildable.stable] &&
-              t.resources === undefined
+              tile.built[Buildable.stable] &&
+              tile.resources === undefined
             ) {
               allowed = true;
             }
           } else if (
             p.caverns[Cavern.stubble_room] &&
-            t.resources === undefined &&
-            farmTile.built[Buildable.field] === false
+            tile.resources === undefined &&
+            tile.built[Buildable.field] === false
           ) {
             allowed = true;
           }
@@ -844,18 +848,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               allowed = true;
               break;
             case "sheep":
-              if ((t.resources?.dogs || -1) >= (t.resources?.sheep || 0))
+              if ((tile.resources?.dogs || -1) >= (tile.resources?.sheep || 0))
                 allowed = true;
               break;
             case "donkeys":
               if (
-                t.resources === undefined &&
-                (t.built[Buildable.ore_mine] || t.built[Buildable.ruby_mine])
+                tile.resources === undefined &&
+                (tile.built[Buildable.ore_mine] ||
+                  tile.built[Buildable.ruby_mine])
               )
                 allowed = true;
               break;
             case "boars":
-              if (t.resources === undefined && t.built[Buildable.stable])
+              if (tile.resources === undefined && tile.built[Buildable.stable])
                 allowed = true;
               break;
             case "cows":
@@ -864,8 +869,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         if (!allowed) return false;
         if (execute) {
-          if (!t.resources) t.resources = {};
-          t.resources[resourceName] = 1 + (t.resources[resourceName] || 0);
+          if (!tile.resources) tile.resources = {};
+          tile.resources[resourceName] =
+            1 + (tile.resources[resourceName] || 0);
           utils.moveResources({ [resourceName]: -1 });
           utils.prepareNextTask(`moved down ${resourceName}`);
         }

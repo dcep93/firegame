@@ -262,7 +262,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.furnish, d: { canSkip: true } },
-        { t: Task.resource, d: { rs: { dogs: 1 } } },
+        { t: Task.housework_dog },
       ]),
   },
   [Action.slash_and_burn]: {
@@ -449,7 +449,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer({
         ore:
           2 *
-          utils.getGrid(p).filter(({ t }) => t.built[Buildable.ruby_mine])
+          utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])
             .length,
       }),
   },
