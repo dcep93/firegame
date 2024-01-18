@@ -520,6 +520,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (utils._notConnectedToHome(coords)) return false;
     const task = utils.getTask();
     if (task.t !== Task.build) return false;
+    if (
+      utils.addResources(p.resources || {}, utils._getBuildCost(task)!) ===
+      undefined
+    )
+      return false;
 
     if (task.d!.buildData !== undefined) {
       const [b1, b2, rowColumn, tileIndex] = task.d!.buildData;
@@ -663,9 +668,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Buildable.fence_2:
         return {
           wood:
-            b === Buildable.fence
-              ? -2
-              : -4 + (p.caverns[Cavern.carpenter] ? 1 : 0),
+            (b === Buildable.fence ? -2 : -4) +
+            (p.caverns[Cavern.carpenter] ? 1 : 0),
         };
       case Buildable.stable:
         if (
