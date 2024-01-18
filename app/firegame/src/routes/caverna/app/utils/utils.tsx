@@ -270,10 +270,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     )
       return false;
     if (
-      store.gameW.game.startingPlayer === p.index &&
       [Action.starting_player__1_3, Action.starting_player__4_7].includes(a)
-    )
-      return false;
+    ) {
+      if (store.gameW.game.startingPlayer === p.index) return false;
+      if (store.gameW.game.upcomingActions === undefined) return false;
+    }
     if (execute) {
       utils.shiftTask();
       p.usedDwarves = p
