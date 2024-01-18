@@ -7,7 +7,6 @@ import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
 import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
-// TODO audit all views
 export default function Main() {
   const [selected, updateSelected] = useState<Coords | undefined>(undefined);
   return (
@@ -17,11 +16,7 @@ export default function Main() {
     >
       <TaskView />
       <ActionsView />
-      <div style={{ alignSelf: "flex-end", maxWidth: "100%" }}>
-        <div style={{ overflow: "scroll" }}>
-          <PlayersView selected={selected} updateSelected={updateSelected} />
-        </div>
-      </div>
+      <PlayersView selected={selected} updateSelected={updateSelected} />
       <ExpeditionsAndRubiesView />
       <CavernsView selected={selected} />
     </div>

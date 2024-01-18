@@ -86,7 +86,6 @@ export type GameType = {
 
   tasks: TaskType[];
 
-  // todo these get shuffled right?
   randomHarvests?: Harvest[];
   upcomingHarvests?: Harvest[];
 

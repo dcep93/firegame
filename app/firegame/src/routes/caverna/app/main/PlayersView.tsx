@@ -15,44 +15,51 @@ type PlayersPropsType = {
   updateSelected: (s: Coords | undefined) => void;
 };
 
-type ExtraPropsType = PlayersPropsType & {
+type PlayerPropsType = PlayersPropsType & {
+  isMe: boolean;
+};
+
+type ExtraPropsType = PlayerPropsType & {
   p: PlayerType;
   f: (t: TileType) => JSX.Element | null;
 };
 
-// TODO check I can't interact with other players board
 export default function PlayersView(props: PlayersPropsType) {
   return (
-    <div>
-      {store.gameW.game.players
-        .map(
-          (_, i) =>
-            store.gameW.game.players[
-              (i + store.gameW.game.players.length - utils.myIndex()) %
-                store.gameW.game.players.length
-            ]
-        )
-        .map((p, i) => (
-          <Player key={i} p={p} {...props} />
-        ))}
+    <div style={{ alignSelf: "flex-end", maxWidth: "100%" }}>
+      <div style={{ overflow: "scroll" }}>
+        <div>
+          {store.gameW.game.players
+            .map(
+              (_, i) =>
+                store.gameW.game.players[
+                  (i + store.gameW.game.players.length - utils.myIndex()) %
+                    store.gameW.game.players.length
+                ]
+            )
+            .map((p, i) => (
+              <Player
+                key={i}
+                p={p}
+                isMe={p.userId === store.me.userId}
+                {...props}
+              />
+            ))}
+        </div>
+      </div>
     </div>
   );
 }
 
 function Player(
-  props: PlayersPropsType & {
+  props: PlayerPropsType & {
     p: PlayerType;
   }
 ) {
   const scoreDict = utils.getScoreDict(props.p);
   return (
     <div>
-      <div
-        className={[
-          styles.bubble,
-          utils.getCurrent().userId === props.p.userId && styles.blue,
-        ].join(" ")}
-      >
+      <div className={[styles.bubble, props.isMe && styles.blue].join(" ")}>
         <div style={{ display: "flex" }}>
           <Grid
             isFarm={true}
@@ -73,7 +80,7 @@ function Player(
                     ? "FIELD"
                     : null}
                 </div>
-                <div>{!t.built[Buildable.stable] ? null : "stable"}</div>
+                <div>{!t.built[Buildable.stable] ? null : "STABLE"}</div>
               </div>
             )}
             {...props}
@@ -86,11 +93,10 @@ function Player(
                   <button
                     style={{ width: "100%" }}
                     title={Caverns[t.cavern].title}
-                    disabled={Caverns[t.cavern!].action === undefined}
-                    onClick={() =>
-                      Caverns[t.cavern!].action !== undefined &&
-                      Caverns[t.cavern!].action!(props.p)
+                    disabled={
+                      !props.isMe || Caverns[t.cavern!].action === undefined
                     }
+                    onClick={() => Caverns[t.cavern!].action!(props.p)}
                   >
                     (
                     {Caverns[t.cavern].points !== undefined
@@ -127,7 +133,7 @@ function Player(
               {(props.p.availableDwarves || []).map((d, i) => (
                 <button
                   key={i}
-                  disabled={!utils.payRubyOutOfOrder(i, false)}
+                  disabled={!props.isMe || !utils.payRubyOutOfOrder(i, false)}
                   style={{
                     padding: "0.5em",
                   }}
@@ -154,7 +160,7 @@ function Player(
             <h2>{props.p.userName}</h2>
           </div>
           <div>
-            {props.p.userId !== store.me.userId ? null : (
+            {!props.isMe ? null : (
               <div className={styles.bubble}>
                 <button
                   disabled={!utils.slaughter(false)}
@@ -191,6 +197,7 @@ function Player(
                   <div key={i}>
                     <button
                       disabled={
+                        !props.isMe ||
                         !utils.resourceToTile(
                           props.selected,
                           resourceName,
@@ -292,13 +299,14 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
             : undefined,
       }}
       onClick={() =>
-        isBuilding
+        props.isMe &&
+        (isBuilding
           ? utils.build(props.coords, true)
           : props.updateSelected(
               utils.objEqual(props.coords, props.selected)
                 ? undefined
                 : props.coords
-            )
+            ))
       }
     >
       {bonuses === undefined ? null : <div>+: {JSON.stringify(bonuses)}</div>}
@@ -309,6 +317,7 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
             <button
               key={resourceName}
               onClick={(event) =>
+                props.isMe &&
                 Promise.resolve(event.stopPropagation())
                   .then(() =>
                     utils.moveResources({
