@@ -1,6 +1,5 @@
 import {
   AnimalResourcesType,
-  CaveTileType,
   PlayerType,
   ResourcesType,
   Task,
@@ -474,16 +473,13 @@ const Caverns: { [t in Cavern]: CavernType } = {
 function numAdjacentToStateParlor(p: PlayerType): number {
   const coords = utils
     .getGrid(p)
-    .find(({ t }) => (t as CaveTileType).cavern === Cavern.state_parlor)!;
-  return [
-    [-1, 0],
-    [1, 0],
-    [0, -1],
-    [0, 1],
-  ]
-    .map(([i, j]) => (p.cave[coords.i + i] || {})[coords.j + j]?.cavern)
+    .find(({ t }) => t.cavern === Cavern.state_parlor)!.c;
+  return utils
+    .getAdjacents(p, coords)
     .filter(
-      (t) => t !== undefined && Caverns[t]?.category === CavernCategory.dwelling
+      (t) =>
+        t !== undefined &&
+        Caverns[t.cavern!]?.category === CavernCategory.dwelling
     ).length;
 }
 

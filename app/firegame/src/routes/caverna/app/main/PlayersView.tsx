@@ -1,22 +1,23 @@
 import styles from "../../../../shared/styles.module.css";
 import Caverns, { Cavern } from "../utils/Caverns";
 import {
-  CaveTileType,
-  FarmTileType,
+  Buildable,
+  Coords,
   PlayerType,
   ResourcesType,
   Task,
+  TileType,
 } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 type PlayersPropsType = {
-  selected: [number, number, number] | undefined;
-  updateSelected: (s: [number, number, number] | undefined) => void;
+  selected: Coords | undefined;
+  updateSelected: (s: Coords | undefined) => void;
 };
 
-type ExtraPropsType<T> = PlayersPropsType & {
+type ExtraPropsType = PlayersPropsType & {
   p: PlayerType;
-  f: (t: T, coords: [number, number, number]) => JSX.Element | null;
+  f: (t: TileType) => JSX.Element | null;
 };
 
 export default function PlayersView(props: PlayersPropsType) {
@@ -55,22 +56,24 @@ function Player(
           <Grid
             title={"farm"}
             selectedIndex={0}
-            f={(t: FarmTileType, [i, j, k]) => (
+            f={(t: TileType) => (
               <div>
                 <div>
-                  {t.isDoubleFence
-                    ? "double_fence"
-                    : t.isFence
-                    ? "fence"
-                    : t.isFence === false
-                    ? "backup_fence"
+                  {t.doubleFenceCoords
+                    ? "DOUBLE_FENCE"
+                    : t.built[Buildable.fence_2]
+                    ? "BACKUP_FENCE"
+                    : t.built[Buildable.fence]
+                    ? "FENCE"
                     : t.resources !== undefined
                     ? null
-                    : t.isPasture
-                    ? "pasture"
-                    : "field"}
+                    : t.built[Buildable.pasture]
+                    ? "PASTURE"
+                    : t.built[Buildable.field]
+                    ? "FIELD"
+                    : null}
                 </div>
-                <div>{!t.isStable ? null : "stable"}</div>
+                <div>{!t.built[Buildable.stable] ? null : "stable"}</div>
               </div>
             )}
             {...props}
@@ -78,7 +81,7 @@ function Player(
           <Grid
             title={"cave"}
             selectedIndex={1}
-            f={(t: CaveTileType, [i, j, k]) => (
+            f={(t: TileType) => (
               <div>
                 {t.cavern !== undefined ? (
                   <button
@@ -99,13 +102,13 @@ function Player(
                   </button>
                 ) : (
                   <div>
-                    {t.isCavern
+                    {t.built[Buildable.cavern]
                       ? "CAVERN"
-                      : t.isRubyMine
+                      : t.built[Buildable.ruby_mine]
                       ? "RUBY_MINE"
-                      : t.isRubyMine === false
+                      : t.built[Buildable.ore_mine]
                       ? "ORE_MINE"
-                      : t.isOreTunnel
+                      : t.built[Buildable.ore_tunnel]
                       ? "ORE_TUNNEL"
                       : "TUNNEL"}
                   </div>
@@ -189,7 +192,7 @@ function Player(
                   <div key={i}>
                     <button
                       disabled={
-                        !utils.doResource(
+                        !utils.playerResource(
                           props.p,
                           props.selected,
                           resourceName,
@@ -197,7 +200,7 @@ function Player(
                         )
                       }
                       onClick={() =>
-                        utils.doResource(
+                        utils.playerResource(
                           props.p,
                           props.selected,
                           resourceName,
@@ -217,8 +220,8 @@ function Player(
   );
 }
 
-function Grid<T>(
-  props: ExtraPropsType<T> & {
+function Grid(
+  props: ExtraPropsType & {
     title: string;
     selectedIndex: number;
   }
@@ -243,10 +246,7 @@ function Grid<T>(
               >
                 {utils
                   .count(utils.numCols)
-                  .map(
-                    (j) =>
-                      [i, j, props.selectedIndex] as [number, number, number]
-                  )
+                  .map((j) => ({ i, j, k: props.selectedIndex }))
                   .map((coords, j) => (
                     <Cell key={j} coords={coords} {...props} />
                   ))}
@@ -257,20 +257,19 @@ function Grid<T>(
             {utils
               .getGrid(props.p)
               .filter(
-                ({ i, j, k }) =>
-                  k === props.selectedIndex && utils.isOutOfBounds([i, j, k])
+                ({ c }) => c.k === props.selectedIndex && utils.isOutOfBounds(c)
               )
-              .map(({ i, j, k }) => (
+              .map(({ c }) => (
                 <div
-                  key={`${i},${j},${k}`}
+                  key={utils.coordsToKey(c)}
                   style={{
                     position: "absolute",
                     right: undefined,
                     bottom: "0",
-                    transform: `translate(${100 * j}%, ${100 * -i}%)`,
+                    transform: `translate(${100 * c.j}%, ${100 * -c.i}%)`,
                   }}
                 >
-                  <Cell {...props} coords={[i, j, k]} />
+                  <Cell {...props} coords={c} />
                 </div>
               ))}
           </div>
@@ -281,15 +280,14 @@ function Grid<T>(
   );
 }
 
-function Cell<T>(
-  props: ExtraPropsType<T> & { coords: [number, number, number] }
-) {
+function Cell(props: ExtraPropsType & { coords: Coords }) {
   const isBuilding = utils.getTask().t === Task.build;
   const t = utils.getTile(props.p, props.coords);
-  const bonuses = (props.p.tileBonuses || {})[props.coords.join("_")];
+  const coordsKey = utils.coordsToKey(props.coords);
+  const bonuses = (props.p.tileBonuses || {})[coordsKey];
   return (
     <div
-      key={props.coords.join(".")}
+      key={coordsKey}
       style={{
         border: "2px solid black",
         width: "7em",
@@ -314,7 +312,7 @@ function Cell<T>(
       }
     >
       {bonuses === undefined ? null : <div>+: {JSON.stringify(bonuses)}</div>}
-      {t === undefined ? null : props.f(t as T, props.coords)}
+      {t === undefined ? null : props.f(t)}
       {t?.resources === undefined
         ? null
         : Object.entries(t.resources).map(([resourceName, count]) => (
@@ -335,7 +333,7 @@ function Cell<T>(
                     () =>
                       (t.resources = utils.addResources(t.resources!, {
                         [resourceName]: -1,
-                      }))
+                      })!)
                   )
                   .then(() => utils.prepareNextTask(`moved up ${resourceName}`))
               }

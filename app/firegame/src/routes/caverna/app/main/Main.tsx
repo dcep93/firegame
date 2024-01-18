@@ -1,5 +1,6 @@
 import { useState } from "react";
 import css from "../index.module.css";
+import { Coords } from "../utils/NewGame";
 import ActionsView from "./ActionsView";
 import CavernsView from "./CavernsView";
 import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
@@ -7,9 +8,7 @@ import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
 export default function Main() {
-  const [selected, updateSelected] = useState<
-    [number, number, number] | undefined
-  >(undefined);
+  const [selected, updateSelected] = useState<Coords | undefined>(undefined);
   return (
     <div
       className={css.main}

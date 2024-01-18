@@ -7,151 +7,71 @@ import Caverns, { Cavern, CavernCategory } from "./Caverns";
 import {
   AnimalResourcesType,
   Buildable,
-  CaveTileType,
-  FarmTileType,
+  Coords,
   GameType,
   Harvest,
   PlayerType,
   ResourcesType,
   Task,
   TaskType,
+  TileType,
 } from "./NewGame";
 import RubyActions, { RubyAction } from "./RubyActions";
 
 const store: StoreType<GameType> = store_;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
+  // GRID COORDS
+
   numRows = 4;
   numCols = 3;
-  // HELPERS
 
-  flipResources(rs: ResourcesType): ResourcesType {
-    return Object.fromEntries(Object.entries(rs).map(([k, v]) => [k, -v]));
+  coordsToKey(c: Coords): string {
+    return [c.i, c.j, c.k].join("_");
   }
 
-  addResources(
-    _addTo: ResourcesType,
-    addFrom: ResourcesType
-  ): ResourcesType | undefined {
-    const addTo = Object.assign({}, _addTo);
-    Object.entries(addFrom)
-      .map(([k, v]) => ({ k, v } as { k: keyof ResourcesType; v: number }))
-      .forEach(({ k, v }) => {
-        addTo[k] = v + (addTo[k] || 0);
-        if (addTo[k] === 0) {
-          delete addTo[k];
-        }
-      });
-    if (Object.values(addTo).filter((c) => c < 0).length > 0) {
-      return undefined;
-    }
-    return addTo;
-  }
-
-  addResourcesToPlayer(
-    p: PlayerType,
-    r: ResourcesType,
-    isMoving: boolean = false
-  ): boolean {
-    const addedResources = utils.addResources(p.resources || {}, r);
-    if (addedResources === undefined) return false;
-    p.resources = addedResources;
-    if ((r.dogs || 0) > 0 && p.caverns[Cavern.dog_school])
-      utils.addResourcesToPlayer(p, { wood: r.dogs! });
-    if (
-      (r.stone || 0) > 0 &&
-      p.caverns[Cavern.seam] &&
-      Object.values(r).filter((v) => v < 0).length === 0
-    )
-      utils.addResourcesToPlayer(p, { ore: r.stone! });
-    if (!isMoving) {
-      Object.keys(utils._toSlaughter(p))
-        .map((r) => r as keyof ResourcesType)
-        .forEach((r) => {
-          while (true) {
-            if (p.resources![r] === undefined) break;
-            const destinations = utils
-              .getGrid(p)
-              .filter(({ i, j, k }) => utils.doResource(p, [i, j, k], r, false))
-              .map((o) => ({
-                ...o,
-                rank: [
-                  o.k * 1000, // 1000 points if cave
-                  Caverns[(o.t as CaveTileType).cavern!]?.category ===
-                  CavernCategory.dwelling
-                    ? -100
-                    : 0, // -100 points for dwelling
-                  (o.t as FarmTileType).isDoubleFence ? 100 : 0, // 100 points for double fence
-                  (o.t as FarmTileType).isPasture ? 500 : 0, // 500 points for pasture
-                  10 * (o.t.resources?.sheep || 0), // 10 points for sheep
-                  Object.values(o.t.resources || {}).sum(), // points for existing resources
-                ].sum(),
-              }))
-              .sort((a, b) => b.rank - a.rank);
-            if (destinations.length === 0) break;
-            destinations[0].t.resources = utils.addResources(
-              destinations[0].t.resources || {},
-              { [r]: 1 }
-            );
-            utils.addResourcesToPlayer(p, { [r]: -1 }, true);
-          }
-        });
-    }
-    return true;
+  keyToCoords(key: string): Coords {
+    const [i, j, k] = key.split("_").map((i) => parseInt(i));
+    return { i, j, k };
   }
 
   getGrid(p: PlayerType): {
-    i: number;
-    j: number;
-    k: number;
-    t: CaveTileType | FarmTileType;
+    c: Coords;
+    t: TileType;
   }[] {
-    return [p.farm || {}, p.cave].flatMap((g, k) =>
+    return Object.entries(p.grid).flatMap(([k, g]) =>
       Object.entries(g).flatMap(([i, r]) =>
         Object.entries(r).flatMap(([j, t]) => ({
-          i: parseInt(i),
-          j: parseInt(j),
-          k,
-          t: t as CaveTileType | FarmTileType,
+          c: { i: parseInt(i), j: parseInt(j), k: parseInt(k) },
+          t: utils._sanitize(t)!,
         }))
       )
     );
   }
 
-  getBreedables(p: PlayerType): (keyof AnimalResourcesType)[] {
-    return Object.entries(utils.getAllResources(p))
-      .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
-      .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
-      .filter(({ r }) => r !== utils.getTask()!.d!.r)
-      .filter(({ c }) => c >= 2)
-      .map(({ r }) => r);
+  getTile(p: PlayerType, coords: Coords): TileType | undefined {
+    return utils._sanitize(
+      ((p.grid[coords.k] || {})[coords.i] || {})[coords.j]
+    );
   }
 
-  pullOffFields(p: PlayerType) {
-    utils
-      .getGrid(p)
-      .filter(
-        ({ t }) =>
-          t.resources?.grain !== undefined ||
-          t.resources?.vegetables !== undefined
-      )
-      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
-      .forEach(({ t, r }) => {
-        utils.addResourcesToPlayer(p, { [r]: 1 });
-        t.resources = utils.addResources(t.resources!, { [r]: -1 });
-      });
+  isFarm(coords: Coords): boolean {
+    return coords.k === 0;
   }
 
-  growthRewards() {
-    return {
-      wood: 1,
-      stone: 1,
-      ore: 1,
-      food: 1,
-      gold: 2,
-    };
+  setTile(p: PlayerType, coords: Coords, t: TileType | undefined) {
+    if (p.grid[coords.k] === undefined) p.grid[coords.k] = {};
+    if (p.grid[coords.k][coords.i] === undefined)
+      p.grid[coords.k][coords.i] = {};
+    if (t !== undefined) p.grid[coords.k][coords.i][coords.j] = t;
   }
 
+  _sanitize(t: TileType | undefined): TileType | undefined {
+    if (t === undefined) return t;
+    if (t.built === undefined) t.built = {};
+    if (t.resources === undefined) t.resources = {};
+    return t;
+  }
   // TASKS
 
   getTask(): TaskType {
@@ -216,9 +136,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       );
     }
     if (task.t === Task.build) {
+      // TODO skip/allowed build stable
       if (
         task.d!.build === Buildable.stable &&
-        utils.getGrid(p).filter(({ t }) => (t as FarmTileType).isStable)
+        utils.getGrid(p).filter(({ t }) => (t.built || {})[Buildable.stable])
           .length === 3
       )
         return false;
@@ -258,7 +179,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                     .filter(
                       ({ t }) =>
                         t.resources?.donkeys !== undefined &&
-                        (t as CaveTileType).isRubyMine !== undefined
+                        t.built[Buildable.ruby_mine] !== undefined
                     ).length)
           );
     if ((p.resources?.food || 0) < numToFeed) return false;
@@ -333,43 +254,38 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   furnish(
-    t: Cavern,
+    c: Cavern,
     p: PlayerType,
-    selected: [number, number, number] | undefined,
+    selected: Coords | undefined,
     execute: boolean
   ): boolean {
     if (!utils.isMyTurn()) return false;
-    if ((store.gameW.game.purchasedTiles || {})[t] !== undefined) {
+    if ((store.gameW.game.purchasedTiles || {})[c] !== undefined) {
       return false;
     }
     if (selected === undefined) return false;
-    if (selected[2] !== 1) return false;
-    if (p.cave[selected[0]] === undefined) p.cave[selected[0]] = [];
-    const caveTile = p.cave[selected[0]][selected[1]];
-    if (caveTile !== undefined) {
-      if (
-        caveTile.cavern !== undefined ||
-        p.cave[selected[0]][selected[1]].isRubyMine !== undefined ||
-        (!p.cave[selected[0]][selected[1]].isCavern &&
-          p.caverns[Cavern.work_room] === undefined)
-      ) {
+    if (selected.k !== 1) return false;
+    const tile = utils.getTile(p, selected);
+    if (tile === undefined) return false;
+    if (tile.cavern !== undefined) return false;
+    if (tile.built[Buildable.tunnel]) {
+      if (tile.built[Buildable.ore_mine] || tile.built[Buildable.ruby_mine])
         return false;
-      }
+      if (!p.caverns[Cavern.work_room]) return false;
     }
-
     const task = utils.getTask();
     if (task.t !== Task.furnish) return false;
     if (
       task.d?.build === Buildable.dwelling &&
-      Caverns[t].category !== CavernCategory.dwelling
+      Caverns[c].category !== CavernCategory.dwelling
     )
       return false;
-    if (task.d?.build === Buildable.dwelling_2_2 && t !== Cavern.dwelling)
+    if (task.d?.build === Buildable.dwelling_2_2 && c !== Cavern.dwelling)
       return false;
     var oppCost =
       task.d?.build === Buildable.dwelling_2_2
         ? { stone: 2, wood: 2 }
-        : Caverns[t].cost;
+        : Caverns[c].cost;
     if (oppCost.wood !== undefined && p.caverns[Cavern.carpenter]) {
       oppCost = utils.addResources(oppCost, { wood: -1 })!;
     }
@@ -384,20 +300,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (execute) {
       utils.shiftTask();
-      if (t !== Cavern.dwelling) {
+      if (c !== Cavern.dwelling) {
         if (store.gameW.game.purchasedTiles === undefined)
           store.gameW.game.purchasedTiles = {};
-        store.gameW.game.purchasedTiles[t] = p.index;
+        store.gameW.game.purchasedTiles[c] = p.index;
       }
       utils.addResourcesToPlayer(p, cost);
-      p.caverns[t] = true;
-      if (!p.cave[selected[0]]![selected[1]])
-        p.cave[selected[0]]![selected[1]] = {};
-      Object.assign(p.cave[selected[0]]![selected[1]], {
-        cavern: t,
-        supply: Caverns[t].supply || {},
+      p.caverns[c] = true;
+      Object.assign(tile, {
+        cavern: c,
+        supply: Caverns[c].supply || {},
       });
-      utils.prepareNextTask(`furnished ${Cavern[t]}`);
+      utils.prepareNextTask(`furnished ${Cavern[c]}`);
     }
     return true;
   }
@@ -551,31 +465,27 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   // BUILD
 
-  build(
-    p: PlayerType,
-    coords: [number, number, number],
-    execute: boolean
-  ): boolean {
+  build(p: PlayerType, coords: Coords, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
-    if (p.farm === undefined) p.farm = {};
     if (utils._notConnectedToHome(p, coords)) return false;
     const task = utils.getTask();
     if (task.t !== Task.build) return false;
 
     if (task.d!.buildData !== undefined) {
-      const [b1, b2, k, j] = task.d!.buildData;
-      const cs = [coords.slice(), coords.slice()] as [number, number, number][];
-      cs[1 - j][1 - k] += j === 0 ? -1 : 1;
+      const [b1, b2, rowColumn, tileIndex] = task.d!.buildData;
+      const cs = utils.count(2).map(() => Object.assign({}, coords));
+      cs[1 - rowColumn][1 - tileIndex === 0 ? "i" : "j"] +=
+        rowColumn === 0 ? -1 : 1;
       if (!utils._buildHereHelper(b1, p, cs[0], execute)) return false;
       if (!utils._buildHereHelper(b2, p, cs[1], execute)) return false;
       if (execute) {
+        // TODO can I build double fence
         if (task.d!.build === Buildable.fence_2) {
-          (this.getTile(p, cs[0]) as FarmTileType).isDoubleFence = cs[1];
-          const tt = utils.getTile(p, cs[1]) as FarmTileType;
-          tt.isFence = false;
+          this.getTile(p, cs[0])!.doubleFenceCoords = cs[1];
+          const tt = utils.getTile(p, cs[1])!;
           if (tt.resources !== undefined) {
             utils.addResourcesToPlayer(p, tt.resources);
-            delete tt.resources;
+            tt.resources = {};
           }
         }
       }
@@ -592,146 +502,134 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  getTile(
-    p: PlayerType,
-    coords: [number, number, number]
-  ): FarmTileType | CaveTileType | undefined {
-    return (([p.farm, p.cave][coords[2]] || {})[coords[0]] || {})[coords[1]];
+  getAdjacents(p: PlayerType, coords: Coords): (TileType | undefined)[] {
+    return [
+      [-1, 0],
+      [1, 0],
+      [0, 1],
+      [0, -1],
+    ]
+      .map(([i, j]) => ({ i: coords.i + i, j: coords.j + j, k: coords.k }))
+      .map((cc) => utils.getTile(p, cc));
   }
 
-  _notConnectedToHome(
-    p: PlayerType,
-    coords: [number, number, number]
-  ): boolean {
-    if (coords[0] === 0 && coords[1] === 0 && coords[2] === 0) return false;
+  _notConnectedToHome(p: PlayerType, coords: Coords): boolean {
+    if (utils.coordsToKey(coords) === utils.coordsToKey({ i: 0, j: 0, k: 0 }))
+      return false;
     return (
-      [
-        [-1, 0],
-        [1, 0],
-        [0, 1],
-        [0, -1],
-      ]
-        .map(([i, j]) => [coords[0] + i, coords[1] + j])
-        .map(([i, j]) => ([p.farm!, p.cave][coords[2]][i] || {})[j])
+      utils
+        .getAdjacents(p, coords)
         .find(
           (t) =>
             t !== undefined &&
-            ((t as FarmTileType).isPasture !== undefined ||
-              (t as CaveTileType).isCavern !== undefined)
+            [
+              Buildable.cavern,
+              Buildable.tunnel,
+              Buildable.pasture,
+              Buildable.field,
+            ].find((b) => t.built[b])
         ) === undefined
     );
   }
 
-  isOutOfBounds(coords: [number, number, number]): boolean {
-    return coords[0] < 0 || coords[0] > 3 || coords[1] < 0 || coords[1] > 2;
+  isOutOfBounds(coords: Coords): boolean {
+    return (
+      coords.i < 0 ||
+      coords.i >= utils.numRows ||
+      coords.j < 0 ||
+      coords.j >= utils.numCols
+    );
   }
 
   _buildHereHelper(
     b: Buildable,
     p: PlayerType,
-    coords: [number, number, number],
+    coords: Coords,
     execute: boolean
   ): boolean {
     if (utils.isOutOfBounds(coords)) {
-      if (p.caverns[Cavern.office_room] && coords[1] >= 0) {
-        if (execute) {
-          utils.addResourcesToPlayer(p, { gold: 2 });
-        }
-      } else {
-        return false;
+      if (coords.j < 0 || !p.caverns[Cavern.office_room]) return false;
+      if (execute) {
+        utils.addResourcesToPlayer(p, { gold: 2 });
       }
     }
-    const g = [p.farm!, p.cave][coords[2]];
-    if (g[coords[0]] === undefined) {
-      g[coords[0]] = {};
-    }
+    if (utils.getTile(p, coords) === undefined)
+      utils.setTile(
+        p,
+        coords,
+        execute ? { resources: {}, built: {} } : undefined
+      );
+    const t = utils.getTile(p, coords);
+    if ((t?.built || {})[b]) return false;
     if (execute) {
+      t!.built[b] = true;
+
       if (b !== Buildable.stable) {
-        const c = coords.join("_");
-        if ((p.tileBonuses || {})[c] !== undefined) {
-          utils.addResourcesToPlayer(p, p.tileBonuses![c]);
-          delete p.tileBonuses![c];
+        const coordsKey = utils.coordsToKey(coords);
+        const b = (p.tileBonuses || {})[coordsKey];
+        if (b !== undefined) {
+          utils.addResourcesToPlayer(p, b);
+          delete p.tileBonuses![coordsKey];
         }
       }
+
+      if (b === Buildable.ruby_mine) {
+        if (t!.built[Buildable.ore_tunnel])
+          utils.addResourcesToPlayer(p, { rubies: 1 });
+      }
+
+      return true;
     }
-    const t = utils
-      .getGrid(p)
-      .find(({ i, j, k }) => utils.objEqual([i, j, k], coords))?.t;
     switch (b) {
       case Buildable.fence_2:
       case Buildable.fence:
       case Buildable.stable:
       case Buildable.pasture:
       case Buildable.field:
-        if (coords[2] !== 0) return false;
-        const farmTile = t as FarmTileType;
+        if (!utils.isFarm(coords)) return false;
+        const farmTile = t;
         switch (b) {
           case Buildable.fence_2:
           case Buildable.fence:
             if (farmTile === undefined) return false;
-            if (farmTile.isFence || !farmTile.isPasture) return false;
-            if (execute) {
-              farmTile.isFence = true;
-            }
+            if (!farmTile.built[Buildable.pasture]) return false;
             return true;
           case Buildable.stable:
-            if (farmTile === undefined) {
-              if (execute) {
-                p.farm![coords[0]][coords[1]] = { isStable: true };
-              }
-              return true;
-            }
-            if (farmTile.isStable) return false;
-            if (execute) {
-              farmTile.isStable = true;
-            }
             return true;
           case Buildable.pasture:
-            if (farmTile === undefined) {
-              if (execute) {
-                p.farm![coords[0]][coords[1]] = { isPasture: true };
+            if (farmTile !== undefined) {
+              const numBuilt = Object.keys(farmTile.built).length;
+              if (numBuilt === 1 && farmTile.built[Buildable.stable]) {
+                return true;
               }
-              return true;
-            }
-            if (farmTile.isPasture !== undefined) return false;
-            if (execute) {
-              farmTile.isPasture = true;
+              return false;
             }
             return true;
           case Buildable.field:
             if (farmTile !== undefined) return false;
-            if (execute) {
-              p.farm![coords[0]][coords[1]] = { isPasture: false };
-            }
             return true;
         }
     }
-    if (coords[2] !== 1) return false;
-    const caveTile = t as CaveTileType;
+    if (utils.isFarm(coords)) return false;
+    const caveTile = t;
     switch (b) {
       case Buildable.tunnel:
         if (caveTile !== undefined) return false;
-        if (execute) {
-          p.cave[coords[0]][coords[1]] = { isCavern: false };
-        }
         return true;
       case Buildable.cavern:
         if (caveTile !== undefined) return false;
-        if (execute) {
-          p.cave[coords[0]][coords[1]] = { isCavern: true };
-        }
         return true;
       case Buildable.ruby_mine:
-        if (caveTile?.isCavern !== false || caveTile.isRubyMine !== undefined)
+        if (caveTile === undefined) return false;
+        if (
+          !caveTile.built[Buildable.tunnel] ||
+          caveTile.built[Buildable.ore_mine]
+        )
           return false;
         const r = utils.getTask().d!.r;
         if (r !== undefined) {
-          if ((caveTile.isOreTunnel === true) !== (r === "ore")) return false;
-        }
-        if (execute) {
-          if (caveTile.isOreTunnel)
-            utils.addResourcesToPlayer(p, { rubies: 1 });
-          caveTile.isRubyMine = true;
+          if ((caveTile.built[Buildable.ore_tunnel] || false) !== (r === "ore"))
+            return false;
         }
         return true;
     }
@@ -755,19 +653,91 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
   }
 
-  // RESOURCE
+  // RESOURCES
 
-  doResource(
+  flipResources(rs: ResourcesType): ResourcesType {
+    return Object.fromEntries(Object.entries(rs).map(([k, v]) => [k, -v]));
+  }
+
+  addResources(
+    _addTo: ResourcesType,
+    addFrom: ResourcesType
+  ): ResourcesType | undefined {
+    const addTo = Object.assign({}, _addTo);
+    Object.entries(addFrom)
+      .map(([k, v]) => ({ k, v } as { k: keyof ResourcesType; v: number }))
+      .forEach(({ k, v }) => {
+        addTo[k] = v + (addTo[k] || 0);
+        if (addTo[k] === 0) {
+          delete addTo[k];
+        }
+      });
+    if (Object.values(addTo).filter((c) => c < 0).length > 0) {
+      return undefined;
+    }
+    return addTo;
+  }
+
+  addResourcesToPlayer(
     p: PlayerType,
-    selected: [number, number, number] | undefined,
+    r: ResourcesType,
+    isMoving: boolean = false
+  ): boolean {
+    const addedResources = utils.addResources(p.resources || {}, r);
+    if (addedResources === undefined) return false;
+    p.resources = addedResources;
+    if ((r.dogs || 0) > 0 && p.caverns[Cavern.dog_school])
+      utils.addResourcesToPlayer(p, { wood: r.dogs! });
+    if (
+      (r.stone || 0) > 0 &&
+      p.caverns[Cavern.seam] &&
+      Object.values(r).filter((v) => v < 0).length === 0
+    )
+      utils.addResourcesToPlayer(p, { ore: r.stone! });
+    if (!isMoving) {
+      Object.keys(utils._toSlaughter(p))
+        .map((r) => r as keyof ResourcesType)
+        .forEach((r) => {
+          while (true) {
+            if (p.resources![r] === undefined) break;
+            const destinations = utils
+              .getGrid(p)
+              .filter(({ c }) => utils.playerResource(p, c, r, false))
+              .map(({ c, t }) => ({
+                t,
+                rank: [
+                  c.k * 1000, // 1000 points if cave
+                  Caverns[t.cavern!]?.category === CavernCategory.dwelling
+                    ? -100
+                    : 0, // -100 points for dwelling
+                  t.doubleFenceCoords ? 100 : 0, // 100 points for double fence
+                  t.built[Buildable.pasture] ? 500 : 0, // 500 points for pasture
+                  10 * (t.resources?.sheep || 0), // 10 points for sheep
+                  Object.values(t.resources || {}).sum(), // points for existing resources
+                ].sum(),
+              }))
+              .sort((a, b) => b.rank - a.rank);
+            if (destinations.length === 0) break;
+            destinations[0].t.resources = utils.addResources(
+              destinations[0].t.resources || {},
+              { [r]: 1 }
+            )!;
+            utils.addResourcesToPlayer(p, { [r]: -1 }, true);
+          }
+        });
+    }
+    return true;
+  }
+
+  playerResource(
+    p: PlayerType,
+    selected: Coords | undefined,
     resourceName: keyof ResourcesType,
     execute: boolean
   ): boolean {
     if (!utils.isMyTurn()) return false;
     const task = utils.getTask();
-    const t = utils
-      .getGrid(p)
-      .find(({ i, j, k }) => utils.objEqual([i, j, k], selected))?.t;
+    const t = selected === undefined ? undefined : utils.getTile(p, selected);
     switch (resourceName) {
       case "food":
         return utils.harvest(p, execute);
@@ -787,7 +757,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             task.d!.rs![resourceName] &&
             t !== undefined &&
             t.resources === undefined &&
-            (t as FarmTileType).isPasture === false
+            !t.built[Buildable.pasture]
           ) {
             t.resources = { [resourceName]: resourceName === "grain" ? 3 : 2 };
             task.d!.rs![resourceName]!--;
@@ -814,7 +784,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         )
           return false;
         var allowed = false;
-        const cavern = (t as CaveTileType).cavern;
+        const cavern = t.cavern;
         if (cavern !== undefined) {
           const c = Caverns[cavern];
           if (
@@ -827,24 +797,25 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             allowed = true;
           }
         } else {
-          const farmTile = t as FarmTileType;
-          if (farmTile.isPasture) {
-            if (farmTile.isFence) {
+          const farmTile = t;
+          if (farmTile.built[Buildable.pasture]) {
+            if (farmTile.built[Buildable.fence]) {
               var numAllowed = 2;
-              if (farmTile.isStable) numAllowed *= 2;
-              if (farmTile.isDoubleFence) {
+              if (farmTile.built[Buildable.stable]) numAllowed *= 2;
+              if (farmTile.built[Buildable.fence_2]) {
                 numAllowed *= 2;
+                if (farmTile.doubleFenceCoords === undefined) return false;
                 if (
-                  (utils.getTile(p, farmTile.isDoubleFence) as FarmTileType)
-                    .isStable
+                  utils.getTile(p, farmTile.doubleFenceCoords)!.built[
+                    Buildable.stable
+                  ]
                 )
                   numAllowed *= 2;
               }
               if (numAllowed > ((t.resources || {})[resourceName] || 0))
                 allowed = true;
             } else if (
-              farmTile.isFence === undefined &&
-              farmTile.isStable &&
+              farmTile.built[Buildable.stable] &&
               t.resources === undefined
             ) {
               allowed = true;
@@ -852,7 +823,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           } else if (
             p.caverns[Cavern.stubble_room] &&
             t.resources === undefined &&
-            farmTile.isPasture === false
+            farmTile.built[Buildable.field] === false
           ) {
             allowed = true;
           }
@@ -863,17 +834,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               allowed = true;
               break;
             case "sheep":
-              allowed = (t.resources?.dogs || -1) >= (t.resources?.sheep || 0);
+              if ((t.resources?.dogs || -1) >= (t.resources?.sheep || 0))
+                allowed = true;
               break;
             case "donkeys":
-              allowed =
+              if (
                 t.resources === undefined &&
-                (t as CaveTileType).isRubyMine !== undefined;
+                (t.built[Buildable.ore_mine] || t.built[Buildable.ruby_mine])
+              )
+                allowed = true;
               break;
             case "boars":
-              allowed =
-                t.resources === undefined &&
-                (t as FarmTileType).isStable === true;
+              if (t.resources === undefined && t.built[Buildable.stable])
+                allowed = true;
               break;
             case "cows":
               break;
@@ -969,10 +942,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     g.players.forEach((p) =>
       utils
         .getGrid(p)
-        .map(({ t }) => t as CaveTileType)
-        .map((t) => ({ t, s: t.supply }))
-        .filter(({ s }) => s !== undefined)
-        .map(({ t, s }) => ({ t, r: Object.keys(s!)[0] }))
+        .filter(({ t }) => t.supply !== undefined)
+        .map(({ t }) => ({ t, r: Object.keys(t.supply!)[0] }))
         .forEach(({ t, r }) => {
           utils.addResourcesToPlayer(p, { [r]: 1 });
           t.supply = utils.addResources(t.supply!, { [r]: -1 }) || {};
@@ -983,10 +954,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         p,
         num: utils
           .getGrid(p)
-          .map(
+          .filter(
             ({ t }) =>
-              t.resources?.donkeys !== undefined &&
-              (t as CaveTileType).isRubyMine === false
+              t.resources?.donkeys !== undefined && t.built[Buildable.ore_mine]
           ).length,
       }))
       .filter(({ p, num }) => num > 0 && p.caverns[Cavern.miner])
@@ -1067,16 +1037,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                     ] as (keyof ResourcesType)[]
                   ).includes(r)
                 ).length) -
-          [p.cave, p.farm]
-            .flatMap((g) =>
+          [0, 1]
+            .flatMap((k) =>
               utils
                 .count(utils.numRows)
-                .flatMap((r) =>
-                  utils.count(utils.numCols).map((c) => ({ g, r, c }))
+                .flatMap((i) =>
+                  utils.count(utils.numCols).map((j) => ({ i, j, k }))
                 )
             )
-            .filter(({ g, r, c }) => ((g || {})[r] || {})[c] === undefined)
-            .length
+            .filter((coords) => utils.getTile(p, coords) === undefined).length
       ),
       furnishingPasturesMines:
         Object.keys(p.caverns || {})
@@ -1089,19 +1058,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           utils
             .getGrid(p)
             .map(({ t }) =>
-              (t as FarmTileType).isDoubleFence
-                ? 4
-                : (t as FarmTileType).isFence
-                ? 2
-                : 0
+              t.doubleFenceCoords ? 4 : t.built[Buildable.fence] ? 2 : 0
             )
             .sum() +
         utils
           .getGrid(p)
           .map(({ t }) =>
-            (t as CaveTileType).isRubyMine === true
+            t.built[Buildable.ruby_mine] === true
               ? 4
-              : (t as CaveTileType).isRubyMine === false
+              : t.built[Buildable.ore_mine] === false
               ? 3
               : 0
           )
@@ -1128,6 +1093,42 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       "lightcoral",
       "lightsalmon",
     ][index];
+  }
+
+  // OTHER
+
+  getBreedables(p: PlayerType): (keyof AnimalResourcesType)[] {
+    return Object.entries(utils.getAllResources(p))
+      .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
+      .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
+      .filter(({ r }) => r !== utils.getTask()!.d!.r)
+      .filter(({ c }) => c >= 2)
+      .map(({ r }) => r);
+  }
+
+  pullOffFields(p: PlayerType) {
+    utils
+      .getGrid(p)
+      .filter(
+        ({ t }) =>
+          t.resources?.grain !== undefined ||
+          t.resources?.vegetables !== undefined
+      )
+      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
+      .forEach(({ t, r }) => {
+        utils.addResourcesToPlayer(p, { [r]: 1 });
+        t.resources = utils.addResources(t.resources!, { [r]: -1 })!;
+      });
+  }
+
+  growthRewards() {
+    return {
+      wood: 1,
+      stone: 1,
+      ore: 1,
+      food: 1,
+      gold: 2,
+    };
   }
 }
 

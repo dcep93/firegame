@@ -103,21 +103,15 @@ export type Params = {
   lobby: LobbyType;
 };
 
-export type CaveTileType = {
-  resources?: ResourcesType;
-  isCavern?: boolean; // false for tunnel
-  cavern?: Cavern;
-  supply?: ResourcesType;
-  isOreTunnel?: boolean;
-  isRubyMine?: boolean; // false if ore mine
-};
+// todo can I change this
+export type Coords = { i: number; j: number; k: number };
+export type TileType = {
+  resources: ResourcesType;
+  built: { [b in Buildable]?: boolean };
 
-export type FarmTileType = {
-  resources?: ResourcesType;
-  isStable?: boolean;
-  isPasture?: boolean; // false for field
-  isFence?: boolean; // false for backup fence
-  isDoubleFence?: [number, number, number];
+  supply?: ResourcesType;
+  cavern?: Cavern;
+  doubleFenceCoords?: Coords;
 };
 
 export type PlayerType = {
@@ -136,17 +130,8 @@ export type PlayerType = {
 
   caverns: { [t in Cavern]?: boolean };
 
-  cave: {
-    [row: number]: {
-      [column: number]: CaveTileType;
-    };
-  };
-
-  farm?: {
-    [row: number]: {
-      [column: number]: FarmTileType;
-    };
-  };
+  // todo can I change this?
+  grid: { [side: number]: { [row: number]: { [column: number]: TileType } } };
 
   tileBonuses?: {
     [k: string]: ResourcesType;
@@ -230,24 +215,34 @@ function setPlayers(game: GameType): GameType {
       userName,
       index,
 
-      usedDwarves: [0, 0],
+      availableDwarves: [0, 0],
 
       resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
 
       caverns: { [Cavern.starting_dwelling]: true },
 
-      cave: {
-        0: { 0: { isCavern: true, cavern: Cavern.starting_dwelling } },
-        1: { 0: { isCavern: true } },
+      grid: {
+        1: {
+          0: {
+            0: {
+              resources: {},
+              built: { [Buildable.cavern]: true },
+              cavern: Cavern.starting_dwelling,
+            },
+          },
+          1: { 0: { resources: {}, built: { [Buildable.cavern]: true } } },
+        },
       },
 
-      tileBonuses: {
-        "3_0_0": { boars: 1 },
-        "1_2_0": { boars: 1 },
-        "0_1_0": { food: 1 },
-        "0_1_1": { food: 1 },
-        "3_2_1": { food: 2 },
-      },
+      tileBonuses: Object.fromEntries(
+        [
+          { c: { k: 0, i: 0, j: 0 }, b: { boars: 1 } },
+          { c: { k: 0, i: 1, j: 2 }, b: { boars: 1 } },
+          { c: { k: 0, i: 0, j: 1 }, b: { food: 1 } },
+          { c: { k: 1, i: 0, j: 1 }, b: { food: 1 } },
+          { c: { k: 1, i: 3, j: 2 }, b: { food: 2 } },
+        ].map(({ c, b }) => [utils.coordsToKey(c), b])
+      ),
     }));
 
   return game;

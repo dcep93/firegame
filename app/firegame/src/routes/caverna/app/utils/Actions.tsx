@@ -1,11 +1,5 @@
 import { Cavern } from "./Caverns";
-import {
-  Buildable,
-  CaveTileType,
-  PlayerType,
-  ResourcesType,
-  Task,
-} from "./NewGame";
+import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
 import utils, { store } from "./utils";
 
 export enum Action {
@@ -213,9 +207,8 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils
-            .getGrid(p)
-            .filter(({ t }) => (t as CaveTileType).isRubyMine === false).length,
+          utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])
+            .length,
       }),
   },
   [Action.ore_trading]: {
@@ -231,8 +224,8 @@ const Actions: { [a in Action]: ActionType } = {
         rubies:
           utils
             .getGrid(p)
-            .filter(({ t }) => (t as CaveTileType).isRubyMine === true)
-            .length >= 2
+            .filter(({ t }) => t.built[Buildable.ruby_mine] === true).length >=
+          2
             ? 1
             : 0,
       }),
@@ -254,8 +247,8 @@ const Actions: { [a in Action]: ActionType } = {
         rubies:
           utils
             .getGrid(p)
-            .filter(({ t }) => (t as CaveTileType).isRubyMine === true)
-            .length >= 1
+            .filter(({ t }) => t.built[Buildable.ruby_mine] === true).length >=
+          1
             ? 1
             : 0,
       }),
@@ -327,9 +320,8 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils
-            .getGrid(p)
-            .filter(({ t }) => (t as CaveTileType).isRubyMine === false).length,
+          utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])
+            .length,
       }),
   },
   [Action.wood_gathering]: {
@@ -453,9 +445,8 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer(p, {
         ore:
           2 *
-          utils
-            .getGrid(p)
-            .filter(({ t }) => (t as CaveTileType).isRubyMine === false).length,
+          utils.getGrid(p).filter(({ t }) => t.built[Buildable.ruby_mine])
+            .length,
       }),
   },
   [Action.sustenance__4_7]: {

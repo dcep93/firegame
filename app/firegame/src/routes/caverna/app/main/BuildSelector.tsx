@@ -33,26 +33,29 @@ export default function BuildSelector() {
           )
           .flatMap((cs) =>
             (["row", "column"] as ("row" | "column")[]).map(
-              (flexDirection, k) => ({
+              (flexDirection, rowColumn) => ({
                 flexDirection,
                 cs: cs as [Buildable, Buildable],
-                k,
+                rowColumn,
               })
             )
           )
-          .map(({ cs, flexDirection, k }, i) => (
+          .map(({ cs, flexDirection, rowColumn }, i) => (
             <div
               key={i}
               style={{ border: 0, display: "flex", flexDirection }}
               className={styles.bubble}
             >
-              {cs.map((c, j) => (
+              {cs.map((c, tileIndex) => (
                 <button
-                  key={j}
+                  key={tileIndex}
                   style={{ height: "4em", width: "4em" }}
                   onClick={() =>
                     Promise.resolve()
-                      .then(() => (d.buildData = [cs[0], cs[1], k, j]))
+                      .then(
+                        () =>
+                          (d.buildData = [cs[0], cs[1], rowColumn, tileIndex])
+                      )
                       .then(() =>
                         utils.prepareNextTask(
                           `oriented: ${Buildable[d.build!]}`

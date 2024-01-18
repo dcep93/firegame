@@ -1,12 +1,11 @@
 import styles from "../../../../shared/styles.module.css";
 import Caverns, { Cavern } from "../utils/Caverns";
+import { Coords } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import Button from "./Button";
 import { chunk } from "./Main";
 
-export default function CavernsView(props: {
-  selected: [number, number, number] | undefined;
-}) {
+export default function CavernsView(props: { selected: Coords | undefined }) {
   const p = utils.getCurrent();
   return (
     <div>
