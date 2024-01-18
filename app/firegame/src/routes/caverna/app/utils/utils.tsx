@@ -1053,6 +1053,27 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
   }
 
+  _popNextAction(g: GameType): Action {
+    if (g.players.length === 1)
+      return [
+        Action.ruby_delivery,
+        Action.adventure,
+        Action.ore_trading,
+        Action.family_life,
+        Action.ore_delivery,
+        Action.ruby_mine_construction,
+        Action.donkey_farming,
+        Action.wish_for_children,
+        Action.ore_mine_construction,
+        Action.sheep_farming,
+        Action.blacksmithing,
+      ][(g.upcomingHarvests || []).length - 1];
+    return utils
+      .shuffle(g.upcomingActions!)
+      .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
+      .pop()!;
+  }
+
   enrichAndReveal(g: GameType): GameType {
     g.currentPlayer = g.startingPlayer;
     delete g.harvest;
@@ -1088,21 +1109,29 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .forEach(({ p, num }) => utils.addResourcesToPlayer({ ore: num }));
 
     g.tasks = [{ t: Task.action }];
-    g.actions.push(
-      utils
-        .shuffle(g.upcomingActions!)
-        .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
-        .pop()!
-    );
+    const upcomingAction = utils._popNextAction(g);
+    g.actions.push(upcomingAction);
+    if (g.players.length <= 2 && upcomingAction === Action.exploration) {
+      g.actions.push(utils._popNextAction(g));
+    }
     if (g.actionBonuses === undefined) {
       g.actionBonuses = {};
     }
     g.actions
       .map((a) => ({ a, e: Actions[a].enrichment }))
       .filter(({ e }) => e)
+      .filter(
+        ({ a }) =>
+          a !== Action.ruby_mining ||
+          g.players.length !== 2 ||
+          (g.upcomingActions || []).length < 10
+      )
       .forEach(
         ({ a, e }) =>
           (g.actionBonuses![a] =
+            // TODO single player pay 1 ruby to not bomb enrichment
+            (g.players.length === 1 &&
+              Object.values(g.actionBonuses![a] || {}).sum() > 6) ||
             g.actionBonuses![a] === undefined
               ? Object.assign({}, e![0])
               : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))

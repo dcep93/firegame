@@ -264,6 +264,18 @@ function setPlayers(game: GameType): GameType {
       ),
     }));
 
+  if (game.players.length <= 2) {
+    game.randomHarvests!.shift();
+    game.upcomingHarvests!.pop();
+
+    if (game.players.length === 1) {
+      game.upcomingHarvests = game.upcomingHarvests!.map((h) =>
+        h === Harvest.random ? Harvest.harvest : h
+      );
+      game.players[0].resources!.food = 2;
+    }
+  }
+
   return game;
 }
 

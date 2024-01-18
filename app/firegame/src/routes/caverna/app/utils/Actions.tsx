@@ -323,7 +323,7 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => {
       utils.addResourcesToPlayer({ ore: 2 });
-      store.gameW.game.currentPlayer = utils.myIndex();
+      store.gameW.game.startingPlayer = utils.myIndex();
     },
   },
   [Action.logging__1_3]: {
@@ -441,7 +441,10 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     title: "+1 ruby",
     enrichment: [{ food: 1 }],
-    action: (p: PlayerType) => utils.addResourcesToPlayer({ rubies: 1 }),
+    action: (p: PlayerType) => {
+      utils.addResourcesToPlayer({ rubies: 1 });
+      store.gameW.game.startingPlayer = utils.myIndex();
+    },
   },
   [Action.imitation__4_7]: {
     availability: [4, 7],
