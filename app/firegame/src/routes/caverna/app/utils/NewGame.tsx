@@ -20,7 +20,8 @@ export enum Task {
   choose_excavation,
   eat_gold,
   breed_2,
-  resource,
+  // TODO explicitly get a dog for housework
+  resource, // Action.housework
 
   wish_for_children,
   ruby_mine_construction,
@@ -50,20 +51,23 @@ export enum Buildable {
   excavation,
   ore_mine_construction,
 
-  dwelling_2_2,
-  dwelling,
+  dwelling_2_2, // ExpeditionActions.dwelling_2_2
+  dwelling, // Action.wish_for_children
 }
 
-// todo audit where these are used
+// TODO order use cases and maybe break em up
 export type TaskType = {
   t: Task;
   d?: {
+    // TODO what is this used for
     num?: number;
-    canSkip?: boolean;
-    r?: keyof ResourcesType;
-    rs?: ResourcesType;
-    build?: Buildable;
-    buildData?: number[];
+    canSkip?: boolean; // Action.sheep/donkey_farming | Action.fence_building | Cavern.guest_room | Action.housework | Action.slash_and_burn
+    // TODO can this be pulled into rs
+    // r?: keyof ResourcesType; // Buildable.ruby_mine | Cavern.builder | Task.breed_2
+    // TODO make sure we skip when we need to
+    rs?: ResourcesType; // Task.weekly_market | Task.extension | Task.resource | Task.sow | Task.build | Cavern.builder | Task.breed_2
+    build?: Buildable; // Task.build | Task.furnish
+    buildData?: [number, number, number, number]; // [BuildableA, BuildableB, isRow ? 0 : 1, isBuildableA ? 0 : 1]
     expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
   };
 };

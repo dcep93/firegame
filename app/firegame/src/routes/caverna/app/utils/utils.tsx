@@ -333,8 +333,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
     const cost = utils.flipResources(oppCost);
     if (utils.addResources(p.resources || {}, cost) === undefined) return false;
-    if (task.d?.r !== undefined) {
-      if (cost[task.d?.r] === undefined) return false;
+    if (task.d?.rs !== undefined) {
+      if (cost[Object.keys(task.d?.rs)[0] as keyof ResourcesType] === undefined)
+        return false;
     }
     if (execute) {
       utils.shiftTask();
@@ -628,9 +629,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           caveTile.built[Buildable.ore_mine]
         )
           return false;
-        const r = utils.getTask().d!.r;
-        if (r !== undefined) {
-          if ((caveTile.built[Buildable.ore_tunnel] || false) !== (r === "ore"))
+        const num = utils.getTask().d!.num;
+        if (num !== undefined) {
+          // TODO do I get a ruby?
+          if ((caveTile.built[Buildable.ore_tunnel] || false) !== (num === 1))
             return false;
         }
         return true;
@@ -875,15 +877,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           !p.caverns[Cavern.working_cave] ||
           task.t !== Task.harvest ||
           store.gameW.game.harvest === Harvest.one_per ||
-          task.d?.r !== undefined
+          task.d?.rs !== undefined
         )
           return false;
+        const cost = {
+          food: 2,
+          [resourceName]: resourceName === "ore" ? -2 : -1,
+        };
+        if (utils.addResources(p.resources || {}, cost) === undefined)
+          return false;
         if (execute) {
-          utils.addResourcesToPlayer({
-            food: 2,
-            [resourceName]: resourceName === "ore" ? -2 : -1,
-          });
-          store.gameW.game.tasks[0].d!.r = resourceName;
+          utils.addResourcesToPlayer(cost);
+          store.gameW.game.tasks[0].d!.rs = { [resourceName]: 1 };
           utils.prepareNextTask(`ate ${resourceName}`);
         }
         return true;
@@ -895,7 +900,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return Object.entries(utils.getAllResources(p))
       .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
       .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
-      .filter(({ r }) => r !== utils.getTask()!.d!.r)
+      .filter(({ r }) => (utils.getTask()!.d!.rs || {})[r] === undefined)
       .filter(({ c }) => c >= 2)
       .map(({ r }) => r);
   }

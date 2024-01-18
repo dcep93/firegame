@@ -160,11 +160,15 @@ const Actions: { [a in Action]: ActionType } = {
         ? utils.queueTasks([
             {
               t: Task.build,
-              d: { canSkip: true, build: Buildable.ruby_mine, r: "stone" },
+              d: {
+                canSkip: true,
+                build: Buildable.ruby_mine,
+                num: 0,
+              },
             },
             {
               t: Task.build,
-              d: { canSkip: true, build: Buildable.ruby_mine, r: "ore" },
+              d: { canSkip: true, build: Buildable.ruby_mine, num: 1 },
             },
           ])
         : utils.queueTasks([

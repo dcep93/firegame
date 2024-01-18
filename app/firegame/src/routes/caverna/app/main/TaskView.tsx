@@ -127,7 +127,7 @@ function Special() {
   }
   if (
     task.t === Task.furnish &&
-    task.d?.num === undefined &&
+    task.d?.rs === undefined &&
     p.caverns[Cavern.builder]
   ) {
     return (
@@ -149,7 +149,7 @@ function Special() {
                 .then(
                   () =>
                     (store.gameW.game.tasks[0].d = {
-                      r: builderResource as keyof ResourcesType,
+                      rs: { [builderResource]: 1 },
                     })
                 )
                 .then(() =>
@@ -287,7 +287,7 @@ function Special() {
                     utils.addResourcesToPlayer({ stone: 1 })
                 )
                 .then(() => task.d!.num!--)
-                .then(() => (task.d!.r = r))
+                .then(() => (task.d!.rs = { [r]: 1 }))
                 .then(() => utils.prepareNextTask(`bred ${r}`))
             }
           >
