@@ -101,24 +101,27 @@ export default function SpecialTaskView() {
                 utils.queueTasks([
                   {
                     t: Task.furnish,
-                    d: { build: Buildable.wish_for_children },
+                    d: { build: Buildable.wish_for_children, canSkip: true },
+                  },
+                  {
+                    t: Task.have_baby,
                   },
                 ])
               )
-              .then(() => utils.prepareNextTask("will furnish dwelling"))
+              .then(() => utils.prepareNextTask("will urgent wish"))
           }
         >
-          get {utils.stringify(growthRewards)}
+          furnish AND/OR have a baby
         </button>
         <button
           onClick={() =>
             Promise.resolve()
               .then(() => utils.shiftTask())
-              .then(() => utils.haveChild(true))
-              .then(() => utils.prepareNextTask("had a baby"))
+              .then(() => utils.addResourcesToPlayer({ gold: 3 }))
+              .then(() => utils.prepareNextTask("ate the baby for 3 gold"))
           }
         >
-          have baby
+          3 points
         </button>
       </div>
     );
@@ -152,12 +155,13 @@ export default function SpecialTaskView() {
   if (
     task.t === Task.harvest &&
     store.gameW.game.harvest === Harvest.skip_one &&
-    task.d!.magicBoolean === undefined
+    task.d?.magicBoolean === undefined
   ) {
     return (
       <div className={styles.bubble}>
         {["skip pulling off fields", "skip breeding"].map((text, i) => (
           <button
+            key={i}
             onClick={() =>
               Promise.resolve()
                 .then(() => (task.d = { magicBoolean: i === 0 }))
@@ -185,7 +189,8 @@ export default function SpecialTaskView() {
         </button>
         <button
           onClick={() =>
-            Promise.resolve(() => utils.haveChild(true))
+            Promise.resolve()
+              .then(() => utils.haveChild(true))
               .then(() => utils.shiftTask())
               .then(() => utils.prepareNextTask("had a baby"))
           }
@@ -196,7 +201,7 @@ export default function SpecialTaskView() {
     );
   }
   if (task.t === Task.breed_2) {
-    const breedables = utils.getBreedables();
+    const breedables = utils.getBreedables(p);
     return (
       <div className={styles.bubble}>
         {breedables.map((r) => (

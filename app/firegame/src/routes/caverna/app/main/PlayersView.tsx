@@ -189,7 +189,10 @@ function Player(
                     whiteSpace: "nowrap",
                   }}
                 >
-                  food cost: {utils.numToFeed(props.p)}
+                  <div>food cost: {utils.numToFeed(props.p)}</div>
+                  <div>
+                    breed potential: {utils.getBreedables(props.p).join(",")}
+                  </div>
                 </div>
               )}
             </div>
@@ -315,7 +318,6 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
   const bonuses = (props.p.tileBonuses || {})[coordsKey];
   const canClick =
     props.isMe && (!isBuilding || utils.build(props.coords, false));
-  const buttonEnabled = !utils.isFarm(props.coords) && props.isMe;
   return (
     <div
       key={coordsKey}
@@ -345,30 +347,38 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
       {t === undefined ? null : props.f(t)}
       {t?.resources === undefined
         ? null
-        : Object.entries(t.resources).map(([resourceName, count]) => (
-            <button
-              key={resourceName}
-              disabled={!buttonEnabled}
-              onClick={(event) =>
-                buttonEnabled &&
-                Promise.resolve(event.stopPropagation())
-                  .then(() =>
-                    utils.moveResources({
-                      [resourceName]: 1,
-                    })
-                  )
-                  .then(
-                    () =>
-                      (t.resources = utils.addResources(t.resources!, {
-                        [resourceName]: -1,
-                      })!)
-                  )
-                  .then(() => utils.prepareNextTask(`moved up ${resourceName}`))
-              }
-            >
-              {resourceName}: {count}
-            </button>
-          ))}
+        : Object.entries(t.resources)
+            .map(([resourceName, count]) => ({
+              resourceName,
+              count,
+              buttonEnabled: !["grain", "vegetables"].includes(resourceName),
+            }))
+            .map(({ resourceName, count, buttonEnabled }) => (
+              <button
+                key={resourceName}
+                disabled={!buttonEnabled}
+                onClick={(event) =>
+                  buttonEnabled &&
+                  Promise.resolve(event.stopPropagation())
+                    .then(() =>
+                      utils.moveResources({
+                        [resourceName]: 1,
+                      })
+                    )
+                    .then(
+                      () =>
+                        (t.resources = utils.addResources(t.resources!, {
+                          [resourceName]: -1,
+                        })!)
+                    )
+                    .then(() =>
+                      utils.prepareNextTask(`moved up ${resourceName}`)
+                    )
+                }
+              >
+                {resourceName}: {count}
+              </button>
+            ))}
     </div>
   );
 }
