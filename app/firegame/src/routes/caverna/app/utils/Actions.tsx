@@ -68,9 +68,17 @@ export enum Action {
   extension,
 }
 
+const growthRewards = {
+  wood: 1,
+  stone: 1,
+  ore: 1,
+  food: 1,
+  gold: 2,
+};
+
 export type ActionType = {
   availability: [number, number];
-  title?: string;
+  title: string | null;
   foodCost?: number;
   enrichment?: ResourcesType[];
   action?: (p: PlayerType) => void;
@@ -79,6 +87,7 @@ export type ActionType = {
 const Actions: { [a in Action]: ActionType } = {
   [Action.blacksmithing]: {
     availability: [-1, 0],
+    title: "forge\nx3 expedition",
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.forge },
@@ -87,6 +96,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.ore_mine_construction]: {
     availability: [-1, 0],
+    title: "construct an ore mine on two adjacent tunnels\nx2 expedition",
     action: (p: PlayerType) =>
       utils.queueTasks([
         {
@@ -102,6 +112,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.sheep_farming]: {
     availability: [-1, 0],
+    title: "construct a fence\nconstruct a double fence\nconstruct a stable",
     enrichment: [{ sheep: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -121,6 +132,8 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.wish_for_children]: {
     availability: [-1.5, 0],
+    title:
+      "furnish a dwelling OR have a baby\nonce family life is revealed,\ntransforms to urgent_wish_for_children\n(furnish a dwelling AND THEN have a baby) OR +3 gold",
     action: (p: PlayerType) =>
       store.gameW.game.actions.includes(Action.family_life)
         ? // urgent wish
@@ -155,6 +168,8 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.ruby_mine_construction]: {
     availability: [-2, 0],
+    title:
+      "build a ruby mine on a tunnel OR (build a ruby mine on an ore tunnel AND +1 ruby)",
     action: (p: PlayerType) =>
       p.caverns[Cavern.guest_room]
         ? utils.queueTasks([
@@ -181,6 +196,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.donkey_farming]: {
     availability: [-2, 0],
+    title: "construct a fence\nconstruct a double fence\nconstruct a stable",
     enrichment: [{ donkeys: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -197,11 +213,14 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.exploration]: {
     availability: [-3, 0],
+    title: "x4 expedition",
     action: (p: PlayerType) =>
       utils.queueTasks([{ t: Task.expedition, d: { remaining: 4 } }]),
   },
   [Action.family_life]: {
     availability: [-3, 0],
+    title:
+      "when revealed, upgrade wish_for_children -> urgent_wish_for_children\nhave a baby\nsow",
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.have_baby },
@@ -210,6 +229,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.ore_delivery]: {
     availability: [-3, 0],
+    title: "+2 ore for each ore_mine",
     enrichment: [{ stone: 1, ore: 1 }],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -221,11 +241,13 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.ore_trading]: {
     availability: [-4, 0],
+    title: "up to 3 times,\ntrade 2 ore for 2 gold and 1 food",
     action: (p: PlayerType) =>
       utils.queueTasks([{ t: Task.ore_trading, d: { remaining: 3 } }]),
   },
   [Action.ruby_delivery]: {
     availability: [-4, 0],
+    title: "+1 ruby if at least 2 ruby mines",
     enrichment: [{ rubies: 2 }, { rubies: 1 }],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -240,6 +262,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.adventure]: {
     availability: [-4, 0],
+    title: "forge\nx1 expedition\nx1 expedition",
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.forge },
@@ -249,6 +272,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.ruby_mining]: {
     availability: [1, 7],
+    title: "+1 ruby if at least 1 ruby mine",
     enrichment: [{ rubies: 1 }],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -263,6 +287,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.housework]: {
     availability: [1, 7],
+    title: "furnish a cavern\n+1 dog",
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.furnish, d: { canSkip: true } },
@@ -271,6 +296,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.slash_and_burn]: {
     availability: [1, 7],
+    title: "place pasture+field\nsow",
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.build, d: { canSkip: true, build: Buildable.farm_tile } },
@@ -279,6 +305,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.drift_mining__1_3]: {
     availability: [1, 3],
+    title: "place cavern+tunnel",
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -287,12 +314,14 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.excavation__1_3]: {
     availability: [1, 3],
+    title: "place cavern+tunnel\nOR\nplace cavern+cavern",
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([{ t: Task.build, d: { build: Buildable.excavation } }]),
   },
   [Action.starting_player__1_3]: {
     availability: [1, 3],
+    title: "+2 ore",
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => {
       utils.addResourcesToPlayer({ ore: 2 });
@@ -301,6 +330,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.logging__1_3]: {
     availability: [1, 3],
+    title: "x1 expedition",
     enrichment: [{ wood: 3 }, { wood: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -312,6 +342,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.supplies]: {
     availability: [1, 3],
+    title: "+1 wood,stone,ore,food\n+2 gold",
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
         wood: 1,
@@ -323,6 +354,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.ore_mining__1_3]: {
     availability: [1, 3],
+    title: "+2 ore for each ore mine",
     enrichment: [{ ore: 2 }, { ore: 1 }],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -334,10 +366,12 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.wood_gathering]: {
     availability: [1, 3],
+    title: null,
     enrichment: [{ wood: 1 }],
   },
   [Action.clearing__1_3]: {
     availability: [1, 3],
+    title: "place pasture+field",
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -350,6 +384,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.sustenance__1_3]: {
     availability: [1, 3],
     enrichment: [{ food: 1 }],
+    title: "place pasture+field",
     action: (p: PlayerType) =>
       utils.queueTasks([
         {
@@ -360,6 +395,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.strip_mining]: {
     availability: [3, 3],
+    title: "+2 wood",
     enrichment: [{ ore: 1 }, { stone: 1 }],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -368,6 +404,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.forest_exploration__3]: {
     availability: [3, 3],
+    title: "+1 vegetables",
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -376,10 +413,12 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.imitation__3]: {
     availability: [3, 3],
+    title: null,
     foodCost: 4,
   },
   [Action.drift_mining__4_7]: {
     availability: [4, 7],
+    title: "place cavern+tunnel",
     enrichment: [{ stone: 2 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -391,6 +430,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.excavation__4_7]: {
     availability: [4, 7],
+    title: "place cavern+tunnel\nOR\nplace cavern+cavern",
     enrichment: [{ stone: 2 }, { stone: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -401,26 +441,37 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.starting_player__4_7]: {
     availability: [4, 7],
+    title: "+1 ruby",
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => utils.addResourcesToPlayer({ rubies: 1 }),
   },
   [Action.imitation__4_7]: {
     availability: [4, 7],
+    title: null,
     foodCost: 2,
   },
   [Action.logging__4_7]: {
     availability: [4, 7],
+    title: "x2 expedition",
     enrichment: [{ wood: 3 }],
     action: (p: PlayerType) =>
       utils.queueTasks([{ t: Task.expedition, d: { remaining: 2 } }]),
   },
   [Action.forest_exploration__4_7]: {
     availability: [4, 7],
+    title: "+2 food",
     enrichment: [{ wood: 2 }, { wood: 1 }],
     action: (p: PlayerType) => utils.addResourcesToPlayer({ food: 2 }),
   },
   [Action.growth]: {
     availability: [4, 7],
+    title: [
+      Object.entries(growthRewards)
+        .map(([k, v]) => `+${v} ${k}`)
+        .join(" , "),
+      "OR",
+      "have a baby",
+    ].join("\n"),
     action: (p: PlayerType) =>
       p.caverns[Cavern.guest_room]
         ? Promise.resolve()
@@ -442,12 +493,14 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.clearing__4_7]: {
     availability: [4, 7],
+    title: "place pasture+field",
     enrichment: [{ wood: 2 }],
     action: (p: PlayerType) =>
       utils.queueTasks([{ t: Task.build, d: { build: Buildable.farm_tile } }]),
   },
   [Action.ore_mining__4_7]: {
     availability: [4, 7],
+    title: "+2 ore for each ore mine",
     enrichment: [{ ore: 3 }, { ore: 2 }],
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -459,6 +512,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.sustenance__4_7]: {
     availability: [4, 7],
+    title: "place pasture+field",
     enrichment: [{ grain: 1 }, { vegetables: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -470,10 +524,12 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.depot_5]: {
     availability: [5, 5],
+    title: null,
     enrichment: [{ wood: 1, ore: 1 }],
   },
   [Action.small_scale_drift_mining]: {
     availability: [5, 5],
+    title: "place cavern+tunnel",
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -482,6 +538,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.weekly_market__5]: {
     availability: [5, 5],
+    title: "+4 gold\ngo to market!",
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({ gold: 4 }) &&
       utils.queueTasks([
@@ -506,10 +563,12 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.imitation__5]: {
     availability: [5, 5],
+    title: null,
     foodCost: 4,
   },
   [Action.hardware_rental__5]: {
     availability: [5, 5],
+    title: "x2 expedition\nsow",
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.expedition, d: { remaining: 2 } },
@@ -518,6 +577,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.fence_building__5]: {
     availability: [5, 5],
+    title: "construct a fence\nconstruct a double fence",
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -530,10 +590,12 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.depot__6_7]: {
     availability: [6, 7],
+    title: null,
     enrichment: [{ wood: 1, ore: 1 }],
   },
   [Action.drift_mining__6_7]: {
     availability: [6, 7],
+    title: "place cavern+tunnel",
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -542,6 +604,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.weekly_market__6_7]: {
     availability: [6, 7],
+    title: "+4 gold\ngo to market!",
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({ gold: 4 }) &&
       utils.queueTasks([
@@ -566,10 +629,12 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.imitation__6_7]: {
     availability: [6, 7],
+    title: null,
     foodCost: 1,
   },
   [Action.hardware_rental__6_7]: {
     availability: [6, 7],
+    title: "+2 wood\nx2 expedition\nsow",
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({ wood: 2 }) &&
       utils.queueTasks([
@@ -579,6 +644,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.fence_building__6_7]: {
     availability: [6, 7],
+    title: "construct a fence\nconstruct a double fence",
     enrichment: [{ wood: 2 }, { wood: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
@@ -594,6 +660,7 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.large_depot]: {
     availability: [7, 7],
+    title: null,
     enrichment: [
       { wood: 2, stone: 1, ore: 1 },
       { wood: 1, stone: 1, ore: 1 },
@@ -601,10 +668,13 @@ const Actions: { [a in Action]: ActionType } = {
   },
   [Action.imitation__7]: {
     availability: [7, 7],
+    title: null,
     foodCost: 0,
   },
   [Action.extension]: {
     availability: [7, 7],
+    title:
+      "place pasture+field AND +1 wood\nOR\nplace cavern+tunnel AND +1 stone",
     action: (p: PlayerType) =>
       p.caverns[Cavern.guest_room]
         ? utils.queueTasks([
@@ -631,14 +701,6 @@ const Actions: { [a in Action]: ActionType } = {
             },
           ]),
   },
-};
-
-const growthRewards = {
-  wood: 1,
-  stone: 1,
-  ore: 1,
-  food: 1,
-  gold: 2,
 };
 
 export { growthRewards };

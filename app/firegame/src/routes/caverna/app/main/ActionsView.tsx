@@ -38,21 +38,19 @@ export default function ActionsView() {
                 .map(({ a, action, takenAction, weaponLevel }, j) => (
                   <div
                     key={a}
-                    title={
-                      action.title ||
-                      [
-                        action.foodCost === undefined
-                          ? null
-                          : `food cost: ${action.foodCost}`,
-                        action.enrichment === undefined
-                          ? null
-                          : `enrichment: ${action.enrichment
-                              .map((e) => JSON.stringify(e))
-                              .join("->")}`,
-                      ]
-                        .filter((s) => s !== null)
-                        .join("\n")
-                    }
+                    title={[
+                      action.title,
+                      action.foodCost === undefined
+                        ? null
+                        : `food cost: ${action.foodCost}`,
+                      action.enrichment === undefined
+                        ? null
+                        : `enrichment: ${action.enrichment
+                            .map((e) => JSON.stringify(e))
+                            .join("->")}`,
+                    ]
+                      .filter((s) => s !== null)
+                      .join("\n")}
                     style={{
                       width: "6em",
                       height: "8em",
