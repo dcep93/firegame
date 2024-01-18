@@ -465,7 +465,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             : -Object.values(toSlaughter).sum()),
       });
       utils.addResourcesToPlayer(toSlaughter);
-      utils.prepareNextTask(`slaughtered ${JSON.stringify(toSlaughter)}`);
+      utils.prepareNextTask(`slaughtered ${utils.stringify(toSlaughter)}`);
     }
     return true;
   }
@@ -1168,6 +1168,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       "lightcoral",
       "lightsalmon",
     ][index];
+  }
+
+  stringify(
+    o: { [k: string]: number } | undefined,
+    delimiter = " "
+  ): string | undefined {
+    return o === undefined
+      ? undefined
+      : Object.entries(o)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(delimiter);
   }
 }
 

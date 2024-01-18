@@ -16,9 +16,9 @@ function Current() {
           {store.gameW.game.tasks.map((t, i) => (
             <div key={i} style={{ display: "flex" }}>
               <div>{Task[t.t]}</div>
-              {t.d === undefined
-                ? null
-                : JSON.stringify(
+              {t.d === undefined ? null : (
+                <div style={{ paddingLeft: "1em" }}>
+                  {utils.stringify(
                     Object.assign(
                       {},
                       null,
@@ -44,6 +44,8 @@ function Current() {
                           }
                     )
                   )}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -186,7 +188,7 @@ function Special() {
               .then(() => utils.prepareNextTask("will furnish dwelling"))
           }
         >
-          get {JSON.stringify(growthRewards)}
+          get {utils.stringify(growthRewards)}
         </button>
         <button
           onClick={() =>
@@ -212,7 +214,7 @@ function Special() {
               .then(() => utils.prepareNextTask("got resources"))
           }
         >
-          get {JSON.stringify(growthRewards)}
+          get {utils.stringify(growthRewards)}
         </button>
         <button
           onClick={() =>

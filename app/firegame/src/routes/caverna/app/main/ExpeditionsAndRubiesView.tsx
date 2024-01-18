@@ -74,7 +74,7 @@ function RubiesElement() {
               onClick={() => utils.rubyTrade(a, true)}
             >
               {RubyActions[a].cost && (
-                <div>cost: {JSON.stringify(RubyActions[a].cost!)}</div>
+                <div>cost: {utils.stringify(RubyActions[a].cost!)}</div>
               )}
             </Button>
           </div>

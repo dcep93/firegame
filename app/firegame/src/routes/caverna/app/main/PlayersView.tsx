@@ -103,7 +103,7 @@ function Player(
                       ? Caverns[t.cavern].points
                       : Caverns[t.cavern].pointsF!(props.p)}
                     ) {Cavern[t.cavern].replaceAll("_", "\n")}{" "}
-                    {JSON.stringify(Caverns[t.cavern!].supply)}
+                    {utils.stringify(Caverns[t.cavern!].supply)}
                   </button>
                 ) : (
                   <div>
@@ -135,7 +135,7 @@ function Player(
                 ></div>
                 <h4
                   style={{ display: "inline-block", margin: 0 }}
-                  title={JSON.stringify(scoreDict, null, 2)}
+                  title={utils.stringify(scoreDict, "\n")}
                 >
                   score: {Object.values(scoreDict).sum()}
                 </h4>
@@ -295,6 +295,7 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
       key={coordsKey}
       style={{
         border: "2px solid black",
+        textAlign: "center",
         width: "8em",
         height: "8em",
         backgroundColor:
@@ -314,7 +315,7 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
             ))
       }
     >
-      {bonuses === undefined ? null : <div>+: {JSON.stringify(bonuses)}</div>}
+      {bonuses === undefined ? null : <div>{utils.stringify(bonuses)}</div>}
       {t === undefined ? null : props.f(t)}
       {t?.resources === undefined
         ? null

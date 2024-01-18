@@ -46,7 +46,7 @@ export default function ActionsView() {
                       action.enrichment === undefined
                         ? null
                         : `enrichment: ${action.enrichment
-                            .map((e) => JSON.stringify(e))
+                            .map((e) => utils.stringify(e))
                             .join("->")}`,
                     ]
                       .filter((s) => s !== null)
@@ -63,9 +63,9 @@ export default function ActionsView() {
                       onClick={() => utils.action(a, true)}
                     >
                       {takenAction === undefined ? (
-                        JSON.stringify(
+                        utils.stringify(
                           (store.gameW.game.actionBonuses || {})[a]
-                        )?.slice(1, -1)
+                        )
                       ) : (
                         <div
                           className={styles.bubble}
