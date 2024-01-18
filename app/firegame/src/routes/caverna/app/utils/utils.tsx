@@ -538,8 +538,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (task.d!.buildData !== undefined) {
       const [b1, b2, rowColumn, tileIndex] = task.d!.buildData;
       const cs = utils.count(2).map(() => Object.assign({}, coords));
+
       cs[1 - tileIndex][1 - rowColumn === 0 ? "i" : "j"] +=
-        rowColumn === 0 ? 1 : -1;
+        (rowColumn === 0 && tileIndex !== coords.k) ||
+        (rowColumn === 1 && tileIndex === 1)
+          ? 1
+          : -1;
       if (!utils._buildHelper(b1, cs[0], execute)) return false;
       if (!utils._buildHelper(b2, cs[1], execute)) return false;
       if (execute) {
