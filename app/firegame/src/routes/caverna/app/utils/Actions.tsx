@@ -416,7 +416,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       p.caverns[Cavern.guest_room]
         ? Promise.resolve()
-            .then(() => utils.addResourcesToPlayer(utils.growthRewards()))
+            .then(() => utils.addResourcesToPlayer(growthRewards))
             .then(() =>
               utils.queueTasks([
                 {
@@ -430,7 +430,7 @@ const Actions: { [a in Action]: ActionType } = {
               t: Task.growth,
             },
           ])
-        : utils.addResourcesToPlayer(utils.growthRewards()),
+        : utils.addResourcesToPlayer(growthRewards),
   },
   [Action.clearing__4_7]: {
     availability: [4, 7],
@@ -601,4 +601,15 @@ const Actions: { [a in Action]: ActionType } = {
           ]),
   },
 };
+
+const growthRewards = {
+  wood: 1,
+  stone: 1,
+  ore: 1,
+  food: 1,
+  gold: 2,
+};
+
+export { growthRewards };
+
 export default Actions;

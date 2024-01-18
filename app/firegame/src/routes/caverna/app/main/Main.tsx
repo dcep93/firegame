@@ -7,6 +7,7 @@ import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
 import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
+// TODO audit all views
 export default function Main() {
   const [selected, updateSelected] = useState<Coords | undefined>(undefined);
   return (

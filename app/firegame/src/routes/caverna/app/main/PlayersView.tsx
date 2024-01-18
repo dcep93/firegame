@@ -191,14 +191,14 @@ function Player(
                   <div key={i}>
                     <button
                       disabled={
-                        !utils.playerResource(
+                        !utils.resourceToTile(
                           props.selected,
                           resourceName,
                           false
                         )
                       }
                       onClick={() =>
-                        utils.playerResource(props.selected, resourceName, true)
+                        utils.resourceToTile(props.selected, resourceName, true)
                       }
                     >
                       {resourceName}: {count}

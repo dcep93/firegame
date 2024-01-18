@@ -54,6 +54,7 @@ export enum Buildable {
   dwelling,
 }
 
+// todo audit where these are used
 export type TaskType = {
   t: Task;
   d?: {
@@ -85,6 +86,7 @@ export type GameType = {
 
   tasks: TaskType[];
 
+  // todo these get shuffled right?
   randomHarvests?: Harvest[];
   upcomingHarvests?: Harvest[];
 
@@ -105,9 +107,9 @@ export type Params = {
 
 export type Coords = { i: number; j: number; k: number };
 export type TileType = {
-  resources: ResourcesType;
   built: { [b in Buildable]?: boolean };
 
+  resources?: ResourcesType;
   supply?: ResourcesType;
   cavern?: Cavern;
   doubleFenceCoords?: Coords;

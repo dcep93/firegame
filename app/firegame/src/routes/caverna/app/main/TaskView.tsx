@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
+import { growthRewards } from "../utils/Actions";
 import { Cavern } from "../utils/Caverns";
 import { ExpeditionAction } from "../utils/ExpeditionActions";
 import { Buildable, Harvest, ResourcesType, Task } from "../utils/NewGame";
@@ -177,7 +178,7 @@ function Special() {
               .then(() => utils.prepareNextTask("will furnish dwelling"))
           }
         >
-          get {JSON.stringify(utils.growthRewards())}
+          get {JSON.stringify(growthRewards)}
         </button>
         <button
           onClick={() =>
@@ -198,12 +199,12 @@ function Special() {
         <button
           onClick={() =>
             Promise.resolve()
-              .then(() => utils.addResourcesToPlayer(utils.growthRewards()))
+              .then(() => utils.addResourcesToPlayer(growthRewards))
               .then(() => utils.shiftTask())
               .then(() => utils.prepareNextTask("got resources"))
           }
         >
-          get {JSON.stringify(utils.growthRewards())}
+          get {JSON.stringify(growthRewards)}
         </button>
         <button
           onClick={() =>

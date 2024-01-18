@@ -20,8 +20,6 @@ import RubyActions, { RubyAction } from "./RubyActions";
 
 const store: StoreType<GameType> = store_;
 
-// TODO audit all functions
-
 class Utils extends SharedUtils<GameType, PlayerType> {
   // GRID COORDS
 
@@ -68,7 +66,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   _sanitize(t: TileType | undefined): TileType | undefined {
     if (t === undefined) return t;
     if (t.built === undefined) t.built = {};
-    if (t.resources === undefined) t.resources = {};
     return t;
   }
 
@@ -692,7 +689,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return utils._addResourcesToPlayer(r, true);
   }
 
-  // TODO no default var
   _addResourcesToPlayer(r: ResourcesType, isMoving: boolean): boolean {
     const p = utils.getMe();
     const addedResources = utils.addResources(p.resources || {}, r);
@@ -714,7 +710,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             if (p.resources![r] === undefined) break;
             const destinations = utils
               .getGrid(p)
-              .filter(({ c }) => utils.playerResource(c, r, false))
+              .filter(({ c }) => utils.resourceToTile(c, r, false))
               .map(({ c, t }) => ({
                 t,
                 rank: [
@@ -741,7 +737,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  playerResource(
+  resourceToTile(
     selected: Coords | undefined,
     resourceName: keyof ResourcesType,
     execute: boolean
@@ -894,6 +890,32 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
   }
 
+  getBreedables(): (keyof AnimalResourcesType)[] {
+    const p = utils.getMe();
+    return Object.entries(utils.getAllResources(p))
+      .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
+      .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
+      .filter(({ r }) => r !== utils.getTask()!.d!.r)
+      .filter(({ c }) => c >= 2)
+      .map(({ r }) => r);
+  }
+
+  // TODO make sure we pull
+  pullOffFields(p: PlayerType) {
+    utils
+      .getGrid(p)
+      .filter(
+        ({ t }) =>
+          t.resources?.grain !== undefined ||
+          t.resources?.vegetables !== undefined
+      )
+      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
+      .forEach(({ t, r }) => {
+        utils.addResourcesToPlayer({ [r]: 1 });
+        t.resources = utils.addResources(t.resources!, { [r]: -1 })!;
+      });
+  }
+
   // GAME FLOW
 
   finishTurn() {
@@ -997,6 +1019,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
     return g;
   }
+
+  // PLAYER
 
   getAllResources(p: PlayerType): ResourcesType {
     return utils
@@ -1105,44 +1129,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       "lightcoral",
       "lightsalmon",
     ][index];
-  }
-
-  // OTHER
-
-  getBreedables(): (keyof AnimalResourcesType)[] {
-    const p = utils.getMe();
-    return Object.entries(utils.getAllResources(p))
-      .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
-      .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
-      .filter(({ r }) => r !== utils.getTask()!.d!.r)
-      .filter(({ c }) => c >= 2)
-      .map(({ r }) => r);
-  }
-
-  // TODO make sure we pull
-  pullOffFields(p: PlayerType) {
-    utils
-      .getGrid(p)
-      .filter(
-        ({ t }) =>
-          t.resources?.grain !== undefined ||
-          t.resources?.vegetables !== undefined
-      )
-      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
-      .forEach(({ t, r }) => {
-        utils.addResourcesToPlayer({ [r]: 1 });
-        t.resources = utils.addResources(t.resources!, { [r]: -1 })!;
-      });
-  }
-
-  growthRewards() {
-    return {
-      wood: 1,
-      stone: 1,
-      ore: 1,
-      food: 1,
-      gold: 2,
-    };
   }
 }
 
