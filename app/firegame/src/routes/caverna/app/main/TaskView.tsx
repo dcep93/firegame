@@ -177,7 +177,10 @@ function Special() {
               .then(() => utils.shiftTask())
               .then(() =>
                 utils.queueTasks([
-                  { t: Task.furnish, d: { build: Buildable.dwelling } },
+                  {
+                    t: Task.furnish,
+                    d: { build: Buildable.wish_for_children },
+                  },
                 ])
               )
               .then(() => utils.prepareNextTask("will furnish dwelling"))
@@ -227,7 +230,7 @@ function Special() {
   if (
     task.t === Task.harvest &&
     store.gameW.game.harvest === Harvest.skip_one &&
-    task.d!.num === undefined
+    task.d!.magicBoolean === undefined
   ) {
     return (
       <div className={styles.bubble}>
@@ -235,7 +238,7 @@ function Special() {
           <button
             onClick={() =>
               Promise.resolve()
-                .then(() => (task.d = { num: i }))
+                .then(() => (task.d = { magicBoolean: i === 0 }))
                 .then(() => i === 1 && utils.pullOffFields(p))
                 .then(() => utils.prepareNextTask(`chose to ${text}`))
             }
@@ -292,8 +295,13 @@ function Special() {
                     r === "donkeys" &&
                     utils.addResourcesToPlayer({ stone: 1 })
                 )
-                .then(() => task.d!.num!--)
-                .then(() => (task.d!.availableResources = { [r]: 1 }))
+                .then(
+                  () =>
+                    (task.d!.availableResources = utils.addResources(
+                      task.d!.availableResources!,
+                      { [r]: -1 }
+                    ))
+                )
                 .then(() => utils.prepareNextTask(`bred ${r}`))
             }
           >
@@ -309,7 +317,7 @@ function Special() {
         <button
           onClick={() =>
             Promise.resolve()
-              .then(() => task.d!.num!--)
+              .then(() => task.d!.remaining!--)
               .then(() =>
                 utils.addResourcesToPlayer({ ore: -2, gold: 2, food: 1 })
               )

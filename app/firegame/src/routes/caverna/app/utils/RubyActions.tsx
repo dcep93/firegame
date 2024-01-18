@@ -36,29 +36,21 @@ const RubyActions: {
   [RubyAction.ore]: { reward: { ore: 1 } },
   [RubyAction.pasture]: {
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        { t: Task.build, d: { num: 1, build: Buildable.pasture } },
-      ]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.pasture } }]),
   },
   [RubyAction.field]: {
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        { t: Task.build, d: { num: 1, build: Buildable.field } },
-      ]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.field } }]),
   },
   [RubyAction.tunnel]: {
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        { t: Task.build, d: { num: 1, build: Buildable.tunnel } },
-      ]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.tunnel } }]),
   },
   [RubyAction.cow]: { reward: { cows: 1 }, cost: { rubies: 1, food: 1 } },
   [RubyAction.cavern]: {
     cost: { rubies: 2 },
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        { t: Task.build, d: { num: 1, build: Buildable.cavern } },
-      ]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.cavern } }]),
   },
 };
 

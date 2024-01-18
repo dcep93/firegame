@@ -68,6 +68,7 @@ export enum Action {
   extension,
 }
 
+// TODO dont use player as argument
 export type ActionType = {
   availability: [number, number];
   title?: string;
@@ -82,7 +83,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.forge },
-        { t: Task.expedition, d: { num: 3 } },
+        { t: Task.expedition, d: { remaining: 3 } },
       ]),
   },
   [Action.ore_mine_construction]: {
@@ -97,7 +98,7 @@ const Actions: { [a in Action]: ActionType } = {
             buildReward: { ore: 3 },
           },
         },
-        { t: Task.expedition, d: { num: 2 } },
+        { t: Task.expedition, d: { remaining: 2 } },
       ]),
   },
   [Action.sheep_farming]: {
@@ -107,15 +108,15 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.build,
-          d: { num: 2, canSkip: true, build: Buildable.fence },
+          d: { canSkip: true, build: Buildable.fence },
         },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
+          d: { canSkip: true, build: Buildable.fence_2 },
         },
         {
           t: Task.build,
-          d: { num: 1, canSkip: true, build: Buildable.stable },
+          d: { canSkip: true, build: Buildable.stable },
         },
       ]),
   },
@@ -131,7 +132,7 @@ const Actions: { [a in Action]: ActionType } = {
                 utils.queueTasks([
                   {
                     t: Task.furnish,
-                    d: { build: Buildable.dwelling, canSkip: true },
+                    d: { build: Buildable.wish_for_children, canSkip: true },
                   },
                   { t: Task.have_baby },
                 ])
@@ -142,7 +143,7 @@ const Actions: { [a in Action]: ActionType } = {
         ? utils.queueTasks([
             {
               t: Task.furnish,
-              d: { build: Buildable.dwelling, canSkip: true },
+              d: { build: Buildable.wish_for_children, canSkip: true },
             },
             { t: Task.have_baby },
           ])
@@ -150,7 +151,7 @@ const Actions: { [a in Action]: ActionType } = {
         ? utils.queueTasks([{ t: Task.wish_for_children }])
         : // no room for a baby, must build dwelling
           utils.queueTasks([
-            { t: Task.furnish, d: { build: Buildable.dwelling } },
+            { t: Task.furnish, d: { build: Buildable.wish_for_children } },
           ]),
   },
   [Action.ruby_mine_construction]: {
@@ -163,12 +164,16 @@ const Actions: { [a in Action]: ActionType } = {
               d: {
                 canSkip: true,
                 build: Buildable.ruby_mine,
-                num: 0,
+                magicBoolean: true,
               },
             },
             {
               t: Task.build,
-              d: { canSkip: true, build: Buildable.ruby_mine, num: 1 },
+              d: {
+                canSkip: true,
+                build: Buildable.ruby_mine,
+                magicBoolean: false,
+              },
             },
           ])
         : utils.queueTasks([
@@ -180,21 +185,21 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ donkeys: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 2, canSkip: true, build: Buildable.fence } },
+        { t: Task.build, d: { canSkip: true, build: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
+          d: { canSkip: true, build: Buildable.fence_2 },
         },
         {
           t: Task.build,
-          d: { num: 1, canSkip: true, build: Buildable.stable },
+          d: { canSkip: true, build: Buildable.stable },
         },
       ]),
   },
   [Action.exploration]: {
     availability: [-3, 0],
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.expedition, d: { num: 4 } }]),
+      utils.queueTasks([{ t: Task.expedition, d: { remaining: 4 } }]),
   },
   [Action.family_life]: {
     availability: [-3, 0],
@@ -218,7 +223,7 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.ore_trading]: {
     availability: [-4, 0],
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.ore_trading, d: { num: 3 } }]),
+      utils.queueTasks([{ t: Task.ore_trading, d: { remaining: 3 } }]),
   },
   [Action.ruby_delivery]: {
     availability: [-4, 0],
@@ -239,8 +244,9 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.forge },
-        { t: Task.expedition, d: { num: 1 } },
-        { t: Task.expedition, d: { num: 1 } },
+        // TODO level up after expedition
+        { t: Task.expedition, d: { remaining: 1 } },
+        { t: Task.expedition, d: { remaining: 1 } },
       ]),
   },
   [Action.ruby_mining]: {
@@ -302,7 +308,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([
         {
           t: Task.expedition,
-          d: { num: 1 },
+          d: { remaining: 1 },
         },
       ]),
   },
@@ -408,7 +414,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     enrichment: [{ wood: 3 }],
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.expedition, d: { num: 2 } }]),
+      utils.queueTasks([{ t: Task.expedition, d: { remaining: 2 } }]),
   },
   [Action.forest_exploration__4_7]: {
     availability: [4, 7],
@@ -508,7 +514,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [5, 5],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.expedition, d: { num: 2 } },
+        { t: Task.expedition, d: { remaining: 2 } },
         { t: Task.sow, d: { availableResources: { grain: 2, vegetables: 2 } } },
       ]),
   },
@@ -517,10 +523,10 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 2, canSkip: true, build: Buildable.fence } },
+        { t: Task.build, d: { canSkip: true, build: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
+          d: { canSkip: true, build: Buildable.fence_2 },
         },
       ]),
   },
@@ -569,7 +575,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({ wood: 2 }) &&
       utils.queueTasks([
-        { t: Task.expedition, d: { num: 2 } },
+        { t: Task.expedition, d: { remaining: 2 } },
         { t: Task.sow, d: { availableResources: { grain: 2, vegetables: 2 } } },
       ]),
   },
@@ -578,10 +584,13 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ wood: 2 }, { wood: 1 }],
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.build, d: { num: 2, canSkip: true, build: Buildable.fence } },
         {
           t: Task.build,
-          d: { num: 4, canSkip: true, build: Buildable.fence_2 },
+          d: { remaining: 2, canSkip: true, build: Buildable.fence },
+        },
+        {
+          t: Task.build,
+          d: { remaining: 4, canSkip: true, build: Buildable.fence_2 },
         },
       ]),
   },

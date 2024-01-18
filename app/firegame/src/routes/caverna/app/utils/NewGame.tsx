@@ -50,21 +50,21 @@ export enum Buildable {
   excavation,
   ore_mine_construction,
 
-  dwelling_2_2, // ExpeditionActions.dwelling_2_2
-  dwelling, // Action.wish_for_children
+  expedition_dwelling_2_2,
+  wish_for_children,
 }
 
 export type TaskType = {
   t: Task;
   d?: {
-    // TODO what is this used for
-    num?: number;
+    expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
+    magicBoolean?: boolean; // Buildable.ruby_mine | Harvest.skip_one
+    remaining?: number; // Action.ore_trading | Task.expedition
     canSkip?: boolean; //  Cavern.guest_room | Action.housework | Task.build(Action.slash_and_burn | Action.sheep/donkey_farming | Action.fence_building)
     availableResources?: ResourcesType; // Task.weekly_market | Task.sow | Cavern.builder | Task.breed_2
     build?: Buildable; // Task.build | Task.furnish
     buildReward?: ResourcesType; // Task.extension | Task.ore_mine_construction
     buildData?: [number, number, number, number]; // [BuildableA, BuildableB, isRow ? 0 : 1, isBuildableA ? 0 : 1]
-    expeditionsTaken?: { [e in ExpeditionAction]?: boolean };
   };
 };
 

@@ -57,9 +57,8 @@ const ExpeditionActions: {
   [ExpeditionAction.stable]: {
     level: 8,
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        { t: Task.build, d: { num: 0, build: Buildable.stable } },
-      ]),
+      utils.addResourcesToPlayer({ stone: 1 }) &&
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.stable } }]),
   },
   [ExpeditionAction.tunnel]: {
     level: 9,
@@ -69,33 +68,31 @@ const ExpeditionActions: {
   [ExpeditionAction.fence_1]: {
     level: 9,
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        { t: Task.build, d: { num: 1, build: Buildable.fence } },
-      ]),
+      utils.addResourcesToPlayer({ wood: 1 }) &&
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.fence } }]),
   },
   [ExpeditionAction.cow]: { level: 10, reward: { cows: 1 } },
   [ExpeditionAction.fence_2]: {
     level: 10,
     action: (p: PlayerType) =>
+      utils.addResourcesToPlayer({ wood: 2 }) &&
       utils.queueTasks([
         {
           t: Task.build,
-          d: { num: 2, build: Buildable.fence_2 },
+          d: { build: Buildable.fence_2 },
         },
       ]),
   },
   [ExpeditionAction.pasture]: {
     level: 11,
     action: (p: PlayerType) =>
-      utils.queueTasks([
-        { t: Task.build, d: { num: 1, build: Buildable.pasture } },
-      ]),
+      utils.queueTasks([{ t: Task.build, d: { build: Buildable.pasture } }]),
   },
   [ExpeditionAction.dwelling_2_2]: {
     level: 11,
     action: (p: PlayerType) =>
       utils.queueTasks([
-        { t: Task.furnish, d: { build: Buildable.dwelling_2_2 } },
+        { t: Task.furnish, d: { build: Buildable.expedition_dwelling_2_2 } },
       ]),
   },
   [ExpeditionAction.field]: {

@@ -162,7 +162,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       );
     }
     if (task.t === Task.ore_trading) {
-      return task.d!.num! > 0 && (p.resources?.ore || 0) >= 2;
+      return task.d!.remaining! > 0 && (p.resources?.ore || 0) >= 2;
     }
     if (task.t === Task.slaughter) {
       return Object.keys(utils._toSlaughter()).length > 0;
@@ -174,7 +174,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       );
     }
     if (task.t === Task.expedition) {
-      return task.d!.num! > 0 && p.usedDwarves![0] !== 0;
+      return task.d!.remaining! > 0 && p.usedDwarves![0] !== 0;
     }
     if (task.t === Task.sow) {
       return (
@@ -214,7 +214,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (task.t !== Task.harvest) return false;
     if (
       store.gameW.game.harvest === Harvest.skip_one &&
-      task.d?.num === undefined
+      task.d?.magicBoolean === undefined
     )
       return false;
     const numToFeed =
@@ -236,19 +236,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           );
     if ((p.resources?.food || 0) < numToFeed) return false;
     if (execute) {
-      if (store.gameW.game.harvest !== Harvest.one_per) {
-        if (task.d?.num !== 1) {
-          const bs = utils.getBreedables();
-          bs.forEach((r) => utils.addResourcesToPlayer({ [r]: 1 }));
-          if (p.caverns[Cavern.breeding_cave]) {
-            utils.addResourcesToPlayer({ food: [0, 1, 2, 3, 5][bs.length] });
-          }
-          if (p.caverns[Cavern.quarry] && bs.includes("donkeys")) {
-            utils.addResourcesToPlayer({ stone: 1 });
-          }
+      if (task.d?.magicBoolean !== false) {
+        const bs = utils.getBreedables();
+        bs.forEach((r) => utils.addResourcesToPlayer({ [r]: 1 }));
+        if (p.caverns[Cavern.breeding_cave]) {
+          utils.addResourcesToPlayer({ food: [0, 1, 2, 3, 5][bs.length] });
+        }
+        if (p.caverns[Cavern.quarry] && bs.includes("donkeys")) {
+          utils.addResourcesToPlayer({ stone: 1 });
         }
       }
-      delete (task.d! || {}).num;
+      if (store.gameW.game.harvest === Harvest.skip_one) {
+        delete task.d!.magicBoolean;
+      }
       utils.addResourcesToPlayer({ food: -numToFeed });
       utils.shiftTask();
       utils.prepareNextTask(`fed ${numToFeed}`);
@@ -324,14 +324,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const task = utils.getTask();
     if (task.t !== Task.furnish) return false;
     if (
-      task.d?.build === Buildable.dwelling &&
+      task.d?.build === Buildable.wish_for_children &&
       Caverns[c].category !== CavernCategory.dwelling
     )
       return false;
-    if (task.d?.build === Buildable.dwelling_2_2 && c !== Cavern.dwelling)
+    if (
+      task.d?.build === Buildable.expedition_dwelling_2_2 &&
+      c !== Cavern.dwelling
+    )
       return false;
     var oppCost =
-      task.d?.build === Buildable.dwelling_2_2
+      task.d?.build === Buildable.expedition_dwelling_2_2
         ? { stone: 2, wood: 2 }
         : Caverns[c].cost;
     if (oppCost.wood !== undefined && p.caverns[Cavern.carpenter]) {
@@ -390,11 +393,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const t = utils.getTask();
     if (t.t !== Task.expedition) return false;
     if ((t.d!.expeditionsTaken || {})[a] !== undefined) return false;
-    if (a === ExpeditionAction.strength && t.d!.num !== 1) return false;
+    if (a === ExpeditionAction.strength && t.d!.remaining !== 1) return false;
     const e = ExpeditionActions[a];
     if (p.usedDwarves![0] < e.level) return false;
     if (execute) {
-      t.d!.num!--;
+      t.d!.remaining!--;
       if (t.d!.expeditionsTaken === undefined) t.d!.expeditionsTaken = {};
       t.d!.expeditionsTaken[a] = true;
       const e = ExpeditionActions[a];
@@ -646,9 +649,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (tile === undefined) return false;
         if (!tile.built[Buildable.tunnel] || tile.built[Buildable.ore_mine])
           return false;
-        const num = utils.getTask().d!.num;
-        if (num !== undefined) {
-          if ((tile.built[Buildable.ore_tunnel] || false) !== (num === 1))
+        const magicBoolean = utils.getTask().d!.magicBoolean;
+        if (magicBoolean !== undefined) {
+          if ((tile.built[Buildable.ore_tunnel] || false) !== magicBoolean)
             return false;
         }
         return true;
@@ -658,18 +661,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   _getBuildCost(task: TaskType): ResourcesType | undefined {
     const p = utils.getMe();
-    switch (task.d!.build!) {
+    const b = task.d!.build!;
+    switch (b) {
       case Buildable.fence:
       case Buildable.fence_2:
         return {
-          wood: -task.d!.num! + (p.caverns[Cavern.carpenter] ? 1 : 0),
+          wood:
+            b === Buildable.fence
+              ? -2
+              : -4 + (p.caverns[Cavern.carpenter] ? 1 : 0),
         };
       case Buildable.stable:
         return {
-          stone: Math.min(
-            0,
-            -task.d!.num! + (p.caverns[Cavern.stone_carver] ? 1 : 0)
-          ),
+          stone: Math.min(0, -1 + (p.caverns[Cavern.stone_carver] ? 1 : 0)),
         };
     }
   }
