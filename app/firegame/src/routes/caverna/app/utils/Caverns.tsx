@@ -444,7 +444,8 @@ const Caverns: { [t in Cavern]: CavernType } = {
     cost: { stone: 2 },
     category: CavernCategory.yellow,
     title: "prevents up to 7 negative points",
-    points: 0,
+    pointsF: (p: PlayerType) =>
+      Math.min(7, -Object.values(utils.getNegativePointsDict(p)).sum()),
   },
   [Cavern.fodder_chamber]: {
     cost: { grain: 2, stone: 1 },

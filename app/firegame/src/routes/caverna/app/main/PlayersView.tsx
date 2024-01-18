@@ -125,9 +125,7 @@ function Player(
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
-            {props.p.begging !== undefined && (
-              <div>begging: {props.p.begging}</div>
-            )}
+            {props.p.begging === 0 && <div>begging: {props.p.begging}</div>}
             <div>
               ready dwarves:{" "}
               {(props.p.availableDwarves || []).map((d, i) => (

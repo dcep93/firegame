@@ -244,7 +244,6 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.forge },
-        // TODO level up after expedition
         { t: Task.expedition, d: { remaining: 1 } },
         { t: Task.expedition, d: { remaining: 1 } },
       ]),

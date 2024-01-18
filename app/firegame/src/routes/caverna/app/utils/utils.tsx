@@ -174,7 +174,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       );
     }
     if (task.t === Task.expedition) {
-      return task.d!.remaining! > 0 && p.usedDwarves![0] !== 0;
+      if (task.d!.remaining === 0) {
+        p.usedDwarves![0]++;
+        return false;
+      }
+      return p.usedDwarves![0] !== 0;
     }
     if (task.t === Task.sow) {
       return (
@@ -544,7 +548,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       if (execute) {
         // TODO can I build double fence
         if (task.d!.build === Buildable.fence_2) {
-          this.getTile(cs[0], p)!.doubleFenceCoords = cs[1];
+          utils.getTile(cs[0], p)!.doubleFenceCoords = cs[1];
           const tt = utils.getTile(cs[1], p)!;
           if (tt.resources !== undefined) {
             utils.addResourcesToPlayer(tt.resources);
@@ -1071,8 +1075,33 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       );
   }
 
+  getNegativePointsDict(p: PlayerType): { [k: string]: number } {
+    return {
+      unusedSpace: -[0, 1]
+        .flatMap((k) =>
+          utils
+            .count(utils.numRows)
+            .flatMap((i) =>
+              utils.count(utils.numCols).map((j) => ({ i, j, k }))
+            )
+        )
+        .filter((coords) => utils.getTile(coords, p) === undefined).length,
+      missingAnimal:
+        -2 *
+        (4 -
+          Object.keys(utils.getAllResources(p))
+            .map((r) => r as keyof ResourcesType)
+            .filter((r) =>
+              (
+                ["sheep", "donkeys", "boars", "cows"] as (keyof ResourcesType)[]
+              ).includes(r)
+            ).length),
+      begging: -3 * p.begging,
+    };
+  }
+
   getScoreDict(p: PlayerType): { [k: string]: number } {
-    const allResources = this.getAllResources(p);
+    const allResources = utils.getAllResources(p);
     return {
       animal: Object.entries(allResources)
         .map(([r, c]) => ({ r: r as keyof ResourcesType, c }))
@@ -1093,33 +1122,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       vegetables: allResources.vegetables || 0,
       rubies: allResources.rubies || 0,
       dwarves: (p.availableDwarves || []).concat(p.usedDwarves || []).length,
-      unusedSpaceMissingAnimal: Math.min(
-        0,
-        ((p.caverns || {})[Cavern.writing_chamber] ? 7 : 0) +
-          -2 *
-            (4 -
-              Object.keys(allResources)
-                .map((r) => r as keyof ResourcesType)
-                .filter((r) =>
-                  (
-                    [
-                      "sheep",
-                      "donkeys",
-                      "boars",
-                      "cows",
-                    ] as (keyof ResourcesType)[]
-                  ).includes(r)
-                ).length) -
-          [0, 1]
-            .flatMap((k) =>
-              utils
-                .count(utils.numRows)
-                .flatMap((i) =>
-                  utils.count(utils.numCols).map((j) => ({ i, j, k }))
-                )
-            )
-            .filter((coords) => utils.getTile(coords, p) === undefined).length
-      ),
       furnishingPasturesMines:
         Object.keys(p.caverns || {})
           .map((t) => parseInt(t) as Cavern)
@@ -1152,7 +1154,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           tile.points !== undefined ? tile.points : tile.pointsF!(p)
         )
         .sum(),
-      goldBegging: (p.resources || {}).gold || 0 - 3 * (p.begging || 0),
+      gold: p.resources?.gold || 0,
+      ...utils.getNegativePointsDict(p),
     };
   }
 

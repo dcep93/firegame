@@ -126,7 +126,7 @@ export type PlayerType = {
 
   resources?: ResourcesType;
 
-  begging?: number;
+  begging: number;
 
   caverns: { [t in Cavern]?: boolean };
 
@@ -216,6 +216,7 @@ function setPlayers(game: GameType): GameType {
 
       usedDwarves: [0, 0],
 
+      begging: 0,
       resources: { food: [1, 1, 2, 3, 3, 3, 3][index] },
 
       caverns: { [Cavern.starting_dwelling]: true },
