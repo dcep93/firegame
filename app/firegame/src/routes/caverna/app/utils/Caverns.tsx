@@ -339,9 +339,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     category: CavernCategory.yellow,
     title: "convert: 2 [grain] -> 3 [points] OR 4 [food]",
     points: 3,
-    action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({ grain: -2 }) &&
-      utils.queueTasks([{ t: Task.beer_parlor }]),
+    action: (p: PlayerType) => utils.queueTasks([{ t: Task.beer_parlor }]),
   },
   [Cavern.blacksmithing_parlor]: {
     cost: { ore: 3 },

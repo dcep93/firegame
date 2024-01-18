@@ -58,8 +58,11 @@ const ExpeditionActions: {
   [ExpeditionAction.stable]: {
     level: 8,
     action: () =>
-      utils.addResourcesToPlayer({ stone: 1 }) &&
-      utils.queueTasks([{ t: Task.build, d: { build: Buildable.stable } }]),
+      Promise.resolve()
+        .then(() => utils.addResourcesToPlayer({ stone: 1 }))
+        .then(() =>
+          utils.queueTasks([{ t: Task.build, d: { build: Buildable.stable } }])
+        ),
   },
   [ExpeditionAction.tunnel]: {
     level: 9,
@@ -69,20 +72,21 @@ const ExpeditionActions: {
   [ExpeditionAction.fence_1]: {
     level: 9,
     action: () =>
-      utils.addResourcesToPlayer({ wood: 1 }) &&
-      utils.queueTasks([{ t: Task.build, d: { build: Buildable.fence } }]),
+      Promise.resolve()
+        .then(() => utils.addResourcesToPlayer({ wood: 1 }))
+        .then(() =>
+          utils.queueTasks([{ t: Task.build, d: { build: Buildable.fence } }])
+        ),
   },
   [ExpeditionAction.cow]: { level: 10, reward: { cows: 1 } },
   [ExpeditionAction.fence_2]: {
     level: 10,
     action: () =>
-      utils.addResourcesToPlayer({ wood: 2 }) &&
-      utils.queueTasks([
-        {
-          t: Task.build,
-          d: { build: Buildable.fence_2 },
-        },
-      ]),
+      Promise.resolve()
+        .then(() => utils.addResourcesToPlayer({ wood: 2 }))
+        .then(() =>
+          utils.queueTasks([{ t: Task.build, d: { build: Buildable.fence_2 } }])
+        ),
   },
   [ExpeditionAction.pasture]: {
     level: 11,

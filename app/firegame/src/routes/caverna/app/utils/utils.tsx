@@ -549,7 +549,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.shiftTask();
       if (task.d?.buildReward !== undefined)
         utils.addResourcesToPlayer(task.d!.buildReward);
-      utils.addResourcesToPlayer(utils._getBuildCost(task) || {});
+      utils.addResourcesToPlayer(utils.log(utils._getBuildCost(task)) || {});
       utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
     }
     return true;
@@ -724,18 +724,29 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return addTo;
   }
 
-  addResourcesToPlayer(r: ResourcesType): boolean {
-    return utils._addResourcesToPlayer(r, false);
+  convert(r: ResourcesType) {
+    utils._addResourcesToPlayer(r, false, true);
   }
 
-  moveResources(r: ResourcesType): boolean {
-    return utils._addResourcesToPlayer(r, true);
+  addResourcesToPlayer(r: ResourcesType) {
+    utils._addResourcesToPlayer(r, false, false);
   }
 
-  _addResourcesToPlayer(r: ResourcesType, isMoving: boolean): boolean {
+  moveResources(r: ResourcesType) {
+    utils._addResourcesToPlayer(r, true, false);
+  }
+
+  _addResourcesToPlayer(
+    r: ResourcesType,
+    isMoving: boolean,
+    isConvert: boolean
+  ) {
     const p = utils.getMe();
     const addedResources = utils.addResources(p.resources || {}, r);
-    if (addedResources === undefined) return false;
+    if (addedResources === undefined) {
+      if (isConvert) return;
+      throw new Error("illegal");
+    }
     p.resources = addedResources;
     if ((r.dogs || 0) > 0 && p.caverns[Cavern.dog_school])
       utils.addResourcesToPlayer({ wood: r.dogs! });
@@ -777,7 +788,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           }
         });
     }
-    return true;
   }
 
   resourceToTile(

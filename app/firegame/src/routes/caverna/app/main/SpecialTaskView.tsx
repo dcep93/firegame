@@ -308,8 +308,8 @@ export default function SpecialTaskView() {
     return (
       <div className={styles.bubble}>
         {[
-          { message: "3 gold", reward: { gold: 3 } },
-          { message: "4 food", reward: { food: 4 } },
+          { message: "2 grain -> 3 gold", reward: { grain: -2, gold: 3 } },
+          { message: "2 grain -> 4 food", reward: { grain: -2, food: 4 } },
         ].map(({ message, reward }) => (
           <button
             key={message}
