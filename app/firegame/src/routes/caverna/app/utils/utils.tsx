@@ -184,19 +184,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return (
         Object.keys(task.d!.availableResources!).filter(
           (resourceName) =>
-            // TODO audit || {})[
             (p.resources || {})[resourceName as keyof ResourcesType]! > 0
         ).length > 0
       );
     }
     if (task.t === Task.build) {
-      // TODO skip/allowed build stable
-      if (
-        task.d!.build === Buildable.stable &&
-        utils.getGrid(p).filter(({ t }) => (t.built || {})[Buildable.stable])
-          .length === 3
-      )
-        return false;
       if (
         task.d?.canSkip &&
         utils.addResources(
@@ -676,6 +668,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               : -4 + (p.caverns[Cavern.carpenter] ? 1 : 0),
         };
       case Buildable.stable:
+        if (
+          utils.getGrid(p).filter(({ t }) => (t.built || {})[Buildable.stable])
+            .length >= 3
+        )
+          // 1000 gold to build after 3 stables
+          return { gold: 1000 };
         return {
           stone: Math.min(0, -1 + (p.caverns[Cavern.stone_carver] ? 1 : 0)),
         };

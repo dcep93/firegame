@@ -68,7 +68,6 @@ export enum Action {
   extension,
 }
 
-// TODO dont use player as argument
 export type ActionType = {
   availability: [number, number];
   title?: string;
