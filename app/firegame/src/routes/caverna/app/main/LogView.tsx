@@ -2,19 +2,23 @@ import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
 import { store } from "../utils/utils";
 
-const keys = ["score", "toUpdate", "playerIndex", "firebaseId", "time"];
+const keys = ["time", "playerIndex", "score", "toUpdate"];
 
 export default function LogView() {
   const [visible, update] = useState(false);
   return (
     <div className={styles.bubble}>
-      <h3 onClick={() => update(!visible)}>log</h3>
+      <h3 style={{ cursor: "pointer" }} onClick={() => update(!visible)}>
+        log
+      </h3>
       <div hidden={!visible}>
-        <table style={{ width: "100%" }}>
+        <table>
           <thead>
             <tr>
               {keys.map((k) => (
-                <th key={k}>{k}</th>
+                <th key={k} style={{ padding: "0 2em" }}>
+                  {k}
+                </th>
               ))}
             </tr>
           </thead>
