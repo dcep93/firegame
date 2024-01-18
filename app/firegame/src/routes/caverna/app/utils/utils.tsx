@@ -165,7 +165,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return task.d!.remaining! > 0 && (p.resources?.ore || 0) >= 2;
     }
     if (task.t === Task.slaughter) {
-      return Object.keys(utils._toSlaughter()).length > 0;
+      return Object.keys(utils.toSlaughter(utils.getMe())).length > 0;
     }
     if (task.t === Task.forge) {
       return (
@@ -213,26 +213,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       task.d?.magicBoolean === undefined
     )
       return false;
-    const numToFeed =
-      store.gameW.game.harvest === Harvest.one_per
-        ? p.usedDwarves!.length
-        : Math.max(
-            0,
-            p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
-              (!p.caverns[Cavern.mining_cave]
-                ? 0
-                : utils
-                    .getGrid(p)
-                    .filter(
-                      ({ t }) =>
-                        t.resources?.donkeys !== undefined &&
-                        (t.built[Buildable.ruby_mine] ||
-                          t.built[Buildable.ore_mine])
-                    ).length)
-          );
+    const numToFeed = utils.numToFeed(p);
     if ((p.resources?.food || 0) < numToFeed) return false;
     if (execute) {
-      if (task.d?.magicBoolean !== false) {
+      if (
+        store.gameW.game.harvest !== Harvest.one_per &&
+        task.d?.magicBoolean !== false
+      ) {
         const bs = utils.getBreedables();
         bs.forEach((r) => utils.addResourcesToPlayer({ [r]: 1 }));
         if (p.caverns[Cavern.breeding_cave]) {
@@ -427,8 +414,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  _toSlaughter(): AnimalResourcesType {
-    const p = utils.getMe();
+  toSlaughter(p: PlayerType): AnimalResourcesType {
     return Object.fromEntries(
       Object.entries(p.resources || {})
         .map(([r, c]) => ({ c, r: r as keyof ResourcesType }))
@@ -439,7 +425,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   slaughter(execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
-    const toSlaughter = utils._toSlaughter();
+    const toSlaughter = utils.toSlaughter(utils.getMe());
     if (Object.keys(toSlaughter).length === 0) return false;
     if (execute) {
       utils.addResourcesToPlayer({
@@ -696,6 +682,25 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   // RESOURCES
 
+  numToFeed(p: PlayerType): number {
+    return store.gameW.game.harvest === Harvest.one_per
+      ? p.usedDwarves!.length
+      : Math.max(
+          0,
+          p.usedDwarves!.map((d) => (d < 0 ? 1 : 2)).sum() -
+            (!p.caverns[Cavern.mining_cave]
+              ? 0
+              : utils
+                  .getGrid(p)
+                  .filter(
+                    ({ t }) =>
+                      t.resources?.donkeys !== undefined &&
+                      (t.built[Buildable.ruby_mine] ||
+                        t.built[Buildable.ore_mine])
+                  ).length)
+        );
+  }
+
   flipResources(rs: ResourcesType): ResourcesType {
     return Object.fromEntries(Object.entries(rs).map(([k, v]) => [k, -v]));
   }
@@ -741,7 +746,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     )
       utils.addResourcesToPlayer({ ore: r.stone! });
     if (!isMoving) {
-      Object.keys(utils._toSlaughter())
+      Object.keys(utils.toSlaughter(p))
         .map((r) => r as keyof ResourcesType)
         .forEach((r) => {
           while (true) {
@@ -804,15 +809,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             task.d!.availableResources![resourceName] &&
             tile !== undefined &&
             tile.resources === undefined &&
-            !tile.built[Buildable.pasture]
+            tile.built[Buildable.field]
           ) {
+            const cost = { [resourceName]: -1 };
+            utils.addResourcesToPlayer(cost);
+            task.d!.availableResources = utils.addResources(
+              task.d!.availableResources!,
+              cost
+            );
             tile.resources = {
               [resourceName]: resourceName === "grain" ? 3 : 2,
             };
-            task.d!.availableResources = utils.addResources(
-              task.d!.availableResources!,
-              { [resourceName]: -1 }
-            );
             utils.prepareNextTask(`planted ${resourceName}`);
           } else {
             utils.addResourcesToPlayer({
@@ -959,17 +966,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           t.resources?.grain !== undefined ||
           t.resources?.vegetables !== undefined
       )
-      .map(({ t }) => ({ t, r: Object.keys(t)[0] }))
+      .map(({ t }) => ({ t, r: Object.keys(t.resources!)[0] }))
       .forEach(({ t, r }) => {
         utils.addResourcesToPlayer({ [r]: 1 });
-        t.resources = utils.addResources(t.resources!, { [r]: -1 })!;
+        t.resources = utils.addResources(t.resources!, { [r]: -1 }) || {};
       });
   }
 
   // GAME FLOW
 
   finishTurn() {
-    if (Object.keys(utils._toSlaughter()).length > 0) {
+    if (Object.keys(utils.toSlaughter(utils.getMe())).length > 0) {
       utils.queueTasks([{ t: Task.slaughter }]);
       return;
     }

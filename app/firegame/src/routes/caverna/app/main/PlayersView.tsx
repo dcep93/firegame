@@ -165,18 +165,43 @@ function Player(
             </div>
             <h2>{props.p.userName}</h2>
           </div>
-          <div>
-            {!props.isMe ? null : (
-              <div className={styles.bubble}>
-                <button
-                  disabled={!utils.slaughter(false)}
-                  onClick={() => utils.slaughter(true)}
+          <div style={{ display: "flex" }}>
+            <div style={{ position: "relative" }}>
+              {!props.isMe ? null : (
+                <div style={{ position: "absolute", right: 0 }}>
+                  <div className={styles.bubble}>
+                    <button
+                      disabled={!utils.slaughter(false)}
+                      onClick={() => utils.slaughter(true)}
+                    >
+                      slaughter
+                    </button>
+                  </div>
+                </div>
+              )}
+              {store.gameW.game.harvest === undefined ? null : (
+                <div
+                  className={styles.bubble}
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 0,
+                    whiteSpace: "nowrap",
+                  }}
                 >
-                  slaughter
-                </button>
-              </div>
-            )}
-            <div className={styles.bubble}>
+                  food cost: {utils.numToFeed(props.p)}
+                </div>
+              )}
+            </div>
+            <div
+              className={styles.bubble}
+              style={{
+                backgroundColor:
+                  Object.keys(utils.toSlaughter(props.p)).length > 0
+                    ? "lightgrey"
+                    : undefined,
+              }}
+            >
               {(
                 [
                   "dogs",
@@ -290,6 +315,7 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
   const bonuses = (props.p.tileBonuses || {})[coordsKey];
   const canClick =
     props.isMe && (!isBuilding || utils.build(props.coords, false));
+  const buttonEnabled = !utils.isFarm(props.coords) && props.isMe;
   return (
     <div
       key={coordsKey}
@@ -322,8 +348,9 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
         : Object.entries(t.resources).map(([resourceName, count]) => (
             <button
               key={resourceName}
+              disabled={!buttonEnabled}
               onClick={(event) =>
-                props.isMe &&
+                buttonEnabled &&
                 Promise.resolve(event.stopPropagation())
                   .then(() =>
                     utils.moveResources({

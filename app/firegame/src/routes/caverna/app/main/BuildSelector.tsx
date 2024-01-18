@@ -4,7 +4,6 @@ import utils from "../utils/utils";
 
 export default function BuildSelector() {
   const d = utils.getTask().d!;
-  if (d.buildData !== undefined) return null;
   const allChoices = {
     [Buildable.cavern_tunnel]: [[Buildable.cavern, Buildable.tunnel]],
     [Buildable.excavation]: [

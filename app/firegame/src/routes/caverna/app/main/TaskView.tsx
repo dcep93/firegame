@@ -9,9 +9,10 @@ function Current() {
     <div className={styles.bubble}>
       <div>
         <div>current: {utils.getCurrent().userName}</div>
-        {store.gameW.game.harvest !== undefined ? (
-          <div>harvest: {Harvest[store.gameW.game.harvest]}</div>
-        ) : (
+        {store.gameW.game.harvest === undefined ? null : (
+          <div>harvest {Harvest[store.gameW.game.harvest]}</div>
+        )}
+        {
           <div>
             {store.gameW.game.tasks.map((t, i) => (
               <div key={i} style={{ display: "flex" }}>
@@ -56,7 +57,7 @@ function Current() {
               </div>
             ))}
           </div>
-        )}
+        }
       </div>
       <div style={{ textAlign: "right" }}>
         <div>
@@ -81,7 +82,8 @@ function Current() {
 }
 
 function Skip() {
-  return !utils.getTask()?.d?.canSkip ? null : (
+  const t = utils.getTask();
+  return !t?.d?.canSkip && t?.t !== Task.sow ? null : (
     <div className={styles.bubble}>
       <button
         onClick={() =>
