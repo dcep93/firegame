@@ -2,6 +2,7 @@ import { Cavern } from "./Caverns";
 import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
 import utils, { store } from "./utils";
 
+// TODO order
 export enum Action {
   // 0-1
   blacksmithing,

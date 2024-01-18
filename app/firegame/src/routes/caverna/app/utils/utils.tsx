@@ -272,6 +272,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }) === undefined
     )
       return false;
+    if (
+      store.gameW.game.startingPlayer === p.index &&
+      [Action.starting_player__1_3, Action.starting_player__4_7].includes(a)
+    )
+      return false;
     if (execute) {
       utils.shiftTask();
       p.usedDwarves = p
@@ -639,6 +644,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return true;
       case Buildable.cavern:
         if (tile !== undefined) return false;
+        return true;
+      case Buildable.ore_mine:
+      case Buildable.ore_tunnel:
+        if (tile === undefined) return false;
+        if (!tile.built[Buildable.tunnel]) return false;
+        if (Object.keys(tile.built).length > 1) return false;
         return true;
       case Buildable.ruby_mine:
         if (tile === undefined) return false;
