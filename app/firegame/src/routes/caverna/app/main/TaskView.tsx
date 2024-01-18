@@ -100,7 +100,7 @@ function Special() {
         >
           finish
         </button>
-        {Object.entries(task.d!.rs!)
+        {Object.entries(task.d!.availableResources!)
           .map(([r, gold]) => ({
             r,
             gold,
@@ -114,7 +114,12 @@ function Special() {
               }
               onClick={() =>
                 Promise.resolve()
-                  .then(() => delete task.d!.rs![r as keyof ResourcesType])
+                  .then(
+                    () =>
+                      delete task.d!.availableResources![
+                        r as keyof ResourcesType
+                      ]
+                  )
                   .then(() => utils.addResourcesToPlayer(cost))
                   .then(() => utils.prepareNextTask(`bought ${r}`))
               }
@@ -127,7 +132,7 @@ function Special() {
   }
   if (
     task.t === Task.furnish &&
-    task.d?.rs === undefined &&
+    task.d?.availableResources === undefined &&
     p.caverns[Cavern.builder]
   ) {
     return (
@@ -149,7 +154,7 @@ function Special() {
                 .then(
                   () =>
                     (store.gameW.game.tasks[0].d = {
-                      rs: { [builderResource]: 1 },
+                      availableResources: { [builderResource]: 1 },
                     })
                 )
                 .then(() =>
@@ -265,6 +270,7 @@ function Special() {
       </div>
     );
   }
+  // TODO breeding_cave every year
   if (task.t === Task.breed_2) {
     const breedables = utils.getBreedables();
     return (
@@ -287,7 +293,7 @@ function Special() {
                     utils.addResourcesToPlayer({ stone: 1 })
                 )
                 .then(() => task.d!.num!--)
-                .then(() => (task.d!.rs = { [r]: 1 }))
+                .then(() => (task.d!.availableResources = { [r]: 1 }))
                 .then(() => utils.prepareNextTask(`bred ${r}`))
             }
           >

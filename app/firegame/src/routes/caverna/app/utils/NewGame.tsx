@@ -54,15 +54,13 @@ export enum Buildable {
   dwelling, // Action.wish_for_children
 }
 
-// TODO order use cases and maybe break em up
 export type TaskType = {
   t: Task;
   d?: {
     // TODO what is this used for
     num?: number;
     canSkip?: boolean; //  Cavern.guest_room | Action.housework | Task.build(Action.slash_and_burn | Action.sheep/donkey_farming | Action.fence_building)
-    // TODO make sure we skip when we need to
-    rs?: ResourcesType; // Task.weekly_market | Task.sow | Cavern.builder | Task.breed_2
+    availableResources?: ResourcesType; // Task.weekly_market | Task.sow | Cavern.builder | Task.breed_2
     build?: Buildable; // Task.build | Task.furnish
     buildReward?: ResourcesType; // Task.extension | Task.ore_mine_construction
     buildData?: [number, number, number, number]; // [BuildableA, BuildableB, isRow ? 0 : 1, isBuildableA ? 0 : 1]

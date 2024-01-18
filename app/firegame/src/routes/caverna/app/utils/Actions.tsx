@@ -201,7 +201,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.have_baby },
-        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { availableResources: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.ore_delivery]: {
@@ -270,7 +270,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.build, d: { canSkip: true, build: Buildable.farm_tile } },
-        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { availableResources: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.drift_mining__1_3]: {
@@ -484,7 +484,7 @@ const Actions: { [a in Action]: ActionType } = {
         {
           t: Task.weekly_market,
           d: {
-            rs: {
+            availableResources: {
               dogs: 2,
               sheep: 1,
               donkeys: 1,
@@ -509,7 +509,7 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.queueTasks([
         { t: Task.expedition, d: { num: 2 } },
-        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { availableResources: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.fence_building__5]: {
@@ -541,7 +541,23 @@ const Actions: { [a in Action]: ActionType } = {
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({ gold: 4 }) &&
       utils.queueTasks([
-        { t: Task.weekly_market, d: { num: Action.weekly_market__6_7 } },
+        {
+          t: Task.weekly_market,
+          d: {
+            availableResources: {
+              dogs: 2,
+              sheep: 1,
+              donkeys: 1,
+              boars: 2,
+              cows: 3,
+              wood: 1,
+              stone: 1,
+              ore: 1,
+              grain: 1,
+              vegetables: 2,
+            },
+          },
+        },
       ]),
   },
   [Action.imitation__6_7]: {
@@ -554,7 +570,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.addResourcesToPlayer({ wood: 2 }) &&
       utils.queueTasks([
         { t: Task.expedition, d: { num: 2 } },
-        { t: Task.sow, d: { rs: { grain: 2, vegetables: 2 } } },
+        { t: Task.sow, d: { availableResources: { grain: 2, vegetables: 2 } } },
       ]),
   },
   [Action.fence_building__6_7]: {

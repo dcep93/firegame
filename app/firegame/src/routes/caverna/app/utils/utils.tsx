@@ -142,6 +142,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.finishTurn();
       return true;
     }
+    if (task.t === Task.weekly_market) {
+      return (
+        Math.min(...Object.values(task.d?.availableResources || {})) <=
+        (p.resources?.gold || 0)
+      );
+    }
     if (task.t === Task.housework_dog) {
       utils.addResourcesToPlayer({ dogs: 1 });
       return false;
@@ -150,7 +156,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return utils.haveChild(false);
     }
     if (task.t === Task.breed_2) {
-      return task.d!.num! > 0 && utils.getBreedables().length > 0;
+      return (
+        Object.keys(task.d!.availableResources!).length > 2 &&
+        utils.getBreedables().length > 0
+      );
     }
     if (task.t === Task.ore_trading) {
       return task.d!.num! > 0 && (p.resources?.ore || 0) >= 2;
@@ -169,10 +178,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (task.t === Task.sow) {
       return (
-        Object.entries(task.d!.rs!).filter(
-          ([resourceName, count]) =>
-            (p.resources || {})[resourceName as keyof ResourcesType]! * count >
-            0
+        Object.keys(task.d!.availableResources!).filter(
+          (resourceName) =>
+            // TODO audit || {})[
+            (p.resources || {})[resourceName as keyof ResourcesType]! > 0
         ).length > 0
       );
     }
@@ -334,8 +343,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
     const cost = utils.flipResources(oppCost);
     if (utils.addResources(p.resources || {}, cost) === undefined) return false;
-    if (task.d?.rs !== undefined) {
-      if (cost[Object.keys(task.d?.rs)[0] as keyof ResourcesType] === undefined)
+    if (task.d?.availableResources !== undefined) {
+      if (
+        cost[
+          Object.keys(task.d?.availableResources)[0] as keyof ResourcesType
+        ] === undefined
+      )
         return false;
     }
     if (execute) {
@@ -768,7 +781,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (execute) {
           if (
             task.t === Task.sow &&
-            task.d!.rs![resourceName] &&
+            task.d!.availableResources![resourceName] &&
             tile !== undefined &&
             tile.resources === undefined &&
             !tile.built[Buildable.pasture]
@@ -776,7 +789,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             tile.resources = {
               [resourceName]: resourceName === "grain" ? 3 : 2,
             };
-            task.d!.rs![resourceName]!--;
+            task.d!.availableResources = utils.addResources(
+              task.d!.availableResources!,
+              { [resourceName]: -1 }
+            );
             utils.prepareNextTask(`planted ${resourceName}`);
           } else {
             utils.addResourcesToPlayer({
@@ -884,7 +900,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           !p.caverns[Cavern.working_cave] ||
           task.t !== Task.harvest ||
           store.gameW.game.harvest === Harvest.one_per ||
-          task.d?.rs !== undefined
+          task.d?.availableResources !== undefined
         )
           return false;
         const cost = {
@@ -895,7 +911,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           return false;
         if (execute) {
           utils.addResourcesToPlayer(cost);
-          store.gameW.game.tasks[0].d!.rs = { [resourceName]: 1 };
+          store.gameW.game.tasks[0].d!.availableResources = {
+            [resourceName]: 1,
+          };
           utils.prepareNextTask(`ate ${resourceName}`);
         }
         return true;
@@ -907,7 +925,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return Object.entries(utils.getAllResources(p))
       .map(([r, c]) => ({ r: r as keyof AnimalResourcesType, c }))
       .filter(({ r }) => ["sheep", "donkeys", "boars", "cows"].includes(r))
-      .filter(({ r }) => (utils.getTask()!.d!.rs || {})[r] === undefined)
+      .filter(
+        ({ r }) =>
+          (utils.getTask()!.d!.availableResources || {})[r] === undefined
+      )
       .filter(({ c }) => c >= 2)
       .map(({ r }) => r);
   }

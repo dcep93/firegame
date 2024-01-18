@@ -105,7 +105,10 @@ const ExpeditionActions: {
   },
   [ExpeditionAction.sow]: {
     level: 12,
-    action: (p: PlayerType) => utils.queueTasks([{ t: Task.sow }]),
+    action: (p: PlayerType) =>
+      utils.queueTasks([
+        { t: Task.sow, d: { availableResources: { grain: 2, vegetables: 2 } } },
+      ]),
   },
   [ExpeditionAction.cavern]: {
     level: 14,
@@ -115,7 +118,14 @@ const ExpeditionActions: {
   [ExpeditionAction.breed_2]: {
     level: 14,
     action: (p: PlayerType) =>
-      utils.queueTasks([{ t: Task.breed_2, d: { num: 2 } }]),
+      utils.queueTasks([
+        {
+          t: Task.breed_2,
+          d: {
+            availableResources: { sheep: 1, donkeys: 1, boars: 1, cows: 1 },
+          },
+        },
+      ]),
   },
 };
 
