@@ -55,10 +55,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
 
-  isFarm(coords: Coords): boolean {
-    return coords.k === 0;
-  }
-
   setTile(p: PlayerType, coords: Coords, t: TileType | undefined) {
     if (p.grid[coords.k] === undefined) p.grid[coords.k] = {};
     if (p.grid[coords.k][coords.i] === undefined)
@@ -72,6 +68,50 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (t.resources === undefined) t.resources = {};
     return t;
   }
+
+  getAdjacents(p: PlayerType, coords: Coords): (TileType | undefined)[] {
+    return [
+      [-1, 0],
+      [1, 0],
+      [0, 1],
+      [0, -1],
+    ]
+      .map(([i, j]) => ({ i: coords.i + i, j: coords.j + j, k: coords.k }))
+      .map((cc) => utils.getTile(p, cc));
+  }
+
+  _notConnectedToHome(p: PlayerType, coords: Coords): boolean {
+    if (utils.coordsToKey(coords) === utils.coordsToKey({ i: 0, j: 0, k: 0 }))
+      return false;
+    return (
+      utils
+        .getAdjacents(p, coords)
+        .find(
+          (t) =>
+            t !== undefined &&
+            [
+              Buildable.cavern,
+              Buildable.tunnel,
+              Buildable.pasture,
+              Buildable.field,
+            ].find((b) => t.built[b])
+        ) === undefined
+    );
+  }
+
+  isOutOfBounds(coords: Coords): boolean {
+    return (
+      coords.i < 0 ||
+      coords.i >= utils.numRows ||
+      coords.j < 0 ||
+      coords.j >= utils.numCols
+    );
+  }
+
+  isFarm(coords: Coords): boolean {
+    return coords.k === 0;
+  }
+
   // TASKS
 
   getTask(): TaskType {
@@ -500,45 +540,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.prepareNextTask(`built ${Buildable[task.d!.build!]}`);
     }
     return true;
-  }
-
-  getAdjacents(p: PlayerType, coords: Coords): (TileType | undefined)[] {
-    return [
-      [-1, 0],
-      [1, 0],
-      [0, 1],
-      [0, -1],
-    ]
-      .map(([i, j]) => ({ i: coords.i + i, j: coords.j + j, k: coords.k }))
-      .map((cc) => utils.getTile(p, cc));
-  }
-
-  _notConnectedToHome(p: PlayerType, coords: Coords): boolean {
-    if (utils.coordsToKey(coords) === utils.coordsToKey({ i: 0, j: 0, k: 0 }))
-      return false;
-    return (
-      utils
-        .getAdjacents(p, coords)
-        .find(
-          (t) =>
-            t !== undefined &&
-            [
-              Buildable.cavern,
-              Buildable.tunnel,
-              Buildable.pasture,
-              Buildable.field,
-            ].find((b) => t.built[b])
-        ) === undefined
-    );
-  }
-
-  isOutOfBounds(coords: Coords): boolean {
-    return (
-      coords.i < 0 ||
-      coords.i >= utils.numRows ||
-      coords.j < 0 ||
-      coords.j >= utils.numCols
-    );
   }
 
   _buildHereHelper(

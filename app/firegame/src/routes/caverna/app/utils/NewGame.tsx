@@ -103,7 +103,6 @@ export type Params = {
   lobby: LobbyType;
 };
 
-// todo can I change this
 export type Coords = { i: number; j: number; k: number };
 export type TileType = {
   resources: ResourcesType;
@@ -130,7 +129,6 @@ export type PlayerType = {
 
   caverns: { [t in Cavern]?: boolean };
 
-  // todo can I change this?
   grid: { [side: number]: { [row: number]: { [column: number]: TileType } } };
 
   tileBonuses?: {
