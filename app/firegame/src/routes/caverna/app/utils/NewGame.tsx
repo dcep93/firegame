@@ -236,7 +236,7 @@ function setPlayers(game: GameType): GameType {
 
       tileBonuses: Object.fromEntries(
         [
-          { c: { k: 0, i: 0, j: 0 }, b: { boars: 1 } },
+          { c: { k: 0, i: 3, j: 0 }, b: { boars: 1 } },
           { c: { k: 0, i: 1, j: 2 }, b: { boars: 1 } },
           { c: { k: 0, i: 0, j: 1 }, b: { food: 1 } },
           { c: { k: 1, i: 0, j: 1 }, b: { food: 1 } },

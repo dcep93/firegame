@@ -273,7 +273,6 @@ function Special() {
       </div>
     );
   }
-  // TODO breeding_cave every year
   if (task.t === Task.breed_2) {
     const breedables = utils.getBreedables();
     return (

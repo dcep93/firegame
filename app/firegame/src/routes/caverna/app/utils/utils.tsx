@@ -533,12 +533,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (task.d!.buildData !== undefined) {
       const [b1, b2, rowColumn, tileIndex] = task.d!.buildData;
       const cs = utils.count(2).map(() => Object.assign({}, coords));
-      cs[1 - rowColumn][1 - tileIndex === 0 ? "i" : "j"] +=
-        rowColumn === 0 ? -1 : 1;
+      cs[1 - tileIndex][1 - rowColumn === 0 ? "i" : "j"] +=
+        rowColumn === 0 ? 1 : -1;
       if (!utils._buildHelper(b1, cs[0], execute)) return false;
       if (!utils._buildHelper(b2, cs[1], execute)) return false;
       if (execute) {
-        // TODO can I build double fence
         if (task.d!.build === Buildable.fence_2) {
           utils.getTile(cs[0], p)!.doubleFenceCoords = cs[1];
           const tt = utils.getTile(cs[1], p)!;
@@ -939,7 +938,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .map(({ r }) => r);
   }
 
-  // TODO make sure we pull
   pullOffFields(p: PlayerType) {
     utils
       .getGrid(p)
@@ -995,6 +993,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         } else {
           store.gameW.game.harvest = h;
           utils.queueTasks([{ t: Task.harvest }]);
+          if (h !== Harvest.skip_one) {
+            store.gameW.game.players.forEach((p) => utils.pullOffFields(p));
+          }
         }
         break;
       }

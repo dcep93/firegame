@@ -67,9 +67,9 @@ function Player(
               <div>
                 <div>
                   {t.doubleFenceCoords
-                    ? "DOUBLE_FENCE"
+                    ? "DOUBLE FENCE"
                     : t.built[Buildable.fence_2]
-                    ? "BACKUP_FENCE"
+                    ? "BACKUP FENCE"
                     : t.built[Buildable.fence]
                     ? "FENCE"
                     : t.resources !== undefined
@@ -110,11 +110,11 @@ function Player(
                     {t.built[Buildable.cavern]
                       ? "CAVERN"
                       : t.built[Buildable.ruby_mine]
-                      ? "RUBY_MINE"
+                      ? "RUBY MINE"
                       : t.built[Buildable.ore_mine]
-                      ? "ORE_MINE"
+                      ? "ORE MINE"
                       : t.built[Buildable.ore_tunnel]
-                      ? "ORE_TUNNEL"
+                      ? "ORE TUNNEL"
                       : "TUNNEL"}
                   </div>
                 )}
@@ -125,35 +125,43 @@ function Player(
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
-            {props.p.begging === 0 && <div>begging: {props.p.begging}</div>}
             <div>
-              ready dwarves:{" "}
-              {(props.p.availableDwarves || []).map((d, i) => (
-                <button
-                  key={i}
-                  disabled={!props.isMe || !utils.payRubyOutOfOrder(i, false)}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  className={styles.bubble}
                   style={{
-                    padding: "0.5em",
+                    backgroundColor: utils.getColor(props.p.index),
                   }}
-                  onClick={() => utils.payRubyOutOfOrder(i, true)}
+                ></div>
+                <h4
+                  style={{ display: "inline-block", margin: 0 }}
+                  title={JSON.stringify(scoreDict, null, 2)}
                 >
-                  {d}
-                </button>
-              ))}
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                className={styles.bubble}
-                style={{
-                  backgroundColor: utils.getColor(props.p.index),
-                }}
-              ></div>
-              <h4
-                style={{ display: "inline-block", margin: 0 }}
-                title={JSON.stringify(scoreDict, null, 2)}
-              >
-                score: {Object.values(scoreDict).sum()}
-              </h4>
+                  score: {Object.values(scoreDict).sum()}
+                </h4>
+                <div style={{ paddingLeft: "1em" }}>
+                  {props.p.begging !== 0 && (
+                    <div>begging: {props.p.begging}</div>
+                  )}
+                  <div>
+                    ready dwarves:{" "}
+                    {(props.p.availableDwarves || []).map((d, i) => (
+                      <button
+                        key={i}
+                        disabled={
+                          !props.isMe || !utils.payRubyOutOfOrder(i, false)
+                        }
+                        style={{
+                          padding: "0.5em",
+                        }}
+                        onClick={() => utils.payRubyOutOfOrder(i, true)}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
             <h2>{props.p.userName}</h2>
           </div>
@@ -224,10 +232,10 @@ function Grid(
   }
 ) {
   return (
-    <div className={styles.bubble}>
+    <div className={styles.bubble} style={{ fontSize: "smaller" }}>
       <h4>{props.isFarm ? "FARM" : "CAVE"}</h4>
       <div>
-        <div style={{ height: "2em" }}></div>
+        <div style={{ height: "3em" }}></div>
         <div>
           {utils
             .count(utils.numRows)
@@ -246,7 +254,7 @@ function Grid(
                   .map((coords, j) => (
                     <Cell key={j} coords={coords} {...props} />
                   ))}
-                <div style={{ width: "5em" }}></div>
+                <div style={{ width: "6em" }}></div>
               </div>
             ))}
           <div style={{ position: "relative" }}>
@@ -269,7 +277,7 @@ function Grid(
               ))}
           </div>
         </div>
-        <div style={{ height: "4em" }}></div>
+        <div style={{ height: "5em" }}></div>
       </div>
     </div>
   );
@@ -280,24 +288,23 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
   const t = utils.getTile(props.coords, props.p);
   const coordsKey = utils.coordsToKey(props.coords);
   const bonuses = (props.p.tileBonuses || {})[coordsKey];
+  const canClick =
+    props.isMe && (!isBuilding || utils.build(props.coords, false));
   return (
     <div
       key={coordsKey}
       style={{
         border: "2px solid black",
-        width: "7em",
-        height: "5em",
+        width: "8em",
+        height: "8em",
         backgroundColor:
           isBuilding || !utils.objEqual(props.coords, props.selected)
             ? undefined
             : "lightgrey",
-        cursor:
-          !isBuilding || utils.build(props.coords, false)
-            ? "pointer"
-            : undefined,
+        cursor: canClick ? "pointer" : undefined,
       }}
       onClick={() =>
-        props.isMe &&
+        canClick &&
         (isBuilding
           ? utils.build(props.coords, true)
           : props.updateSelected(
