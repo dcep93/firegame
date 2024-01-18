@@ -3,6 +3,7 @@ import store_, { StoreType } from "../../../../shared/store";
 import Actions, { Action } from "./Actions";
 import ExpeditionActions, { ExpeditionAction } from "./ExpeditionActions";
 
+import { firebaseId } from "../../../../firegame/firebase";
 import Caverns, { Cavern, CavernCategory } from "./Caverns";
 import {
   AnimalResourcesType,
@@ -132,6 +133,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       if (utils.canUpcomingTask()) break;
       utils.shiftTask();
     }
+    const p = utils.getMe();
+
+    store.gameW.game.log.push({
+      score: Object.values(utils.getScoreDict(p)).sum(),
+      toUpdate,
+      playerIndex: p.index,
+      firebaseId,
+      time: Date.now(),
+    });
     store.update(toUpdate);
   }
 

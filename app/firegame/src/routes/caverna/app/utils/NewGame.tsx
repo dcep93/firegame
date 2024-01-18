@@ -1,3 +1,4 @@
+import { firebaseId } from "../../../../firegame/firebase";
 import { LobbyType } from "../../../../shared/store";
 import Actions, { Action } from "./Actions";
 import { Cavern } from "./Caverns";
@@ -82,6 +83,14 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
+  log: {
+    time: number;
+    playerIndex: number;
+    score: number;
+    toUpdate: string;
+    firebaseId: string;
+  }[];
+
   startingPlayer: number;
   harvest?: Harvest;
 
@@ -162,6 +171,15 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
+    log: [
+      {
+        playerIndex: 0,
+        score: 0,
+        toUpdate: "<NEW_GAME>",
+        firebaseId,
+        time: Date.now(),
+      },
+    ],
 
     tasks: [],
 

@@ -4,6 +4,7 @@ import { Coords } from "../utils/NewGame";
 import ActionsView from "./ActionsView";
 import CavernsView from "./CavernsView";
 import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
+import LogView from "./LogView";
 import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
@@ -19,6 +20,7 @@ export default function Main() {
       <PlayersView selected={selected} updateSelected={updateSelected} />
       <ExpeditionsAndRubiesView />
       <CavernsView selected={selected} />
+      <LogView />
     </div>
   );
 }

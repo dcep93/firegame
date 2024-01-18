@@ -16,17 +16,14 @@ const config = {
   databaseURL: "https://firebase-320421-default-rtdb.firebaseio.com/",
 };
 
-var latest: string;
-
-declare global {
-  interface Window {
-    undo: () => void;
-    clear: () => void;
-  }
-}
+export var firebaseId: string;
 
 export function firebaseUndo() {
-  f_set(ref(database, `${gamePath()}/${latest}`), {});
+  f_set(ref(database, `${gamePath()}/${firebaseId}`), {});
+}
+
+export function firebaseClear() {
+  f_set(ref(database, namespace()), {});
 }
 
 var database: Database;
@@ -40,8 +37,6 @@ function init(): void {
   initialized = true;
   var app = initializeApp(config);
   database = getDatabase(app);
-  window.undo = firebaseUndo;
-  window.clear = () => f_set(ref(database, namespace()), {});
   onValue(ref(database, ".info/serverTimeOffset"), (snap: ResultType) => {
     offset = snap.val();
   });
@@ -56,7 +51,7 @@ function latestChild(path: string, callback: (value: BlobType) => void): void {
     query(ref(database, path), limitToLast(1)),
     (snapshot: ResultType) => {
       var val = snapshot.val();
-      if (val) latest = Object.keys(val)[0];
+      if (val) firebaseId = Object.keys(val)[0];
       callback(val);
     }
   );

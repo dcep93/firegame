@@ -1,3 +1,4 @@
+import { firebaseClear, firebaseUndo } from "../firegame/firebase";
 import store from "./store";
 
 export const VERSION: string = "v0.1.2";
@@ -26,6 +27,14 @@ Array.prototype.sum = function (this: number[]): number {
 };
 
 class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
+  undo() {
+    firebaseUndo();
+  }
+
+  clear() {
+    firebaseClear();
+  }
+
   isMyTurn(game_: T | undefined = undefined): boolean {
     const game: T = game_ || store.gameW.game!;
     if (!game) return false;
