@@ -302,7 +302,7 @@ const Actions: { [a in Action]: ActionType } = {
       ]),
   },
   [Action.drift_mining__1_3]: {
-    availability: [1, 3],
+    availability: [2, 3],
     title: "place cavern+tunnel",
     enrichment: [{ stone: 1 }],
     action: (p: PlayerType) =>
@@ -318,7 +318,7 @@ const Actions: { [a in Action]: ActionType } = {
       utils.queueTasks([{ t: Task.build, d: { build: Buildable.excavation } }]),
   },
   [Action.starting_player__1_3]: {
-    availability: [1, 3],
+    availability: [2, 3],
     title: "+2 ore",
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => {
@@ -339,7 +339,7 @@ const Actions: { [a in Action]: ActionType } = {
       ]),
   },
   [Action.supplies]: {
-    availability: [1, 3],
+    availability: [2, 3],
     title: "+1 wood,stone,ore,food\n+2 gold",
     action: (p: PlayerType) =>
       utils.addResourcesToPlayer({
@@ -368,7 +368,7 @@ const Actions: { [a in Action]: ActionType } = {
     enrichment: [{ wood: 1 }],
   },
   [Action.clearing__1_3]: {
-    availability: [1, 3],
+    availability: [2, 3],
     title: "place pasture+field",
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>

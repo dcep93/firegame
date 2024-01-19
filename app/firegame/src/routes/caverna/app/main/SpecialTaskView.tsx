@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
-import { growthRewards } from "../utils/Actions";
+import { Action, growthRewards } from "../utils/Actions";
 import { Cavern } from "../utils/Caverns";
 import { Buildable, Harvest, ResourcesType, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
@@ -10,6 +10,40 @@ export default function SpecialTaskView() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
   const p = utils.getCurrent()!;
+  if (task.t === Task.save_actions) {
+    return (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() => utils.prepareNextTask(`allowed actions to empty`))
+          }
+        >
+          allow actions to empty
+        </button>
+        {utils.getActionsToClear(store.gameW.game).map((a) => (
+          <button
+            key={a}
+            onClick={() =>
+              Promise.resolve()
+                .then(() => utils.addResourcesToPlayer({ rubies: -1 }))
+                .then(
+                  () =>
+                    (store.gameW.game.singlePlayerSavedActions = Object.assign(
+                      store.gameW.game.singlePlayerSavedActions || {},
+                      { [a]: true }
+                    ))
+                )
+                .then(() => utils.prepareNextTask(`saved ${Action[a]}`))
+            }
+          >
+            save {Action[a]}
+          </button>
+        ))}
+      </div>
+    );
+  }
   if (task.t === Task.weekly_market) {
     return (
       <div className={styles.bubble}>

@@ -148,9 +148,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   canUpcomingTask(): boolean {
     const task = utils.getTask();
     const p = utils.getCurrent();
+    const g = store.gameW.game;
     if (task === undefined) {
       utils.finishTurn();
       return true;
+    }
+    if (task.t === Task.save_actions) {
+      const actionsToClear = utils.getActionsToClear(g);
+      if (actionsToClear.length > 0) {
+        if ((g.players[0].resources?.rubies || 0) > 0) {
+          return true;
+        }
+        actionsToClear.forEach((a) => delete g.actionBonuses![a]);
+        utils.enrichAndReveal(g);
+      }
+      return false;
     }
     if (task.t === Task.weekly_market) {
       return (
@@ -1011,13 +1023,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.queueTasks([{ t: Task.slaughter }]);
       return;
     }
-    if (store.gameW.game.harvest !== undefined) {
+    const g = store.gameW.game;
+    if (g.harvest !== undefined) {
       utils.incrementPlayerTurn();
-      if (store.gameW.game.currentPlayer === store.gameW.game.startingPlayer) {
+      if (g.currentPlayer === g.startingPlayer) {
         if (store.gameW.game.upcomingHarvests === undefined) {
           utils.queueTasks([{ t: Task.game_end }]);
         } else {
-          utils.enrichAndReveal(store.gameW.game);
+          if (g.players.length === 1) {
+            utils.queueTasks([{ t: Task.save_actions }]);
+            if (utils.canUpcomingTask()) return;
+          }
+          utils.enrichAndReveal(g);
         }
       } else {
         utils.queueTasks([{ t: Task.harvest }]);
@@ -1031,21 +1048,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         break;
       }
       if (utils.isMyTurn()) {
-        store.gameW.game.currentPlayer = store.gameW.game.startingPlayer;
-        var h = store.gameW.game.upcomingHarvests!.shift();
+        g.currentPlayer = g.startingPlayer;
+        var h = g.upcomingHarvests!.shift();
         if (h === Harvest.random) {
-          const hs = utils.shuffle(store.gameW.game.randomHarvests!);
+          const hs = utils.shuffle(g.randomHarvests!);
           if (hs[0] < Harvest.harvest) hs.sort((a, b) => a - b);
           h = hs.shift()!;
           hs.sort((a, b) => a - b);
         }
         if (h === Harvest.nothing) {
-          utils.enrichAndReveal(store.gameW.game);
+          utils.enrichAndReveal(g);
         } else {
-          store.gameW.game.harvest = h;
+          g.harvest = h;
           utils.queueTasks([{ t: Task.harvest }]);
           if (h !== Harvest.one_per) {
-            store.gameW.game.players.forEach((p) => utils.pullOffFields(p));
+            g.players.forEach((p) => utils.pullOffFields(p));
           }
         }
         break;
@@ -1056,22 +1073,30 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   _popNextAction(g: GameType): Action {
     if (g.players.length === 1)
       return [
-        Action.ruby_delivery,
-        Action.adventure,
-        Action.ore_trading,
-        Action.family_life,
-        Action.ore_delivery,
-        Action.ruby_mine_construction,
-        Action.donkey_farming,
-        Action.wish_for_children,
-        Action.ore_mine_construction,
-        Action.sheep_farming,
         Action.blacksmithing,
-      ][(g.upcomingHarvests || []).length - 1];
+        Action.sheep_farming,
+        Action.ore_mine_construction,
+        Action.wish_for_children,
+        Action.donkey_farming,
+        Action.ruby_mine_construction,
+        Action.ore_delivery,
+        Action.family_life,
+        Action.ore_trading,
+        Action.adventure,
+        Action.ruby_delivery,
+      ].reverse()[(g.upcomingHarvests || []).length - 1];
     return utils
       .shuffle(g.upcomingActions!)
       .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
       .pop()!;
+  }
+
+  getActionsToClear(g: GameType): Action[] {
+    return Object.entries(g.actionBonuses || {})
+      .map(([a, b]) => ({ a, b }))
+      .filter(({ b }) => Object.values(b).sum() > 6)
+      .map(({ a }) => parseInt(a) as Action)
+      .filter((a) => !(g.singlePlayerSavedActions || {})[a]);
   }
 
   enrichAndReveal(g: GameType): GameType {
@@ -1129,13 +1154,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .forEach(
         ({ a, e }) =>
           (g.actionBonuses![a] =
-            // TODO single player pay 1 ruby to not bomb enrichment
-            (g.players.length === 1 &&
-              Object.values(g.actionBonuses![a] || {}).sum() > 6) ||
             g.actionBonuses![a] === undefined
               ? Object.assign({}, e![0])
               : utils.addResources(g.actionBonuses![a]!, e![e!.length - 1]))
       );
+
+    delete g.singlePlayerSavedActions;
 
     return g;
   }

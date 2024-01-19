@@ -32,6 +32,8 @@ export enum Task {
 
   beer_parlor,
   peaceful_cave,
+
+  save_actions, // single player
 }
 
 export enum Buildable {
@@ -108,6 +110,7 @@ export type GameType = {
     | {
         [a in Action]?: { playerIndex: number; dwarfIndex: number };
       };
+  singlePlayerSavedActions?: { [a in Action]?: boolean };
 };
 
 export type Params = {
