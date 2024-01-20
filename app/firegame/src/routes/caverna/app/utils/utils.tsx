@@ -452,39 +452,45 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
 
+  slaughterValue(): number {
+    const toSlaughter = utils.toSlaughter(utils.getMe());
+    return (
+      Object.entries(toSlaughter)
+        .map(([r, c]) => ({
+          c: -c,
+          r: r as keyof AnimalResourcesType,
+        }))
+        .map(({ r, c }) => {
+          if (r === "sheep") {
+            return c;
+          }
+          if (r === "donkeys") {
+            return Math.floor(c * 1.5);
+          }
+          if (r === "boars") {
+            return c * 2;
+          }
+          if (r === "cows") {
+            return c * 3;
+          }
+          return 0;
+        })
+        .sum() +
+      (!utils.getMe().caverns[Cavern.slaughtering_cave]
+        ? 0
+        : -Object.values(utils.toSlaughter(utils.getMe())).sum())
+    );
+  }
+
   slaughter(execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
     const toSlaughter = utils.toSlaughter(utils.getMe());
     if (Object.keys(toSlaughter).length === 0) return false;
     if (execute) {
-      utils.addResourcesToPlayer({
-        food:
-          Object.entries(toSlaughter)
-            .map(([r, c]) => ({
-              c: -c,
-              r: r as keyof AnimalResourcesType,
-            }))
-            .map(({ r, c }) => {
-              if (r === "sheep") {
-                return c;
-              }
-              if (r === "donkeys") {
-                return Math.floor(c * 1.5);
-              }
-              if (r === "boars") {
-                return c * 2;
-              }
-              if (r === "cows") {
-                return c * 3;
-              }
-              return 0;
-            })
-            .sum() +
-          (!utils.getMe().caverns[Cavern.slaughtering_cave]
-            ? 0
-            : -Object.values(toSlaughter).sum()),
-      });
       utils.addResourcesToPlayer(toSlaughter);
+      utils.addResourcesToPlayer({
+        food: utils.slaughterValue(),
+      });
       utils.prepareNextTask(`slaughtered ${utils.stringify(toSlaughter)}`);
     }
     return true;

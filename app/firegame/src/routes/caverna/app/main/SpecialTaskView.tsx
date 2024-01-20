@@ -126,7 +126,7 @@ export default function SpecialTaskView() {
     );
   }
   if (task.t === Task.wish_for_children) {
-    return (
+    return store.gameW.game.actions.includes(Action.family_life) ? (
       <div className={styles.bubble}>
         <button
           onClick={() =>
@@ -157,6 +157,36 @@ export default function SpecialTaskView() {
           }
         >
           3 points
+        </button>
+      </div>
+    ) : (
+      <div className={styles.bubble}>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() =>
+                utils.queueTasks([
+                  {
+                    t: Task.furnish,
+                    d: { build: Buildable.wish_for_children, canSkip: true },
+                  },
+                ])
+              )
+              .then(() => utils.prepareNextTask("will furnish dwelling"))
+          }
+        >
+          furnish dwelling
+        </button>
+        <button
+          onClick={() =>
+            Promise.resolve()
+              .then(() => utils.shiftTask())
+              .then(() => utils.haveChild(true))
+              .then(() => utils.prepareNextTask("had a baby"))
+          }
+        >
+          have baby
         </button>
       </div>
     );
