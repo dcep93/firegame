@@ -298,15 +298,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (execute) {
       utils.shiftTask();
-      p.usedDwarves = p
-        .availableDwarves!.splice(0, 1)
-        .concat(p.usedDwarves || []);
-      if (store.gameW.game.takenActions === undefined)
-        store.gameW.game.takenActions = {};
-      store.gameW.game.takenActions![a] = {
-        playerIndex: utils.myIndex(),
-        dwarfIndex: p.usedDwarves.length,
-      };
+      if (task !== Task.imitate) {
+        p.usedDwarves = p
+          .availableDwarves!.splice(0, 1)
+          .concat(p.usedDwarves || []);
+        if (store.gameW.game.takenActions === undefined)
+          store.gameW.game.takenActions = {};
+        store.gameW.game.takenActions![a] = {
+          playerIndex: utils.myIndex(),
+          dwarfIndex: p.usedDwarves.length,
+        };
+      }
       const bonus = (store.gameW.game.actionBonuses || {})[a];
       if (bonus !== undefined) {
         utils.addResourcesToPlayer(bonus);
