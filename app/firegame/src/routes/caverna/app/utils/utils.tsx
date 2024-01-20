@@ -145,6 +145,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.update(toUpdate);
   }
 
+  emptyActionsForSinglePlayer() {
+    const g = store.gameW.game;
+    const actionsToClear = utils.getActionsToClear(g);
+    actionsToClear.forEach((a) => delete g.actionBonuses![a]);
+  }
+
   canUpcomingTask(): boolean {
     const task = utils.getTask();
     const p = utils.getCurrent();
@@ -159,7 +165,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if ((g.players[0].resources?.rubies || 0) > 0) {
           return true;
         }
-        actionsToClear.forEach((a) => delete g.actionBonuses![a]);
+        utils.emptyActionsForSinglePlayer();
         utils.enrichAndReveal(g);
       }
       return false;
@@ -226,6 +232,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   // EXECUTABLES
 
   harvest(execute: boolean): boolean {
+    // TODO beg
     const p = utils.getMe();
     if (!utils.isMyTurn()) return false;
     const task = utils.getTask();

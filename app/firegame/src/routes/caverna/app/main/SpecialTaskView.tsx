@@ -17,6 +17,7 @@ export default function SpecialTaskView() {
           onClick={() =>
             Promise.resolve()
               .then(() => utils.shiftTask())
+              .then(() => utils.emptyActionsForSinglePlayer())
               .then(() => utils.prepareNextTask(`allowed actions to empty`))
           }
         >
