@@ -8,6 +8,7 @@ function Current() {
   return (
     <div className={styles.bubble}>
       <div>
+        <div>year: {store.gameW.game.year}</div>
         <div>current: {utils.getCurrent().userName}</div>
         {store.gameW.game.harvest === undefined ? null : (
           <div>harvest {Harvest[store.gameW.game.harvest]}</div>

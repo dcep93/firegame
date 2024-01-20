@@ -129,13 +129,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   prepareNextTask(move: string) {
+    const p = utils.getMe();
+    const dwarfIndex = (p.usedDwarves || []).length;
     while (true) {
       if (utils.canUpcomingTask()) break;
       utils.shiftTask();
     }
-    const p = utils.getMe();
 
     store.gameW.game.log.push({
+      year: store.gameW.game.year,
+      dwarfIndex,
       score: Object.values(utils.getScoreDict(p)).sum(),
       move,
       playerIndex: p.index,
@@ -384,6 +387,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         cavern: c,
         supply: Caverns[c].supply || {},
       });
+      const onPurchase = Caverns[c].onPurchase;
+      if (onPurchase !== undefined) {
+        onPurchase(p);
+      }
       utils.prepareNextTask(`furnished ${Cavern[c]}`);
     }
     return true;
@@ -1110,7 +1117,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         Action.ore_trading,
         Action.adventure,
         Action.ruby_delivery,
-      ].reverse()[(g.upcomingHarvests || []).length - 1];
+      ][g.year];
     return utils
       .shuffle(g.upcomingActions!)
       .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
@@ -1165,6 +1172,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (g.players.length <= 2 && upcomingAction === Action.exploration) {
       g.actions.push(utils._popNextAction(g));
     }
+    g.year++;
     if (g.actionBonuses === undefined) {
       g.actionBonuses = {};
     }
@@ -1252,25 +1260,26 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       rubies: allResources.rubies || 0,
       dwarves: (p.availableDwarves || []).concat(p.usedDwarves || []).length,
       furnishingPasturesMines:
-        Object.keys(p.caverns || {})
-          .map((t) => parseInt(t) as Cavern)
-          .map((t) => Caverns[t])
-          .filter((t) => t.category !== CavernCategory.yellow)
+        utils
+          .getGrid(p)
+          .map(({ t }) => Caverns[t.cavern!])
+          .filter(
+            (t) => t !== undefined && t.category !== CavernCategory.yellow
+          )
           .map((tile) => tile.points!)
           .sum() +
-        2 *
-          utils
-            .getGrid(p)
-            .map(({ t }) =>
-              t.doubleFenceCoords ? 4 : t.built[Buildable.fence] ? 2 : 0
-            )
-            .sum() +
+        utils
+          .getGrid(p)
+          .map(({ t }) =>
+            t.doubleFenceCoords ? 4 : t.built[Buildable.fence] ? 2 : 0
+          )
+          .sum() +
         utils
           .getGrid(p)
           .map(({ t }) =>
             t.built[Buildable.ruby_mine] === true
               ? 4
-              : t.built[Buildable.ore_mine] === false
+              : t.built[Buildable.ore_mine]
               ? 3
               : 0
           )

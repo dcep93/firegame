@@ -85,7 +85,10 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
+  year: number;
   log: {
+    year: number;
+    dwarfIndex: number;
     time: number;
     playerIndex: number;
     score: number;
@@ -174,8 +177,11 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
+    year: 0,
     log: [
       {
+        year: 0,
+        dwarfIndex: 0,
         playerIndex: 0,
         score: 0,
         move: "<NEW_GAME>",

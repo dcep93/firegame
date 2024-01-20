@@ -2,7 +2,7 @@ import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
 import { store } from "../utils/utils";
 
-const keys = ["time", "playerIndex", "score", "move"];
+const keys = ["time", "playerIndex", "year", "dwarfIndex", "score", "move"];
 
 export default function LogView() {
   const [visible, update] = useState(false);
