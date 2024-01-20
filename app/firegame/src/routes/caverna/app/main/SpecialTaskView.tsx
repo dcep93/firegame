@@ -439,7 +439,7 @@ export default function SpecialTaskView() {
   }
   if (task.t === Task.forge) {
     const blacksmithDiscount = p.caverns[Cavern.blacksmith] ? 2 : 0;
-    if (state === null) updateState(1);
+    if (state === null || state > p.resources!.ore!) updateState(1);
     return (
       <div className={styles.bubble}>
         <input
