@@ -6,8 +6,6 @@ import { Buildable, Harvest, ResourcesType, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import BuildSelector from "./BuildSelector";
 
-// TODO binary choices should be popup
-
 export default function SpecialTaskView() {
   const [state, updateState] = useState<any>(null);
   const task = utils.getTask();
