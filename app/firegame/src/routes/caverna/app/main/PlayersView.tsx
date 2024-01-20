@@ -140,9 +140,12 @@ function Player(
                   score: {Object.values(scoreDict).sum()}
                 </h4>
                 <div style={{ paddingLeft: "1em" }}>
-                  {props.p.begging !== 0 && (
-                    <div>begging: {props.p.begging}</div>
-                  )}
+                  <button
+                    disabled={!utils.beg(false)}
+                    onClick={() => utils.beg(true)}
+                  >
+                    begging: {props.p.begging}
+                  </button>
                   <div>
                     ready dwarves:{" "}
                     {(props.p.availableDwarves || []).map((d, i) => (
@@ -166,9 +169,9 @@ function Player(
             <h2>{props.p.userName}</h2>
           </div>
           <div style={{ display: "flex" }}>
-            <div style={{ position: "relative" }}>
+            <div>
               {!props.isMe ? null : (
-                <div style={{ position: "absolute", right: 0 }}>
+                <div style={{}}>
                   <div className={styles.bubble}>
                     <button
                       disabled={!utils.slaughter(false)}
@@ -183,9 +186,6 @@ function Player(
                 <div
                   className={styles.bubble}
                   style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
                     whiteSpace: "nowrap",
                   }}
                 >

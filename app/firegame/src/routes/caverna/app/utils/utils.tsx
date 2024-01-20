@@ -232,7 +232,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   // EXECUTABLES
 
   harvest(execute: boolean): boolean {
-    // TODO beg
     const p = utils.getMe();
     if (!utils.isMyTurn()) return false;
     const task = utils.getTask();
@@ -996,6 +995,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         return true;
     }
+  }
+
+  beg(execute: boolean): boolean {
+    if (!utils.isMyTurn()) return false;
+    if (execute) {
+      utils.getCurrent().begging++;
+      utils.addResourcesToPlayer({ food: 1 });
+      utils.prepareNextTask("begged");
+    }
+    return true;
   }
 
   getBreedables(p: PlayerType): (keyof AnimalResourcesType)[] {
