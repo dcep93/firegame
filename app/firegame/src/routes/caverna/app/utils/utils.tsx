@@ -128,7 +128,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return store.gameW.game.tasks.shift()!;
   }
 
-  prepareNextTask(toUpdate: string) {
+  prepareNextTask(move: string) {
     while (true) {
       if (utils.canUpcomingTask()) break;
       utils.shiftTask();
@@ -137,12 +137,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
     store.gameW.game.log.push({
       score: Object.values(utils.getScoreDict(p)).sum(),
-      toUpdate,
+      move,
       playerIndex: p.index,
       firebaseId,
       time: Date.now(),
     });
-    store.update(toUpdate);
+    store.update(move);
   }
 
   emptyActionsForSinglePlayer() {
@@ -486,10 +486,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) return false;
     const toSlaughter = utils.toSlaughter(utils.getMe());
     if (Object.keys(toSlaughter).length === 0) return false;
+    const food = utils.slaughterValue();
     if (execute) {
       utils.addResourcesToPlayer(toSlaughter);
       utils.addResourcesToPlayer({
-        food: utils.slaughterValue(),
+        food,
       });
       utils.prepareNextTask(`slaughtered ${utils.stringify(toSlaughter)}`);
     }
@@ -801,7 +802,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     )
       utils.addResourcesToPlayer({ ore: r.stone! });
     if (!isMoving) {
-      Object.keys(utils.toSlaughter(p))
+      ["dogs", "sheep", "donkeys", "boars", "cows"]
         .map((r) => r as keyof ResourcesType)
         .forEach((r) => {
           while (true) {
@@ -812,12 +813,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               .map(({ c, t }) => ({
                 t,
                 rank: [
-                  c.k * 1000, // 1000 points if cave
+                  t.built[Buildable.pasture] ? 500 : 0, // 500 points for pasture
                   Caverns[t.cavern!]?.category === CavernCategory.dwelling
                     ? -100
                     : 0, // -100 points for dwelling
                   t.doubleFenceCoords ? 100 : 0, // 100 points for double fence
-                  t.built[Buildable.pasture] ? 500 : 0, // 500 points for pasture
                   10 * (t.resources?.sheep || 0), // 10 points for sheep
                   Object.values(t.resources || {}).sum(), // points for existing resources
                 ].sum(),
@@ -946,8 +946,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               allowed = true;
               break;
             case "sheep":
-              if ((tile.resources?.dogs || -1) >= (tile.resources?.sheep || 0))
-                allowed = true;
+              if (tile.built[Buildable.pasture]) {
+                if (
+                  (tile.resources?.dogs || -1) >= (tile.resources?.sheep || 0)
+                )
+                  allowed = true;
+              }
               break;
             case "donkeys":
               if (

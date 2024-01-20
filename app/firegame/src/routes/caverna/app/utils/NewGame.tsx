@@ -89,7 +89,7 @@ export type GameType = {
     time: number;
     playerIndex: number;
     score: number;
-    toUpdate: string;
+    move: string;
     firebaseId: string;
   }[];
 
@@ -178,7 +178,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
       {
         playerIndex: 0,
         score: 0,
-        toUpdate: "<NEW_GAME>",
+        move: "<NEW_GAME>",
         firebaseId,
         time: Date.now(),
       },
