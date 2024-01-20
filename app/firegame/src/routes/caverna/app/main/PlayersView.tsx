@@ -177,7 +177,7 @@ function Player(
                       disabled={!utils.slaughter(false)}
                       onClick={() => utils.slaughter(true)}
                     >
-                      slaughter {utils.slaughterValue()}
+                      slaughter: {utils.slaughterValue()} food
                     </button>
                   </div>
                 </div>
