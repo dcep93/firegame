@@ -351,7 +351,10 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
             .map(([resourceName, count]) => ({
               resourceName,
               count,
-              buttonEnabled: !["grain", "vegetables"].includes(resourceName),
+              buttonEnabled:
+                !["grain", "vegetables"].includes(resourceName) &&
+                (resourceName !== "dogs" ||
+                  Object.keys(t.resources!).length === 1),
             }))
             .map(({ resourceName, count, buttonEnabled }) => (
               <button
