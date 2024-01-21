@@ -1,11 +1,11 @@
 import styles from "../../../../shared/styles.module.css";
+import { Action } from "../utils/Actions";
 import { ExpeditionAction } from "../utils/ExpeditionActions";
 import { Buildable, Harvest, Task } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import SpecialTaskView from "./SpecialTaskView";
 
 function Current() {
-  // TODO upcoming actions
   return (
     <div className={styles.bubble}>
       <div>
@@ -77,6 +77,13 @@ function Current() {
           {(store.gameW.game.upcomingHarvests || [])
             .map((h) => Harvest[h])
             .join("/")}
+        </div>
+        <div style={{ height: "2em" }}></div>
+        <div>
+          upcoming actions:
+          {(store.gameW.game.upcomingActions || [])
+            .map((a) => Action[a])
+            .join(" / ")}
         </div>
       </div>
     </div>

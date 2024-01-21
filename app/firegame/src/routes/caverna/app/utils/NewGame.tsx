@@ -279,9 +279,7 @@ function setPlayers(game: GameType): GameType {
     game.upcomingHarvests!.pop();
 
     if (game.players.length === 1) {
-      game.upcomingHarvests = game.upcomingHarvests!.map((h) =>
-        h === Harvest.random ? Harvest.harvest : h
-      );
+      game.randomHarvests = game.randomHarvests!.map(() => Harvest.harvest);
       game.players[0].resources!.food = 2;
     }
   }

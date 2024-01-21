@@ -1106,24 +1106,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   _popNextAction(g: GameType): Action {
-    if (g.players.length === 1)
-      return [
-        Action.blacksmithing,
-        Action.sheep_farming,
-        Action.ore_mine_construction,
-        Action.wish_for_children,
-        Action.donkey_farming,
-        Action.ruby_mine_construction,
-        Action.ore_delivery,
-        Action.family_life,
-        Action.ore_trading,
-        Action.adventure,
-        Action.ruby_delivery,
-      ][g.year];
-    return utils
-      .shuffle(g.upcomingActions!)
-      .sort((a, b) => Actions[a].availability[0] - Actions[b].availability[0])
-      .pop()!;
+    if (g.players.length > 1)
+      utils
+        .shuffle(g.upcomingActions!)
+        .sort(
+          (a, b) => Actions[a].availability[0] - Actions[b].availability[0]
+        );
+    return g.upcomingActions!.shift()!;
   }
 
   getActionsToClear(g: GameType): Action[] {
@@ -1183,9 +1172,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .filter(({ e }) => e)
       .filter(
         ({ a }) =>
-          a !== Action.ruby_mining ||
-          g.players.length !== 2 ||
-          (g.upcomingActions || []).length < 10
+          a !== Action.ruby_mining || g.players.length !== 2 || g.year >= 3
       )
       .forEach(
         ({ a, e }) =>

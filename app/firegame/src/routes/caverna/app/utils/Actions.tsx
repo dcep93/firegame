@@ -2,20 +2,20 @@ import { Cavern } from "./Caverns";
 import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
 import utils, { store } from "./utils";
 
-// TODO order
+// TODO order for pictures
 export enum Action {
   // 0-1
   blacksmithing,
-  ore_mine_construction,
   sheep_farming,
+  ore_mine_construction,
   // 0-2
   wish_for_children,
-  ruby_mine_construction,
   donkey_farming,
+  ruby_mine_construction,
   // 0-3
-  exploration,
-  family_life,
   ore_delivery,
+  family_life,
+  exploration,
   // 0-4
   ore_trading,
   ruby_delivery,
