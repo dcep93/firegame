@@ -5,6 +5,7 @@ import ActionsView from "./ActionsView";
 import CavernsView from "./CavernsView";
 import ExpeditionsAndRubiesView from "./ExpeditionsAndRubiesView";
 import LogView from "./LogView";
+import Photos from "./Photos";
 import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
@@ -21,6 +22,7 @@ export default function Main() {
       <ExpeditionsAndRubiesView />
       <CavernsView selected={selected} />
       <LogView />
+      <Photos />
     </div>
   );
 }
