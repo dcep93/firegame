@@ -159,6 +159,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "either/or becomes and/or",
     points: 0,
   },
+  // TODO double check building below farm
   [Cavern.office_room]: {
     cost: { stone: 1 },
     category: CavernCategory.green,

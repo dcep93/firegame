@@ -900,6 +900,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "cows":
         if (tile === undefined) return false;
         if (
+          resourceName !== "dogs" &&
           Object.keys(tile.resources || {}).filter(
             (r) => !["dogs", resourceName].includes(r)
           ).length !== 0
