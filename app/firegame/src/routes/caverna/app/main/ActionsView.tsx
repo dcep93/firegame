@@ -4,6 +4,7 @@ import utils, { store } from "../utils/utils";
 import Button from "./Button";
 import { chunk } from "./Main";
 
+// TODO dont chunk by 3's always
 export default function ActionsView() {
   return (
     <div>

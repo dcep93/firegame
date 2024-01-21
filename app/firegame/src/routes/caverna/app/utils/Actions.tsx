@@ -2,7 +2,6 @@ import { Cavern } from "./Caverns";
 import { Buildable, PlayerType, ResourcesType, Task } from "./NewGame";
 import utils, { store } from "./utils";
 
-// TODO order for pictures
 export enum Action {
   // 0-1
   blacksmithing,
@@ -20,53 +19,53 @@ export enum Action {
   ore_trading,
   ruby_delivery,
   adventure,
-  // 1-7
-  ruby_mining,
-  housework,
-  slash_and_burn,
   // 1-3
   drift_mining__1_3,
-  excavation__1_3,
-  starting_player__1_3,
   logging__1_3,
-  supplies,
-  ore_mining__1_3,
   wood_gathering,
+  excavation__1_3,
+  supplies,
   clearing__1_3,
+  starting_player__1_3,
+  ore_mining__1_3,
   sustenance__1_3,
   // 3
   strip_mining,
-  forest_exploration__3,
   imitation__3,
+  forest_exploration__3,
   // 4-7
   drift_mining__4_7,
-  excavation__4_7,
-  starting_player__4_7,
   imitation__4_7,
   logging__4_7,
   forest_exploration__4_7,
+  excavation__4_7,
   growth,
   clearing__4_7,
+  starting_player__4_7,
   ore_mining__4_7,
   sustenance__4_7,
   // 5
   depot_5,
-  small_scale_drift_mining,
   weekly_market__5,
-  imitation__5,
   hardware_rental__5,
+  small_scale_drift_mining,
+  imitation__5,
   fence_building__5,
   // 6-7
   depot__6_7,
-  drift_mining__6_7,
   weekly_market__6_7,
-  imitation__6_7,
   hardware_rental__6_7,
+  drift_mining__6_7,
+  imitation__6_7,
   fence_building__6_7,
   // 7
   large_depot,
   imitation__7,
   extension,
+  // 1-7
+  ruby_mining,
+  housework,
+  slash_and_burn,
 }
 
 const growthRewards = {

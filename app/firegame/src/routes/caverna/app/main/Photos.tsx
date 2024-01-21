@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
 
-import single_player from "../assets/1.jpg";
 import one_to_three from "../assets/1_3.jpg";
 import four_to_seven from "../assets/4_7.jpg";
 import five_player from "../assets/5.jpg";
@@ -18,7 +17,6 @@ export default function Photos() {
         mat,
         caverns,
         upcoming,
-        single_player,
         one_to_three,
         four_to_seven,
         five_player,

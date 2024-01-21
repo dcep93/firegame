@@ -6,7 +6,6 @@ class Sidebar extends SharedSidebar<Params> {
   name = "Caverna";
   NewGame = NewGame;
   utils = utils;
-  // TODO pictures
   rules = "https://cdn.1j1ju.com/medias/e1/f2/6b-caverna-rulebook.pdf";
 
   getParams(): Params {
