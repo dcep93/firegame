@@ -169,7 +169,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           return true;
         }
         utils.emptyActionsForSinglePlayer();
-        utils.enrichAndReveal(g);
       }
       return false;
     }
