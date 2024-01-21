@@ -5,6 +5,7 @@ import utils, { store } from "../utils/utils";
 import SpecialTaskView from "./SpecialTaskView";
 
 function Current() {
+  // TODO upcoming actions
   return (
     <div className={styles.bubble}>
       <div>

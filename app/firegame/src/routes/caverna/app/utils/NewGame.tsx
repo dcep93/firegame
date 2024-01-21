@@ -120,6 +120,7 @@ export type Params = {
   lobby: LobbyType;
 };
 
+// TODO 2d not 3d
 export type Coords = { i: number; j: number; k: number };
 export type TileType = {
   built: { [b in Buildable]?: boolean };

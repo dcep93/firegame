@@ -295,9 +295,11 @@ function Grid(
                   key={utils.coordsToKey(c)}
                   style={{
                     position: "absolute",
-                    right: undefined,
+                    right: utils.isFarm(c) ? "0" : undefined,
                     bottom: "0",
-                    transform: `translate(${100 * c.j}%, ${100 * -c.i}%)`,
+                    transform: `translate(${
+                      100 * c.j * (utils.isFarm(c) ? -1 : 1)
+                    }%, ${100 * -c.i}%)`,
                   }}
                 >
                   <Cell {...props} coords={c} />
@@ -305,7 +307,7 @@ function Grid(
               ))}
           </div>
         </div>
-        <div style={{ height: "5em" }}></div>
+        <div style={{ height: "8em" }}></div>
       </div>
     </div>
   );
