@@ -271,6 +271,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   action(a: Action, execute: boolean): boolean {
     if (!utils.isMyTurn()) return false;
+    if (
+      [
+        Action.drift_mining__1,
+        Action.starting_player__1,
+        Action.suppies__1,
+        Action.clearing__1,
+      ].includes(a)
+    )
+      return false;
     const p = utils.getMe();
     const task = utils.getTask().t;
     const playerIndex = (store.gameW.game.takenActions || {})[a]?.playerIndex;

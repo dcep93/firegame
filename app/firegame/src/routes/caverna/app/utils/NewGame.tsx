@@ -277,6 +277,9 @@ function setPlayers(game: GameType): GameType {
   if (game.players.length <= 2) {
     game.randomHarvests!.shift();
     game.upcomingHarvests!.pop();
+    game.upcomingActions = game.upcomingActions!.filter(
+      (a) => a !== Action.exploration
+    );
 
     if (game.players.length === 1) {
       game.randomHarvests = game.randomHarvests!.map(() => Harvest.harvest);

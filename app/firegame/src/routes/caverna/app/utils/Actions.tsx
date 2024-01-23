@@ -21,12 +21,16 @@ export enum Action {
   adventure,
   // 1-3
   drift_mining__1_3,
+  drift_mining__1,
   logging__1_3,
   wood_gathering,
   excavation__1_3,
   supplies,
+  suppies__1,
   clearing__1_3,
+  clearing__1,
   starting_player__1_3,
+  starting_player__1,
   ore_mining__1_3,
   sustenance__1_3,
   // 3
@@ -699,6 +703,22 @@ const Actions: { [a in Action]: ActionType } = {
               t: Task.extension,
             },
           ]),
+  },
+  [Action.drift_mining__1]: {
+    availability: [1, 1],
+    title: "drift_mining not available in 1p",
+  },
+  [Action.starting_player__1]: {
+    availability: [1, 1],
+    title: "starting_player not available in 1p",
+  },
+  [Action.suppies__1]: {
+    availability: [1, 1],
+    title: "suppies not available in 1p",
+  },
+  [Action.clearing__1]: {
+    availability: [1, 1],
+    title: "clearing not available in 1p",
   },
 };
 
