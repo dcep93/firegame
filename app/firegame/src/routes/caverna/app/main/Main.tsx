@@ -10,7 +10,8 @@ import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
 // TODO images need ruby mining
-// TODO double check actions
+// TODO move resources when not my turn
+// TODO skip on not your turn
 
 export default function Main() {
   const [selected, updateSelected] = useState<Coords | undefined>(undefined);

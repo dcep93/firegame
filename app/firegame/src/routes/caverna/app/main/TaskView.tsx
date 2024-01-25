@@ -92,6 +92,7 @@ function Current() {
 
 function Skip() {
   const t = utils.getTask();
+  if (!utils.isMyTurn()) return null;
   return !t?.d?.canSkip && t?.t !== Task.sow ? null : (
     <div className={styles.bubble}>
       <button
