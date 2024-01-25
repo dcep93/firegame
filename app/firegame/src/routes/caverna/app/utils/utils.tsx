@@ -571,8 +571,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   build(coords: Coords, execute: boolean): boolean {
     const p = utils.getMe();
     if (!utils.isMyTurn()) return false;
-    if (utils._notConnectedToHome(coords)) return false;
     const task = utils.getTask();
+    const b = task.d!.build!;
+    if (b !== Buildable.stable && utils._notConnectedToHome(coords))
+      return false;
     if (task.t !== Task.build) return false;
     if (
       utils.addResources(p.resources || {}, utils._getBuildCost(task) || {}) ===

@@ -10,6 +10,7 @@ import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
 // TODO images need ruby mining
+// TODO double check actions
 
 export default function Main() {
   const [selected, updateSelected] = useState<Coords | undefined>(undefined);

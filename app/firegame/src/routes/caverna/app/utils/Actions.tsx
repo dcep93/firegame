@@ -388,6 +388,8 @@ const Actions: { [a in Action]: ActionType } = {
     title: "place pasture+field",
     action: (p: PlayerType) =>
       utils.queueTasks([
+        // TODO sustenance
+        // { t: Task.resource, d: { availableResources: { grain: 1 } } },
         {
           t: Task.build,
           d: { build: Buildable.farm_tile },
