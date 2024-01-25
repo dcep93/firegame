@@ -9,6 +9,8 @@ import Photos from "./Photos";
 import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
+// TODO images need ruby mining
+
 export default function Main() {
   const [selected, updateSelected] = useState<Coords | undefined>(undefined);
   return (

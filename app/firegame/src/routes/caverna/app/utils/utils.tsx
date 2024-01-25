@@ -1119,7 +1119,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils
         .shuffle(g.upcomingActions!)
         .sort(
-          (a, b) => Actions[a].availability[0] - Actions[b].availability[0]
+          (a, b) => Actions[b].availability[0] - Actions[a].availability[0]
         );
     return g.upcomingActions!.shift()!;
   }
