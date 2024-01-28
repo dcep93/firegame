@@ -736,7 +736,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           utils.getGrid(p).filter(({ t }) => (t.built || {})[Buildable.stable])
             .length >= 3
         )
-          // 1000 gold to build after 3 stables
+          // TODO 1000 gold to build after 3 stables
           return { gold: 1000 };
         return {
           stone: Math.min(0, -1 + (p.caverns[Cavern.stone_carver] ? 1 : 0)),
@@ -858,7 +858,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     resourceName: keyof ResourcesType,
     execute: boolean
   ): boolean {
-    if (!utils.isMyTurn()) return false;
     const p = utils.getMe();
     const task = utils.getTask();
     const tile =
@@ -869,6 +868,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case "rubies":
         return false;
       case "gold":
+        if (!utils.isMyTurn()) return false;
         if (execute) {
           utils.queueTasks([{ t: Task.eat_gold }]);
           utils.prepareNextTask(`is about to eat gold`);
@@ -876,6 +876,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return true;
       case "grain":
       case "vegetables":
+        if (!utils.isMyTurn()) return false;
         if (execute) {
           if (
             task.t === Task.sow &&
