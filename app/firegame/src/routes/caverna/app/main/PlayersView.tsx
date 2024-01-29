@@ -372,7 +372,7 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
                     )
                     .then(
                       () =>
-                        (t.resources = utils.addResources(t.resources!, {
+                        (t.resources = utils.sumResources(t.resources!, {
                           [resourceName]: -1,
                         })!)
                     )

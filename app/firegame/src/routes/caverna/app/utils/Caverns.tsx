@@ -178,7 +178,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title:
       "immediately 2 [stone]\n\nevery time you furnish a cavern or build a stable,\nyou receive a discount of 1 [stone]",
     points: 1,
-    onPurchase: (p: PlayerType) => utils.addResourcesToPlayer({ stone: 2 }),
+    onPurchase: (p: PlayerType) => utils.addResourcesToMe({ stone: 2 }),
   },
   [Cavern.blacksmith]: {
     cost: { wood: 1, stone: 2 },
@@ -186,7 +186,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title:
       "immediately 2 [ore]\n\nevery time you forge a weapon,\nyou receive a discount of 2 [ore]",
     points: 3,
-    onPurchase: (p: PlayerType) => utils.addResourcesToPlayer({ ore: 2 }),
+    onPurchase: (p: PlayerType) => utils.addResourcesToMe({ ore: 2 }),
   },
   [Cavern.miner]: {
     cost: { wood: 1, stone: 1 },
@@ -208,7 +208,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "convert: 2 [gold] -> [wood] + [ore] + [stone]",
     points: 2,
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({ gold: -2, wood: 1, ore: 1, stone: 1 }),
+      utils.addResourcesToMe({ gold: -2, wood: 1, ore: 1, stone: 1 }),
   },
   [Cavern.wood_supplier]: {
     cost: { stone: 1 },
@@ -261,7 +261,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "convert: [grain] + [vegetable] -> 5 [food]",
     points: 2,
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({ grain: -1, vegetables: -1, food: 5 }),
+      utils.addResourcesToMe({ grain: -1, vegetables: -1, food: 5 }),
   },
   [Cavern.working_cave]: {
     cost: { wood: 1, stone: 1 },
@@ -301,7 +301,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     pointsF: (p: PlayerType) =>
       Math.floor((utils.getAllResources(p).sheep || 0) / 2),
     onPurchase: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         food: utils.getAllResources(p).sheep || 0,
       }),
   },
@@ -311,7 +311,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "immediately 1 [food] per [cow]\n1 point per [cow]",
     pointsF: (p: PlayerType) => utils.getAllResources(p).cows || 0,
     onPurchase: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         food: utils.getAllResources(p).cows || 0,
       }),
   },
@@ -322,7 +322,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
       "immediately 2 [food] per adjacent dwelling\n4 points per adjacent dwelling",
     pointsF: (p: PlayerType) => 4 * numAdjacentToStateParlor(p),
     onPurchase: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         food: 2 * numAdjacentToStateParlor(p),
       }),
   },
@@ -332,7 +332,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "convert: 2 [boar] -> 2 [gold] + 2 [food]",
     points: 1,
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({ boars: -2, gold: 2, food: 2 }),
+      utils.addResourcesToMe({ boars: -2, gold: 2, food: 2 }),
   },
   [Cavern.beer_parlor]: {
     cost: { wood: 2 },
@@ -347,7 +347,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "convert: [ore] + [ruby] -> 2 [gold] + [food]",
     points: 2,
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({ ore: -1, rubies: -1, gold: 2, food: 1 }),
+      utils.addResourcesToMe({ ore: -1, rubies: -1, gold: 2, food: 1 }),
   },
   [Cavern.stone_storage]: {
     cost: { wood: 3, ore: 1 },
@@ -367,7 +367,7 @@ const Caverns: { [t in Cavern]: CavernType } = {
     title: "convert: [wood] + [ore] + [stone] -> 2 [gold]",
     points: 0,
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({ wood: -1, stone: -1, ore: -1, gold: 2 }),
+      utils.addResourcesToMe({ wood: -1, stone: -1, ore: -1, gold: 2 }),
   },
   [Cavern.main_storage]: {
     cost: { wood: 2, stone: 1 },

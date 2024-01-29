@@ -233,7 +233,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+2 ore for each ore_mine",
     enrichment: [{ stone: 1, ore: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         ore:
           2 *
           utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])
@@ -251,7 +251,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+1 ruby if at least 2 ruby mines",
     enrichment: [{ rubies: 2 }, { rubies: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         rubies:
           utils
             .getGrid(p)
@@ -276,7 +276,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+1 ruby if at least 1 ruby mine",
     enrichment: [{ rubies: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         rubies:
           utils
             .getGrid(p)
@@ -325,7 +325,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+2 ore",
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => {
-      utils.addResourcesToPlayer({ ore: 2 });
+      utils.addResourcesToMe({ ore: 2 });
       store.gameW.game.startingPlayer = utils.myIndex();
     },
   },
@@ -345,7 +345,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [2, 3],
     title: "+1 wood,stone,ore,food\n+2 gold",
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         wood: 1,
         stone: 1,
         ore: 1,
@@ -358,7 +358,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+2 ore for each ore mine",
     enrichment: [{ ore: 2 }, { ore: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         ore:
           2 *
           utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])
@@ -385,11 +385,10 @@ const Actions: { [a in Action]: ActionType } = {
   [Action.sustenance__1_3]: {
     availability: [1, 3],
     enrichment: [{ food: 1 }],
-    title: "place pasture+field",
+    title: "place pasture+field\n+1 grain",
     action: (p: PlayerType) =>
       utils.queueTasks([
-        // TODO sustenance
-        // { t: Task.resource, d: { availableResources: { grain: 1 } } },
+        { t: Task.resource, d: { availableResources: { grain: 1 } } },
         {
           t: Task.build,
           d: { build: Buildable.farm_tile },
@@ -401,7 +400,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+2 wood",
     enrichment: [{ ore: 1 }, { stone: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         wood: 2,
       }),
   },
@@ -410,7 +409,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+1 vegetables",
     enrichment: [{ wood: 1 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         vegetables: 1,
       }),
   },
@@ -447,7 +446,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+1 ruby",
     enrichment: [{ food: 1 }],
     action: (p: PlayerType) => {
-      utils.addResourcesToPlayer({ rubies: 1 });
+      utils.addResourcesToMe({ rubies: 1 });
       store.gameW.game.startingPlayer = utils.myIndex();
     },
   },
@@ -467,7 +466,7 @@ const Actions: { [a in Action]: ActionType } = {
     availability: [4, 7],
     title: "+2 food",
     enrichment: [{ wood: 2 }, { wood: 1 }],
-    action: (p: PlayerType) => utils.addResourcesToPlayer({ food: 2 }),
+    action: (p: PlayerType) => utils.addResourcesToMe({ food: 2 }),
   },
   [Action.growth]: {
     availability: [4, 7],
@@ -492,7 +491,7 @@ const Actions: { [a in Action]: ActionType } = {
               t: Task.growth,
             },
           ])
-        : utils.addResourcesToPlayer(growthRewards),
+        : utils.addResourcesToMe(growthRewards),
   },
   [Action.clearing__4_7]: {
     availability: [4, 7],
@@ -506,7 +505,7 @@ const Actions: { [a in Action]: ActionType } = {
     title: "+2 ore for each ore mine",
     enrichment: [{ ore: 3 }, { ore: 2 }],
     action: (p: PlayerType) =>
-      utils.addResourcesToPlayer({
+      utils.addResourcesToMe({
         ore:
           2 *
           utils.getGrid(p).filter(({ t }) => t.built[Buildable.ore_mine])

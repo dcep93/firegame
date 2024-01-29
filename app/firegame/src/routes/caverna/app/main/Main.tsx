@@ -10,9 +10,6 @@ import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
 // TODO images need ruby mining
-// TODO move resources when not my turn
-// TODO skip on not your turn
-// TODO get everyone's resources when pull off/breed
 // TODO skip_one pulled off fields
 
 export default function Main() {

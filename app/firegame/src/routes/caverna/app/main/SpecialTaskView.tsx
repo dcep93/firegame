@@ -28,7 +28,7 @@ export default function SpecialTaskView() {
             key={a}
             onClick={() =>
               Promise.resolve()
-                .then(() => utils.addResourcesToPlayer({ rubies: -1 }))
+                .then(() => utils.addResourcesToMe({ rubies: -1 }))
                 .then(
                   () =>
                     (store.gameW.game.singlePlayerSavedActions = Object.assign(
@@ -67,7 +67,7 @@ export default function SpecialTaskView() {
             <button
               key={r}
               disabled={
-                utils.addResources(p.resources || {}, cost) === undefined
+                utils.sumResources(p.resources || {}, cost) === undefined
               }
               onClick={() =>
                 Promise.resolve()
@@ -77,7 +77,7 @@ export default function SpecialTaskView() {
                         r as keyof ResourcesType
                       ]
                   )
-                  .then(() => utils.addResourcesToPlayer(cost))
+                  .then(() => utils.addResourcesToMe(cost))
                   .then(() => utils.prepareNextTask(`bought ${r}`))
               }
             >
@@ -98,12 +98,12 @@ export default function SpecialTaskView() {
           <button
             key={builderResource}
             disabled={
-              utils.addResources(p.resources || {}, { ore: -1 }) === undefined
+              utils.sumResources(p.resources || {}, { ore: -1 }) === undefined
             }
             onClick={() =>
               Promise.resolve()
                 .then(() =>
-                  utils.addResourcesToPlayer({
+                  utils.addResourcesToMe({
                     [builderResource]: 1,
                     ore: -1,
                   })
@@ -152,7 +152,7 @@ export default function SpecialTaskView() {
           onClick={() =>
             Promise.resolve()
               .then(() => utils.shiftTask())
-              .then(() => utils.addResourcesToPlayer({ gold: 3 }))
+              .then(() => utils.addResourcesToMe({ gold: 3 }))
               .then(() => utils.prepareNextTask("ate the baby for 3 gold"))
           }
         >
@@ -197,7 +197,7 @@ export default function SpecialTaskView() {
         <button
           onClick={() =>
             Promise.resolve()
-              .then(() => utils.addResourcesToPlayer(growthRewards))
+              .then(() => utils.addResourcesToMe(growthRewards))
               .then(() => utils.shiftTask())
               .then(() => utils.prepareNextTask("got resources"))
           }
@@ -274,21 +274,21 @@ export default function SpecialTaskView() {
             key={r}
             onClick={() =>
               Promise.resolve()
-                .then(() => utils.addResourcesToPlayer({ [r]: 1 }))
+                .then(() => utils.addResourcesToMe({ [r]: 1 }))
                 .then(
                   () =>
                     p.caverns[Cavern.breeding_cave] &&
-                    utils.addResourcesToPlayer({ food: 1 })
+                    utils.addResourcesToMe({ food: 1 })
                 )
                 .then(
                   () =>
                     p.caverns[Cavern.quarry] &&
                     r === "donkeys" &&
-                    utils.addResourcesToPlayer({ stone: 1 })
+                    utils.addResourcesToMe({ stone: 1 })
                 )
                 .then(
                   () =>
-                    (task.d!.availableResources = utils.addResources(
+                    (task.d!.availableResources = utils.sumResources(
                       task.d!.availableResources!,
                       { [r]: -1 }
                     ))
@@ -309,9 +309,7 @@ export default function SpecialTaskView() {
           onClick={() =>
             Promise.resolve()
               .then(() => task.d!.remaining!--)
-              .then(() =>
-                utils.addResourcesToPlayer({ ore: -2, gold: 2, food: 1 })
-              )
+              .then(() => utils.addResourcesToMe({ ore: -2, gold: 2, food: 1 }))
               .then(() =>
                 utils.prepareNextTask("traded 2 ore for 2 [gold] and 1 [food]")
               )
@@ -386,7 +384,7 @@ export default function SpecialTaskView() {
             onClick={() =>
               Promise.resolve()
                 .then(() => utils.shiftTask())
-                .then(() => utils.addResourcesToPlayer(reward))
+                .then(() => utils.addResourcesToMe(reward))
                 .then(() => utils.prepareNextTask(`earned ${message}`))
             }
           >
@@ -407,7 +405,7 @@ export default function SpecialTaskView() {
               Promise.resolve(p.usedDwarves![i]).then((food) =>
                 Promise.resolve()
                   .then(() => (p.usedDwarves![i] = 0))
-                  .then(() => utils.addResourcesToPlayer({ food }))
+                  .then(() => utils.addResourcesToMe({ food }))
                   .then(() => utils.shiftTask())
                   .then(() => utils.prepareNextTask(`traded used ${food}`))
               )
@@ -426,7 +424,7 @@ export default function SpecialTaskView() {
                 Promise.resolve()
                   .then(() => (p.availableDwarves![i] = 0))
                   .then(() => p.availableDwarves!.sort((a, b) => a - b))
-                  .then(() => utils.addResourcesToPlayer({ food }))
+                  .then(() => utils.addResourcesToMe({ food }))
                   .then(() => utils.shiftTask())
                   .then(() => utils.prepareNextTask(`traded available ${food}`))
               )
@@ -473,7 +471,7 @@ export default function SpecialTaskView() {
           onClick={() =>
             Promise.resolve()
               .then(() =>
-                utils.addResourcesToPlayer({ gold: -state, food: state - 1 })
+                utils.addResourcesToMe({ gold: -state, food: state - 1 })
               )
               .then(() => utils.shiftTask())
               .then(() =>
