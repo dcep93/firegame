@@ -872,7 +872,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return true;
       case "grain":
       case "vegetables":
-        // TODO revisit sow
+        // TODO revisit auto sow/furnish
         if (!utils.isMyTurn()) return false;
         if (execute) {
           if (

@@ -262,8 +262,13 @@ function Grid(
   return (
     <div className={styles.bubble} style={{ fontSize: "smaller" }}>
       <h4>{props.isFarm ? "FARM" : "CAVE"}</h4>
-      <div>
-        <div style={{ height: "3em" }}></div>
+      <div
+        style={{
+          padding: `5em ${props.isFarm ? 0 : 8}em 8em ${
+            props.isFarm ? 8 : 0
+          }em`,
+        }}
+      >
         <div>
           {utils
             .count(utils.numRows)
@@ -284,7 +289,6 @@ function Grid(
                   .map((coords, j) => (
                     <Cell key={j} coords={coords} {...props} />
                   ))}
-                {/* TODO room for office room */}
               </div>
             ))}
           <div style={{ position: "relative" }}>
@@ -300,7 +304,7 @@ function Grid(
                     right: utils.isFarm(c) ? "0" : undefined,
                     bottom: "0",
                     transform: `translate(${
-                      100 * c.x * (utils.isFarm(c) ? -1 : 1)
+                      100 * (utils.isFarm(c) ? c.x + 1 : c.x)
                     }%, ${100 * -c.y}%)`,
                   }}
                 >
@@ -309,7 +313,6 @@ function Grid(
               ))}
           </div>
         </div>
-        <div style={{ height: "8em" }}></div>
       </div>
     </div>
   );
