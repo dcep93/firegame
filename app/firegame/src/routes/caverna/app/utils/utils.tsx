@@ -902,13 +902,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         return true;
       case "dogs":
+        return (tile?.built || {})[Buildable.pasture] === true;
       case "sheep":
       case "donkeys":
       case "boars":
       case "cows":
         if (tile === undefined) return false;
         if (
-          resourceName !== "dogs" &&
           Object.keys(tile.resources || {}).filter(
             (r) => !["dogs", resourceName].includes(r)
           ).length !== 0
@@ -960,9 +960,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         if (!allowed) {
           switch (resourceName) {
-            case "dogs":
-              allowed = true;
-              break;
             case "sheep":
               if (tile.built[Buildable.pasture]) {
                 if (
