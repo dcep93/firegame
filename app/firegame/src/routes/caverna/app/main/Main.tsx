@@ -10,7 +10,6 @@ import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
 // TODO images need ruby mining
-// TODO where do dogs live
 
 export default function Main() {
   const [selected, updateSelected] = useState<Coords | undefined>(undefined);
