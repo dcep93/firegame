@@ -10,7 +10,6 @@ import PlayersView from "./PlayersView";
 import TaskView from "./TaskView";
 
 // TODO images need ruby mining
-// TODO skip_one pulled off fields
 
 export default function Main() {
   const [selected, updateSelected] = useState<Coords | undefined>(undefined);

@@ -1103,8 +1103,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         g.currentPlayer = g.startingPlayer;
         var h = g.upcomingHarvests!.shift();
         if (h === Harvest.random) {
-          // TODO uncomment
-          const hs = g.randomHarvests!; //utils.shuffle(g.randomHarvests!);
+          const hs = utils.shuffle(g.randomHarvests!);
           if (hs[0] < Harvest.harvest) hs.sort((a, b) => a - b);
           h = hs.shift()!;
           hs.sort((a, b) => a - b);
@@ -1114,7 +1113,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         } else {
           g.harvest = h;
           utils.queueTasks([{ t: Task.harvest }]);
-          if (h !== Harvest.one_per) {
+          if (h === Harvest.harvest) {
             g.players.forEach((p) => utils.pullOffFields(p));
           }
         }
