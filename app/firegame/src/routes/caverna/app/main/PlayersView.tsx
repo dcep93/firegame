@@ -273,16 +273,18 @@ function Grid(
                 key={i}
                 style={{
                   display: "flex",
-                  flexDirection: props.isFarm ? "row-reverse" : "row",
                 }}
               >
                 {utils
                   .count(utils.numCols)
-                  .map((j) => ({ i, j, k: props.isFarm ? 0 : 1 }))
+                  .map((j) => ({
+                    y: i,
+                    x: props.isFarm ? j - utils.numCols : j,
+                  }))
                   .map((coords, j) => (
                     <Cell key={j} coords={coords} {...props} />
                   ))}
-                <div style={{ width: "6em" }}></div>
+                {/* TODO room for office room */}
               </div>
             ))}
           <div style={{ position: "relative" }}>
@@ -298,8 +300,8 @@ function Grid(
                     right: utils.isFarm(c) ? "0" : undefined,
                     bottom: "0",
                     transform: `translate(${
-                      100 * c.j * (utils.isFarm(c) ? -1 : 1)
-                    }%, ${100 * -c.i}%)`,
+                      100 * c.x * (utils.isFarm(c) ? -1 : 1)
+                    }%, ${100 * -c.y}%)`,
                   }}
                 >
                   <Cell {...props} coords={c} />

@@ -28,40 +28,34 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   numCols = 3;
 
   coordsToKey(c: Coords): string {
-    return [c.i, c.j, c.k].join("_");
+    return [c.x, c.y].join("_");
   }
 
   keyToCoords(key: string): Coords {
-    const [i, j, k] = key.split("_").map((i) => parseInt(i));
-    return { i, j, k };
+    const [x, y] = key.split("_").map((i) => parseInt(i));
+    return { x, y };
   }
 
   getGrid(p: PlayerType): {
     c: Coords;
     t: TileType;
   }[] {
-    return Object.entries(p.grid).flatMap(([k, g]) =>
-      Object.entries(g).flatMap(([i, r]) =>
-        Object.entries(r).flatMap(([j, t]) => ({
-          c: { i: parseInt(i), j: parseInt(j), k: parseInt(k) },
-          t: utils._sanitize(t)!,
-        }))
-      )
+    return Object.entries(p.grid).flatMap(([i, r]) =>
+      Object.entries(r).flatMap(([j, t]) => ({
+        c: { y: parseInt(i), x: parseInt(j) },
+        t: utils._sanitize(t)!,
+      }))
     );
   }
 
   getTile(coords: Coords, p: PlayerType): TileType | undefined {
-    return utils._sanitize(
-      ((p.grid[coords.k] || {})[coords.i] || {})[coords.j]
-    );
+    return utils._sanitize((p.grid[coords.y] || {})[coords.x]);
   }
 
   setTile(coords: Coords, t: TileType | undefined) {
     const p = utils.getMe();
-    if (p.grid[coords.k] === undefined) p.grid[coords.k] = {};
-    if (p.grid[coords.k][coords.i] === undefined)
-      p.grid[coords.k][coords.i] = {};
-    if (t !== undefined) p.grid[coords.k][coords.i][coords.j] = t;
+    if (p.grid[coords.y] === undefined) p.grid[coords.y] = {};
+    if (t !== undefined) p.grid[coords.y][coords.x] = t;
   }
 
   _sanitize(t: TileType | undefined): TileType | undefined {
@@ -77,13 +71,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       [0, 1],
       [0, -1],
     ]
-      .map(([i, j]) => ({ i: coords.i + i, j: coords.j + j, k: coords.k }))
+      .map(([i, j]) => ({ y: coords.y + i, x: coords.x + j }))
+      .filter((cc) => utils.isFarm(cc) === utils.isFarm(coords))
       .map((cc) => utils.getTile(cc, p));
   }
 
   _notConnectedToHome(coords: Coords): boolean {
     const p = utils.getMe();
-    if (utils.coordsToKey(coords) === utils.coordsToKey({ i: 0, j: 0, k: 0 }))
+    if (utils.coordsToKey(coords) === utils.coordsToKey({ y: 0, x: -1 }))
       return false;
     return (
       utils
@@ -103,15 +98,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   isOutOfBounds(coords: Coords): boolean {
     return (
-      coords.i < 0 ||
-      coords.i >= utils.numRows ||
-      coords.j < 0 ||
-      coords.j >= utils.numCols
+      coords.y < 0 ||
+      coords.y >= utils.numRows ||
+      coords.x < -utils.numCols ||
+      coords.x >= utils.numCols
     );
   }
 
   isFarm(coords: Coords): boolean {
-    return coords.k === 0;
+    return coords.x < 0;
   }
 
   // TASKS
@@ -592,11 +587,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       const [b1, b2, rowColumn, tileIndex] = task.d!.buildData;
       const cs = utils.count(2).map(() => Object.assign({}, coords));
 
-      cs[1 - tileIndex][1 - rowColumn === 0 ? "i" : "j"] +=
-        (rowColumn === 0 && tileIndex !== coords.k) ||
-        (rowColumn === 1 && tileIndex === 1)
-          ? 1
-          : -1;
+      cs[1 - tileIndex][1 - rowColumn === 0 ? "y" : "x"] +=
+        rowColumn === tileIndex ? 1 : -1;
       if (!utils._buildHelper(b1, cs[0], execute)) return false;
       if (!utils._buildHelper(b2, cs[1], execute)) return false;
       if (execute) {
@@ -631,7 +623,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   ): boolean {
     const p = utils.getMe();
     if (utils.isOutOfBounds(coords)) {
-      if (coords.j < 0 || !p.caverns[Cavern.office_room]) return false;
+      if (!p.caverns[Cavern.office_room]) return false;
       if (execute) {
         utils.addResourcesToMe({ gold: 2 });
       }
@@ -1220,13 +1212,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   getNegativePointsDict(p: PlayerType): { [k: string]: number } {
     return {
-      unusedSpace: -[0, 1]
-        .flatMap((k) =>
+      unusedSpace: -utils
+        .count(utils.numRows)
+        .flatMap((i) =>
           utils
-            .count(utils.numRows)
-            .flatMap((i) =>
-              utils.count(utils.numCols).map((j) => ({ i, j, k }))
-            )
+            .count(utils.numCols * 2)
+            .map((j) => ({ y: i, x: j - utils.numCols - 1 }))
         )
         .filter((coords) => utils.getTile(coords, p) === undefined).length,
       missingAnimal:

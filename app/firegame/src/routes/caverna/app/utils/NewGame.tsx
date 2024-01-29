@@ -120,8 +120,7 @@ export type Params = {
   lobby: LobbyType;
 };
 
-// TODO 2d not 3d
-export type Coords = { i: number; j: number; k: number };
+export type Coords = { x: number; y: number };
 export type TileType = {
   built: { [b in Buildable]?: boolean };
 
@@ -147,7 +146,7 @@ export type PlayerType = {
 
   caverns: { [t in Cavern]?: boolean };
 
-  grid: { [side: number]: { [row: number]: { [column: number]: TileType } } };
+  grid: { [row: number]: { [column: number]: TileType } };
 
   tileBonuses?: {
     [k: string]: ResourcesType;
@@ -251,25 +250,23 @@ function setPlayers(game: GameType): GameType {
       caverns: { [Cavern.starting_dwelling]: true },
 
       grid: {
-        1: {
+        0: {
           0: {
-            0: {
-              resources: {},
-              built: { [Buildable.cavern]: true },
-              cavern: Cavern.starting_dwelling,
-            },
+            resources: {},
+            built: { [Buildable.cavern]: true },
+            cavern: Cavern.starting_dwelling,
           },
-          1: { 0: { resources: {}, built: { [Buildable.cavern]: true } } },
         },
+        1: { 0: { resources: {}, built: { [Buildable.cavern]: true } } },
       },
 
       tileBonuses: Object.fromEntries(
         [
-          { c: { k: 0, i: 3, j: 0 }, b: { boars: 1 } },
-          { c: { k: 0, i: 1, j: 2 }, b: { boars: 1 } },
-          { c: { k: 0, i: 0, j: 1 }, b: { food: 1 } },
-          { c: { k: 1, i: 0, j: 1 }, b: { food: 1 } },
-          { c: { k: 1, i: 3, j: 2 }, b: { food: 2 } },
+          { c: { y: 3, x: -1 }, b: { boars: 1 } },
+          { c: { y: 1, x: -3 }, b: { boars: 1 } },
+          { c: { y: 0, x: -2 }, b: { food: 1 } },
+          { c: { y: 0, x: 1 }, b: { food: 1 } },
+          { c: { y: 3, x: 2 }, b: { food: 2 } },
         ].map(({ c, b }) => [utils.coordsToKey(c), b])
       ),
     }));
