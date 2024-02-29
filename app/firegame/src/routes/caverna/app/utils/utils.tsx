@@ -903,13 +903,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         return true;
       case "dogs":
-        return (tile?.built || {})[Buildable.pasture] === true;
       case "sheep":
       case "donkeys":
       case "boars":
       case "cows":
         if (tile === undefined) return false;
         if (
+          resourceName !== "dogs" &&
           Object.keys(tile.resources || {}).filter(
             (r) => !["dogs", resourceName].includes(r)
           ).length !== 0
@@ -930,7 +930,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           }
         } else {
           if (tile.built[Buildable.pasture]) {
-            if (tile.built[Buildable.fence] || tile.built[Buildable.fence_2]) {
+            if (resourceName === "dogs") {
+              allowed = true;
+            } else if (
+              tile.built[Buildable.fence] ||
+              tile.built[Buildable.fence_2]
+            ) {
               var numAllowed = 2;
               if (tile.built[Buildable.stable]) numAllowed *= 2;
               if (tile.built[Buildable.fence_2]) {

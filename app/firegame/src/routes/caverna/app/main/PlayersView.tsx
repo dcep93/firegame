@@ -360,6 +360,7 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
               resourceName,
               count,
               buttonEnabled:
+                utils.isMyTurn() &&
                 props.isMe &&
                 !["grain", "vegetables"].includes(resourceName) &&
                 (resourceName !== "dogs" ||
