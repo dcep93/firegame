@@ -33,8 +33,7 @@ export default function PlayersView(props: PlayersPropsType) {
             .map(
               (_, i) =>
                 store.gameW.game.players[
-                  (i + store.gameW.game.players.length - utils.myIndex()) %
-                    store.gameW.game.players.length
+                  (i + utils.myIndex()) % store.gameW.game.players.length
                 ]
             )
             .map((p, i) => (
@@ -359,6 +358,7 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
               resourceName,
               count,
               buttonEnabled:
+                props.isMe &&
                 !["grain", "vegetables"].includes(resourceName) &&
                 (resourceName !== "dogs" ||
                   Object.keys(t.resources!).length === 1),
