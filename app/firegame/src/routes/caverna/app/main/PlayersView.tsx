@@ -333,7 +333,9 @@ function Cell(props: ExtraPropsType & { coords: Coords }) {
         width: "8em",
         height: "8em",
         backgroundColor:
-          isBuilding || !utils.objEqual(props.coords, props.selected)
+          !props.isMe ||
+          isBuilding ||
+          !utils.objEqual(props.coords, props.selected)
             ? undefined
             : "lightgrey",
         cursor: canClick ? "pointer" : undefined,

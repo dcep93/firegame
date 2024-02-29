@@ -675,6 +675,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             if (!tile.built[Buildable.pasture]) return false;
             return true;
           case Buildable.stable:
+            if (tile?.built[Buildable.field]) return false;
             return true;
           case Buildable.pasture:
             if (tile !== undefined) {
