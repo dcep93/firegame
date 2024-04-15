@@ -17,7 +17,7 @@ class Main extends React.Component {
             }
           }}
         >
-          {JSON.stringify(store.gameW.game)}
+          {JSON.stringify(store.gameW.game, null, 2)}
         </pre>
       </div>
     );
