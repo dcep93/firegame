@@ -3,6 +3,7 @@ import utils, { store } from "./utils";
 
 export type GameType = {
   params: Params;
+  blah: number;
   currentPlayer: number;
   players: PlayerType[];
 };
@@ -18,6 +19,7 @@ export type PlayerType = {
 
 function NewGame(params: Params): PromiseLike<GameType> {
   const game: GameType = {
+    blah: Date.now(),
     params,
     currentPlayer: 0,
     players: [],

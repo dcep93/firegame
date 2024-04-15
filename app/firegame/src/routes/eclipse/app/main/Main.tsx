@@ -12,6 +12,7 @@ class Main extends React.Component {
           onClick={() => {
             if (utils.isMyTurn()) {
               utils.incrementPlayerTurn();
+              store.gameW.game.blah = Date.now();
               store.update("clicked");
             }
           }}
