@@ -1,5 +1,7 @@
 // https://console.firebase.google.com/u/0/project/firebase-320421/database/firebase-320421-default-rtdb/data
+import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
+
 import {
   Database,
   push as f_push,
@@ -37,6 +39,8 @@ function init(): void {
   initialized = true;
   var app = initializeApp(config);
   database = getDatabase(app);
+  const analytics = getAnalytics(app);
+  console.log("firebase", analytics);
   onValue(ref(database, ".info/serverTimeOffset"), (snap: ResultType) => {
     offset = snap.val();
   });
