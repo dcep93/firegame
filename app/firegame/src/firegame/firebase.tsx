@@ -15,7 +15,14 @@ import {
 import { gamePath, namespace } from "./writer/utils";
 
 const config = {
-  databaseURL: "https://firebase-320421-default-rtdb.firebaseio.com/",
+  apiKey: "AIzaSyD6FMqmSTbv-cxRkgWZ7-iyPVTUlkVzjuM",
+  authDomain: "fir-320421.firebaseapp.com",
+  databaseURL: "https://firebase-320421-default-rtdb.firebaseio.com",
+  projectId: "firebase-320421",
+  storageBucket: "firebase-320421.appspot.com",
+  messagingSenderId: "532025077082",
+  appId: "1:532025077082:web:0570d675c7caac9bca9763",
+  measurementId: "G-7M3Q897DJW",
 };
 
 export var firebaseId: string;
