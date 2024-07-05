@@ -23,7 +23,8 @@ export type PlayerType = {
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
-  const ps = params.p.split("\n");
+  const ps =
+    params.p.length > 0 ? params.p.split("\n") : Object.values(params.lobby);
   const game: GameType = {
     word: utils.randomFrom(locations_json),
     ps,
