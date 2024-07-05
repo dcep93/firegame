@@ -36,20 +36,18 @@ export type PlayerType = {
   userId: string;
   userName: string;
 
-  d:
-    | undefined
-    | {
-        faction: Faction;
-        storage: Resources;
-        income: Resources;
-        well: Resources;
-        discs: number;
-        usedDiscs: number;
-        research: Science[];
-        twoPointers: number;
-        diamondUpgrades?: Diamond[];
-        military?: number[];
-      };
+  d?: {
+    faction: Faction;
+    storage: Resources;
+    income: Resources;
+    well: Resources;
+    discs: number;
+    usedDiscs: number;
+    research: Science[];
+    twoPointers: number;
+    diamondUpgrades?: Diamond[];
+    military?: number[];
+  };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
@@ -65,16 +63,16 @@ function NewGame(params: Params): PromiseLike<GameType> {
     buyableResearch: [],
     researchBag: utils.shuffle(
       Object.entries(Sciences).flatMap(([key, value]) =>
-        utils.repeat(key as Science, 4)
+        utils.repeat(key as Science, 100)
       )
     ),
     diamonds: utils.shuffle(
       Object.entries(Diamonds).flatMap(([key, value]) =>
-        utils.repeat(key as Diamond, 4)
+        utils.repeat(key as Diamond, 100)
       )
     ),
     military: utils.shuffle(
-      [1, 2, 3, 4].flatMap((value) => utils.repeat(value, 4))
+      [1, 2, 3, 4].flatMap((value) => utils.repeat(value, 100))
     ),
     tiles: Object.fromEntries(
       utils
@@ -113,7 +111,6 @@ function setPlayers(game: GameType): GameType {
     .map(([userId, userName]) => ({
       userId,
       userName,
-      d: undefined,
     }));
   game.currentPlayer = game.players.length - 1;
 

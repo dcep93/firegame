@@ -1,6 +1,6 @@
 import { store } from "../utils/utils";
 
-export default function EclipseMap() {
+export default function ResearchView() {
   const game = store.gameW.game;
-  return <div>EclipseMap</div>;
+  return <div>ResearchView</div>;
 }
