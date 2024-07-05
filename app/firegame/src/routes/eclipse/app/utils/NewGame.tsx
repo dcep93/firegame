@@ -1,12 +1,14 @@
 import { LobbyType } from "../../../../shared/store";
 import {
-  DiamondEnum,
-  FactionEnum,
-  MaterialsType,
+  Diamond,
+  Diamonds,
+  Faction,
   Rank,
-  Research,
-  ResearchEnum,
-  TileType,
+  Resources,
+  Science,
+  Sciences,
+  Sector,
+  Tile,
   Tiles,
   Track,
 } from "./library";
@@ -16,12 +18,13 @@ export type GameType = {
   params: Params;
   currentPlayer: number;
   players: PlayerType[];
-  map: TileType[];
-  buyableResearch: ResearchEnum[];
-  researchBag: ResearchEnum[];
-  diamonds: DiamondEnum[];
+
+  map: Sector[];
+  buyableResearch: Science[];
+  researchBag: Science[];
+  diamonds: Diamond[];
   military: number[];
-  tiles: { [rank: string]: string[] | undefined };
+  tiles: { [rank in Rank]?: Tile[] };
 };
 
 export type Params = {
@@ -35,16 +38,16 @@ export type PlayerType = {
   d:
     | undefined
     | {
-        faction: FactionEnum;
-        storage: MaterialsType;
-        income: MaterialsType;
-        well: MaterialsType;
+        faction: Faction;
+        storage: Resources;
+        income: Resources;
+        well: Resources;
         discs: number;
         usedDiscs: number;
-        research: ResearchEnum[];
+        research: Science[];
         twoPointers: number;
-        diamondUpgrades: DiamondEnum[] | undefined;
-        military: number[] | undefined;
+        diamondUpgrades?: Diamond[];
+        military?: number[];
       };
 };
 
@@ -56,34 +59,42 @@ function NewGame(params: Params): PromiseLike<GameType> {
     map: [],
     buyableResearch: [],
     researchBag: utils.shuffle(
-      utils
-        .enumArray(ResearchEnum)
-        .flatMap((researchEnum) => utils.repeat(researchEnum, 4))
+      Object.entries(Sciences).flatMap(([key, value]) =>
+        utils.repeat(key as Science, 4)
+      )
     ),
     diamonds: utils.shuffle(
-      utils
-        .enumArray(DiamondEnum)
-        .flatMap((diamondEnum) => utils.repeat(diamondEnum, 4))
+      Object.entries(Diamonds).flatMap(([key, value]) =>
+        utils.repeat(key as Diamond, 4)
+      )
     ),
     military: utils.shuffle(
       [1, 2, 3, 4].flatMap((value) => utils.repeat(value, 4))
     ),
     tiles: Object.fromEntries(
-      utils.enumArray(Rank).map((rank) => [rank, Object.keys(Tiles)])
+      utils
+        .enumArray(Rank)
+        .map((rank) => [
+          rank,
+          Object.keys(Tiles).filter((t) => Tiles[t].rank === rank),
+        ])
     ),
-    // tiles: { [rank: string]: TileType[] | undefined };
   };
-  while (true) {
-    const needed =
+  game.map.push({
+    tile: game.tiles[Rank.o]!.pop() as Tile,
+    orientation: 0,
+    enemies: ["death_star"],
+    tokens: [],
+  });
+  for (
+    var needed;
+    (needed =
       14 -
       game.buyableResearch.filter(
-        (research) => Research[research].track !== Track.black
-      ).length;
-    if (needed === 0) {
-      break;
-    }
-    utils.drawResearch(needed, game);
-  }
+        (science) => Sciences[science].track !== Track.black
+      ).length);
+    utils.drawResearch(needed, game)
+  ) {}
   return Promise.resolve(game).then(setPlayers);
 }
 
@@ -97,6 +108,7 @@ function setPlayers(game: GameType): GameType {
       userName,
       d: undefined,
     }));
+  game.currentPlayer = game.players.length - 1;
 
   return game;
 }
