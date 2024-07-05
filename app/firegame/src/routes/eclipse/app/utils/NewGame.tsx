@@ -1,16 +1,13 @@
 import { LobbyType } from "../../../../shared/store";
+import { Action, Rank, Resources, Sector, Track } from "./gameTypes";
 import {
   Diamond,
   Diamonds,
   Faction,
-  Rank,
-  Resources,
   Science,
   Sciences,
-  Sector,
   Tile,
   Tiles,
-  Track,
 } from "./library";
 import utils, { store } from "./utils";
 
@@ -19,6 +16,9 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
+  year: number;
+  action: Action;
+  startingPlayer: number;
   map: Sector[];
   buyableResearch: Science[];
   researchBag: Science[];
@@ -29,6 +29,7 @@ export type GameType = {
 
 export type Params = {
   lobby: LobbyType;
+  randomStarting: boolean;
 };
 
 export type PlayerType = {
@@ -55,6 +56,10 @@ function NewGame(params: Params): PromiseLike<GameType> {
   const game: GameType = {
     params,
     currentPlayer: 0,
+
+    year: 1,
+    action: Action.selectFaction,
+    startingPlayer: 0,
     players: [],
     map: [],
     buyableResearch: [],
@@ -101,7 +106,9 @@ function NewGame(params: Params): PromiseLike<GameType> {
 function setPlayers(game: GameType): GameType {
   game.players = utils
     .shuffle(Object.entries(store.lobby))
-    .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
+    .sort((a, b) =>
+      game.params.randomStarting || b[0] === store.me.userId ? 1 : -1
+    )
     .slice(0, 2)
     .map(([userId, userName]) => ({
       userId,

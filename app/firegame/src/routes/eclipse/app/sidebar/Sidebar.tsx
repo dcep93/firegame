@@ -8,7 +8,7 @@ class Sidebar extends SharedSidebar<Params> {
   utils = utils;
 
   getParams(): Params {
-    return { lobby: store.lobby };
+    return { lobby: store.lobby, randomStarting: true };
   }
 }
 

@@ -1,46 +1,27 @@
-// types/enums
+import { Rank, Track } from "./gameTypes";
 
-export enum Faction {
-  blue,
-  green,
-  white,
-  black,
-  red,
-  yellow,
-}
-
-export enum Resource {
-  materials,
-  science,
-  gold,
-}
-
-export type Resources = {
-  [r in Resource]: number;
+const RawFactions = {
+  blue: {
+    research: [],
+  },
+  green: {
+    research: [],
+  },
+  white: {
+    research: [],
+  },
+  black: {
+    research: [],
+  },
+  red: {
+    research: [],
+  },
+  yellow: {
+    research: [],
+  },
 };
-
-export type Sector = {
-  tile: Tile;
-  orientation: number;
-  enemies?: Enemy[];
-  tokens?: Token[];
-};
-
-export enum Track {
-  pink,
-  green,
-  yellow,
-  black,
-}
-
-export enum Rank {
-  o,
-  i,
-  ii,
-  iii,
-}
-
-// library
+export type Faction = keyof typeof RawFactions;
+export const Factions: { [key: string]: { research: Science[] } } = RawFactions;
 
 const RawDiamonds = {
   monolith: {},

@@ -1,27 +1,19 @@
 import React from "react";
-import utils, { store } from "../utils/utils";
+import { Action } from "../utils/gameTypes";
+import { store } from "../utils/utils";
+import EclipseMap from "./EclipseMap";
+import Players from "./Players";
+import { SelectFaction } from "./SelectFaction";
 
-import styles from "../../../../shared/styles.module.css";
-
-class Main extends React.Component {
+export default class Main extends React.Component {
   render() {
+    const game = store.gameW.game;
+    if (game.action === Action.selectFaction) return <SelectFaction />;
     return (
-      <div className={styles.bubble}>
-        <h2>Main</h2>
-        <pre
-          onClick={() => {
-            if (utils.isMyTurn()) {
-              utils.incrementPlayerTurn();
-              store.gameW.game.blah = Date.now();
-              store.update("clicked");
-            }
-          }}
-        >
-          {JSON.stringify(store.gameW.game, null, 2)}
-        </pre>
+      <div>
+        <Players />
+        <EclipseMap />
       </div>
     );
   }
 }
-
-export default Main;
