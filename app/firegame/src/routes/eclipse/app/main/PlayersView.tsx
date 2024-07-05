@@ -1,6 +1,6 @@
 import { Track } from "../utils/gameTypes";
-import { Upgrade } from "../utils/library";
-import { store } from "../utils/utils";
+import { Faction, Factions, Upgrade } from "../utils/library";
+import utils, { store } from "../utils/utils";
 
 export default function PlayersView(props: {
   upgrade: Upgrade | null;
@@ -10,7 +10,26 @@ export default function PlayersView(props: {
   return (
     <div>
       {game.players.map((p) => (
-        <div key={p.userId}>{JSON.stringify(p.d)}</div>
+        <div key={p.userId}>
+          {p.d === undefined
+            ? Object.entries(Factions)
+                .map(([faction, obj]) => ({
+                  faction: faction as Faction,
+                  ...obj,
+                }))
+                .map((obj) => (
+                  <div
+                    key={obj.faction}
+                    style={{ cursor: utils.isMyTurn() ? "pointer" : undefined }}
+                    onClick={() =>
+                      utils.isMyTurn() && utils.selectFaction(obj.faction)
+                    }
+                  >
+                    {obj.faction}
+                  </div>
+                ))
+            : JSON.stringify(p.d)}
+        </div>
       ))}
     </div>
   );

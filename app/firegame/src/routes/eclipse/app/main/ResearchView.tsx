@@ -34,7 +34,7 @@ export default function ResearchView(props: { track: Track }) {
                     >
                       <div>{obj.science}</div>
                       <div>
-                        ${obj.cost}/{obj.floor} x{obj.count}
+                        ${obj.cost}/{obj.floor} (x{obj.count})
                       </div>
                     </div>
                   )}

@@ -1,27 +1,99 @@
-import { Rank, Track } from "./gameTypes";
+import { Rank, Resource, Resources, Ship, Track } from "./gameTypes";
 
 const RawFactions = {
   blue: {
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
     research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
   },
   green: {
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
     research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
   },
   white: {
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
     research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
   },
   black: {
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
     research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
   },
   red: {
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
     research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
   },
   yellow: {
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
     research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
   },
 };
 export type Faction = keyof typeof RawFactions;
-export const Factions: { [key: string]: { research: Science[] } } = RawFactions;
+export const Factions: {
+  [key: string]: {
+    storage: Resources;
+    research: Science[];
+    ships: { [ship in Ship]: Upgrade[] };
+  };
+} = RawFactions;
 
 const RawDiamonds = {
   monolith: {},
@@ -30,7 +102,7 @@ const RawDiamonds = {
 export type Diamond = keyof typeof RawDiamonds;
 export const Diamonds: { [key: string]: {} } = RawDiamonds;
 
-const RawTiles = { "100": { rank: Rank.o, points: 4, colonies: [{}] } };
+const RawTiles = { "100": { rank: Rank.special, points: 4, colonies: [{}] } };
 export type Tile = keyof typeof RawTiles;
 export const Tiles: {
   [key: string]: { rank: Rank; points: number; colonies: {}[] };

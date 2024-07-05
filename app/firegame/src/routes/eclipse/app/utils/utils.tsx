@@ -1,6 +1,14 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { Diamond, Diamonds, Science, Sciences, Tile, Tiles } from "./library";
+import {
+  Diamond,
+  Diamonds,
+  Faction,
+  Factions,
+  Science,
+  Sciences,
+  Tiles,
+} from "./library";
 
 import { GameType, Params, PlayerType } from "./NewGame";
 import { Action, Rank, Resource, Track } from "./gameTypes";
@@ -35,6 +43,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       tiles: Object.fromEntries(
         utils
           .enumArray(Rank)
+          .filter((rank) => rank !== Rank.special)
           .map((rank) => [
             rank,
             Object.keys(Tiles).filter((t) => Tiles[t].rank === rank),
@@ -42,7 +51,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       ),
     };
     game.sectors.push({
-      tile: game.tiles[Rank.o]!.pop() as Tile,
+      tile: "100",
       orientation: 0,
       x: 0,
       y: 0,
@@ -60,9 +69,37 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     ) {}
     return game;
   }
+
   drawResearch(needed: number, game: GameType | undefined = undefined): void {
     game = game || store.gameW.game;
     game.buyableSciences.push(...game.sciencesBag.splice(0, needed));
+  }
+
+  selectFaction(faction: Faction): void {
+    const obj = Factions[faction];
+    utils.getMe().d = {
+      faction,
+      ships: obj.ships,
+      storage: obj.storage,
+      income: {
+        [Resource.materials]: 1,
+        [Resource.science]: 1,
+        [Resource.gold]: 1,
+      },
+      well: {
+        [Resource.materials]: 0,
+        [Resource.science]: 0,
+        [Resource.gold]: 0,
+      },
+      discs: 13,
+      usedDiscs: 0,
+      research: obj.research.map((science) => ({
+        science,
+        track: Sciences[science].track,
+      })),
+      twoPointers: 0,
+    };
+    store.update(`selected ${faction}`);
   }
 
   research(execute: boolean, science: Science, track: Track): boolean {

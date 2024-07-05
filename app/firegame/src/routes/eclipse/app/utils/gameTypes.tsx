@@ -27,7 +27,7 @@ export enum Track {
 }
 
 export enum Rank {
-  o,
+  special,
   i,
   ii,
   iii,
@@ -37,4 +37,11 @@ export enum Action {
   selectFaction,
   turn,
   research,
+}
+
+export enum Ship {
+  interceptor,
+  cruiser,
+  dreadnought,
+  starbase,
 }
