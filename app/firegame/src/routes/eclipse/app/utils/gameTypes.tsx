@@ -13,6 +13,8 @@ export type Resources = {
 export type Sector = {
   tile: Tile;
   orientation: number;
+  x: number;
+  y: number;
   enemies?: Enemy[];
   tokens?: Token[];
 };
@@ -33,4 +35,6 @@ export enum Rank {
 
 export enum Action {
   selectFaction,
+  turn,
+  research,
 }

@@ -1,14 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
 import { Action, Rank, Resources, Sector, Track } from "./gameTypes";
-import {
-  Diamond,
-  Diamonds,
-  Faction,
-  Science,
-  Sciences,
-  Tile,
-  Tiles,
-} from "./library";
+import { Diamond, Faction, Science, Tile } from "./library";
 import utils, { store } from "./utils";
 
 export type GameType = {
@@ -19,9 +11,9 @@ export type GameType = {
   year: number;
   action: Action;
   startingPlayer: number;
-  map: Sector[];
-  buyableResearch: Science[];
-  researchBag: Science[];
+  sectors: Sector[];
+  buyableSciences: Science[];
+  sciencesBag: Science[];
   diamonds: Diamond[];
   military: number[];
   tiles: { [rank in Rank]?: Tile[] };
@@ -43,7 +35,7 @@ export type PlayerType = {
     well: Resources;
     discs: number;
     usedDiscs: number;
-    research: Science[];
+    research: { science: Science; track: Track }[];
     twoPointers: number;
     diamondUpgrades?: Diamond[];
     military?: number[];
@@ -51,54 +43,7 @@ export type PlayerType = {
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
-  const game: GameType = {
-    params,
-    currentPlayer: 0,
-
-    year: 1,
-    action: Action.selectFaction,
-    startingPlayer: 0,
-    players: [],
-    map: [],
-    buyableResearch: [],
-    researchBag: utils.shuffle(
-      Object.entries(Sciences).flatMap(([key, value]) =>
-        utils.repeat(key as Science, 100)
-      )
-    ),
-    diamonds: utils.shuffle(
-      Object.entries(Diamonds).flatMap(([key, value]) =>
-        utils.repeat(key as Diamond, 100)
-      )
-    ),
-    military: utils.shuffle(
-      [1, 2, 3, 4].flatMap((value) => utils.repeat(value, 100))
-    ),
-    tiles: Object.fromEntries(
-      utils
-        .enumArray(Rank)
-        .map((rank) => [
-          rank,
-          Object.keys(Tiles).filter((t) => Tiles[t].rank === rank),
-        ])
-    ),
-  };
-  game.map.push({
-    tile: game.tiles[Rank.o]!.pop() as Tile,
-    orientation: 0,
-    enemies: ["death_star"],
-    tokens: [],
-  });
-  for (
-    var needed;
-    (needed =
-      14 -
-      game.buyableResearch.filter(
-        (science) => Sciences[science].track !== Track.black
-      ).length);
-    utils.drawResearch(needed, game)
-  ) {}
-  return Promise.resolve(game).then(setPlayers);
+  return Promise.resolve(utils.newGame(params)).then(setPlayers);
 }
 
 function setPlayers(game: GameType): GameType {
@@ -112,7 +57,6 @@ function setPlayers(game: GameType): GameType {
       userId,
       userName,
     }));
-  game.currentPlayer = game.players.length - 1;
 
   return game;
 }

@@ -1,16 +1,20 @@
-import React from "react";
-import EclipseMap from "./EclipseMap";
-import Players from "./Players";
+import { useState } from "react";
+import { Track } from "../utils/gameTypes";
+import { Upgrade } from "../utils/library";
+import PlayersView from "./PlayersView";
 import ResearchView from "./ResearchView";
+import SectorsView from "./SectorsView";
+import UpgradesView from "./UpgradesView";
 
-export default class Main extends React.Component {
-  render() {
-    return (
-      <div>
-        <Players />
-        <EclipseMap />
-        <ResearchView />
-      </div>
-    );
-  }
+export default function Main() {
+  const [track, updateTrack] = useState(Track.black);
+  const [upgrade, updateUpgrade] = useState<Upgrade | null>(null);
+  return (
+    <div>
+      <PlayersView updateTrack={updateTrack} upgrade={upgrade} />
+      <SectorsView />
+      <ResearchView track={track} />
+      <UpgradesView updateUpgrade={updateUpgrade} />
+    </div>
+  );
 }

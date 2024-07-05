@@ -73,3 +73,9 @@ const RawTokens = {
 };
 export type Token = keyof typeof RawTokens;
 export const Tokens: { [key: string]: {} } = RawTokens;
+
+const RawUpgrades = {
+  plasma_cannon: {},
+};
+export type Upgrade = keyof typeof RawUpgrades;
+export const Upgrades: { [key: string]: {} } = RawUpgrades;
