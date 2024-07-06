@@ -108,49 +108,49 @@ const RawTiles = {
     portals: [0, 1, 2, 3, 4, 5],
     points: 4,
     colonies: [{ resource: Resource.gold }],
-    enemies: ["death_star"] as Enemy[],
+    npcs: [Ship.dreadnought],
   },
   "201": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
     colonies: [{ resource: Resource.gold }],
-    enemies: ["guardian"] as Enemy[],
+    npcs: [Ship.cruiser],
   },
   "202": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
     colonies: [{ resource: Resource.gold }],
-    enemies: ["guardian"] as Enemy[],
+    npcs: [Ship.cruiser],
   },
   "203": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
     colonies: [{ resource: Resource.gold }],
-    enemies: ["guardian"] as Enemy[],
+    npcs: [Ship.cruiser],
   },
   "204": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
     colonies: [{ resource: Resource.gold }],
-    enemies: ["guardian"] as Enemy[],
+    npcs: [Ship.cruiser],
   },
   "205": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
     colonies: [{ resource: Resource.gold }],
-    enemies: ["guardian"] as Enemy[],
+    npcs: [Ship.cruiser],
   },
   "206": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
     colonies: [{ resource: Resource.gold }],
-    enemies: ["guardian"] as Enemy[],
+    npcs: [Ship.cruiser],
   },
   blue: {
     rank: Rank.special,
@@ -196,13 +196,15 @@ export const Tiles: {
     portals: number[];
     points: number;
     colonies: { resource: Resource; advanced?: boolean }[];
-    enemies?: Enemy[];
+    npcs?: Ship[];
     diamond?: boolean;
+    warp_portal?: boolean;
   };
 } = RawTiles;
 
 const RawSciences = {
   neutron_bombs: { track: Track.pink, cost: 2, floor: 2 },
+  wormhole_generator: { track: Track.yellow, cost: 14, floor: 7 },
 };
 export type Science = keyof typeof RawSciences;
 export const Sciences: {
@@ -251,6 +253,7 @@ export const Enemies: {
 const RawTokens = {
   monolith: {},
   orbital: {},
+  warp_portal: {},
 };
 export type Token = keyof typeof RawTokens;
 export const Tokens: { [key: string]: {} } = RawTokens;

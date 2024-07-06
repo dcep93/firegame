@@ -12,7 +12,7 @@ import {
 } from "./library";
 
 import { GameType, Params, PlayerType } from "./NewGame";
-import { Action, Rank, Resource, Sector, Track } from "./gameTypes";
+import { Action, Rank, Resource, Sector, Ship, Track } from "./gameTypes";
 
 const store: StoreType<GameType> = store_;
 
@@ -99,7 +99,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return {
       tile,
       ...obj,
-      enemies: Tiles[tile].enemies || [],
+      units: (Tiles[tile].npcs || []).map((ship) => ({
+        ship,
+      })),
       tokens: [],
     };
   }
@@ -195,8 +197,63 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .sum();
     const rank = d < 1 ? Rank.i : d < 4 ? Rank.ii : Rank.iii;
     if (execute) {
-      game.action.state = state;
+      game.action.state = { ...state };
       store.update(`explored rank ${Rank[rank]}`);
+    }
+    return true;
+  }
+
+  move(
+    execute: boolean,
+    ship: Ship,
+    source: Sector,
+    destination: Sector
+  ): boolean {
+    if (!utils.isMyTurn()) return false;
+    const game = store.gameW.game;
+    if (game.action.action !== Action.move) return false;
+    const sourceTile = Tiles[source.tile];
+    const myFaction = utils.getMe().d!.faction;
+    const units = [true, false].map(
+      (match) =>
+        source.units!.filter((unit) => (unit.faction === myFaction) === match)
+          .length
+    );
+    if (units[0] <= units[1]) return false;
+    const destinationTile = Tiles[destination.tile];
+    if (
+      !(
+        (sourceTile.warp_portal ||
+          (source.tokens || []).includes("warp_portal")) &&
+        (destinationTile.warp_portal ||
+          (destination.tokens || []).includes("warp_portal"))
+      )
+    ) {
+      const distance = [source.x - destination.x, source.y - destination.y]
+        .map(Math.abs)
+        .sum();
+      if (distance > 2) return false;
+      const num_wormholes = [
+        sourceTile.portals.includes(-1),
+        destinationTile.portals.includes(-1),
+        utils
+          .getMe()
+          .d!.research.find(({ science }) => science === "wormhole_generator"),
+      ].filter(Boolean).length;
+      if (num_wormholes < 2) return false;
+    }
+    if (execute) {
+      source.units!.splice(
+        source.units!.findIndex(
+          (unit) => unit.faction === myFaction && unit.ship === ship
+        ),
+        1
+      );
+      destination.units = (destination.units || []).concat({
+        faction: myFaction,
+        ship,
+      });
+      store.update(`moved a ${Ship[ship]}`);
     }
     return true;
   }

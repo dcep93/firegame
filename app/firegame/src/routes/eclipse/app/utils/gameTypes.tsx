@@ -1,4 +1,4 @@
-import { Enemy, Tile, Token } from "./library";
+import { Faction, Tile, Token } from "./library";
 
 export enum Resource {
   materials,
@@ -15,7 +15,7 @@ export type Sector = {
   orientation: number;
   x: number;
   y: number;
-  enemies: Enemy[] | undefined;
+  units?: { faction?: Faction; ship: Ship }[];
   tokens?: Token[];
 };
 
@@ -37,7 +37,11 @@ export enum Action {
   selectFaction,
   turn,
   explore,
+  move,
+  build,
+  upgrade,
   research,
+  influence,
 }
 
 export enum Ship {
