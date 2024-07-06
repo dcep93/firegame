@@ -36,6 +36,7 @@ export enum Rank {
 export enum Action {
   selectFaction,
   turn,
+  explore,
   research,
 }
 

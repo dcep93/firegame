@@ -37,35 +37,12 @@ export default function SectorsView() {
               position: "absolute",
               height: `${radius * Math.sqrt(3)}em`,
               width: `${radius * 2}em`,
-              top: `${
+              bottom: `${
                 (radius * (sector.y - stats.y.min) * Math.sqrt(3)) / 2
               }em`,
               left: `${radius * (sector.x - stats.x.min) * 1.5}em`,
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                zIndex: 1,
-              }}
-            >
-              <div>{sector.tile}</div>
-            </div>
-            {Tiles[sector.tile].portals
-              .map((portal) => portal + sector.orientation)
-              .map((orientation) => (
-                <div
-                  key={orientation}
-                  style={{
-                    position: "absolute",
-                    zIndex: 1,
-                    height: "100%",
-                    transform: `rotate(${60 * orientation}deg)`,
-                  }}
-                >
-                  {"o"}
-                </div>
-              ))}
             <div
               style={{
                 height: "100%",
@@ -83,6 +60,43 @@ export default function SectorsView() {
                   .join(", ")})`,
               }}
             ></div>
+            {Tiles[sector.tile].portals
+              .map((portal) => portal + sector.orientation)
+              .map((orientation) => (
+                <div
+                  key={orientation}
+                  style={{
+                    position: "absolute",
+                    height: "50%",
+                    top: 0,
+                    transform: `rotate(${60 * orientation}deg)`,
+                    transformOrigin: "bottom center",
+                  }}
+                >
+                  <div
+                    onClick={() =>
+                      utils.explorePortal(true, sector, orientation)
+                    }
+                    style={{
+                      cursor:
+                        true || utils.explorePortal(false, sector, orientation)
+                          ? "pointer"
+                          : undefined,
+                    }}
+                  >
+                    {"o"}
+                  </div>
+                </div>
+              ))}
+            <div
+              style={{
+                position: "absolute",
+              }}
+            >
+              <div>
+                {sector.tile}x{sector.x}y{sector.y}
+              </div>
+            </div>
           </div>
         ))}
       </div>

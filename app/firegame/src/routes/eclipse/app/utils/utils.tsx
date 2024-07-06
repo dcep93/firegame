@@ -24,7 +24,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       currentPlayer: numPlayers - 1,
 
       year: 1,
-      action: Action.selectFaction,
+      action: { action: Action.selectFaction },
       startingPlayer: 0,
       players: [],
       sectors: [
@@ -80,10 +80,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   buildStartingSector(tile: Tile, orientation: number): Sector {
     return utils.buildSector(tile, {
       orientation,
-      x: Math.round(
-        -(Math.sin((Math.PI * orientation) / 3) * 4) / Math.sqrt(3)
+      x: -Math.round(
+        (Math.sin((Math.PI * orientation) / 3) * 4) / Math.sqrt(3)
       ),
-      y: Math.round(Math.cos((Math.PI * orientation) / 3) * 4),
+      y: -Math.round(Math.cos((Math.PI * orientation) / 3) * 4),
     });
   }
 
@@ -104,46 +104,55 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     };
   }
 
-  selectFaction(faction: Faction): void {
-    const obj = Factions[faction];
-    utils.getMe().d = {
-      faction,
-      ships: obj.ships,
-      storage: obj.storage,
-      income: {
-        [Resource.materials]: 1,
-        [Resource.science]: 1,
-        [Resource.gold]: 1,
-      },
-      well: {
-        [Resource.materials]: 0,
-        [Resource.science]: 0,
-        [Resource.gold]: 0,
-      },
-      discs: 13,
-      usedDiscs: 0,
-      research: obj.research.map((science) => ({
-        science,
-        track: Sciences[science].track,
-      })),
-      twoPointers: 0,
-    };
-    const game = store.gameW.game;
-    game.sectors.push(
-      utils.buildStartingSector(
+  // execute
+
+  selectFaction(execute: boolean, faction: Faction): boolean {
+    if (!utils.isMyTurn()) return false;
+    if (execute) {
+      const obj = Factions[faction];
+      utils.getMe().d = {
         faction,
-        Math.ceil((utils.myIndex() * 6) / game.players.length)
-      )
-    );
-    if (game.currentPlayer === 0) {
-      game.action = Action.turn;
-    } else {
-      game.currentPlayer--;
+        ships: obj.ships,
+        storage: obj.storage,
+        income: {
+          [Resource.materials]: 1,
+          [Resource.science]: 1,
+          [Resource.gold]: 1,
+        },
+        well: {
+          [Resource.materials]: 0,
+          [Resource.science]: 0,
+          [Resource.gold]: 0,
+        },
+        discs: 13,
+        usedDiscs: 0,
+        research: obj.research.map((science) => ({
+          science,
+          track: Sciences[science].track,
+        })),
+        twoPointers: 0,
+      };
+      const game = store.gameW.game;
+      game.sectors.push(
+        utils.buildStartingSector(
+          faction,
+          Math.ceil((utils.myIndex() * 6) / game.players.length)
+        )
+      );
+      if (game.currentPlayer === 0) {
+        game.action = { action: Action.turn };
+      } else {
+        game.currentPlayer--;
+      }
+      store.update(`selected ${faction}`);
     }
-    store.update(`selected ${faction}`);
+    return true;
   }
 
   research(execute: boolean, science: Science, track: Track): boolean {
+    if (!utils.isMyTurn()) return false;
+    const game = store.gameW.game;
+    if (game.action.action !== Action.research) return false;
     if (track === Track.black) return false;
     const researched = utils
       .getMe()
@@ -153,8 +162,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (obj.track !== Track.black && obj.track !== track) return false;
     const cost = Math.max(obj.cost - researched, obj.floor);
     if (utils.getMe().d!.storage[Resource.science] < cost) return false;
-    const game = store.gameW.game;
-    if (game.action !== Action.research) return false;
     if (execute) {
       utils.getMe().d!.storage[Resource.science] -= cost;
       utils.getMe().d!.research.push({ track, science });
@@ -163,6 +170,33 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         1
       );
       store.update(`researched ${science}`);
+    }
+    return true;
+  }
+
+  explorePortal(
+    execute: boolean,
+    sector: Sector,
+    orientation: number
+  ): boolean {
+    if (!utils.isMyTurn()) return false;
+    const game = store.gameW.game;
+    if (game.action.action !== Action.explore) return false;
+    if (game.action.state?.orientation !== undefined) return false;
+    const state = {
+      orientation,
+      x:
+        sector.x +
+        Math.round((Math.sin((Math.PI * orientation) / 3) * 2) / Math.sqrt(3)),
+      y: sector.y + Math.round(Math.cos((Math.PI * orientation) / 3) * 2),
+    };
+    const d = [(state.x * 1.5) / 2, (state.y * Math.sqrt(3)) / 4]
+      .map((v) => Math.pow(v, 2))
+      .sum();
+    const rank = d < 1 ? Rank.i : d < 4 ? Rank.ii : Rank.iii;
+    if (execute) {
+      game.action.state = state;
+      store.update(`explored rank ${Rank[rank]}`);
     }
     return true;
   }

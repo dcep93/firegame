@@ -20,10 +20,12 @@ export default function PlayersView(props: {
                 .map((obj) => (
                   <div
                     key={obj.faction}
-                    style={{ cursor: utils.isMyTurn() ? "pointer" : undefined }}
-                    onClick={() =>
-                      utils.isMyTurn() && utils.selectFaction(obj.faction)
-                    }
+                    style={{
+                      cursor: utils.selectFaction(false, obj.faction)
+                        ? "pointer"
+                        : undefined,
+                    }}
+                    onClick={() => utils.selectFaction(true, obj.faction)}
                   >
                     {obj.faction}
                   </div>

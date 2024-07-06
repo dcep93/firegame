@@ -9,7 +9,8 @@ export type GameType = {
   players: PlayerType[];
 
   year: number;
-  action: Action;
+  action: { action: Action; state?: any };
+  actionState?: any;
   startingPlayer: number;
   sectors: Sector[];
   buyableSciences: Science[];
