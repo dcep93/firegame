@@ -107,86 +107,86 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 2, 3, 4, 5],
     points: 4,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
     enemies: ["death_star"] as Enemy[],
   },
   "201": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
     enemies: ["guardian"] as Enemy[],
   },
   "202": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
     enemies: ["guardian"] as Enemy[],
   },
   "203": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
     enemies: ["guardian"] as Enemy[],
   },
   "204": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
     enemies: ["guardian"] as Enemy[],
   },
   "205": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
     enemies: ["guardian"] as Enemy[],
   },
   "206": {
     rank: Rank.special,
     portals: [0, 1],
     points: 4,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
     enemies: ["guardian"] as Enemy[],
   },
   blue: {
     rank: Rank.special,
     portals: [0, 1],
     points: 3,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
   },
   green: {
     rank: Rank.special,
     portals: [0, 1],
     points: 3,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
   },
   red: {
     rank: Rank.special,
     portals: [0, 1],
     points: 3,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
   },
   yellow: {
     rank: Rank.special,
     portals: [0, 1],
     points: 3,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
   },
   black: {
     rank: Rank.special,
     portals: [0, 1],
     points: 3,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
   },
   white: {
     rank: Rank.special,
     portals: [0, 1],
     points: 3,
-    colonies: [{}],
+    colonies: [{ resource: Resource.gold }],
   },
 };
 export type Tile = keyof typeof RawTiles;
@@ -195,8 +195,9 @@ export const Tiles: {
     rank: Rank;
     portals: number[];
     points: number;
-    colonies: {}[];
+    colonies: { resource: Resource; advanced?: boolean }[];
     enemies?: Enemy[];
+    diamond?: boolean;
   };
 } = RawTiles;
 
