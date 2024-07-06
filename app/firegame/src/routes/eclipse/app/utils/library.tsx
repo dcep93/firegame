@@ -393,7 +393,21 @@ export type Token = keyof typeof RawTokens;
 export const Tokens: { [key: string]: {} } = RawTokens;
 
 const RawUpgrades = {
-  plasma_cannon: { energy: -1 },
+  hull: { hull: 1 },
+  nuclear_drive: { drive: 1, initiative: 1, energy: -1 },
+  nuclear_source: { energy: 3 },
+  electron_computer: { computer: 1 },
+  ion_cannon: { dice: [1], energy: -1 },
 };
 export type Upgrade = keyof typeof RawUpgrades;
-export const Upgrades: { [key: string]: { energy: number } } = RawUpgrades;
+export const Upgrades: {
+  [key: string]: {
+    energy?: number;
+    hull?: number;
+    drive?: number;
+    initiative?: number;
+    computer?: number;
+    missile?: number[];
+    dice?: number[];
+  };
+} = RawUpgrades;
