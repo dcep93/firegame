@@ -1,4 +1,5 @@
 import styles from "../../../../shared/styles.module.css";
+import { Tiles } from "../utils/library";
 import utils, { store } from "../utils/utils";
 
 export default function SectorsView() {
@@ -49,8 +50,22 @@ export default function SectorsView() {
               }}
             >
               <div>{sector.tile}</div>
-              <div>{sector.orientation}</div>
             </div>
+            {Tiles[sector.tile].portals
+              .map((portal) => portal + sector.orientation)
+              .map((orientation) => (
+                <div
+                  key={orientation}
+                  style={{
+                    position: "absolute",
+                    zIndex: 1,
+                    height: "100%",
+                    transform: `rotate(${60 * orientation}deg)`,
+                  }}
+                >
+                  {"o"}
+                </div>
+              ))}
             <div
               style={{
                 height: "100%",

@@ -59,13 +59,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       ),
     };
     game.sectors.push(
-      ...(["201", "202", "203", "204", "205", "206"] as Tile[]).map((tile, i) =>
-        utils.buildSector(tile, {
-          orientation: i,
-          x: Math.round((Math.sin((Math.PI * i) / 3) * 4) / Math.sqrt(3)),
-          y: Math.round(Math.cos((Math.PI * i) / 3) * 4),
-        })
-      )
+      ...utils
+        .shuffle(["201", "202", "203", "204", "205", "206"] as Tile[])
+        .map((tile, i) => ({ tile, i }))
+        .filter(({ i }) => (i * numPlayers) % 6 >= numPlayers)
+        .map(({ tile, i }) => utils.buildStartingSector(tile, i))
     );
     for (
       var needed;
@@ -77,6 +75,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       utils.drawResearch(needed, game)
     ) {}
     return game;
+  }
+
+  buildStartingSector(tile: Tile, orientation: number): Sector {
+    return utils.buildSector(tile, {
+      orientation,
+      x: Math.round(
+        -(Math.sin((Math.PI * orientation) / 3) * 4) / Math.sqrt(3)
+      ),
+      y: Math.round(Math.cos((Math.PI * orientation) / 3) * 4),
+    });
   }
 
   drawResearch(needed: number, game: GameType | undefined = undefined): void {
@@ -121,6 +129,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       twoPointers: 0,
     };
     const game = store.gameW.game;
+    game.sectors.push(
+      utils.buildStartingSector(
+        faction,
+        Math.ceil((utils.myIndex() * 6) / game.players.length)
+      )
+    );
     if (game.currentPlayer === 0) {
       game.action = Action.turn;
     } else {

@@ -105,51 +105,95 @@ export const Diamonds: { [key: string]: {} } = RawDiamonds;
 const RawTiles = {
   "100": {
     rank: Rank.special,
+    portals: [0, 1, 2, 3, 4, 5],
     points: 4,
     colonies: [{}],
     enemies: ["death_star"] as Enemy[],
   },
   "201": {
     rank: Rank.special,
+    portals: [0, 1],
     points: 4,
     colonies: [{}],
     enemies: ["guardian"] as Enemy[],
   },
   "202": {
     rank: Rank.special,
+    portals: [0, 1],
     points: 4,
     colonies: [{}],
     enemies: ["guardian"] as Enemy[],
   },
   "203": {
     rank: Rank.special,
+    portals: [0, 1],
     points: 4,
     colonies: [{}],
     enemies: ["guardian"] as Enemy[],
   },
   "204": {
     rank: Rank.special,
+    portals: [0, 1],
     points: 4,
     colonies: [{}],
     enemies: ["guardian"] as Enemy[],
   },
   "205": {
     rank: Rank.special,
+    portals: [0, 1],
     points: 4,
     colonies: [{}],
     enemies: ["guardian"] as Enemy[],
   },
   "206": {
     rank: Rank.special,
+    portals: [0, 1],
     points: 4,
     colonies: [{}],
     enemies: ["guardian"] as Enemy[],
+  },
+  blue: {
+    rank: Rank.special,
+    portals: [0, 1],
+    points: 3,
+    colonies: [{}],
+  },
+  green: {
+    rank: Rank.special,
+    portals: [0, 1],
+    points: 3,
+    colonies: [{}],
+  },
+  red: {
+    rank: Rank.special,
+    portals: [0, 1],
+    points: 3,
+    colonies: [{}],
+  },
+  yellow: {
+    rank: Rank.special,
+    portals: [0, 1],
+    points: 3,
+    colonies: [{}],
+  },
+  black: {
+    rank: Rank.special,
+    portals: [0, 1],
+    points: 3,
+    colonies: [{}],
+  },
+  white: {
+    rank: Rank.special,
+    portals: [0, 1],
+    points: 3,
+    colonies: [{}],
   },
 };
 export type Tile = keyof typeof RawTiles;
 export const Tiles: {
   [key: string]: {
     rank: Rank;
+    portals: number[];
     points: number;
     colonies: {}[];
     enemies?: Enemy[];
