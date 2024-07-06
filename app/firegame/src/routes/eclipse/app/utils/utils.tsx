@@ -54,9 +54,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         utils
           .enumArray(Rank)
           .filter((rank) => rank !== Rank.special)
-          .map((rank) => [
+          .map((rank) => ({
             rank,
-            Object.keys(Tiles).filter((t) => Tiles[t].rank === rank),
+            arr: utils.shuffle(
+              Object.keys(Tiles).filter((t) => Tiles[t].rank === rank)
+            ),
+          }))
+          .map(({ rank, arr }) => [
+            rank,
+            rank === Rank.iii
+              ? arr.slice(
+                  -{ 1: 10, 2: 5, 3: 8, 4: 14, 5: 16, 6: 18 }[numPlayers]!
+                )
+              : arr,
           ])
       ),
     };
@@ -70,7 +80,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     for (
       var needed;
       (needed =
-        14 -
+        { 1: 10, 2: 12, 3: 14, 4: 16, 5: 18, 6: 20 }[numPlayers]! -
         game.buyableSciences.filter(
           (science) => Sciences[science].track !== Track.black
         ).length);
@@ -89,6 +99,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     });
   }
 
+  // {1: 10, 2: 5, 3: 6, 4: 7, 5: 8, 6: 9}
   drawResearch(needed: number, game: GameType | undefined = undefined): void {
     game = game || store.gameW.game;
     game.buyableSciences.push(...game.sciencesBag.splice(0, needed));
