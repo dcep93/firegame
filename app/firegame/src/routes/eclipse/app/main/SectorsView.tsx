@@ -14,7 +14,7 @@ export default function SectorsView() {
         { max: Math.max(...values), min: Math.min(...values) },
       ])
   );
-  const radius = 10;
+  const radius = 4;
   return (
     <div className={styles.bubble}>
       <div
@@ -30,24 +30,45 @@ export default function SectorsView() {
           <div
             key={sector.tile}
             style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
               position: "absolute",
-              height: `${radius * 2}em`,
+              height: `${radius * Math.sqrt(3)}em`,
               width: `${radius * 2}em`,
-              top: `${radius * ((sector.y + 1) * (Math.sqrt(3) / 2) - 1)}em`,
-              left: `${sector.x * radius * 1.5}em`,
-              backgroundColor: "#3498db",
-              clipPath: `polygon(${utils
-                .count(6)
-                .map((i) => (i * 2 * Math.PI) / 6)
-                .map(
-                  (angle) =>
-                    `${50 + 49.5 * Math.cos(angle)}% ${
-                      50 + 49.5 * Math.sin(angle)
-                    }%`
-                )
-                .join(", ")})`,
+              top: `${
+                (radius * (sector.y - stats.y.min) * Math.sqrt(3)) / 2
+              }em`,
+              left: `${radius * (sector.x - stats.x.min) * 1.5}em`,
             }}
-          ></div>
+          >
+            <div
+              style={{
+                position: "absolute",
+                zIndex: 1,
+              }}
+            >
+              <div>{sector.tile}</div>
+              <div>{sector.orientation}</div>
+            </div>
+            <div
+              style={{
+                height: "100%",
+                width: "100%",
+                backgroundColor: "#3498db",
+                clipPath: `polygon(${utils
+                  .count(6)
+                  .map((i) => (i * 2 * Math.PI) / 6)
+                  .map(
+                    (angle) =>
+                      `${50 + 49.5 * Math.cos(angle)}% ${
+                        50 + (49.5 * Math.sin(angle) * 2) / Math.sqrt(3)
+                      }%`
+                  )
+                  .join(", ")})`,
+              }}
+            ></div>
+          </div>
         ))}
       </div>
     </div>

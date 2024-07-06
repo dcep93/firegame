@@ -12,7 +12,7 @@ import {
 } from "./library";
 
 import { GameType, Params, PlayerType } from "./NewGame";
-import { Action, Rank, Resource, Track } from "./gameTypes";
+import { Action, Rank, Resource, Sector, Track } from "./gameTypes";
 
 const store: StoreType<GameType> = store_;
 
@@ -27,7 +27,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       action: Action.selectFaction,
       startingPlayer: 0,
       players: [],
-      sectors: [],
+      sectors: [
+        utils.buildSector("100", {
+          orientation: 0,
+          x: 0,
+          y: 0,
+        }),
+      ],
       buyableSciences: [],
       sciencesBag: utils.shuffle(
         Object.entries(Sciences).flatMap(([key, value]) =>
@@ -52,15 +58,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           ])
       ),
     };
-    utils.pushSector(
-      "100",
-      {
-        orientation: 0,
-        x: 0,
-        y: 0,
-      },
-      game
+    game.sectors.push(
+      ...(["201", "202", "203", "204", "205", "206"] as Tile[]).map((tile, i) =>
+        utils.buildSector(tile, {
+          orientation: i,
+          x: Math.round((Math.sin((Math.PI * i) / 3) * 4) / Math.sqrt(3)),
+          y: Math.round(Math.cos((Math.PI * i) / 3) * 4),
+        })
+      )
     );
+    console.log(game.sectors);
+    // 0 0
+    // 1 1
+    // 2 1
+    // 3 0
+    // 4 -1
+    // 5 -1
     for (
       var needed;
       (needed =
@@ -78,18 +91,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     game.buyableSciences.push(...game.sciencesBag.splice(0, needed));
   }
 
-  pushSector(
+  buildSector(
     tile: Tile,
-    obj: { orientation: number; x: number; y: number },
-    game: GameType | undefined = undefined
-  ): void {
-    game = game || store.gameW.game;
-    game.sectors.push({
+    obj: { orientation: number; x: number; y: number }
+  ): Sector {
+    return {
       tile,
       ...obj,
       enemies: Tiles[tile].enemies || [],
       tokens: [],
-    });
+    };
   }
 
   selectFaction(faction: Faction): void {
