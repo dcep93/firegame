@@ -39,16 +39,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       buyableSciences: [],
       sciencesBag: utils.shuffle(
         Object.entries(Sciences).flatMap(([key, value]) =>
-          utils.repeat(key as Science, 100)
+          utils.repeat(key as Science, value.count)
         )
       ),
       diamonds: utils.shuffle(
-        Object.entries(Diamonds).flatMap(([key, value]) =>
-          utils.repeat(key as Diamond, 100)
+        Object.entries(Diamonds).flatMap(([key, count]) =>
+          utils.repeat(key as Diamond, count)
         )
       ),
       military: utils.shuffle(
-        [1, 2, 3, 4].flatMap((value) => utils.repeat(value, 100))
+        Object.entries({ 1: 12, 2: 10, 3: 7, 4: 4 }).flatMap(([value, count]) =>
+          utils.repeat(parseInt(value), count)
+        )
       ),
       tiles: Object.fromEntries(
         utils
@@ -172,7 +174,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const researched = utils
       .getMe()
       .d!.research.filter((obj) => obj.track === track).length;
-    if (researched > 100) return false;
+    if (researched >= 7) return false;
     const obj = Sciences[science];
     if (obj.track !== Track.black && obj.track !== track) return false;
     const cost = Math.max(obj.cost - researched, obj.floor);

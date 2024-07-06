@@ -14,6 +14,7 @@ const RawFactions = {
       [Ship.dreadnought]: [],
       [Ship.starbase]: [],
     },
+    sector: "224",
   },
   green: {
     storage: {
@@ -96,11 +97,33 @@ export const Factions: {
 } = RawFactions;
 
 const RawDiamonds = {
-  monolith: {},
-  _8_gold: {},
+  monolith: 1,
+  warp_portal: 1,
+  ion_turret: 1, // {dice: [1,1]}
+  ion_disruptor: 1, // {dice: [1], initiative: 3}
+  ion_missile: 1, // {missile: [1,1,1]}
+  plasma_turret: 1, // {dice: [2,2], energy: -3}
+  soliton_charger: 1, // {dice: [3], energy: -1}
+  soliton_missile: 1, // {missile: [3], initiative: 1}
+  antimatter_missle: 1, // {missile: [4]}
+  shard_hull: 1, // {hull: 3}
+  axion_computer: 1, // {computer: 2, initiative: 1}
+  flux_shield: 1, // {shield: 3, initiative: 1, energy: -2}
+  inversion_shield: 1, // {shield: 2, energy: 2}
+  muon_source: 1, // {initiative: 1, energy: 2} (outside)
+  nonlinear_drive: 1, // {drive: 2, energy: 2}
+  conformal_drive: 1, // {drive: 4, initiative: 2, energy: -2}
+  hypergrid_source: 1, // {energy: 11}
+  orbital: 2, // {materials: 2}
+  resources: 2, // {materials: 2, science: 2, gold: 3}
+  materials: 3, // {materials: 6}
+  science: 3, // {science: 5}
+  gold: 3, // {gold: 8}
+  research: 3,
+  cruiser: 3,
 };
 export type Diamond = keyof typeof RawDiamonds;
-export const Diamonds: { [key: string]: {} } = RawDiamonds;
+export const Diamonds: { [key: string]: number } = RawDiamonds;
 
 const RawTiles = {
   "100": {
@@ -348,25 +371,49 @@ export const Sciences: {
 const RawEnemies = {
   ancient: {
     easy: {
+      initiative: 2,
+      cannons: [1, 1],
       missiles: [],
-      cannons: [1, 1, 1, 1],
-      hull: 7,
-      computer: 2,
+      hull: 1,
+      computer: 1,
+    },
+    hard: {
+      initiative: 1,
+      cannons: [2],
+      missiles: [],
+      hull: 2,
+      computer: 1,
     },
   },
   guardian: {
     easy: {
+      initiative: 3,
+      cannons: [1, 1, 1],
+      missiles: [],
+      hull: 2,
+      computer: 2,
+    },
+    medium: {
+      initiative: 1,
+      missiles: [2, 2],
+      cannons: [4],
+      hull: 3,
+      computer: 1,
+    },
+  },
+  death_star: {
+    easy: {
+      initiative: 0,
       missiles: [],
       cannons: [1, 1, 1, 1],
       hull: 7,
       computer: 2,
     },
-  },
-  death_star: {
-    easy: {
-      missiles: [],
-      cannons: [1, 1, 1, 1],
-      hull: 7,
+    medium: {
+      initiative: 2,
+      missiles: [1, 1, 1, 1],
+      cannons: [4],
+      hull: 3,
       computer: 2,
     },
   },
@@ -377,6 +424,7 @@ export const Enemies: {
   [key: string]: {
     [difficulty: string]: {
       missiles: number[];
+      initiative: number;
       cannons: number[];
       hull: number;
       computer: number;
