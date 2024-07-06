@@ -18,9 +18,10 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(params: Params): GameType {
+    const numPlayers = Object.keys(params.lobby).length;
     const game: GameType = {
       params,
-      currentPlayer: Object.keys(params.lobby).length - 1,
+      currentPlayer: numPlayers - 1,
 
       year: 1,
       action: Action.selectFaction,
@@ -115,6 +116,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       })),
       twoPointers: 0,
     };
+    const game = store.gameW.game;
+    if (game.currentPlayer === 0) {
+      game.action = Action.turn;
+    } else {
+      game.currentPlayer--;
+    }
     store.update(`selected ${faction}`);
   }
 

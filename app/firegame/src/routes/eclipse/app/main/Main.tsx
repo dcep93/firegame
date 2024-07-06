@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Track } from "../utils/gameTypes";
 import { Upgrade } from "../utils/library";
+import ActionView from "./ActionView";
 import PlayersView from "./PlayersView";
 import ResearchView from "./ResearchView";
 import SectorsView from "./SectorsView";
@@ -11,6 +12,7 @@ export default function Main() {
   const [upgrade, updateUpgrade] = useState<Upgrade | null>(null);
   return (
     <div>
+      <ActionView />
       <PlayersView updateTrack={updateTrack} upgrade={upgrade} />
       <SectorsView />
       <ResearchView track={track} />
