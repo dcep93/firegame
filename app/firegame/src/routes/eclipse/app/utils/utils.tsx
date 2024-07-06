@@ -9,6 +9,8 @@ import {
   Sciences,
   Tile,
   Tiles,
+  Upgrade,
+  Upgrades,
 } from "./library";
 
 import { GameType, Params, PlayerType } from "./NewGame";
@@ -184,7 +186,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) return false;
     const game = store.gameW.game;
     if (game.action.action !== Action.explore) return false;
-    if (game.action.state?.orientation !== undefined) return false;
     const state = {
       orientation,
       x:
@@ -197,7 +198,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .sum();
     const rank = d < 1 ? Rank.i : d < 4 ? Rank.ii : Rank.iii;
     if (execute) {
-      game.action.state = { ...state };
       store.update(`explored rank ${Rank[rank]}`);
     }
     return true;
@@ -254,6 +254,94 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         ship,
       });
       store.update(`moved a ${Ship[ship]}`);
+    }
+    return true;
+  }
+
+  build(execute: boolean, ship: Ship, sector: Sector): boolean {
+    if (!utils.isMyTurn()) return false;
+    const game = store.gameW.game;
+    if (game.action.action !== Action.build) return false;
+    const myD = utils.getMe().d!;
+    if (
+      ship === Ship.starbase &&
+      !myD.research.find(({ science }) => science === "starbase")
+    )
+      return false;
+    if (
+      game.sectors.flatMap((sector) =>
+        (sector.units || []).filter(
+          (unit) => unit.faction === myD.faction && unit.ship === ship
+        )
+      ).length ===
+      {
+        [Ship.interceptor]: 8,
+        [Ship.cruiser]: 4,
+        [Ship.dreadnought]: 2,
+        [Ship.starbase]: 4,
+      }[ship]
+    )
+      return false;
+    const cost = {
+      [Ship.interceptor]: 3,
+      [Ship.cruiser]: 5,
+      [Ship.dreadnought]: 8,
+      [Ship.starbase]: 3,
+    }[ship];
+    if (myD.storage[Resource.materials] < cost) return false;
+    if (execute) {
+      myD.storage[Resource.materials] -= cost;
+      sector.units = (sector.units || []).concat({
+        faction: myD.faction,
+        ship,
+      });
+      store.update(`built ${Ship[ship]}`);
+    }
+    return true;
+  }
+
+  buildToken(
+    execute: boolean,
+    token: "orbital" | "monolith",
+    sector: Sector
+  ): boolean {
+    if (!utils.isMyTurn()) return false;
+    const game = store.gameW.game;
+    if (game.action.action !== Action.build) return false;
+    const myD = utils.getMe().d!;
+    const cost = {
+      orbital: 4,
+      monolith: 10,
+    }[token];
+    if (myD.storage[Resource.materials] < cost) return false;
+    if (execute) {
+      myD.storage[Resource.materials] -= cost;
+      sector.tokens = (sector.tokens || []).concat(token);
+      store.update(`built ${token}`);
+    }
+    return true;
+  }
+
+  upgrade(
+    execute: boolean,
+    ship: Ship,
+    index: number,
+    upgrade: Upgrade
+  ): boolean {
+    if (!utils.isMyTurn()) return false;
+    const game = store.gameW.game;
+    if (game.action.action !== Action.upgrade) return false;
+    const blueprint = utils.getMe().d!.ships[ship];
+    if (
+      blueprint
+        .map((u, i) => (i === index ? upgrade : u))
+        .map((u) => Upgrades[u].energy)
+        .sum() < 0
+    )
+      return false;
+    if (execute) {
+      blueprint[index] = upgrade;
+      store.update(`upgraded ${Ship[ship]} with ${upgrade}`);
     }
     return true;
   }

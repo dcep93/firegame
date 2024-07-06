@@ -204,6 +204,7 @@ export const Tiles: {
 
 const RawSciences = {
   neutron_bombs: { track: Track.pink, cost: 2, floor: 2 },
+  starbase: { track: Track.pink, cost: 4, floor: 3 },
   wormhole_generator: { track: Track.yellow, cost: 14, floor: 7 },
 };
 export type Science = keyof typeof RawSciences;
@@ -259,7 +260,7 @@ export type Token = keyof typeof RawTokens;
 export const Tokens: { [key: string]: {} } = RawTokens;
 
 const RawUpgrades = {
-  plasma_cannon: {},
+  plasma_cannon: { energy: -1 },
 };
 export type Upgrade = keyof typeof RawUpgrades;
-export const Upgrades: { [key: string]: {} } = RawUpgrades;
+export const Upgrades: { [key: string]: { energy: number } } = RawUpgrades;
