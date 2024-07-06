@@ -102,10 +102,22 @@ const RawDiamonds = {
 export type Diamond = keyof typeof RawDiamonds;
 export const Diamonds: { [key: string]: {} } = RawDiamonds;
 
-const RawTiles = { "100": { rank: Rank.special, points: 4, colonies: [{}] } };
+const RawTiles = {
+  "100": {
+    rank: Rank.special,
+    points: 4,
+    colonies: [{}],
+    enemies: ["death_star"] as Enemy[],
+  },
+};
 export type Tile = keyof typeof RawTiles;
 export const Tiles: {
-  [key: string]: { rank: Rank; points: number; colonies: {}[] };
+  [key: string]: {
+    rank: Rank;
+    points: number;
+    colonies: {}[];
+    enemies?: Enemy[];
+  };
 } = RawTiles;
 
 const RawSciences = {

@@ -7,6 +7,7 @@ import {
   Factions,
   Science,
   Sciences,
+  Tile,
   Tiles,
 } from "./library";
 
@@ -50,14 +51,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           ])
       ),
     };
-    game.sectors.push({
-      tile: "100",
-      orientation: 0,
-      x: 0,
-      y: 0,
-      enemies: ["death_star"],
-      tokens: [],
-    });
+    utils.pushSector(
+      "100",
+      {
+        orientation: 0,
+        x: 0,
+        y: 0,
+      },
+      game
+    );
     for (
       var needed;
       (needed =
@@ -73,6 +75,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   drawResearch(needed: number, game: GameType | undefined = undefined): void {
     game = game || store.gameW.game;
     game.buyableSciences.push(...game.sciencesBag.splice(0, needed));
+  }
+
+  pushSector(
+    tile: Tile,
+    obj: { orientation: number; x: number; y: number },
+    game: GameType | undefined = undefined
+  ): void {
+    game = game || store.gameW.game;
+    game.sectors.push({
+      tile,
+      ...obj,
+      enemies: Tiles[tile].enemies || [],
+      tokens: [],
+    });
   }
 
   selectFaction(faction: Faction): void {

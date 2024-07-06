@@ -15,7 +15,7 @@ export type Sector = {
   orientation: number;
   x: number;
   y: number;
-  enemies?: Enemy[];
+  enemies: Enemy[] | undefined;
   tokens?: Token[];
 };
 
