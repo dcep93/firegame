@@ -150,16 +150,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         ships: obj.ships,
         storage: obj.storage,
         income: {
-          [Resource.materials]: 1,
-          [Resource.science]: 1,
-          [Resource.gold]: 1,
+          [Resource.materials]: 0,
+          [Resource.science]: 0,
+          [Resource.gold]: 0,
         },
         well: {
           [Resource.materials]: 0,
           [Resource.science]: 0,
           [Resource.gold]: 0,
         },
-        discs: 13,
+        remainingDiscs: 12,
         usedDiscs: 0,
         research: obj.research.map((science) => ({
           science,
@@ -367,7 +367,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       blueprint.upgrades
         .map((u, i) => (i === index ? upgrade : u))
         .map((u) => Upgrades[u])
-        .concat(blueprint.builtIn)
+        .concat(blueprint.builtIn || {})
         .map((u) => u.energy)
         .sum() < 0
     )

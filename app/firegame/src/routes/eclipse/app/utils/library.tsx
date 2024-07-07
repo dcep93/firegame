@@ -1,7 +1,7 @@
 import { Rank, Resource, Resources, Ship, Track } from "./gameTypes";
 
-export const disc_costs = [0, 0, 1, 2, 3, 5, 7, 10, 13, 17, 21, 25, 30];
-export const income = [2, 3, 4, 6, 8, 10, 12, 15, 18, 21, 24, 28];
+export const disc_cost_arr = [0, 0, 1, 2, 3, 5, 7, 10, 13, 17, 21, 25, 30];
+export const income_arr = [2, 3, 4, 6, 8, 10, 12, 15, 18, 21, 24, 28];
 
 const RawFactions = {
   red: {
@@ -395,7 +395,7 @@ const RawFactions = {
 };
 export type Faction = keyof typeof RawFactions;
 export type ShipData = {
-  [ship in Ship]: { builtIn: UpgradeData; upgrades: Upgrade[] };
+  [ship in Ship]: { builtIn?: UpgradeData; upgrades: Upgrade[] };
 };
 export const Factions: {
   [key: string]: {
@@ -1159,13 +1159,23 @@ export type UpgradeData = {
 export const Upgrades: {
   [key: string]: UpgradeData;
 } = Object.fromEntries(
-  (Object.entries(RawUpgrades) as [Upgrade, UpgradeData][]).concat(
-    Object.entries(Sciences)
-      .map(([science, scienceData]) => ({
-        science,
-        ...scienceData,
-      }))
-      .filter(({ upgrade }) => upgrade)
-      .map((obj) => [obj.science, obj.upgrade]) as [Upgrade, UpgradeData][]
-  )
+  (Object.entries(RawUpgrades) as [Upgrade, UpgradeData][])
+    .concat(
+      Object.entries(Diamonds)
+        .map(([diamond, diamondData]) => ({ diamond, diamondData }))
+        .filter(({ diamondData }) => diamondData.upgrade)
+        .map(({ diamond, diamondData }) => [diamond, diamondData.upgrade]) as [
+        Upgrade,
+        UpgradeData
+      ][]
+    )
+    .concat(
+      Object.entries(Sciences)
+        .map(([science, scienceData]) => ({
+          science,
+          ...scienceData,
+        }))
+        .filter(({ upgrade }) => upgrade)
+        .map((obj) => [obj.science, obj.upgrade]) as [Upgrade, UpgradeData][]
+    )
 );

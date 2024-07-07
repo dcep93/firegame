@@ -35,7 +35,7 @@ export type PlayerType = {
     storage: Resources;
     income: Resources;
     well: Resources;
-    discs: number;
+    remainingDiscs: number;
     usedDiscs: number;
     research: { science: Science; track: Track }[];
     twoPointers: number;
