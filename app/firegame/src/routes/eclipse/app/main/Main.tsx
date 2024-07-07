@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Track } from "../utils/gameTypes";
 import { Upgrade } from "../utils/library";
-import ActionView from "./ActionView";
+import DashboardView from "./DashboardView";
 import PlayersView from "./PlayersView";
 import ResearchView from "./ResearchView";
 import SectorsView from "./SectorsView";
@@ -12,7 +12,7 @@ export default function Main() {
   const [upgrade, updateUpgrade] = useState<Upgrade | null>(null);
   return (
     <div style={{ overflow: "scroll" }}>
-      <ActionView />
+      <DashboardView />
       <PlayersView updateTrack={updateTrack} upgrade={upgrade} />
       <SectorsView />
       <ResearchView track={track} />

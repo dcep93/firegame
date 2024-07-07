@@ -10,7 +10,6 @@ export type GameType = {
 
   year: number;
   action: { action: Action; state?: any };
-  actionState?: any;
   startingPlayer: number;
   sectors: Sector[];
   buyableSciences: Science[];

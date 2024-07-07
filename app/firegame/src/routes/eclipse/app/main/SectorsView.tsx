@@ -1,4 +1,5 @@
 import styles from "../../../../shared/styles.module.css";
+import { Rank } from "../utils/gameTypes";
 import { Tiles } from "../utils/library";
 import utils, { store } from "../utils/utils";
 
@@ -18,6 +19,17 @@ export default function SectorsView() {
   const radius = 8;
   return (
     <div className={styles.bubble}>
+      <div className={styles.bubble}>
+        <h5>remaining tiles:</h5>
+        {utils
+          .enumArray(Rank)
+          .filter((r) => r !== Rank.special)
+          .map((r) => (
+            <div key={r}>
+              {Rank[r]}: {(game.tiles[r] || []).length}
+            </div>
+          ))}
+      </div>
       <div
         style={{
           height: `${

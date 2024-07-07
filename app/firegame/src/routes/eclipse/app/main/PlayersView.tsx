@@ -10,17 +10,6 @@ import {
 } from "../utils/library";
 import utils, { store } from "../utils/utils";
 
-// year: number;
-// action: { action: Action; state?: any };
-// actionState?: any;
-// startingPlayer: number;
-// sectors: Sector[];
-// buyableSciences: Science[];
-// sciencesBag: Science[];
-// diamonds: Diamond[];
-// military: number[];
-// tiles: { [rank in Rank]?: Tile[] };
-
 export default function PlayersView(props: {
   upgrade: Upgrade | null;
   updateTrack: (track: Track) => void;
