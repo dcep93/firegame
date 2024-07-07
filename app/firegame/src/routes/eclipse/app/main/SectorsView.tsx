@@ -15,7 +15,7 @@ export default function SectorsView() {
         { max: Math.max(...values), min: Math.min(...values) },
       ])
   );
-  const radius = 4;
+  const radius = 8;
   return (
     <div className={styles.bubble}>
       <div

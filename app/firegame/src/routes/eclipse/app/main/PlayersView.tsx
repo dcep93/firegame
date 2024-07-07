@@ -21,8 +21,6 @@ import utils, { store } from "../utils/utils";
 // military: number[];
 // tiles: { [rank in Rank]?: Tile[] };
 
-// research: { science: Science; track: Track }[];
-
 export default function PlayersView(props: {
   upgrade: Upgrade | null;
   updateTrack: (track: Track) => void;
@@ -32,7 +30,13 @@ export default function PlayersView(props: {
     <div style={{ display: "flex" }}>
       {game.players.map((p, playerIndex) => (
         <div key={p.userId}>
-          <div className={styles.bubble}>
+          <div
+            className={styles.bubble}
+            style={{
+              backgroundColor:
+                game.currentPlayer === playerIndex ? "grey" : undefined,
+            }}
+          >
             <h1>{p.userName}</h1>
             {p.d === undefined ? (
               game.currentPlayer !== playerIndex ? null : (
@@ -40,7 +44,7 @@ export default function PlayersView(props: {
               )
             ) : (
               <div>
-                <div>faction: {p.d.faction}</div>
+                <div className={styles.bubble}>faction: {p.d.faction}</div>
                 <div style={{ display: "flex", alignItems: "flex-start" }}>
                   <div className={styles.bubble}>
                     <h5>storage:</h5>
@@ -92,6 +96,28 @@ export default function PlayersView(props: {
                       </div>
                     ))}
                   </div>
+                </div>
+                <div className={styles.bubble} style={{ display: "block" }}>
+                  <h5>research:</h5>
+                  <table>
+                    <tbody>
+                      {utils
+                        .enumArray(Track)
+                        .filter((t) => t !== Track.black)
+                        .map((t) => (
+                          <tr key={t}>
+                            <td>{Track[t]}</td>
+                            {p
+                              .d!.research.filter(({ track }) => track === t)
+                              .map(({ science }) => (
+                                <td key={science} className={styles.bubble}>
+                                  {science}
+                                </td>
+                              ))}
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
                 </div>
                 <div style={{ display: "flex", alignItems: "flex-start" }}>
                   {utils.enumArray(Ship).map((s) => (
