@@ -6,6 +6,18 @@ import { Rank, Resource, Resources, Ship, Track } from "./gameTypes";
 const RawFactions = {
   red: {
     tile: "222" as Tile,
+    tileData: {
+      rank: Rank.special,
+      portals: [0, 1, 3, 4],
+      points: 3,
+      artifact: true,
+      colonies: [
+        { resource: Resource.gold },
+        { resource: Resource.science },
+        { resource: Resource.gold, advanced: true },
+        { resource: Resource.science, advanced: true },
+      ],
+    },
     storage: {
       [Resource.materials]: 4,
       [Resource.science]: 2,
@@ -13,45 +25,64 @@ const RawFactions = {
     },
     research: ["plasma_cannon", "gauss_shield", "fusion_drive"] as Science[],
     ships: {
-      [Ship.interceptor]: [
-        "red_interceptor",
-        "ion_cannon",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.cruiser]: [
-        "red_cruiser",
-        "ion_cannon",
-        "hull",
-        "nuclear_drive",
-        "electron_computer",
-        "nuclear_source",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.dreadnought]: [
-        "red_dreadnought",
-        "ion_cannon",
-        "ion_cannon",
-        "hull",
-        "hull",
-        "electron_computer",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.starbase]: [
-        "red_starbase",
-        "electron_computer",
-        "ion_cannon",
-        "hull",
-        "hull",
-        "_empty",
-      ] as Upgrade[],
+      [Ship.interceptor]: {
+        builtIn: { initiative: 2, energy: 1 },
+        upgrades: [
+          "ion_cannon",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.cruiser]: {
+        builtIn: { initiative: 1, energy: 1 },
+        upgrades: [
+          "ion_cannon",
+          "hull",
+          "nuclear_drive",
+          "electron_computer",
+          "nuclear_source",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.dreadnought]: {
+        builtIn: { energy: 1 },
+        upgrades: [
+          "ion_cannon",
+          "ion_cannon",
+          "hull",
+          "hull",
+          "electron_computer",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.starbase]: {
+        builtIn: { initiative: 4, energy: 3 },
+        upgrades: [
+          "electron_computer",
+          "ion_cannon",
+          "hull",
+          "hull",
+          "_empty",
+        ] as Upgrade[],
+      },
     },
   },
   blue: {
     tile: "224" as Tile,
+    tileData: {
+      rank: Rank.special,
+      portals: [0, 1, 3, 4],
+      points: 3,
+      artifact: true,
+      colonies: [
+        { resource: Resource.gold },
+        { resource: Resource.science, advanced: true },
+        { resource: Resource.materials, advanced: true },
+      ],
+    },
     storage: {
       [Resource.materials]: 2,
       [Resource.science]: 6,
@@ -59,45 +90,63 @@ const RawFactions = {
     },
     research: ["advanced_labs" as Science],
     ships: {
-      [Ship.interceptor]: [
-        "blue_interceptor",
-        "ion_cannon",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.cruiser]: [
-        "blue_cruiser",
-        "ion_cannon",
-        "hull",
-        "electron_computer",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.dreadnought]: [
-        "blue_dreadnought",
-        "electron_computer",
-        "ion_cannon",
-        "ion_cannon",
-        "hull",
-        "hull",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.starbase]: [
-        "blue_starbase",
-        "electron_computer",
-        "hull",
-        "hull",
-        "ion_cannon",
-        "_empty",
-      ] as Upgrade[],
+      [Ship.interceptor]: {
+        builtIn: { initiative: 2 },
+        upgrades: [
+          "ion_cannon",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.cruiser]: {
+        builtIn: { initiative: 1 },
+        upgrades: [
+          "ion_cannon",
+          "hull",
+          "electron_computer",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.dreadnought]: {
+        builtIn: {},
+        upgrades: [
+          "electron_computer",
+          "ion_cannon",
+          "ion_cannon",
+          "hull",
+          "hull",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.starbase]: {
+        builtIn: { initiative: 4, energy: 3 },
+        upgrades: [
+          "electron_computer",
+          "hull",
+          "hull",
+          "ion_cannon",
+          "_empty",
+        ] as Upgrade[],
+      },
     },
   },
   green: {
     tile: "226" as Tile,
+    tileData: {
+      rank: Rank.special,
+      portals: [0, 1, 3, 4],
+      points: 3,
+      artifact: true,
+      colonies: [
+        { resource: Resource.materials },
+        { resource: Resource.science },
+      ],
+    },
     storage: {
       [Resource.materials]: 4,
       [Resource.science]: 3,
@@ -105,41 +154,60 @@ const RawFactions = {
     },
     research: ["starbase" as Science],
     ships: {
-      [Ship.interceptor]: [
-        "green_interceptor",
-        "ion_cannon",
-        "nuclear_source",
-        "nuclear_drive",
-      ] as Upgrade[],
-      [Ship.cruiser]: [
-        "green_cruiser",
-        "nuclear_source",
-        "ion_cannon",
-        "hull",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.dreadnought]: [
-        "green_dreadnought",
-        "ion_cannon",
-        "ion_cannon",
-        "hull",
-        "hull",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.starbase]: [
-        "green_starbase",
-        "electron_computer",
-        "ion_cannon",
-        "hull",
-        "hull",
-      ] as Upgrade[],
+      [Ship.interceptor]: {
+        builtIn: { computer: 1, energy: 2 },
+        upgrades: [
+          "ion_cannon",
+          "nuclear_source",
+          "nuclear_drive",
+        ] as Upgrade[],
+      },
+      [Ship.cruiser]: {
+        builtIn: { computer: 1, energy: 2 },
+        upgrades: [
+          "nuclear_source",
+          "ion_cannon",
+          "hull",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.dreadnought]: {
+        builtIn: { computer: 1, energy: 2 },
+        upgrades: [
+          "ion_cannon",
+          "ion_cannon",
+          "hull",
+          "hull",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.starbase]: {
+        builtIn: { initiative: 2, energy: 5, computer: 1 },
+        upgrades: [
+          "electron_computer",
+          "ion_cannon",
+          "hull",
+          "hull",
+        ] as Upgrade[],
+      },
     },
   },
   yellow: {
     tile: "228" as Tile,
+    tileData: {
+      rank: Rank.special,
+      portals: [0, 1, 3, 4],
+      points: 3,
+      artifact: true,
+      colonies: [
+        { resource: Resource.gold },
+        { resource: Resource.science },
+        { resource: Resource.materials, advanced: true },
+      ],
+    },
     storage: {
       [Resource.materials]: 3,
       [Resource.science]: 4,
@@ -147,45 +215,65 @@ const RawFactions = {
     },
     research: ["fusion_drive" as Science],
     ships: {
-      [Ship.interceptor]: [
-        "yellow_interceptor",
-        "ion_cannon",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.cruiser]: [
-        "yellow_cruiser",
-        "ion_cannon",
-        "electron_computer",
-        "nuclear_source",
-        "hull",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.dreadnought]: [
-        "yellow_dreadnought",
-        "ion_cannon",
-        "ion_cannon",
-        "hull",
-        "hull",
-        "electron_computer",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.starbase]: [
-        "yellow_starbase",
-        "electron_computer",
-        "ion_cannon",
-        "hull",
-        "hull",
-        "_empty",
-      ] as Upgrade[],
+      [Ship.interceptor]: {
+        builtIn: { initiative: 2 },
+        upgrades: [
+          "ion_cannon",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.cruiser]: {
+        builtIn: { initiative: 1 },
+        upgrades: [
+          "ion_cannon",
+          "electron_computer",
+          "nuclear_source",
+          "hull",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.dreadnought]: {
+        builtIn: {},
+        upgrades: [
+          "ion_cannon",
+          "ion_cannon",
+          "hull",
+          "hull",
+          "electron_computer",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.starbase]: {
+        builtIn: { initiative: 4, energy: 3 },
+        upgrades: [
+          "electron_computer",
+          "ion_cannon",
+          "hull",
+          "hull",
+          "_empty",
+        ] as Upgrade[],
+      },
     },
   },
   white: {
     tile: "230" as Tile,
+    tileData: {
+      rank: Rank.special,
+      portals: [0, 1, 3, 4],
+      points: 3,
+      artifact: true,
+      colonies: [
+        { resource: Resource.gold },
+        { resource: Resource.science },
+        { resource: Resource.gold, advanced: true },
+        { resource: Resource.materials, advanced: true },
+      ],
+    },
     storage: {
       [Resource.materials]: 4,
       [Resource.science]: 3,
@@ -193,45 +281,65 @@ const RawFactions = {
     },
     research: ["positron_computer" as Science],
     ships: {
-      [Ship.interceptor]: [
-        "white_interceptor",
-        "ion_cannon",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.cruiser]: [
-        "white_cruiser",
-        "ion_cannon",
-        "hull",
-        "electron_computer",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.dreadnought]: [
-        "white_dreadnought",
-        "ion_cannon",
-        "ion_cannon",
-        "hull",
-        "hull",
-        "electron_computer",
-        "nuclear_source",
-        "nuclear_drive",
-        "_empty",
-      ] as Upgrade[],
-      [Ship.starbase]: [
-        "white_starbase",
-        "electron_computer",
-        "hull",
-        "hull",
-        "_empty",
-        "ion_cannon",
-      ] as Upgrade[],
+      [Ship.interceptor]: {
+        builtIn: { initiative: 2 },
+        upgrades: [
+          "ion_cannon",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.cruiser]: {
+        builtIn: { initiative: 1 },
+        upgrades: [
+          "ion_cannon",
+          "hull",
+          "electron_computer",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.dreadnought]: {
+        builtIn: {},
+        upgrades: [
+          "ion_cannon",
+          "ion_cannon",
+          "hull",
+          "hull",
+          "electron_computer",
+          "nuclear_source",
+          "nuclear_drive",
+          "_empty",
+        ] as Upgrade[],
+      },
+      [Ship.starbase]: {
+        builtIn: { initiative: 4, energy: 3 },
+        upgrades: [
+          "electron_computer",
+          "hull",
+          "hull",
+          "_empty",
+          "ion_cannon",
+        ] as Upgrade[],
+      },
     },
   },
   black: {
     tile: "232" as Tile,
+    tileData: {
+      rank: Rank.special,
+      portals: [0, 1, 3, 4],
+      points: 3,
+      artifact: true,
+      colonies: [
+        { resource: Resource.materials },
+        { resource: Resource.science },
+        { resource: Resource.gold, advanced: true },
+        { resource: Resource.materials, advanced: true },
+      ],
+    },
     storage: {
       [Resource.materials]: 4,
       [Resource.science]: 3,
@@ -239,51 +347,63 @@ const RawFactions = {
     },
     research: ["gauss_shield", "neutron_bombs"] as Science[],
     ships: {
-      [Ship.interceptor]: [
-        "black_interceptor",
-        "ion_cannon",
-        "gauss_shield",
-        "nuclear_source",
-        "nuclear_drive",
-      ] as Upgrade[],
-      [Ship.cruiser]: [
-        "black_cruiser",
-        "ion_cannon",
-        "electron_computer",
-        "nuclear_source",
-        "hull",
-        "gauss_shield",
-        "nuclear_drive",
-      ] as Upgrade[],
-      [Ship.dreadnought]: [
-        "black_dreadnought",
-        "ion_cannon",
-        "ion_cannon",
-        "electron_computer",
-        "nuclear_source",
-        "hull",
-        "hull",
-        "nuclear_drive",
-        "gauss_shield",
-      ] as Upgrade[],
-      [Ship.starbase]: [
-        "black_starbase",
-        "electron_computer",
-        "hull",
-        "ion_cannon",
-        "gauss_shield",
-        "hull",
-      ] as Upgrade[],
+      [Ship.interceptor]: {
+        builtIn: { initiative: 3, energy: 1 },
+        upgrades: [
+          "ion_cannon",
+          "gauss_shield",
+          "nuclear_source",
+          "nuclear_drive",
+        ] as Upgrade[],
+      },
+      [Ship.cruiser]: {
+        builtIn: { initiative: 2, energy: 2 },
+        upgrades: [
+          "ion_cannon",
+          "electron_computer",
+          "nuclear_source",
+          "hull",
+          "gauss_shield",
+          "nuclear_drive",
+        ] as Upgrade[],
+      },
+      [Ship.dreadnought]: {
+        builtIn: { energy: 3, initiative: 1 },
+        upgrades: [
+          "ion_cannon",
+          "ion_cannon",
+          "electron_computer",
+          "nuclear_source",
+          "hull",
+          "hull",
+          "nuclear_drive",
+          "gauss_shield",
+        ] as Upgrade[],
+      },
+      [Ship.starbase]: {
+        builtIn: { initiative: 5, energy: 3 },
+        upgrades: [
+          "electron_computer",
+          "hull",
+          "ion_cannon",
+          "gauss_shield",
+          "hull",
+        ] as Upgrade[],
+      },
     },
   },
 };
 export type Faction = keyof typeof RawFactions;
+export type ShipData = {
+  [ship in Ship]: { builtIn: UpgradeData; upgrades: Upgrade[] };
+};
 export const Factions: {
   [key: string]: {
     tile: Tile;
+    tileData: TileData;
     storage: Resources;
     research: Science[];
-    ships: { [ship in Ship]: Upgrade[] };
+    ships: ShipData;
   };
 } = RawFactions;
 
@@ -330,80 +450,6 @@ const RawTiles = {
       { resource: Resource.materials, advanced: true },
       { resource: Resource.science },
       { resource: Resource.science, advanced: true },
-    ],
-  },
-  "222": {
-    // red
-    rank: Rank.special,
-    portals: [0, 1, 3, 4],
-    points: 3,
-    artifact: true,
-    colonies: [
-      { resource: Resource.gold },
-      { resource: Resource.science },
-      { resource: Resource.gold, advanced: true },
-      { resource: Resource.science, advanced: true },
-    ],
-  },
-  "224": {
-    // blue
-    rank: Rank.special,
-    portals: [0, 1, 3, 4],
-    points: 3,
-    artifact: true,
-    colonies: [
-      { resource: Resource.gold },
-      { resource: Resource.science, advanced: true },
-      { resource: Resource.materials, advanced: true },
-    ],
-  },
-  "226": {
-    // green
-    rank: Rank.special,
-    portals: [0, 1, 3, 4],
-    points: 3,
-    artifact: true,
-    colonies: [
-      { resource: Resource.materials },
-      { resource: Resource.science },
-    ],
-  },
-  "228": {
-    // yellow
-    rank: Rank.special,
-    portals: [0, 1, 3, 4],
-    points: 3,
-    artifact: true,
-    colonies: [
-      { resource: Resource.gold },
-      { resource: Resource.science },
-      { resource: Resource.materials, advanced: true },
-    ],
-  },
-  "230": {
-    // white
-    rank: Rank.special,
-    portals: [0, 1, 3, 4],
-    points: 3,
-    artifact: true,
-    colonies: [
-      { resource: Resource.gold },
-      { resource: Resource.science },
-      { resource: Resource.gold, advanced: true },
-      { resource: Resource.materials, advanced: true },
-    ],
-  },
-  "232": {
-    // black
-    rank: Rank.special,
-    portals: [0, 1, 3, 4],
-    points: 3,
-    artifact: true,
-    colonies: [
-      { resource: Resource.materials },
-      { resource: Resource.science },
-      { resource: Resource.gold, advanced: true },
-      { resource: Resource.materials, advanced: true },
     ],
   },
   "271": {
@@ -831,17 +877,25 @@ const RawTiles = {
   },
 };
 export type Tile = keyof typeof RawTiles;
+export type TileData = {
+  rank: Rank;
+  portals: number[];
+  points: number;
+  colonies: { resource?: Resource; advanced?: boolean }[];
+  npcs?: Ship[];
+  diamond?: boolean;
+  warp_portal?: boolean;
+};
 export const Tiles: {
-  [key: string]: {
-    rank: Rank;
-    portals: number[];
-    points: number;
-    colonies: { resource?: Resource; advanced?: boolean }[];
-    npcs?: Ship[];
-    diamond?: boolean;
-    warp_portal?: boolean;
-  };
-} = RawTiles;
+  [key: string]: TileData;
+} = Object.fromEntries(
+  (Object.entries(RawTiles) as [Tile, TileData][]).concat(
+    ...(Object.values(Factions).map((faction) => [
+      faction.tile,
+      faction.tileData,
+    ]) as [Tile, TileData][])
+  )
+);
 
 const RawSciences = {
   neutron_bombs: { track: Track.pink, cost: 2 },
@@ -1065,41 +1119,17 @@ const RawUpgrades = {
   electron_computer: { computer: 1 },
   ion_cannon: { dice: [1], energy: -1 },
   _empty: {},
-  red_interceptor: { faction: true, initiative: 2, energy: 1 },
-  red_cruiser: { faction: true, initiative: 1, energy: 1 },
-  red_dreadnought: { faction: true, energy: 1 },
-  red_starbase: { faction: true, initiative: 4, energy: 3 },
-  blue_interceptor: { faction: true, initiative: 2 },
-  blue_cruiser: { faction: true, initiative: 1 },
-  blue_dreadnought: { faction: true },
-  blue_starbase: { faction: true, initiative: 4, energy: 3 },
-  green_interceptor: { faction: true, computer: 1, energy: 2 },
-  green_cruiser: { faction: true, computer: 1, energy: 2 },
-  green_dreadnought: { faction: true, computer: 1, energy: 2 },
-  green_starbase: { faction: true, initiative: 2, energy: 5, computer: 1 },
-  yellow_interceptor: { faction: true, initiative: 2 },
-  yellow_cruiser: { faction: true, initiative: 1 },
-  yellow_dreadnought: { faction: true },
-  yellow_starbase: { faction: true, initiative: 4, energy: 3 },
-  white_interceptor: { faction: true, initiative: 2 },
-  white_cruiser: { faction: true, initiative: 1 },
-  white_dreadnought: { faction: true },
-  white_starbase: { faction: true, initiative: 4, energy: 3 },
-  black_interceptor: { faction: true, initiative: 3, energy: 1 },
-  black_cruiser: { faction: true, initiative: 2, energy: 2 },
-  black_dreadnought: { faction: true, energy: 3, initiative: 1 },
-  black_starbase: { faction: true, initiative: 5, energy: 3 },
 };
 export type Upgrade = keyof typeof RawUpgrades;
+export type UpgradeData = {
+  energy?: number;
+  hull?: number;
+  drive?: number;
+  initiative?: number;
+  computer?: number;
+  missile?: number[];
+  dice?: number[];
+};
 export const Upgrades: {
-  [key: string]: {
-    faction?: boolean;
-    energy?: number;
-    hull?: number;
-    drive?: number;
-    initiative?: number;
-    computer?: number;
-    missile?: number[];
-    dice?: number[];
-  };
+  [key: string]: UpgradeData;
 } = RawUpgrades;

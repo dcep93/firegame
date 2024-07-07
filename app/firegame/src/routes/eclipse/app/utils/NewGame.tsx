@@ -1,6 +1,6 @@
 import { LobbyType } from "../../../../shared/store";
-import { Action, Rank, Resources, Sector, Ship, Track } from "./gameTypes";
-import { Diamond, Faction, Science, Tile, Upgrade } from "./library";
+import { Action, Rank, Resources, Sector, Track } from "./gameTypes";
+import { Diamond, Faction, Science, ShipData, Tile } from "./library";
 import utils, { store } from "./utils";
 
 export type GameType = {
@@ -31,7 +31,7 @@ export type PlayerType = {
 
   d?: {
     faction: Faction;
-    ships: { [ship in Ship]: Upgrade[] };
+    ships: ShipData;
     storage: Resources;
     income: Resources;
     well: Resources;

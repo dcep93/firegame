@@ -351,14 +351,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (game.action.action !== Action.upgrade) return false;
     const blueprint = utils.getMe().d!.ships[ship];
     if (
-      blueprint
+      blueprint.upgrades
         .map((u, i) => (i === index ? upgrade : u))
-        .map((u) => Upgrades[u].energy)
+        .map((u) => Upgrades[u])
+        .concat(blueprint.builtIn)
+        .map((u) => u.energy)
         .sum() < 0
     )
       return false;
     if (execute) {
-      blueprint[index] = upgrade;
+      blueprint.upgrades[index] = upgrade;
       store.update(`upgraded ${Ship[ship]} with ${upgrade}`);
     }
     return true;
