@@ -1,7 +1,23 @@
 import { Rank, Resource, Resources, Ship, Track } from "./gameTypes";
 
 const RawFactions = {
+  red: {
+    tile: "222" as Tile,
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
+    research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
+  },
   blue: {
+    tile: "224" as Tile,
     storage: {
       [Resource.materials]: 2,
       [Resource.science]: 6,
@@ -14,51 +30,9 @@ const RawFactions = {
       [Ship.dreadnought]: [],
       [Ship.starbase]: [],
     },
-    sector: "224",
   },
   green: {
-    storage: {
-      [Resource.materials]: 0,
-      [Resource.science]: 0,
-      [Resource.gold]: 0,
-    },
-    research: [],
-    ships: {
-      [Ship.interceptor]: [],
-      [Ship.cruiser]: [],
-      [Ship.dreadnought]: [],
-      [Ship.starbase]: [],
-    },
-  },
-  white: {
-    storage: {
-      [Resource.materials]: 0,
-      [Resource.science]: 0,
-      [Resource.gold]: 0,
-    },
-    research: [],
-    ships: {
-      [Ship.interceptor]: [],
-      [Ship.cruiser]: [],
-      [Ship.dreadnought]: [],
-      [Ship.starbase]: [],
-    },
-  },
-  black: {
-    storage: {
-      [Resource.materials]: 0,
-      [Resource.science]: 0,
-      [Resource.gold]: 0,
-    },
-    research: [],
-    ships: {
-      [Ship.interceptor]: [],
-      [Ship.cruiser]: [],
-      [Ship.dreadnought]: [],
-      [Ship.starbase]: [],
-    },
-  },
-  red: {
+    tile: "226" as Tile,
     storage: {
       [Resource.materials]: 0,
       [Resource.science]: 0,
@@ -73,6 +47,37 @@ const RawFactions = {
     },
   },
   yellow: {
+    tile: "228" as Tile,
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
+    research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
+  },
+  white: {
+    tile: "230" as Tile,
+    storage: {
+      [Resource.materials]: 0,
+      [Resource.science]: 0,
+      [Resource.gold]: 0,
+    },
+    research: [],
+    ships: {
+      [Ship.interceptor]: [],
+      [Ship.cruiser]: [],
+      [Ship.dreadnought]: [],
+      [Ship.starbase]: [],
+    },
+  },
+  black: {
+    tile: "232" as Tile,
     storage: {
       [Resource.materials]: 0,
       [Resource.science]: 0,
@@ -90,6 +95,7 @@ const RawFactions = {
 export type Faction = keyof typeof RawFactions;
 export const Factions: {
   [key: string]: {
+    tile: Tile;
     storage: Resources;
     research: Science[];
     ships: { [ship in Ship]: Upgrade[] };
@@ -130,86 +136,138 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 2, 3, 4, 5],
     points: 4,
-    colonies: [{ resource: Resource.gold }],
     npcs: [Ship.dreadnought],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.gold },
+      { resource: Resource.materials },
+      { resource: Resource.materials, advanced: true },
+      { resource: Resource.science },
+      { resource: Resource.science, advanced: true },
+    ],
   },
-  "201": {
+  "222": {
+    // red
     rank: Rank.special,
-    portals: [0, 1],
-    points: 4,
-    colonies: [{ resource: Resource.gold }],
-    npcs: [Ship.cruiser],
-  },
-  "202": {
-    rank: Rank.special,
-    portals: [0, 1],
-    points: 4,
-    colonies: [{ resource: Resource.gold }],
-    npcs: [Ship.cruiser],
-  },
-  "203": {
-    rank: Rank.special,
-    portals: [0, 1],
-    points: 4,
-    colonies: [{ resource: Resource.gold }],
-    npcs: [Ship.cruiser],
-  },
-  "204": {
-    rank: Rank.special,
-    portals: [0, 1],
-    points: 4,
-    colonies: [{ resource: Resource.gold }],
-    npcs: [Ship.cruiser],
-  },
-  "205": {
-    rank: Rank.special,
-    portals: [0, 1],
-    points: 4,
-    colonies: [{ resource: Resource.gold }],
-    npcs: [Ship.cruiser],
-  },
-  "206": {
-    rank: Rank.special,
-    portals: [0, 1],
-    points: 4,
-    colonies: [{ resource: Resource.gold }],
-    npcs: [Ship.cruiser],
-  },
-  blue: {
-    rank: Rank.special,
-    portals: [0, 1],
+    portals: [0, 1, 3, 4],
     points: 3,
-    colonies: [{ resource: Resource.gold }],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science },
+      { resource: Resource.gold, advanced: true },
+      { resource: Resource.science, advanced: true },
+    ],
   },
-  green: {
+  "224": {
+    // blue
     rank: Rank.special,
-    portals: [0, 1],
+    portals: [0, 1, 3, 4],
     points: 3,
-    colonies: [{ resource: Resource.gold }],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science, advanced: true },
+      { resource: Resource.materials, advanced: true },
+    ],
   },
-  red: {
+  "226": {
+    // green
     rank: Rank.special,
-    portals: [0, 1],
+    portals: [0, 1, 3, 4],
     points: 3,
-    colonies: [{ resource: Resource.gold }],
+    artifact: true,
+    colonies: [
+      { resource: Resource.materials },
+      { resource: Resource.science },
+    ],
   },
-  yellow: {
+  "228": {
+    // yellow
     rank: Rank.special,
-    portals: [0, 1],
+    portals: [0, 1, 3, 4],
     points: 3,
-    colonies: [{ resource: Resource.gold }],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science },
+      { resource: Resource.materials, advanced: true },
+    ],
   },
-  black: {
+  "230": {
+    // white
     rank: Rank.special,
-    portals: [0, 1],
+    portals: [0, 1, 3, 4],
     points: 3,
-    colonies: [{ resource: Resource.gold }],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science },
+      { resource: Resource.gold, advanced: true },
+      { resource: Resource.materials, advanced: true },
+    ],
   },
-  white: {
+  "232": {
+    // black
     rank: Rank.special,
-    portals: [0, 1],
+    portals: [0, 1, 3, 4],
     points: 3,
-    colonies: [{ resource: Resource.gold }],
+    artifact: true,
+    colonies: [
+      { resource: Resource.materials },
+      { resource: Resource.science },
+      { resource: Resource.gold, advanced: true },
+      { resource: Resource.materials, advanced: true },
+    ],
+  },
+  "271": {
+    rank: Rank.special,
+    portals: [0, 1, 3, 4],
+    points: 2,
+    nps: [Ship.cruiser],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science },
+      { resource: Resource.materials, advanced: true },
+    ],
+  },
+  "272": {
+    rank: Rank.special,
+    portals: [0, 1, 3, 4],
+    points: 2,
+    nps: [Ship.cruiser],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.materials },
+      { resource: Resource.science, advanced: true },
+    ],
+  },
+  "273": {
+    rank: Rank.special,
+    portals: [0, 1, 3, 4],
+    points: 2,
+    nps: [Ship.cruiser],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.materials },
+      { resource: Resource.materials, advanced: true },
+    ],
+  },
+  "274": {
+    rank: Rank.special,
+    portals: [0, 1, 3, 4],
+    points: 2,
+    nps: [Ship.cruiser],
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science },
+      { resource: Resource.science, advanced: true },
+    ],
   },
 };
 export type Tile = keyof typeof RawTiles;
@@ -369,7 +427,7 @@ export const Sciences: {
 );
 
 const RawEnemies = {
-  ancient: {
+  [Ship.interceptor]: {
     easy: {
       initiative: 2,
       cannons: [1, 1],
@@ -385,7 +443,7 @@ const RawEnemies = {
       computer: 1,
     },
   },
-  guardian: {
+  [Ship.cruiser]: {
     easy: {
       initiative: 3,
       cannons: [1, 1, 1],
@@ -401,7 +459,7 @@ const RawEnemies = {
       computer: 1,
     },
   },
-  death_star: {
+  [Ship.dreadnought]: {
     easy: {
       initiative: 0,
       missiles: [],

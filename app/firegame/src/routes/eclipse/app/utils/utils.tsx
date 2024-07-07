@@ -74,7 +74,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     };
     game.sectors.push(
       ...utils
-        .shuffle(["201", "202", "203", "204", "205", "206"] as Tile[])
+        .shuffle(
+          Object.entries(Tiles)
+            .map(([tile, obj]) => ({ tile, obj }))
+            .filter(({ obj }) => (obj.npcs || []).includes(Ship.cruiser))
+            .map(({ tile }) => tile as Tile)
+        )
         .map((tile, i) => ({ tile, i }))
         .filter(({ i }) => (i * numPlayers) % 6 >= numPlayers)
         .map(({ tile, i }) => utils.buildStartingSector(tile, i))
@@ -152,7 +157,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       const game = store.gameW.game;
       game.sectors.push(
         utils.buildStartingSector(
-          faction,
+          obj.tile,
           Math.ceil((utils.myIndex() * 6) / game.players.length)
         )
       );
