@@ -17,6 +17,11 @@ export default function PlayersView(props: {
                   faction: faction as Faction,
                   ...obj,
                 }))
+                .filter(
+                  (obj) =>
+                    game.players.find((p) => p.d?.faction === obj.faction) ===
+                    undefined
+                )
                 .map((obj) => (
                   <div
                     key={obj.faction}

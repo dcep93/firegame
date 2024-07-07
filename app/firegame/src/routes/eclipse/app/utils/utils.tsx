@@ -73,17 +73,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           ])
       ),
     };
+    const playerOrientations = utils
+      .count(numPlayers)
+      .map((index) => utils.getPlayerStartingOrientation(index, numPlayers));
+    const guardianTiles = utils.shuffle(
+      Object.entries(Tiles)
+        .map(([tile, obj]) => ({ tile, obj }))
+        .filter(({ obj }) => (obj.enemies || []).includes(Ship.cruiser))
+        .map(({ tile }) => tile as Tile)
+    );
     game.sectors.push(
       ...utils
-        .shuffle(
-          Object.entries(Tiles)
-            .map(([tile, obj]) => ({ tile, obj }))
-            .filter(({ obj }) => (obj.enemies || []).includes(Ship.cruiser))
-            .map(({ tile }) => tile as Tile)
+        .count(6)
+        .filter((i) => !playerOrientations.includes(i))
+        .map((orientation, index) =>
+          utils.buildStartingSector(guardianTiles[index], orientation)
         )
-        .map((tile, i) => ({ tile, i: i + 1 }))
-        .filter(({ i }) => (i * numPlayers) % 6 >= numPlayers)
-        .map(({ tile, i }) => utils.buildStartingSector(tile, i))
     );
     for (
       var needed;
@@ -127,6 +132,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     };
   }
 
+  getPlayerStartingOrientation(
+    playerIndex: number,
+    numPlayers: number
+  ): number {
+    return Math.ceil((playerIndex * 6) / numPlayers);
+  }
+
   // execute
 
   selectFaction(execute: boolean, faction: Faction): boolean {
@@ -159,7 +171,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       game.sectors.push(
         utils.buildStartingSector(
           obj.tile,
-          Math.ceil((utils.myIndex() * 6) / game.players.length)
+          utils.getPlayerStartingOrientation(
+            utils.myIndex(),
+            game.players.length
+          )
         )
       );
       if (game.currentPlayer === 0) {
