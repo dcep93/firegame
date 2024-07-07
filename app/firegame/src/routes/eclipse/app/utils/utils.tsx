@@ -9,6 +9,7 @@ import {
   Sciences,
   Tile,
   Tiles,
+  Token,
   Upgrade,
   Upgrades,
 } from "./library";
@@ -77,7 +78,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         .shuffle(
           Object.entries(Tiles)
             .map(([tile, obj]) => ({ tile, obj }))
-            .filter(({ obj }) => (obj.npcs || []).includes(Ship.cruiser))
+            .filter(({ obj }) => (obj.enemies || []).includes(Ship.cruiser))
             .map(({ tile }) => tile as Tile)
         )
         .map((tile, i) => ({ tile, i }))
@@ -119,7 +120,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return {
       tile,
       ...obj,
-      units: (Tiles[tile].npcs || []).map((ship) => ({
+      units: (Tiles[tile].enemies || []).map((ship) => ({
         ship,
       })),
       tokens: [],
@@ -242,9 +243,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (
       !(
         (sourceTile.warp_portal ||
-          (source.tokens || []).includes("warp_portal")) &&
+          (source.tokens || []).includes(Token.warp_portal)) &&
         (destinationTile.warp_portal ||
-          (destination.tokens || []).includes("warp_portal"))
+          (destination.tokens || []).includes(Token.warp_portal))
       )
     ) {
       const distance = [source.x - destination.x, source.y - destination.y]
@@ -318,18 +319,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  buildToken(
-    execute: boolean,
-    token: "orbital" | "monolith",
-    sector: Sector
-  ): boolean {
+  buildToken(execute: boolean, token: Token, sector: Sector): boolean {
     if (!utils.isMyTurn()) return false;
     const game = store.gameW.game;
     if (game.action.action !== Action.build) return false;
     const myD = utils.getMe().d!;
     const cost = {
-      orbital: 4,
-      monolith: 10,
+      [Token.orbital]: 4,
+      [Token.monolith]: 10,
+      [Token.warp_portal]: 0,
     }[token];
     if (myD.storage[Resource.materials] < cost) return false;
     if (execute) {

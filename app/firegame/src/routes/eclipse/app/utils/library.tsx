@@ -441,7 +441,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 2, 3, 4, 5],
     points: 4,
-    npcs: [Ship.dreadnought],
+    enemies: [Ship.dreadnought],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -456,7 +456,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    npcs: [Ship.cruiser],
+    enemies: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -468,7 +468,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    npcs: [Ship.cruiser],
+    enemies: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -480,7 +480,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    npcs: [Ship.cruiser],
+    enemies: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -492,7 +492,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    npcs: [Ship.cruiser],
+    enemies: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -504,7 +504,7 @@ const RawTiles = {
     rank: Rank.i,
     portals: [1, 2, 3, 4, 5],
     points: 2,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       { resource: Resource.gold },
       { resource: Resource.materials },
@@ -527,7 +527,7 @@ const RawTiles = {
     rank: Rank.i,
     portals: [0, 1, 3, 4],
     points: 2,
-    npcs: [Ship.interceptor, Ship.interceptor],
+    enemies: [Ship.interceptor, Ship.interceptor],
     colonies: [
       { resource: Resource.gold },
       { resource: Resource.science },
@@ -539,7 +539,7 @@ const RawTiles = {
     rank: Rank.i,
     portals: [0, 1, 3, 4, 5],
     points: 2,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       { resource: Resource.gold },
       { resource: Resource.science },
@@ -567,7 +567,7 @@ const RawTiles = {
     rank: Rank.i,
     portals: [0, 1, 3, 4],
     points: 2,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       {},
       { resource: Resource.science },
@@ -579,7 +579,7 @@ const RawTiles = {
     portals: [1, 2, 3, 4, 5],
     points: 4,
     artifact: true,
-    npcs: [Ship.interceptor, Ship.interceptor],
+    enemies: [Ship.interceptor, Ship.interceptor],
     colonies: [{ resource: Resource.gold }, { resource: Resource.materials }],
   },
   "110": {
@@ -609,7 +609,7 @@ const RawTiles = {
     rank: Rank.ii,
     portals: [0, 1, 3, 5],
     points: 2,
-    npcs: [Ship.interceptor, Ship.interceptor],
+    enemies: [Ship.interceptor, Ship.interceptor],
     colonies: [
       { resource: Resource.gold, advanced: true },
       { resource: Resource.materials },
@@ -621,7 +621,7 @@ const RawTiles = {
     portals: [0, 1, 3, 5],
     artifact: true,
     points: 2,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       {},
       { resource: Resource.materials, advanced: true },
@@ -676,7 +676,7 @@ const RawTiles = {
     rank: Rank.ii,
     portals: [0, 1, 2, 3],
     points: 1,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       {},
       { resource: Resource.gold },
@@ -687,7 +687,7 @@ const RawTiles = {
     rank: Rank.ii,
     portals: [0, 1, 2, 4, 5],
     points: 2,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       { advanced: true },
       { resource: Resource.science },
@@ -707,7 +707,7 @@ const RawTiles = {
     portals: [0, 2, 3],
     points: 2,
     artifact: true,
-    npcs: [Ship.interceptor, Ship.interceptor],
+    enemies: [Ship.interceptor, Ship.interceptor],
     colonies: [
       { resource: Resource.gold },
       { resource: Resource.science },
@@ -719,7 +719,7 @@ const RawTiles = {
     portals: [0, 3, 4],
     points: 2,
     artifact: true,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       { resource: Resource.materials },
       { resource: Resource.gold, advanced: true },
@@ -731,7 +731,7 @@ const RawTiles = {
     portals: [3, 5],
     points: 2,
     artifact: true,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       {},
       { resource: Resource.science, advanced: true },
@@ -751,7 +751,7 @@ const RawTiles = {
     rank: Rank.iii,
     portals: [0, 1, 3],
     points: 1,
-    npcs: [Ship.interceptor],
+    enemies: [Ship.interceptor],
     colonies: [
       { resource: Resource.materials },
       { resource: Resource.science },
@@ -882,8 +882,9 @@ export type TileData = {
   portals: number[];
   points: number;
   colonies: { resource?: Resource; advanced?: boolean }[];
-  npcs?: Ship[];
+  enemies?: Ship[];
   diamond?: boolean;
+  artifact?: boolean;
   warp_portal?: boolean;
 };
 export const Tiles: {
@@ -1090,7 +1091,6 @@ const RawEnemies = {
     },
   },
 };
-
 export type Enemy = keyof typeof RawEnemies;
 export const Enemies: {
   [key: string]: {
@@ -1104,13 +1104,11 @@ export const Enemies: {
   };
 } = RawEnemies;
 
-const RawTokens = {
-  monolith: {},
-  orbital: {},
-  warp_portal: {},
-};
-export type Token = keyof typeof RawTokens;
-export const Tokens: { [key: string]: {} } = RawTokens;
+export enum Token {
+  monolith,
+  orbital,
+  warp_portal,
+}
 
 const RawUpgrades = {
   hull: { hull: 1 },
