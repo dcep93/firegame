@@ -997,7 +997,13 @@ const RawSciences = {
 };
 export type Science = keyof typeof RawSciences;
 export const Sciences: {
-  [key: string]: { track: Track; cost: number; floor: number; count: number };
+  [key: string]: {
+    track: Track;
+    cost: number;
+    floor: number;
+    count: number;
+    upgrade?: UpgradeData;
+  };
 } = Object.fromEntries(
   Object.entries(RawSciences).map(([science, obj]) => [
     science,
@@ -1122,6 +1128,7 @@ export type Upgrade = keyof typeof RawUpgrades;
 export type UpgradeData = {
   energy?: number;
   hull?: number;
+  shield?: number;
   drive?: number;
   initiative?: number;
   computer?: number;
@@ -1130,4 +1137,14 @@ export type UpgradeData = {
 };
 export const Upgrades: {
   [key: string]: UpgradeData;
-} = RawUpgrades;
+} = Object.fromEntries(
+  (Object.entries(RawUpgrades) as [Upgrade, UpgradeData][]).concat(
+    ...(Object.entries(Sciences)
+      .map(([science, scienceData]) => ({
+        science,
+        ...scienceData,
+      }))
+      .filter(({ upgrade }) => upgrade)
+      .map((obj) => [obj.science, obj.upgrade]) as [Upgrade, UpgradeData][])
+  )
+);
