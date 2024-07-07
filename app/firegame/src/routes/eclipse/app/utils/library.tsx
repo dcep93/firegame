@@ -915,10 +915,7 @@ export const Tiles: {
   [key: string]: TileData;
 } = Object.fromEntries(
   (Object.entries(RawTiles) as [Tile, TileData][]).concat(
-    ...(Object.values(Factions).map((faction) => [
-      faction.tile,
-      faction.tileData,
-    ]) as [Tile, TileData][])
+    Object.values(Factions).map((faction) => [faction.tile, faction.tileData])
   )
 );
 
@@ -1163,12 +1160,12 @@ export const Upgrades: {
   [key: string]: UpgradeData;
 } = Object.fromEntries(
   (Object.entries(RawUpgrades) as [Upgrade, UpgradeData][]).concat(
-    ...(Object.entries(Sciences)
+    Object.entries(Sciences)
       .map(([science, scienceData]) => ({
         science,
         ...scienceData,
       }))
       .filter(({ upgrade }) => upgrade)
-      .map((obj) => [obj.science, obj.upgrade]) as [Upgrade, UpgradeData][])
+      .map((obj) => [obj.science, obj.upgrade]) as [Upgrade, UpgradeData][]
   )
 );
