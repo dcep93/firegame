@@ -81,7 +81,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             .filter(({ obj }) => (obj.enemies || []).includes(Ship.cruiser))
             .map(({ tile }) => tile as Tile)
         )
-        .map((tile, i) => ({ tile, i }))
+        .map((tile, i) => ({ tile, i: i + 1 }))
         .filter(({ i }) => (i * numPlayers) % 6 >= numPlayers)
         .map(({ tile, i }) => utils.buildStartingSector(tile, i))
     );
