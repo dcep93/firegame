@@ -11,7 +11,12 @@ export default class Eclipse extends React.Component {
         className={[styles.main, utils.isMyTurn() && styles.my_turn].join(" ")}
       >
         <Sidebar />
-        <div className={styles.content}>{store.gameW.game && <Main />}</div>
+        <div
+          className={[utils.isMyTurn() && styles.my_turn].join(" ")}
+          style={{ width: "100%", height: "100%", display: "flex" }}
+        >
+          {store.gameW.game && <Main />}
+        </div>
       </div>
     );
   }

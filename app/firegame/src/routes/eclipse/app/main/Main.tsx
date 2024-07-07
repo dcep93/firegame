@@ -11,7 +11,7 @@ export default function Main() {
   const [track, updateTrack] = useState(Track.black);
   const [upgrade, updateUpgrade] = useState<Upgrade | null>(null);
   return (
-    <div>
+    <div style={{ overflow: "scroll" }}>
       <ActionView />
       <PlayersView updateTrack={updateTrack} upgrade={upgrade} />
       <SectorsView />
