@@ -1,7 +1,7 @@
-// costs: 0,0,1,2,3,5,7,10,13,17,21,25,30
-// income: 2,3,4,6,8,10,12,15,18,21,24,28
-
 import { Rank, Resource, Resources, Ship, Track } from "./gameTypes";
+
+export const disc_costs = [0, 0, 1, 2, 3, 5, 7, 10, 13, 17, 21, 25, 30];
+export const income = [2, 3, 4, 6, 8, 10, 12, 15, 18, 21, 24, 28];
 
 const RawFactions = {
   red: {
