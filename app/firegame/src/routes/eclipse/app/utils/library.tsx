@@ -408,33 +408,57 @@ export const Factions: {
 } = RawFactions;
 
 const RawDiamonds = {
-  monolith: 1,
-  warp_portal: 1,
-  ion_turret: 1, // {dice: [1,1]}
-  ion_disruptor: 1, // {dice: [1], initiative: 3}
-  ion_missile: 1, // {missile: [1,1,1]}
-  plasma_turret: 1, // {dice: [2,2], energy: -3}
-  soliton_charger: 1, // {dice: [3], energy: -1}
-  soliton_missile: 1, // {missile: [3], initiative: 1}
-  antimatter_missle: 1, // {missile: [4]}
-  shard_hull: 1, // {hull: 3}
-  axion_computer: 1, // {computer: 2, initiative: 1}
-  flux_shield: 1, // {shield: 3, initiative: 1, energy: -2}
-  inversion_shield: 1, // {shield: 2, energy: 2}
-  muon_source: 1, // {initiative: 1, energy: 2} (outside)
-  nonlinear_drive: 1, // {drive: 2, energy: 2}
-  conformal_drive: 1, // {drive: 4, initiative: 2, energy: -2}
-  hypergrid_source: 1, // {energy: 11}
-  orbital: 2, // {materials: 2}
-  resources: 2, // {materials: 2, science: 2, gold: 3}
-  materials: 3, // {materials: 6}
-  science: 3, // {science: 5}
-  gold: 3, // {gold: 8}
-  research: 3,
-  cruiser: 3,
+  monolith: { count: 1, special: true },
+  warp_portal: { count: 1, special: true },
+  ion_turret: { count: 1, upgrade: { dice: [1, 1] } },
+  ion_disruptor: { count: 1, upgrade: { dice: [1], initiative: 3 } },
+  ion_missile: { count: 1, upgrade: { missile: [1, 1, 1] } },
+  plasma_turret: { count: 1, upgrade: { dice: [2, 2], energy: -3 } },
+  soliton_charger: { count: 1, upgrade: { dice: [3], energy: -1 } },
+  soliton_missile: { count: 1, upgrade: { missile: [3], initiative: 1 } },
+  antimatter_missle: { count: 1, upgrade: { missile: [4] } },
+  shard_hull: { count: 1, upgrade: { hull: 3 } },
+  axion_computer: { count: 1, upgrade: { computer: 2, initiative: 1 } },
+  flux_shield: { count: 1, upgrade: { shield: 3, initiative: 1, energy: -2 } },
+  inversion_shield: { count: 1, upgrade: { shield: 2, energy: 2 } },
+  muon_source: {
+    count: 1,
+    builtInUpgrade: true,
+    upgrade: { initiative: 1, energy: 2 },
+  },
+  nonlinear_drive: { count: 1, upgrade: { drive: 2, energy: 2 } },
+  conformal_drive: {
+    count: 1,
+    upgrade: { drive: 4, initiative: 2, energy: -2 },
+  },
+  hypergrid_source: { count: 1, upgrade: { energy: 11 } },
+  orbital: { count: 2, special: true, resources: { [Resource.materials]: 2 } },
+  resources: {
+    count: 2,
+    resources: {
+      [Resource.materials]: 2,
+      [Resource.science]: 2,
+      [Resource.gold]: 3,
+    },
+  },
+  materials: { count: 3, resources: { [Resource.materials]: 6 } },
+  science: { count: 3, resources: { [Resource.science]: 5 } },
+  gold: { count: 3, resources: { [Resource.gold]: 8 } },
+  research: { count: 3, special: true },
+  cruiser: { count: 3, special: true },
 };
 export type Diamond = keyof typeof RawDiamonds;
-export const Diamonds: { [key: string]: number } = RawDiamonds;
+export const Diamonds: {
+  [key: string]: {
+    count: number;
+    builtInUpgrade?: boolean;
+    upgrade?: UpgradeData;
+    resources?: {
+      [r in Resource]?: number;
+    };
+    special?: boolean;
+  };
+} = RawDiamonds;
 
 const RawTiles = {
   "100": {

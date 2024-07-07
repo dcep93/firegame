@@ -44,8 +44,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         )
       ),
       diamonds: utils.shuffle(
-        Object.entries(Diamonds).flatMap(([key, count]) =>
-          utils.repeat(key as Diamond, count)
+        Object.entries(Diamonds).flatMap(([key, obj]) =>
+          utils.repeat(key as Diamond, obj.count)
         )
       ),
       military: utils.shuffle(
