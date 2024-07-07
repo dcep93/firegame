@@ -407,7 +407,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    nps: [Ship.cruiser],
+    npcs: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -419,7 +419,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    nps: [Ship.cruiser],
+    npcs: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -431,7 +431,7 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    nps: [Ship.cruiser],
+    npcs: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
@@ -443,13 +443,102 @@ const RawTiles = {
     rank: Rank.special,
     portals: [0, 1, 3, 4],
     points: 2,
-    nps: [Ship.cruiser],
+    npcs: [Ship.cruiser],
     artifact: true,
     colonies: [
       { resource: Resource.gold },
       { resource: Resource.science },
       { resource: Resource.science, advanced: true },
     ],
+  },
+  "101": {
+    rank: Rank.i,
+    portals: [1, 2, 3, 4, 5],
+    points: 2,
+    npcs: [Ship.interceptor],
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.materials },
+      { resource: Resource.materials, advanced: true },
+    ],
+  },
+  "102": {
+    rank: Rank.i,
+    portals: [0, 2, 3, 5],
+    points: 2,
+    colonies: [{ resource: Resource.science }, { resource: Resource.science }],
+  },
+  "103": {
+    rank: Rank.i,
+    portals: [0, 1, 2, 4, 5],
+    points: 2,
+    colonies: [{ resource: Resource.gold }, { resource: Resource.science }],
+  },
+  "104": {
+    rank: Rank.i,
+    portals: [0, 1, 3, 4],
+    points: 2,
+    npcs: [Ship.interceptor, Ship.interceptor],
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science },
+      { resource: Resource.gold, advanced: true },
+      { resource: Resource.science, advanced: true },
+    ],
+  },
+  "105": {
+    rank: Rank.i,
+    portals: [0, 1, 3, 4, 5],
+    points: 2,
+    npcs: [Ship.interceptor],
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.science },
+      { resource: Resource.materials, advanced: true },
+    ],
+  },
+  "106": {
+    rank: Rank.i,
+    portals: [0, 1, 2, 3],
+    points: 2,
+    colonies: [{ resource: Resource.gold }, { resource: Resource.materials }],
+  },
+  "107": {
+    rank: Rank.i,
+    portals: [0, 1, 2, 3, 5],
+    points: 3,
+    artifact: true,
+    colonies: [
+      { resource: Resource.gold },
+      { resource: Resource.materials, advanced: true },
+      { resource: Resource.science, advanced: true },
+    ],
+  },
+  "108": {
+    rank: Rank.i,
+    portals: [0, 1, 3, 4],
+    points: 2,
+    npcs: [Ship.interceptor],
+    colonies: [
+      {},
+      { resource: Resource.science },
+      { resource: Resource.gold, advanced: true },
+    ],
+  },
+  "109": {
+    rank: Rank.i,
+    portals: [1, 2, 3, 4, 5],
+    points: 4,
+    artifact: true,
+    npcs: [Ship.interceptor, Ship.interceptor],
+    colonies: [{ resource: Resource.gold }, { resource: Resource.materials }],
+  },
+  "110": {
+    rank: Rank.i,
+    portals: [0, 2, 3, 4],
+    points: 2,
+    diamond: true,
+    colonies: [{ resource: Resource.gold, advanced: true }, { advanced: true }],
   },
 };
 export type Tile = keyof typeof RawTiles;
@@ -458,7 +547,7 @@ export const Tiles: {
     rank: Rank;
     portals: number[];
     points: number;
-    colonies: { resource: Resource; advanced?: boolean }[];
+    colonies: { resource?: Resource; advanced?: boolean }[];
     npcs?: Ship[];
     diamond?: boolean;
     warp_portal?: boolean;
