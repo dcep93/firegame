@@ -15,129 +15,135 @@ export default function PlayersView(props: {
   updateTrack: (track: Track) => void;
 }) {
   const game = store.gameW.game;
+  const myIndex = utils.getMe() ? utils.myIndex() : 0;
   return (
     <div style={{ display: "flex" }}>
-      {game.players.map((p, playerIndex) => (
-        <div key={p.userId}>
-          <div
-            className={styles.bubble}
-            style={{
-              backgroundColor:
-                game.currentPlayer === playerIndex ? "grey" : undefined,
-            }}
-          >
-            <h1>{p.userName}</h1>
-            {p.d === undefined ? (
-              game.currentPlayer !== playerIndex ? null : (
-                <SelectFaction />
-              )
-            ) : (
-              <div>
-                <div className={styles.bubble}>faction: {p.d.faction}</div>
-                <div style={{ display: "flex", alignItems: "flex-start" }}>
-                  <div className={styles.bubble}>
-                    <h5>storage:</h5>
-                    {utils.enumArray(Resource).map((r) => (
-                      <div>
-                        {Resource[r]}: {p.d!.storage[r]}
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.bubble}>
-                    <h5 title={JSON.stringify(income_arr)}>income:</h5>
-                    {utils.enumArray(Resource).map((r) => (
-                      <div>
-                        {Resource[r]}: {income_arr[p.d!.income[r]]}{" "}
-                        {p.d!.well[r] === 0 ? null : `(${p.d!.well[r]})`}
-                      </div>
-                    ))}
-                  </div>
-                  <div className={styles.bubble}>
-                    <h5 title={JSON.stringify(disc_cost_arr)}>discs:</h5>
-                    <div>{p.d!.usedDiscs} used</div>
-                    <div>{p.d!.remainingDiscs} remaining</div>
-                    <div>
-                      {
-                        disc_cost_arr[
-                          disc_cost_arr.length - p.d!.remainingDiscs
-                        ]
-                      }{" "}
-                      gold
+      {game.players
+        .map(
+          (_, i) => (i + game.players.length - myIndex) % game.players.length
+        )
+        .map((playerIndex) => ({ p: game.players[playerIndex], playerIndex }))
+        .map(({ p, playerIndex }) => (
+          <div key={p.userId}>
+            <div
+              className={styles.bubble}
+              style={{
+                backgroundColor:
+                  game.currentPlayer === playerIndex ? "grey" : undefined,
+              }}
+            >
+              <h1>{p.userName}</h1>
+              {p.d === undefined ? (
+                game.currentPlayer !== playerIndex ? null : (
+                  <SelectFaction />
+                )
+              ) : (
+                <div>
+                  <div className={styles.bubble}>faction: {p.d.faction}</div>
+                  <div style={{ display: "flex", alignItems: "flex-start" }}>
+                    <div className={styles.bubble}>
+                      <h5>storage:</h5>
+                      {utils.enumArray(Resource).map((r) => (
+                        <div>
+                          {Resource[r]}: {p.d!.storage[r]}
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                  <div className={styles.bubble}>
-                    <h5>military:</h5>
-                    <pre>
-                      {JSON.stringify(
-                        p.d.military ||
-                          [].map((m) =>
-                            utils.myIndex() === playerIndex ? m : "?"
-                          )
-                      )}
-                    </pre>
-                  </div>
-                  <div className={styles.bubble}>
-                    <h5>diamonds:</h5>
-                    <div>two points: {p.d.twoPointers}</div>
-                    {(p.d.diamondUpgrades || []).map((d) => (
-                      <div key={d} title={JSON.stringify(Upgrades[d])}>
-                        {d}
+                    <div className={styles.bubble}>
+                      <h5 title={JSON.stringify(income_arr)}>income:</h5>
+                      {utils.enumArray(Resource).map((r) => (
+                        <div>
+                          {Resource[r]}: {income_arr[p.d!.income[r]]}{" "}
+                          {p.d!.well[r] === 0 ? null : `(${p.d!.well[r]})`}
+                        </div>
+                      ))}
+                    </div>
+                    <div className={styles.bubble}>
+                      <h5 title={JSON.stringify(disc_cost_arr)}>discs:</h5>
+                      <div>{p.d!.usedDiscs} used</div>
+                      <div>{p.d!.remainingDiscs} remaining</div>
+                      <div>
+                        {
+                          disc_cost_arr[
+                            disc_cost_arr.length - p.d!.remainingDiscs
+                          ]
+                        }{" "}
+                        gold
                       </div>
-                    ))}
-                  </div>
-                </div>
-                <div className={styles.bubble} style={{ display: "block" }}>
-                  <h5>research:</h5>
-                  <table>
-                    <tbody>
-                      {utils
-                        .enumArray(Track)
-                        .filter((t) => t !== Track.black)
-                        .map((t) => (
-                          <tr key={t}>
-                            <td>{Track[t]}</td>
-                            {p
-                              .d!.research.filter(({ track }) => track === t)
-                              .map(({ science }) => (
-                                <td key={science} className={styles.bubble}>
-                                  {science}
-                                </td>
-                              ))}
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div style={{ display: "flex", alignItems: "flex-start" }}>
-                  {utils.enumArray(Ship).map((s) => (
-                    <div key={s} className={styles.bubble}>
-                      <h5
-                        title={JSON.stringify(
-                          p.d!.ships[s].builtIn || {},
-                          null,
-                          2
+                    </div>
+                    <div className={styles.bubble}>
+                      <h5>military:</h5>
+                      <pre>
+                        {JSON.stringify(
+                          p.d.military ||
+                            [].map((m) =>
+                              utils.myIndex() === playerIndex ? m : "?"
+                            )
                         )}
-                      >
-                        {Ship[s]}
-                      </h5>
-                      <div>
-                        {p.d!.ships[s].upgrades.map((u, i) => (
-                          <div
-                            key={i}
-                            title={JSON.stringify(Upgrades[u], null, 2)}
-                          >
-                            {u}
-                          </div>
-                        ))}
-                      </div>
+                      </pre>
                     </div>
-                  ))}
+                    <div className={styles.bubble}>
+                      <h5>diamonds:</h5>
+                      <div>two points: {p.d.twoPointers}</div>
+                      {(p.d.diamondUpgrades || []).map((d) => (
+                        <div key={d} title={JSON.stringify(Upgrades[d])}>
+                          {d}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.bubble} style={{ display: "block" }}>
+                    <h5>research:</h5>
+                    <table>
+                      <tbody>
+                        {utils
+                          .enumArray(Track)
+                          .filter((t) => t !== Track.black)
+                          .map((t) => (
+                            <tr key={t}>
+                              <td>{Track[t]}</td>
+                              {p
+                                .d!.research.filter(({ track }) => track === t)
+                                .map(({ science }) => (
+                                  <td key={science} className={styles.bubble}>
+                                    {science}
+                                  </td>
+                                ))}
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "flex-start" }}>
+                    {utils.enumArray(Ship).map((s) => (
+                      <div key={s} className={styles.bubble}>
+                        <h5
+                          title={JSON.stringify(
+                            p.d!.ships[s].builtIn || {},
+                            null,
+                            2
+                          )}
+                        >
+                          {Ship[s]}
+                        </h5>
+                        <div>
+                          {p.d!.ships[s].upgrades.map((u, i) => (
+                            <div
+                              key={i}
+                              title={JSON.stringify(Upgrades[u], null, 2)}
+                            >
+                              {u}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 }
