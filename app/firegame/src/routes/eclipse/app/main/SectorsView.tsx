@@ -1,6 +1,6 @@
 import styles from "../../../../shared/styles.module.css";
-import { Rank } from "../utils/gameTypes";
-import { Tiles } from "../utils/library";
+import { Rank, Resource, Ship } from "../utils/gameTypes";
+import { Factions, Tiles, Token } from "../utils/library";
 import utils, { store } from "../utils/utils";
 
 export default function SectorsView() {
@@ -16,9 +16,15 @@ export default function SectorsView() {
         { max: Math.max(...values), min: Math.min(...values) },
       ])
   );
-  const radius = 8;
+  const radius = 12;
   return (
-    <div style={{ display: "flex", alignItems: "flex-start" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        fontSize: "x-small",
+      }}
+    >
       <div className={styles.bubble}>
         <div
           style={{
@@ -49,7 +55,8 @@ export default function SectorsView() {
                 style={{
                   height: "100%",
                   width: "100%",
-                  backgroundColor: "#3498db",
+                  backgroundColor:
+                    Factions[sector.faction || ""]?.color || "lightgrey",
                   clipPath: `polygon(${utils
                     .count(6)
                     .map((i) => (i * 2 * Math.PI) / 6)
@@ -97,7 +104,49 @@ export default function SectorsView() {
                 }}
               >
                 <div>
-                  {sector.tile}x{sector.x}y{sector.y}
+                  #{sector.tile}
+                  {sector.tokens?.includes(Token.monolith) ? (
+                    <div>monolith</div>
+                  ) : null}
+                  {(sector.colonists || []).map((obj, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        filter: "grayscale(100%)",
+                      }}
+                    >
+                      {obj.active ? "✅" : "❌"}
+                      {obj.advanced ? "🔥 " : ""}
+                      {obj.resource === undefined
+                        ? "<synthesis>"
+                        : Resource[obj.resource]}{" "}
+                    </div>
+                  ))}
+                  {sector.faction === undefined ? (
+                    <div>
+                      {(sector.units || []).map((u, i) => (
+                        <div key={i}>
+                          {
+                            {
+                              [Ship.cruiser]: "guardian",
+                              [Ship.interceptor]: "ancient",
+                              [Ship.dreadnought]: "death_star",
+                              [Ship.starbase]: "starbase",
+                            }[u.ship]
+                          }
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      <div>faction: {sector.faction}</div>
+                      {(sector.units || []).map((u, i) => (
+                        <div key={i}>
+                          {u.faction} {Ship[u.ship]}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

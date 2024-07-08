@@ -41,7 +41,12 @@ export default function PlayersView(props: {
                 )
               ) : (
                 <div>
-                  <div className={styles.bubble}>faction: {p.d.faction}</div>
+                  <div
+                    className={styles.bubble}
+                    style={{ backgroundColor: Factions[p.d.faction].color }}
+                  >
+                    faction: {p.d.faction}
+                  </div>
                   <div style={{ display: "flex", alignItems: "flex-start" }}>
                     <div className={styles.bubble}>
                       <h5>storage:</h5>

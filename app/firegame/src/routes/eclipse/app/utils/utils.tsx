@@ -129,6 +129,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         ship,
       })),
       tokens: [],
+      colonists: Tiles[tile].colonies.map((obj) => ({ ...obj, active: false })),
     };
   }
 
@@ -170,12 +171,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       const game = store.gameW.game;
       game.sectors.push({
         faction,
-        units: [
-          {
-            faction,
-            ship: faction === "black" ? Ship.cruiser : Ship.interceptor,
-          },
-        ],
         ...utils.buildStartingSector(
           obj.tile,
           utils.getPlayerStartingOrientation(
@@ -183,6 +178,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             game.players.length
           )
         ),
+        units: [
+          {
+            faction,
+            ship: faction === "black" ? Ship.cruiser : Ship.interceptor,
+          },
+        ],
       });
       if (game.currentPlayer === 0) {
         game.action = { action: Action.turn };

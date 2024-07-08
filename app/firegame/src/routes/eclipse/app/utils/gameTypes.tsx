@@ -18,6 +18,9 @@ export type Sector = {
   y: number;
   units?: { faction?: Faction; ship: Ship }[];
   tokens?: Token[];
+  colonists:
+    | { resource?: Resource; advanced?: boolean; active: boolean }[]
+    | undefined;
 };
 
 export enum Track {
