@@ -26,10 +26,12 @@ export default function ResearchView(props: { track: Track }) {
                       t === obj.track && (t !== Track.black || obj.count > 0)
                   )
                   .map((obj) => (
-                    <td key={obj.science} title={JSON.stringify(obj)}>
+                    <td key={obj.science} title={JSON.stringify(obj, null, 2)}>
                       {obj.count === 0 ? null : (
                         <div
+                          className={styles.bubble}
                           style={{
+                            margin: 0,
                             cursor: utils.research(
                               false,
                               obj.science,

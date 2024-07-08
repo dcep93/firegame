@@ -1,5 +1,5 @@
 import styles from "../../../../shared/styles.module.css";
-import { Diamonds, Upgrade, Upgrades } from "../utils/library";
+import { Diamonds, Sciences, Upgrade, Upgrades } from "../utils/library";
 
 export default function UpgradesView(props: {
   updateUpgrade: (upgrade: Upgrade) => void;
@@ -16,6 +16,7 @@ export default function UpgradesView(props: {
             <div
               key={upgrade}
               className={styles.bubble}
+              title={JSON.stringify(Sciences[upgrade], null, 2)}
               onClick={() => props.updateUpgrade(upgrade)}
             >
               <div>{upgrade}</div>

@@ -105,7 +105,11 @@ export default function PlayersView(props: {
                               {p
                                 .d!.research.filter(({ track }) => track === t)
                                 .map(({ science }) => (
-                                  <td key={science} className={styles.bubble}>
+                                  <td
+                                    key={science}
+                                    className={styles.bubble}
+                                    style={{ margin: 0 }}
+                                  >
                                     {science}
                                   </td>
                                 ))}
