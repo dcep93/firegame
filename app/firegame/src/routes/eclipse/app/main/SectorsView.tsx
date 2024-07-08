@@ -101,20 +101,24 @@ export default function SectorsView() {
               <div
                 style={{
                   position: "absolute",
+                  filter: "grayscale(100%)",
                 }}
               >
                 <div>
-                  #{sector.tile}
-                  {sector.tokens?.includes(Token.monolith) ? (
-                    <div>monolith</div>
-                  ) : null}
+                  <div>
+                    #{sector.tile} ({Tiles[sector.tile].points}){" "}
+                    {Tiles[sector.tile].artifact ? "⭐" : ""}
+                  </div>
+                  {!Tiles[sector.tile].warp_portal ? null : (
+                    <div>warp_portal</div>
+                  )}
+                  {(sector.tokens || [])
+                    .filter((t) => t !== Token.orbital)
+                    .map((t, i) => (
+                      <div key={i}>{Token[t]}</div>
+                    ))}
                   {(sector.colonists || []).map((obj, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        filter: "grayscale(100%)",
-                      }}
-                    >
+                    <div key={i}>
                       {obj.active ? "✅" : "❌"}
                       {obj.advanced ? "🔥 " : ""}
                       {obj.resource === undefined
