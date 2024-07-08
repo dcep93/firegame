@@ -15,45 +15,47 @@ export default function ActionView() {
           </div>
         )}
       </div>
-      <div>
-        {utils
-          .enumArray(Action)
-          .filter((a) => a !== Action.selectFaction && a !== Action.turn)
-          .filter(
-            (a) =>
-              !utils.getCurrent().d!.reaction ||
-              [
-                Action._pass,
-                Action.build,
-                Action.move,
-                Action.upgrade,
-              ].includes(a)
-          )
-          .map((action) => (
-            <div
-              key={action}
-              className={styles.bubble}
-              style={{
-                cursor: utils.isMyTurn() ? "pointer" : undefined,
-                backgroundColor:
-                  store.gameW.game.action.action === action
-                    ? "grey"
-                    : undefined,
-              }}
-              onClick={() => {
-                if (!utils.isMyTurn()) return;
-                if (store.gameW.game.action.action !== Action.turn) return;
-                if (action === Action._pass) return utils.pass();
-                utils.getMe().d!.passed = false;
-                utils.getMe().d!.remainingDiscs--;
-                game.action = { action };
-                store.update(`action: ${Action[action]}`);
-              }}
-            >
-              {Action[action]}
-            </div>
-          ))}
-      </div>
+      {game.year === 0 ? null : (
+        <div>
+          {utils
+            .enumArray(Action)
+            .filter((a) => a !== Action.selectFaction && a !== Action.turn)
+            .filter(
+              (a) =>
+                !utils.getCurrent().d!.reaction ||
+                [
+                  Action._pass,
+                  Action.build,
+                  Action.move,
+                  Action.upgrade,
+                ].includes(a)
+            )
+            .map((action) => (
+              <div
+                key={action}
+                className={styles.bubble}
+                style={{
+                  cursor: utils.isMyTurn() ? "pointer" : undefined,
+                  backgroundColor:
+                    store.gameW.game.action.action === action
+                      ? "grey"
+                      : undefined,
+                }}
+                onClick={() => {
+                  if (!utils.isMyTurn()) return;
+                  if (store.gameW.game.action.action !== Action.turn) return;
+                  if (action === Action._pass) return utils.pass();
+                  utils.getMe().d!.passed = false;
+                  utils.getMe().d!.remainingDiscs--;
+                  game.action = { action };
+                  store.update(`action: ${Action[action]}`);
+                }}
+              >
+                {Action[action]}
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 }

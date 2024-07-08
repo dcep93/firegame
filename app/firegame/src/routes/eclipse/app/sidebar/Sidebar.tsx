@@ -6,6 +6,8 @@ class Sidebar extends SharedSidebar<Params> {
   name = "Eclipse";
   NewGame = NewGame;
   utils = utils;
+  rules =
+    "https://cdn.1j1ju.com/medias/bb/af/07-eclipse-second-dawn-for-the-galaxy-rulebook.pdf";
 
   getParams(): Params {
     return { lobby: store.lobby, randomStarting: true };

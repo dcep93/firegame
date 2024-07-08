@@ -149,6 +149,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (store.gameW.game.startingPlayer === -1) {
       store.gameW.game.startingPlayer = utils.myIndex();
       utils.getMe().d!.resources[Resource.gold] += 2;
+    } else if (
+      store.gameW.game.players.find((p) => !p.d!.passed) === undefined
+    ) {
+      alert("end of year");
+    } else {
+      utils.incrementPlayerTurn();
     }
     store.update("passed");
   }
