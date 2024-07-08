@@ -1,9 +1,11 @@
+import { useState } from "react";
 import styles from "../../../../shared/styles.module.css";
 import { Resource, Sector, Ship } from "../utils/gameTypes";
 import { Factions, Tiles, Token } from "../utils/library";
-import utils from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 export default function SectorView(props: { sector: Sector; radius: number }) {
+  const [rotate, updateRotate] = useState(0);
   const { sector, radius } = props;
   return (
     <div
@@ -34,7 +36,7 @@ export default function SectorView(props: { sector: Sector; radius: number }) {
         }}
       ></div>
       {Tiles[sector.tile].portals
-        .map((portal) => portal + sector.orientation)
+        .map((portal) => portal + sector.orientation + rotate)
         .map((orientation) => (
           <div
             key={orientation}
@@ -49,10 +51,11 @@ export default function SectorView(props: { sector: Sector; radius: number }) {
             <div
               onClick={() => utils.explorePortal(true, sector, orientation)}
               style={{
-                cursor:
-                  true || utils.explorePortal(false, sector, orientation)
-                    ? "pointer"
-                    : undefined,
+                position: "absolute",
+                top: "0.5em",
+                cursor: utils.explorePortal(false, sector, orientation)
+                  ? "pointer"
+                  : "default",
               }}
             >
               {"o"}
@@ -69,6 +72,18 @@ export default function SectorView(props: { sector: Sector; radius: number }) {
         }}
       >
         <div style={{ display: "inline-block" }}>
+          {store.gameW.game.action.state?.tile !== sector.tile ? null : (
+            <div>
+              <button onClick={() => updateRotate(rotate + 1)}>↻</button>
+              <button
+                disabled={!utils.finishExplore(false, rotate)}
+                onClick={() => utils.finishExplore(true, rotate)}
+              >
+                ☑
+              </button>
+              <button onClick={() => utils.finishExplore(true, null)}>x</button>
+            </div>
+          )}
           <div>
             #{sector.tile} ({Tiles[sector.tile].points}){" "}
             {Tiles[sector.tile].artifact ? "★" : ""}

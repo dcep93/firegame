@@ -251,8 +251,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) return false;
     const game = store.gameW.game;
     if (game.action.action !== Action.explore) return false;
+    if (game.action.state?.tile !== undefined) return false;
     const state = {
-      orientation,
+      orientation: 0,
       x:
         sector.x +
         Math.round((Math.sin((Math.PI * orientation) / 3) * 2) / Math.sqrt(3)),
@@ -262,10 +263,38 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .map((v) => Math.pow(v, 2))
       .sum();
     const rank = d < 1 ? Rank.i : d < 4 ? Rank.ii : Rank.iii;
+    const tile = (game.tiles[rank] || []).pop();
+    if (tile === undefined) return false;
     if (execute) {
+      game.sectors.push(utils.buildSector(tile, state));
+      game.action.state = Object.assign({ tile }, game.action.state);
       store.update(`explored rank ${Rank[rank]}`);
     }
     return true;
+  }
+
+  finishExplore(execute: boolean, rotate: number | null): boolean {
+    const tile = store.gameW.game.action.state!.tile;
+    if (execute) {
+      if (
+        utils.getMe().d!.faction === "green" &&
+        !store.gameW.game.action.state!.greenExplored
+      ) {
+        store.gameW.game.action.state!.greenExplored = true;
+      } else {
+        store.gameW.game.action = { action: Action.turn };
+        utils.incrementPlayerTurn();
+      }
+      if (rotate === null) {
+        store.update("discarded the tile");
+      } else {
+        store.gameW.game.sectors.find(
+          (sector) => sector.tile === tile
+        )!.orientation = rotate;
+        store.update("placed the tile");
+      }
+    }
+    return false;
   }
 
   move(

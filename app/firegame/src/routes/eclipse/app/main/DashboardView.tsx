@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import styles from "../../../../shared/styles.module.css";
 import { Action, Ship } from "../utils/gameTypes";
 import utils, { store } from "../utils/utils";
@@ -10,6 +10,7 @@ export default function DashboardView(props: {
   switch (game.action.action) {
     case Action.selectFaction:
     case Action.turn:
+    case Action.explore:
       return null;
     case Action.build:
       return props.sectorIndex === -1 ? null : (
@@ -32,8 +33,6 @@ export default function DashboardView(props: {
           ))}
         </div>
       );
-    case Action.explore:
-      return game.action.state?.tile === undefined ? null : <ActionExplore />;
     case Action.influence:
     case Action.move:
     case Action.research:
@@ -41,9 +40,4 @@ export default function DashboardView(props: {
     case Action._pass:
       return <></>;
   }
-}
-
-function ActionExplore() {
-  const [orientation, updateOrientation] = useState(0);
-  return <div></div>;
 }
