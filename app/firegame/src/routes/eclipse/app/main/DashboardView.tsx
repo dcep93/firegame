@@ -10,7 +10,9 @@ export default function DashboardView() {
         action: {Action[game.action.action]}
       </div>
       <div>year: {game.year} / 8</div>
-      <div>starting player: {game.players[game.startingPlayer].userName}</div>
+      {game.startingPlayer === -1 ? null : (
+        <div>starting player: {game.players[game.startingPlayer].userName}</div>
+      )}
     </div>
   );
 }

@@ -264,7 +264,7 @@ const RawFactions = {
       },
     },
   },
-  white: {
+  pinknwhite: {
     color: "#E88FE8",
     tile: "230" as Tile,
     tileData: {

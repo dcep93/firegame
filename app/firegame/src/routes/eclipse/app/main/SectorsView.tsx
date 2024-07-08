@@ -102,9 +102,12 @@ export default function SectorsView() {
                 style={{
                   position: "absolute",
                   filter: "grayscale(100%)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                 }}
               >
-                <div>
+                <div style={{ display: "inline-block" }}>
                   <div>
                     #{sector.tile} ({Tiles[sector.tile].points}){" "}
                     {Tiles[sector.tile].artifact ? "★" : ""}
@@ -126,6 +129,8 @@ export default function SectorsView() {
                         : Resource[obj.resource]}{" "}
                     </div>
                   ))}
+                </div>
+                <div>
                   {sector.faction === undefined ? (
                     <div>
                       {(sector.units || []).map((u, i) => (

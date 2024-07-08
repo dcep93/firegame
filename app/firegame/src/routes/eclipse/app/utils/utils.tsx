@@ -185,7 +185,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           },
         ],
       });
-      if (game.currentPlayer === 0) {
+      if (game.currentPlayer === game.startingPlayer) {
+        game.startingPlayer = -1;
         game.action = { action: Action.turn };
       } else {
         game.currentPlayer--;
