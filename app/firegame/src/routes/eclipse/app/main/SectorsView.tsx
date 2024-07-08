@@ -22,7 +22,6 @@ export default function SectorsView() {
       style={{
         display: "flex",
         alignItems: "flex-start",
-        fontSize: "x-small",
       }}
     >
       <div className={styles.bubble}>
@@ -33,6 +32,7 @@ export default function SectorsView() {
             }em`,
             width: `${(stats.x.max - stats.x.min + 4 / 3) * 1.5 * radius}em`,
             position: "relative",
+            fontSize: "x-small",
           }}
         >
           {game.sectors.map((sector) => (
@@ -107,7 +107,7 @@ export default function SectorsView() {
                 <div>
                   <div>
                     #{sector.tile} ({Tiles[sector.tile].points}){" "}
-                    {Tiles[sector.tile].artifact ? "⭐" : ""}
+                    {Tiles[sector.tile].artifact ? "★" : ""}
                   </div>
                   {!Tiles[sector.tile].warp_portal ? null : (
                     <div>warp_portal</div>
@@ -119,7 +119,7 @@ export default function SectorsView() {
                     ))}
                   {(sector.colonists || []).map((obj, i) => (
                     <div key={i}>
-                      {obj.active ? "✅" : "❌"}
+                      {obj.active ? "☑" : "□"}
                       {obj.advanced ? "🔥 " : ""}
                       {obj.resource === undefined
                         ? "<synthesis>"
@@ -130,14 +130,16 @@ export default function SectorsView() {
                     <div>
                       {(sector.units || []).map((u, i) => (
                         <div key={i}>
-                          {
+                          <div className={styles.bubble}>
                             {
-                              [Ship.cruiser]: "guardian",
-                              [Ship.interceptor]: "ancient",
-                              [Ship.dreadnought]: "death_star",
-                              [Ship.starbase]: "starbase",
-                            }[u.ship]
-                          }
+                              {
+                                [Ship.cruiser]: "guardian",
+                                [Ship.interceptor]: "ancient",
+                                [Ship.dreadnought]: "death_star",
+                                [Ship.starbase]: "starbase",
+                              }[u.ship]
+                            }
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -146,7 +148,9 @@ export default function SectorsView() {
                       <div>faction: {sector.faction}</div>
                       {(sector.units || []).map((u, i) => (
                         <div key={i}>
-                          {u.faction} {Ship[u.ship]}
+                          <div className={styles.bubble}>
+                            {u.faction} {Ship[u.ship]}
+                          </div>
                         </div>
                       ))}
                     </div>
