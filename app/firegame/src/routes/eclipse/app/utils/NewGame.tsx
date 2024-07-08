@@ -30,8 +30,10 @@ export type PlayerType = {
 
   d?: {
     faction: Faction;
+    reaction: boolean;
+    passed: boolean;
     ships: ShipData;
-    storage: Resources;
+    resources: Resources;
     income: Resources;
     well: Resources;
     remainingDiscs: number;

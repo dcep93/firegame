@@ -52,7 +52,7 @@ export default function PlayersView(props: {
                       <h5>storage:</h5>
                       {utils.enumArray(Resource).map((r) => (
                         <div key={r}>
-                          {Resource[r]}: {p.d!.storage[r]}
+                          {Resource[r]}: {p.d!.resources[r]}
                         </div>
                       ))}
                     </div>

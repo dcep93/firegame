@@ -22,6 +22,9 @@ const store: StoreType<GameType> = store_;
 class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(params: Params): GameType {
     const numPlayers = Object.keys(params.lobby).length;
+    if (numPlayers < 2 || numPlayers > 6) {
+      throw Error("numPlayers");
+    }
     const game: GameType = {
       params,
       currentPlayer: numPlayers - 1,
@@ -140,6 +143,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return Math.ceil((playerIndex * 6) / numPlayers);
   }
 
+  pass(): void {
+    utils.getMe().d!.passed = true;
+    utils.getMe().d!.reaction = true;
+    if (store.gameW.game.startingPlayer === -1) {
+      store.gameW.game.startingPlayer = utils.myIndex();
+      utils.getMe().d!.resources[Resource.gold] += 2;
+    }
+    store.update("passed");
+  }
+
   // execute
 
   selectFaction(execute: boolean, faction: Faction): boolean {
@@ -148,8 +161,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       const obj = Factions[faction];
       utils.getMe().d = {
         faction,
+        reaction: false,
+        passed: false,
         ships: obj.ships,
-        storage: obj.storage,
+        resources: obj.storage,
         income: {
           [Resource.materials]: 0,
           [Resource.science]: 0,
@@ -209,9 +224,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const obj = Sciences[science];
     if (obj.track !== Track.black && obj.track !== track) return false;
     const cost = Math.max(obj.cost - researched, obj.floor);
-    if (utils.getMe().d!.storage[Resource.science] < cost) return false;
+    if (utils.getMe().d!.resources[Resource.science] < cost) return false;
     if (execute) {
-      utils.getMe().d!.storage[Resource.science] -= cost;
+      utils.getMe().d!.resources[Resource.science] -= cost;
       utils.getMe().d!.research.push({ track, science });
       game.buyableSciences.splice(
         game.buyableSciences.findIndex((s) => s === science),
@@ -332,9 +347,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       [Ship.dreadnought]: 8,
       [Ship.starbase]: 3,
     }[ship];
-    if (myD.storage[Resource.materials] < cost) return false;
+    if (myD.resources[Resource.materials] < cost) return false;
     if (execute) {
-      myD.storage[Resource.materials] -= cost;
+      myD.resources[Resource.materials] -= cost;
       sector.units = (sector.units || []).concat({
         faction: myD.faction,
         ship,
@@ -354,9 +369,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       [Token.monolith]: 10,
       [Token.warp_portal]: 0,
     }[token];
-    if (myD.storage[Resource.materials] < cost) return false;
+    if (myD.resources[Resource.materials] < cost) return false;
     if (execute) {
-      myD.storage[Resource.materials] -= cost;
+      myD.resources[Resource.materials] -= cost;
       sector.tokens = (sector.tokens || []).concat(token);
       store.update(`built ${token}`);
     }
