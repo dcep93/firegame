@@ -26,7 +26,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       params,
       currentPlayer: numPlayers - 1,
 
-      year: 1,
+      year: 0,
       action: { action: Action.selectFaction },
       startingPlayer: 0,
       players: [],
@@ -187,6 +187,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       });
       if (game.currentPlayer === game.startingPlayer) {
         game.startingPlayer = -1;
+        game.year = 1;
         game.action = { action: Action.turn };
       } else {
         game.currentPlayer--;

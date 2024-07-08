@@ -46,6 +46,7 @@ export enum Action {
   upgrade,
   research,
   influence,
+  _pass,
 }
 
 export enum Ship {

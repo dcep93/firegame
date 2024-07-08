@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Track } from "../utils/gameTypes";
+import { Action, Track } from "../utils/gameTypes";
 import { Upgrade } from "../utils/library";
-import utils, { store } from "../utils/utils";
+import { store } from "../utils/utils";
+import ActionView from "./ActionView";
 import DashboardView from "./DashboardView";
 import PlayersView from "./PlayersView";
 import ResearchView from "./ResearchView";
@@ -18,12 +19,12 @@ export default function Main() {
   const [state, updateState] = useState(initialState);
   const game = store.gameW.game;
   useEffect(() => {
-    if (utils.isMyTurn()) return;
-    updateState(initialState);
+    if (game.action.action === Action.turn) updateState(initialState);
   }, [game]);
   return (
     <div style={{ overflow: "scroll" }}>
-      <DashboardView selectedSector={state.sectorIndex} />
+      <ActionView />
+      <DashboardView sectorIndex={state.sectorIndex} />
       <PlayersView
         updateTrack={(track) =>
           updateState(Object.assign({}, null, state, { track }))
