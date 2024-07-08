@@ -35,7 +35,7 @@ export type PlayerType = {
     income: Resources;
     well: Resources;
     remainingDiscs: number;
-    usedDiscs: number;
+    totalDiscs: number;
     research: { science: Science; track: Track }[];
     twoPointers: number;
     diamondUpgrades?: Diamond[];

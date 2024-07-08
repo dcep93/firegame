@@ -161,7 +161,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           [Resource.gold]: 0,
         },
         remainingDiscs: 12,
-        usedDiscs: 0,
+        totalDiscs: 12,
         research: obj.research.map((science) => ({
           science,
           track: Sciences[science].track,

@@ -67,7 +67,7 @@ export default function PlayersView(props: {
                     </div>
                     <div className={styles.bubble}>
                       <h5 title={JSON.stringify(disc_cost_arr)}>discs:</h5>
-                      <div>{p.d!.usedDiscs} used</div>
+                      <div>{p.d!.totalDiscs - p.d!.remainingDiscs} used</div>
                       <div>{p.d!.remainingDiscs} remaining</div>
                       <div>
                         {

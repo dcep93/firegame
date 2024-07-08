@@ -32,6 +32,8 @@ export default function ActionView() {
               }}
               onClick={() => {
                 if (!utils.isMyTurn()) return;
+                if (store.gameW.game.action.action !== Action.turn) return;
+                utils.getMe().d!.remainingDiscs--;
                 game.action = { action };
                 store.update(`action: ${Action[action]}`);
               }}
