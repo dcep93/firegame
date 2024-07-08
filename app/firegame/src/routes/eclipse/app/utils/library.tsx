@@ -5,6 +5,7 @@ export const income_arr = [2, 3, 4, 6, 8, 10, 12, 15, 18, 21, 24, 28];
 
 const RawFactions = {
   red: {
+    color: "#F42948",
     tile: "222" as Tile,
     tileData: {
       rank: Rank.special,
@@ -71,6 +72,7 @@ const RawFactions = {
     },
   },
   blue: {
+    color: "lightblue",
     tile: "224" as Tile,
     tileData: {
       rank: Rank.special,
@@ -136,6 +138,7 @@ const RawFactions = {
     },
   },
   green: {
+    color: "lightgreen",
     tile: "226" as Tile,
     tileData: {
       rank: Rank.special,
@@ -196,6 +199,7 @@ const RawFactions = {
     },
   },
   yellow: {
+    color: "yellow",
     tile: "228" as Tile,
     tileData: {
       rank: Rank.special,
@@ -261,6 +265,7 @@ const RawFactions = {
     },
   },
   white: {
+    color: "#E88FE8",
     tile: "230" as Tile,
     tileData: {
       rank: Rank.special,
@@ -327,6 +332,7 @@ const RawFactions = {
     },
   },
   black: {
+    color: "orange",
     tile: "232" as Tile,
     tileData: {
       rank: Rank.special,
@@ -399,6 +405,7 @@ export type ShipData = {
 };
 export const Factions: {
   [key: string]: {
+    color: string;
     tile: Tile;
     tileData: TileData;
     storage: Resources;

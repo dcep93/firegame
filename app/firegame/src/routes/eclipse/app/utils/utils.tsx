@@ -168,15 +168,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         twoPointers: 0,
       };
       const game = store.gameW.game;
-      game.sectors.push(
-        utils.buildStartingSector(
+      game.sectors.push({
+        faction,
+        units: [
+          {
+            faction,
+            ship: faction === "black" ? Ship.cruiser : Ship.interceptor,
+          },
+        ],
+        ...utils.buildStartingSector(
           obj.tile,
           utils.getPlayerStartingOrientation(
             utils.myIndex(),
             game.players.length
           )
-        )
-      );
+        ),
+      });
       if (game.currentPlayer === 0) {
         game.action = { action: Action.turn };
       } else {

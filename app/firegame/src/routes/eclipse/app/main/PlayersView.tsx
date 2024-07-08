@@ -29,7 +29,9 @@ export default function PlayersView(props: {
               className={styles.bubble}
               style={{
                 backgroundColor:
-                  game.currentPlayer === playerIndex ? "grey" : undefined,
+                  p.d !== undefined && game.currentPlayer === playerIndex
+                    ? "grey"
+                    : undefined,
               }}
             >
               <h1>{p.userName}</h1>
@@ -169,6 +171,7 @@ function SelectFaction() {
           <div
             key={obj.faction}
             style={{
+              backgroundColor: Factions[obj.faction].color,
               cursor: utils.selectFaction(false, obj.faction)
                 ? "pointer"
                 : undefined,

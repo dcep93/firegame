@@ -12,6 +12,7 @@ export type Resources = {
 
 export type Sector = {
   tile: Tile;
+  faction?: Faction;
   orientation: number;
   x: number;
   y: number;
