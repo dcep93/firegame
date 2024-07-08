@@ -1,13 +1,15 @@
 import { ReactElement } from "react";
 import styles from "../../../../shared/styles.module.css";
-import { Action } from "../utils/gameTypes";
+import { Action, Ship } from "../utils/gameTypes";
 import utils, { store } from "../utils/utils";
 
-export default function DashboardView(): ReactElement {
+export default function DashboardView(props: {
+  selectedSector: number;
+}): ReactElement | null {
   const game = store.gameW.game;
   switch (game.action.action) {
     case Action.selectFaction:
-      return <></>;
+      return null;
     case Action.turn:
       return (
         <div>
@@ -42,6 +44,30 @@ export default function DashboardView(): ReactElement {
         </div>
       );
     case Action.build:
+      return props.selectedSector === -1 ? null : (
+        <div>
+          {utils.enumArray(Ship).map((s) => (
+            <div
+              key={s}
+              className={styles.bubble}
+              style={{
+                cursor: utils.build(
+                  false,
+                  s,
+                  game.sectors[props.selectedSector]
+                )
+                  ? "pointer"
+                  : undefined,
+              }}
+              onClick={() =>
+                utils.build(true, s, game.sectors[props.selectedSector])
+              }
+            >
+              {Ship[s]}
+            </div>
+          ))}
+        </div>
+      );
     case Action.explore:
     case Action.influence:
     case Action.move:

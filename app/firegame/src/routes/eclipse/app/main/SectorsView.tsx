@@ -3,7 +3,9 @@ import { Rank, Resource, Ship } from "../utils/gameTypes";
 import { Factions, Tiles, Token } from "../utils/library";
 import utils, { store } from "../utils/utils";
 
-export default function SectorsView() {
+export default function SectorsView(props: {
+  updateSectorIndex: (sectorIndex: number) => void;
+}) {
   const game = store.gameW.game;
   const stats = Object.fromEntries(
     (["x", "y"] as ("x" | "y")[])

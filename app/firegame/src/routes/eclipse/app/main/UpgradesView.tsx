@@ -1,5 +1,7 @@
 import styles from "../../../../shared/styles.module.css";
+import { Action } from "../utils/gameTypes";
 import { Diamonds, Sciences, Upgrade, Upgrades } from "../utils/library";
+import utils, { store } from "../utils/utils";
 
 export default function UpgradesView(props: {
   updateUpgrade: (upgrade: Upgrade) => void;
@@ -17,7 +19,11 @@ export default function UpgradesView(props: {
               key={upgrade}
               className={styles.bubble}
               title={JSON.stringify(Sciences[upgrade], null, 2)}
-              onClick={() => props.updateUpgrade(upgrade)}
+              onClick={() =>
+                utils.isMyTurn() &&
+                store.gameW.game.action.action === Action.upgrade &&
+                props.updateUpgrade(upgrade)
+              }
             >
               <div>{upgrade}</div>
               <div>{JSON.stringify(Upgrades[upgrade])}</div>

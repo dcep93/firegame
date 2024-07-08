@@ -11,8 +11,8 @@ import {
 import utils, { store } from "../utils/utils";
 
 export default function PlayersView(props: {
-  upgrade: Upgrade | null;
   updateTrack: (track: Track) => void;
+  upgrade: Upgrade;
 }) {
   const game = store.gameW.game;
   const myIndex = utils.getMe() ? utils.myIndex() : 0;
