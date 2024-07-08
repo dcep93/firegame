@@ -8,6 +8,12 @@ export default function ResearchView(props: { track: Track }) {
   return (
     <div>
       <div className={styles.bubble}>
+        <div>year: {game.year} / 8</div>
+        {game.startingPlayer === -1 ? null : (
+          <div>
+            starting player: {game.players[game.startingPlayer].userName}
+          </div>
+        )}
         <h5>research:</h5>
         <table>
           <tbody>
