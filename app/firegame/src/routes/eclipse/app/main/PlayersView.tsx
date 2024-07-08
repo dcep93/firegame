@@ -44,7 +44,7 @@ export default function PlayersView(props: {
                     <div className={styles.bubble}>
                       <h5>storage:</h5>
                       {utils.enumArray(Resource).map((r) => (
-                        <div>
+                        <div key={r}>
                           {Resource[r]}: {p.d!.storage[r]}
                         </div>
                       ))}
@@ -52,7 +52,7 @@ export default function PlayersView(props: {
                     <div className={styles.bubble}>
                       <h5 title={JSON.stringify(income_arr)}>income:</h5>
                       {utils.enumArray(Resource).map((r) => (
-                        <div>
+                        <div key={r}>
                           {Resource[r]}: {income_arr[p.d!.income[r]]}{" "}
                           {p.d!.well[r] === 0 ? null : `(${p.d!.well[r]})`}
                         </div>
