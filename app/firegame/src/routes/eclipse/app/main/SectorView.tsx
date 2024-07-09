@@ -74,13 +74,13 @@ export default function SectorView(props: { sector: Sector; radius: number }) {
         <div style={{ display: "inline-block" }}>
           {store.gameW.game.action.state?.tile !== sector.tile ? null : (
             <div>
-              <button onClick={() => updateRotate(rotate + 1)}>↻</button>
               <button
                 disabled={!utils.finishExplore(false, rotate)}
                 onClick={() => utils.finishExplore(true, rotate)}
               >
                 ☑
               </button>
+              <button onClick={() => updateRotate(rotate + 1)}>↻</button>
               <button onClick={() => utils.finishExplore(true, null)}>x</button>
             </div>
           )}

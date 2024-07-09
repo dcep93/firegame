@@ -263,9 +263,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .map((v) => Math.pow(v, 2))
       .sum();
     const rank = d < 1 ? Rank.i : d < 4 ? Rank.ii : Rank.iii;
-    const tile = (game.tiles[rank] || []).pop();
-    if (tile === undefined) return false;
+    if (game.tiles[rank] === undefined) return false;
     if (execute) {
+      const tile = game.tiles[rank]!.pop()!;
       game.sectors.push(utils.buildSector(tile, state));
       game.action.state = Object.assign({ tile }, game.action.state);
       store.update(`explored rank ${Rank[rank]}`);
