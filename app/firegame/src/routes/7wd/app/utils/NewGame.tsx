@@ -35,7 +35,9 @@ function setBoard(game: GameType): GameType {
 
 function setPlayers(game: GameType): GameType {
   game.players = Object.entries(store.lobby)
-    .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
+    .sort((a, b) =>
+      game.params.randomStarting || b[0] === store.me.userId ? 1 : -1
+    )
     .map(([userId, userName], index) => ({
       userId,
       userName,

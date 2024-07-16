@@ -7,6 +7,7 @@ import utils, { store } from "../utils/utils";
 
 class Sidebar extends SharedSidebar<Params> {
   expansionRef: RefObject<HTMLInputElement> = React.createRef();
+  randomStartingRef: RefObject<HTMLInputElement> = React.createRef();
   name = "7 Wonders Duel";
   NewGame = NewGame;
   utils = utils;
@@ -17,6 +18,8 @@ class Sidebar extends SharedSidebar<Params> {
         <div>
           <label>
             God Expansion: <input type={"checkbox"} ref={this.expansionRef} />
+            Random Starting:{" "}
+            <input type={"checkbox"} ref={this.randomStartingRef} />
           </label>
         </div>
         <button onClick={this.startNewGame.bind(this)}>New Game</button>
@@ -26,6 +29,7 @@ class Sidebar extends SharedSidebar<Params> {
 
   getParams() {
     return {
+      randomStarting: this.randomStartingRef.current!.checked,
       godExpansion: this.expansionRef.current!.checked,
       lobby: store.lobby,
     };
@@ -34,6 +38,8 @@ class Sidebar extends SharedSidebar<Params> {
   maybeSyncParams() {
     super.maybeSyncParams();
     if (store.gameW.info.isNewGame) {
+      this.randomStartingRef.current!.checked =
+        store.gameW.game.params.randomStarting;
       this.expansionRef.current!.checked = store.gameW.game.params.godExpansion;
     }
   }
