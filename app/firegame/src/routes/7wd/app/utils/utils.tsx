@@ -257,17 +257,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     ).length;
     const templePoints =
       numTemples === 0 ? 0 : numTemples === 1 ? 5 : numTemples === 2 ? 12 : 21;
-    return player.index === 0
-      ? 8
-      : 0 +
-          cardPoints +
-          moneyPoints +
-          guildPoints +
-          militaryPoints +
-          sciencePoints +
-          wonderPoints +
-          godPoints +
-          templePoints;
+    return (
+      (player.index === 0 ? 8 : 0) +
+      cardPoints +
+      moneyPoints +
+      guildPoints +
+      militaryPoints +
+      sciencePoints +
+      wonderPoints +
+      godPoints +
+      templePoints
+    );
   }
 
   stealMoney(amount: number) {
