@@ -1,5 +1,12 @@
 import bank from "./bank";
-import { CommercialEnum, GameType, God, Params, ScienceToken } from "./types";
+import {
+  Age,
+  CommercialEnum,
+  GameType,
+  God,
+  Params,
+  ScienceToken,
+} from "./types";
 import utils, { store } from "./utils";
 
 const NUM_WONDERS = 8;
@@ -8,13 +15,18 @@ function NewGame(params: Params): PromiseLike<GameType> {
   // @ts-ignore game being constructed
   const game: GameType = {
     currentPlayer: 0,
+    age: Age.one,
   };
   game.params = params;
   return Promise.resolve(game)
     .then(setBoard)
     .then(setPlayers)
     .then(prepareToChooseWonders)
-    .then(maybePrepareExpansion);
+    .then(maybePrepareExpansion)
+    .then((game) => {
+      utils.deal(game);
+      return game;
+    });
 }
 
 function setBoard(game: GameType): GameType {

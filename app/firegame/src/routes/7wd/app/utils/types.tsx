@@ -114,6 +114,7 @@ export type GameType = {
   wentFirst: number;
   wondersToChoose: number[];
   military: number;
+  p1Advantage?: number;
 
   discounts: number[];
   godTokens: God[];
@@ -128,7 +129,6 @@ export type Params = {
   lobby: LobbyType;
   godExpansion: boolean;
   randomStarting: boolean;
-  p1Advantage: number;
 };
 
 export type StructureCardType = {
@@ -150,6 +150,7 @@ export type PlayerType = {
   tokens?: TokenType[];
   gods?: number[];
   scienceIcons?: { [x in ScienceEnum]?: number };
+  p1Advantage?: number;
 };
 
 export type PlayerWonder = { built: boolean; wonderIndex: number };

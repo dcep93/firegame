@@ -258,7 +258,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const templePoints =
       numTemples === 0 ? 0 : numTemples === 1 ? 5 : numTemples === 2 ? 12 : 21;
     return (
-      (player.index === 0 ? store.gameW.game.params.p1Advantage : 0) +
+      (player.index === 0 ? store.gameW.game.p1Advantage! : 0) +
       cardPoints +
       moneyPoints +
       guildPoints +
