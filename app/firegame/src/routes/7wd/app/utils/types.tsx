@@ -128,6 +128,7 @@ export type Params = {
   lobby: LobbyType;
   godExpansion: boolean;
   randomStarting: boolean;
+  p1Advantage: number;
 };
 
 export type StructureCardType = {

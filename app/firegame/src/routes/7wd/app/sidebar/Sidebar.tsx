@@ -8,6 +8,7 @@ import utils, { store } from "../utils/utils";
 class Sidebar extends SharedSidebar<Params> {
   expansionRef: RefObject<HTMLInputElement> = React.createRef();
   randomStartingRef: RefObject<HTMLInputElement> = React.createRef();
+  p1AdvantageRef: RefObject<HTMLInputElement> = React.createRef();
   name = "7 Wonders Duel";
   NewGame = NewGame;
   utils = utils;
@@ -16,11 +17,27 @@ class Sidebar extends SharedSidebar<Params> {
     return (
       <div>
         <div>
-          <label>
-            God Expansion: <input type={"checkbox"} ref={this.expansionRef} />
-            Random Starting:{" "}
-            <input type={"checkbox"} ref={this.randomStartingRef} />
-          </label>
+          <div>
+            <label>
+              God Expansion: <input type={"checkbox"} ref={this.expansionRef} />
+            </label>
+          </div>
+          <div>
+            <label>
+              Random Starting:{" "}
+              <input type={"checkbox"} ref={this.randomStartingRef} />
+            </label>
+          </div>
+          <div>
+            <label>
+              p1Advantage:{" "}
+              <input
+                type={"number"}
+                ref={this.p1AdvantageRef}
+                defaultValue={8}
+              />
+            </label>
+          </div>
         </div>
         <button onClick={this.startNewGame.bind(this)}>New Game</button>
       </div>
@@ -29,6 +46,7 @@ class Sidebar extends SharedSidebar<Params> {
 
   getParams() {
     return {
+      p1Advantage: parseInt(this.p1AdvantageRef.current!.value),
       randomStarting: this.randomStartingRef.current!.checked,
       godExpansion: this.expansionRef.current!.checked,
       lobby: store.lobby,

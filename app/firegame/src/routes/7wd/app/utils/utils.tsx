@@ -258,7 +258,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const templePoints =
       numTemples === 0 ? 0 : numTemples === 1 ? 5 : numTemples === 2 ? 12 : 21;
     return (
-      (player.index === 0 ? 8 : 0) +
+      (player.index === 0 ? store.gameW.game.params.p1Advantage : 0) +
       cardPoints +
       moneyPoints +
       guildPoints +
@@ -312,8 +312,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.gameW.game.commercials.push(commercial);
   }
 
-  enumName<T>(val: string, e: T): keyof T {
-    return Object.entries(e).find(([k, v]) => v === val)![0] as keyof T;
+  enumName<T>(val: string, e: { [k: string]: T }): T {
+    return e[val];
   }
 
   gainScience(science: ScienceEnum) {
