@@ -1,4 +1,4 @@
-import React from "react";
+import React, { RefObject } from "react";
 import Hotkeys from "react-hot-keys";
 
 import utils, { store } from "../utils/utils";
@@ -28,6 +28,7 @@ class Main extends React.Component<
     usedTokens?: { [tokenIndex: number]: boolean };
   }
 > {
+  p1AdvantageRef: RefObject<HTMLInputElement> = React.createRef();
   constructor(props: {}) {
     super(props);
     this.state = {};
@@ -49,6 +50,7 @@ class Main extends React.Component<
   }
 
   render() {
+    const me = utils.getMe();
     return (
       <div>
         <Hotkeys
@@ -59,6 +61,41 @@ class Main extends React.Component<
           {store.gameW.game.p1Advantage !== undefined ? null : (
             <div className={styles.bubble}>
               <h2>p1Advantage</h2>
+              {!me ? null : (
+                <div>
+                  <input
+                    type={"number"}
+                    ref={this.p1AdvantageRef}
+                    defaultValue={8}
+                  />
+                  <input
+                    type={"submit"}
+                    onClick={() => {
+                      me.p1Advantage = parseInt(
+                        this.p1AdvantageRef.current!.value
+                      );
+                      if (utils.getOpponent().p1Advantage === undefined) {
+                        store.update("picked a p1Advantage");
+                      } else {
+                        const advantages = store.gameW.game.players.map(
+                          (p) => p.p1Advantage!
+                        );
+                        if (advantages[1] < advantages[0]) {
+                          advantages.reverse();
+                          store.gameW.game.players.reverse();
+                          store.gameW.game.players.forEach((p, index) => {
+                            p.index = index;
+                          });
+                        }
+                        store.gameW.game.p1Advantage = advantages[0];
+                        store.update(
+                          `picked a p1Advantage ${advantages.join(",")}`
+                        );
+                      }
+                    }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
