@@ -85,7 +85,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }))
     );
     var wentFirst;
-    const me = utils.getMe();
+    const me = utils.getMe(game);
     const militaryDiff = utils.getMilitary(me);
     if (militaryDiff > 0) {
       wentFirst = utils.getOpponent().index;
@@ -312,8 +312,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.gameW.game.commercials.push(commercial);
   }
 
-  enumName<T>(val: string, e: { [k: string]: T }): T {
-    return e[val];
+  enumName(val: string, e: { [k: string]: string }): string {
+    return Object.entries(e)
+      .map(([k, t]) => ({ k, t }))
+      .find(({ k, t }) => t === val)!.k;
   }
 
   gainScience(science: ScienceEnum) {
