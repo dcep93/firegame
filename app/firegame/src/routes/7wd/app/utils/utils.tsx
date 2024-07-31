@@ -86,7 +86,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
     var wentFirst;
     const me = utils.getMe(game);
-    const militaryDiff = utils.getMilitary(me);
+    const militaryDiff = utils.getMilitary(me, game);
     if (militaryDiff > 0) {
       wentFirst = utils.getOpponent().index;
     } else if (militaryDiff < 0) {
@@ -222,8 +222,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return resources;
   }
 
-  getMilitary(player: PlayerType) {
-    const militaryDiff = store.gameW.game.military;
+  getMilitary(player: PlayerType, game_: GameType | undefined = undefined) {
+    const game: GameType = game_ || store.gameW.game!;
+    const militaryDiff = game.military;
     return player.index === 0 ? militaryDiff : -militaryDiff;
   }
 

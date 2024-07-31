@@ -68,7 +68,7 @@ class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
   }
 
   getMe(game_: T | undefined = undefined): U {
-    return this.getPlayer(this.myIndex(game_));
+    return this.getPlayer(this.myIndex(game_), game_);
   }
 
   getCurrent(game_: T | undefined = undefined): U {
