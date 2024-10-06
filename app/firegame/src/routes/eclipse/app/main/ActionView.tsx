@@ -8,7 +8,7 @@ export default function ActionView() {
     <div>
       <div className={styles.bubble}>
         <div>year: {game.year} / 8</div>
-        <div>current: {game.players[game.currentPlayer].userName}</div>
+        <div>current: {game.players[game.currentPlayer]?.userName}</div>
         {game.startingPlayer === -1 ? null : (
           <div>
             starting player: {game.players[game.startingPlayer].userName}

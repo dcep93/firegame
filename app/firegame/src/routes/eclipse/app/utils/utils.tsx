@@ -23,7 +23,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(params: Params): GameType {
     const numPlayers = Object.keys(params.lobby).length;
     if (numPlayers < 2 || numPlayers > 6) {
-      throw Error("numPlayers");
+      // throw Error("numPlayers");
+      alert("numPlayers");
     }
     const game: GameType = {
       params,
@@ -89,6 +90,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       ...utils
         .count(6)
         .filter((i) => !playerOrientations.includes(i))
+        .filter((index) => guardianTiles[index])
         .map((orientation, index) =>
           utils.buildStartingSector(guardianTiles[index], orientation)
         )

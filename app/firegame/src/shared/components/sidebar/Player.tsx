@@ -39,7 +39,7 @@ function getTimes(userId: string) {
   const times = [];
   var previous = Firebase.now();
   const current =
-    store.gameW.game.players[store.gameW.game.currentPlayer].userId;
+    store.gameW.game.players[store.gameW.game.currentPlayer]?.userId;
   if (current === userId)
     times.push({
       id: -1,

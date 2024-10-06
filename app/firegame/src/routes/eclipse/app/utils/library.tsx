@@ -423,7 +423,7 @@ const RawDiamonds = {
   plasma_turret: { count: 1, upgrade: { dice: [2, 2], energy: -3 } },
   soliton_charger: { count: 1, upgrade: { dice: [3], energy: -1 } },
   soliton_missile: { count: 1, upgrade: { missile: [3], initiative: 1 } },
-  antimatter_missle: { count: 1, upgrade: { missile: [4] } },
+  antimatter_missile: { count: 1, upgrade: { missile: [4] } },
   shard_hull: { count: 1, upgrade: { hull: 3 } },
   axion_computer: { count: 1, upgrade: { computer: 2, initiative: 1 } },
   flux_shield: { count: 1, upgrade: { shield: 3, initiative: 1, energy: -2 } },
