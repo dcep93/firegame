@@ -3,6 +3,7 @@ import azul from "../routes/azul/app/Azul";
 import blacknwhite from "../routes/blacknwhite/app/BlackNWhite";
 import bohnanza from "../routes/bohnanza/app/Bohnanza";
 import Caverna from "../routes/caverna/app/Caverna";
+import CavernaScorer from "../routes/caverna_scorer/app/CavernaScorer";
 import Eclipse from "../routes/eclipse/app/Eclipse";
 import ff_draft from "../routes/ff_draft/app/FFDraft";
 import five from "../routes/five/app/Five";
@@ -22,6 +23,7 @@ import wavelength from "../routes/wavelength/app/Wavelength";
 import wingspan from "../routes/wingspan/app/Wingspan";
 
 const ex = {
+  CavernaScorer,
   Eclipse,
   Caverna,
   ff_draft,
