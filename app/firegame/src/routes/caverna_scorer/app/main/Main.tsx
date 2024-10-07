@@ -34,7 +34,6 @@ const categories = [
 export default function Main() {
   return (
     <div>
-      <pre>{JSON.stringify(store.gameW.game.scoreSheet)}</pre>
       <div style={{ display: "flex" }}>
         <div className={styles.bubble} style={{ backgroundColor: "lightgray" }}>
           <div>
