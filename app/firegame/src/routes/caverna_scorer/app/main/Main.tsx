@@ -35,7 +35,15 @@ export default function Main() {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <div className={styles.bubble} style={{ backgroundColor: "lightgray" }}>
+        <div
+          className={styles.bubble}
+          style={{
+            backgroundColor: "lightgray",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
           <div>
             <span>+ </span>
             <Input
