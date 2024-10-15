@@ -44,7 +44,7 @@ export default function Main() {
             justifyContent: "space-between",
           }}
         >
-          <div>
+          <div style={{ display: "flex" }}>
             <span>+ </span>
             <Input
               value={""}
