@@ -130,22 +130,30 @@ function getPossibleChildren(
   childShipGroups: ShipGroupsType;
 }[] {
   const shooter = shipGroups[shipGroups.length - 1];
-  const dice = shooter.flatMap(({ ship }) =>
-    Object.entries(ship.values)
-      .map(([k, count]) => ({
-        k,
-        count,
-      }))
-      .filter(
-        ({ k, count }) =>
-          count && k.startsWith(isMissiles ? "missiles" : "cannons")
-      )
-      .map(({ k, count }) => ({
-        value: parseInt(k.split("_")[1]),
-        count,
-        computer: ship.values.computer,
-      }))
-  );
+  const dice = Object.values(
+    utils.groupByF(
+      shooter.flatMap(({ ship }) =>
+        Object.entries(ship.values)
+          .map(([k, count]) => ({
+            k,
+            count,
+          }))
+          .filter(
+            ({ k, count }) =>
+              count && k.startsWith(isMissiles ? "missiles" : "cannons")
+          )
+          .map(({ k, count }) => ({
+            value: parseInt(k.split("_")[1]),
+            count,
+            computer: ship.values.computer,
+          }))
+      ),
+      (d) => JSON.stringify([d.computer, d.value])
+    )
+  ).map((arr) => ({
+    ...arr[0],
+    count: arr.map((d) => d.count).reduce((a, b) => a + b, 0),
+  }));
   alert(JSON.stringify({ isMissiles, dice }));
   return [];
 }
