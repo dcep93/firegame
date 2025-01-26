@@ -5,12 +5,18 @@ import utils, { store } from "../utils/utils";
 type OutcomeType = {
   survivingShips: { [name: string]: number };
   probability: number;
-};
-
-function getOutcomes(): (OutcomeType & {
+  fI: number;
   winner: string;
   cumProb: number;
-})[] {
+};
+
+type ShipGroupsType = {
+  ship: ShipType;
+  fI: number;
+  damage: number;
+}[][];
+
+function getOutcomes(): OutcomeType[] {
   const shipGroups = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
@@ -19,7 +25,13 @@ function getOutcomes(): (OutcomeType & {
           .map((ship) => ship as ShipType)
           .flatMap((ship) =>
             utils.repeat(
-              { ship, damage: 0, fI, sort: ship.values.initiative * 2 - fI },
+              {
+                ship,
+                damage: 0,
+                shotMissiles: false,
+                fI,
+                sort: ship.values.initiative * 2 - fI,
+              },
               ship.values.count
             )
           )
@@ -30,20 +42,16 @@ function getOutcomes(): (OutcomeType & {
     .map(([sortStr, o]) => ({ sort: parseInt(sortStr), o }))
     .sort((a, b) => b.sort - a.sort)
     .map(({ o }) => o);
-  const cached: { [key: string]: OutcomeType } = {};
-  const helped = getOutcomesHelper(shipGroups, cached).filter(
-    (o) => o.probability
-  );
+  const helped = getOutcomesHelper(true, 1, shipGroups.concat([[]]), {});
   const totalProbability = helped
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
   return helped
     .map((o) => ({ ...o, probability: o.probability / totalProbability }))
-    .map(({ fI, ...o }) => ({
+    .map((o) => ({
       ...o,
-      winner: ["good", "evil"][fI],
       sort:
-        [-1, 1][fI] *
+        [-1, 1][o.fI] *
         Object.values(o.survivingShips)
           .map((c) => c as number)
           .reduce((a, b) => a + b, 0),
@@ -55,36 +63,70 @@ function getOutcomes(): (OutcomeType & {
           ...curr,
           cumProb: (prev[prev.length - 1]?.cumProb || 0) + curr.probability,
         }),
-      [] as (OutcomeType & { cumProb: number; winner: string })[]
+      [] as OutcomeType[]
     );
 }
 
 function getOutcomesHelper(
-  shipGroups: {
+  isMissiles: boolean,
+  parentProbability: number,
+  shipGroups: ShipGroupsType,
+  cached: { [key: string]: OutcomeType[] }
+): OutcomeType[] {
+  const shipsByFi = utils.groupByF(
+    shipGroups.flatMap((ss) => ss),
+    (s) => s.fI.toString()
+  );
+  if (Object.keys(shipsByFi).length === 1) {
+    return [
+      ((fI) => ({
+        fI,
+        probability: 1,
+        survivingShips: Object.fromEntries(
+          Object.entries(
+            utils.groupByF(Object.values(shipsByFi)[0], (s) => s.ship.name)
+          ).map(([name, arr]) => [name, arr.length])
+        ),
+        cumProb: 0,
+        winner: ["good", "evil"][fI],
+      }))(parseInt(Object.keys(shipsByFi)[0])),
+    ];
+  }
+  const key = JSON.stringify(shipGroups);
+  if (cached[key]) {
+    return cached[key];
+  }
+  cached[key] = [];
+  const nextShipGroups = shipGroups.map((sg) => sg.map((o) => ({ ...o })));
+  const shooter = nextShipGroups.shift()!;
+  if (shooter.length === 0) {
+    // end of missiles
+    return getOutcomesHelper(false, parentProbability, nextShipGroups, cached);
+  }
+  nextShipGroups.push(shooter);
+  return getPossibleChildren(isMissiles, nextShipGroups).flatMap(
+    ({ childProbability, childShipGroups }) =>
+      getOutcomesHelper(
+        isMissiles,
+        parentProbability * childProbability,
+        childShipGroups,
+        cached
+      )
+  );
+}
+
+function getPossibleChildren(
+  isMissiles: boolean,
+  shipGroups: ShipGroupsType
+): {
+  childProbability: number;
+  childShipGroups: {
     ship: ShipType;
-    damage: number;
     fI: number;
-    sort: number;
-  }[][],
-  cached: { [key: string]: OutcomeType }
-): (OutcomeType & { fI: number })[] {
-  return [
-    {
-      fI: 1,
-      survivingShips: { gotem: 1 },
-      probability: 1,
-    },
-    {
-      fI: 1,
-      survivingShips: { gotem: 1 },
-      probability: 1,
-    },
-    {
-      fI: 0,
-      survivingShips: { gotem: 2 },
-      probability: 1,
-    },
-  ];
+    damage: number;
+  }[][];
+}[] {
+  return [];
 }
 
 export default function Outcomes() {
