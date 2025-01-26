@@ -20,13 +20,7 @@ export type PlayerType = {
 
 export type ShipType = {
   name: string;
-  count: number;
-  hull: number;
-  computer: number;
-  shield: number;
-  initiative: number;
-  cannons: { [strengthStr: string]: number };
-  missiles: { [strengthStr: string]: number };
+  values: { [key: string]: number };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

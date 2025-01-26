@@ -18,7 +18,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
 const utils = new Utils();
 
-const wordList = [
+export const wordList = [
   "account",
   "achiever",
   "acoustics",
