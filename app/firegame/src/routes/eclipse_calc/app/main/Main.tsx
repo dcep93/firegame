@@ -111,12 +111,12 @@ class Main extends React.Component {
         <div>
           <Outcomes />
         </div>
-        <div>
+        {/* <div>
           <div className={styles.bubble}>
             <h2>raw_state.json</h2>
             <pre>{JSON.stringify(store.gameW.game, null, 2)}</pre>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

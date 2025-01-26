@@ -210,6 +210,15 @@ class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
     console.log(x);
     return x;
   }
+
+  groupByF<T>(ts: T[], f: (t: T) => string): { [key: string]: T[] } {
+    return ts.reduce((prev, curr) => {
+      const key = f(curr);
+      if (!prev[key]) prev[key] = [];
+      prev[key]!.push(curr);
+      return prev;
+    }, {} as { [key: string]: T[] });
+  }
 }
 
 export default SharedUtils;
