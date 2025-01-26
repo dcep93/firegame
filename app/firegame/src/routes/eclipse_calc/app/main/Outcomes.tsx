@@ -2,6 +2,8 @@ import styles from "../../../../shared/styles.module.css";
 import { ShipType } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
+// todo antimatter_splitter
+
 type OutcomeType = {
   survivingShips: { [name: string]: number };
   probability: number;
@@ -16,7 +18,12 @@ type ShipGroupsType = {
   damage: number;
 }[][];
 
+// todo
+var initialized = false;
+
 function getOutcomes(): OutcomeType[] {
+  if (initialized) return [];
+  initialized = true;
   const shipGroups = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
@@ -120,12 +127,26 @@ function getPossibleChildren(
   shipGroups: ShipGroupsType
 ): {
   childProbability: number;
-  childShipGroups: {
-    ship: ShipType;
-    fI: number;
-    damage: number;
-  }[][];
+  childShipGroups: ShipGroupsType;
 }[] {
+  const shooter = shipGroups[shipGroups.length - 1];
+  const dice = shooter.flatMap(({ ship }) =>
+    Object.entries(ship.values)
+      .map(([k, count]) => ({
+        k,
+        count,
+      }))
+      .filter(
+        ({ k, count }) =>
+          count && k.startsWith(isMissiles ? "missiles" : "cannons")
+      )
+      .map(({ k, count }) => ({
+        value: parseInt(k.split("_")[1]),
+        count,
+        computer: ship.values.computer,
+      }))
+  );
+  alert(JSON.stringify({ isMissiles, dice }));
   return [];
 }
 
