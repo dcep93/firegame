@@ -5,6 +5,7 @@ import bohnanza from "../routes/bohnanza/app/Bohnanza";
 import Caverna from "../routes/caverna/app/Caverna";
 import CavernaScorer from "../routes/caverna_scorer/app/CavernaScorer";
 import Eclipse from "../routes/eclipse/app/Eclipse";
+import EclipseCalc from "../routes/eclipse_calc/app/EclipseCalc";
 import ff_draft from "../routes/ff_draft/app/FFDraft";
 import five from "../routes/five/app/Five";
 import fox from "../routes/fox/app/Fox";
@@ -23,6 +24,7 @@ import wavelength from "../routes/wavelength/app/Wavelength";
 import wingspan from "../routes/wingspan/app/Wingspan";
 
 const ex = {
+  EclipseCalc,
   CavernaScorer,
   Eclipse,
   Caverna,
