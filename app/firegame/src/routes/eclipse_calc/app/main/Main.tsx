@@ -4,6 +4,7 @@ import utils, { store } from "../utils/utils";
 import styles from "../../../../shared/styles.module.css";
 import { wordList } from "../../../spy/app/utils/utils";
 import { ShipType } from "../utils/NewGame";
+import Outcomes from "./Outcomes";
 
 class Main extends React.Component {
   render() {
@@ -119,37 +120,6 @@ class Main extends React.Component {
       </div>
     );
   }
-}
-
-function getOutcomes(): {
-  winnerIndex: number;
-  survivingShips: { [name: string]: number };
-  probability: number;
-  cumProb: number;
-}[] {
-  return [
-    {
-      winnerIndex: 0,
-      survivingShips: {},
-      probability: 0,
-      cumProb: Math.random(),
-    },
-  ];
-}
-
-function Outcomes() {
-  return (
-    <div className={styles.bubble}>
-      <h2>Outcomes</h2>
-      <div>
-        {getOutcomes().map((o, i) => (
-          <div key={i}>
-            <pre>{JSON.stringify(o, null, 2)}</pre>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 function Ship(props: { ship: ShipType }) {
