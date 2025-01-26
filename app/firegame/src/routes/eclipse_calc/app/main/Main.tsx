@@ -149,7 +149,7 @@ function Ship(props: { ship: ShipType }) {
                       .then(() => (props.ship.values[valueKey] += v))
                       .then(() =>
                         store.update(
-                          `${value}${k}${props.ship.name}.${valueKey}`
+                          `${props.ship.name}.${valueKey}.${value}.${k}`
                         )
                       )
                   }

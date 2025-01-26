@@ -31,7 +31,9 @@ function getOutcomes(): (OutcomeType & {
     .sort((a, b) => b.sort - a.sort)
     .map(({ o }) => o);
   const cached: { [key: string]: OutcomeType } = {};
-  const helped = getOutcomesHelper(shipGroups, cached);
+  const helped = getOutcomesHelper(shipGroups, cached).filter(
+    (o) => o.probability
+  );
   const totalProbability = helped
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
