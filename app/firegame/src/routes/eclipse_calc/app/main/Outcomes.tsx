@@ -28,7 +28,6 @@ type PRolls = {
 }[];
 
 function getOutcomes(): OutcomeType[] {
-  return [];
   const shipGroups: ShipGroupsType = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
@@ -55,7 +54,7 @@ function getOutcomes(): OutcomeType[] {
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
   const probabilities = Object.values(
     utils.groupByF(
-      getProbabilities(true, 1, shipGroups.concat(null), {}, 0),
+      getProbabilities(true, shipGroups.concat(null), {}, 0),
       (o) => JSON.stringify(o.survivingShips)
     )
   ).map((arr) => ({
@@ -85,9 +84,8 @@ function getOutcomes(): OutcomeType[] {
 
 function getProbabilities(
   isMissiles: boolean,
-  probability: number,
   shipGroups: ShipGroupsType,
-  cached: { [key: string]: { t: string; v: OutcomeType[] } },
+  cached: { [key: string]: OutcomeType[] },
   depth: number
 ): OutcomeType[] {
   const shipsByFi = utils.groupByF(
@@ -102,7 +100,7 @@ function getProbabilities(
     return [
       ((fI) => ({
         fI,
-        probability,
+        probability: 1,
         survivingShips: Object.fromEntries(
           Object.entries(
             utils.groupByF(Object.values(shipsByFi)[0], (s) => s.ship.name)
@@ -115,23 +113,16 @@ function getProbabilities(
   }
   const key = JSON.stringify(shipGroups);
   if (cached[key]) {
-    console.log({ isMissiles, shipGroups, c: cached[key] });
-    return cached[key].v;
+    return cached[key];
   }
-  cached[key] = { t: "init", v: [] };
+  cached[key] = [];
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
   const shooter = nextShipGroups.shift();
   if (!shooter) {
     // end of missiles
-    const cannonProbs = getProbabilities(
-      false,
-      probability,
-      nextShipGroups,
-      {},
-      depth + 1
-    );
+    const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1);
     const totalProbability = cannonProbs
       .map((o) => o.probability)
       .reduce((a, b) => a + b, 0);
@@ -141,28 +132,18 @@ function getProbabilities(
     }));
   }
   nextShipGroups.push(shooter);
-  console.log({
-    depth,
-    isMissiles,
-    shooter,
-    nextShipGroups,
-  });
-  const children = getChildren(isMissiles, nextShipGroups).flatMap(
+  const children = getChildren(isMissiles, nextShipGroups);
+  const childProbabilities = children.flatMap(
     ({ childProbability, childShipGroups }) =>
-      getProbabilities(
-        isMissiles,
-        childProbability,
-        childShipGroups,
-        cached,
-        depth + 1
+      getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
+        ({ probability, ...o }) => ({
+          ...o,
+          probability: probability * childProbability,
+        })
       )
   );
-  console.log({ x: children.map((c) => c.probability).sum() });
-  cached[key] = { t: "calc", v: children };
-  return children.map((c) => ({
-    ...c,
-    probability: c.probability * probability,
-  }));
+  cached[key] = childProbabilities;
+  return childProbabilities;
 }
 
 // todo group
@@ -225,7 +206,7 @@ function getPRolls(
   if (--dZero.count === 0) {
     dice.shift();
   }
-  const possibleRolls = [5, Infinity];
+  const possibleRolls = [-Infinity, 2, 3, 4, 5, Infinity];
   const rollProbs = Object.values(
     utils.groupByF(
       possibleRolls
@@ -279,60 +260,3 @@ export default function Outcomes() {
     </div>
   );
 }
-
-const shipGroups = [
-  [
-    {
-      ship: {
-        name: "FROGS ",
-        values: {
-          cannons_1: 1,
-          cannons_2: 0,
-          cannons_3: 0,
-          cannons_4: 0,
-          computer: 0,
-          count: 1,
-          hull: 1,
-          initiative: 0,
-          missiles_1: 0,
-          missiles_2: 0,
-          missiles_3: 0,
-          missiles_4: 0,
-          shield: 0,
-        },
-      },
-      damage: 0,
-      fI: 1,
-    },
-  ],
-  [
-    {
-      ship: {
-        name: "BELIEF",
-        values: {
-          cannons_1: 0,
-          cannons_2: 0,
-          cannons_3: 0,
-          cannons_4: 0,
-          computer: 1,
-          count: 1,
-          hull: 0,
-          initiative: 0,
-          missiles_1: 1,
-          missiles_2: 0,
-          missiles_3: 0,
-          missiles_4: 0,
-          shield: 0,
-        },
-      },
-      damage: 0,
-      fI: 0,
-    },
-  ],
-];
-
-console.log(
-  getProbabilities(false, 1, shipGroups, {}, 0)
-    .map((p) => p.probability)
-    .sum()
-);

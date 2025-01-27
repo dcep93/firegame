@@ -10,9 +10,6 @@ class Main extends React.Component {
   render() {
     return (
       <div>
-        <div>
-          <Outcomes />
-        </div>
         <div className={styles.flex}>
           {store.gameW.game.fleets.map((f, fI) => (
             <div className={styles.bubble} key={fI} style={{ height: "100%" }}>
@@ -110,6 +107,9 @@ class Main extends React.Component {
               swap fleets
             </button>
           </div>
+        </div>
+        <div>
+          <Outcomes />
         </div>
         {/* <div>
           <div className={styles.bubble}>
