@@ -39,7 +39,6 @@ function getOutcomes(): OutcomeType[] {
               {
                 ship,
                 damage: 0,
-                shotMissiles: false,
                 fI,
                 sort: ship.values.initiative * 2 - fI,
               },

@@ -8,5 +8,6 @@ export function assignDamage(
   const targets = shipGroups
     .flatMap((sg) => sg || [])
     .filter((s) => s.fI !== shooterFi);
+  alert(JSON.stringify(targets));
   return shipGroups;
 }
