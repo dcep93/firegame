@@ -61,13 +61,10 @@ function getOutcomes(): OutcomeType[] {
     ...arr[0],
     probability: arr.map((a) => a.probability).reduce((a, b) => a + b, 0),
   }));
-  const totalProbability = probabilities
-    .map((o) => o.probability)
-    .reduce((a, b) => a + b, 0);
   return probabilities
-    .map((o) => ({ ...o, probability: o.probability / totalProbability }))
     .map((o) => ({
       ...o,
+      probability: parseFloat(o.probability.toFixed(4)),
       sort:
         [-1, 1][o.fI] *
         Object.values(o.survivingShips)
@@ -103,7 +100,7 @@ function getProbabilities(
     return [
       ((fI) => ({
         fI,
-        probability: 1,
+        probability,
         survivingShips: Object.fromEntries(
           Object.entries(
             utils.groupByF(Object.values(shipsByFi)[0], (s) => s.ship.name)
@@ -125,7 +122,19 @@ function getProbabilities(
   const shooter = nextShipGroups.shift();
   if (!shooter) {
     // end of missiles
-    return getProbabilities(false, probability, nextShipGroups, {});
+    const cannonProbs = getProbabilities(
+      false,
+      probability,
+      nextShipGroups,
+      {}
+    );
+    const totalProbability = cannonProbs
+      .map((o) => o.probability)
+      .reduce((a, b) => a + b, 0);
+    return cannonProbs.map((o) => ({
+      ...o,
+      probability: o.probability / totalProbability,
+    }));
   }
   nextShipGroups.push(shooter);
   const children = getChildren(isMissiles, nextShipGroups).flatMap(
