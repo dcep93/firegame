@@ -4,9 +4,7 @@ import { ShipGroupsType } from "./Outcomes";
 // one at a time, handle each die
 // in order of (color, roll)
 // dont plan ahead
-// prefer not overkilling
-// then killing
-// then sooner turn
+// prefer...
 export function assignDamage(
   shooterFi: number,
   shipGroups: ShipGroupsType,
@@ -18,7 +16,24 @@ export function assignDamage(
   rolls
     .sort((a, b) => b.roll - a.roll)
     .sort((a, b) => b.value - a.value)
-    .map((r) => ({ r, t: targets.find((t) => t.ship) }));
-  //   alert(JSON.stringify(targets));
+    .map((r) => ({
+      r,
+      t: targets
+        .filter((t) => r.roll - t.ship.values.shield >= 6)
+        // prefer order
+        .map((t) => [
+          // not overkilling
+          t.damage + r.value <= t.ship.values.hull + 1 ? 0 : 1,
+          // killing
+          t.damage + r.value >= t.ship.values.hull + 1 ? 0 : 1,
+          // shield
+          -t.ship.values.shield,
+          t,
+        ])
+        .sort()
+        .map((o) => o.reverse()[0])[0] as { damage: number },
+    }))
+    .filter(({ t }) => t)
+    .map((o) => (o.t.damage += o.r.value));
   return shipGroups;
 }
