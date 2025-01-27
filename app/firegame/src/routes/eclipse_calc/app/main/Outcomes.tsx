@@ -28,7 +28,6 @@ type PRolls = {
 }[];
 
 function getOutcomes(): OutcomeType[] {
-  console.log("getOutcomes");
   const shipGroups: ShipGroupsType = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
@@ -199,12 +198,10 @@ function getPRolls(
         .map((roll) => (roll >= 6 ? roll : 0)),
       (roll) => roll.toString()
     )
-  )
-    .map((arr) => ({
-      roll: arr[0],
-      probability: arr.length / possibleRolls.length,
-    }))
-    .filter(({ roll }) => roll >= 6);
+  ).map((arr) => ({
+    roll: arr[0],
+    probability: arr.length / possibleRolls.length,
+  }));
   const nextCross = Object.values(
     utils.groupByF(
       rollProbs.flatMap((rp) =>
