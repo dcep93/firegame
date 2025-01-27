@@ -27,13 +27,8 @@ type PRolls = {
   rolls: { value: number; roll: number }[];
 }[];
 
-var initialized = false;
-
 function getOutcomes(): OutcomeType[] {
-  if (!initialized) {
-    initialized = true;
-    return [];
-  }
+  console.log("getOutcomes");
   const shipGroups: ShipGroupsType = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
