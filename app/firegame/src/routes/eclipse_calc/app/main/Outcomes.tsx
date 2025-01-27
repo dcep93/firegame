@@ -52,7 +52,15 @@ function getOutcomes(): OutcomeType[] {
     .map(([sortStr, o]) => ({ sort: parseInt(sortStr), o }))
     .sort((a, b) => b.sort - a.sort)
     .map(({ o }) => o);
-  const probabilities = getProbabilities(true, 1, shipGroups.concat(null), {});
+  const probabilities = Object.values(
+    utils.groupByF(
+      getProbabilities(true, 1, shipGroups.concat(null), {}),
+      (o) => JSON.stringify(o.survivingShips)
+    )
+  ).map((arr) => ({
+    ...arr[0],
+    probability: arr.map((a) => a.probability).reduce((a, b) => a + b, 0),
+  }));
   const totalProbability = probabilities
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
