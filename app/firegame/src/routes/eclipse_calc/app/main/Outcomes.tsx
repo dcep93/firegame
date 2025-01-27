@@ -113,20 +113,18 @@ function getProbabilities(
   const shooter = nextShipGroups.shift()!;
   if (shooter.length === 0) {
     // end of missiles
-    return getProbabilities(false, probability, nextShipGroups, cached);
+    return getProbabilities(false, probability, nextShipGroups, {});
   }
   nextShipGroups.push(shooter);
-  const rval = getChildren(isMissiles, nextShipGroups).flatMap(
+  const children = getChildren(isMissiles, nextShipGroups).flatMap(
     ({ childProbability, childShipGroups }) =>
-      getProbabilities(
-        isMissiles,
-        probability * childProbability,
-        childShipGroups,
-        cached
-      )
+      getProbabilities(isMissiles, childProbability, childShipGroups, cached)
   );
-  cached[key] = rval;
-  return rval;
+  cached[key] = children;
+  return children.map((c) => ({
+    ...c,
+    probability: c.probability * probability,
+  }));
 }
 
 function getChildren(
@@ -167,7 +165,13 @@ function getChildren(
   );
   return pRolls.map((pr) => ({
     childProbability: pr.probability,
-    childShipGroups: assignDamage(shooter[0].fI, shipGroups, pr.rolls),
+    childShipGroups: assignDamage(
+      shooter[0].fI,
+      shipGroups.map((sg) => sg.map((o) => ({ ...o }))),
+      pr.rolls
+    )
+      .map((sg) => sg.filter((s) => s.damage < s.ship.values.hull + 1))
+      .filter((sg) => sg.length > 0),
   }));
 }
 
