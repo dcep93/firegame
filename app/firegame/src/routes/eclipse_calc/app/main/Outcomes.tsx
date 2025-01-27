@@ -13,11 +13,14 @@ type OutcomeType = {
   cumProb: number;
 };
 
-export type ShipGroupsType = {
-  ship: ShipType;
-  fI: number;
-  damage: number;
-}[][];
+export type ShipGroupsType = (
+  | {
+      ship: ShipType;
+      fI: number;
+      damage: number;
+    }[]
+  | null
+)[];
 
 type PRolls = {
   probability: number;
@@ -25,7 +28,7 @@ type PRolls = {
 }[];
 
 function getOutcomes(): OutcomeType[] {
-  const shipGroups = Object.entries(
+  const shipGroups: ShipGroupsType = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
         f
@@ -50,7 +53,7 @@ function getOutcomes(): OutcomeType[] {
     .map(([sortStr, o]) => ({ sort: parseInt(sortStr), o }))
     .sort((a, b) => b.sort - a.sort)
     .map(({ o }) => o);
-  const probabilities = getProbabilities(true, 1, shipGroups.concat([[]]), {});
+  const probabilities = getProbabilities(true, 1, shipGroups.concat(null), {});
   const totalProbability = probabilities
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
@@ -82,7 +85,7 @@ function getProbabilities(
   cached: { [key: string]: OutcomeType[] }
 ): OutcomeType[] {
   const shipsByFi = utils.groupByF(
-    shipGroups.flatMap((ss) => ss),
+    shipGroups.flatMap((ss) => ss || []),
     (s) => s.fI.toString()
   );
   const numFactions = Object.keys(shipsByFi).length;
@@ -109,9 +112,11 @@ function getProbabilities(
     return cached[key];
   }
   cached[key] = [];
-  const nextShipGroups = shipGroups.map((sg) => sg.map((o) => ({ ...o })));
-  const shooter = nextShipGroups.shift()!;
-  if (shooter.length === 0) {
+  const nextShipGroups = shipGroups.map((sg) =>
+    sg === null ? null : sg.map((o) => ({ ...o }))
+  );
+  const shooter = nextShipGroups.shift();
+  if (!shooter) {
     // end of missiles
     return getProbabilities(false, probability, nextShipGroups, {});
   }
@@ -134,7 +139,7 @@ function getChildren(
   childProbability: number;
   childShipGroups: ShipGroupsType;
 }[] {
-  const shooter = shipGroups[shipGroups.length - 1];
+  const shooter = shipGroups[shipGroups.length - 1]!;
   const dice = Object.values(
     utils.groupByF(
       shooter.flatMap(({ ship }) =>
@@ -167,11 +172,13 @@ function getChildren(
     childProbability: pr.probability,
     childShipGroups: assignDamage(
       shooter[0].fI,
-      shipGroups.map((sg) => sg.map((o) => ({ ...o }))),
+      shipGroups.map((sg) => (sg === null ? null : sg.map((o) => ({ ...o })))),
       pr.rolls
     )
-      .map((sg) => sg.filter((s) => s.damage < s.ship.values.hull + 1))
-      .filter((sg) => sg.length > 0),
+      .map((sg) =>
+        sg === null ? null : sg.filter((s) => s.damage < s.ship.values.hull + 1)
+      )
+      .filter((sg) => sg === null || sg.length > 0),
   }));
 }
 
