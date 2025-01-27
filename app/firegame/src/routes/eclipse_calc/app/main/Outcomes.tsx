@@ -79,7 +79,11 @@ function getProbabilities(
     shipGroups.flatMap((ss) => ss),
     (s) => s.fI.toString()
   );
-  if (Object.keys(shipsByFi).length === 1) {
+  const numFactions = Object.keys(shipsByFi).length;
+  if (numFactions === 0) {
+    return [];
+  }
+  if (numFactions === 1) {
     return [
       ((fI) => ({
         fI,
