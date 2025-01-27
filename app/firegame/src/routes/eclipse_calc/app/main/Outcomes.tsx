@@ -18,12 +18,7 @@ type ShipGroupsType = {
   damage: number;
 }[][];
 
-// todo
-var initialized = false;
-
 function getOutcomes(): OutcomeType[] {
-  if (initialized) return [];
-  initialized = true;
   const shipGroups = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
@@ -49,11 +44,11 @@ function getOutcomes(): OutcomeType[] {
     .map(([sortStr, o]) => ({ sort: parseInt(sortStr), o }))
     .sort((a, b) => b.sort - a.sort)
     .map(({ o }) => o);
-  const helped = getOutcomesHelper(true, 1, shipGroups.concat([[]]), {});
-  const totalProbability = helped
+  const probabilities = getProbabilities(true, 1, shipGroups.concat([[]]), {});
+  const totalProbability = probabilities
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
-  return helped
+  return probabilities
     .map((o) => ({ ...o, probability: o.probability / totalProbability }))
     .map((o) => ({
       ...o,
@@ -74,7 +69,7 @@ function getOutcomes(): OutcomeType[] {
     );
 }
 
-function getOutcomesHelper(
+function getProbabilities(
   isMissiles: boolean,
   parentProbability: number,
   shipGroups: ShipGroupsType,
@@ -108,21 +103,23 @@ function getOutcomesHelper(
   const shooter = nextShipGroups.shift()!;
   if (shooter.length === 0) {
     // end of missiles
-    return getOutcomesHelper(false, parentProbability, nextShipGroups, cached);
+    return getProbabilities(false, parentProbability, nextShipGroups, cached);
   }
   nextShipGroups.push(shooter);
-  return getPossibleChildren(isMissiles, nextShipGroups).flatMap(
+  const rval = getChildren(isMissiles, nextShipGroups).flatMap(
     ({ childProbability, childShipGroups }) =>
-      getOutcomesHelper(
+      getProbabilities(
         isMissiles,
         parentProbability * childProbability,
         childShipGroups,
         cached
       )
   );
+  cached[key] = rval;
+  return rval;
 }
 
-function getPossibleChildren(
+function getChildren(
   isMissiles: boolean,
   shipGroups: ShipGroupsType
 ): {
