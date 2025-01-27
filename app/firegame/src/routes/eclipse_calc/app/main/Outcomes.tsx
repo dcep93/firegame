@@ -1,6 +1,7 @@
 import styles from "../../../../shared/styles.module.css";
 import { ShipType } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
+import { assignDamage } from "./assignDamage";
 
 // todo antimatter_splitter
 
@@ -12,11 +13,16 @@ type OutcomeType = {
   cumProb: number;
 };
 
-type ShipGroupsType = {
+export type ShipGroupsType = {
   ship: ShipType;
   fI: number;
   damage: number;
 }[][];
+
+type PRolls = {
+  probability: number;
+  rolls: { value: number; roll: number }[];
+}[];
 
 function getOutcomes(): OutcomeType[] {
   const shipGroups = Object.entries(
@@ -155,15 +161,15 @@ function getChildren(
     ...arr[0],
     count: arr.map((d) => d.count).reduce((a, b) => a + b, 0),
   }));
-  const pRolls = getPRolls(dice, [{ probability: 1, rolls: [] }]);
-  alert(JSON.stringify({ isMissiles, dice, pRolls }));
-  return [];
+  const pRolls = getPRolls(
+    dice.map((o) => ({ ...o })),
+    [{ probability: 1, rolls: [] }]
+  );
+  return pRolls.map((pr) => ({
+    childProbability: pr.probability,
+    childShipGroups: assignDamage(shooter[0].fI, shipGroups, pr.rolls),
+  }));
 }
-
-type PRolls = {
-  probability: number;
-  rolls: { value: number; roll: number }[];
-}[];
 
 function getPRolls(
   dice: { count: number; value: number; computer: number }[],
@@ -182,16 +188,29 @@ function getPRolls(
         .map((roll) => (roll >= 6 ? roll : 0)),
       (roll) => roll.toString()
     )
-  ).map((arr) => ({
-    roll: arr[0],
-    probability: arr.length / possibleRolls.length,
-  }));
-  const nextCross = rollProbs.flatMap((rp) =>
-    cross.map((cp) => ({
-      probability: cp.probability * rp.probability,
-      rolls: cp.rolls.concat({ value: dZero.value, roll: rp.roll }),
+  )
+    .map((arr) => ({
+      roll: arr[0],
+      probability: arr.length / possibleRolls.length,
     }))
-  );
+    .filter(({ roll }) => roll >= 6);
+  const nextCross = Object.values(
+    utils.groupByF(
+      rollProbs.flatMap((rp) =>
+        cross.map((cp) => ({
+          probability: cp.probability * rp.probability,
+          rolls: cp.rolls
+            .concat({ value: dZero.value, roll: rp.roll })
+            .sort((a, b) => a.value - b.value)
+            .sort((a, b) => a.roll - b.roll),
+        }))
+      ),
+      (nc) => JSON.stringify(nc.rolls)
+    )
+  ).map((arr) => ({
+    ...arr[0],
+    probability: arr.map((a) => a.probability).reduce((a, b) => a + b, 0),
+  }));
   return getPRolls(dice, nextCross);
 }
 
