@@ -71,7 +71,7 @@ function getOutcomes(): OutcomeType[] {
 
 function getProbabilities(
   isMissiles: boolean,
-  parentProbability: number,
+  probability: number,
   shipGroups: ShipGroupsType,
   cached: { [key: string]: OutcomeType[] }
 ): OutcomeType[] {
@@ -107,14 +107,14 @@ function getProbabilities(
   const shooter = nextShipGroups.shift()!;
   if (shooter.length === 0) {
     // end of missiles
-    return getProbabilities(false, parentProbability, nextShipGroups, cached);
+    return getProbabilities(false, probability, nextShipGroups, cached);
   }
   nextShipGroups.push(shooter);
   const rval = getChildren(isMissiles, nextShipGroups).flatMap(
     ({ childProbability, childShipGroups }) =>
       getProbabilities(
         isMissiles,
-        parentProbability * childProbability,
+        probability * childProbability,
         childShipGroups,
         cached
       )
@@ -155,8 +155,44 @@ function getChildren(
     ...arr[0],
     count: arr.map((d) => d.count).reduce((a, b) => a + b, 0),
   }));
-  alert(JSON.stringify({ isMissiles, dice }));
+  const pRolls = getPRolls(dice, [{ probability: 1, rolls: [] }]);
+  alert(JSON.stringify({ isMissiles, dice, pRolls }));
   return [];
+}
+
+type PRolls = {
+  probability: number;
+  rolls: { value: number; roll: number }[];
+}[];
+
+function getPRolls(
+  dice: { count: number; value: number; computer: number }[],
+  cross: PRolls
+): PRolls {
+  if (dice.length === 0) return cross;
+  const dZero = dice[0];
+  if (--dZero.count === 0) {
+    dice.shift();
+  }
+  const possibleRolls = [-Infinity, 2, 3, 4, 5, Infinity];
+  const rollProbs = Object.values(
+    utils.groupByF(
+      possibleRolls
+        .map((roll) => roll + dZero.computer)
+        .map((roll) => (roll >= 6 ? roll : 0)),
+      (roll) => roll.toString()
+    )
+  ).map((arr) => ({
+    roll: arr[0],
+    probability: arr.length / possibleRolls.length,
+  }));
+  const nextCross = rollProbs.flatMap((rp) =>
+    cross.map((cp) => ({
+      probability: cp.probability * rp.probability,
+      rolls: cp.rolls.concat({ value: dZero.value, roll: rp.roll }),
+    }))
+  );
+  return getPRolls(dice, nextCross);
 }
 
 export default function Outcomes() {
