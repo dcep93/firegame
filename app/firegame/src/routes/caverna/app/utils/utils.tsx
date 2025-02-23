@@ -5,12 +5,13 @@ import ExpeditionActions, { ExpeditionAction } from "./ExpeditionActions";
 
 import { firebaseId } from "../../../../firegame/firebase";
 import Caverns, { Cavern, CavernCategory } from "./Caverns";
-import {
+import NewGame, {
   AnimalResourcesType,
   Buildable,
   Coords,
   GameType,
   Harvest,
+  Params,
   PlayerType,
   ResourcesType,
   Task,
@@ -1318,6 +1319,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       : Object.entries(o)
           .map(([k, v]) => `${k}: ${v}`)
           .join(delimiter);
+  }
+
+  newGame(params: Params) {
+    return NewGame(params);
   }
 }
 

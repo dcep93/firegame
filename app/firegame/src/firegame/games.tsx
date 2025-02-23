@@ -6,7 +6,6 @@ import Caverna from "../routes/caverna/app/Caverna";
 import CavernaScorer from "../routes/caverna_scorer/app/CavernaScorer";
 import Eclipse from "../routes/eclipse/app/Eclipse";
 import EclipseCalc from "../routes/eclipse_calc/app/EclipseCalc";
-import ff_draft from "../routes/ff_draft/app/FFDraft";
 import five from "../routes/five/app/Five";
 import fox from "../routes/fox/app/Fox";
 import loveletter from "../routes/love_letter/app/LoveLetter";
@@ -32,7 +31,6 @@ const ex = {
   Eclipse,
   Caverna,
   Template, // todo
-  ff_draft,
   azul,
   SecretHitler,
   spyfall,

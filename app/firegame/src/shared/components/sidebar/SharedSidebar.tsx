@@ -65,8 +65,13 @@ abstract class SharedSidebar extends React.Component {
     );
   }
 
+  getParams(): any {
+    return null;
+  }
+
   startNewGame() {
     Promise.resolve()
+      .then(this.getParams)
       .then(this.utils.newGame)
       .catch((e) => {
         alert(e);

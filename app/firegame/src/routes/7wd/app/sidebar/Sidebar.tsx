@@ -2,15 +2,16 @@ import React, { RefObject } from "react";
 
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import NewGame from "../utils/NewGame";
-import { Params } from "../utils/types";
 import utils, { store } from "../utils/utils";
 
-class Sidebar extends SharedSidebar<Params> {
+class Sidebar extends SharedSidebar {
   expansionRef: RefObject<HTMLInputElement> = React.createRef();
   randomStartingRef: RefObject<HTMLInputElement> = React.createRef();
   name = "7 Wonders Duel";
   NewGame = NewGame;
   utils = utils;
+
+  rules = "";
 
   renderStartNewGame() {
     return (

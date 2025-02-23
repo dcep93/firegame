@@ -1,6 +1,6 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { GameType, PlayerType } from "./NewGame";
+import NewGame, { GameType, Params, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
@@ -13,6 +13,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
     this.shuffle(game.bank);
     return game;
+  }
+
+  newGame(params: Params) {
+    return NewGame(params);
   }
 }
 

@@ -1,6 +1,6 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { GameType, PlayerType, Tile } from "./NewGame";
+import NewGame, { GameType, Params, PlayerType, Tile } from "./NewGame";
 
 const TILES_PER_FACTORY = 4;
 
@@ -9,6 +9,10 @@ const store: StoreType<GameType> = store_;
 class Utils extends SharedUtils<GameType, PlayerType> {
   FIRST_PLAYER_TILE = -1;
   FLOOR_SCORING = [-1, -1, -2, -2, -2, -3, -3];
+
+  newGame(params: Params) {
+    return NewGame(params);
+  }
 
   newRound(game: GameType) {
     if (game.bag === undefined) game.bag = [];

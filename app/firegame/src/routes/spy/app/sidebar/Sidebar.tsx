@@ -4,10 +4,11 @@ import css from "../index.module.css";
 import NewGame, { Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
-class Sidebar extends SharedSidebar<Params> {
+class Sidebar extends SharedSidebar {
   name = "Spy";
   NewGame = NewGame;
   utils = utils;
+  rules = "";
   numTeamsRef: RefObject<HTMLInputElement> = React.createRef();
   numWordsRef: RefObject<HTMLInputElement> = React.createRef();
 

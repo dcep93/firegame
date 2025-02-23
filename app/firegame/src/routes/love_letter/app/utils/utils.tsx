@@ -1,11 +1,11 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 
-import { Card, GameType, PlayerType, Ranks } from "./NewGame";
+import NewGame, { Card, GameType, Params, PlayerType, Ranks } from "./NewGame";
 
 export const store: StoreType<GameType> = store_;
 
-export const WINNER = -1;
+export const WINNER = -1 as Card;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
   advanceTurn() {
@@ -70,6 +70,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       player.hand = [draw];
     }
     player.played.unshift(card);
+  }
+
+  newGame(params: Params) {
+    return NewGame(params);
   }
 }
 

@@ -2,7 +2,7 @@ import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import wStyles from "../index.module.css";
 import Preview from "../sidebar/Preview";
-import { BirdType, GameType, PlayerType } from "./NewGame";
+import NewGame, { BirdType, GameType, Params, PlayerType } from "./NewGame";
 import bank from "./bank";
 import {
   BonusType,
@@ -17,6 +17,9 @@ import {
 const store: StoreType<GameType> = store_;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
+  newGame(params: Params) {
+    return NewGame(params);
+  }
   goalScoring = [
     [4, 1, 0, 0],
     [5, 2, 1, 0],

@@ -3,6 +3,7 @@ import store_, { StoreType } from "../../../../shared/store";
 import { SelectedEnum } from "../main/Main";
 import { NUM_SCIENCES } from "../main/Science";
 import bank from "./bank";
+import NewGame from "./NewGame";
 import {
   Age,
   CardType,
@@ -10,6 +11,7 @@ import {
   CommercialEnum,
   CommercialType,
   GameType,
+  Params,
   PlayerType,
   Resource,
   ScienceEnum,
@@ -584,6 +586,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         break;
     }
     utils.endCommercial(`built ${utils.enumName(scienceName, ScienceToken)}`);
+  }
+
+  newGame(params: Params) {
+    return NewGame(params);
   }
 }
 

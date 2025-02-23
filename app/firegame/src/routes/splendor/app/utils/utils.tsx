@@ -2,7 +2,7 @@ import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import "./ai";
 import { Card, Token, TokenToEmoji } from "./bank";
-import { GameType, PlayerType } from "./NewGame";
+import NewGame, { GameType, Params, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
@@ -38,6 +38,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       (player.cards || []).map((c) => c.points).reduce((a, b) => a + b, 0) +
       player.nobles * 3
     );
+  }
+
+  newGame(params: Params) {
+    return NewGame(params);
   }
 }
 

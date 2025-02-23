@@ -4,11 +4,12 @@ import NewGame, { Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 import Preview from "./Preview";
 
-class Sidebar extends SharedSidebar<Params> {
+class Sidebar extends SharedSidebar {
   expansionRef: RefObject<HTMLInputElement> = React.createRef();
   name = "Wingspan";
   NewGame = NewGame;
   utils = utils;
+  rules = "";
 
   renderStartNewGame() {
     return (

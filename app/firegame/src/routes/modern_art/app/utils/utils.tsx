@@ -1,6 +1,13 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { Art, Artist, AType, GameType, PlayerType } from "./NewGame";
+import NewGame, {
+  Art,
+  Artist,
+  AType,
+  GameType,
+  Params,
+  PlayerType,
+} from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
@@ -68,6 +75,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   artToString(a: Art): string {
     return `${Artist[a.artist]} - ${AType[a.aType]}`;
+  }
+
+  newGame(params: Params) {
+    return NewGame(params);
   }
 }
 

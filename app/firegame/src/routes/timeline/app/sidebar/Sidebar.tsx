@@ -1,18 +1,19 @@
 import React, { RefObject } from "react";
 
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
-import NewGame, { GameType, Params } from "../utils/NewGame";
+import NewGame, { GameType } from "../utils/NewGame";
 import { store, shared as utils } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
 import Settings from "./Settings";
 
-class Sidebar extends SharedSidebar<Params> {
+class Sidebar extends SharedSidebar {
   settingsRef: RefObject<Settings> = React.createRef();
   name = "Timeline";
   NewGame = NewGame;
   utils = utils;
+  rules = "";
 
   renderStartNewGame() {
     return (

@@ -2,7 +2,7 @@ import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";
-import { GameType, PlayerType } from "./NewGame";
+import NewGame, { GameType, Params, PlayerType } from "./NewGame";
 import { Cities, City, Color, Routes, TicketType } from "./bank";
 
 const store: StoreType<GameType> = store_;
@@ -319,6 +319,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         .map((r) => r.length)
         .sum()
     );
+  }
+
+  newGame(params: Params) {
+    return NewGame(params);
   }
 }
 
