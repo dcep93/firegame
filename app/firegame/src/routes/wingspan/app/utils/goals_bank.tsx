@@ -1,3 +1,4 @@
+import { enumArray } from "../../../../shared/shared";
 import ActivationsBank from "./activations_bank";
 import bank from "./bank";
 import { GoalType } from "./NewGame";
@@ -77,13 +78,5 @@ const GoalsBank: GoalType[] = [
       f: (p: PlayerType) => eggsInNest(p, n),
     })),
 ].flatMap((i) => i);
-
-function enumArray<X>(enumType: { [k: string]: string | X }): X[] {
-  return Object.values(enumType)
-    .filter((e) => typeof e === "number")
-    .map((e) => e as unknown as number)
-    .sort((a, b) => a - b)
-    .map((e) => e as unknown as X);
-}
 
 export default GoalsBank;

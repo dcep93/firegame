@@ -128,13 +128,7 @@ abstract class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
     return Array.from(new Array(num)).map((_, i) => i);
   }
 
-  enumArray<X>(enumType: { [k: string]: string | X }): X[] {
-    return Object.values(enumType)
-      .filter((e) => typeof e === "number")
-      .map((e) => e as unknown as number)
-      .sort((a, b) => a - b)
-      .map((e) => e as unknown as X);
-  }
+  enumArray = enumArray;
 
   enumNameToValue(name: string, e: { [s: string]: number | string }): number {
     return e[name] as number;
@@ -221,6 +215,14 @@ abstract class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
       return prev;
     }, {} as { [key: string]: T[] });
   }
+}
+
+export function enumArray<X>(enumType: { [k: string]: string | X }): X[] {
+  return Object.values(enumType)
+    .filter((e) => typeof e === "number")
+    .map((e) => e as unknown as number)
+    .sort((a, b) => a - b)
+    .map((e) => e as unknown as X);
 }
 
 export default SharedUtils;

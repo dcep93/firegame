@@ -7,13 +7,16 @@ export enum Resource {
 
 export type PowerPlant = { index: number; cost: number; isPlug: boolean };
 
-export const deck: PowerPlant[] = [{ cost: 3 }, { cost: 16 }].map(
-  (pp, index) => ({
-    ...pp,
-    index,
-    isPlug: pp.cost <= 15,
-  })
-);
+export const deck: PowerPlant[] = [
+  { cost: 3 },
+  { cost: 4 },
+  { cost: 16 },
+  { cost: 17 },
+].map((pp, index) => ({
+  ...pp,
+  index,
+  isPlug: pp.cost <= 15,
+}));
 
 export type GameType = {
   currentPlayer: number;

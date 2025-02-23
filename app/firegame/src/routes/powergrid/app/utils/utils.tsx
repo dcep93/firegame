@@ -8,7 +8,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
     return Promise.resolve({
       currentPlayer: 0,
-      players: [],
+      players: utils
+        .shuffle(Object.entries(store.lobby))
+        .slice(0, 2)
+        .map(([userId, userName], index) => ({
+          userId,
+          userName,
+          color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
+          money: 50,
+          powerPlantIndices: [],
+          cityIndices: [],
+          resources: Object.fromEntries(
+            utils.enumArray(Resource).map((r) => [r, 0])
+          ) as { [r in Resource]: number },
+        })),
       deckIndices: undefined,
       outOfPlayZones: [],
       resources: {
@@ -17,36 +30,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         [Resource.garbage]: 9,
         [Resource.uranium]: 2,
       },
-    } as GameType)
-      .then((game) => ({
-        ...game,
-        players: utils
-          .shuffle(Object.entries(store.lobby))
-          .slice(0, 2)
-          .map(([userId, userName], index) => ({
-            userId,
-            userName,
-            color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
-            money: 50,
-            powerPlantIndices: [],
-            cityIndices: [],
-            resources: Object.fromEntries(
-              utils.enumArray(Resource).map((r) => [r, 0])
-            ) as { [r in Resource]: number },
-          })),
-      }))
-      .then((game) => {
-        const grouped = utils.groupByF(deck, (pp) => pp.isPlug.toString());
-        const plugs = utils.shuffle(grouped["true"]);
-        const sockets = utils.shuffle(grouped["false"]);
-        plugs.splice(0, { 2: 1, 3: 2, 4: 1 }[game.players.length] || 0);
-        sockets.splice(0, { 2: 5, 3: 6, 4: 3 }[game.players.length] || 0);
-        game.deckIndices = plugs
-          .splice(0, 9)
-          .concat(utils.shuffle(plugs.concat(sockets)))
-          .map(({ index }) => index);
-        return game;
-      });
+    } as GameType).then((game) => ({
+      ...game,
+      deckIndices: ((grouped) =>
+        ((plugs, sockets) =>
+          plugs
+            .splice(0, 9)
+            .concat(utils.shuffle(plugs.concat(sockets)))
+            .map(({ index }) => index))(
+          utils.shuffle(grouped["true"]),
+          utils.shuffle(grouped["false"])
+        ))(utils.groupByF(deck, (pp) => pp.isPlug.toString())),
+    }));
   }
 }
 
