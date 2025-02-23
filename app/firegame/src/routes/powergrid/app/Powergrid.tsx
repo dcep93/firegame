@@ -1,7 +1,7 @@
 import React from "react";
+import SharedSidebar from "../../../shared/components/sidebar/SharedSidebar";
 import styles from "../../../shared/styles.module.css";
 import Main from "./main/Main";
-import Sidebar from "./sidebar/Sidebar";
 import utils, { store } from "./utils/utils";
 
 export default class PowerGrid extends React.Component {
@@ -15,4 +15,11 @@ export default class PowerGrid extends React.Component {
       </div>
     );
   }
+}
+
+class Sidebar extends SharedSidebar {
+  name = "Power Grid";
+  utils = utils;
+  rules =
+    "https://www.riograndegames.com/wp-content/uploads/2018/12/Power-Grid-Recharged-Rules.pdf";
 }

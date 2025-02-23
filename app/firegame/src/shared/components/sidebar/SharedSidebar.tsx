@@ -7,13 +7,11 @@ import store from "../../store";
 import Player from "./Player";
 import SharedLog from "./SharedLog";
 
-abstract class SharedSidebar<T> extends React.Component {
+abstract class SharedSidebar extends React.Component {
   abstract name: string;
   abstract utils: SharedUtils<any, any>;
-  abstract NewGame: (params: T) => any;
-  abstract getParams(): T;
 
-  rules: string | null = null;
+  abstract rules: string;
 
   render() {
     return (
@@ -58,7 +56,7 @@ abstract class SharedSidebar<T> extends React.Component {
           </button>
         </div>
 
-        {this.rules && (
+        {this.rules !== "" && (
           <h4>
             <a href={this.rules}>Rules</a>
           </h4>
@@ -69,8 +67,7 @@ abstract class SharedSidebar<T> extends React.Component {
 
   startNewGame() {
     Promise.resolve()
-      .then(this.getParams.bind(this))
-      .then(this.NewGame)
+      .then(this.utils.newGame)
       .catch((e) => {
         alert(e);
         console.error(e);

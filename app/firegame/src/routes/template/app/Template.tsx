@@ -1,7 +1,7 @@
 import React from "react";
+import SharedSidebar from "../../../shared/components/sidebar/SharedSidebar";
 import styles from "../../../shared/styles.module.css";
 import Main from "./main/Main";
-import Sidebar from "./sidebar/Sidebar";
 import utils, { store } from "./utils/utils";
 
 // this folder should be as small as possible
@@ -18,4 +18,10 @@ export default class Template extends React.Component {
       </div>
     );
   }
+}
+
+class Sidebar extends SharedSidebar {
+  name = "Template";
+  utils = utils;
+  rules = "";
 }

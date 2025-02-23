@@ -26,7 +26,9 @@ Array.prototype.sum = function (this: number[]): number {
   return this.reduce((a, b) => a + b, 0);
 };
 
-class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
+abstract class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
+  abstract newGame(params: any): any;
+
   undo() {
     firebaseUndo();
   }
