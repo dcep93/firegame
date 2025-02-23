@@ -17,9 +17,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
     return Promise.resolve({
       currentPlayer: 0,
-      players: [],
-    } as GameType).then((game) => ({
-      ...game,
       players: utils
         .shuffle(Object.entries(store.lobby))
         .slice(0, 2)
@@ -27,7 +24,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           userId,
           userName,
         })),
-    }));
+    } as GameType);
   }
 }
 
