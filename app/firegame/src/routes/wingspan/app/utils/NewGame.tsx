@@ -2,13 +2,13 @@ import { LobbyType } from "../../../../shared/store";
 import bank from "./bank";
 import GoalsBank from "./goals_bank";
 import {
-  BirdType,
   BonusType,
   CardType,
   ExpansionEnum,
   FoodEnum,
   GoalWrapperType,
   HabitatEnum,
+  PlayerType,
 } from "./types";
 import utils, { store } from "./utils";
 
@@ -31,16 +31,6 @@ export type GameType = {
 export type Params = {
   lobby: LobbyType;
   europeanExpansion: boolean;
-};
-
-export type PlayerType = {
-  userId: string;
-  userName: string;
-  hand?: number[];
-  bonuses: number[];
-  food: { [f in FoodEnum]: number };
-  habitats: { [h in HabitatEnum]?: BirdType[] };
-  actions?: { [h in HabitatEnum]?: number };
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {

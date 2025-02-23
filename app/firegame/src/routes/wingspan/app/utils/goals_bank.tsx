@@ -1,8 +1,11 @@
 import ActivationsBank from "./activations_bank";
 import bank from "./bank";
-import { GoalType, PlayerType } from "./NewGame";
-import { BirdType, HabitatEnum, NestEnum } from "./types";
+import { GoalType } from "./NewGame";
+import { BirdType, HabitatEnum, NestEnum, PlayerType } from "./types";
 import utils from "./utils";
+
+console.log({ utils });
+throw new Error("gotem");
 
 function getCount(b: BirdType): number {
   return bank.cards[b.index].activation === ActivationsBank.countDouble ? 2 : 1;

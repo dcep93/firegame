@@ -1,3 +1,13 @@
+export type PlayerType = {
+  userId: string;
+  userName: string;
+  hand?: number[];
+  bonuses: number[];
+  food: { [f in FoodEnum]: number };
+  habitats: { [h in HabitatEnum]?: BirdType[] };
+  actions?: { [h in HabitatEnum]?: number };
+};
+
 export type BirdType = {
   index: number;
   eggs: number;
