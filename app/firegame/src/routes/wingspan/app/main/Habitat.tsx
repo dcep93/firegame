@@ -2,8 +2,8 @@ import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import wStyles from "../index.module.css";
 import bank from "../utils/bank";
-import { BirdType, PlayerType } from "../utils/NewGame";
-import { HabitatEnum } from "../utils/types";
+import { PlayerType } from "../utils/NewGame";
+import { BirdType, HabitatEnum } from "../utils/types";
 import utils, { store } from "../utils/utils";
 
 class Habitat extends React.Component<{

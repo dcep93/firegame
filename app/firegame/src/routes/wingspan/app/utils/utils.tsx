@@ -2,9 +2,10 @@ import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import wStyles from "../index.module.css";
 import Preview from "../sidebar/Preview";
-import NewGame, { BirdType, GameType, Params, PlayerType } from "./NewGame";
+import NewGame, { GameType, Params, PlayerType } from "./NewGame";
 import bank from "./bank";
 import {
+  BirdType,
   BonusType,
   CardType,
   ColorEnum,

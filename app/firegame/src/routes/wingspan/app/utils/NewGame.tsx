@@ -2,6 +2,7 @@ import { LobbyType } from "../../../../shared/store";
 import bank from "./bank";
 import GoalsBank from "./goals_bank";
 import {
+  BirdType,
   BonusType,
   CardType,
   ExpansionEnum,
@@ -10,6 +11,8 @@ import {
   HabitatEnum,
 } from "./types";
 import utils, { store } from "./utils";
+
+export type GoalType = { goal: string; f: (p: PlayerType) => number };
 
 export type GameType = {
   params: Params;
@@ -28,13 +31,6 @@ export type GameType = {
 export type Params = {
   lobby: LobbyType;
   europeanExpansion: boolean;
-};
-
-export type BirdType = {
-  index: number;
-  eggs: number;
-  cache: number;
-  tucked: number;
 };
 
 export type PlayerType = {

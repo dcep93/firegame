@@ -1,4 +1,9 @@
-import { BirdType, PlayerType } from "./NewGame";
+export type BirdType = {
+  index: number;
+  eggs: number;
+  cache: number;
+  tucked: number;
+};
 
 export type CardType = {
   name: string;
@@ -34,8 +39,6 @@ export type BonusType = {
   vp_f: { [num: number]: number } | null;
   percent: number | null;
 };
-
-export type GoalType = { goal: string; f: (p: PlayerType) => number };
 
 export type GoalWrapperType = {
   index: number;

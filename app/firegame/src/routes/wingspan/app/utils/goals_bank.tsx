@@ -1,7 +1,7 @@
 import ActivationsBank from "./activations_bank";
 import bank from "./bank";
-import { BirdType, PlayerType } from "./NewGame";
-import { GoalType, HabitatEnum, NestEnum } from "./types";
+import { GoalType, PlayerType } from "./NewGame";
+import { BirdType, HabitatEnum, NestEnum } from "./types";
 import utils from "./utils";
 
 function getCount(b: BirdType): number {

@@ -1,6 +1,5 @@
 import bank from "./bank";
-import { BirdType } from "./NewGame";
-import { FoodEnum, HabitatEnum, NestEnum } from "./types";
+import { BirdType, FoodEnum, HabitatEnum, NestEnum } from "./types";
 import utils, { store } from "./utils";
 
 class ABC {
@@ -116,8 +115,9 @@ class ABC {
       .map((i) => i!.index)
       .filter((i) => i !== bt.index)
       .map((i) => bank.cards[i])
-      .filter((i) => i.nest === NestEnum.wild || i.nest === NestEnum.cavity)
-      .length;
+      .filter(
+        (i) => i.nest === NestEnum.wild || i.nest === NestEnum.cavity
+      ).length;
     utils.layEggs(bt, eggs);
   }
 
