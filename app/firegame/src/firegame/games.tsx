@@ -11,6 +11,7 @@ import five from "../routes/five/app/Five";
 import fox from "../routes/fox/app/Fox";
 import loveletter from "../routes/love_letter/app/LoveLetter";
 import ModernArt from "../routes/modern_art/app/ModernArt";
+import PowerGrid from "../routes/powergrid/app/Powergrid";
 import Random from "../routes/random/app/Random";
 import SecretHitler from "../routes/secret_hitler/app/SecretHitler";
 import splendor from "../routes/splendor/app/Splendor";
@@ -24,6 +25,7 @@ import wavelength from "../routes/wavelength/app/Wavelength";
 import wingspan from "../routes/wingspan/app/Wingspan";
 
 const ex = {
+  PowerGrid,
   EclipseCalc,
   CavernaScorer,
   Eclipse,
