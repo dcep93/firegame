@@ -1,13 +1,21 @@
 import SharedUtils from "../../../../shared/shared";
-import store, { StoreType } from "../../../../shared/store";
+import store_, { StoreType } from "../../../../shared/store";
+import NewGame, { GameType, Params, PlayerType } from "./NewGame";
 
-import { GameType, PlayerType } from "./NewGame";
+const store: StoreType<GameType> = store_;
 
-const store_: StoreType<GameType> = store;
-const shared: SharedUtils<GameType, PlayerType> = new SharedUtils();
+class Utils extends SharedUtils<GameType, PlayerType> {
+  newGame(params: Params) {
+    return NewGame(params);
+  }
 
-function sortBoard(game: GameType) {
-  game.board.sort((a, b) => a - b);
+  sortBoard(game: GameType) {
+    game.board.sort((a, b) => a - b);
+  }
 }
 
-export { shared, sortBoard, store_ as store };
+const utils = new Utils();
+
+export default utils;
+
+export { store, utils };

@@ -2,7 +2,7 @@ import React, { RefObject } from "react";
 
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import NewGame, { GameType } from "../utils/NewGame";
-import { store, shared as utils } from "../utils/utils";
+import { store, utils } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
 import css from "../index.module.css";

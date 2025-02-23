@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
-import { shared } from "../../../timeline/app/utils/utils";
 import wStyles from "../index.module.css";
 import bank from "../utils/bank";
 import GoalsBank from "../utils/goals_bank";
@@ -108,7 +107,7 @@ class Hand extends React.Component<{
       .reverse()
       .forEach((key) => {
         const players = scoresD[key];
-        shared.count(players.length).forEach((_) => {
+        utils.count(players.length).forEach((_) => {
           players.forEach((p) => (g.rankings[offset][p.i] = true));
           offset++;
         });

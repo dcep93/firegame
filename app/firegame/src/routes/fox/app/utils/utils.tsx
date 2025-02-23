@@ -1,17 +1,22 @@
 import SharedUtils from "../../../../shared/shared";
 import store, { StoreType } from "../../../../shared/store";
 
-import { Card, GameType, PlayerType } from "./NewGame";
+import NewGame, { Card, GameType, Params, PlayerType } from "./NewGame";
 
 const store_: StoreType<GameType> = store;
-const shared: SharedUtils<GameType, PlayerType> = new SharedUtils();
+class Utils extends SharedUtils<GameType, PlayerType> {
+  newGame(params: Params) {
+    return NewGame(params);
+  }
+}
+const utils = new Utils();
 const NUM_RANKS = 11;
 const NUM_SUITS = 3;
 const TRICKS_PER_ROUND = 13;
 
 function deal(game: GameType): GameType {
   game.currentPlayer = game.dealer;
-  game.dealer = shared.playerIndexByIndex(game.dealer + 1, game);
+  game.dealer = utils.playerIndexByIndex(game.dealer + 1, game);
   game.lead = null;
   game.deck = buildDeck();
   game.players = dealPlayers(game);
@@ -27,7 +32,7 @@ function buildDeck(): Card[] {
       deck.push({ suit, value });
     }
   }
-  shared.shuffle(deck);
+  utils.shuffle(deck);
   return deck;
 }
 
@@ -58,4 +63,4 @@ function getText(card: Card) {
   return `${card.suit}/${card.value || "-"}`;
 }
 
-export { deal, getText, shared, sortHand, store_ as store };
+export { deal, getText, utils as shared, sortHand, store_ as store };
