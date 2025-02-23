@@ -2,10 +2,6 @@ import ActivationsBank from "./activations_bank";
 import bank from "./bank";
 import { GoalType } from "./NewGame";
 import { BirdType, HabitatEnum, NestEnum, PlayerType } from "./types";
-import utils from "./utils";
-
-console.log({ utils });
-throw new Error("gotem");
 
 function getCount(b: BirdType): number {
   return bank.cards[b.index].activation === ActivationsBank.countDouble ? 2 : 1;
@@ -59,29 +55,35 @@ const GoalsBank: GoalType[] = [
         Math.min(...Object.values(p.habitats).map(eggsInHabitat)),
     },
   ],
-  utils.enumArray(HabitatEnum).map((i: HabitatEnum) => ({
+  enumArray(HabitatEnum).map((i: HabitatEnum) => ({
     goal: `birds in [${HabitatEnum[i]}]`,
     f: (p: PlayerType) =>
       (p.habitats[i] || []).map(getCount).reduce((a, b) => a + b, 0),
   })),
-  utils.enumArray(HabitatEnum).map((h: HabitatEnum) => ({
+  enumArray(HabitatEnum).map((h: HabitatEnum) => ({
     goal: `eggs in [${HabitatEnum[h]}]`,
     f: (p: PlayerType) => eggsInHabitat(p.habitats[h]),
   })),
-  utils
-    .enumArray(NestEnum)
+  enumArray(NestEnum)
     .filter((i: NestEnum) => i !== NestEnum.none && i !== NestEnum.wild)
     .map((n: NestEnum) => ({
       goal: `birds with eggs in [${NestEnum[n]}]`,
       f: (p: PlayerType) => birdsWithEggs(p, n),
     })),
-  utils
-    .enumArray(NestEnum)
+  enumArray(NestEnum)
     .filter((i: NestEnum) => i !== NestEnum.none && i !== NestEnum.wild)
     .map((n: NestEnum) => ({
       goal: `eggs in [${NestEnum[n]}]`,
       f: (p: PlayerType) => eggsInNest(p, n),
     })),
 ].flatMap((i) => i);
+
+function enumArray<X>(enumType: { [k: string]: string | X }): X[] {
+  return Object.values(enumType)
+    .filter((e) => typeof e === "number")
+    .map((e) => e as unknown as number)
+    .sort((a, b) => a - b)
+    .map((e) => e as unknown as X);
+}
 
 export default GoalsBank;
