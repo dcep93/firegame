@@ -3,15 +3,23 @@ export enum Resource {
   oil,
   garbage,
   uranium,
+
+  hybrid,
+  renewable,
 }
 
-export type PowerPlant = { index: number; cost: number; isPlug: boolean };
+export type PowerPlant = {
+  cost: number;
+  resources: { [r in Resource]?: number };
+  index: number;
+  isPlug: boolean;
+};
 
 export const deck: PowerPlant[] = [
-  { cost: 3 },
-  { cost: 4 },
-  { cost: 16 },
-  { cost: 17 },
+  { cost: 3, resources: {} },
+  { cost: 4, resources: {} },
+  { cost: 16, resources: {} },
+  { cost: 17, resources: {} },
 ].map((pp, index) => ({
   ...pp,
   index,
@@ -24,7 +32,7 @@ export type GameType = {
 
   deckIndices: number[] | undefined;
   outOfPlayZones: number[] | undefined; // todo
-  resources: { [r in Resource]: number };
+  resources: { [r in Resource]?: number };
 };
 
 export type PlayerType = {
@@ -35,5 +43,5 @@ export type PlayerType = {
   money: number;
   powerPlantIndices: number[] | undefined;
   cityIndices: number[] | undefined;
-  resources: { [r in Resource]: number };
+  resources: { [r in Resource]?: number };
 };

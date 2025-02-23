@@ -18,9 +18,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           money: 50,
           powerPlantIndices: [],
           cityIndices: [],
-          resources: Object.fromEntries(
-            utils.enumArray(Resource).map((r) => [r, 0])
-          ) as { [r in Resource]: number },
+          resources: {
+            [Resource.coal]: 0,
+            [Resource.oil]: 0,
+            [Resource.garbage]: 0,
+            [Resource.uranium]: 0,
+          },
         })),
       deckIndices: undefined,
       outOfPlayZones: [],
@@ -37,7 +40,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           plugs
             .splice(0, 9)
             .concat(utils.shuffle(plugs.concat(sockets)))
-            .map(({ index }) => index))(
+            .map(({ index }) => index)
+            .concat(-1))(
           utils.shuffle(grouped["true"]),
           utils.shuffle(grouped["false"])
         ))(utils.groupByF(deck, (pp) => pp.isPlug.toString())),
