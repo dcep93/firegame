@@ -1,10 +1,14 @@
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
-import NewGame, { Params } from "../utils/NewGame";
+import { LobbyType } from "../../../../shared/store";
 import utils, { store } from "../utils/utils";
+
+export type Params = {
+  lobby: LobbyType;
+};
 
 class Sidebar extends SharedSidebar<Params> {
   name = "Power Grid";
-  NewGame = NewGame;
+  NewGame = () => utils.newGame();
   utils = utils;
   rules =
     "https://www.riograndegames.com/wp-content/uploads/2018/12/Power-Grid-Recharged-Rules.pdf";
