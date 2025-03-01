@@ -80,7 +80,7 @@ export default function MapBuilder(props: { name: string }) {
                   (c) =>
                     [c.x - x, c.y - y]
                       .map((i) => Math.pow(i, 2))
-                      .reduce((a, b) => a + b, 0) < 1000
+                      .reduce((a, b) => a + b, 0) < 2000
                 );
                 if (close === undefined) {
                   m.cities.push({ name: m.cities.length.toString(), x, y });
