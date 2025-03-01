@@ -29,12 +29,6 @@ abstract class SharedSidebar extends React.Component {
               </div>
             ))}
           </div>
-          {this.renderInfo()}
-          <div className={styles.bubble}>
-            <h2>
-              <a href={".."}>Home</a>
-            </h2>
-          </div>
           <SharedLog />
         </div>
       </div>
@@ -56,11 +50,16 @@ abstract class SharedSidebar extends React.Component {
           </button>
         </div>
 
+        <h2>
+          <a href={".."}>Home</a>
+        </h2>
+
         {this.rules !== "" && (
-          <h4>
+          <h2>
             <a href={this.rules}>Rules</a>
-          </h4>
+          </h2>
         )}
+        {this.renderInfo()}
       </div>
     );
   }
