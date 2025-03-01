@@ -1,6 +1,6 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { deck, Resource } from "./bank";
+import { deck, Resource, startingBankResources } from "./bank";
 
 export type GameType = {
   currentPlayer: number;
@@ -26,6 +26,7 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
+    const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
       currentPlayer: 0,
       players: utils
@@ -49,19 +50,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         ((plugs, sockets) =>
           plugs
             .splice(0, 9)
-            .concat(utils.shuffle(plugs.concat(sockets)))
+            .concat(
+              utils.shuffle(
+                plugs
+                  .slice(0, -({ 2: 1, 3: 2, 4: 1 }[numPlayers] || 0))
+                  .concat(
+                    sockets.slice(0, -({ 2: 5, 3: 6, 4: 3 }[numPlayers] || 0))
+                  )
+              )
+            )
             .map(({ index }) => index)
             .concat(-1))(
           utils.shuffle(grouped["true"]),
           utils.shuffle(grouped["false"])
         ))(utils.groupByF(deck, (pp) => pp.isPlug.toString())),
       outOfPlayZones: [],
-      resources: {
-        [Resource.coal]: 24,
-        [Resource.oil]: 18,
-        [Resource.garbage]: 9,
-        [Resource.uranium]: 2,
-      },
+      resources: startingBankResources,
     }).then(utils.sortDeckTop);
   }
 

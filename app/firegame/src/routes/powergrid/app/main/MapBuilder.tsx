@@ -83,7 +83,12 @@ export default function MapBuilder(props: { name: string }) {
                       .reduce((a, b) => a + b, 0) < 2000
                 );
                 if (close === undefined) {
-                  m.cities.push({ name: m.cities.length.toString(), x, y });
+                  m.cities.push({
+                    color: "",
+                    name: m.cities.length.toString(),
+                    x,
+                    y,
+                  });
                 } else {
                   const edge = m.edges.find((e) => e.cost < 0);
                   if (edge === undefined) {
