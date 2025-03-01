@@ -64,3 +64,19 @@ export const deck: PowerPlant[] = [
   index,
   isPlug: pp.cost <= 15,
 }));
+
+export type Map = {
+  name: string;
+  img: string;
+  cities: { name: string; x: number; y: number }[];
+  edges: { c1: string; c2: string; cost: number }[];
+};
+
+const maps: Map[] = [
+  {
+    name: "germany",
+    img: "https://cf.geekdo-images.com/S4goYZXgXYxg6YM3XjCc3Q__original/img/8MwA59fnTZn8RdC4py4cryJ2uTM=/0x0/filters:format(jpeg)/pic354241.jpg",
+    cities: [],
+    edges: [],
+  },
+];
