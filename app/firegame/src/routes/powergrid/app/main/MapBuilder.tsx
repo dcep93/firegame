@@ -61,7 +61,7 @@ export default function MapBuilder(props: { name: string }) {
                 top: (cs[0].y + cs[1].y) / 2,
                 width,
                 transform: `rotate(${angleDeg}deg) translate(0%, -50%)`,
-                opacity: 0.5,
+                opacity: 0.3,
                 textAlign: "center",
               }}
             >
