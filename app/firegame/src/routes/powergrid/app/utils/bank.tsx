@@ -64,23 +64,3 @@ export const deck: PowerPlant[] = [
   index,
   isPlug: pp.cost <= 15,
 }));
-
-export type GameType = {
-  currentPlayer: number;
-  players: PlayerType[];
-
-  deckIndices: number[] | undefined;
-  outOfPlayZones: number[] | undefined; // todo
-  resources: { [r in Resource]?: number };
-};
-
-export type PlayerType = {
-  userId: string;
-  userName: string;
-
-  color: string;
-  money: number;
-  powerPlantIndices: number[] | undefined;
-  cityIndices: number[] | undefined;
-  resources: { [r in Resource]?: number };
-};

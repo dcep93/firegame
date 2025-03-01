@@ -1,6 +1,26 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { deck, GameType, PlayerType, Resource } from "./bank";
+import { deck, Resource } from "./bank";
+
+export type GameType = {
+  currentPlayer: number;
+  players: PlayerType[];
+
+  deckIndices?: number[];
+  outOfPlayZones?: number[]; // todo
+  resources: { [r in Resource]?: number };
+};
+
+export type PlayerType = {
+  userId: string;
+  userName: string;
+
+  color: string;
+  money: number;
+  powerPlantIndices?: number[];
+  cityIndices?: number[];
+  resources: { [r in Resource]?: number };
+};
 
 const store: StoreType<GameType> = store_;
 
@@ -25,16 +45,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             [Resource.uranium]: 0,
           },
         })),
-      deckIndices: undefined,
-      outOfPlayZones: [],
-      resources: {
-        [Resource.coal]: 24,
-        [Resource.oil]: 18,
-        [Resource.garbage]: 9,
-        [Resource.uranium]: 2,
-      },
-    } as GameType).then((game) => ({
-      ...game,
       deckIndices: ((grouped) =>
         ((plugs, sockets) =>
           plugs
@@ -45,7 +55,24 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           utils.shuffle(grouped["true"]),
           utils.shuffle(grouped["false"])
         ))(utils.groupByF(deck, (pp) => pp.isPlug.toString())),
-    }));
+      outOfPlayZones: [],
+      resources: {
+        [Resource.coal]: 24,
+        [Resource.oil]: 18,
+        [Resource.garbage]: 9,
+        [Resource.uranium]: 2,
+      },
+    }).then(utils.sortDeckTop);
+  }
+
+  sortDeckTop(game: GameType): GameType {
+    game.deckIndices &&
+      game.deckIndices.splice(
+        0,
+        0,
+        ...game.deckIndices.splice(0, 8).sort((a, b) => a - b)
+      );
+    return game;
   }
 }
 
