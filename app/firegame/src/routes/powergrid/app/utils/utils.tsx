@@ -53,10 +53,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             .concat(
               utils.shuffle(
                 plugs
-                  .slice(0, -({ 2: 1, 3: 2, 4: 1 }[numPlayers] || 0))
-                  .concat(
-                    sockets.slice(0, -({ 2: 5, 3: 6, 4: 3 }[numPlayers] || 0))
-                  )
+                  .slice({ 2: 1, 3: 2, 4: 1 }[numPlayers] || 0)
+                  .concat(sockets.slice({ 2: 5, 3: 6, 4: 3 }[numPlayers] || 0))
               )
             )
             .map(({ index }) => index)
