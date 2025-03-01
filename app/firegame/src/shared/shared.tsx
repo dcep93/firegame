@@ -215,6 +215,14 @@ abstract class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
       return prev;
     }, {} as { [key: string]: T[] });
   }
+
+  bubbleStyle = {
+    display: "inline-block",
+    borderRadius: "1em",
+    border: "2px solid black",
+    padding: "0.7em",
+    margin: "0.5em",
+  };
 }
 
 export function enumArray<X>(enumType: { [k: string]: string | X }): X[] {
