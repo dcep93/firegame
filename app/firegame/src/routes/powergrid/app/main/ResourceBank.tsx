@@ -17,7 +17,7 @@ export default function ResourceBank() {
             }}
             onClick={() => utils.buyResource(true, r)}
           >
-            ${utils.getCost(r)}({c}) {Resource[r]}
+            ${utils.getResourceCost(r)}({c}) {Resource[r]}
           </div>
         ))}
     </div>

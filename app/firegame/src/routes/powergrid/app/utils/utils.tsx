@@ -100,7 +100,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  sellPowerPlant(execute: boolean, i: number): boolean {
+  dumpPowerPlant(execute: boolean, i: number): boolean {
     if (
       utils.isMyTurn() &&
       (utils.getMe().powerPlantIndices || []).length > 3
@@ -152,7 +152,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  getCost(resource: Resource): number {
+  getResourceCost(resource: Resource): number {
     const count = store.gameW.game.resources[resource]!;
     const costs = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16].reverse();
     const tier =
