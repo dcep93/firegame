@@ -1,4 +1,4 @@
-import utils, { store } from "../utils/utils";
+import utils, { Action, store } from "../utils/utils";
 import { PlayerLabel } from "./Players";
 import PowerPlant from "./PowerPlant";
 
@@ -7,7 +7,7 @@ export default function Bank() {
     <div>
       <div style={utils.bubbleStyle}>
         <PlayerLabel p={utils.getCurrent()} />
-        <div>{utils.getAction()}</div>
+        <div>{Action[utils.getAction()]}</div>
       </div>
       <div>
         <button onClick={() => utils.pass(true)}>pass</button>

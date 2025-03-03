@@ -11,6 +11,13 @@ export default function PowerPlant(props: {
       style={{
         ...utils.bubbleStyle,
         cursor: props.isHover ? "pointer" : undefined,
+        ...((store.gameW.game.deckIndices || [])[
+          store.gameW.game.auction?.i || -1
+        ] === props.pp
+          ? {
+              backgroundColor: "gray",
+            }
+          : {}),
       }}
       onClick={props.onClick}
     >

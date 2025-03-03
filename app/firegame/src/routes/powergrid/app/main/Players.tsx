@@ -6,12 +6,16 @@ export default function Players() {
   return (
     <div>
       {store.gameW.game.playerOrder
-        .map((i) => ({ i, p: store.gameW.game.players[i] }))
-        .map(({ p, i }) => (
+        .map((i) => ({
+          i,
+          p: store.gameW.game.players[i],
+          isMe: i === utils.myIndex(),
+        }))
+        .map(({ p, i, isMe }) => (
           <div
             key={i}
             style={
-              i === utils.myIndex()
+              isMe
                 ? {
                     float: "right",
                     backgroundColor: "lightgrey",
@@ -37,9 +41,7 @@ export default function Players() {
                     .map((r) => (
                       <div
                         key={r}
-                        onClick={() =>
-                          i === utils.myIndex() && utils.dumpResource(true, r)
-                        }
+                        onClick={() => isMe && utils.dumpResource(true, r)}
                       >
                         {p.resources[r]} {Resource[r]}
                       </div>
@@ -49,12 +51,8 @@ export default function Players() {
                   <div key={j}>
                     <PowerPlant
                       pp={pp}
-                      isHover={
-                        i === utils.myIndex() && utils.dumpPowerPlant(false, j)
-                      }
-                      onClick={() =>
-                        i === utils.myIndex() && utils.dumpPowerPlant(true, j)
-                      }
+                      isHover={isMe && utils.dumpPowerPlant(false, j)}
+                      onClick={() => isMe && utils.dumpPowerPlant(true, j)}
                     />
                   </div>
                 ))}
