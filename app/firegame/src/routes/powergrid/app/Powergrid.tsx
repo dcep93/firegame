@@ -8,10 +8,17 @@ export default class PowerGrid extends React.Component {
   render() {
     return (
       <div
-        className={[styles.main, utils.isMyTurn() && styles.my_turn].join(" ")}
+        className={[utils.isMyTurn() && styles.my_turn].join(" ")}
+        style={{
+          display: "inline-flex",
+          minHeight: "100vH",
+          minWidth: "100vW",
+        }}
       >
-        <Sidebar />
-        <div className={styles.content}>{store.gameW.game && <Main />}</div>
+        <div>
+          <Sidebar />
+        </div>
+        <div>{store.gameW.game && <Main />}</div>
       </div>
     );
   }
@@ -27,7 +34,7 @@ class Sidebar extends SharedSidebar {
     return (
       <h2>
         <a href="https://github.com/dcep93/firegame/blob/master/app/firegame/src/routes/powergrid/app/utils/bank.tsx">
-          bank
+          bank.tsx
         </a>
       </h2>
     );

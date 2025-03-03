@@ -222,6 +222,7 @@ abstract class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
     border: "2px solid black",
     padding: "0.7em",
     margin: "0.5em",
+    backgroundColor: "white",
   };
 }
 

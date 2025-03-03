@@ -1,16 +1,32 @@
 import React from "react";
-import { store } from "../utils/utils";
-
-import styles from "../../../../shared/styles.module.css";
-import MapBuilder from "./MapBuilder";
+import Board from "./Board";
+import Players from "./Players";
 
 class Main extends React.Component {
   render() {
     return (
-      <div className={styles.bubble}>
-        <h2>Main</h2>
-        <pre>{JSON.stringify(store.gameW.game)}</pre>
-        <MapBuilder name="germany" />
+      <div
+        style={{
+          width: "100vW",
+          height: "100%",
+          overflowX: "scroll",
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        {/* <MapBuilder name="germany" /> */}
+        <div style={{ width: "15em", overflow: "scroll" }}>
+          <Players />
+        </div>
+        <div
+          style={{
+            flexGrow: 1,
+            minWidth: "50em",
+            position: "relative",
+          }}
+        >
+          <Board />
+        </div>
       </div>
     );
   }

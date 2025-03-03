@@ -15,7 +15,6 @@ export default function MapBuilder(props: { name: string }) {
             key={i}
             style={{
               ...utils.bubbleStyle,
-              backgroundColor: "white",
               position: "absolute",
               margin: 0,
               transform: "translate(-50%,-100%)",
@@ -53,7 +52,6 @@ export default function MapBuilder(props: { name: string }) {
               key={i}
               style={{
                 ...utils.bubbleStyle,
-                backgroundColor: "white",
                 position: "absolute",
                 margin: 0,
                 padding: 0,

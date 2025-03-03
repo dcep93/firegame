@@ -6,8 +6,10 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
+  mapName: string;
+  playerOrder: number[];
   deckIndices?: number[];
-  outOfPlayZones?: number[]; // todo
+  outOfPlayZones?: string[]; // todo
   resources: { [r in Resource]?: number };
 };
 
@@ -29,23 +31,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
       currentPlayer: 0,
-      players: utils
-        .shuffle(Object.entries(store.lobby))
-        .slice(0, 2)
-        .map(([userId, userName], index) => ({
-          userId,
-          userName,
-          color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
-          money: 50,
-          powerPlantIndices: [],
-          cityIndices: [],
-          resources: {
-            [Resource.coal]: 0,
-            [Resource.oil]: 0,
-            [Resource.garbage]: 0,
-            [Resource.uranium]: 0,
-          },
-        })),
+      mapName: "germany",
+      playerOrder: utils.shuffle(utils.count(numPlayers)),
+      players: Object.entries(store.lobby).map(([userId, userName], index) => ({
+        userId,
+        userName,
+        color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
+        money: 50,
+        powerPlantIndices: [],
+        cityIndices: [],
+        resources: {
+          [Resource.coal]: 0,
+          [Resource.oil]: 0,
+          [Resource.garbage]: 0,
+          [Resource.uranium]: 0,
+        },
+      })),
       deckIndices: ((grouped) =>
         ((plugs, sockets) =>
           plugs
