@@ -1,5 +1,6 @@
 import { Resource } from "../utils/bank";
 import utils, { store } from "../utils/utils";
+import PowerPlant from "./PowerPlant";
 
 export default function Players() {
   return (
@@ -34,15 +35,26 @@ export default function Players() {
               <div>
                 {p.color} / ${p.money} / {(p.cityIndices || []).length} cities
               </div>
-              <div>
-                {utils
-                  .enumArray(Resource)
-                  .filter((r) => p.resources[r] !== undefined)
-                  .map((r) => (
-                    <div key={r}>
-                      {p.resources[r]} {Resource[r]}
-                    </div>
-                  ))}
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                <div>
+                  {utils
+                    .enumArray(Resource)
+                    .filter((r) => p.resources[r] !== undefined)
+                    .map((r) => (
+                      <div key={r}>
+                        {p.resources[r]} {Resource[r]}
+                      </div>
+                    ))}
+                </div>
+                {(p.powerPlantIndices || []).map((pp, i) => (
+                  <div key={i}>
+                    <PowerPlant
+                      pp={pp}
+                      isHover={utils.sellPowerPlant(false, i)}
+                      onClick={() => utils.sellPowerPlant(true, i)}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>

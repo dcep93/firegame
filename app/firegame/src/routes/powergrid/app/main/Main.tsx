@@ -1,4 +1,5 @@
 import React from "react";
+import Bank from "./Bank";
 import Board from "./Board";
 import Players from "./Players";
 
@@ -16,6 +17,7 @@ class Main extends React.Component {
       >
         {/* <MapBuilder name="germany" /> */}
         <div style={{ width: "15em", overflow: "scroll" }}>
+          <Bank />
           <Players />
         </div>
         <div

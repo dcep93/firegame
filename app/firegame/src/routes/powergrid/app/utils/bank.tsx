@@ -23,7 +23,7 @@ export const startingBankResources = {
   [Resource.uranium]: 2,
 };
 
-export const deck: PowerPlant[] = [
+export const powerplants: PowerPlant[] = [
   { cost: 3, resources: { [Resource.oil]: 2 }, power: 1 },
   { cost: 4, resources: { [Resource.coal]: 2 }, power: 1 },
   { cost: 5, resources: { [Resource.hybrid]: 2 }, power: 1 },

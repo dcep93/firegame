@@ -1,16 +1,19 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { deck, Resource, startingBankResources } from "./bank";
+import { powerplants, Resource, startingBankResources } from "./bank";
 
 export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
+  step: number;
   mapName: string;
   playerOrder: number[];
   deckIndices?: number[];
+  costs?: { [pp: number]: number };
   outOfPlayZones?: string[]; // todo
   resources: { [r in Resource]?: number };
+  auction?: { pp: number; cost: number };
 };
 
 export type PlayerType = {
@@ -30,6 +33,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
     const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
+      step: 1,
       currentPlayer: 0,
       mapName: "germany",
       playerOrder: utils.shuffle(utils.count(numPlayers)),
@@ -39,7 +43,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
         money: 50,
         powerPlantIndices: [],
-        cityIndices: [],
+        cityIndices: [2, 3, 4],
         resources: {
           [Resource.coal]: 0,
           [Resource.oil]: 0,
@@ -62,20 +66,40 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             .concat(-1))(
           utils.shuffle(grouped["true"]),
           utils.shuffle(grouped["false"])
-        ))(utils.groupByF(deck, (pp) => pp.isPlug.toString())),
+        ))(utils.groupByF(powerplants, (pp) => pp.isPlug.toString())),
       outOfPlayZones: [],
       resources: startingBankResources,
-    }).then(utils.sortDeckTop);
+    } as GameType);
   }
 
-  sortDeckTop(game: GameType): GameType {
-    game.deckIndices &&
-      game.deckIndices.splice(
-        0,
-        0,
-        ...game.deckIndices.splice(0, 8).sort((a, b) => a - b)
-      );
-    return game;
+  buyPowerPlant(execute: boolean, pp: number, i: number, j: number): boolean {
+    if (utils.isMyTurn() && pp !== -1) {
+      if (utils.getMe().money >= powerplants[pp].cost) {
+        if (store.gameW.game.step === 3 || j <= 3) {
+          if (execute) {
+            store.gameW.game.auction = { pp, cost: powerplants[pp].cost - 1 };
+            store.update(`auctions \$${powerplants[pp].cost}`);
+          }
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  sellPowerPlant(execute: boolean, i: number): boolean {
+    if (
+      utils.isMyTurn() &&
+      (utils.getMe().powerPlantIndices || []).length > 3
+    ) {
+      if (execute) {
+        const spliced = utils.getMe().powerPlantIndices!.splice(i, 1)[0];
+        utils.incrementPlayerTurn();
+        store.update(`discarded \$${powerplants[spliced].cost}`);
+      }
+      return true;
+    }
+    return false;
   }
 }
 
