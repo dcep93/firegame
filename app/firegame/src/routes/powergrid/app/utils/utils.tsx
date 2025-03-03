@@ -43,7 +43,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
         money: 50,
         powerPlantIndices: [],
-        cityIndices: [2, 3, 4],
+        cityIndices: [],
         resources: {
           [Resource.coal]: 0,
           [Resource.oil]: 0,
@@ -162,6 +162,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   buyResource(execute: boolean, resource: Resource): boolean {
     return false;
+  }
+
+  getAction(): string {
+    return "picking a card for auction";
+  }
+
+  getPlayerBackgroundColor(p: PlayerType): string {
+    return "red";
   }
 }
 

@@ -1,12 +1,17 @@
 import utils, { store } from "../utils/utils";
+import { PlayerLabel } from "./Players";
 import PowerPlant from "./PowerPlant";
 
 export default function Bank() {
   return (
     <div>
-      {store.gameW.game.auction === undefined ? null : (
-        <div>
-          <button onClick={() => utils.pass(true)}>pass</button>
+      <div style={utils.bubbleStyle}>
+        <PlayerLabel p={utils.getCurrent()} />
+        <div>{utils.getAction()}</div>
+      </div>
+      <div>
+        <button onClick={() => utils.pass(true)}>pass</button>
+        {store.gameW.game.auction === undefined ? null : (
           <form
             style={{ display: "inline", float: "right" }}
             onSubmit={(e) =>
@@ -31,8 +36,8 @@ export default function Bank() {
             />
             <input type={"submit"} value={"bid"} />
           </form>
-        </div>
-      )}
+        )}
+      </div>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {(store.gameW.game.deckIndices || [])
           .slice(0, store.gameW.game.step === 3 ? 7 : 8)

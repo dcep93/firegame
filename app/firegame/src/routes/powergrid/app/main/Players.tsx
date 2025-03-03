@@ -1,5 +1,5 @@
 import { Resource } from "../utils/bank";
-import utils, { store } from "../utils/utils";
+import utils, { PlayerType, store } from "../utils/utils";
 import PowerPlant from "./PowerPlant";
 
 export default function Players() {
@@ -8,24 +8,24 @@ export default function Players() {
       {store.gameW.game.playerOrder
         .map((i) => store.gameW.game.players[i])
         .map((p, i) => (
-          <div key={i}>
+          <div
+            key={i}
+            style={
+              p.userId !== store.me.userId
+                ? {}
+                : {
+                    float: "right",
+                    backgroundColor: "lightgrey",
+                  }
+            }
+          >
             <div
               style={{
                 ...utils.bubbleStyle,
-                backgroundColor:
-                  p.userId === store.me.userId ? "lightgrey" : undefined,
+                backgroundColor: utils.getPlayerBackgroundColor(p),
               }}
             >
-              <div style={{ display: "flex" }}>
-                <span
-                  style={{
-                    minWidth: "1em",
-                    backgroundColor: "red",
-                    marginRight: "1em",
-                  }}
-                ></span>
-                <span>{p.userName}</span>
-              </div>
+              <PlayerLabel p={p} />
               <div>
                 {p.color} / ${p.money} / {(p.cityIndices || []).length} cities
               </div>
@@ -53,6 +53,21 @@ export default function Players() {
             </div>
           </div>
         ))}
+    </div>
+  );
+}
+
+export function PlayerLabel(props: { p: PlayerType }) {
+  return (
+    <div style={{ display: "flex" }}>
+      <span
+        style={{
+          minWidth: "1em",
+          backgroundColor: props.p.color,
+          marginRight: "1em",
+        }}
+      ></span>
+      <span>{props.p.userName}</span>
     </div>
   );
 }

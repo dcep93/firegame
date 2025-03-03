@@ -1,5 +1,5 @@
 import { BoardMap } from "../utils/bank";
-import utils from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 export default function Board(props: { map: BoardMap }) {
   return (
@@ -29,9 +29,37 @@ export default function Board(props: { map: BoardMap }) {
                 width: "4em",
                 height: "4em",
                 cursor: utils.buyCity(false, i) ? "pointer" : undefined,
+                // display: "flex",
               }}
               onClick={() => utils.buyCity(true, i)}
-            ></div>
+            >
+              <div
+                style={{
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%,-100%)",
+                  position: "relative",
+                  display: "inline-block",
+                }}
+              >
+                {store.gameW.game.players
+                  .flatMap((p) =>
+                    (p.cityIndices || []).map((cc) => ({ cc, p }))
+                  )
+                  .filter(({ cc }) => i === cc)
+                  .map(({ p }) => (
+                    <div
+                      key={p.userId}
+                      style={{
+                        backgroundColor: p.color,
+                        height: "1em",
+                        width: "1em",
+                        display: "inline-block",
+                      }}
+                    ></div>
+                  ))}
+              </div>
+            </div>
           ))}
           <img
             style={{
