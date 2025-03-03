@@ -6,13 +6,7 @@ export default function Players() {
   return (
     <div>
       {store.gameW.game.playerOrder
-        .map((i) => ({
-          i,
-          order:
-            i < utils.myIndex() ? i + store.gameW.game.playerOrder.length : i,
-        }))
-        .sort((a, b) => a.order - b.order)
-        .map(({ i }) => store.gameW.game.players[i])
+        .map((i) => store.gameW.game.players[i])
         .map((p, i) => (
           <div key={i}>
             <div

@@ -10,7 +10,7 @@ export default function PowerPlant(props: {
     <div
       style={{
         ...utils.bubbleStyle,
-        cursor: props.isHover ? "hover" : undefined,
+        cursor: props.isHover ? "pointer" : undefined,
       }}
       onClick={props.onClick}
     >

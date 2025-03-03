@@ -13,7 +13,7 @@ export type GameType = {
   costs?: { [pp: number]: number };
   outOfPlayZones?: string[]; // todo
   resources: { [r in Resource]?: number };
-  auction?: { pp: number; cost: number };
+  auction?: { player: number; i: number; cost: number };
 };
 
 export type PlayerType = {
@@ -72,13 +72,26 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     } as GameType);
   }
 
-  buyPowerPlant(execute: boolean, pp: number, i: number, j: number): boolean {
-    if (utils.isMyTurn() && pp !== -1) {
-      if (utils.getMe().money >= powerplants[pp].cost) {
-        if (store.gameW.game.step === 3 || j <= 3) {
+  auctionPowerPlant(
+    execute: boolean,
+    pp: number,
+    i: number,
+    j: number
+  ): boolean {
+    if (
+      utils.isMyTurn() &&
+      pp !== -1 &&
+      store.gameW.game.auction === undefined
+    ) {
+      if (store.gameW.game.step === 3 || j <= 3) {
+        if (utils.getMe().money >= powerplants[pp].cost) {
           if (execute) {
-            store.gameW.game.auction = { pp, cost: powerplants[pp].cost - 1 };
-            store.update(`auctions \$${powerplants[pp].cost}`);
+            store.gameW.game.auction = {
+              player: utils.myIndex(),
+              i,
+              cost: powerplants[pp].cost,
+            };
+            store.update(`auctions $${powerplants[pp].cost}`);
           }
           return true;
         }
@@ -95,11 +108,39 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       if (execute) {
         const spliced = utils.getMe().powerPlantIndices!.splice(i, 1)[0];
         utils.incrementPlayerTurn();
-        store.update(`discarded \$${powerplants[spliced].cost}`);
+        store.update(`discarded $${powerplants[spliced].cost}`);
       }
       return true;
     }
     return false;
+  }
+
+  pass(execute: boolean): boolean {
+    if (utils.isMyTurn()) {
+      if (execute) {
+        utils.incrementPlayerTurn();
+        store.update("passed");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  bidOnPowerPlant(cost: number) {
+    if (utils.isMyTurn()) {
+      if (
+        cost <= utils.getMe()!.money &&
+        cost >= store.gameW.game.auction!.cost
+      ) {
+        utils.getMe()!.money -= cost;
+        const pp = store.gameW.game.deckIndices!.splice(
+          store.gameW.game.auction!.i,
+          1
+        )[0];
+        delete store.gameW.game.auction;
+        store.update(`bid $${cost} on $${powerplants[pp].cost}`);
+      }
+    }
   }
 }
 
