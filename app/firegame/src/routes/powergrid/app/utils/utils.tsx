@@ -338,9 +338,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             .reduce((a, b) => a + b, 0),
           (utils.getCurrent().cityIndices || []).length
         );
-        utils.getCurrent().money += incomes[numPowered] || 0;
+        const income = incomes[numPowered] || 0;
+        utils.getCurrent().money += income;
         delete store.gameW.game.bureocracyUsed;
-      // todo
+        if (
+          store.gameW.game.currentPlayer ===
+          store.gameW.game.players.length - 1
+        ) {
+          store.gameW.game.year++;
+          utils.reorderPlayers();
+          store.gameW.game.currentPlayer = 0;
+          store.update(`powered ${numPowered} for $${income} - new year`);
+          return true;
+        }
+        store.gameW.game.currentPlayer++;
+        store.update(`powered ${numPowered} for $${income}`);
+        return true;
     }
     store.update("passed");
     return true;
