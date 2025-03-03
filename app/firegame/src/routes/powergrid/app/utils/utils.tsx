@@ -126,10 +126,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   needsToDumpPowerPlant(): boolean {
-    if (
-      utils.isMyTurn() &&
-      (utils.getCurrent().powerPlantIndices || []).length > 3
-    ) {
+    if ((utils.getCurrent().powerPlantIndices || []).length > 3) {
       return true;
     }
     return false;
@@ -214,8 +211,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   finishPowerPlantPurchase() {
-    // todo
     delete store.gameW.game.auction;
+    if (utils.needsToDumpPowerPlant()) {
+      store.gameW.game.phase = Phase.dumping_power_plant;
+    } else {
+      const excessResources = utils.getExcessResources();
+      if (Object.values(excessResources).find((c) => c > 0) !== undefined) {
+        store.gameW.game.phase = Phase.dumping_power_plant;
+      } else {
+        const nextAuctionPlayer = utils.getNextAuctionPlayer();
+        if (nextAuctionPlayer === -1) {
+          utils.startBuyingResources();
+        } else {
+          store.gameW.game.phase = Phase.selecting_auction;
+        }
+      }
+    }
   }
 
   getNextAuctionPlayer(): number {
@@ -225,6 +236,33 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.auctionPassers![playerIndex] === undefined
       ) || -1
     );
+  }
+
+  getNextBidPlayer(): number {
+    return store.gameW.game.playerOrder
+      .concat(store.gameW.game.playerOrder)
+      .splice(
+        store.gameW.game.playerOrder.findIndex(
+          (p) => p === store.gameW.game.currentPlayer
+        ),
+        store.gameW.game.playerOrder.length
+      )
+      .find(
+        (playerIndex) =>
+          store.gameW.game.auctionPassers![playerIndex] === undefined &&
+          store.gameW.game.auction!.playerIndex !== playerIndex
+      )!;
+  }
+
+  buyPowerPlant(): number {
+    const auction = store.gameW.game.auction!;
+    const pp = store.gameW.game.deckIndices!.splice(auction.i, 1)[0];
+    utils.getCurrent().money -= auction.cost;
+    if (!utils.getCurrent().powerPlantIndices)
+      utils.getCurrent().powerPlantIndices = [];
+    utils.getCurrent().powerPlantIndices!.push(pp);
+    this.finishPowerPlantPurchase();
+    return pp;
   }
 
   pass(execute: boolean): boolean {
@@ -261,19 +299,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (!store.gameW.game.auctionPassers)
           store.gameW.game.auctionPassers = {};
         store.gameW.game.auctionPassers[store.gameW.game.currentPlayer] = false;
-        const nextBidPlayer = store.gameW.game.playerOrder
-          .concat(store.gameW.game.playerOrder)
-          .splice(currentIndex, store.gameW.game.playerOrder.length)
-          .find(
-            (playerIndex) =>
-              store.gameW.game.auctionPassers![playerIndex] === undefined
-          )!;
-        if (nextBidPlayer === auction.playerIndex) {
-          const pp = store.gameW.game.deckIndices!.splice(auction.i, 1)[0];
-          utils.getCurrent().money -= auction.cost;
-          if (!utils.getCurrent().powerPlantIndices)
-            utils.getCurrent().powerPlantIndices = [];
-          utils.getCurrent().powerPlantIndices!.push(pp);
+        const nextBidPlayer = utils.getNextBidPlayer();
+        if (nextBidPlayer === -1) {
+          const pp = utils.buyPowerPlant();
           const nextAuctionPlayer = utils.getNextAuctionPlayer();
           if (nextAuctionPlayer === -1) {
             utils.startBuyingResources();
@@ -402,7 +430,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           cost,
         });
         const pp = store.gameW.game.deckIndices![store.gameW.game.auction!.i];
-        store.update(`bid $${cost} on $${powerplants[pp].cost}`); // todo might win, might need to dump x2
+        const nextBidPlayer = utils.getNextBidPlayer();
+        if (nextBidPlayer === -1) {
+          utils.buyPowerPlant();
+          if (store.gameW.game.phase === Phase.buying_resources) {
+            store.update(
+              `paid $${cost} for $${powerplants[pp].cost} - buying resources`
+            );
+            return true;
+          }
+          store.update(`paid $${cost} for $${powerplants[pp].cost}`);
+          return true;
+        }
+        store.update(`bid $${cost} on $${powerplants[pp].cost}`);
+        return true;
       }
     }
     return false;
@@ -476,9 +517,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   dumpResource(execute: boolean, resource: Resource): boolean {
-    if (!execute) {
-      return false;
-    }
     if (utils.isMyTurn()) {
       const excessResources = utils.getExcessResources();
       if ((excessResources[resource] || 0) > 0) {
