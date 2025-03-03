@@ -100,7 +100,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       store.gameW.game.auction === undefined
     ) {
       if (store.gameW.game.step === 3 || j <= 3) {
-        if (utils.getMe().money >= powerplants[pp].cost) {
+        if (utils.getCurrent().money >= powerplants[pp].cost) {
           if (execute) {
             store.gameW.game.auction = {
               playerIndex: utils.myIndex(),
@@ -116,13 +116,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  dumpPowerPlant(execute: boolean, i: number): boolean {
+  needsToDumpPowerPlant(): boolean {
     if (
       utils.isMyTurn() &&
-      (utils.getMe().powerPlantIndices || []).length > 3
+      (utils.getCurrent().powerPlantIndices || []).length > 3
     ) {
+      return true;
+    }
+    return false;
+  }
+
+  dumpPowerPlant(execute: boolean, i: number): boolean {
+    if (utils.needsToDumpPowerPlant()) {
       if (execute) {
-        const spliced = utils.getMe().powerPlantIndices!.splice(i, 1)[0];
+        const spliced = utils.getCurrent().powerPlantIndices!.splice(i, 1)[0];
         utils.finishPowerPlantPurchase();
         store.update(`discarded $${powerplants[spliced].cost}`);
       }
@@ -142,7 +149,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (store.gameW.game.phase === Phase.powerplants) {
       if (
         store.gameW.game.auction === undefined &&
-        utils.getMe().cityIndices === undefined
+        utils.getCurrent().cityIndices === undefined
       ) {
         return false;
       }
@@ -162,7 +169,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (utils.isMyTurn()) {
       if (
-        cost <= utils.getMe()!.money &&
+        cost <= utils.getCurrent()!.money &&
         cost >= store.gameW.game.auction!.cost
       ) {
         Object.assign(store.gameW.game.auction!, {
@@ -182,9 +189,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (utils.isMyTurn() && store.gameW.game.phase === Phase.city) {
       const cost = 0;
-      if (utils.getMe().money >= cost) {
+      if (utils.getCurrent().money >= cost) {
         if (execute) {
-          utils.getMe().money -= cost;
+          utils.getCurrent().money -= cost;
           store.update(`bought ${utils.getMap().cities[index].name}`);
         }
       }
@@ -202,9 +209,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (utils.isMyTurn()) {
       const excessResources = utils.getExcessResources();
-      if (excessResources[resource] || 0 > 0) {
+      if ((excessResources[resource] || 0) > 0) {
         if (execute) {
-          utils.getMe().resources[resource]!--;
+          utils.getCurrent().resources[resource]!--;
           utils.finishPowerPlantPurchase();
           store.update(`dumped ${Resource[resource]}`);
         }
@@ -214,18 +221,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
+  hasExcessResources(): boolean {
+    const excessResources = utils.getExcessResources();
+    return Object.values(excessResources).filter((c) => c > 0).length > 0;
+  }
+
   getExcessResources(): { [r in Resource]?: number } {
-    const resources = Object.apply({}, utils.getMe().resources as any) as {
+    const resources = Object.apply({}, utils.getCurrent().resources as any) as {
       [r in Resource]?: number;
     };
-    (utils.getMe().powerPlantIndices || [])
+    (utils.getCurrent().powerPlantIndices || [])
       .map((i) => powerplants[i].resources)
       .map((rs) =>
-        Object.entries(rs).map(([r, count]) => {
+        Object.entries(rs).forEach(([r, count]) => {
           resources[r as unknown as Resource]! -= 2 * count;
         })
       );
-    [Resource.coal, Resource.oil].map((r) => {
+    [Resource.coal, Resource.oil].forEach((r) => {
       if (resources[r]! > -resources[Resource.hybrid]!) {
         resources[Resource.hybrid]! += resources[r]!;
         resources[r] = 0;
@@ -248,8 +260,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (utils.isMyTurn()) {
       const cost = utils.getResourceCost(resource);
-      if (utils.getMe().money >= cost) {
-        utils.getMe().money -= cost;
+      if (utils.getCurrent().money >= cost) {
+        utils.getCurrent().money -= cost;
         store.gameW.game.resources[resource]!--;
         store.update(`bought ${Resource[resource]} for $${cost}`);
       }
@@ -258,7 +270,27 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   getAction(): string {
-    return "picking a card for auction"; // todo
+    switch (store.gameW.game.phase) {
+      case Phase.powerplants:
+        if (store.gameW.game.auction !== undefined) {
+          return `bidding on $${
+            powerplants[
+              store.gameW.game.deckIndices![store.gameW.game.auction.i]
+            ].cost
+          }`;
+        }
+        if (utils.needsToDumpPowerPlant()) {
+          return "dumping a power plant";
+        }
+        if (utils.hasExcessResources()) {
+          return "dumping resources";
+        }
+        return "selecting for auction";
+      case Phase.resource:
+        return "buying resources";
+      case Phase.city:
+        return "buying cities";
+    }
   }
 
   getPlayerBackgroundColor(playerIndex: number): string | undefined {
@@ -268,7 +300,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (store.gameW.game.phase === Phase.powerplants) {
       const passer = (store.gameW.game.auctionPassers || {})[playerIndex];
       if (passer === undefined) {
-        return "grey";
+        return "lightgreen"; // todo
       }
     }
     return undefined;
