@@ -40,11 +40,17 @@ export default function Bank() {
           .sort((a, b) => a.pp - b.pp)
           .map(({ pp, i }, j) => (
             <div key={i}>
-              <PowerPlant
-                pp={pp}
-                isHover={utils.auctionPowerPlant(false, pp, i, j)}
-                onClick={() => utils.auctionPowerPlant(true, pp, i, j)}
-              />
+              {pp === -1 ? (
+                <div style={utils.bubbleStyle}>
+                  <div>STEP 3</div>
+                </div>
+              ) : (
+                <PowerPlant
+                  pp={pp}
+                  isHover={utils.auctionPowerPlant(false, pp, i, j)}
+                  onClick={() => utils.auctionPowerPlant(true, pp, i, j)}
+                />
+              )}
             </div>
           ))}
       </div>

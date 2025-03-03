@@ -20,6 +20,7 @@ export default function ResourceBank() {
             ${utils.getCost(r)}({c}) {Resource[r]}
           </div>
         ))}
+      <button onClick={() => utils.pass(true)}>pass</button>
     </div>
   );
 }
