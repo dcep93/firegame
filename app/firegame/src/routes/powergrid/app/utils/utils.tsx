@@ -153,19 +153,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (store.gameW.game.bureocracyUsed[i]) {
           return false;
         }
+        const ppp = powerplants[utils.getCurrent().powerPlantIndices![i]];
+        const spend = utils.getSpend(ppp);
+        if (utils.cantAfford(spend)) {
+          return false;
+        }
         if (execute) {
-          const ppp = powerplants[utils.getCurrent().powerPlantIndices![i]];
-          const spend = utils.getSpend(ppp);
           Object.entries(spend).forEach(([r, count]) => {
             store.gameW.game.resources[r as unknown as Resource]! += count;
+            utils.getCurrent().resources[r as unknown as Resource]! -= count;
           });
           store.gameW.game.bureocracyUsed[i] = true;
           store.update(
-            `powered $${ppp.cost} - using ${Object.entries(spend)
-              .map(
-                ([r, count]) => `${Resource[r as unknown as Resource]}:${count}`
-              )
-              .join(",")}`
+            `powered $${ppp.cost} - using ${utils.getResourceString(spend)}`
           );
         }
         return true;
@@ -173,8 +173,44 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
+  getResourceString(rs: { [r in Resource]?: number }): string {
+    return Object.entries(rs)
+      .map(([r, count]) => `${Resource[r as unknown as Resource]}:${count}`)
+      .join(",");
+  }
+
+  cantAfford(spend: { [r in Resource]?: number }): boolean {
+    return (
+      Object.entries(spend).find(
+        ([r, count]) =>
+          (utils.getCurrent().resources[r as unknown as Resource] || 0) < count
+      ) !== undefined
+    );
+  }
+
   getSpend(ppp: PowerPlant): { [r in Resource]?: number } {
-    return {}; // todo
+    if (ppp.resources[Resource.renewable] !== undefined) {
+      return {};
+    }
+    const numHybrid = ppp.resources[Resource.hybrid];
+    if (numHybrid !== undefined) {
+      const choices = utils
+        .count(numHybrid + 1)
+        .map((numCoal) => ({
+          [Resource.coal]: numCoal,
+          [Resource.oil]: numHybrid - numCoal,
+        }))
+        .filter((spend) => !utils.cantAfford(spend));
+      const chosen = choices.find(
+        (c) =>
+          choices.length === 1 ||
+          window.confirm(`spend ${utils.getResourceString(c)} ?`)
+      );
+      if (chosen) {
+        return chosen;
+      }
+    }
+    return ppp.resources;
   }
 
   finishPowerPlantPurchase() {
