@@ -39,15 +39,17 @@ enum Phase {
   powerplants,
   resource,
   city,
+  bureocracy,
 }
 
 export enum Action {
+  selecting_auction,
   bidding,
   dumping_power_plant,
   dumping_resources,
-  selecting_auction,
   buying_resources,
   buying_cities,
+  bureocracy,
 }
 
 const store: StoreType<GameType> = store_;
@@ -254,7 +256,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         break;
       case Action.buying_cities:
         if (currentIndex === 0) {
-          utils.newYear();
+          utils.reorderPlayers();
+          store.gameW.game.phase = Phase.bureocracy;
           store.update("passed - new year");
           return true;
         }
@@ -266,8 +269,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return true;
   }
 
-  newYear() {
-    // todo
+  reorderPlayers() {
+    store.gameW.game.playerOrder = store.gameW.game.playerOrder
+      .map((playerIndex) => ({
+        playerIndex,
+        p: store.gameW.game.players[playerIndex],
+      }))
+      .map(({ playerIndex, p }) => ({
+        playerIndex,
+        power: p
+          .powerPlantIndices!.map((pp) => powerplants[pp].cost)
+          .reduce((a, b) => a + b, 0),
+        cities: (p.cityIndices || []).length,
+      }))
+      .sort((a, b) => a.cities - b.cities || a.power - b.power)
+      .map(({ playerIndex }) => playerIndex)
+      .reverse();
   }
 
   startBuyingResources() {
@@ -398,6 +415,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         return Action.buying_resources;
       case Phase.city:
         return Action.buying_cities;
+      case Phase.bureocracy:
+        return Action.bureocracy;
     }
   }
 
