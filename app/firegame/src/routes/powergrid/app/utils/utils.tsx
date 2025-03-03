@@ -4,6 +4,7 @@ import {
   BoardMap,
   incomes,
   maps,
+  PowerPlant,
   powerplants,
   Resource,
   startingBankResources,
@@ -153,16 +154,27 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           return false;
         }
         if (execute) {
+          const ppp = powerplants[utils.getCurrent().powerPlantIndices![i]];
+          const spend = utils.getSpend(ppp);
+          Object.entries(spend).forEach(([r, count]) => {
+            store.gameW.game.resources[r as unknown as Resource]! += count;
+          });
           store.gameW.game.bureocracyUsed[i] = true;
           store.update(
-            `powered $${
-              powerplants[utils.getCurrent().powerPlantIndices![i]].cost
-            }`
+            `powered $${ppp.cost} - using ${Object.entries(spend)
+              .map(
+                ([r, count]) => `${Resource[r as unknown as Resource]}:${count}`
+              )
+              .join(",")}`
           );
         }
-        return true; // todo
+        return true;
     }
     return false;
+  }
+
+  getSpend(ppp: PowerPlant): { [r in Resource]?: number } {
+    return {}; // todo
   }
 
   finishPowerPlantPurchase() {
@@ -280,18 +292,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.playerOrder[currentIndex - 1];
         break;
       case Phase.bureocracy:
-        utils.getCurrent().money +=
-          incomes[
-            Object.keys(store.gameW.game.bureocracyUsed || {})
-              .map(
-                (pp) =>
-                  powerplants[
-                    utils.getCurrent().powerPlantIndices![parseInt(pp)]
-                  ].power
-              )
-              .reduce((a, b) => a + b, 0)
-          ] || 0;
+        const numPowered = Math.min(
+          Object.keys(store.gameW.game.bureocracyUsed || {})
+            .map(
+              (pp) =>
+                powerplants[utils.getCurrent().powerPlantIndices![parseInt(pp)]]
+                  .power
+            )
+            .reduce((a, b) => a + b, 0),
+          (utils.getCurrent().cityIndices || []).length
+        );
+        utils.getCurrent().money += incomes[numPowered] || 0;
         delete store.gameW.game.bureocracyUsed;
+      // todo
     }
     store.update("passed");
     return true;
