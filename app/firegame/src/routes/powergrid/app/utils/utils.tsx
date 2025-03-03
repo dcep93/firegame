@@ -35,21 +35,14 @@ export type PlayerType = {
   resources: { [r in Resource]?: number };
 };
 
-enum Phase {
-  powerplants,
-  resource,
-  city,
-  bureocracy,
-}
-
-export enum Action {
+export enum Phase {
   selecting_auction,
   bidding,
   dumping_power_plant,
   dumping_resources,
   buying_resources,
   buying_cities,
-  bureocracy,
+  bureocracy, // todo
 }
 
 const store: StoreType<GameType> = store_;
@@ -59,7 +52,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
       step: 1,
-      phase: Phase.powerplants,
+      phase: Phase.selecting_auction,
       currentPlayer: 0,
       mapName: "germany",
       playerOrder: utils.shuffle(utils.count(numPlayers)),
@@ -107,8 +100,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (
       utils.isMyTurn() &&
       pp !== -1 &&
-      store.gameW.game.phase === Phase.powerplants &&
-      store.gameW.game.auction === undefined
+      store.gameW.game.phase === Phase.selecting_auction
     ) {
       if (store.gameW.game.step === 3 || j <= 3) {
         if (utils.getCurrent().money >= powerplants[pp].cost) {
@@ -172,8 +164,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const currentIndex = store.gameW.game.playerOrder.findIndex(
       (p) => p === store.gameW.game.currentPlayer
     );
-    switch (utils.getAction()) {
-      case Action.selecting_auction:
+    switch (store.gameW.game.phase) {
+      case Phase.selecting_auction:
         if (utils.getCurrent().powerPlantIndices === undefined) {
           return false;
         }
@@ -188,7 +180,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         store.gameW.game.currentPlayer = nextAuctionPlayer;
         break;
-      case Action.bidding:
+      case Phase.bidding:
         const auction = store.gameW.game.auction!;
         if (auction.playerIndex === utils.currentIndex()) {
           return false;
@@ -238,13 +230,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         store.gameW.game.currentPlayer = nextBidPlayer;
         break;
-      case Action.dumping_power_plant:
+      case Phase.dumping_power_plant:
         return false;
-      case Action.dumping_resources:
+      case Phase.dumping_resources:
         return false;
-      case Action.buying_resources:
+      case Phase.buying_resources:
         if (currentIndex === 0) {
-          store.gameW.game.phase = Phase.city;
+          store.gameW.game.phase = Phase.buying_cities;
           store.gameW.game.currentPlayer = store.gameW.game.playerOrder
             .slice()
             .reverse()[0];
@@ -254,9 +246,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         store.gameW.game.currentPlayer =
           store.gameW.game.playerOrder[currentIndex - 1];
         break;
-      case Action.buying_cities:
+      case Phase.buying_cities:
         if (currentIndex === 0) {
-          utils.reorderPlayers();
           store.gameW.game.phase = Phase.bureocracy;
           store.update("passed - new year");
           return true;
@@ -288,7 +279,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   startBuyingResources() {
-    store.gameW.game.phase = Phase.resource;
     // todo
   }
 
@@ -316,8 +306,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!execute) {
       return false;
     }
-    if (utils.isMyTurn() && store.gameW.game.phase === Phase.city) {
-      const cost = 0;
+    if (utils.isMyTurn() && store.gameW.game.phase === Phase.buying_cities) {
+      const cost = 0; // todo
       if (utils.getCurrent().money >= cost) {
         if (execute) {
           utils.getCurrent().money -= cost;
@@ -398,36 +388,39 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  getAction(): Action {
-    switch (store.gameW.game.phase) {
-      case Phase.powerplants:
-        if (store.gameW.game.auction !== undefined) {
-          return Action.bidding;
-        }
-        if (utils.needsToDumpPowerPlant()) {
-          return Action.dumping_power_plant;
-        }
-        if (utils.hasExcessResources()) {
-          return Action.dumping_resources;
-        }
-        return Action.selecting_auction;
-      case Phase.resource:
-        return Action.buying_resources;
-      case Phase.city:
-        return Action.buying_cities;
-      case Phase.bureocracy:
-        return Action.bureocracy;
-    }
-  }
+  // getAction(): Action {
+  //   // todo
+  //   switch (store.gameW.game.phase) {
+  //     case Phase.powerplants:
+  //       if (store.gameW.game.auction !== undefined) {
+  //         return Action.bidding;
+  //       }
+  //       if (utils.needsToDumpPowerPlant()) {
+  //         return Action.dumping_power_plant;
+  //       }
+  //       if (utils.hasExcessResources()) {
+  //         return Action.dumping_resources;
+  //       }
+  //       return Action.selecting_auction;
+  //     case Phase.resource:
+  //       return Action.buying_resources;
+  //     case Phase.city:
+  //       return Action.buying_cities;
+  //     case Phase.bureocracy:
+  //       return Action.bureocracy;
+  //   }
+  // }
 
   getPlayerBackgroundColor(playerIndex: number): string | undefined {
     if (utils.currentIndex() === playerIndex) {
       return "grey";
     }
-    if (store.gameW.game.phase === Phase.powerplants) {
+    if (
+      [Phase.selecting_auction, Phase.bidding].includes(store.gameW.game.phase)
+    ) {
       const passer = (store.gameW.game.auctionPassers || {})[playerIndex];
       if (passer === undefined) {
-        return "lightgreen"; // todo
+        return "lightgreen";
       }
     }
     return undefined;
