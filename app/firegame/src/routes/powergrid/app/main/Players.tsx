@@ -6,23 +6,23 @@ export default function Players() {
   return (
     <div>
       {store.gameW.game.playerOrder
-        .map((i) => store.gameW.game.players[i])
-        .map((p, i) => (
+        .map((i) => ({ i, p: store.gameW.game.players[i] }))
+        .map(({ p, i }) => (
           <div
             key={i}
             style={
-              p.userId !== store.me.userId
-                ? {}
-                : {
+              i === utils.myIndex()
+                ? {
                     float: "right",
                     backgroundColor: "lightgrey",
                   }
+                : {}
             }
           >
             <div
               style={{
                 ...utils.bubbleStyle,
-                backgroundColor: utils.getPlayerBackgroundColor(p),
+                backgroundColor: utils.getPlayerBackgroundColor(i),
               }}
             >
               <PlayerLabel p={p} />
@@ -35,17 +35,26 @@ export default function Players() {
                     .enumArray(Resource)
                     .filter((r) => p.resources[r] !== undefined)
                     .map((r) => (
-                      <div key={r} onClick={() => utils.dumpResource(true, r)}>
+                      <div
+                        key={r}
+                        onClick={() =>
+                          i === utils.myIndex() && utils.dumpResource(true, r)
+                        }
+                      >
                         {p.resources[r]} {Resource[r]}
                       </div>
                     ))}
                 </div>
-                {(p.powerPlantIndices || []).map((pp, i) => (
-                  <div key={i}>
+                {(p.powerPlantIndices || []).map((pp, j) => (
+                  <div key={j}>
                     <PowerPlant
                       pp={pp}
-                      isHover={utils.dumpPowerPlant(false, i)}
-                      onClick={() => utils.dumpPowerPlant(true, i)}
+                      isHover={
+                        i === utils.myIndex() && utils.dumpPowerPlant(false, j)
+                      }
+                      onClick={() =>
+                        i === utils.myIndex() && utils.dumpPowerPlant(true, j)
+                      }
                     />
                   </div>
                 ))}

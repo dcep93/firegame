@@ -1,6 +1,4 @@
 import React from "react";
-import { maps } from "../utils/bank";
-import { store } from "../utils/utils";
 import Bank from "./Bank";
 import Board from "./Board";
 import Players from "./Players";
@@ -37,7 +35,7 @@ class Main extends React.Component {
             position: "relative",
           }}
         >
-          <Board map={maps.find((m) => m.name === store.gameW.game.mapName)!} />
+          <Board />
         </div>
       </div>
     );

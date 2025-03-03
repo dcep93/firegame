@@ -17,6 +17,7 @@ export default function Bank() {
             onSubmit={(e) =>
               Promise.resolve(e.preventDefault()).then(() => {
                 utils.bidOnPowerPlant(
+                  true,
                   parseInt(
                     new FormData(e.target as HTMLFormElement).get(
                       "bid"

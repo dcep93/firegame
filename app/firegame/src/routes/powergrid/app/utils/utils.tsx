@@ -1,19 +1,27 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { powerplants, Resource, startingBankResources } from "./bank";
+import {
+  BoardMap,
+  maps,
+  powerplants,
+  Resource,
+  startingBankResources,
+} from "./bank";
 
 export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
   step: number;
+  phase: Phase;
   mapName: string;
   playerOrder: number[];
   deckIndices?: number[];
   costs?: { [pp: number]: number };
   outOfPlayZones?: string[]; // todo
   resources: { [r in Resource]?: number };
-  auction?: { player: number; i: number; cost: number };
+  auction?: { playerIndex: number; i: number; cost: number };
+  auctionPassers?: { [playerIndex: number]: number };
 };
 
 export type PlayerType = {
@@ -27,6 +35,12 @@ export type PlayerType = {
   resources: { [r in Resource]?: number };
 };
 
+enum Phase {
+  powerplants,
+  resource,
+  city,
+}
+
 const store: StoreType<GameType> = store_;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
@@ -34,6 +48,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
       step: 1,
+      phase: Phase.powerplants,
       currentPlayer: 0,
       mapName: "germany",
       playerOrder: utils.shuffle(utils.count(numPlayers)),
@@ -81,13 +96,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (
       utils.isMyTurn() &&
       pp !== -1 &&
+      store.gameW.game.phase === Phase.powerplants &&
       store.gameW.game.auction === undefined
     ) {
       if (store.gameW.game.step === 3 || j <= 3) {
         if (utils.getMe().money >= powerplants[pp].cost) {
           if (execute) {
             store.gameW.game.auction = {
-              player: utils.myIndex(),
+              playerIndex: utils.myIndex(),
               i,
               cost: powerplants[pp].cost,
             };
@@ -107,7 +123,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     ) {
       if (execute) {
         const spliced = utils.getMe().powerPlantIndices!.splice(i, 1)[0];
-        utils.incrementPlayerTurn();
+        utils.finishPowerPlantPurchase();
         store.update(`discarded $${powerplants[spliced].cost}`);
       }
       return true;
@@ -115,41 +131,90 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  pass(execute: boolean): boolean {
-    if (utils.isMyTurn()) {
-      if (execute) {
-        utils.incrementPlayerTurn();
-        store.update("passed");
-      }
-      return true;
-    }
-    return false;
+  finishPowerPlantPurchase() {
+    // todo
   }
 
-  bidOnPowerPlant(cost: number): boolean {
+  pass(execute: boolean): boolean {
+    if (!utils.isMyTurn()) {
+      return false;
+    }
+    if (store.gameW.game.phase === Phase.powerplants) {
+      if (
+        store.gameW.game.auction === undefined &&
+        utils.getMe().cityIndices === undefined
+      ) {
+        return false;
+      }
+      if (store.gameW.game.auction?.playerIndex === utils.myIndex()) {
+        return false;
+      }
+    }
+    if (execute) {
+      store.update("passed"); // todo
+    }
+    return true;
+  }
+
+  bidOnPowerPlant(execute: boolean, cost: number): boolean {
+    if (!execute) {
+      return false;
+    }
     if (utils.isMyTurn()) {
       if (
         cost <= utils.getMe()!.money &&
         cost >= store.gameW.game.auction!.cost
       ) {
-        utils.getMe()!.money -= cost;
-        const pp = store.gameW.game.deckIndices!.splice(
-          store.gameW.game.auction!.i,
-          1
-        )[0];
-        delete store.gameW.game.auction;
-        store.update(`bid $${cost} on $${powerplants[pp].cost}`);
+        Object.assign(store.gameW.game.auction!, {
+          playerIndex: utils.myIndex(),
+          cost,
+        });
+        const pp = store.gameW.game.deckIndices![store.gameW.game.auction!.i];
+        store.update(`bid $${cost} on $${powerplants[pp].cost}`); // todo
       }
     }
     return false;
   }
 
   buyCity(execute: boolean, index: number): boolean {
+    if (!execute) {
+      return false;
+    }
+    if (utils.isMyTurn() && store.gameW.game.phase === Phase.city) {
+      const cost = 0;
+      if (utils.getMe().money >= cost) {
+        if (execute) {
+          utils.getMe().money -= cost;
+          store.update(`bought ${utils.getMap().cities[index].name}`);
+        }
+      }
+    }
     return false;
   }
 
+  getMap(): BoardMap {
+    return maps.find((m) => m.name === store.gameW.game.mapName)!;
+  }
+
   dumpResource(execute: boolean, resource: Resource): boolean {
+    if (!execute) {
+      return false;
+    }
+    if (utils.isMyTurn()) {
+      const excessResources = utils.getExcessResources();
+      if (excessResources[resource]) {
+        if (execute) {
+          utils.getMe().resources[resource]!--;
+          store.update(`dumped ${Resource[resource]}`); // todo
+        }
+        return true;
+      }
+    }
     return false;
+  }
+
+  getExcessResources(): { [r in Resource]?: number } {
+    return {}; // todo
   }
 
   getResourceCost(resource: Resource): number {
@@ -161,15 +226,35 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   buyResource(execute: boolean, resource: Resource): boolean {
+    if (!execute) {
+      return false;
+    }
+    if (utils.isMyTurn()) {
+      const cost = utils.getResourceCost(resource);
+      if (utils.getMe().money >= cost) {
+        utils.getMe().money -= cost;
+        store.gameW.game.resources[resource]!--;
+        store.update(`bought ${Resource[resource]} for $${cost}`);
+      }
+    }
     return false;
   }
 
   getAction(): string {
-    return "picking a card for auction";
+    return "picking a card for auction"; // todo
   }
 
-  getPlayerBackgroundColor(p: PlayerType): string {
-    return "red";
+  getPlayerBackgroundColor(playerIndex: number): string | undefined {
+    if (utils.currentIndex() === playerIndex) {
+      return "grey";
+    }
+    if (store.gameW.game.phase === Phase.powerplants) {
+      const passer = (store.gameW.game.auctionPassers || {})[playerIndex];
+      if (passer === undefined) {
+        return "grey";
+      }
+    }
+    return undefined;
   }
 }
 

@@ -1,7 +1,7 @@
-import { BoardMap } from "../utils/bank";
 import utils, { store } from "../utils/utils";
 
-export default function Board(props: { map: BoardMap }) {
+export default function Board() {
+  const map = utils.getMap();
   return (
     <div>
       <div
@@ -17,7 +17,7 @@ export default function Board(props: { map: BoardMap }) {
             position: "relative",
           }}
         >
-          {props.map.cities.map((c, i) => (
+          {map.cities.map((c, i) => (
             <div
               key={i}
               style={{
@@ -47,9 +47,9 @@ export default function Board(props: { map: BoardMap }) {
                     (p.cityIndices || []).map((cc) => ({ cc, p }))
                   )
                   .filter(({ cc }) => i === cc)
-                  .map(({ p }) => (
+                  .map(({ p }, j) => (
                     <div
-                      key={p.userId}
+                      key={j}
                       style={{
                         backgroundColor: p.color,
                         height: "1em",
@@ -67,8 +67,8 @@ export default function Board(props: { map: BoardMap }) {
               display: "block",
               objectFit: "contain",
             }}
-            src={props.map.img}
-            alt={props.map.name}
+            src={map.img}
+            alt={map.name}
           />
         </div>
       </div>
