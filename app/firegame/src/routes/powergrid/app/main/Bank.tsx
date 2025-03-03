@@ -8,7 +8,7 @@ export default function Bank() {
       <div
         style={{
           ...utils.bubbleStyle,
-          backgroundColor: utils.isOver() ? "grey" : undefined,
+          ...(utils.isOver() ? { backgroundColor: "grey" } : {}),
         }}
       >
         <PlayerLabel p={utils.getCurrent()} />
@@ -36,7 +36,7 @@ export default function Bank() {
               name={"bid"}
               style={{ width: "3em" }}
               type={"number"}
-              defaultValue={store.gameW.game.auction.cost}
+              defaultValue={store.gameW.game.auction.cost + 1}
               max={utils.getCurrent()?.money}
               min={store.gameW.game.auction.cost + 1}
             />

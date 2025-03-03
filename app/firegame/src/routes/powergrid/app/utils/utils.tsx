@@ -365,7 +365,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   startBuyingResources() {
-    // todo
+    if (store.gameW.game.year === 1) {
+      utils.reorderPlayers();
+    }
+    store.gameW.game.phase = Phase.buying_resources;
+    store.gameW.game.currentPlayer = store.gameW.game.playerOrder
+      .slice()
+      .reverse()[0];
     delete store.gameW.game.auctionPassers;
   }
 
@@ -394,7 +400,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return false;
     }
     if (utils.isMyTurn() && store.gameW.game.phase === Phase.buying_cities) {
-      const cost = 0; // todo
+      const connectionCost = utils.getConnectionCost(index);
+      const cost =
+        connectionCost +
+        { 0: 10, 1: 15, 2: 20 }[
+          store.gameW.game.players.filter((p) => p.cityIndices?.includes(index))
+            .length
+        ]!;
       if (utils.getCurrent().money >= cost) {
         if (execute) {
           utils.getCurrent().money -= cost;
@@ -403,6 +415,47 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
     }
     return false;
+  }
+
+  getConnectionCost(index: number): number {
+    const c = utils.getCurrent();
+    if (c.cityIndices === undefined) {
+      return 0;
+    }
+    if (c.cityIndices.includes(index)) {
+      return Number.POSITIVE_INFINITY;
+    }
+    const owned = Object.fromEntries(
+      c.cityIndices.map((i) => [this.getMap().cities[i].name, true])
+    );
+    const seen: { [name: string]: boolean } = {};
+    const queue = [{ name: this.getMap().cities[index].name, cost: 0 }];
+    for (let i = 0; i < this.getMap().cities.length; i++) {
+      if (queue.length === 0) {
+        break;
+      }
+      queue.sort((a, b) => a.cost - b.cost);
+      const first = queue.shift()!;
+      if (owned[first.name]) {
+        return first.cost;
+      }
+      seen[first.name] = true;
+      queue.push(
+        ...utils
+          .getMap()
+          .edges.map((e) => ({
+            name: (e.c1 === first.name
+              ? e.c2
+              : e.c2 === first.name
+              ? e.c1
+              : null)!,
+            cost: e.cost,
+          }))
+          .filter(({ name }) => name !== null && !seen[name])
+          .map(({ name, cost }) => ({ name, cost: first.cost + cost }))
+      );
+    }
+    throw new Error("infinite loop");
   }
 
   getMap(): BoardMap {
@@ -491,8 +544,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   isOver(): boolean {
-    // todo
-    return false;
+    return (
+      Math.max(
+        ...store.gameW.game.players.map((p) => (p.cityIndices || []).length)
+      ) >=
+      { 2: 18, 3: 17, 4: 17, 5: 15, 6: 15 }[store.gameW.game.players.length]!
+    );
   }
 }
 
