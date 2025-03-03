@@ -33,7 +33,7 @@ export default function Bank() {
               type={"number"}
               defaultValue={store.gameW.game.auction.cost}
               max={utils.getCurrent()?.money}
-              min={store.gameW.game.auction.cost}
+              min={store.gameW.game.auction.cost + 1}
             />
             <input type={"submit"} value={"bid"} />
           </form>

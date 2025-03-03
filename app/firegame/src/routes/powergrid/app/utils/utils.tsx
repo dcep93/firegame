@@ -12,6 +12,7 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
+  year: number;
   step: number;
   phase: Phase;
   mapName: string;
@@ -51,6 +52,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
     const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
+      year: 1,
       step: 1,
       phase: Phase.selecting_auction,
       currentPlayer: 0,
@@ -105,10 +107,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       if (store.gameW.game.step === 3 || j <= 3) {
         if (utils.getCurrent().money >= powerplants[pp].cost) {
           if (execute) {
+            store.gameW.game.phase = Phase.bidding;
             store.gameW.game.auction = {
               playerIndex: store.gameW.game.currentPlayer,
               i,
-              cost: powerplants[pp].cost,
+              cost: powerplants[pp].cost - 1,
             };
             store.update(`auctions $${powerplants[pp].cost}`);
           }
@@ -221,6 +224,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             )
           );
           store.gameW.game.currentPlayer = nextAuctionPlayer;
+          store.gameW.game.phase = Phase.selecting_auction;
           store.update(
             `passed - ${
               store.gameW.game.players[auction!.playerIndex].color
@@ -296,7 +300,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           cost,
         });
         const pp = store.gameW.game.deckIndices![store.gameW.game.auction!.i];
-        store.update(`bid $${cost} on $${powerplants[pp].cost}`); // todo
+        store.update(`bid $${cost} on $${powerplants[pp].cost}`); // todo might win, might need to dump x2
       }
     }
     return false;
@@ -387,29 +391,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     return false;
   }
-
-  // getAction(): Action {
-  //   // todo
-  //   switch (store.gameW.game.phase) {
-  //     case Phase.powerplants:
-  //       if (store.gameW.game.auction !== undefined) {
-  //         return Action.bidding;
-  //       }
-  //       if (utils.needsToDumpPowerPlant()) {
-  //         return Action.dumping_power_plant;
-  //       }
-  //       if (utils.hasExcessResources()) {
-  //         return Action.dumping_resources;
-  //       }
-  //       return Action.selecting_auction;
-  //     case Phase.resource:
-  //       return Action.buying_resources;
-  //     case Phase.city:
-  //       return Action.buying_cities;
-  //     case Phase.bureocracy:
-  //       return Action.bureocracy;
-  //   }
-  // }
 
   getPlayerBackgroundColor(playerIndex: number): string | undefined {
     if (utils.currentIndex() === playerIndex) {
