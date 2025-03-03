@@ -202,10 +202,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (utils.isMyTurn()) {
       const excessResources = utils.getExcessResources();
-      if (excessResources[resource]) {
+      if (excessResources[resource] || 0 > 0) {
         if (execute) {
           utils.getMe().resources[resource]!--;
-          store.update(`dumped ${Resource[resource]}`); // todo
+          utils.finishPowerPlantPurchase();
+          store.update(`dumped ${Resource[resource]}`);
         }
         return true;
       }
@@ -214,7 +215,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   getExcessResources(): { [r in Resource]?: number } {
-    return {}; // todo
+    const resources = Object.apply({}, utils.getMe().resources as any) as {
+      [r in Resource]?: number;
+    };
+    (utils.getMe().powerPlantIndices || [])
+      .map((i) => powerplants[i].resources)
+      .map((rs) =>
+        Object.entries(rs).map(([r, count]) => {
+          resources[r as unknown as Resource]! -= 2 * count;
+        })
+      );
+    [Resource.coal, Resource.oil].map((r) => {
+      if (resources[r]! > -resources[Resource.hybrid]!) {
+        resources[Resource.hybrid]! += resources[r]!;
+        resources[r] = 0;
+      }
+    });
+    return resources;
   }
 
   getResourceCost(resource: Resource): number {
