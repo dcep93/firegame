@@ -2,6 +2,7 @@ import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
 import {
   BoardMap,
+  incomes,
   maps,
   powerplants,
   Resource,
@@ -10,7 +11,7 @@ import {
 
 export type GameType = {
   currentPlayer: number;
-  players: PlayerType[];
+  players: PlayerType[]; // todo 2p
 
   year: number;
   step: number;
@@ -21,8 +22,9 @@ export type GameType = {
   costs?: { [pp: number]: number };
   outOfPlayZones?: string[]; // todo
   resources: { [r in Resource]?: number };
-  auction?: { playerIndex: number; i: number; cost: number };
   auctionPassers?: { [playerIndex: number]: boolean };
+  auction?: { playerIndex: number; i: number; cost: number };
+  bureocracyUsed?: { [ppIndex: number]: boolean };
 };
 
 export type PlayerType = {
@@ -43,7 +45,7 @@ export enum Phase {
   dumping_resources,
   buying_resources,
   buying_cities,
-  bureocracy, // todo
+  bureocracy,
 }
 
 const store: StoreType<GameType> = store_;
@@ -132,20 +134,40 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  dumpPowerPlant(execute: boolean, i: number): boolean {
-    if (utils.needsToDumpPowerPlant()) {
-      if (execute) {
-        const spliced = utils.getCurrent().powerPlantIndices!.splice(i, 1)[0];
-        utils.finishPowerPlantPurchase();
-        store.update(`discarded $${powerplants[spliced].cost}`);
-      }
-      return true;
+  clickPowerPlant(execute: boolean, i: number): boolean {
+    if (!utils.isMyTurn()) {
+      return false;
+    }
+    switch (store.gameW.game.phase) {
+      case Phase.dumping_power_plant:
+        if (execute) {
+          const spliced = utils.getCurrent().powerPlantIndices!.splice(i, 1)[0];
+          utils.finishPowerPlantPurchase();
+          store.update(`discarded $${powerplants[spliced].cost}`);
+        }
+        return true;
+      case Phase.bureocracy:
+        if (!store.gameW.game.bureocracyUsed)
+          store.gameW.game.bureocracyUsed = {};
+        if (store.gameW.game.bureocracyUsed[i]) {
+          return false;
+        }
+        if (execute) {
+          store.gameW.game.bureocracyUsed[i] = true;
+          store.update(
+            `powered $${
+              powerplants[utils.getCurrent().powerPlantIndices![i]].cost
+            }`
+          );
+        }
+        return true; // todo
     }
     return false;
   }
 
   finishPowerPlantPurchase() {
     // todo
+    delete store.gameW.game.auction;
   }
 
   getNextAuctionPlayer(): number {
@@ -199,7 +221,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               store.gameW.game.auctionPassers![playerIndex] === undefined
           )!;
         if (nextBidPlayer === auction.playerIndex) {
-          delete store.gameW.game.auction;
           const pp = store.gameW.game.deckIndices!.splice(auction.i, 1)[0];
           utils.getCurrent().money -= auction.cost;
           if (!utils.getCurrent().powerPlantIndices)
@@ -207,7 +228,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           utils.getCurrent().powerPlantIndices!.push(pp);
           const nextAuctionPlayer = utils.getNextAuctionPlayer();
           if (nextAuctionPlayer === -1) {
-            delete store.gameW.game.auctionPassers;
             utils.startBuyingResources();
             store.update(
               `passed - ${
@@ -253,12 +273,25 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Phase.buying_cities:
         if (currentIndex === 0) {
           store.gameW.game.phase = Phase.bureocracy;
-          store.update("passed - new year");
+          store.update("passed - bureocracy");
           return true;
         }
         store.gameW.game.currentPlayer =
           store.gameW.game.playerOrder[currentIndex - 1];
         break;
+      case Phase.bureocracy:
+        utils.getCurrent().money +=
+          incomes[
+            Object.keys(store.gameW.game.bureocracyUsed || {})
+              .map(
+                (pp) =>
+                  powerplants[
+                    utils.getCurrent().powerPlantIndices![parseInt(pp)]
+                  ].power
+              )
+              .reduce((a, b) => a + b, 0)
+          ] || 0;
+        delete store.gameW.game.bureocracyUsed;
     }
     store.update("passed");
     return true;
@@ -284,6 +317,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   startBuyingResources() {
     // todo
+    delete store.gameW.game.auctionPassers;
   }
 
   bidOnPowerPlant(execute: boolean, cost: number): boolean {
@@ -405,6 +439,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
     }
     return undefined;
+  }
+
+  isOver(): boolean {
+    // todo
+    return false;
   }
 }
 

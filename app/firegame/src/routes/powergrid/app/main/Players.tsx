@@ -51,8 +51,8 @@ export default function Players() {
                   <div key={j}>
                     <PowerPlant
                       pp={pp}
-                      isHover={isMe && utils.dumpPowerPlant(false, j)}
-                      onClick={() => isMe && utils.dumpPowerPlant(true, j)}
+                      isHover={isMe && utils.clickPowerPlant(false, j)}
+                      onClick={() => isMe && utils.clickPowerPlant(true, j)}
                     />
                   </div>
                 ))}

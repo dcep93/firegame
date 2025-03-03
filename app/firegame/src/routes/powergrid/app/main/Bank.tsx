@@ -5,7 +5,12 @@ import PowerPlant from "./PowerPlant";
 export default function Bank() {
   return (
     <div>
-      <div style={utils.bubbleStyle}>
+      <div
+        style={{
+          ...utils.bubbleStyle,
+          backgroundColor: utils.isOver() ? "grey" : undefined,
+        }}
+      >
         <PlayerLabel p={utils.getCurrent()} />
         <div>{Phase[store.gameW.game.phase]}</div>
       </div>
