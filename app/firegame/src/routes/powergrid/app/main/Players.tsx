@@ -35,7 +35,7 @@ export default function Players() {
                     .enumArray(Resource)
                     .filter((r) => p.resources[r] !== undefined)
                     .map((r) => (
-                      <div key={r}>
+                      <div key={r} onClick={() => utils.dumpResource(true, r)}>
                         {p.resources[r]} {Resource[r]}
                       </div>
                     ))}

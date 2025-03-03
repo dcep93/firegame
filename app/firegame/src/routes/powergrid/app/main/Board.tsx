@@ -1,9 +1,7 @@
 import { BoardMap } from "../utils/bank";
+import utils from "../utils/utils";
 
 export default function Board(props: { map: BoardMap }) {
-  console.log(
-    props.map.cities.map((c) => ({ ...c, x: c.x / 1536, y: c.y / 2048 }))
-  );
   return (
     <div>
       <div
@@ -11,28 +9,35 @@ export default function Board(props: { map: BoardMap }) {
           position: "absolute",
           maxHeight: "100%",
           overflowY: "scroll",
-          backgroundColor: "blue",
         }}
       >
-        <div style={{ height: "100%", backgroundColor: "green" }}>
+        <div
+          style={{
+            height: "100%",
+            position: "relative",
+          }}
+        >
           {props.map.cities.map((c, i) => (
             <div
               key={i}
               style={{
                 position: "absolute",
                 left: `${c.x * 100}%`,
-                marginTop: `${c.y * 100}%`,
+                top: `${c.y * 100}%`,
+                borderRadius: "100%",
+                transform: "translate(-50%,-50%)",
+                width: "4em",
+                height: "4em",
+                cursor: utils.buyCity(false, i) ? "pointer" : undefined,
               }}
-            >
-              {c.name}
-            </div>
+              onClick={() => utils.buyCity(true, i)}
+            ></div>
           ))}
           <img
             style={{
               width: "100%",
               display: "block",
               objectFit: "contain",
-              opacity: 0.5,
             }}
             src={props.map.img}
             alt={props.map.name}

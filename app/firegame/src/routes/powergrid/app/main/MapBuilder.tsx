@@ -40,11 +40,14 @@ export default function MapBuilder(props: { name: string }) {
                 cost: e.cost,
                 cs: [e.c1, e.c2]
                   .map((name) => m.cities.find((c) => name === c.name)!)
-                  .map((c) => ({
-                    ...c,
-                    x: c.x * ref.current!.width,
-                    y: c.y * ref.current!.height,
-                  })),
+                  .map(
+                    (c) =>
+                      c && {
+                        ...c,
+                        x: c.x * ref.current!.width,
+                        y: c.y * ref.current!.height,
+                      }
+                  ),
               }))
               .filter(({ cs }) => cs[0] && cs[1])
               .map(({ cs, ...o }) => ({
@@ -72,7 +75,6 @@ export default function MapBuilder(props: { name: string }) {
                     top: (cs[0].y + cs[1].y) / 2,
                     width,
                     transform: `rotate(${angleDeg}deg) translate(0%, -50%)`,
-                    opacity: 0.3,
                     textAlign: "center",
                   }}
                 >
@@ -86,6 +88,7 @@ export default function MapBuilder(props: { name: string }) {
           ref={ref}
           alt={props.name}
           src={m.img}
+          onLoad={() => update({ ...m })}
           onClick={(e) =>
             Promise.resolve()
               .then(() =>

@@ -126,7 +126,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return false;
   }
 
-  bidOnPowerPlant(cost: number) {
+  bidOnPowerPlant(cost: number): boolean {
     if (utils.isMyTurn()) {
       if (
         cost <= utils.getMe()!.money &&
@@ -141,10 +141,27 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         store.update(`bid $${cost} on $${powerplants[pp].cost}`);
       }
     }
+    return false;
   }
 
-  buyCity(execute: boolean, index: number) {
-    return true;
+  buyCity(execute: boolean, index: number): boolean {
+    return false;
+  }
+
+  dumpResource(execute: boolean, resource: Resource): boolean {
+    return false;
+  }
+
+  getCost(resource: Resource): number {
+    const count = store.gameW.game.resources[resource]!;
+    const costs = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16].reverse();
+    const tier =
+      resource === Resource.uranium ? count - 1 : Math.ceil(count / 3) + 3;
+    return costs[tier];
+  }
+
+  buyResource(execute: boolean, resource: Resource): boolean {
+    return false;
   }
 }
 

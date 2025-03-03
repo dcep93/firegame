@@ -3,8 +3,8 @@ import { maps } from "../utils/bank";
 import { store } from "../utils/utils";
 import Bank from "./Bank";
 import Board from "./Board";
-import MapBuilder from "./MapBuilder";
 import Players from "./Players";
+import ResourceBank from "./ResourceBank";
 
 class Main extends React.Component {
   render() {
@@ -12,16 +12,23 @@ class Main extends React.Component {
       <div
         style={{
           width: "100vW",
-          height: "100%",
+          height: "100vH",
           overflowX: "scroll",
           display: "flex",
           flexWrap: "wrap",
         }}
       >
-        <MapBuilder name="germany" />
-        <div style={{ width: "16em", overflow: "scroll" }}>
+        {/* <MapBuilder name="germany" /> */}
+        <div
+          style={{
+            width: "16em",
+            overflow: "scroll",
+            maxHeight: "100%",
+          }}
+        >
           <Bank />
           <Players />
+          <ResourceBank />
         </div>
         <div
           style={{
