@@ -142,6 +142,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
     }
   }
+
+  buyCity(execute: boolean, index: number) {
+    return true;
+  }
 }
 
 const utils = new Utils();
