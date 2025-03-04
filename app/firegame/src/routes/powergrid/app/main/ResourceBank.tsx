@@ -1,9 +1,12 @@
-import { Resource } from "../utils/bank";
+import { incomes, Resource } from "../utils/bank";
 import utils, { store } from "../utils/utils";
 
 export default function ResourceBank() {
   return (
-    <div style={{ ...utils.bubbleStyle }}>
+    <div
+      style={{ ...utils.bubbleStyle }}
+      title={JSON.stringify(incomes, null, 2)}
+    >
       <div>ResourceBank</div>
       {utils
         .enumArray(Resource)

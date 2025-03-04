@@ -1,13 +1,15 @@
+import { recharges } from "../utils/bank";
 import utils, { Phase, store } from "../utils/utils";
 import { PlayerLabel } from "./Players";
 import PowerPlant from "./PowerPlant";
-
-// todo display recharges and incomes
 
 export default function Bank() {
   return (
     <div>
       <div
+        title={((r) => r && utils.getResourceString(r).replaceAll(",", "\n"))(
+          recharges[store.gameW.game.players.length]?.[store.gameW.game.step]
+        )}
         style={{
           ...utils.bubbleStyle,
           ...(utils.isOver() ? { backgroundColor: "grey" } : {}),
