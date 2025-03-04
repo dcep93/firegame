@@ -14,10 +14,10 @@ import {
 
 export type GameType = {
   currentPlayer: number;
-  players: PlayerType[]; // todo 2p
+  players: PlayerType[];
 
   year: number;
-  step: number;
+  step: number; // todo step 3: kill smallest, maybe also do step 2
   phase: Phase;
   mapName: string;
   playerOrder: number[];
@@ -28,6 +28,10 @@ export type GameType = {
   auctionPassers?: { [playerIndex: number]: boolean };
   auction?: { playerIndex: number; i: number; cost: number };
   bureocracyUsed?: { [ppIndex: number]: boolean };
+
+  twoPlayer_trustPowerPlantIndices?: number[];
+  twoPlayer_trustCityIndices?: number[]; // todo
+  germany_uraniumPhaseOut: boolean;
 };
 
 export type PlayerType = {
@@ -57,6 +61,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
     const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
+      germany_uraniumPhaseOut: false,
       year: 1,
       step: 1,
       phase: Phase.selecting_auction,
@@ -232,6 +237,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   getNextAuctionPlayer(): number {
+    // todo if 2 player, pop 4th if bigger than trust
     return (
       store.gameW.game.playerOrder.find(
         (playerIndex) =>
@@ -259,6 +265,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   buyPowerPlant(): number {
     const auction = store.gameW.game.auction!;
     const pp = store.gameW.game.deckIndices!.splice(auction.i, 1)[0];
+    if (store.gameW.game.mapName === "germany" && powerplants[pp].cost === 39) {
+      store.gameW.game.germany_uraniumPhaseOut = true;
+    }
     utils.getCurrent().money -= auction.cost;
     if (!utils.getCurrent().powerPlantIndices)
       utils.getCurrent().powerPlantIndices = [];
@@ -337,6 +346,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Phase.dumping_resources:
         return false;
       case Phase.buying_resources:
+        // todo 2 player trust buys resources
         if (currentIndex === 0) {
           store.gameW.game.phase = Phase.buying_cities;
           store.gameW.game.currentPlayer = store.gameW.game.playerOrder
@@ -350,6 +360,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         break;
       case Phase.buying_cities:
         if (currentIndex === 0) {
+          if (store.gameW.game.step === 1) {
+            if (
+              store.gameW.game.players.find(
+                (p) =>
+                  (p.cityIndices || []).length >=
+                  { 2: 7, 3: 7, 4: 7, 5: 7, 6: 6 }[
+                    store.gameW.game.players.length
+                  ]!
+              )
+            ) {
+              store.gameW.game.step = 2;
+              // todo kill lowest
+            }
+          }
           store.gameW.game.phase = Phase.bureocracy;
           store.update("passed - bureocracy");
           return true;
@@ -375,6 +399,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.currentPlayer ===
           store.gameW.game.players.length - 1
         ) {
+          // todo step 1,2: cycle biggest
+          // todo step 3: kill smallest
           store.gameW.game.year++;
           const recharge =
             recharges[store.gameW.game.players.length][store.gameW.game.step];
@@ -383,6 +409,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               r: r as unknown as Resource,
               count,
             }))
+            .filter(
+              ({ r }) =>
+                r !== Resource.uranium ||
+                !store.gameW.game.germany_uraniumPhaseOut
+            )
             .forEach(
               ({ r, count }) =>
                 (store.gameW.game.resources[r]! += Math.min(
@@ -414,9 +445,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }))
       .map(({ playerIndex, p }) => ({
         playerIndex,
-        power: p
-          .powerPlantIndices!.map((pp) => powerplants[pp].cost)
-          .reduce((a, b) => a + b, 0),
+        power: Math.max(
+          ...p.powerPlantIndices!.map((pp) => powerplants[pp].cost)
+        ),
         cities: (p.cityIndices || []).length,
       }))
       .sort((a, b) => a.cities - b.cities || a.power - b.power)
@@ -472,11 +503,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!execute) {
       return false;
     }
+    // todo 2p trust
+    const step = store.gameW.game.step;
     if (utils.isMyTurn() && store.gameW.game.phase === Phase.buying_cities) {
       const connectionCost = utils.getConnectionCost(index);
       const cost =
         connectionCost +
-        { 0: 10, 1: 15, 2: 20 }[
+        {
+          0: 10,
+          1: step >= 2 ? 15 : Number.POSITIVE_INFINITY,
+          2: step >= 3 ? 20 : Number.POSITIVE_INFINITY,
+        }[
           store.gameW.game.players.filter((p) => p.cityIndices?.includes(index))
             .length
         ]!;
@@ -567,7 +604,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         })
       );
     [Resource.coal, Resource.oil].forEach((r) => {
-      if (resources[r]! > -resources[Resource.hybrid]!) {
+      if (resources[r]! <= -resources[Resource.hybrid]!) {
         resources[Resource.hybrid]! += resources[r]!;
         resources[r] = 0;
       }
@@ -584,15 +621,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   buyResource(execute: boolean, resource: Resource): boolean {
-    if (!execute) {
-      return false;
-    }
     if (utils.isMyTurn()) {
-      const cost = utils.getResourceCost(resource);
-      if (utils.getCurrent().money >= cost) {
-        utils.getCurrent().money -= cost;
-        store.gameW.game.resources[resource]!--;
-        store.update(`bought ${Resource[resource]} for $${cost}`);
+      const excessResources = utils.getExcessResources();
+      if (
+        excessResources[resource]! < 0 ||
+        (excessResources[Resource.hybrid]! < 0 &&
+          [Resource.coal, Resource.oil].includes(resource))
+      ) {
+        const cost = utils.getResourceCost(resource);
+        if (utils.getCurrent().money >= cost) {
+          if (execute) {
+            utils.getCurrent().money -= cost;
+            store.gameW.game.resources[resource]!--;
+            store.update(`bought ${Resource[resource]} for $${cost}`);
+          }
+          return true;
+        }
       }
     }
     return false;

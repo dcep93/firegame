@@ -2,6 +2,8 @@ import utils, { Phase, store } from "../utils/utils";
 import { PlayerLabel } from "./Players";
 import PowerPlant from "./PowerPlant";
 
+// todo display recharges and incomes
+
 export default function Bank() {
   return (
     <div>
