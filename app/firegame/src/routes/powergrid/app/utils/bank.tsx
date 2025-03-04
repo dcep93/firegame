@@ -424,6 +424,118 @@ export const maps: BoardMap[] = [
   },
 ];
 
+export const totalResources: { [r in Resource]?: number } = {
+  [Resource.coal]: 24,
+  [Resource.oil]: 24,
+  [Resource.garbage]: 24,
+  [Resource.uranium]: 12,
+};
+
+export const recharges: {
+  [numPlayers: number]: { [step: number]: { [r in Resource]?: number } };
+} = {
+  2: {
+    1: {
+      [Resource.coal]: 3,
+      [Resource.oil]: 2,
+      [Resource.garbage]: 1,
+      [Resource.uranium]: 1,
+    },
+    2: {
+      [Resource.coal]: 4,
+      [Resource.oil]: 2,
+      [Resource.garbage]: 2,
+      [Resource.uranium]: 1,
+    },
+    3: {
+      [Resource.coal]: 3,
+      [Resource.oil]: 4,
+      [Resource.garbage]: 3,
+      [Resource.uranium]: 1,
+    },
+  },
+  3: {
+    1: {
+      [Resource.coal]: 4,
+      [Resource.oil]: 2,
+      [Resource.garbage]: 1,
+      [Resource.uranium]: 1,
+    },
+    2: {
+      [Resource.coal]: 5,
+      [Resource.oil]: 3,
+      [Resource.garbage]: 2,
+      [Resource.uranium]: 1,
+    },
+    3: {
+      [Resource.coal]: 3,
+      [Resource.oil]: 4,
+      [Resource.garbage]: 3,
+      [Resource.uranium]: 1,
+    },
+  },
+  4: {
+    1: {
+      [Resource.coal]: 5,
+      [Resource.oil]: 3,
+      [Resource.garbage]: 2,
+      [Resource.uranium]: 1,
+    },
+    2: {
+      [Resource.coal]: 6,
+      [Resource.oil]: 4,
+      [Resource.garbage]: 3,
+      [Resource.uranium]: 2,
+    },
+    3: {
+      [Resource.coal]: 4,
+      [Resource.oil]: 5,
+      [Resource.garbage]: 4,
+      [Resource.uranium]: 2,
+    },
+  },
+  5: {
+    1: {
+      [Resource.coal]: 5,
+      [Resource.oil]: 4,
+      [Resource.garbage]: 3,
+      [Resource.uranium]: 2,
+    },
+    2: {
+      [Resource.coal]: 7,
+      [Resource.oil]: 5,
+      [Resource.garbage]: 3,
+      [Resource.uranium]: 3,
+    },
+    3: {
+      [Resource.coal]: 5,
+      [Resource.oil]: 6,
+      [Resource.garbage]: 5,
+      [Resource.uranium]: 2,
+    },
+  },
+  6: {
+    1: {
+      [Resource.coal]: 7,
+      [Resource.oil]: 5,
+      [Resource.garbage]: 3,
+      [Resource.uranium]: 2,
+    },
+    2: {
+      [Resource.coal]: 9,
+      [Resource.oil]: 6,
+      [Resource.garbage]: 5,
+      [Resource.uranium]: 3,
+    },
+    3: {
+      [Resource.coal]: 6,
+      [Resource.oil]: 7,
+      [Resource.garbage]: 6,
+      [Resource.uranium]: 3,
+    },
+  },
+};
+
 export const incomes: { [count: number]: number } = {
   0: 10,
   1: 22,

@@ -6,8 +6,10 @@ import {
   maps,
   PowerPlant,
   powerplants,
+  recharges,
   Resource,
   startingBankResources,
+  totalResources,
 } from "./bank";
 
 export type GameType = {
@@ -374,6 +376,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.players.length - 1
         ) {
           store.gameW.game.year++;
+          const recharge =
+            recharges[store.gameW.game.players.length][store.gameW.game.step];
+          Object.entries(recharge)
+            .map(([r, count]) => ({
+              r: r as unknown as Resource,
+              count,
+            }))
+            .forEach(
+              ({ r, count }) =>
+                (store.gameW.game.resources[r]! += Math.min(
+                  count,
+                  totalResources[r]! -
+                    store.gameW.game.players
+                      .map((p) => p.resources[r]!)
+                      .reduce((a, b) => a + b, 0)
+                ))
+            );
           utils.reorderPlayers();
           store.gameW.game.currentPlayer = 0;
           store.update(`powered ${numPowered} for $${income} - new year`);
