@@ -12,14 +12,12 @@ export type PowerPlant = {
   cost: number;
   resources: { [r in Resource]?: number };
   power: number;
-  index: number;
-  isPlug: boolean;
 };
 
 export const startingBankResources = {
   [Resource.coal]: 24,
   [Resource.oil]: 18,
-  [Resource.garbage]: 9,
+  [Resource.garbage]: 6,
   [Resource.uranium]: 2,
 };
 
@@ -66,11 +64,7 @@ export const powerplants: PowerPlant[] = [
   { cost: 44, resources: { [Resource.renewable]: 0 }, power: 5 },
   { cost: 46, resources: { [Resource.hybrid]: 3 }, power: 7 },
   { cost: 50, resources: { [Resource.renewable]: 0 }, power: 6 },
-].map((pp, index) => ({
-  ...pp,
-  index,
-  isPlug: pp.cost <= 15,
-}));
+];
 
 export type BoardMap = {
   name: string;

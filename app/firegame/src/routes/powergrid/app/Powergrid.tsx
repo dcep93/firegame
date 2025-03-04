@@ -27,8 +27,7 @@ export default class PowerGrid extends React.Component {
 class Sidebar extends SharedSidebar {
   name = "Power Grid";
   utils = utils;
-  rules =
-    "https://www.riograndegames.com/wp-content/uploads/2018/12/Power-Grid-Recharged-Rules.pdf";
+  rules = "https://tesera.ru/images/items/11611/Power_Grid_Rules_EN.pdf";
 
   renderInfo(): JSX.Element | null {
     return (

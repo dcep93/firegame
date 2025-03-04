@@ -11,7 +11,7 @@ export default function PowerPlant(props: {
       style={{
         ...utils.bubbleStyle,
         cursor: props.isHover ? "pointer" : undefined,
-        ...((store.gameW.game.deckIndices || [])[
+        ...((store.gameW.game.powerplantIndices || [])[
           store.gameW.game.auction?.i || -1
         ] === props.pp
           ? {
@@ -23,7 +23,7 @@ export default function PowerPlant(props: {
     >
       <div>
         ${powerplants[props.pp].cost}(
-        {store.gameW.game.costs?.[props.pp] || "*"})
+        {store.gameW.game.historicalCosts?.[props.pp] || "*"})
       </div>
       <div>
         {Object.entries(powerplants[props.pp].resources).map(

@@ -21,10 +21,11 @@ export type GameType = {
   phase: Phase;
   mapName: string;
   playerOrder: number[];
-  deckIndices?: number[];
-  costs?: { [pp: number]: number };
-  outOfPlayZones?: string[]; // todo
+  powerplantIndices?: number[]; // todo kill smaller than max cities
+  historicalCosts?: { [pp: number]: number };
+  outOfPlayZones?: string[]; // todo 3,3,4,5,5
   resources: { [r in Resource]?: number };
+
   auctionPassers?: { [playerIndex: number]: boolean };
   auction?: { playerIndex: number; i: number; cost: number };
   bureocracyUsed?: { [ppIndex: number]: boolean };
@@ -82,22 +83,24 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           [Resource.uranium]: 0,
         },
       })),
-      deckIndices: ((grouped) =>
+      powerplantIndices: ((grouped) =>
         ((plugs, sockets) =>
           plugs
-            .splice(0, 9)
             .concat(
               utils.shuffle(
-                plugs
-                  .slice({ 2: 1, 3: 2, 4: 1 }[numPlayers] || 0)
-                  .concat(sockets.slice({ 2: 5, 3: 6, 4: 3 }[numPlayers] || 0))
+                sockets.slice({ 2: 8, 3: 8, 4: 4 }[numPlayers] || 0)
               )
             )
             .map(({ index }) => index)
             .concat(-1))(
           utils.shuffle(grouped["true"]),
           utils.shuffle(grouped["false"])
-        ))(utils.groupByF(powerplants, (pp) => pp.isPlug.toString())),
+        ))(
+        utils.groupByF(
+          powerplants.map((pp, index) => ({ pp, index })),
+          ({ pp }) => (pp.cost <= 10).toString()
+        )
+      ),
       outOfPlayZones: [],
       resources: startingBankResources,
     } as GameType);
@@ -133,7 +136,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   needsToDumpPowerPlant(): boolean {
-    if ((utils.getCurrent().powerPlantIndices || []).length > 3) {
+    if (
+      (utils.getCurrent().powerPlantIndices || []).length >
+      (store.gameW.game.players.length === 2 ? 4 : 3)
+    ) {
       return true;
     }
     return false;
@@ -264,7 +270,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   buyPowerPlant(): number {
     const auction = store.gameW.game.auction!;
-    const pp = store.gameW.game.deckIndices!.splice(auction.i, 1)[0];
+    const pp = store.gameW.game.powerplantIndices!.splice(auction.i, 1)[0];
     if (store.gameW.game.mapName === "germany" && powerplants[pp].cost === 39) {
       store.gameW.game.germany_uraniumPhaseOut = true;
     }
@@ -365,7 +371,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               store.gameW.game.players.find(
                 (p) =>
                   (p.cityIndices || []).length >=
-                  { 2: 7, 3: 7, 4: 7, 5: 7, 6: 6 }[
+                  { 2: 10, 3: 7, 4: 7, 5: 7, 6: 6 }[
                     store.gameW.game.players.length
                   ]!
               )
@@ -463,6 +469,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.gameW.game.currentPlayer = store.gameW.game.playerOrder
       .slice()
       .reverse()[0];
+    // todo if all passed, kill smallest
+    // todo cant buy more than 1 per round
     delete store.gameW.game.auctionPassers;
   }
 
@@ -479,7 +487,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           playerIndex: store.gameW.game.currentPlayer,
           cost,
         });
-        const pp = store.gameW.game.deckIndices![store.gameW.game.auction!.i];
+        const pp =
+          store.gameW.game.powerplantIndices![store.gameW.game.auction!.i];
         const nextBidPlayer = utils.getNextBidPlayer();
         if (nextBidPlayer === -1) {
           utils.buyPowerPlant();
@@ -662,7 +671,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       Math.max(
         ...store.gameW.game.players.map((p) => (p.cityIndices || []).length)
       ) >=
-      { 2: 18, 3: 17, 4: 17, 5: 15, 6: 15 }[store.gameW.game.players.length]!
+      { 2: 21, 3: 17, 4: 17, 5: 15, 6: 14 }[store.gameW.game.players.length]!
     );
   }
 }

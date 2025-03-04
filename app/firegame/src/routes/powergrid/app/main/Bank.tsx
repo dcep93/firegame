@@ -47,7 +47,7 @@ export default function Bank() {
         )}
       </div>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {(store.gameW.game.deckIndices || [])
+        {(store.gameW.game.powerplantIndices || [])
           .slice(0, store.gameW.game.step === 3 ? 7 : 8)
           .map((pp, i) => ({ pp, i }))
           .sort((a, b) => a.pp - b.pp)
