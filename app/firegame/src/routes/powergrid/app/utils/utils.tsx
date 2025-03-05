@@ -663,6 +663,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   buyCity(execute: boolean, index: number): boolean {
+    if (
+      (store.gameW.game.outOfPlayZones || []).includes(
+        utils.getMap().cities[index].color
+      )
+    ) {
+      return false;
+    }
     if (!utils.isMyTurn()) {
       return false;
     }

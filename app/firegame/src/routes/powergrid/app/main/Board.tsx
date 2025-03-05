@@ -29,7 +29,11 @@ export default function Board() {
                 width: "4em",
                 height: "4em",
                 cursor: utils.buyCity(false, i) ? "pointer" : undefined,
-                // display: "flex",
+                ...((store.gameW.game.outOfPlayZones || []).includes(
+                  utils.getMap().cities[i].color
+                )
+                  ? { backgroundColor: "black" }
+                  : {}),
               }}
               onClick={() => utils.buyCity(true, i)}
             >
