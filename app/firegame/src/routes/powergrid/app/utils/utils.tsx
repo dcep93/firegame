@@ -439,7 +439,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       case Phase.dumping_resources:
         return false;
       case Phase.buying_resources:
-        // todo 2 player trust buys resources
         if (currentIndex === 0) {
           store.gameW.game.phase = Phase.buying_cities;
           store.gameW.game.currentPlayer = store.gameW.game.playerOrder
@@ -447,6 +446,50 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             .reverse()[0];
           store.update("passed - buying cities");
           return true;
+        }
+        if (store.gameW.game.twoPlayer_trust) {
+          store.gameW.game.twoPlayer_trust
+            .powerPlantIndices!.flatMap((pp) =>
+              Object.entries(powerplants[pp].resources)
+            )
+            .map(([r, count]) => ({ r: r as unknown as Resource, count }))
+            .filter(({ r }) => r !== Resource.renewable)
+            .forEach(({ r, count }) => {
+              if (r === Resource.hybrid) {
+                const availableCoal =
+                  store.gameW.game.resources[Resource.coal]!;
+                if (availableCoal < count / 2) {
+                  store.gameW.game.resources[Resource.coal] = 0;
+                  store.gameW.game.resources[Resource.oil] = Math.max(
+                    0,
+                    store.gameW.game.resources[Resource.oil]! -
+                      (count - availableCoal)
+                  );
+                  return;
+                }
+                const availableOil = store.gameW.game.resources[Resource.oil]!;
+                if (availableOil < (count - 1) / 2) {
+                  store.gameW.game.resources[Resource.oil] = 0;
+                  store.gameW.game.resources[Resource.coal] = Math.max(
+                    0,
+                    store.gameW.game.resources[Resource.coal]! -
+                      (count - availableCoal)
+                  );
+                  return;
+                }
+                store.gameW.game.resources[Resource.coal]! -= Math.ceil(
+                  count / 2
+                );
+                store.gameW.game.resources[Resource.oil]! -= Math.floor(
+                  count / 2
+                );
+              } else {
+                store.gameW.game.resources[r] = Math.max(
+                  0,
+                  store.gameW.game.resources[r]! - count
+                );
+              }
+            });
         }
         store.gameW.game.currentPlayer =
           store.gameW.game.playerOrder[currentIndex - 1];
