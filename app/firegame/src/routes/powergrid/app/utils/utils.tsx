@@ -31,8 +31,7 @@ export type GameType = {
   auction?: { playerIndex: number; i: number; cost: number };
   bureocracyUsed?: { [ppIndex: number]: boolean };
 
-  twoPlayer_trustPowerPlantIndices?: number[];
-  twoPlayer_trustCityIndices?: number[]; // todo init 6
+  twoPlayer_trust?: PlayerType;
   germany_uraniumPhaseOut: boolean;
 };
 
@@ -55,6 +54,8 @@ export enum Phase {
   buying_resources,
   buying_cities,
   bureocracy,
+
+  initializing_trust,
 }
 enum AuctionState {
   bought,
@@ -66,51 +67,83 @@ const store: StoreType<GameType> = store_;
 
 class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
-    const numPlayers = Object.entries(store.lobby).length;
-    return Promise.resolve({
-      justDrewStep3: false,
-      germany_uraniumPhaseOut: false,
-      year: 1,
-      step: 1,
-      phase: Phase.selecting_auction,
-      currentPlayer: 0,
-      mapName: "germany",
-      playerOrder: utils.shuffle(utils.count(numPlayers)),
-      players: Object.entries(store.lobby).map(([userId, userName], index) => ({
-        userId,
-        userName,
-        color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
-        money: 50,
-        powerPlantIndices: [],
-        cityIndices: [],
-        resources: {
-          [Resource.coal]: 0,
-          [Resource.oil]: 0,
-          [Resource.garbage]: 0,
-          [Resource.uranium]: 0,
-        },
-      })),
-      powerplantIndices: ((grouped) =>
-        ((plugs, sockets) =>
-          plugs
-            .concat(
-              utils.shuffle(
-                sockets.slice({ 2: 8, 3: 8, 4: 4 }[numPlayers] || 0)
+    return Promise.resolve()
+      .then(() => ({
+        players: Object.entries(store.lobby).map(
+          ([userId, userName], index) => ({
+            userId,
+            userName,
+            color: ["red", "blue", "green", "pink", "yellow", "orange"][index],
+            money: 50,
+            powerPlantIndices: [],
+            cityIndices: [],
+            resources: {
+              [Resource.coal]: 0,
+              [Resource.oil]: 0,
+              [Resource.garbage]: 0,
+              [Resource.uranium]: 0,
+            },
+          })
+        ),
+      }))
+      .then(
+        ({ players }) =>
+          ({
+            justDrewStep3: false,
+            germany_uraniumPhaseOut: false,
+            year: 1,
+            step: 1,
+            phase:
+              players.length === 2
+                ? Phase.initializing_trust
+                : Phase.selecting_auction,
+            currentPlayer: 0,
+            mapName: "germany",
+            playerOrder: utils.shuffle(utils.count(players.length)),
+            players,
+            powerplantIndices: ((grouped) =>
+              ((plugs, sockets) =>
+                plugs
+                  .concat(
+                    utils.shuffle(
+                      sockets.slice({ 2: 8, 3: 8, 4: 4 }[players.length] || 0)
+                    )
+                  )
+                  .map(({ index }) => index)
+                  .concat(-1))(
+                utils.shuffle(grouped["true"]),
+                utils.shuffle(grouped["false"])
+              ))(
+              utils.groupByF(
+                powerplants.map((pp, index) => ({ pp, index })),
+                ({ pp }) => (pp.cost <= 10).toString()
               )
-            )
-            .map(({ index }) => index)
-            .concat(-1))(
-          utils.shuffle(grouped["true"]),
-          utils.shuffle(grouped["false"])
-        ))(
-        utils.groupByF(
-          powerplants.map((pp, index) => ({ pp, index })),
-          ({ pp }) => (pp.cost <= 10).toString()
-        )
-      ),
-      outOfPlayZones: [],
-      resources: startingBankResources,
-    } as GameType);
+            ),
+            outOfPlayZones: [],
+            resources: startingBankResources,
+          } as GameType)
+      )
+      .then((game) => ({
+        ...game,
+        ...(game.players.length === 2
+          ? {
+              twoPlayer_trust: {
+                userId: "",
+                userName: "",
+                color: "black",
+                money: 0,
+                powerPlantIndices: [],
+                cityIndices: [],
+                resources: {
+                  [Resource.coal]: 0,
+                  [Resource.oil]: 0,
+                  [Resource.garbage]: 0,
+                  [Resource.uranium]: 0,
+                },
+              },
+            }
+          : {}),
+      }));
   }
 
   auctionPowerPlant(
@@ -545,12 +578,31 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   buyCity(execute: boolean, index: number): boolean {
-    if (!execute) {
+    if (!utils.isMyTurn()) {
       return false;
     }
-    // todo 2p trust
+    if (store.gameW.game.phase === Phase.initializing_trust) {
+      if (execute) {
+        const c = store.gameW.game.twoPlayer_trust!;
+        if (!c.cityIndices) {
+          c.cityIndices = [];
+        }
+        c.cityIndices.push(index);
+        if (c.cityIndices.length === 1) {
+          store.gameW.game.currentPlayer = 1;
+        } else if (c.cityIndices.length === 3) {
+          store.gameW.game.currentPlayer = 0;
+        } else if (c.cityIndices.length === 5) {
+          store.gameW.game.currentPlayer = 1;
+        } else {
+          store.gameW.game.currentPlayer = 0;
+          store.gameW.game.phase = Phase.buying_cities;
+        }
+      }
+      return true;
+    }
     const step = store.gameW.game.step;
-    if (utils.isMyTurn() && store.gameW.game.phase === Phase.buying_cities) {
+    if (store.gameW.game.phase === Phase.buying_cities) {
       const connectionCost = utils.getConnectionCost(index);
       const cost =
         connectionCost +
@@ -559,12 +611,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           1: step >= 2 ? 15 : Number.POSITIVE_INFINITY,
           2: step >= 3 ? 20 : Number.POSITIVE_INFINITY,
         }[
-          store.gameW.game.players.filter((p) => p.cityIndices?.includes(index))
-            .length
+          store.gameW.game.players
+            .concat(store.gameW.game.twoPlayer_trust || [])
+            .filter((p) => p.cityIndices?.includes(index)).length
         ]!;
       const c = utils.getCurrent();
       if (c.money >= cost) {
         if (execute) {
+          if (
+            (store.gameW.game.twoPlayer_trust?.cityIndices?.length ||
+              Number.POSITIVE_INFINITY) < 16
+          ) {
+            store.gameW.game.twoPlayer_trust!.cityIndices!.push(index);
+          }
           c.money -= cost;
           if (!c.cityIndices) c.cityIndices = [];
           c.cityIndices.push(index);
@@ -575,7 +634,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                 .filter(
                   (i) => i < 0 || powerplants[i].cost >= c.cityIndices!.length
                 )
-            ); // todo update notes array
+            );
           if (utils.justEnteredStep3()) {
             utils.removeSmallest(1);
           }

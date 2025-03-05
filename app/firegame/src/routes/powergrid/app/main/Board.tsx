@@ -43,6 +43,7 @@ export default function Board() {
                 }}
               >
                 {store.gameW.game.players
+                  .concat(store.gameW.game.twoPlayer_trust || [])
                   .flatMap((p) =>
                     (p.cityIndices || []).map((cc) => ({ cc, p }))
                   )
