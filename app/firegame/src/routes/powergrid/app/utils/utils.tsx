@@ -282,15 +282,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
   }
 
-  getMarketIndices(): number[] {
-    return []; // todo
-  }
-
   getNextAuctionPlayer(): number {
     const t = store.gameW.game.twoPlayer_trust;
     if (t) {
-      const biggestMarket = utils
-        .getMarketIndices()
+      const biggestMarket = (store.gameW.game.powerplantIndices || [])
+        .slice(0, store.gameW.game.step === 3 ? 7 : 8)
+        .map((pp, i) => ({
+          pp,
+          i,
+          sort: pp === -1 ? Number.POSITIVE_INFINITY : powerplants[pp].cost,
+        }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ i }) => i)
+        .slice(0, store.gameW.game.step === 3 ? 6 : 4)
         .map((pp, index) => ({
           index,
           value: pp < 0 ? Number.NEGATIVE_INFINITY : powerplants[pp].cost,

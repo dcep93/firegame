@@ -1,4 +1,4 @@
-import { recharges } from "../utils/bank";
+import { powerplants, recharges } from "../utils/bank";
 import utils, { Phase, store } from "../utils/utils";
 import { PlayerLabel } from "./Players";
 import PowerPlant from "./PowerPlant";
@@ -51,8 +51,12 @@ export default function Bank() {
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {(store.gameW.game.powerplantIndices || [])
           .slice(0, store.gameW.game.step === 3 ? 7 : 8)
-          .map((pp, i) => ({ pp, i }))
-          .sort((a, b) => a.pp - b.pp)
+          .map((pp, i) => ({
+            pp,
+            i,
+            sort: pp === -1 ? Number.POSITIVE_INFINITY : powerplants[pp].cost,
+          }))
+          .sort((a, b) => a.sort - b.sort)
           .map(({ pp, i }, j) => (
             <div key={i}>
               {pp === -1 ? (
