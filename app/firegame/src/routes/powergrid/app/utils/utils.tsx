@@ -640,12 +640,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   buyCity(execute: boolean, index: number): boolean {
+    const color = utils.getMap().cities[index].color;
     if (!store.gameW.game.outOfPlayZones) store.gameW.game.outOfPlayZones = [];
-    if (
-      store.gameW.game.outOfPlayZones.includes(
-        utils.getMap().cities[index].color
-      )
-    ) {
+    if (store.gameW.game.outOfPlayZones.includes(color)) {
       return false;
     }
     if (!utils.isMyTurn()) {
@@ -653,9 +650,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (store.gameW.game.phase === Phase.nuking_cities) {
       if (execute) {
-        store.gameW.game.outOfPlayZones.push(
-          utils.getMap().cities[index].color
-        );
+        store.gameW.game.outOfPlayZones.push(color);
         if (
           6 - store.gameW.game.outOfPlayZones.length ===
           { 2: 3, 3: 3, 4: 4, 5: 5, 6: 5 }[store.gameW.game.players.length]
@@ -679,6 +674,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             };
           }
         }
+        store.update(`nuked ${color}`);
       }
       return true;
     }
@@ -702,6 +698,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.currentPlayer = 0;
           store.gameW.game.phase = Phase.buying_cities;
         }
+        store.update(
+          `established trust in ${utils.getMap().cities[index].name}`
+        );
       }
       return true;
     }
