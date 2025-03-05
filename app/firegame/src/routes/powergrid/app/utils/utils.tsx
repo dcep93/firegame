@@ -17,21 +17,22 @@ export type GameType = {
   players: PlayerType[];
 
   year: number;
-  step: number; // todo step 3: kill smallest, maybe also do step 2
+  step: number;
   phase: Phase;
   mapName: string;
   playerOrder: number[];
-  powerplantIndices?: number[]; // todo kill smaller than max cities
+  powerplantIndices?: number[];
   historicalCosts?: { [pp: number]: number };
   outOfPlayZones?: string[]; // todo 3,3,4,5,5
   resources: { [r in Resource]?: number };
+  justDrewStep3: boolean;
 
-  auctionPassers?: { [playerIndex: number]: boolean };
+  auctionPassers?: { [playerIndex: number]: AuctionState };
   auction?: { playerIndex: number; i: number; cost: number };
   bureocracyUsed?: { [ppIndex: number]: boolean };
 
   twoPlayer_trustPowerPlantIndices?: number[];
-  twoPlayer_trustCityIndices?: number[]; // todo
+  twoPlayer_trustCityIndices?: number[]; // todo init 6
   germany_uraniumPhaseOut: boolean;
 };
 
@@ -55,6 +56,11 @@ export enum Phase {
   buying_cities,
   bureocracy,
 }
+enum AuctionState {
+  bought,
+  passed,
+  folded,
+}
 
 const store: StoreType<GameType> = store_;
 
@@ -62,6 +68,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   newGame(): Promise<GameType> {
     const numPlayers = Object.entries(store.lobby).length;
     return Promise.resolve({
+      justDrewStep3: false,
       germany_uraniumPhaseOut: false,
       year: 1,
       step: 1,
@@ -271,6 +278,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   buyPowerPlant(): number {
     const auction = store.gameW.game.auction!;
     const pp = store.gameW.game.powerplantIndices!.splice(auction.i, 1)[0];
+    if (utils.justEnteredStep3()) {
+      store.gameW.game.powerplantIndices!.push(
+        ...utils.shuffle(store.gameW.game.powerplantIndices!.splice(8))
+      );
+    }
     if (store.gameW.game.mapName === "germany" && powerplants[pp].cost === 39) {
       store.gameW.game.germany_uraniumPhaseOut = true;
     }
@@ -278,6 +290,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.getCurrent().powerPlantIndices)
       utils.getCurrent().powerPlantIndices = [];
     utils.getCurrent().powerPlantIndices!.push(pp);
+    store.gameW.game.auctionPassers![store.gameW.game.currentPlayer] =
+      AuctionState.bought;
     this.finishPowerPlantPurchase();
     return pp;
   }
@@ -299,7 +313,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         if (!store.gameW.game.auctionPassers)
           store.gameW.game.auctionPassers = {};
-        store.gameW.game.auctionPassers[store.gameW.game.currentPlayer] = true;
+        store.gameW.game.auctionPassers[store.gameW.game.currentPlayer] =
+          AuctionState.passed;
         const nextAuctionPlayer = utils.getNextAuctionPlayer();
         if (nextAuctionPlayer === -1) {
           utils.startBuyingResources();
@@ -315,7 +330,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         }
         if (!store.gameW.game.auctionPassers)
           store.gameW.game.auctionPassers = {};
-        store.gameW.game.auctionPassers[store.gameW.game.currentPlayer] = false;
+        store.gameW.game.auctionPassers[store.gameW.game.currentPlayer] =
+          AuctionState.folded;
         const nextBidPlayer = utils.getNextBidPlayer();
         if (nextBidPlayer === -1) {
           const pp = utils.buyPowerPlant();
@@ -333,7 +349,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           }
           store.gameW.game.auctionPassers = Object.fromEntries(
             Object.entries(store.gameW.game.auctionPassers || {}).filter(
-              ([_, passedAuction]) => passedAuction
+              ([_, passedAuction]) => passedAuction !== AuctionState.folded
             )
           );
           store.gameW.game.currentPlayer = nextAuctionPlayer;
@@ -377,10 +393,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               )
             ) {
               store.gameW.game.step = 2;
-              // todo kill lowest
+              utils.removeSmallest(1);
             }
           }
           store.gameW.game.phase = Phase.bureocracy;
+          if (store.gameW.game.justDrewStep3) {
+            store.gameW.game.step = 3;
+            store.gameW.game.justDrewStep3 = false;
+          }
           store.update("passed - bureocracy");
           return true;
         }
@@ -405,8 +425,6 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.currentPlayer ===
           store.gameW.game.players.length - 1
         ) {
-          // todo step 1,2: cycle biggest
-          // todo step 3: kill smallest
           store.gameW.game.year++;
           const recharge =
             recharges[store.gameW.game.players.length][store.gameW.game.step];
@@ -432,6 +450,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             );
           utils.reorderPlayers();
           store.gameW.game.currentPlayer = 0;
+          if (store.gameW.game.step === 3) {
+            utils.removeSmallest(1);
+          } else {
+            utils.removeSmallest(-1);
+            if (utils.justEnteredStep3()) {
+              utils.removeSmallest(1);
+            }
+          }
           store.update(`powered ${numPowered} for $${income} - new year`);
           return true;
         }
@@ -462,6 +488,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   startBuyingResources() {
+    if (store.gameW.game.justDrewStep3) {
+      store.gameW.game.step = 3;
+      store.gameW.game.justDrewStep3 = false;
+      utils.removeSmallest(1);
+    }
     if (store.gameW.game.year === 1) {
       utils.reorderPlayers();
     }
@@ -469,8 +500,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.gameW.game.currentPlayer = store.gameW.game.playerOrder
       .slice()
       .reverse()[0];
-    // todo if all passed, kill smallest
-    // todo cant buy more than 1 per round
+    if (
+      Object.values(store.gameW.game.auctionPassers!).find(
+        (a) => a !== AuctionState.passed
+      ) === undefined
+    ) {
+      utils.removeSmallest(1);
+    }
     delete store.gameW.game.auctionPassers;
   }
 
@@ -526,14 +562,50 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.players.filter((p) => p.cityIndices?.includes(index))
             .length
         ]!;
-      if (utils.getCurrent().money >= cost) {
+      const c = utils.getCurrent();
+      if (c.money >= cost) {
         if (execute) {
-          utils.getCurrent().money -= cost;
+          c.money -= cost;
+          if (!c.cityIndices) c.cityIndices = [];
+          c.cityIndices.push(index);
+          if (store.gameW.game.powerplantIndices)
+            store.gameW.game.powerplantIndices.unshift(
+              ...store.gameW.game.powerplantIndices
+                .splice(0, 8)
+                .filter(
+                  (i) => i < 0 || powerplants[i].cost >= c.cityIndices!.length
+                )
+            ); // todo update notes array
+          if (utils.justEnteredStep3()) {
+            utils.removeSmallest(1);
+          }
           store.update(`bought ${utils.getMap().cities[index].name}`);
         }
       }
     }
     return false;
+  }
+
+  justEnteredStep3(): boolean {
+    if (store.gameW.game.step === 3 || store.gameW.game.justDrewStep3) {
+      return false;
+    }
+    store.gameW.game.justDrewStep3 = !!store.gameW.game.powerplantIndices
+      ?.slice(0, 8)
+      .includes(-1);
+    return store.gameW.game.justDrewStep3;
+  }
+
+  removeSmallest(factor: number) {
+    if (!store.gameW.game.powerplantIndices) return;
+    const index = store.gameW.game.powerplantIndices
+      .map((pp, i) => ({
+        pp,
+        i,
+        value: i < 0 ? Number.POSITIVE_INFINITY : powerplants[pp].cost * factor,
+      }))
+      .sort((a, b) => a.value - b.value)[0].i;
+    store.gameW.game.powerplantIndices.splice(index, 1);
   }
 
   getConnectionCost(index: number): number {
