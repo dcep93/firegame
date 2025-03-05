@@ -14,6 +14,10 @@ export default function Bank() {
           ...utils.bubbleStyle,
           ...(utils.isOver() ? { backgroundColor: "grey" } : {}),
         }}
+        onClick={() => {
+          utils.debugSwap();
+          store.update("[debug] swapped");
+        }}
       >
         <PlayerLabel p={utils.getCurrent()} />
         <div>{Phase[store.gameW.game.phase]}</div>

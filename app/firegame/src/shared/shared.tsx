@@ -37,6 +37,13 @@ abstract class SharedUtils<T extends TurnGame<U>, U extends PlayerType> {
     firebaseClear();
   }
 
+  debugSwap() {
+    const p = (store.gameW.game as T).players;
+    p.forEach((pp, i) => {
+      pp.userId = p[(i + 1) % p.length].userId;
+    });
+  }
+
   isMyTurn(game_: T | undefined = undefined): boolean {
     const game: T = game_ || store.gameW.game!;
     if (!game) return false;
