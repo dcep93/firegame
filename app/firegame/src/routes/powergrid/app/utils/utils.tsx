@@ -125,7 +125,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       )
       .then((game) => ({
         ...game,
-        ...(game.players.length === 2
+        ...(game.phase === Phase.initializing_trust
           ? {
               twoPlayer_trust: {
                 userId: "",
@@ -282,8 +282,39 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
   }
 
+  getMarketIndices(): number[] {
+    return []; // todo
+  }
+
   getNextAuctionPlayer(): number {
-    // todo if 2 player, pop 4th if bigger than trust
+    const t = store.gameW.game.twoPlayer_trust;
+    if (t) {
+      const biggestMarket = utils
+        .getMarketIndices()
+        .map((pp, index) => ({
+          index,
+          value: pp < 0 ? Number.NEGATIVE_INFINITY : powerplants[pp].cost,
+        }))
+        .sort((a, b) => b.value - a.value)[0];
+      if (!t.powerPlantIndices) {
+        t.powerPlantIndices = [];
+        utils.acquirePowerPlant(t, biggestMarket.index);
+      } else {
+        const smallestOwned = t.powerPlantIndices
+          .map((pp, index) => ({
+            index,
+            value: powerplants[pp].cost,
+          }))
+          .sort((a, b) => a.value - b.value)[0];
+        if (biggestMarket.value > smallestOwned.value) {
+          utils.acquirePowerPlant(t, biggestMarket.index);
+          t.powerPlantIndices!.sort((a, b) => a - b);
+          if (t.powerPlantIndices!.length > 4) {
+            t.powerPlantIndices!.shift();
+          }
+        }
+      }
+    }
     return (
       store.gameW.game.playerOrder.find(
         (playerIndex) =>
@@ -309,8 +340,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   buyPowerPlant(): number {
+    const p = utils.getCurrent();
     const auction = store.gameW.game.auction!;
-    const pp = store.gameW.game.powerplantIndices!.splice(auction.i, 1)[0];
+
+    p.money -= auction.cost;
+    store.gameW.game.auctionPassers![store.gameW.game.currentPlayer] =
+      AuctionState.bought;
+    this.finishPowerPlantPurchase();
+
+    const pp = store.gameW.game.powerplantIndices![auction.i];
+    utils.acquirePowerPlant(p, auction.i);
+    return pp;
+  }
+
+  acquirePowerPlant(p: PlayerType, index: number) {
+    const pp = store.gameW.game.powerplantIndices!.splice(index, 1)[0];
     if (utils.justEnteredStep3()) {
       store.gameW.game.powerplantIndices!.push(
         ...utils.shuffle(store.gameW.game.powerplantIndices!.splice(8))
@@ -319,14 +363,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (store.gameW.game.mapName === "germany" && powerplants[pp].cost === 39) {
       store.gameW.game.germany_uraniumPhaseOut = true;
     }
-    utils.getCurrent().money -= auction.cost;
-    if (!utils.getCurrent().powerPlantIndices)
-      utils.getCurrent().powerPlantIndices = [];
-    utils.getCurrent().powerPlantIndices!.push(pp);
-    store.gameW.game.auctionPassers![store.gameW.game.currentPlayer] =
-      AuctionState.bought;
-    this.finishPowerPlantPurchase();
-    return pp;
+    if (!p.powerPlantIndices) p.powerPlantIndices = [];
+    p.powerPlantIndices!.push(pp);
   }
 
   pass(execute: boolean): boolean {
