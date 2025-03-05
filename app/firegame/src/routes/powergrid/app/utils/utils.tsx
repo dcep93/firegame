@@ -23,7 +23,7 @@ export type GameType = {
   playerOrder: number[];
   powerplantIndices?: number[];
   historicalCosts?: { [pp: number]: number };
-  outOfPlayZones?: string[]; // todo 3,3,4,5,5
+  outOfPlayZones?: string[];
   resources: { [r in Resource]?: number };
   justDrewStep3: boolean;
 
@@ -55,6 +55,7 @@ export enum Phase {
   buying_cities,
   bureocracy,
 
+  nuking_cities,
   initializing_trust,
 }
 enum AuctionState {
@@ -93,10 +94,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             germany_uraniumPhaseOut: false,
             year: 1,
             step: 1,
-            phase:
-              players.length === 2
-                ? Phase.initializing_trust
-                : Phase.selecting_auction,
+            phase: Phase.nuking_cities,
             currentPlayer: 0,
             mapName: "germany",
             playerOrder: utils.shuffle(utils.count(players.length)),
@@ -122,28 +120,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
             outOfPlayZones: [],
             resources: startingBankResources,
           } as GameType)
-      )
-      .then((game) => ({
-        ...game,
-        ...(game.phase === Phase.initializing_trust
-          ? {
-              twoPlayer_trust: {
-                userId: "",
-                userName: "",
-                color: "black",
-                money: 0,
-                powerPlantIndices: [],
-                cityIndices: [],
-                resources: {
-                  [Resource.coal]: 0,
-                  [Resource.oil]: 0,
-                  [Resource.garbage]: 0,
-                  [Resource.uranium]: 0,
-                },
-              },
-            }
-          : {}),
-      }));
+      );
   }
 
   auctionPowerPlant(
@@ -663,8 +640,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   buyCity(execute: boolean, index: number): boolean {
+    if (!store.gameW.game.outOfPlayZones) store.gameW.game.outOfPlayZones = [];
     if (
-      (store.gameW.game.outOfPlayZones || []).includes(
+      store.gameW.game.outOfPlayZones.includes(
         utils.getMap().cities[index].color
       )
     ) {
@@ -673,12 +651,46 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!utils.isMyTurn()) {
       return false;
     }
-    if (store.gameW.game.phase === Phase.initializing_trust) {
+    if (store.gameW.game.phase === Phase.nuking_cities) {
       if (execute) {
-        const c = store.gameW.game.twoPlayer_trust!;
-        if (!c.cityIndices) {
-          c.cityIndices = [];
+        store.gameW.game.outOfPlayZones.push(
+          utils.getMap().cities[index].color
+        );
+        if (
+          6 - store.gameW.game.outOfPlayZones.length ===
+          { 2: 3, 3: 3, 4: 4, 5: 5, 6: 5 }[store.gameW.game.players.length]
+        ) {
+          store.gameW.game.phase = Phase.selecting_auction;
+          if (store.gameW.game.players.length === 2) {
+            store.gameW.game.phase = Phase.initializing_trust;
+            store.gameW.game.twoPlayer_trust = {
+              userId: "",
+              userName: "",
+              color: "black",
+              money: 0,
+              powerPlantIndices: [],
+              cityIndices: [],
+              resources: {
+                [Resource.coal]: 0,
+                [Resource.oil]: 0,
+                [Resource.garbage]: 0,
+                [Resource.uranium]: 0,
+              },
+            };
+          }
         }
+      }
+      return true;
+    }
+    if (store.gameW.game.phase === Phase.initializing_trust) {
+      const c = store.gameW.game.twoPlayer_trust!;
+      if (!c.cityIndices) {
+        c.cityIndices = [];
+      }
+      if (c.cityIndices.includes(index)) {
+        return false;
+      }
+      if (execute) {
         c.cityIndices.push(index);
         if (c.cityIndices.length === 1) {
           store.gameW.game.currentPlayer = 1;
