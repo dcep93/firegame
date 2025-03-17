@@ -696,7 +696,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.gameW.game.currentPlayer = 1;
         } else if (c.cityIndices.length === 6) {
           store.gameW.game.currentPlayer = 0;
-          store.gameW.game.phase = Phase.buying_cities;
+          store.gameW.game.phase = Phase.selecting_auction;
         }
         store.update(
           `established trust in ${utils.getMap().cities[index].name}`
