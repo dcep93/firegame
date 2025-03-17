@@ -633,6 +633,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           return true;
         }
         store.update(`bid $${cost} on $${powerplants[pp].cost}`);
+        store.gameW.game.currentPlayer = nextBidPlayer;
         return true;
       }
     }
