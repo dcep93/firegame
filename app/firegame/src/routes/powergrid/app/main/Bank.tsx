@@ -24,7 +24,7 @@ export default function Bank() {
       </div>
       <div>
         <button onClick={() => utils.pass(true)}>pass</button>
-        {store.gameW.game.auction === undefined ? null : (
+        {store.gameW.game.auction === undefined || !utils.isMyTurn() ? null : (
           <form
             style={{ display: "inline", float: "right" }}
             onSubmit={(e) =>

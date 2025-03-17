@@ -632,8 +632,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
           store.update(`paid $${cost} for $${powerplants[pp].cost}`);
           return true;
         }
-        store.update(`bid $${cost} on $${powerplants[pp].cost}`);
         store.gameW.game.currentPlayer = nextBidPlayer;
+        store.update(`bid $${cost} on $${powerplants[pp].cost}`);
         return true;
       }
     }
@@ -650,13 +650,33 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       return false;
     }
     if (store.gameW.game.phase === Phase.nuking_cities) {
+      if (store.gameW.game.outOfPlayZones.length > 0) {
+        const neighbors = utils
+          .getMap()
+          .edges.map((e) =>
+            [e.c1, e.c2].map(
+              (c) => utils.getMap().cities.find((cc) => cc.name === c)!.color
+            )
+          )
+          .filter((colors) => colors.includes(color))
+          .map((colors) => colors.find((c) => c !== color));
+        if (
+          store.gameW.game.outOfPlayZones.find((z) => neighbors.includes(z)) ===
+          undefined
+        ) {
+          return false;
+        }
+      }
       if (execute) {
         store.gameW.game.outOfPlayZones.push(color);
+        console.log(
+          6 - store.gameW.game.outOfPlayZones.length,
+          { 2: 3, 3: 3, 4: 4, 5: 5, 6: 5 }[store.gameW.game.players.length]
+        );
         if (
           6 - store.gameW.game.outOfPlayZones.length ===
           { 2: 3, 3: 3, 4: 4, 5: 5, 6: 5 }[store.gameW.game.players.length]
         ) {
-          store.gameW.game.phase = Phase.selecting_auction;
           if (store.gameW.game.players.length === 2) {
             store.gameW.game.phase = Phase.initializing_trust;
             store.gameW.game.twoPlayer_trust = {
@@ -673,6 +693,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
                 [Resource.uranium]: 0,
               },
             };
+          } else {
+            store.gameW.game.phase = Phase.selecting_auction;
           }
         }
         store.update(`nuked ${color}`);
@@ -681,8 +703,24 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
     if (store.gameW.game.phase === Phase.initializing_trust) {
       const c = store.gameW.game.twoPlayer_trust!;
-      if (!c.cityIndices) {
-        c.cityIndices = [];
+      if (!c.cityIndices) c.cityIndices = [];
+      if (c.cityIndices.length || 0 > 0) {
+        const name = utils.getMap().cities[index].name;
+        const neighbors = utils
+          .getMap()
+          .edges.map((e) =>
+            [e.c1, e.c2].map(
+              (c) => utils.getMap().cities.find((cc) => cc.name === c)!.name
+            )
+          )
+          .filter((cities) => cities.includes(name))
+          .map((cities) => cities.find((c) => c !== name)!);
+        const cityNames = c.cityIndices!.map(
+          (i) => utils.getMap().cities[i].name
+        );
+        if (neighbors.find((n) => cityNames.includes(n)) === undefined) {
+          return false;
+        }
       }
       if (c.cityIndices.includes(index)) {
         return false;
