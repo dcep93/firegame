@@ -305,19 +305,21 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   getNextBidPlayer(): number {
-    return store.gameW.game.playerOrder
-      .concat(store.gameW.game.playerOrder)
-      .splice(
-        store.gameW.game.playerOrder.findIndex(
-          (p) => p === store.gameW.game.currentPlayer
-        ),
-        store.gameW.game.playerOrder.length
-      )
-      .find(
-        (playerIndex) =>
-          store.gameW.game.auctionPassers?.[playerIndex] === undefined &&
-          store.gameW.game.auction!.playerIndex !== playerIndex
-      )!;
+    return (
+      store.gameW.game.playerOrder
+        .concat(store.gameW.game.playerOrder)
+        .splice(
+          store.gameW.game.playerOrder.findIndex(
+            (p) => p === store.gameW.game.currentPlayer
+          ),
+          store.gameW.game.playerOrder.length
+        )
+        .find(
+          (playerIndex) =>
+            store.gameW.game.auctionPassers?.[playerIndex] === undefined &&
+            store.gameW.game.auction!.playerIndex !== playerIndex
+        ) || -1
+    );
   }
 
   buyPowerPlant(): number {
@@ -325,6 +327,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const auction = store.gameW.game.auction!;
 
     p.money -= auction.cost;
+    if (!store.gameW.game.historicalCosts)
+      store.gameW.game.historicalCosts = {};
+    store.gameW.game.historicalCosts[auction.i] = auction.cost;
     store.gameW.game.auctionPassers![store.gameW.game.currentPlayer] =
       AuctionState.bought;
     this.finishPowerPlantPurchase();
