@@ -315,7 +315,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       )
       .find(
         (playerIndex) =>
-          store.gameW.game.auctionPassers![playerIndex] === undefined &&
+          store.gameW.game.auctionPassers?.[playerIndex] === undefined &&
           store.gameW.game.auction!.playerIndex !== playerIndex
       )!;
   }
