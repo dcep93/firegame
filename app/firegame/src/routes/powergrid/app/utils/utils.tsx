@@ -709,7 +709,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (store.gameW.game.phase === Phase.initializing_trust) {
       const c = store.gameW.game.twoPlayer_trust!;
       if (!c.cityIndices) c.cityIndices = [];
-      if (c.cityIndices.length || 0 > 0) {
+      if (c.cityIndices.length > 0) {
         const name = utils.getMap().cities[index].name;
         const neighbors = utils
           .getMap()
