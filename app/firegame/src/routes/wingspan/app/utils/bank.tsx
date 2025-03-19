@@ -6113,7 +6113,7 @@ const bonuses: BonusType[] = [
   },
   {
     name: "Behaviorist",
-    to_skip: true, // todo
+    to_skip: true,
     expansion: ExpansionEnum.european,
     automa: false,
     automa_only: false,
@@ -6235,7 +6235,7 @@ const bonuses: BonusType[] = [
   },
   {
     name: "Ethologist",
-    to_skip: true, // todo
+    to_skip: true,
     expansion: ExpansionEnum.european,
     automa: false,
     automa_only: false,

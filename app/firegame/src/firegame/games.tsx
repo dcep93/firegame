@@ -30,12 +30,11 @@ const ex = {
   CavernaScorer,
   Eclipse,
   Caverna,
-  Template, // todo
   azul,
   SecretHitler,
   spyfall,
   fox,
-  "7wd": _7wd,
+  _7wd,
   loveletter,
   bohnanza,
   splendor,
