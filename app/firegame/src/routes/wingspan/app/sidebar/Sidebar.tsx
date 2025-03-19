@@ -11,16 +11,13 @@ class Sidebar extends SharedSidebar {
   utils = utils;
   rules = "";
 
-  renderStartNewGame() {
+  renderNewGameExtras() {
     return (
       <div>
-        <div>
-          <label>
-            European Expansion:{" "}
-            <input type={"checkbox"} ref={this.expansionRef} />
-          </label>
-        </div>
-        <button onClick={this.startNewGame.bind(this)}>New Game</button>
+        <label>
+          European Expansion:{" "}
+          <input type={"checkbox"} ref={this.expansionRef} />
+        </label>
       </div>
     );
   }

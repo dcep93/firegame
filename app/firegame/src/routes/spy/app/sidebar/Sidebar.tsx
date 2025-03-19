@@ -20,7 +20,7 @@ class Sidebar extends SharedSidebar {
     };
   }
 
-  renderStartNewGame() {
+  renderNewGameExtras() {
     return (
       <div className={css.settings_form}>
         <div>
@@ -41,7 +41,6 @@ class Sidebar extends SharedSidebar {
             ref={this.numWordsRef}
           />
         </div>
-        <button onClick={this.startNewGame.bind(this)}>New Game</button>
       </div>
     );
   }

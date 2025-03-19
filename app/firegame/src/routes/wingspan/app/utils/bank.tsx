@@ -6066,7 +6066,7 @@ const cards: CardType[] = [
     scientific_name: "Calidris pugnax",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text: "Round End: Tuck up to 3 [card] from your hand behind this bird. Draw 1 [card] for each card you tucked.",
+    text: "Tuck up to 3 [card] from your hand behind this bird. Draw 1 [card] for each card you tucked.",
     flocking: true,
     points: 2,
     nest: NestEnum.ground,

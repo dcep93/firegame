@@ -6,24 +6,8 @@ class Sidebar extends SharedSidebar {
   name = "Five";
   NewGame = NewGame;
   utils = utils;
-  rules = "";
-
-  getParams(): Params {
-    return { lobby: store.lobby };
-  }
-
-  renderStartNewGame() {
-    return (
-      <div>
-        <button onClick={this.startNewGame.bind(this)}>New Game</button>
-        <h4>
-          <a href="https://raw.githubusercontent.com/dcep93/firegame/master/firegame/src/routes/five/app/sidebar/rules.jpeg">
-            Rules
-          </a>
-        </h4>
-      </div>
-    );
-  }
+  rules =
+    "https://raw.githubusercontent.com/dcep93/firegame/master/app/firegame/src/routes/five/app/sidebar/rules.jpeg";
 }
 
 export default Sidebar;

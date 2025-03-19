@@ -13,23 +13,20 @@ class Sidebar extends SharedSidebar {
 
   rules = "";
 
-  renderStartNewGame() {
+  renderNewGameExtras() {
     return (
       <div>
         <div>
-          <div>
-            <label>
-              God Expansion: <input type={"checkbox"} ref={this.expansionRef} />
-            </label>
-          </div>
-          <div>
-            <label>
-              Random Starting:{" "}
-              <input type={"checkbox"} ref={this.randomStartingRef} />
-            </label>
-          </div>
+          <label>
+            God Expansion: <input type={"checkbox"} ref={this.expansionRef} />
+          </label>
         </div>
-        <button onClick={this.startNewGame.bind(this)}>New Game</button>
+        <div>
+          <label>
+            Random Starting:{" "}
+            <input type={"checkbox"} ref={this.randomStartingRef} />
+          </label>
+        </div>
       </div>
     );
   }

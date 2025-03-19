@@ -21,7 +21,7 @@ class Preview extends React.Component<{}, { card?: CardType }> {
     const file_name = this.state.card.scientific_name
       .toLowerCase()
       .replace(" ", "_");
-    const src = `https://raw.githubusercontent.com/dcep93/firegame/master/firegame/src/routes/wingspan/assets/img/${file_name}.jpg`;
+    const src = `https://raw.githubusercontent.com/dcep93/firegame/master/app/firegame/src/routes/wingspan/assets/img/${file_name}.jpg`;
     return (
       <div className={styles.bubble}>
         <h5>{this.state.card.name}</h5>

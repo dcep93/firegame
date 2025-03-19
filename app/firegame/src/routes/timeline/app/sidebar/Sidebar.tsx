@@ -15,11 +15,10 @@ class Sidebar extends SharedSidebar {
   utils = utils;
   rules = "";
 
-  renderStartNewGame() {
+  renderNewGameExtras() {
     return (
       <div>
         <Settings ref={this.settingsRef} />
-        <button onClick={this.startNewGame.bind(this)}>New Game</button>
       </div>
     );
   }

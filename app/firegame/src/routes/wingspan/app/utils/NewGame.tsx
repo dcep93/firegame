@@ -59,7 +59,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
   utils.reroll(game);
   game.publicCards = [-1, -1, -1];
   game.roundNumber = 1;
-  game.turnNumber = 1;
+  game.turnNumber = 0;
   return Promise.resolve(game).then(setPlayers);
 }
 
