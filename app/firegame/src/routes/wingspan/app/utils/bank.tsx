@@ -272,8 +272,7 @@ const cards: CardType[] = [
     scientific_name: "Periparus ater",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Gain 1 [seed] from the supply and cache it on this card. At any time, you may spend [seed] cached on this card.",
+    text: "Gain 1 [seed] from the supply and cache it on this card. At any time, you may spend [seed] cached on this card.",
     points: 2,
     nest: NestEnum.cavity,
     capacity: 6,
@@ -295,8 +294,7 @@ const cards: CardType[] = [
     scientific_name: "Sitta europaea",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Gain 1 [seed] from the supply and cache it on this card. At any time, you may spend [seed] cached on this card.",
+    text: "Gain 1 [seed] from the supply and cache it on this card. At any time, you may spend [seed] cached on this card.",
     points: 3,
     nest: NestEnum.cavity,
     capacity: 3,
@@ -409,8 +407,7 @@ const cards: CardType[] = [
     scientific_name: "Cettia cetti",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "This bird counts double toward the end-of-round goal, if it qualifies for the goal.",
+    text: "This bird counts double toward the end-of-round goal, if it qualifies for the goal.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 3,
@@ -431,8 +428,7 @@ const cards: CardType[] = [
     scientific_name: "Picus viridis",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "This bird counts double toward the end-of-round goal, if it qualifies for the goal.",
+    text: "This bird counts double toward the end-of-round goal, if it qualifies for the goal.",
     points: 4,
     nest: NestEnum.cavity,
     capacity: 3,
@@ -454,8 +450,7 @@ const cards: CardType[] = [
     scientific_name: "Anser anser",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "This bird counts double toward the end-of-round goal, if it qualifies for the goal.",
+    text: "This bird counts double toward the end-of-round goal, if it qualifies for the goal.",
     points: 7,
     nest: NestEnum.ground,
     capacity: 2,
@@ -477,8 +472,7 @@ const cards: CardType[] = [
     scientific_name: "Galerida theklae",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard 1 [seed] from your supply. If you do, lay 2 [egg] on this bird.",
+    text: "Discard 1 [seed] from your supply. If you do, lay 2 [egg] on this bird.",
     points: 4,
     nest: NestEnum.ground,
     capacity: 3,
@@ -1153,8 +1147,7 @@ const cards: CardType[] = [
     scientific_name: "Aquila chrysaetos",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <100cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <100cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 8,
     nest: NestEnum.platform,
@@ -1179,8 +1172,7 @@ const cards: CardType[] = [
     scientific_name: "Bubo virginianus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <100cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <100cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 8,
     nest: NestEnum.platform,
@@ -1204,8 +1196,7 @@ const cards: CardType[] = [
     scientific_name: "Falco peregrinus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <100cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <100cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 5,
     nest: NestEnum.platform,
@@ -1228,8 +1219,7 @@ const cards: CardType[] = [
     scientific_name: "Geococcyx californianus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <50cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <50cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 7,
     nest: NestEnum.platform,
@@ -1257,8 +1247,7 @@ const cards: CardType[] = [
     scientific_name: "Strix varia",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 3,
     nest: NestEnum.cavity,
@@ -1282,8 +1271,7 @@ const cards: CardType[] = [
     scientific_name: "Accipiter cooperii",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 3,
     nest: NestEnum.platform,
@@ -1308,8 +1296,7 @@ const cards: CardType[] = [
     scientific_name: "Circus cyaneus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 3,
     nest: NestEnum.platform,
@@ -1334,8 +1321,7 @@ const cards: CardType[] = [
     scientific_name: "Buteo lineatus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <75cm, tuck it under this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <75cm, tuck it under this bird. If not, discard it.",
     predator: true,
     points: 3,
     nest: NestEnum.platform,
@@ -1361,8 +1347,7 @@ const cards: CardType[] = [
     scientific_name: "Buteo jamaicensis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 5,
     nest: NestEnum.platform,
@@ -1387,8 +1372,7 @@ const cards: CardType[] = [
     scientific_name: "Buteo swainsoni",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
+    text: "Look at a [card] from the deck. If <75cm, tuck it behind this bird. If not, discard it.",
     predator: true,
     points: 5,
     nest: NestEnum.platform,
@@ -1412,8 +1396,7 @@ const cards: CardType[] = [
     scientific_name: "Anhinga anhinga",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
     predator: true,
     points: 6,
     nest: NestEnum.platform,
@@ -1435,8 +1418,7 @@ const cards: CardType[] = [
     scientific_name: "Rynchops niger",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
     predator: true,
     points: 6,
     nest: NestEnum.ground,
@@ -1459,8 +1441,7 @@ const cards: CardType[] = [
     scientific_name: "Mergus merganser",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
     predator: true,
     points: 5,
     nest: NestEnum.cavity,
@@ -1483,8 +1464,7 @@ const cards: CardType[] = [
     scientific_name: "Egretta thula",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
     predator: true,
     points: 4,
     nest: NestEnum.platform,
@@ -1508,8 +1488,7 @@ const cards: CardType[] = [
     scientific_name: "Plegadis chihi",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
     predator: true,
     points: 8,
     nest: NestEnum.platform,
@@ -1534,8 +1513,7 @@ const cards: CardType[] = [
     scientific_name: "Tringa semipalmata",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [fish], gain 1 [fish] and cache it on this card.",
     predator: true,
     points: 4,
     nest: NestEnum.ground,
@@ -1558,8 +1536,7 @@ const cards: CardType[] = [
     scientific_name: "Falco sparverius",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
     predator: true,
     points: 5,
     nest: NestEnum.cavity,
@@ -1581,8 +1558,7 @@ const cards: CardType[] = [
     scientific_name: "Tyto alba",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
     predator: true,
     points: 5,
     nest: NestEnum.cavity,
@@ -1604,8 +1580,7 @@ const cards: CardType[] = [
     scientific_name: "Buteo platypterus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.swiftstart,
-    text:
-      "Roll all dice not in birdfeeder. If any are a [rodent], gain 1 [rodent] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are a [rodent], gain 1 [rodent] and cache it on this card.",
     predator: true,
     points: 4,
     nest: NestEnum.platform,
@@ -1628,8 +1603,7 @@ const cards: CardType[] = [
     scientific_name: "Athene cunicularia",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
     predator: true,
     points: 5,
     nest: NestEnum.wild,
@@ -1653,8 +1627,7 @@ const cards: CardType[] = [
     scientific_name: "Megascops asio",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
     predator: true,
     points: 4,
     nest: NestEnum.cavity,
@@ -1677,8 +1650,7 @@ const cards: CardType[] = [
     scientific_name: "Buteo regalis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
     predator: true,
     points: 6,
     nest: NestEnum.platform,
@@ -1701,8 +1673,7 @@ const cards: CardType[] = [
     scientific_name: "Ictinia mississippiensis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
+    text: "Roll all dice not in birdfeeder. If any are [rodent], gain 1 [rodent] and cache it on this card.",
     predator: true,
     points: 4,
     nest: NestEnum.platform,
@@ -1726,8 +1697,7 @@ const cards: CardType[] = [
     scientific_name: "Morus bassanus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Roll all dice not in birdfeeder. If any are a [fish], gain that many [fish] from the supply and cache them on this bird.",
+    text: "Roll all dice not in birdfeeder. If any are a [fish], gain that many [fish] from the supply and cache them on this bird.",
     predator: true,
     points: 5,
     nest: NestEnum.ground,
@@ -1750,8 +1720,7 @@ const cards: CardType[] = [
     scientific_name: "Bucephala clangula",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Lay 1 [egg] on this bird for each other bird with a [cavity] nest that you have.",
+    text: "Lay 1 [egg] on this bird for each other bird with a [cavity] nest that you have.",
     points: 2,
     nest: NestEnum.cavity,
     capacity: 4,
@@ -1968,8 +1937,7 @@ const cards: CardType[] = [
     scientific_name: "Falco eleonorae",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Roll all dice not in the birdfeeder. If any are [rodent], place 1 [egg] on this card.",
+    text: "Roll all dice not in the birdfeeder. If any are [rodent], place 1 [egg] on this card.",
     points: 6,
     nest: NestEnum.ground,
     capacity: 2,
@@ -1990,8 +1958,7 @@ const cards: CardType[] = [
     scientific_name: "Passerina amoena",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "All players lay 1 [egg] on any 1 [bowl] bird. You may lay 1 [egg] on 1 additional [bowl] bird.",
+    text: "All players lay 1 [egg] on any 1 [bowl] bird. You may lay 1 [egg] on 1 additional [bowl] bird.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 4,
@@ -2018,8 +1985,7 @@ const cards: CardType[] = [
     scientific_name: "Dryocopus pileatus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "All players lay 1 [egg] on any 1 [cavity] bird. You may lay 1 [egg] on 1 additional [cavity] bird.",
+    text: "All players lay 1 [egg] on any 1 [cavity] bird. You may lay 1 [egg] on 1 additional [cavity] bird.",
     points: 4,
     nest: NestEnum.cavity,
     capacity: 2,
@@ -2039,8 +2005,7 @@ const cards: CardType[] = [
     scientific_name: "Sturnella neglecta",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "All players lay 1 [egg] on any 1 [ground] bird. You may lay 1 [egg] on 1 additional [ground] bird.",
+    text: "All players lay 1 [egg] on any 1 [ground] bird. You may lay 1 [egg] on 1 additional [ground] bird.",
     points: 2,
     nest: NestEnum.ground,
     capacity: 4,
@@ -2061,8 +2026,7 @@ const cards: CardType[] = [
     scientific_name: "Nucifraga caryocatactes",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1-5 birds in your [forest]. Cache 1 [seed] from your supply on each.",
+    text: "Choose 1-5 birds in your [forest]. Cache 1 [seed] from your supply on each.",
     points: 5,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -2077,8 +2041,7 @@ const cards: CardType[] = [
     scientific_name: "Pica pica",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1 other player. For each action cube in their [grassland], cache 1 [wild] from the supply on any of your birds.",
+    text: "Choose 1 other player. For each action cube in their [grassland], cache 1 [wild] from the supply on any of your birds.",
     points: 1,
     nest: NestEnum.platform,
     capacity: 3,
@@ -2099,8 +2062,7 @@ const cards: CardType[] = [
     scientific_name: "Corvus corone",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose any 1 player (including yourself). Cache 1 [rodent] from the supply on this bird for each [predator] that player has.",
+    text: "Choose any 1 player (including yourself). Cache 1 [rodent] from the supply on this bird for each [predator] that player has.",
     points: 3,
     nest: NestEnum.platform,
     capacity: 2,
@@ -2121,8 +2083,7 @@ const cards: CardType[] = [
     scientific_name: "Gyps fulvus",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose any 1 player (including yourself). Cache 1 [rodent] from the supply on this bird for each [predator] that player has.",
+    text: "Choose any 1 player (including yourself). Cache 1 [rodent] from the supply on this bird for each [predator] that player has.",
     points: 1,
     nest: NestEnum.platform,
     capacity: 1,
@@ -2142,8 +2103,7 @@ const cards: CardType[] = [
     scientific_name: "Luscinia svecica",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose a food type. All players gain 1 of that food from the supply.",
+    text: "Choose a food type. All players gain 1 of that food from the supply.",
     points: 7,
     nest: NestEnum.ground,
     capacity: 5,
@@ -2171,8 +2131,7 @@ const cards: CardType[] = [
     scientific_name: "Luscinia megarhynchos",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose a food type. All players gain 1 of that food from the supply.",
+    text: "Choose a food type. All players gain 1 of that food from the supply.",
     points: 3,
     nest: NestEnum.bowl,
     capacity: 4,
@@ -2199,8 +2158,7 @@ const cards: CardType[] = [
     scientific_name: "Turdus merula",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Place this bird sideways, so that it covers 2 [forest] spaces. Pay the lower egg cost.",
+    text: "Place this bird sideways, so that it covers 2 [forest] spaces. Pay the lower egg cost.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 5,
@@ -2221,8 +2179,7 @@ const cards: CardType[] = [
     scientific_name: "Aegithalos caudatus",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Place this bird sideways, so that it covers 2 [forest] spaces. Pay the lower egg cost.",
+    text: "Place this bird sideways, so that it covers 2 [forest] spaces. Pay the lower egg cost.",
     points: 0,
     nest: NestEnum.wild,
     capacity: 4,
@@ -2247,8 +2204,7 @@ const cards: CardType[] = [
     scientific_name: "Coracias garrulus",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Place this bird sideways, so that it covers 2 [grassland] spaces. Pay the lower egg cost.",
+    text: "Place this bird sideways, so that it covers 2 [grassland] spaces. Pay the lower egg cost.",
     points: 3,
     nest: NestEnum.cavity,
     capacity: 2,
@@ -2270,8 +2226,7 @@ const cards: CardType[] = [
     scientific_name: "Ardea cinerea",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Place this bird sideways, so that it covers 2 [wetland] spaces. Pay the lower egg cost.",
+    text: "Place this bird sideways, so that it covers 2 [wetland] spaces. Pay the lower egg cost.",
     points: 3,
     nest: NestEnum.platform,
     capacity: 2,
@@ -2293,8 +2248,7 @@ const cards: CardType[] = [
     scientific_name: "Regulus regulus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard 1 [card] from your hand. If you do, play another bird in your [forest]. Pay its normal food and egg cost.",
+    text: "Discard 1 [card] from your hand. If you do, play another bird in your [forest]. Pay its normal food and egg cost.",
     points: 1,
     nest: NestEnum.bowl,
     capacity: 6,
@@ -2364,8 +2318,7 @@ const cards: CardType[] = [
     scientific_name: "Corvus brachyrhynchos",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Discard 1 [egg] from any of your other birds to gain 1 [wild] from the supply.",
+    text: "Discard 1 [egg] from any of your other birds to gain 1 [wild] from the supply.",
     points: 4,
     nest: NestEnum.platform,
     capacity: 2,
@@ -2386,8 +2339,7 @@ const cards: CardType[] = [
     scientific_name: "Nycticorax nycticorax",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Discard 1 [egg] from any of your other birds to gain 1 [wild] from the supply.",
+    text: "Discard 1 [egg] from any of your other birds to gain 1 [wild] from the supply.",
     points: 9,
     nest: NestEnum.platform,
     capacity: 2,
@@ -2415,8 +2367,7 @@ const cards: CardType[] = [
     scientific_name: "Corvus ossifragus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Discard 1 [egg] from any of your other birds to gain 1 [wild] from the supply.",
+    text: "Discard 1 [egg] from any of your other birds to gain 1 [wild] from the supply.",
     points: 6,
     nest: NestEnum.platform,
     capacity: 2,
@@ -2437,8 +2388,7 @@ const cards: CardType[] = [
     scientific_name: "Corvus cryptoleucus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Discard 1 [egg] from any of your other birds to gain 2 [wild] from the supply.",
+    text: "Discard 1 [egg] from any of your other birds to gain 2 [wild] from the supply.",
     points: 4,
     nest: NestEnum.platform,
     capacity: 3,
@@ -2461,8 +2411,7 @@ const cards: CardType[] = [
     scientific_name: "Corvus corax",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Discard 1 [egg] from any of your other birds to gain 2 [wild] from the supply.",
+    text: "Discard 1 [egg] from any of your other birds to gain 2 [wild] from the supply.",
     points: 5,
     nest: NestEnum.platform,
     capacity: 2,
@@ -2484,8 +2433,7 @@ const cards: CardType[] = [
     scientific_name: "Certhia brachydactyla",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard 1 [egg] from any bird. If you do, play another bird in your [forest]. Pay its normal food and egg cost.",
+    text: "Discard 1 [egg] from any bird. If you do, play another bird in your [forest]. Pay its normal food and egg cost.",
     points: 2,
     nest: NestEnum.cavity,
     capacity: 5,
@@ -2507,8 +2455,7 @@ const cards: CardType[] = [
     scientific_name: "Passer domesticus",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard up to 5 [seed] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
+    text: "Discard up to 5 [seed] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
     flocking: true,
     points: 6,
     nest: NestEnum.cavity,
@@ -2532,8 +2479,7 @@ const cards: CardType[] = [
     scientific_name: "Sturnus vulgaris",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard up to 5 [wild] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
+    text: "Discard up to 5 [wild] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
     flocking: true,
     points: 3,
     nest: NestEnum.cavity,
@@ -2562,8 +2508,7 @@ const cards: CardType[] = [
     scientific_name: "Streptopelia decaocto",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard up to 5 [wild] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
+    text: "Discard up to 5 [wild] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
     flocking: true,
     points: 5,
     nest: NestEnum.platform,
@@ -2588,8 +2533,7 @@ const cards: CardType[] = [
     scientific_name: "Apus apus",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard up to 5 [invertebrate] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
+    text: "Discard up to 5 [invertebrate] from your supply. For each, tuck 1 [card] from the deck behind this bird.",
     flocking: true,
     points: 5,
     nest: NestEnum.cavity,
@@ -2611,8 +2555,7 @@ const cards: CardType[] = [
     scientific_name: "Gallinula chloropus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard 1 [wild] from your supply. If you do, play another bird in your [wetland]. Pay its normal food and egg cost.",
+    text: "Discard 1 [wild] from your supply. If you do, play another bird in your [wetland]. Pay its normal food and egg cost.",
     points: 3,
     nest: NestEnum.wild,
     capacity: 6,
@@ -2642,8 +2585,7 @@ const cards: CardType[] = [
     scientific_name: "Haematopus palliatus",
     color: ColorEnum.white,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw [card] equal to the number of players +1. Starting with you and proceeding clockwise, each player selects 1 of those cards and places it in their hand. You keep the extra card.",
+    text: "Draw [card] equal to the number of players +1. Starting with you and proceeding clockwise, each player selects 1 of those cards and places it in their hand. You keep the extra card.",
     points: 5,
     nest: NestEnum.ground,
     capacity: 2,
@@ -2664,8 +2606,7 @@ const cards: CardType[] = [
     scientific_name: "Ichthyaetus audouinii",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Draw 2 [card] from the deck. Tuck 1 behind this bird and keep the other.",
+    text: "Draw 2 [card] from the deck. Tuck 1 behind this bird and keep the other.",
     flocking: true,
     points: 1,
     nest: NestEnum.ground,
@@ -3072,8 +3013,7 @@ const cards: CardType[] = [
     scientific_name: "Tetrax tetrax",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Draw 1 new bonus card. Then gain 1 [card] or lay 1 [egg] on any bird.",
+    text: "Draw 1 new bonus card. Then gain 1 [card] or lay 1 [egg] on any bird.",
     bonus: true,
     points: 4,
     nest: NestEnum.ground,
@@ -3094,8 +3034,7 @@ const cards: CardType[] = [
     scientific_name: "Bubo scandiacus",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Draw 1 new bonus card. Then gain 1 [card] or lay 1 [egg] on any bird.",
+    text: "Draw 1 new bonus card. Then gain 1 [card] or lay 1 [egg] on any bird.",
     bonus: true,
     points: 4,
     nest: NestEnum.ground,
@@ -3139,8 +3078,7 @@ const cards: CardType[] = [
     scientific_name: "Streptopelia turtur",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Draw 1 new bonus card. Then gain 1 [die] from the birdfeeder, lay 1 [egg] on any bird, or draw 1 [card].",
+    text: "Draw 1 new bonus card. Then gain 1 [die] from the birdfeeder, lay 1 [egg] on any bird, or draw 1 [card].",
     bonus: true,
     points: 4,
     nest: NestEnum.platform,
@@ -3202,8 +3140,7 @@ const cards: CardType[] = [
     scientific_name: "Chlidonias niger",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw 1 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 1 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 4,
     nest: NestEnum.wild,
     capacity: 2,
@@ -3227,8 +3164,7 @@ const cards: CardType[] = [
     scientific_name: "Aechmophorus clarkii",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw 1 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 1 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 5,
     nest: NestEnum.wild,
     capacity: 2,
@@ -3251,8 +3187,7 @@ const cards: CardType[] = [
     scientific_name: "Sterna forsteri",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw 1 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 1 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 4,
     nest: NestEnum.wild,
     capacity: 2,
@@ -3277,8 +3212,7 @@ const cards: CardType[] = [
     scientific_name: "Geothlypis trichas",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 1,
     nest: NestEnum.bowl,
     capacity: 4,
@@ -3301,8 +3235,7 @@ const cards: CardType[] = [
     scientific_name: "Podilymbus podiceps",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 0,
     nest: NestEnum.platform,
     capacity: 4,
@@ -3324,8 +3257,7 @@ const cards: CardType[] = [
     scientific_name: "Mergus serrator",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.swiftstart,
-    text:
-      "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 3,
     nest: NestEnum.ground,
     capacity: 4,
@@ -3348,8 +3280,7 @@ const cards: CardType[] = [
     scientific_name: "Oxyura jamaicensis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 0,
     nest: NestEnum.platform,
     capacity: 5,
@@ -3371,8 +3302,7 @@ const cards: CardType[] = [
     scientific_name: "Aix sponsa",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
+    text: "Draw 2 [card]. If you do, discard 1 [card] from your hand at the end of your turn.",
     points: 4,
     nest: NestEnum.cavity,
     capacity: 4,
@@ -3394,8 +3324,7 @@ const cards: CardType[] = [
     scientific_name: "Podiceps cristatus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Draw 1 [card] for each empty card slot in this row. At the end of your turn, keep 1 and discard the rest.",
+    text: "Draw 1 [card] for each empty card slot in this row. At the end of your turn, keep 1 and discard the rest.",
     points: 3,
     nest: NestEnum.wild,
     capacity: 2,
@@ -3419,8 +3348,7 @@ const cards: CardType[] = [
     scientific_name: "Oceanites oceanicus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Draw 1 [card] for each empty card slot in this row. At the end of your turn, keep 1 and discard the rest.",
+    text: "Draw 1 [card] for each empty card slot in this row. At the end of your turn, keep 1 and discard the rest.",
     points: 6,
     nest: NestEnum.wild,
     capacity: 1,
@@ -3444,8 +3372,7 @@ const cards: CardType[] = [
     scientific_name: "Calypte anna",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Each player gains 1 [die] from the birdfeeder, starting with the player of your choice.",
+    text: "Each player gains 1 [die] from the birdfeeder, starting with the player of your choice.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -3466,8 +3393,7 @@ const cards: CardType[] = [
     scientific_name: "Archilochus colubris",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Each player gains 1 [die] from the birdfeeder, starting with the player of your choice.",
+    text: "Each player gains 1 [die] from the birdfeeder, starting with the player of your choice.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -3489,8 +3415,7 @@ const cards: CardType[] = [
     scientific_name: "Buteo buteo",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
+    text: "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
     predator: true,
     points: 4,
     nest: NestEnum.platform,
@@ -3514,8 +3439,7 @@ const cards: CardType[] = [
     scientific_name: "Falco subbuteo",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
+    text: "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
     predator: true,
     points: 4,
     nest: NestEnum.platform,
@@ -3541,8 +3465,7 @@ const cards: CardType[] = [
     scientific_name: "Circus pygargus",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
+    text: "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
     predator: true,
     points: 4,
     nest: NestEnum.ground,
@@ -3567,8 +3490,7 @@ const cards: CardType[] = [
     scientific_name: "Milvus milvus",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
+    text: "Instead of paying any costs, you may play this bird on top of another bird on your player mat. Discard any eggs and food from that bird. It becomes a tucked card.",
     predator: true,
     points: 4,
     nest: NestEnum.platform,
@@ -3682,8 +3604,7 @@ const cards: CardType[] = [
     scientific_name: "Melanerpes formicivorus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
+    text: "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
     points: 5,
     nest: NestEnum.cavity,
     capacity: 4,
@@ -3698,8 +3619,7 @@ const cards: CardType[] = [
     scientific_name: "Cyanocitta cristata",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
+    text: "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
     points: 3,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -3721,8 +3641,7 @@ const cards: CardType[] = [
     scientific_name: "Nucifraga columbiana",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
+    text: "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
     points: 5,
     nest: NestEnum.platform,
     capacity: 2,
@@ -3744,8 +3663,7 @@ const cards: CardType[] = [
     scientific_name: "Melanerpes carolinus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
+    text: "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
     points: 1,
     nest: NestEnum.cavity,
     capacity: 3,
@@ -3768,8 +3686,7 @@ const cards: CardType[] = [
     scientific_name: "Melanerpes erythrocephalus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
+    text: "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
     points: 4,
     nest: NestEnum.cavity,
     capacity: 3,
@@ -3796,8 +3713,7 @@ const cards: CardType[] = [
     scientific_name: "Cyanocitta stelleri",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
+    text: "Gain 1 [seed] from the birdfeeder (if available). You may cache it on this card.",
     points: 5,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -3819,8 +3735,7 @@ const cards: CardType[] = [
     scientific_name: "Passerina cyanea",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [invertebrate] or [fruit] from the birdfeeder, if there is one.",
+    text: "Gain 1 [invertebrate] or [fruit] from the birdfeeder, if there is one.",
     points: 5,
     nest: NestEnum.bowl,
     capacity: 3,
@@ -3847,8 +3762,7 @@ const cards: CardType[] = [
     scientific_name: "Piranga ludoviciana",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Gain 1 [invertebrate] or [fruit] from the birdfeeder, if there is one.",
+    text: "Gain 1 [invertebrate] or [fruit] from the birdfeeder, if there is one.",
     points: 6,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -3897,8 +3811,7 @@ const cards: CardType[] = [
     scientific_name: "Oriolus oriolus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.european,
-    text:
-      'When another player takes the "gain food" action, gain 1 [invertebrate] or [fruit] from the birdfeeder at the end of their turn.',
+    text: 'When another player takes the "gain food" action, gain 1 [invertebrate] or [fruit] from the birdfeeder at the end of their turn.',
     points: 4,
     nest: NestEnum.wild,
     capacity: 2,
@@ -3928,8 +3841,7 @@ const cards: CardType[] = [
     scientific_name: "Passer montanus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.european,
-    text:
-      'When another player takes the "gain food" action, gain 1 [seed] from the birdfeeder at the end of their turn.',
+    text: 'When another player takes the "gain food" action, gain 1 [seed] from the birdfeeder at the end of their turn.',
     points: 3,
     nest: NestEnum.cavity,
     capacity: 4,
@@ -3966,8 +3878,7 @@ const cards: CardType[] = [
     scientific_name: "Tyrannus tyrannus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      "When another player plays a [forest] bird, gain 1 [invertebrate] from the supply.",
+    text: "When another player plays a [forest] bird, gain 1 [invertebrate] from the supply.",
     points: 2,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -3989,8 +3900,7 @@ const cards: CardType[] = [
     scientific_name: "Lanius ludovicianus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      'When another player takes the "gain food" action, if they gain any number of [rodent], also gain 1 [rodent] from the supply and cache it on this card.',
+    text: 'When another player takes the "gain food" action, if they gain any number of [rodent], also gain 1 [rodent] from the supply and cache it on this card.',
     points: 3,
     nest: NestEnum.bowl,
     capacity: 4,
@@ -4122,8 +4032,7 @@ const cards: CardType[] = [
     scientific_name: "Molothrus aeneus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] nest.',
+    text: 'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] nest.',
     points: 5,
     nest: NestEnum.none,
     capacity: 0,
@@ -4138,8 +4047,7 @@ const cards: CardType[] = [
     scientific_name: "Molothrus ater",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] nest.',
+    text: 'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] nest.',
     points: 3,
     nest: NestEnum.none,
     capacity: 0,
@@ -4161,8 +4069,7 @@ const cards: CardType[] = [
     scientific_name: "Coccyzus americanus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] nest.',
+    text: 'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] nest.',
     points: 5,
     nest: NestEnum.platform,
     capacity: 2,
@@ -4184,8 +4091,7 @@ const cards: CardType[] = [
     scientific_name: "Bucephala islandica",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [cavity] nest.',
+    text: 'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [cavity] nest.',
     points: 5,
     nest: NestEnum.cavity,
     capacity: 4,
@@ -4214,8 +4120,7 @@ const cards: CardType[] = [
     scientific_name: "Cuculus canorus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.european,
-    text:
-      'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] or [ground] nest.',
+    text: 'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [bowl] or [ground] nest.',
     points: 4,
     nest: NestEnum.none,
     capacity: 0,
@@ -4230,8 +4135,7 @@ const cards: CardType[] = [
     scientific_name: "Recurvirostra americana",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [ground] nest.',
+    text: 'When another player takes the "lay eggs" action, this bird lays 1 [egg] on another bird with a [ground] nest.',
     points: 6,
     nest: NestEnum.ground,
     capacity: 2,
@@ -4253,8 +4157,7 @@ const cards: CardType[] = [
     scientific_name: "Phoenicurus ochruros",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose a habitat with no [egg]. Lay 1 [egg] on each bird in that habitat.",
+    text: "Choose a habitat with no [egg]. Lay 1 [egg] on each bird in that habitat.",
     points: 0,
     nest: NestEnum.wild,
     capacity: 4,
@@ -4285,8 +4188,7 @@ const cards: CardType[] = [
     scientific_name: "Sylvia curruca",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose a habitat with no [egg]. Lay 1 [egg] on each bird in that habitat.",
+    text: "Choose a habitat with no [egg]. Lay 1 [egg] on each bird in that habitat.",
     points: 0,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -4309,8 +4211,7 @@ const cards: CardType[] = [
     scientific_name: "Prunella modularis",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1 other player. For each action cube on their [grassland], lay 1 [egg] on this bird.",
+    text: "Choose 1 other player. For each action cube on their [grassland], lay 1 [egg] on this bird.",
     points: 1,
     nest: NestEnum.bowl,
     capacity: 4,
@@ -4331,8 +4232,7 @@ const cards: CardType[] = [
     scientific_name: "Thryomanes bewickii",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 4,
     nest: NestEnum.cavity,
     capacity: 3,
@@ -4354,8 +4254,7 @@ const cards: CardType[] = [
     scientific_name: "Passerina caerulea",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 3,
@@ -4378,8 +4277,7 @@ const cards: CardType[] = [
     scientific_name: "Chaetura pelagica",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 3,
     nest: NestEnum.wild,
     capacity: 2,
@@ -4402,8 +4300,7 @@ const cards: CardType[] = [
     scientific_name: "Chordeiles minor",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 3,
     nest: NestEnum.ground,
     capacity: 2,
@@ -4423,8 +4320,7 @@ const cards: CardType[] = [
     scientific_name: "Melospiza lincolnii",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 3,
     nest: NestEnum.ground,
     capacity: 2,
@@ -4446,8 +4342,7 @@ const cards: CardType[] = [
     scientific_name: "Melospiza melodia",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 0,
     nest: NestEnum.bowl,
     capacity: 5,
@@ -4474,8 +4369,7 @@ const cards: CardType[] = [
     scientific_name: "Zonotrichia leucophrys",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 2,
     nest: NestEnum.ground,
     capacity: 5,
@@ -4498,8 +4392,7 @@ const cards: CardType[] = [
     scientific_name: "Icteria virens",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
+    text: "If this bird is to the right of all other birds in its habitat, move it to another habitat.",
     points: 5,
     nest: NestEnum.bowl,
     capacity: 3,
@@ -4522,8 +4415,7 @@ const cards: CardType[] = [
     scientific_name: "Megaceryle alcyon",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      "When another player plays a [wetland] bird, gain 1 [fish] from the supply.",
+    text: "When another player plays a [wetland] bird, gain 1 [fish] from the supply.",
     points: 4,
     nest: NestEnum.wild,
     capacity: 4,
@@ -4546,8 +4438,7 @@ const cards: CardType[] = [
     scientific_name: "Sylvia subalpina",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "If you used all 4 types of actions this round, play another bird. Pay its normal food and egg cost.",
+    text: "If you used all 4 types of actions this round, play another bird. Pay its normal food and egg cost.",
     points: 3,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -4569,8 +4460,7 @@ const cards: CardType[] = [
     scientific_name: "Motacilla alba",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "If you used all 4 types of actions this round, play another bird. Pay its normal food and egg cost.",
+    text: "If you used all 4 types of actions this round, play another bird. Pay its normal food and egg cost.",
     points: 2,
     nest: NestEnum.bowl,
     capacity: 5,
@@ -4593,8 +4483,7 @@ const cards: CardType[] = [
     scientific_name: "Emberiza citrinella",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "If you used all 4 types of actions this round, play another bird. Pay its normal food and egg cost.",
+    text: "If you used all 4 types of actions this round, play another bird. Pay its normal food and egg cost.",
     points: 2,
     nest: NestEnum.ground,
     capacity: 3,
@@ -4616,8 +4505,7 @@ const cards: CardType[] = [
     scientific_name: "Troglodytes aedon",
     color: ColorEnum.white,
     expansion: ExpansionEnum.core,
-    text:
-      "Play a second bird in your [grassland] or [forest]. Pay its normal cost.",
+    text: "Play a second bird in your [grassland] or [forest]. Pay its normal cost.",
     points: 1,
     nest: NestEnum.cavity,
     capacity: 5,
@@ -4856,8 +4744,7 @@ const cards: CardType[] = [
     scientific_name: "Coragyps atratus",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      "When another player's predator succeeds, gain 1 [die] from the birdfeeder.",
+    text: "When another player's predator succeeds, gain 1 [die] from the birdfeeder.",
     points: 2,
     nest: NestEnum.cavity,
     capacity: 1,
@@ -4878,8 +4765,7 @@ const cards: CardType[] = [
     scientific_name: "Pica hudsonia",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      "When another player's predator succeeds, gain 1 [die] from the birdfeeder.",
+    text: "When another player's predator succeeds, gain 1 [die] from the birdfeeder.",
     points: 3,
     nest: NestEnum.wild,
     capacity: 3,
@@ -4904,8 +4790,7 @@ const cards: CardType[] = [
     scientific_name: "Cathartes aura",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      "When another player's predator succeeds, gain 1 [die] from the birdfeeder.",
+    text: "When another player's predator succeeds, gain 1 [die] from the birdfeeder.",
     points: 1,
     nest: NestEnum.cavity,
     capacity: 1,
@@ -4925,8 +4810,7 @@ const cards: CardType[] = [
     scientific_name: "Aquila fasciata",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
+    text: "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
     predator: true,
     points: 8,
     nest: NestEnum.platform,
@@ -4952,8 +4836,7 @@ const cards: CardType[] = [
     scientific_name: "Aquila heliaca",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
+    text: "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
     predator: true,
     points: 7,
     nest: NestEnum.platform,
@@ -4979,8 +4862,7 @@ const cards: CardType[] = [
     scientific_name: "Accipiter nisus",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
+    text: "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
     predator: true,
     points: 4,
     nest: NestEnum.platform,
@@ -5004,8 +4886,7 @@ const cards: CardType[] = [
     scientific_name: "Accipiter gentilis",
     color: ColorEnum.white,
     expansion: ExpansionEnum.european,
-    text:
-      "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
+    text: "For each [rodent] in this bird's cost, you may pay 1 [card] from your hand instead. If you do, tuck the paid [card] behind this card.",
     predator: true,
     points: 5,
     nest: NestEnum.platform,
@@ -5030,8 +4911,7 @@ const cards: CardType[] = [
     scientific_name: "Erithacus rubecula",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "From the supply, gain 1 food of a type you already gained this turn.",
+    text: "From the supply, gain 1 food of a type you already gained this turn.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 4,
@@ -5058,8 +4938,7 @@ const cards: CardType[] = [
     scientific_name: "Loxia pytyopsittacus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Remove any 1 [die] from the birdfeeder, then gain 1 [seed] from the supply.",
+    text: "Remove any 1 [die] from the birdfeeder, then gain 1 [seed] from the supply.",
     points: 6,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -5139,8 +5018,7 @@ const cards: CardType[] = [
     scientific_name: "Pyrrhula pyrrhula",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Reset the birdfeeder. If you do, gain 1 [seed] or [fruit] from the birdfeeder after resetting.",
+    text: "Reset the birdfeeder. If you do, gain 1 [seed] or [fruit] from the birdfeeder after resetting.",
     points: 3,
     nest: NestEnum.bowl,
     capacity: 4,
@@ -5162,8 +5040,7 @@ const cards: CardType[] = [
     scientific_name: "Pernis apivorus",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Reset the birdfeeder. If you do, gain all [invertebrate] in the birdfeeder after resetting.",
+    text: "Reset the birdfeeder. If you do, gain all [invertebrate] in the birdfeeder after resetting.",
     points: 4,
     nest: NestEnum.platform,
     capacity: 1,
@@ -5185,8 +5062,7 @@ const cards: CardType[] = [
     scientific_name: "Merops apiaster",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Reset the birdfeeder. If you do, gain 1 [invertebrate] from the birdfeeder after resetting.",
+    text: "Reset the birdfeeder. If you do, gain 1 [invertebrate] from the birdfeeder after resetting.",
     points: 3,
     nest: NestEnum.cavity,
     capacity: 3,
@@ -5207,8 +5083,7 @@ const cards: CardType[] = [
     scientific_name: "Coccothraustes coccothraustes",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Reset the birdfeeder. If you do, gain 1 [seed] from the birdfeeder after resetting.",
+    text: "Reset the birdfeeder. If you do, gain 1 [seed] from the birdfeeder after resetting.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -5228,8 +5103,7 @@ const cards: CardType[] = [
     scientific_name: "Parus major",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Reset the birdfeeder. If you do, gain 1 [die] from the birdfeeder after resetting.",
+    text: "Reset the birdfeeder. If you do, gain 1 [die] from the birdfeeder after resetting.",
     points: 4,
     nest: NestEnum.cavity,
     capacity: 6,
@@ -5255,8 +5129,7 @@ const cards: CardType[] = [
     scientific_name: "Alcedo atthis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Steal 1 [fish] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
+    text: "Steal 1 [fish] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
     points: 4,
     nest: NestEnum.wild,
     capacity: 5,
@@ -5280,8 +5153,7 @@ const cards: CardType[] = [
     scientific_name: "Lanius collurio",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Steal 1 [invertebrate] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
+    text: "Steal 1 [invertebrate] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
     points: 5,
     nest: NestEnum.bowl,
     capacity: 2,
@@ -5308,8 +5180,7 @@ const cards: CardType[] = [
     scientific_name: "Athene noctua",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Steal 1 [rodent] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
+    text: "Steal 1 [rodent] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
     points: 4,
     nest: NestEnum.cavity,
     capacity: 2,
@@ -5324,8 +5195,7 @@ const cards: CardType[] = [
     scientific_name: "Garrulus glandarius",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Steal 1 [seed] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
+    text: "Steal 1 [seed] from another player's supply and cache it on this bird. They gain 1 [die] from the birdfeeder.",
     points: 4,
     nest: NestEnum.bowl,
     capacity: 3,
@@ -5351,8 +5221,7 @@ const cards: CardType[] = [
     scientific_name: "Chroicocephalus ridibundus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Steal 1 [wild] from another player's supply and add it to your own supply. They gain 1 [die] from the birdfeeder.",
+    text: "Steal 1 [wild] from another player's supply and add it to your own supply. They gain 1 [die] from the birdfeeder.",
     points: 3,
     nest: NestEnum.ground,
     capacity: 2,
@@ -5397,8 +5266,7 @@ const cards: CardType[] = [
     scientific_name: "Gavia arctica",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard all remaining face-up [card] and refill the tray. If you do, draw 1 of the new face-up [card].",
+    text: "Discard all remaining face-up [card] and refill the tray. If you do, draw 1 of the new face-up [card].",
     points: 5,
     nest: NestEnum.ground,
     capacity: 1,
@@ -5420,8 +5288,7 @@ const cards: CardType[] = [
     scientific_name: "Ciconia ciconia",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard all remaining face-up [card] and refill the tray. If you do, draw 1 of the new face-up [card].",
+    text: "Discard all remaining face-up [card] and refill the tray. If you do, draw 1 of the new face-up [card].",
     points: 8,
     nest: NestEnum.platform,
     capacity: 2,
@@ -5448,8 +5315,7 @@ const cards: CardType[] = [
     scientific_name: "Cinclus cinclus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Discard all remaining face-up [card] and refill the tray. If you do, draw 1 of the new face-up [card].",
+    text: "Discard all remaining face-up [card] and refill the tray. If you do, draw 1 of the new face-up [card].",
     points: 3,
     nest: NestEnum.cavity,
     capacity: 4,
@@ -5472,8 +5338,7 @@ const cards: CardType[] = [
     scientific_name: "Fulica americana",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 3,
     nest: NestEnum.platform,
@@ -5498,8 +5363,7 @@ const cards: CardType[] = [
     scientific_name: "Turdus migratorius",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 1,
     nest: NestEnum.bowl,
@@ -5524,8 +5388,7 @@ const cards: CardType[] = [
     scientific_name: "Hirundo rustica",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 1,
     nest: NestEnum.wild,
@@ -5551,8 +5414,7 @@ const cards: CardType[] = [
     scientific_name: "Haemorhous mexicanus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 3,
     nest: NestEnum.bowl,
@@ -5577,8 +5439,7 @@ const cards: CardType[] = [
     scientific_name: "Progne subis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 2,
     nest: NestEnum.cavity,
@@ -5602,8 +5463,7 @@ const cards: CardType[] = [
     scientific_name: "Larus delawarensis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 4,
     nest: NestEnum.ground,
@@ -5627,8 +5487,7 @@ const cards: CardType[] = [
     scientific_name: "Tachycineta bicolor",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 3,
     nest: NestEnum.cavity,
@@ -5651,8 +5510,7 @@ const cards: CardType[] = [
     scientific_name: "Tachycineta thalassina",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 3,
     nest: NestEnum.cavity,
@@ -5676,8 +5534,7 @@ const cards: CardType[] = [
     scientific_name: "Setophaga coronata",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
+    text: "Tuck a [card] from your hand behind this bird. If you do, draw 1 [card].",
     flocking: true,
     points: 1,
     nest: NestEnum.bowl,
@@ -5709,8 +5566,7 @@ const cards: CardType[] = [
     scientific_name: "Plectrophenax nivalis",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.european,
-    text:
-      "When another player tucks a [card] for any reason, tuck 1 [card] from your hand behind this bird, then draw 1 [card] at the end of their turn.",
+    text: "When another player tucks a [card] for any reason, tuck 1 [card] from your hand behind this bird, then draw 1 [card] at the end of their turn.",
     flocking: true,
     points: 5,
     nest: NestEnum.cavity,
@@ -5732,8 +5588,7 @@ const cards: CardType[] = [
     scientific_name: "Bombycilla cedrorum",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, gain 1 [fruit] from the supply.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, gain 1 [fruit] from the supply.",
     flocking: true,
     points: 3,
     nest: NestEnum.bowl,
@@ -5758,8 +5613,7 @@ const cards: CardType[] = [
     scientific_name: "Sitta pygmaea",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, gain 1 [invertebrate] or 1 [seed] from the supply.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, gain 1 [invertebrate] or 1 [seed] from the supply.",
     flocking: true,
     points: 2,
     nest: NestEnum.cavity,
@@ -5783,8 +5637,7 @@ const cards: CardType[] = [
     scientific_name: "Chaetura vauxi",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.swiftstart,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, gain 1 [invertebrate] from the supply.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, gain 1 [invertebrate] from the supply.",
     flocking: true,
     points: 2,
     nest: NestEnum.cavity,
@@ -5808,8 +5661,7 @@ const cards: CardType[] = [
     scientific_name: "Junco hyemalis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, gain 1 [seed] from the supply.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, gain 1 [seed] from the supply.",
     flocking: true,
     points: 3,
     nest: NestEnum.ground,
@@ -5834,8 +5686,7 @@ const cards: CardType[] = [
     scientific_name: "Spinus pinus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, gain 1 [seed] from the supply.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, gain 1 [seed] from the supply.",
     flocking: true,
     points: 3,
     nest: NestEnum.bowl,
@@ -5859,8 +5710,7 @@ const cards: CardType[] = [
     scientific_name: "Euphagus cyanocephalus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
     flocking: true,
     points: 3,
     nest: NestEnum.bowl,
@@ -5886,8 +5736,7 @@ const cards: CardType[] = [
     scientific_name: "Psaltriparus minimus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
     flocking: true,
     points: 2,
     nest: NestEnum.wild,
@@ -5914,8 +5763,7 @@ const cards: CardType[] = [
     scientific_name: "Quiscalus quiscula",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
     flocking: true,
     points: 3,
     nest: NestEnum.bowl,
@@ -5939,8 +5787,7 @@ const cards: CardType[] = [
     scientific_name: "Spiza americana",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
     flocking: true,
     points: 4,
     nest: NestEnum.ground,
@@ -5964,8 +5811,7 @@ const cards: CardType[] = [
     scientific_name: "Agelaius phoeniceus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
     flocking: true,
     points: 2,
     nest: NestEnum.bowl,
@@ -5990,8 +5836,7 @@ const cards: CardType[] = [
     scientific_name: "Xanthocephalus xanthocephalus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.core,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, also lay 1 [egg] on this bird.",
     flocking: true,
     points: 4,
     nest: NestEnum.bowl,
@@ -6015,8 +5860,7 @@ const cards: CardType[] = [
     scientific_name: "Aeronautes saxatalis",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.swiftstart,
-    text:
-      "Tuck a [card] from your hand behind this bird. If you do, lay 1 [egg] on any bird.",
+    text: "Tuck a [card] from your hand behind this bird. If you do, lay 1 [egg] on any bird.",
     flocking: true,
     points: 2,
     nest: NestEnum.cavity,
@@ -6041,8 +5885,7 @@ const cards: CardType[] = [
     scientific_name: "Fringilla coelebs",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1-5 birds in this habitat. Tuck 1 [card] from your hand behind each.",
+    text: "Choose 1-5 birds in this habitat. Tuck 1 [card] from your hand behind each.",
     flocking: true,
     points: 4,
     nest: NestEnum.bowl,
@@ -6066,8 +5909,7 @@ const cards: CardType[] = [
     scientific_name: "Phylloscopus collybita",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1-5 birds in this habitat. Tuck 1 [card] from your hand behind each.",
+    text: "Choose 1-5 birds in this habitat. Tuck 1 [card] from your hand behind each.",
     flocking: true,
     points: 3,
     nest: NestEnum.ground,
@@ -6097,8 +5939,7 @@ const cards: CardType[] = [
     scientific_name: "Cygnus olor",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1-3 birds in your [wetland]. Tuck 1 [card] from your hand behind each. If you tuck at least 1 card, draw 1 [card].",
+    text: "Choose 1-3 birds in your [wetland]. Tuck 1 [card] from your hand behind each. If you tuck at least 1 card, draw 1 [card].",
     points: 4,
     nest: NestEnum.ground,
     capacity: 3,
@@ -6125,8 +5966,7 @@ const cards: CardType[] = [
     scientific_name: "Eremophila alpestris",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.core,
-    text:
-      "When another player plays a [grassland] bird, tuck 1 [card] from your hand behind this bird.",
+    text: "When another player plays a [grassland] bird, tuck 1 [card] from your hand behind this bird.",
     flocking: true,
     points: 5,
     nest: NestEnum.ground,
@@ -6149,8 +5989,7 @@ const cards: CardType[] = [
     scientific_name: "Carduelis carduelis",
     color: ColorEnum.pink,
     expansion: ExpansionEnum.european,
-    text:
-      "When another player tucks a [card] for any reason, tuck 1 [card] from the deck behind this bird.",
+    text: "When another player tucks a [card] for any reason, tuck 1 [card] from the deck behind this bird.",
     flocking: true,
     points: 6,
     nest: NestEnum.bowl,
@@ -6177,8 +6016,7 @@ const cards: CardType[] = [
     scientific_name: "Corvus cornix",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1 other player. For each action cube on their [grassland], tuck 1 [card] from your hand behind this bird, then draw an equal number of [card].",
+    text: "Choose 1 other player. For each action cube on their [grassland], tuck 1 [card] from your hand behind this bird, then draw an equal number of [card].",
     flocking: true,
     points: 3,
     nest: NestEnum.platform,
@@ -6203,8 +6041,7 @@ const cards: CardType[] = [
     scientific_name: "Phoenicopterus roseus",
     color: ColorEnum.brown,
     expansion: ExpansionEnum.european,
-    text:
-      "Choose 1 other player. For each action cube on their [wetland], tuck 1 [card] from your hand behind this bird, then draw an equal number of [card].",
+    text: "Choose 1 other player. For each action cube on their [wetland], tuck 1 [card] from your hand behind this bird, then draw an equal number of [card].",
     flocking: true,
     points: 3,
     nest: NestEnum.ground,
@@ -6229,8 +6066,7 @@ const cards: CardType[] = [
     scientific_name: "Calidris pugnax",
     color: ColorEnum.teal,
     expansion: ExpansionEnum.european,
-    text:
-      "Tuck up to 3 [card] from your hand behind this bird. Draw 1 [card] for each card you tucked.",
+    text: "Round End: Tuck up to 3 [card] from your hand behind this bird. Draw 1 [card] for each card you tucked.",
     flocking: true,
     points: 2,
     nest: NestEnum.ground,
