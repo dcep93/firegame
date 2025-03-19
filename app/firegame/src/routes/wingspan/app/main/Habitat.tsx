@@ -16,16 +16,15 @@ class Habitat extends React.Component<{
   render() {
     return (
       <div className={[wStyles.habitatRow].join(" ")}>
-        <span>
-          <span
-            className={[
-              styles.inline,
-              styles.bubble,
-              wStyles.habitatName,
-              wStyles.habitatWords,
-            ].join(" ")}
-            onClick={this.activateX.bind(this)}
-          >
+        <span
+          className={[
+            styles.inline,
+            styles.bubble,
+            wStyles.habitatName,
+            wStyles.habitatWords,
+          ].join(" ")}
+        >
+          <span onClick={this.activateX.bind(this)}>
             {HabitatEnum[this.props.habitat]}
           </span>
           <span onClick={this.unactivate.bind(this)}>
