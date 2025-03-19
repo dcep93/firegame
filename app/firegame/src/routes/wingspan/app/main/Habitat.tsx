@@ -16,33 +16,43 @@ class Habitat extends React.Component<{
   render() {
     return (
       <div className={[wStyles.habitatRow].join(" ")}>
-        <span
-          className={[
-            styles.inline,
-            styles.bubble,
-            wStyles.habitatName,
-            wStyles.habitatWords,
-          ].join(" ")}
-          onClick={this.use.bind(this)}
-        >
-          {HabitatEnum[this.props.habitat]}
-          {utils
-            .repeat(
-              "*",
-              (this.props.player.actions || {})[this.props.habitat] || 0
-            )
-            .join("")}
+        <span>
+          <span
+            className={[
+              styles.inline,
+              styles.bubble,
+              wStyles.habitatName,
+              wStyles.habitatWords,
+            ].join(" ")}
+            onClick={this.activateX.bind(this)}
+          >
+            {HabitatEnum[this.props.habitat]}
+          </span>
+          <span onClick={this.unactivate.bind(this)}>
+            {utils
+              .repeat(
+                "*",
+                (this.props.player.actions || {})[this.props.habitat] || 0
+              )
+              .join("")}
+          </span>
         </span>
         {utils.count(5).map(this.renderPlace.bind(this))}
       </div>
     );
   }
 
-  use(): void {
+  activateX(): void {
     const me = utils.getMe();
     if (!me.actions) me.actions = { [this.props.habitat]: 0 };
     me.actions[this.props.habitat]!++;
     store.update(`activated ${HabitatEnum[this.props.habitat]}`);
+  }
+
+  unactivate(): void {
+    const me = utils.getMe();
+    me.actions![this.props.habitat]!--;
+    store.update(`unactivated ${HabitatEnum[this.props.habitat]}`);
   }
 
   renderPlace(index: number): JSX.Element {

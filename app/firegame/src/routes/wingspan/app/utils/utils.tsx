@@ -51,7 +51,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
               ([f, num]) =>
                 `(${FoodEnum[parseInt(f)]}${num! > 1 ? ` ${num}` : ""})`
             )
-            .join(card.food_slash ? " / " : " ")}
+            .join(card.food_slash ? " / " : " + ")}
         </div>
         {card.flocking && <div>flocking</div>}
         {card.predator && <div>predator</div>}
