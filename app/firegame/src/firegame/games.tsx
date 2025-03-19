@@ -17,7 +17,6 @@ import splendor from "../routes/splendor/app/Splendor";
 import spy from "../routes/spy/app/Spy";
 import spyfall from "../routes/spyfall/app/Spyfall";
 import takebacktoe from "../routes/takebacktoe/app/TakeBackToe";
-import Template from "../routes/template/app/Template";
 import TicketToRide from "../routes/ticket_to_ride/app/TicketToRide";
 import tictactoe from "../routes/tictactoe/app/TicTacToe";
 import timeline from "../routes/timeline/app/Timeline";

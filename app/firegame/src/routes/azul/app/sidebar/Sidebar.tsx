@@ -1,6 +1,6 @@
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
-import NewGame, { Params } from "../utils/NewGame";
-import utils, { store } from "../utils/utils";
+import NewGame from "../utils/NewGame";
+import utils from "../utils/utils";
 
 class Sidebar extends SharedSidebar {
   name = "Azul";
