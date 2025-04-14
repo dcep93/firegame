@@ -2,22 +2,6 @@ import React from "react";
 import styles from "../../../../shared/styles.module.css";
 import { store } from "../utils/utils";
 
-function Input(props: { value: string; onSubmit: (value: string) => void }) {
-  const ref = React.useRef<HTMLInputElement>(null);
-  return (
-    <form
-      style={{ display: "inline-block" }}
-      onSubmit={(e) => {
-        e.preventDefault();
-        props.onSubmit(ref.current!.value);
-        store.update(".");
-      }}
-    >
-      <input ref={ref} defaultValue={props.value} />
-    </form>
-  );
-}
-
 const categories = [
   "farm animal and dog",
   "missing type of farm animal (-2)",
@@ -32,6 +16,20 @@ const categories = [
 ];
 
 export default function Main() {
+  const ref = React.useRef<HTMLInputElement>(null);
+  const newPlayer = () =>
+    Promise.resolve(ref.current!.value).then((playerName) =>
+      Promise.resolve()
+        .then(
+          () =>
+            (store.gameW.game.scoreSheet = Object.assign(
+              { [playerName]: { [-1]: 0 } },
+              store.gameW.game.scoreSheet
+            ))
+        )
+        .then(() => store.update(`${playerName} joined`))
+    );
+
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -45,19 +43,21 @@ export default function Main() {
           }}
         >
           <div style={{ display: "flex" }}>
-            <span>+ </span>
-            <Input
-              value={""}
-              onSubmit={(playerName) => {
-                store.gameW.game.scoreSheet = Object.assign(
-                  { [playerName]: { [-1]: 0 } },
-                  store.gameW.game.scoreSheet
-                );
+            <span>name:</span>{" "}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                newPlayer();
               }}
-            />
+            >
+              <input ref={ref}></input>
+              <input type="submit" value={"+"}></input>
+            </form>
           </div>
           {categories.map((c, i) => (
-            <div key={i}>{c}</div>
+            <div key={i} style={{ whiteSpace: "nowrap" }}>
+              {c}
+            </div>
           ))}
         </div>
         {Object.entries(store.gameW.game.scoreSheet || {}).map(
@@ -66,16 +66,32 @@ export default function Main() {
               <div>
                 {playerName} (
                 {Object.values(playerScores).reduce((a, b) => a + b, 0)})
+                <button
+                  onClick={() =>
+                    Promise.resolve()
+                      .then(
+                        () => delete store.gameW.game.scoreSheet![playerName]
+                      )
+                      .then(() => store.update(`${playerName} left`))
+                  }
+                >
+                  x
+                </button>
               </div>
               {categories.map((c, i) => (
                 <div key={i}>
-                  <Input
-                    value={store.gameW.game.scoreSheet![playerName][
+                  <input
+                    defaultValue={store.gameW.game.scoreSheet![playerName][
                       i
                     ]?.toString()}
-                    onSubmit={(value) =>
-                      (store.gameW.game.scoreSheet![playerName][i] =
-                        parseInt(value))
+                    onChange={(e) =>
+                      Promise.resolve()
+                        .then(
+                          () =>
+                            (store.gameW.game.scoreSheet![playerName][i] =
+                              parseInt(e.target.value))
+                        )
+                        .then(() => store.update("."))
                     }
                   />
                 </div>
