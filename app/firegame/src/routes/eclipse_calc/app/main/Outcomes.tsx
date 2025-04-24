@@ -76,7 +76,11 @@ function getOutcomes(): OutcomeType[] {
       (prev, { sortz, ...curr }) =>
         prev.concat({
           ...curr,
-          cumProb: (prev[prev.length - 1]?.cumProb || 0) + curr.probability,
+          cumProb: parseFloat(
+            ((prev[prev.length - 1]?.cumProb || 0) + curr.probability).toFixed(
+              6
+            )
+          ),
         }),
       [] as OutcomeType[]
     );
