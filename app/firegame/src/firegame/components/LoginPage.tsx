@@ -13,6 +13,7 @@ class LoginPage extends React.Component {
         <p>Enter your name to continue</p>
         <form onSubmit={this.setUsername.bind(this)}>
           <input type="text" ref={this.inputRef} />
+          <input type="submit" />
         </form>
       </div>
     );

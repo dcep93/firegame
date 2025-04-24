@@ -4,6 +4,13 @@ import styles from "../../../shared/styles.module.css";
 import Main from "./main/Main";
 import utils, { store } from "./utils/utils";
 
+// todo
+// Power grid:
+// highlight in bank if in auction
+// what power plants does trust have
+// pass button broken
+// trust should buy only from eligible
+
 export default class PowerGrid extends React.Component {
   render() {
     return (

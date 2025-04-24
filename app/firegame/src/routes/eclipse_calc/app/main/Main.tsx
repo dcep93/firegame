@@ -139,7 +139,7 @@ function Ship(props: { ship: ShipType }) {
           }))
           .sort((a, b) => a.sortValue - b.sortValue)
           .map(({ valueKey, value }) => (
-            <div key={valueKey}>
+            <div key={valueKey} style={{ display: "flex" }}>
               {Object.entries({ "-": -1, "+": 1 }).map(([k, v]) => (
                 <button
                   key={k}
@@ -156,8 +156,16 @@ function Ship(props: { ship: ShipType }) {
                 >
                   {k}
                 </button>
-              ))}{" "}
-              {value} / {valueKey}
+              ))}
+              <div style={{ width: "1em" }}></div>
+              <div
+                style={{
+                  display: "inline",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {value} / {valueKey}
+              </div>
             </div>
           ))}
       </div>
