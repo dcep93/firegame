@@ -28,6 +28,7 @@ class Main extends React.Component {
                             .filter(
                               (ss) => !(ss as unknown as { null: boolean }).null
                             )
+                            .concat(store.gameW.game.oldFleets || [])
                             .map((ss) => (ss as ShipType).name)
                         )
                       )
@@ -68,6 +69,31 @@ class Main extends React.Component {
                 </button>
               </div>
               <div>
+                <select
+                  value={0}
+                  onChange={(e) =>
+                    Promise.resolve(e.target.value)
+                      .then((targetValue) =>
+                        (store.gameW.game.oldFleets || []).find(
+                          (of) => of.name === targetValue
+                        )
+                      )
+                      .then(
+                        (of) =>
+                          of &&
+                          Promise.resolve()
+                            .then(() => f.push(of))
+                            .then(() => store.update(`revived ${of.name}`))
+                      )
+                  }
+                >
+                  <option>revive ship</option>
+                  {(store.gameW.game.oldFleets || []).map((f, i) => (
+                    <option key={i}>{f.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <div>
                   {f
                     .map((ship, shipI) => ({ ship: ship as ShipType, shipI }))
@@ -81,7 +107,19 @@ class Main extends React.Component {
                           <button
                             onClick={() =>
                               Promise.resolve()
-                                .then(() => f.splice(shipI, 1))
+                                .then(() => f.splice(shipI, 1)[0]! as ShipType)
+                                .then((deleted) => {
+                                  if (!store.gameW.game.oldFleets)
+                                    store.gameW.game.oldFleets = [];
+                                  const found = store.gameW.game.oldFleets.find(
+                                    (f) => f.name === deleted.name
+                                  );
+                                  if (found === undefined) {
+                                    store.gameW.game.oldFleets!.push(deleted);
+                                  } else {
+                                    found.values = deleted.values;
+                                  }
+                                })
                                 .then(() =>
                                   store.update(`deleted ${ship.name}`)
                                 )
