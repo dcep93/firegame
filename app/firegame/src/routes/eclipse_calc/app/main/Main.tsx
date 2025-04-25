@@ -8,7 +8,6 @@ import Outcomes from "./Outcomes";
 
 class Main extends React.Component {
   render() {
-    // return null;
     const catalog = store.gameW.game.catalog || [];
     store.gameW.game.catalog = catalog;
     return (
@@ -26,62 +25,54 @@ class Main extends React.Component {
                   value={0}
                   onChange={(e) =>
                     (({ targetValue }) =>
-                      Promise.resolve()
-                        .then(() =>
-                          (store.gameW.game.catalog || []).find(
-                            (of) => of.name === targetValue
-                          )
-                        )
-                        .then((catalogShip) =>
-                          catalogShip
-                            ? Promise.resolve()
-                                .then(() => f.push(catalogShip.name))
-                                .then(() =>
-                                  store.update(`added ${catalogShip.name}`)
-                                )
-                            : Promise.resolve()
-                                .then(() => catalog.map((ca) => ca.name))
-                                .then((existingNames) =>
-                                  utils
-                                    .randomFrom(
-                                      wordList.filter(
-                                        (w) => !existingNames.includes(w)
-                                      )
+                      Promise.resolve().then(() =>
+                        targetValue
+                          ? Promise.resolve()
+                              .then(() => f.push(targetValue))
+                              .then(() => store.update(`added ${targetValue}`))
+                          : Promise.resolve()
+                              .then(() => catalog.map((ca) => ca.name))
+                              .then((existingNames) =>
+                                utils
+                                  .randomFrom(
+                                    wordList.filter(
+                                      (w) => !existingNames.includes(w)
                                     )
-                                    .toUpperCase()
-                                )
-                                .then((name) =>
-                                  Promise.resolve()
-                                    .then(() =>
-                                      catalog.push({
-                                        name,
-                                        values: {
-                                          count: 1,
-                                          initiative: 1,
-                                          hull: 0,
-                                          computer: 0,
-                                          shield: 0,
-                                          cannons_1: 1,
-                                          cannons_2: 0,
-                                          cannons_3: 0,
-                                          cannons_4: 0,
-                                          missiles_1: 0,
-                                          missiles_2: 0,
-                                          missiles_3: 0,
-                                          missiles_4: 0,
-                                        },
-                                      })
-                                    )
-                                    .then(() => f.push(name))
-                                    .then(() => store.update(`spawned ${name}`))
-                                )
-                        ))({
+                                  )
+                                  .toUpperCase()
+                              )
+                              .then((name) =>
+                                Promise.resolve()
+                                  .then(() =>
+                                    catalog.push({
+                                      name,
+                                      values: {
+                                        count: 1,
+                                        initiative: 1,
+                                        hull: 0,
+                                        computer: 0,
+                                        shield: 0,
+                                        cannons_1: 1,
+                                        cannons_2: 0,
+                                        cannons_3: 0,
+                                        cannons_4: 0,
+                                        missiles_1: 0,
+                                        missiles_2: 0,
+                                        missiles_3: 0,
+                                        missiles_4: 0,
+                                      },
+                                    })
+                                  )
+                                  .then(() => f.push(name))
+                                  .then(() => store.update(`spawned ${name}`))
+                              )
+                      ))({
                       targetValue: e.target.value,
                     })
                   }
                 >
-                  <option value={"todo"}>revive ship</option>
-                  <option value={"todo"}>revive ship</option>
+                  <option>add ship</option>
+                  <option value={""}>new ship</option>
                   {(store.gameW.game.catalog || [])
                     .filter((c) => f.find((ff) => ff === c.name) === undefined)
                     .map((c, i) => (
@@ -128,12 +119,6 @@ class Main extends React.Component {
         <div>
           <Outcomes />
         </div>
-        {/* <div>
-          <div className={styles.bubble}>
-            <h2>raw_state.json</h2>
-            <pre>{JSON.stringify(store.gameW.game, null, 2)}</pre>
-          </div>
-        </div> */}
       </div>
     );
   }
