@@ -183,12 +183,10 @@ function getChildren(
     ...arr[0],
     count: arr.map((d) => d.count).reduce((a, b) => a + b, 0),
   }));
-  console.log(dice);
   const pRolls = getPRolls(
     dice.map((o) => ({ ...o })),
     [{ probability: 1, rolls: [] }]
   );
-  pRolls.filter((r) => r.rolls.length).map((r) => console.log(r));
   const children = pRolls.map((pr) => ({
     childProbability: pr.probability,
     childShipGroups: assignDamage(
@@ -205,7 +203,9 @@ function getChildren(
     utils.groupByF(children, (c) => JSON.stringify(c.childShipGroups))
   ).map((cs) => ({
     ...cs[0],
-    probability: cs.map((c) => c.childProbability).reduce((a, b) => a + b, 0),
+    childProbability: cs
+      .map((c) => c.childProbability)
+      .reduce((a, b) => a + b, 0),
   }));
 }
 
