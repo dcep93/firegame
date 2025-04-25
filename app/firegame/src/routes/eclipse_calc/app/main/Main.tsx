@@ -141,7 +141,23 @@ class Main extends React.Component {
 function Ship(props: { ship: ShipType }) {
   return (
     <div>
-      <div>name: {props.ship.name}</div>
+      <div>{props.ship.name}</div>
+      <div>
+        <button
+          onClick={() =>
+            (({ newName, oldName }) =>
+              newName &&
+              Promise.resolve()
+                .then(() => (props.ship.name = newName))
+                .then(() => store.update(`renamed ${oldName} to ${newName}`)))({
+              oldName: props.ship.name,
+              newName: prompt(`enter a new name for ${props.ship.name}`),
+            })
+          }
+        >
+          change name
+        </button>
+      </div>
       <div style={{ paddingLeft: "1em", fontFamily: "Courier New" }}>
         {Object.entries(props.ship.values)
           .sort()
