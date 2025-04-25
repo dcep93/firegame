@@ -8,6 +8,7 @@ import Outcomes from "./Outcomes";
 
 class Main extends React.Component {
   render() {
+    // return null;
     const catalog = store.gameW.game.catalog || [];
     store.gameW.game.catalog = catalog;
     return (
@@ -22,14 +23,18 @@ class Main extends React.Component {
               </h2>
               <div>
                 <select
-                  value={0}
+                  value={-1}
                   onChange={(e) =>
                     (({ targetValue }) =>
                       Promise.resolve().then(() =>
-                        targetValue
+                        targetValue >= 0
                           ? Promise.resolve()
                               .then(() => f.push(targetValue))
-                              .then(() => store.update(`added ${targetValue}`))
+                              .then(() =>
+                                store.update(
+                                  `added ${catalog[targetValue].name}`
+                                )
+                              )
                           : Promise.resolve()
                               .then(() => catalog.map((ca) => ca.name))
                               .then((existingNames) =>
@@ -43,6 +48,7 @@ class Main extends React.Component {
                               )
                               .then((name) =>
                                 Promise.resolve()
+                                  .then(() => f.push(catalog.length))
                                   .then(() =>
                                     catalog.push({
                                       name,
@@ -63,36 +69,44 @@ class Main extends React.Component {
                                       },
                                     })
                                   )
-                                  .then(() => f.push(name))
                                   .then(() => store.update(`spawned ${name}`))
                               )
                       ))({
-                      targetValue: e.target.value,
+                      targetValue: parseInt(e.target.value),
                     })
                   }
                 >
-                  <option>add ship</option>
-                  <option value={""}>new ship</option>
-                  {(store.gameW.game.catalog || [])
-                    .filter((c) => f.find((ff) => ff === c.name) === undefined)
-                    .map((c, i) => (
-                      <option key={i}>{c.name}</option>
+                  <option value={"-1"}>add ship</option>
+                  <option value={"-2"}>new ship</option>
+                  {catalog
+                    .map((c, i) => ({ c, i }))
+                    .filter(({ i }) => !f.includes(i))
+                    .map(({ c, i }) => (
+                      <option key={i} value={i}>
+                        {c.name}
+                      </option>
                     ))}
                 </select>
               </div>
               <div>
                 <div>
                   {f
-                    .filter((name) => !(name as { null: true }).null)
-                    .map((name) => catalog.find((c) => c.name === name))
-                    .map((ship, shipI) => ({ ship: ship as ShipType, shipI }))
+                    .map((shipIndex, shipI) => ({
+                      ship: store.gameW.game.catalog![shipIndex],
+                      shipI,
+                    }))
+                    .filter(({ ship }) => ship)
                     .map(({ ship, shipI }) => (
                       <div key={shipI}>
                         <div className={styles.bubble}>
                           <Ship ship={ship} />
                           <button
                             onClick={() =>
-                              store.update(`deleted ${f.splice(shipI, 1)[0]!}`)
+                              store.update(
+                                `deleted ${
+                                  catalog[f.splice(shipI, 1)[0]!].name
+                                }`
+                              )
                             }
                           >
                             delete ship

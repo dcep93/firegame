@@ -6,7 +6,7 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
-  fleets: (string | { null: true })[][];
+  fleets: number[][];
   catalog: ShipType[] | null;
 };
 
@@ -29,7 +29,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
-    fleets: [[{ null: true }], [{ null: true }]],
+    fleets: [[-1], [-1]],
     catalog: null,
   };
   return Promise.resolve(game).then(setPlayers);

@@ -32,10 +32,8 @@ function getOutcomes(): OutcomeType[] {
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
         f
-          .filter((name) => !(name as { null: true }).null)
-          .map(
-            (name) => store.gameW.game.catalog!.find((c) => c.name === name)!
-          )
+          .map((shipIndex) => store.gameW.game.catalog![shipIndex])
+          .filter(Boolean)
           .flatMap((ship) =>
             utils.repeat(
               {
