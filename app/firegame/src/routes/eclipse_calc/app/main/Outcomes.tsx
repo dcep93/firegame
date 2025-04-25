@@ -32,8 +32,10 @@ function getOutcomes(): OutcomeType[] {
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
         f
-          .filter((ship) => !(ship as unknown as { null: boolean }).null)
-          .map((ship) => ship as ShipType)
+          .filter((name) => !(name as { null: true }).null)
+          .map(
+            (name) => store.gameW.game.catalog!.find((c) => c.name === name)!
+          )
           .flatMap((ship) =>
             utils.repeat(
               {
@@ -183,10 +185,12 @@ function getChildren(
     ...arr[0],
     count: arr.map((d) => d.count).reduce((a, b) => a + b, 0),
   }));
+  console.log(dice);
   const pRolls = getPRolls(
     dice.map((o) => ({ ...o })),
     [{ probability: 1, rolls: [] }]
   );
+  pRolls.filter((r) => r.rolls.length).map((r) => console.log(r));
   const children = pRolls.map((pr) => ({
     childProbability: pr.probability,
     childShipGroups: assignDamage(

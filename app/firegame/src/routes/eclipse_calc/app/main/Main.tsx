@@ -8,6 +8,9 @@ import Outcomes from "./Outcomes";
 
 class Main extends React.Component {
   render() {
+    // return null;
+    const catalog = store.gameW.game.catalog || [];
+    store.gameW.game.catalog = catalog;
     return (
       <div>
         <div className={styles.flex}>
@@ -19,110 +22,86 @@ class Main extends React.Component {
                   : "attacking forces of evil"}
               </h2>
               <div>
-                <button
-                  onClick={() =>
-                    Promise.resolve()
-                      .then(() =>
-                        store.gameW.game.fleets.flatMap((ff) =>
-                          ff
-                            .filter(
-                              (ss) => !(ss as unknown as { null: boolean }).null
-                            )
-                            .concat(store.gameW.game.oldFleets || [])
-                            .map((ss) => (ss as ShipType).name)
-                        )
-                      )
-                      .then((existingNames) =>
-                        utils
-                          .randomFrom(
-                            wordList.filter((w) => !existingNames.includes(w))
-                          )
-                          .toUpperCase()
-                      )
-                      .then((name) =>
-                        Promise.resolve()
-                          .then(() =>
-                            f.push({
-                              name,
-                              values: {
-                                count: 1,
-                                initiative: 1,
-                                hull: 0,
-                                computer: 0,
-                                shield: 0,
-                                cannons_1: 1,
-                                cannons_2: 0,
-                                cannons_3: 0,
-                                cannons_4: 0,
-                                missiles_1: 0,
-                                missiles_2: 0,
-                                missiles_3: 0,
-                                missiles_4: 0,
-                              },
-                            })
-                          )
-                          .then(() => store.update(`spawned ${name}`))
-                      )
-                  }
-                >
-                  add ship
-                </button>
-              </div>
-              <div>
                 <select
                   value={0}
                   onChange={(e) =>
-                    Promise.resolve(e.target.value)
-                      .then((targetValue) =>
-                        (store.gameW.game.oldFleets || []).find(
-                          (of) => of.name === targetValue
+                    (({ targetValue }) =>
+                      Promise.resolve()
+                        .then(() =>
+                          (store.gameW.game.catalog || []).find(
+                            (of) => of.name === targetValue
+                          )
                         )
-                      )
-                      .then(
-                        (of) =>
-                          of &&
-                          Promise.resolve()
-                            .then(() => f.push(of))
-                            .then(() => store.update(`revived ${of.name}`))
-                      )
+                        .then((catalogShip) =>
+                          catalogShip
+                            ? Promise.resolve()
+                                .then(() => f.push(catalogShip.name))
+                                .then(() =>
+                                  store.update(`added ${catalogShip.name}`)
+                                )
+                            : Promise.resolve()
+                                .then(() => catalog.map((ca) => ca.name))
+                                .then((existingNames) =>
+                                  utils
+                                    .randomFrom(
+                                      wordList.filter(
+                                        (w) => !existingNames.includes(w)
+                                      )
+                                    )
+                                    .toUpperCase()
+                                )
+                                .then((name) =>
+                                  Promise.resolve()
+                                    .then(() =>
+                                      catalog.push({
+                                        name,
+                                        values: {
+                                          count: 1,
+                                          initiative: 1,
+                                          hull: 0,
+                                          computer: 0,
+                                          shield: 0,
+                                          cannons_1: 1,
+                                          cannons_2: 0,
+                                          cannons_3: 0,
+                                          cannons_4: 0,
+                                          missiles_1: 0,
+                                          missiles_2: 0,
+                                          missiles_3: 0,
+                                          missiles_4: 0,
+                                        },
+                                      })
+                                    )
+                                    .then(() => f.push(name))
+                                    .then(() => store.update(`spawned ${name}`))
+                                )
+                        ))({
+                      targetValue: e.target.value,
+                    })
                   }
                 >
-                  <option>revive ship</option>
-                  {(store.gameW.game.oldFleets || []).map((f, i) => (
-                    <option key={i}>{f.name}</option>
-                  ))}
+                  <option value={"todo"}>revive ship</option>
+                  <option value={"todo"}>revive ship</option>
+                  {(store.gameW.game.catalog || [])
+                    .filter((c) => f.find((ff) => ff === c.name) === undefined)
+                    .map((c, i) => (
+                      <option key={i}>{c.name}</option>
+                    ))}
                 </select>
               </div>
               <div>
                 <div>
                   {f
+                    .filter((name) => !(name as { null: true }).null)
+                    .map((name) => catalog.find((c) => c.name === name))
                     .map((ship, shipI) => ({ ship: ship as ShipType, shipI }))
-                    .filter(
-                      ({ ship }) => !(ship as unknown as { null: boolean }).null
-                    )
                     .map(({ ship, shipI }) => (
                       <div key={shipI}>
                         <div className={styles.bubble}>
                           <Ship ship={ship} />
                           <button
                             onClick={() =>
-                              Promise.resolve()
-                                .then(() => f.splice(shipI, 1)[0]! as ShipType)
-                                .then((deleted) => {
-                                  if (!store.gameW.game.oldFleets)
-                                    store.gameW.game.oldFleets = [];
-                                  const found = store.gameW.game.oldFleets.find(
-                                    (f) => f.name === deleted.name
-                                  );
-                                  if (found === undefined) {
-                                    store.gameW.game.oldFleets!.push(deleted);
-                                  } else {
-                                    found.values = deleted.values;
-                                  }
-                                })
-                                .then(() =>
-                                  store.update(`deleted ${ship.name}`)
-                                )
+                              store.update(`deleted ${f.splice(shipI, 1)[0]!}`)
                             }
                           >
                             delete ship
