@@ -52,6 +52,10 @@ function getOutcomes(): OutcomeType[] {
     .map(([sortStr, o]) => ({ sorty: parseInt(sortStr), o }))
     .sort((a, b) => b.sorty - a.sorty)
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
+  return getOutcomesHelper(shipGroups);
+}
+
+function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
   const probabilities = Object.values(
     utils.groupByF(
       getProbabilities(true, shipGroups.concat(null), {}, 0),
@@ -272,3 +276,57 @@ export default function Outcomes() {
     </div>
   );
 }
+
+console.log(
+  // todo 29/32
+  getOutcomesHelper([
+    [
+      {
+        ship: {
+          name: "COW",
+          values: {
+            cannons_1: 1,
+            cannons_2: 0,
+            cannons_3: 0,
+            cannons_4: 0,
+            computer: 0,
+            count: 1,
+            hull: 0,
+            initiative: 1,
+            missiles_1: 0,
+            missiles_2: 0,
+            missiles_3: 0,
+            missiles_4: 0,
+            shield: 0,
+          },
+        },
+        damage: 0,
+        fI: 1,
+      },
+    ],
+    [
+      {
+        ship: {
+          name: "LOSS",
+          values: {
+            cannons_1: 1,
+            cannons_2: 0,
+            cannons_3: 0,
+            cannons_4: 0,
+            computer: 1,
+            count: 1,
+            hull: 1,
+            initiative: 0,
+            missiles_1: 0,
+            missiles_2: 0,
+            missiles_3: 0,
+            missiles_4: 0,
+            shield: 0,
+          },
+        },
+        damage: 0,
+        fI: 0,
+      },
+    ],
+  ])
+);
