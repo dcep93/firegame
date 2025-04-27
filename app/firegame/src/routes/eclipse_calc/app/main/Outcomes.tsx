@@ -12,8 +12,7 @@ type OutcomeType =
       fI: number;
       winner: string;
       cumProb: number;
-    }[]
-  | null;
+    }[];
 
 export type ShipGroupsType = (
   | {
@@ -60,7 +59,7 @@ function getOutcomes(): OutcomeType {
 function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType {
   const probabilities = Object.values(
     utils.groupByF(
-      getProbabilities(true, shipGroups.concat(null), {}, 0)!,
+      getProbabilities(true, shipGroups.concat(null), {}, 0),
       (o) => JSON.stringify(o.survivingShips)
     )
   ).map((arr) => ({
@@ -80,12 +79,12 @@ function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType {
     .sort((a, b) => a.sortz - b.sortz)
     .reduce(
       (prev, { sortz, ...curr }) =>
-        prev!.concat({
+        prev.concat({
           ...curr,
           cumProb: parseFloat(
-            (
-              (prev![prev!.length - 1]?.cumProb || 0) + curr.probability
-            ).toFixed(6)
+            ((prev[prev.length - 1]?.cumProb || 0) + curr.probability).toFixed(
+              6
+            )
           ),
         }),
       [] as OutcomeType
@@ -95,7 +94,7 @@ function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType {
 function getProbabilities(
   isMissiles: boolean,
   shipGroups: ShipGroupsType,
-  cached: { [key: string]: OutcomeType },
+  cached: { [key: string]: OutcomeType | null },
   depth: number
 ): OutcomeType {
   const shipsByFi = utils.groupByF(
@@ -123,11 +122,9 @@ function getProbabilities(
   }
   const key = JSON.stringify(shipGroups);
   if (cached[key]) {
-    return cached[key];
+    return cached[key]!;
   }
-  // todo
-  // cached[key] = null
-  cached[key] = [];
+  cached[key] = null;
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
@@ -137,8 +134,7 @@ function getProbabilities(
     const children = getChildren(isMissiles, nextShipGroups);
     const childProbabilities = children.flatMap(
       ({ childProbability, childShipGroups }) =>
-        // todo no !
-        getProbabilities(isMissiles, childShipGroups, cached, depth + 1)!.map(
+        getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
           ({ probability, ...o }) => ({
             ...o,
             probability: probability * childProbability,
@@ -149,7 +145,7 @@ function getProbabilities(
     return childProbabilities;
   }
   // end of missiles
-  const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1)!;
+  const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1);
   const totalProbability = cannonProbs
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
@@ -265,7 +261,7 @@ export default function Outcomes() {
       <h2>Outcomes</h2>
       <div>
         <div className={styles.flex}>
-          {Object.values(utils.groupByF(getOutcomes()!, (o) => o.winner)).map(
+          {Object.values(utils.groupByF(getOutcomes(), (o) => o.winner)).map(
             (o, oI) => (
               <div key={oI} className={styles.bubble}>
                 {o.map((oo, ooI) => (
@@ -337,5 +333,5 @@ const shipGroupsTest: ShipGroupsType = [
 
 console.log(getProbabilities(false, shipGroupsTest, {}, 0));
 
-// if (getOutcomesHelper(shipGroupsTest)[0].probability !== 0.9474)
-//   alert(["changed", getOutcomesHelper(shipGroupsTest)[0].probability]);
+// const p = getOutcomesHelper(shipGroupsTest)![0].probability;
+// if (p !== 0.9474) alert(["changed", p]);
