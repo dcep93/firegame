@@ -53,6 +53,7 @@ function getOutcomes(): OutcomeType {
     .map(([sortStr, o]) => ({ sorty: parseInt(sortStr), o }))
     .sort((a, b) => b.sorty - a.sorty)
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
+  if (shipGroups.length !== 2) return [];
   return getOutcomesHelper(shipGroups);
 }
 
@@ -94,7 +95,7 @@ function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType {
 function getProbabilities(
   isMissiles: boolean,
   shipGroups: ShipGroupsType,
-  cached: { [key: string]: OutcomeType | null },
+  cached: { [key: string]: OutcomeType },
   depth: number
 ): OutcomeType {
   const shipsByFi = utils.groupByF(
@@ -103,7 +104,7 @@ function getProbabilities(
   );
   const numFactions = Object.keys(shipsByFi).length;
   if (numFactions === 0) {
-    return [];
+    throw new Error("getProbabilities.numFactions");
   }
   if (numFactions === 1) {
     return [
@@ -124,7 +125,7 @@ function getProbabilities(
   if (cached[key]) {
     return cached[key]!;
   }
-  cached[key] = null;
+  cached[key] = [];
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
@@ -134,6 +135,7 @@ function getProbabilities(
     const children = getChildren(isMissiles, nextShipGroups);
     const childProbabilities = children.flatMap(
       ({ childProbability, childShipGroups }) =>
+        // todo recurse
         getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
           ({ probability, ...o }) => ({
             ...o,
