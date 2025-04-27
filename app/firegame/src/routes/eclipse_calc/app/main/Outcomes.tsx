@@ -97,7 +97,7 @@ function getProbabilities(
   depth: number
 ): OutcomeType[] {
   const shipsByFi = utils.groupByF(
-    shipGroups.flatMap((ss) => ss || []),
+    shipGroups.flatMap((ss) => (ss === null ? [] : ss)),
     (s) => s.fI.toString()
   );
   const numFactions = Object.keys(shipsByFi).length;
@@ -128,30 +128,30 @@ function getProbabilities(
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
   const shooter = nextShipGroups.shift();
-  if (!shooter) {
-    // end of missiles
-    const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1);
-    const totalProbability = cannonProbs
-      .map((o) => o.probability)
-      .reduce((a, b) => a + b, 0);
-    return cannonProbs.map((o) => ({
-      ...o,
-      probability: o.probability / totalProbability,
-    }));
+  if (shooter) {
+    nextShipGroups.push(shooter);
+    const children = getChildren(isMissiles, nextShipGroups);
+    const childProbabilities = children.flatMap(
+      ({ childProbability, childShipGroups }) =>
+        getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
+          ({ probability, ...o }) => ({
+            ...o,
+            probability: probability * childProbability,
+          })
+        )
+    );
+    cached[key] = childProbabilities;
+    return childProbabilities;
   }
-  nextShipGroups.push(shooter);
-  const children = getChildren(isMissiles, nextShipGroups);
-  const childProbabilities = children.flatMap(
-    ({ childProbability, childShipGroups }) =>
-      getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
-        ({ probability, ...o }) => ({
-          ...o,
-          probability: probability * childProbability,
-        })
-      )
-  );
-  cached[key] = childProbabilities;
-  return childProbabilities;
+  // end of missiles
+  const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1);
+  const totalProbability = cannonProbs
+    .map((o) => o.probability)
+    .reduce((a, b) => a + b, 0);
+  return cannonProbs.map((o) => ({
+    ...o,
+    probability: o.probability / totalProbability,
+  }));
 }
 
 // todo group
@@ -277,56 +277,65 @@ export default function Outcomes() {
   );
 }
 
+const jlog = (key: number, j: any) =>
+  console.log(key, JSON.parse(JSON.stringify(j)));
+
+const shipGroupsTest: ShipGroupsType = [
+  [
+    {
+      ship: {
+        name: "evil",
+        values: {
+          cannons_1: 1,
+          cannons_2: 0,
+          cannons_3: 0,
+          cannons_4: 0,
+          computer: 0,
+          count: 1,
+          hull: 0,
+          initiative: 1,
+          missiles_1: 0,
+          missiles_2: 0,
+          missiles_3: 0,
+          missiles_4: 0,
+          shield: 0,
+        },
+      },
+      damage: 0,
+      fI: 1,
+    },
+  ],
+  [
+    {
+      ship: {
+        name: "good",
+        values: {
+          cannons_1: 1,
+          cannons_2: 0,
+          cannons_3: 0,
+          cannons_4: 0,
+          computer: 1,
+          count: 1,
+          hull: 1,
+          initiative: 0,
+          missiles_1: 0,
+          missiles_2: 0,
+          missiles_3: 0,
+          missiles_4: 0,
+          shield: 0,
+        },
+      },
+      damage: 0,
+      fI: 0,
+    },
+  ],
+];
+
 console.log(
+  283,
   // todo 29/32
-  getOutcomesHelper([
-    [
-      {
-        ship: {
-          name: "COW",
-          values: {
-            cannons_1: 1,
-            cannons_2: 0,
-            cannons_3: 0,
-            cannons_4: 0,
-            computer: 0,
-            count: 1,
-            hull: 0,
-            initiative: 1,
-            missiles_1: 0,
-            missiles_2: 0,
-            missiles_3: 0,
-            missiles_4: 0,
-            shield: 0,
-          },
-        },
-        damage: 0,
-        fI: 1,
-      },
-    ],
-    [
-      {
-        ship: {
-          name: "LOSS",
-          values: {
-            cannons_1: 1,
-            cannons_2: 0,
-            cannons_3: 0,
-            cannons_4: 0,
-            computer: 1,
-            count: 1,
-            hull: 1,
-            initiative: 0,
-            missiles_1: 0,
-            missiles_2: 0,
-            missiles_3: 0,
-            missiles_4: 0,
-            shield: 0,
-          },
-        },
-        damage: 0,
-        fI: 0,
-      },
-    ],
-  ])
+  getProbabilities(true, shipGroupsTest.concat(null), {}, 0)
 );
+
+if (getOutcomesHelper(shipGroupsTest)[0].probability !== 0.9474)
+  alert("changed");
