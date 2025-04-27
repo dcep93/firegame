@@ -5,13 +5,15 @@ import { assignDamage } from "./assignDamage";
 
 // todo antimatter_splitter
 
-type OutcomeType = {
-  survivingShips: { [name: string]: number };
-  probability: number;
-  fI: number;
-  winner: string;
-  cumProb: number;
-};
+type OutcomeType =
+  | {
+      survivingShips: { [name: string]: number };
+      probability: number;
+      fI: number;
+      winner: string;
+      cumProb: number;
+    }[]
+  | null;
 
 export type ShipGroupsType = (
   | {
@@ -27,7 +29,7 @@ type PRolls = {
   rolls: { value: number; roll: number }[];
 }[];
 
-function getOutcomes(): OutcomeType[] {
+function getOutcomes(): OutcomeType {
   const shipGroups: ShipGroupsType = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
@@ -55,10 +57,10 @@ function getOutcomes(): OutcomeType[] {
   return getOutcomesHelper(shipGroups);
 }
 
-function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
+function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType {
   const probabilities = Object.values(
     utils.groupByF(
-      getProbabilities(true, shipGroups.concat(null), {}, 0),
+      getProbabilities(true, shipGroups.concat(null), {}, 0)!,
       (o) => JSON.stringify(o.survivingShips)
     )
   ).map((arr) => ({
@@ -78,24 +80,24 @@ function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
     .sort((a, b) => a.sortz - b.sortz)
     .reduce(
       (prev, { sortz, ...curr }) =>
-        prev.concat({
+        prev!.concat({
           ...curr,
           cumProb: parseFloat(
-            ((prev[prev.length - 1]?.cumProb || 0) + curr.probability).toFixed(
-              6
-            )
+            (
+              (prev![prev!.length - 1]?.cumProb || 0) + curr.probability
+            ).toFixed(6)
           ),
         }),
-      [] as OutcomeType[]
+      [] as OutcomeType
     );
 }
 
 function getProbabilities(
   isMissiles: boolean,
   shipGroups: ShipGroupsType,
-  cached: { [key: string]: OutcomeType[] },
+  cached: { [key: string]: OutcomeType },
   depth: number
-): OutcomeType[] {
+): OutcomeType {
   const shipsByFi = utils.groupByF(
     shipGroups.flatMap((ss) => (ss === null ? [] : ss)),
     (s) => s.fI.toString()
@@ -123,6 +125,8 @@ function getProbabilities(
   if (cached[key]) {
     return cached[key];
   }
+  // todo
+  // cached[key] = null
   cached[key] = [];
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
@@ -133,7 +137,8 @@ function getProbabilities(
     const children = getChildren(isMissiles, nextShipGroups);
     const childProbabilities = children.flatMap(
       ({ childProbability, childShipGroups }) =>
-        getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
+        // todo no !
+        getProbabilities(isMissiles, childShipGroups, cached, depth + 1)!.map(
           ({ probability, ...o }) => ({
             ...o,
             probability: probability * childProbability,
@@ -144,7 +149,7 @@ function getProbabilities(
     return childProbabilities;
   }
   // end of missiles
-  const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1);
+  const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1)!;
   const totalProbability = cannonProbs
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
@@ -260,7 +265,7 @@ export default function Outcomes() {
       <h2>Outcomes</h2>
       <div>
         <div className={styles.flex}>
-          {Object.values(utils.groupByF(getOutcomes(), (o) => o.winner)).map(
+          {Object.values(utils.groupByF(getOutcomes()!, (o) => o.winner)).map(
             (o, oI) => (
               <div key={oI} className={styles.bubble}>
                 {o.map((oo, ooI) => (
@@ -276,9 +281,6 @@ export default function Outcomes() {
     </div>
   );
 }
-
-const jlog = (key: number, j: any) =>
-  console.log(key, JSON.parse(JSON.stringify(j)));
 
 const shipGroupsTest: ShipGroupsType = [
   [
@@ -331,11 +333,9 @@ const shipGroupsTest: ShipGroupsType = [
   ],
 ];
 
-console.log(
-  283,
-  // todo 29/32
-  getProbabilities(true, shipGroupsTest.concat(null), {}, 0)
-);
+// todo why length 3?
 
-if (getOutcomesHelper(shipGroupsTest)[0].probability !== 0.9474)
-  alert("changed");
+console.log(getProbabilities(false, shipGroupsTest, {}, 0));
+
+// if (getOutcomesHelper(shipGroupsTest)[0].probability !== 0.9474)
+//   alert(["changed", getOutcomesHelper(shipGroupsTest)[0].probability]);
