@@ -166,23 +166,21 @@ function getProbabilities(
     if (!cannonCache) {
       return childProbabilities;
     }
-    cannonCache[sourceKey] = childProbabilities;
-    const groupedChildren = utils.groupByF(
-      childProbabilities.map((cpp) => cpp as PlaceholderType),
-      (cpp) => (cpp.placeholderKey === sourceKey).toString()
+    const recursiveChildren = childProbabilities
+      .map((cpp) => cpp as PlaceholderType)
+      .flatMap((cpp) => cannonCache[cpp.placeholderKey] || [cpp])
+      .map((cpp) => cpp as PlaceholderType);
+    cannonCache[sourceKey] = recursiveChildren;
+    const groupedChildren = utils.groupByF(recursiveChildren, (cpp) =>
+      (cpp.placeholderKey === sourceKey).toString()
     );
     const recursiveQuotient = (groupedChildren["true"] || [])
       .map((p) => p.probability)
       .reduce((a, b) => a + b, 0);
-    const recursiveProbabilities = groupedChildren["false"].flatMap(
-      (cpp) =>
-        cannonCache[cpp.placeholderKey] || [
-          {
-            ...cpp,
-            probability: cpp.probability / (1 - recursiveQuotient),
-          },
-        ]
-    );
+    const recursiveProbabilities = groupedChildren["false"].map((cpp) => ({
+      ...cpp,
+      probability: cpp.probability / (1 - recursiveQuotient),
+    }));
     cannonCache[sourceKey] = recursiveProbabilities;
     return recursiveProbabilities;
   }

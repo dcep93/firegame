@@ -215,13 +215,6 @@ export default function TestCases(): { key: string; result: number }[] {
     },
   ];
   return cases
-    .filter(
-      (c) =>
-        [
-          // filter
-          "manual__initiative_vs_computer_hull",
-        ].includes(c.name) === true
-    )
     .map((c) => ({
       c,
       result: (() => {
