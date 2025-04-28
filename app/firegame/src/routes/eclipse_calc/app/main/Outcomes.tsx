@@ -5,6 +5,8 @@ import { assignDamage } from "./assignDamage";
 
 // todo antimatter_splitter
 
+const MIN_PROBABILITY = 1e-8;
+
 type OutcomeType = {
   probability: number;
   survivingShips: { [name: string]: number };
@@ -165,7 +167,8 @@ function getProbabilities(
           probability: probability * childProbability,
         })
       )
-    );
+    )
+    .filter((o) => o.probability >= MIN_PROBABILITY);
   if (!cannonCache) {
     return childProbabilities;
   }
@@ -187,10 +190,12 @@ function getProbabilities(
   const recursiveQuotient = (groupedChildren["true"] || [])
     .map((p) => p.probability)
     .reduce((a, b) => a + b, 0);
-  const recursiveProbabilities = groupedChildren["false"].map((cpp) => ({
-    ...cpp,
-    probability: cpp.probability / (1 - recursiveQuotient),
-  }));
+  const recursiveProbabilities = (groupedChildren["false"] || []).map(
+    (cpp) => ({
+      ...cpp,
+      probability: cpp.probability / (1 - recursiveQuotient),
+    })
+  );
   cannonCache[sourceKey] = recursiveProbabilities;
   return recursiveProbabilities;
 }
@@ -319,7 +324,6 @@ export default function Outcomes() {
                             k
                           )
                         )
-                        .map(utils.log)
                         .map(({ k, v }) => `${k}: ${JSON.stringify(v)}`)
                         .join("\n")}
                     </pre>
