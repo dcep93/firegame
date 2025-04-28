@@ -7,6 +7,7 @@ import { assignDamage } from "./assignDamage";
 
 type OutcomeType =
   | {
+      sourceKey: string;
       survivingShips: { [name: string]: number };
       probability: number;
       fI: number;
@@ -104,11 +105,13 @@ function getProbabilities(
   );
   const numFactions = Object.keys(shipsByFi).length;
   if (numFactions === 0) {
-    throw new Error("getProbabilities.numFactions");
+    throw new Error("getProbabilities.numFactions.zero");
   }
+  const sourceKey = JSON.stringify(shipGroups);
   if (numFactions === 1) {
     return [
       ((fI) => ({
+        sourceKey,
         fI,
         probability: 1,
         survivingShips: Object.fromEntries(
@@ -121,11 +124,10 @@ function getProbabilities(
       }))(parseInt(Object.keys(shipsByFi)[0])),
     ];
   }
-  const key = JSON.stringify(shipGroups);
-  if (cached[key]) {
-    return cached[key]!;
+  if (cached[sourceKey]) {
+    return cached[sourceKey];
   }
-  cached[key] = [];
+  cached[sourceKey] = [];
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
@@ -133,17 +135,24 @@ function getProbabilities(
   if (shooter) {
     nextShipGroups.push(shooter);
     const children = getChildren(isMissiles, nextShipGroups);
-    const childProbabilities = children.flatMap(
-      ({ childProbability, childShipGroups }) =>
-        // todo recurse
+    const childProbabilities = children
+      .map((o) => ({
+        ...o,
+        sortX: o.childShipGroups
+          .flatMap((sg) => sg!)
+          .map((sg) => sg.damage)
+          .reduce((a, b) => a + b, 0),
+      }))
+      .sort((a, b) => b.sortX - a.sortX)
+      .flatMap(({ childProbability, childShipGroups }) =>
         getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
           ({ probability, ...o }) => ({
             ...o,
             probability: probability * childProbability,
           })
         )
-    );
-    cached[key] = childProbabilities;
+      );
+    cached[sourceKey] = childProbabilities;
     return childProbabilities;
   }
   // end of missiles
@@ -331,9 +340,9 @@ const shipGroupsTest: ShipGroupsType = [
   ],
 ];
 
-// todo why length 3?
-
+console.log(337);
 console.log(getProbabilities(false, shipGroupsTest, {}, 0));
+console.log(339);
 
 // const p = getOutcomesHelper(shipGroupsTest)![0].probability;
 // if (p !== 0.9474) alert(["changed", p]);
