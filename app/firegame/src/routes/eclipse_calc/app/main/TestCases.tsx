@@ -190,10 +190,14 @@ export default function TestCases(): string[] {
       ],
     },
   ];
-  //   const c = cases.find((c) => c.name === "missile_vs_killer_missile")!;
-  //   console.log(194, getOutcomesHelper(c.groups));
-  //   return [];
   return cases
+    .filter(
+      (c) =>
+        [
+          // filter
+          "missile_vs_killer_missile",
+        ].includes(c.name) === true
+    )
     .filter((c) => {
       try {
         return (

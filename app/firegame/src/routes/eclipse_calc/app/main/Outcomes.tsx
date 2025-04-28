@@ -62,9 +62,10 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
     .sort((a, b) => b.sorty - a.sorty)
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
   if (shipGroups.length !== 2) return [];
+  const rawProbs = getProbabilities(true, shipGroups.concat(null), {}, 0);
   const probabilities = Object.values(
     utils.groupByF(
-      getProbabilities(true, shipGroups.concat(null), {}, 0).map((p) => {
+      rawProbs.map((p) => {
         if ((p as PlaceholderType).placeholderKey) {
           throw new Error("getOutcomesHelper.placeholderKey");
         }
