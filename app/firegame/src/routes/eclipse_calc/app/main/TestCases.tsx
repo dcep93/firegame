@@ -17,10 +17,10 @@ export default function TestCases(): string[] {
                 cannons_2: 0,
                 cannons_3: 0,
                 cannons_4: 0,
-                computer: 1,
+                computer: 0,
                 count: 1,
-                hull: 1,
-                initiative: 0,
+                hull: 0,
+                initiative: 1,
                 missiles_1: 0,
                 missiles_2: 0,
                 missiles_3: 0,
@@ -41,10 +41,10 @@ export default function TestCases(): string[] {
                 cannons_2: 0,
                 cannons_3: 0,
                 cannons_4: 0,
-                computer: 0,
+                computer: 1,
                 count: 1,
-                hull: 0,
-                initiative: 1,
+                hull: 1,
+                initiative: 0,
                 missiles_1: 0,
                 missiles_2: 0,
                 missiles_3: 0,
@@ -230,6 +230,11 @@ export default function TestCases(): string[] {
       ],
     },
   ];
+  const c = cases.find(
+    (c) => c.name === "manual__initiative_vs_computer_hull"
+  )!;
+  console.log(getOutcomesHelper(c.groups));
+  return [];
   return cases
     .filter(
       // todo
