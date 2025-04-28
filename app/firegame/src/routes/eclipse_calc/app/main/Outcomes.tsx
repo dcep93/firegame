@@ -102,15 +102,15 @@ function getProbabilities(
   cached: { [key: string]: (OutcomeType | PlaceholderType)[] },
   depth: number
 ): OutcomeType[] {
-  const shipsByFi = utils.groupByF(
-    shipGroups.flatMap((ss) => (ss === null ? [] : ss)),
-    (s) => s.fI.toString()
-  );
+  const flatShips = shipGroups.flatMap((ss) => (ss === null ? [] : ss));
+  const shipsByFi = utils.groupByF(flatShips, (s) => s.fI.toString());
   const numFactions = Object.keys(shipsByFi).length;
   if (numFactions === 0) {
     throw new Error("getProbabilities.numFactions.zero");
   }
-  const sourceKey = JSON.stringify(shipGroups);
+  const sourceKey = JSON.stringify(
+    flatShips.map((fs) => ({ ...fs, ship: fs.ship.name }))
+  );
   if (numFactions === 1) {
     return [
       ((fI) => ({
