@@ -1,5 +1,7 @@
 import { getOutcomesHelper } from "./Outcomes";
 
+const filteredTestName: string = "filteredTestName";
+
 export default function TestCases(): {}[] {
   const cases = [
     {
@@ -133,7 +135,7 @@ export default function TestCases(): {}[] {
             name: "evil",
             values: {
               initiative: 4,
-              hull: 2,
+              hull: 1,
               computer: 1,
               shield: 1,
               missiles_1: 3,
@@ -178,7 +180,7 @@ export default function TestCases(): {}[] {
         ],
       ],
     },
-  ];
+  ].filter((c) => c.name === filteredTestName || filteredTestName === "");
   return cases
     .map((c) => ({
       ...c,
