@@ -143,56 +143,56 @@ function getProbabilities(
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
   const shooter = nextShipGroups.shift();
-  if (shooter) {
-    nextShipGroups.push(shooter);
-    const children = getChildren(cannonCache === null, nextShipGroups);
-    const childProbabilities = children
-      .map((o) => ({
-        ...o,
-        sortX: o.childShipGroups
-          .flatMap((sg) => sg || [])
-          .map((sg) => sg.damage)
-          .reduce((a, b) => a + b, 0),
-      }))
-      .sort((a, b) => b.sortX - a.sortX)
-      .flatMap(({ childProbability, childShipGroups }) =>
-        getProbabilities(childShipGroups, cannonCache, depth + 1).map(
-          ({ probability, ...o }) => ({
-            ...o,
-            probability: probability * childProbability,
-          })
-        )
-      );
-    if (!cannonCache) {
-      return childProbabilities;
-    }
-    const recursiveChildren = childProbabilities
-      .map((cpp) => cpp as PlaceholderType)
-      .flatMap((cpp) => cannonCache[cpp.placeholderKey] || [cpp])
-      .map((cpp) => cpp as PlaceholderType);
-    cannonCache[sourceKey] = recursiveChildren;
-    const groupedChildren = utils.groupByF(recursiveChildren, (cpp) =>
-      (cpp.placeholderKey === sourceKey).toString()
-    );
-    const recursiveQuotient = (groupedChildren["true"] || [])
-      .map((p) => p.probability)
-      .reduce((a, b) => a + b, 0);
-    const recursiveProbabilities = groupedChildren["false"].map((cpp) => ({
-      ...cpp,
-      probability: cpp.probability / (1 - recursiveQuotient),
-    }));
-    cannonCache[sourceKey] = recursiveProbabilities;
-    return recursiveProbabilities;
+  if (!shooter) {
+    // end of missiles
+    return getProbabilities(nextShipGroups, {}, depth + 1);
   }
-  // end of missiles
-  const cannonProbs = getProbabilities(nextShipGroups, {}, depth + 1);
-  const totalProbability = cannonProbs
-    .map((o) => o.probability)
+  nextShipGroups.push(shooter);
+  const children = getChildren(cannonCache === null, nextShipGroups);
+  const childProbabilities = children
+    .map((o) => ({
+      ...o,
+      sortX: o.childShipGroups
+        .flatMap((sg) => sg || [])
+        .map((sg) => sg.damage)
+        .reduce((a, b) => a + b, 0),
+    }))
+    .sort((a, b) => b.sortX - a.sortX)
+    .flatMap(({ childProbability, childShipGroups }) =>
+      getProbabilities(childShipGroups, cannonCache, depth + 1).map(
+        ({ probability, ...o }) => ({
+          ...o,
+          probability: probability * childProbability,
+        })
+      )
+    );
+  if (!cannonCache) {
+    return childProbabilities;
+  }
+  const recursiveChildren = childProbabilities
+    .map((cpp) => cpp as PlaceholderType)
+    .flatMap((cpp) =>
+      cpp.placeholderKey
+        ? cannonCache[cpp.placeholderKey].map((cccp) => ({
+            ...cccp,
+            probability: cccp.probability * cpp.probability,
+          }))
+        : [cpp]
+    )
+    .map((cpp) => cpp as PlaceholderType);
+  cannonCache[sourceKey] = recursiveChildren;
+  const groupedChildren = utils.groupByF(recursiveChildren, (cpp) =>
+    (cpp.placeholderKey === sourceKey).toString()
+  );
+  const recursiveQuotient = (groupedChildren["true"] || [])
+    .map((p) => p.probability)
     .reduce((a, b) => a + b, 0);
-  return cannonProbs.map((o) => ({
-    ...o,
-    probability: o.probability / totalProbability,
+  const recursiveProbabilities = groupedChildren["false"].map((cpp) => ({
+    ...cpp,
+    probability: cpp.probability / (1 - recursiveQuotient),
   }));
+  cannonCache[sourceKey] = recursiveProbabilities;
+  return recursiveProbabilities;
 }
 
 // todo group
