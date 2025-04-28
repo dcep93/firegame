@@ -1,6 +1,6 @@
 import { getOutcomesHelper } from "./Outcomes";
 
-export default function TestCases(): string[] {
+export default function TestCases(): { key: string; result: number }[] {
   const cases = [
     {
       name: "manual__initiative_vs_computer_hull",
@@ -222,17 +222,18 @@ export default function TestCases(): string[] {
           "manual__hull_vs_hull",
         ].includes(c.name) === true
     )
-    .filter((c) => {
-      try {
-        return (
-          Math.abs(getOutcomesHelper(c.groups)![0].probability - c.expected) >
-          0.01
-        );
-      } catch (e) {
-        console.log(c.name);
-        console.error(e);
-        return true;
-      }
-    })
-    .map((c) => c.name);
+    .map((c) => ({
+      c,
+      result: (() => {
+        try {
+          return getOutcomesHelper(c.groups)![0].probability;
+        } catch (e) {
+          console.log(c.name);
+          console.error(e);
+          return Number.POSITIVE_INFINITY;
+        }
+      })(),
+    }))
+    .filter(({ c, result }) => Math.abs(result - c.expected) > 0.01)
+    .map(({ c, result }) => ({ key: c.name, result }));
 }
