@@ -119,6 +119,7 @@ function getProbabilities(
   if (numFactions === 1) {
     return [
       ((fI) => ({
+        sourceKey,
         probability: 1,
         fI,
         survivingShips: Object.fromEntries(
@@ -307,7 +308,21 @@ export default function Outcomes() {
               <div key={oI} className={styles.bubble}>
                 {o.map((oo, ooI) => (
                   <div key={ooI}>
-                    <pre>{JSON.stringify(oo, null, 2)}</pre>
+                    <pre>
+                      {Object.entries(oo)
+                        .map(([k, v]) => ({
+                          k,
+                          v,
+                        }))
+                        .filter(({ k }) =>
+                          ["survivingShips", "cumProb", "probability"].includes(
+                            k
+                          )
+                        )
+                        .map(utils.log)
+                        .map(({ k, v }) => `${k}: ${JSON.stringify(v)}`)
+                        .join("\n")}
+                    </pre>
                   </div>
                 ))}
               </div>
