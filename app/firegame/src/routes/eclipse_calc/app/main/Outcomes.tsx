@@ -63,6 +63,7 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
   if (shipGroups.length !== 2) return [];
   const rawProbs = getProbabilities(true, shipGroups.concat(null), {}, 0);
+  console.log({ rawProbs });
   const probabilities = Object.values(
     utils.groupByF(
       rawProbs.map((p) => {
@@ -120,6 +121,7 @@ function getProbabilities(
   if (numFactions === 1) {
     return [
       ((fI) => ({
+        sourceKey,
         probability: 1,
         fI,
         survivingShips: Object.fromEntries(
