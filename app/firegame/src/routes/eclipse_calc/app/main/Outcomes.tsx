@@ -5,15 +5,18 @@ import { assignDamage } from "./assignDamage";
 
 // todo antimatter_splitter
 
-type OutcomeType =
-  | {
-      sourceKey: string;
-      survivingShips: { [name: string]: number };
-      probability: number;
-      fI: number;
-      winner: string;
-      cumProb: number;
-    }[];
+type OutcomeType = {
+  probability: number;
+  survivingShips: { [name: string]: number };
+  fI: number;
+  winner: string;
+  cumProb: number;
+};
+
+type PlaceholderType = {
+  probability: number;
+  placeholderKey: string;
+};
 
 export type ShipGroupsType = (
   | {
@@ -29,7 +32,7 @@ type PRolls = {
   rolls: { value: number; roll: number }[];
 }[];
 
-function getOutcomes(): OutcomeType {
+function getOutcomes(): OutcomeType[] {
   const shipGroups: ShipGroupsType = Object.entries(
     utils.groupByF(
       store.gameW.game.fleets.flatMap((f, fI) =>
@@ -58,7 +61,7 @@ function getOutcomes(): OutcomeType {
   return getOutcomesHelper(shipGroups);
 }
 
-function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType {
+function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
   const probabilities = Object.values(
     utils.groupByF(
       getProbabilities(true, shipGroups.concat(null), {}, 0),
@@ -89,16 +92,16 @@ function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType {
             )
           ),
         }),
-      [] as OutcomeType
+      [] as OutcomeType[]
     );
 }
 
 function getProbabilities(
   isMissiles: boolean,
   shipGroups: ShipGroupsType,
-  cached: { [key: string]: OutcomeType },
+  cached: { [key: string]: (OutcomeType | PlaceholderType)[] },
   depth: number
-): OutcomeType {
+): OutcomeType[] {
   const shipsByFi = utils.groupByF(
     shipGroups.flatMap((ss) => (ss === null ? [] : ss)),
     (s) => s.fI.toString()
@@ -111,9 +114,8 @@ function getProbabilities(
   if (numFactions === 1) {
     return [
       ((fI) => ({
-        sourceKey,
-        fI,
         probability: 1,
+        fI,
         survivingShips: Object.fromEntries(
           Object.entries(
             utils.groupByF(Object.values(shipsByFi)[0], (s) => s.ship.name)
@@ -124,10 +126,12 @@ function getProbabilities(
       }))(parseInt(Object.keys(shipsByFi)[0])),
     ];
   }
-  if (cached[sourceKey]) {
-    return cached[sourceKey];
+  const csk = cached[sourceKey];
+  // todo.x verify recursive
+  if (csk) {
+    return csk as OutcomeType[];
   }
-  cached[sourceKey] = [];
+  cached[sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
@@ -145,6 +149,7 @@ function getProbabilities(
       }))
       .sort((a, b) => b.sortX - a.sortX)
       .flatMap(({ childProbability, childShipGroups }) =>
+        // todo.x
         getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
           ({ probability, ...o }) => ({
             ...o,
