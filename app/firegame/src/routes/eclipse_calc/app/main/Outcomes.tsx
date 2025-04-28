@@ -61,7 +61,7 @@ function getOutcomes(): OutcomeType[] {
   return getOutcomesHelper(shipGroups);
 }
 
-function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
+export function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
   const probabilities = Object.values(
     utils.groupByF(
       getProbabilities(true, shipGroups.concat(null), {}, 0).map((p) => {
@@ -135,7 +135,9 @@ function getProbabilities(
   if (csk) {
     return csk;
   }
-  cached[sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
+  if (!isMissiles) {
+    cached[sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
+  }
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
   );
@@ -346,7 +348,7 @@ const shipGroupsTest: ShipGroupsType = [
           cannons_4: 0,
           computer: 1,
           count: 1,
-          hull: 0,
+          hull: 1,
           initiative: 0,
           missiles_1: 0,
           missiles_2: 0,
@@ -360,6 +362,3 @@ const shipGroupsTest: ShipGroupsType = [
     },
   ],
 ];
-
-const p = getOutcomesHelper(shipGroupsTest)![0].probability;
-if (p !== 0.9474) alert(["todo.changed", p]);
