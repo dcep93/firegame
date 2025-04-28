@@ -62,7 +62,7 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
     .sort((a, b) => b.sorty - a.sorty)
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
   if (shipGroups.length !== 2) return [];
-  const rawProbs = getProbabilities(true, shipGroups.concat(null), null, 0);
+  const rawProbs = getProbabilities(shipGroups.concat(null), null, 0);
   console.log({ rawProbs });
   const probabilities = Object.values(
     utils.groupByF(
@@ -104,9 +104,8 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
 }
 
 function getProbabilities(
-  isMissiles: boolean,
   shipGroups: ShipGroupsType,
-  cached: { [key: string]: (OutcomeType | PlaceholderType)[] } | null,
+  cannonCache: { [key: string]: (OutcomeType | PlaceholderType)[] } | null,
   depth: number
 ): (OutcomeType | PlaceholderType)[] {
   const flatShips = shipGroups.flatMap((ss) => (ss === null ? [] : ss));
@@ -134,12 +133,12 @@ function getProbabilities(
       }))(parseInt(Object.keys(shipsByFi)[0])),
     ];
   }
-  if (!isMissiles) {
-    const csk = cached![sourceKey];
+  if (cannonCache) {
+    const csk = cannonCache[sourceKey];
     if (csk) {
       return csk;
     }
-    cached![sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
+    cannonCache[sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
   }
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
@@ -147,7 +146,7 @@ function getProbabilities(
   const shooter = nextShipGroups.shift();
   if (shooter) {
     nextShipGroups.push(shooter);
-    const children = getChildren(isMissiles, nextShipGroups);
+    const children = getChildren(cannonCache === null, nextShipGroups);
     const childProbabilities = children
       .map((o) => ({
         ...o,
@@ -158,17 +157,17 @@ function getProbabilities(
       }))
       .sort((a, b) => b.sortX - a.sortX)
       .flatMap(({ childProbability, childShipGroups }) =>
-        getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
+        getProbabilities(childShipGroups, cannonCache, depth + 1).map(
           ({ probability, ...o }) => ({
             ...o,
             probability: probability * childProbability,
           })
         )
       );
-    if (isMissiles) {
+    if (!cannonCache) {
       return childProbabilities;
     }
-    cached![sourceKey] = childProbabilities;
+    cannonCache[sourceKey] = childProbabilities;
     const groupedChildren = utils.groupByF(childProbabilities, (cpp) =>
       ((cpp as PlaceholderType).placeholderKey === sourceKey).toString()
     );
@@ -179,11 +178,11 @@ function getProbabilities(
       ...cpp,
       probability: cpp.probability / (1 - recursiveQuotient),
     }));
-    cached![sourceKey] = recursiveProbabilities;
+    cannonCache[sourceKey] = recursiveProbabilities;
     return recursiveProbabilities;
   }
   // end of missiles
-  const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1);
+  const cannonProbs = getProbabilities(nextShipGroups, {}, depth + 1);
   const totalProbability = cannonProbs
     .map((o) => o.probability)
     .reduce((a, b) => a + b, 0);
