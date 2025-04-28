@@ -8,49 +8,41 @@ export default function TestCases(): string[] {
       groups: [
         [
           {
-            damage: 0,
-            fI: 0,
-            ship: {
-              name: "good",
-              values: {
-                cannons_1: 1,
-                cannons_2: 0,
-                cannons_3: 0,
-                cannons_4: 0,
-                computer: 0,
-                count: 1,
-                hull: 0,
-                initiative: 1,
-                missiles_1: 0,
-                missiles_2: 0,
-                missiles_3: 0,
-                missiles_4: 0,
-                shield: 0,
-              },
+            name: "good",
+            values: {
+              cannons_1: 1,
+              cannons_2: 0,
+              cannons_3: 0,
+              cannons_4: 0,
+              computer: 1,
+              count: 1,
+              hull: 1,
+              initiative: 0,
+              missiles_1: 0,
+              missiles_2: 0,
+              missiles_3: 0,
+              missiles_4: 0,
+              shield: 0,
             },
           },
         ],
         [
           {
-            damage: 0,
-            fI: 1,
-            ship: {
-              name: "evil",
-              values: {
-                cannons_1: 1,
-                cannons_2: 0,
-                cannons_3: 0,
-                cannons_4: 0,
-                computer: 1,
-                count: 1,
-                hull: 1,
-                initiative: 0,
-                missiles_1: 0,
-                missiles_2: 0,
-                missiles_3: 0,
-                missiles_4: 0,
-                shield: 0,
-              },
+            name: "evil",
+            values: {
+              cannons_1: 1,
+              cannons_2: 0,
+              cannons_3: 0,
+              cannons_4: 0,
+              computer: 0,
+              count: 1,
+              hull: 0,
+              initiative: 1,
+              missiles_1: 0,
+              missiles_2: 0,
+              missiles_3: 0,
+              missiles_4: 0,
+              shield: 0,
             },
           },
         ],
@@ -62,33 +54,25 @@ export default function TestCases(): string[] {
       groups: [
         [
           {
-            damage: 0,
-            fI: 0,
-            ship: {
-              name: "good",
-              values: {
-                initiative: 5,
-                hull: 0,
-                computer: 2,
-                shield: 1,
-                cannons_1: 1,
-              },
+            name: "good",
+            values: {
+              initiative: 5,
+              hull: 0,
+              computer: 2,
+              shield: 1,
+              cannons_1: 1,
             },
           },
         ],
         [
           {
-            damage: 0,
-            fI: 1,
-            ship: {
-              name: "evil",
-              values: {
-                initiative: 4,
-                hull: 0,
-                computer: 1,
-                shield: 1,
-                cannons_1: 1,
-              },
+            name: "evil",
+            values: {
+              initiative: 4,
+              hull: 0,
+              computer: 1,
+              shield: 1,
+              cannons_1: 1,
             },
           },
         ],
@@ -100,47 +84,39 @@ export default function TestCases(): string[] {
       groups: [
         [
           {
-            damage: 0,
-            fI: 0,
-            ship: {
-              name: "good",
-              values: {
-                initiative: 4,
-                hull: 1,
-                computer: 2,
-                shield: 1,
-                missiles_1: 1,
-                missiles_2: 0,
-                missiles_3: 0,
-                missiles_4: 0,
-                cannons_1: 1,
-                cannons_2: 0,
-                cannons_3: 0,
-                cannons_4: 0,
-              },
+            name: "good",
+            values: {
+              initiative: 4,
+              hull: 1,
+              computer: 2,
+              shield: 1,
+              missiles_1: 1,
+              missiles_2: 0,
+              missiles_3: 0,
+              missiles_4: 0,
+              cannons_1: 1,
+              cannons_2: 0,
+              cannons_3: 0,
+              cannons_4: 0,
             },
           },
         ],
         [
           {
-            damage: 0,
-            fI: 1,
-            ship: {
-              name: "evil",
-              values: {
-                initiative: 5,
-                hull: 1,
-                computer: 1,
-                shield: 1,
-                missiles_1: 0,
-                missiles_2: 1,
-                missiles_3: 0,
-                missiles_4: 0,
-                cannons_1: 1,
-                cannons_2: 0,
-                cannons_3: 0,
-                cannons_4: 0,
-              },
+            name: "evil",
+            values: {
+              initiative: 5,
+              hull: 1,
+              computer: 1,
+              shield: 1,
+              missiles_1: 0,
+              missiles_2: 1,
+              missiles_3: 0,
+              missiles_4: 0,
+              cannons_1: 1,
+              cannons_2: 0,
+              cannons_3: 0,
+              cannons_4: 0,
             },
           },
         ],
@@ -152,35 +128,27 @@ export default function TestCases(): string[] {
       groups: [
         [
           {
-            damage: 0,
-            fI: 0,
-            ship: {
-              name: "good",
-              values: {
-                initiative: 5,
-                hull: 1,
-                computer: 2,
-                shield: 1,
-                missiles_1: 2,
-                cannons_1: 1,
-              },
+            name: "good",
+            values: {
+              initiative: 5,
+              hull: 1,
+              computer: 2,
+              shield: 1,
+              missiles_1: 2,
+              cannons_1: 1,
             },
           },
         ],
         [
           {
-            damage: 0,
-            fI: 1,
-            ship: {
-              name: "evil",
-              values: {
-                initiative: 4,
-                hull: 2,
-                computer: 1,
-                shield: 1,
-                missiles_1: 3,
-                cannons_1: 1,
-              },
+            name: "evil",
+            values: {
+              initiative: 4,
+              hull: 2,
+              computer: 1,
+              shield: 1,
+              missiles_1: 3,
+              cannons_1: 1,
             },
           },
         ],
@@ -192,60 +160,40 @@ export default function TestCases(): string[] {
       groups: [
         [
           {
-            damage: 0,
-            fI: 0,
-            ship: {
-              name: "good",
-              values: {
-                initiative: 6,
-                hull: 2,
-                computer: 2,
-                shield: 1,
-                missiles_1: 1,
-                missiles_2: 1,
-                cannons_1: 1,
-                cannons_2: 1,
-              },
+            name: "good",
+            values: {
+              initiative: 6,
+              hull: 2,
+              computer: 2,
+              shield: 1,
+              missiles_1: 1,
+              missiles_2: 1,
+              cannons_1: 1,
+              cannons_2: 1,
             },
           },
         ],
         [
           {
-            damage: 0,
-            fI: 1,
-            ship: {
-              name: "evil",
-              values: {
-                initiative: 4,
-                hull: 2,
-                computer: 1,
-                shield: 1,
-                missiles_1: 2,
-                missiles_2: 1,
-                cannons_1: 2,
-              },
+            name: "evil",
+            values: {
+              initiative: 4,
+              hull: 2,
+              computer: 1,
+              shield: 1,
+              missiles_1: 2,
+              missiles_2: 1,
+              cannons_1: 2,
             },
           },
         ],
       ],
     },
   ];
-  const c = cases.find(
-    (c) => c.name === "manual__initiative_vs_computer_hull"
-  )!;
-  console.log(getOutcomesHelper(c.groups));
+  const c = cases.find((c) => c.name === "sudden_death_1_cannon")!;
+  console.log(194, getOutcomesHelper(c.groups));
   return [];
   return cases
-    .filter(
-      // todo
-      (c) =>
-        ![
-          "manual__initiative_vs_computer_hull",
-          "missile_vs_killer_missile",
-          "two_vs_three_missiles",
-          "multi_damage_combo",
-        ].includes(c.name)
-    )
     .filter((c) => {
       try {
         return (

@@ -33,23 +33,27 @@ type PRolls = {
 }[];
 
 function getOutcomes(): OutcomeType[] {
+  const shipInputs = store.gameW.game.fleets.map((f) =>
+    f.map((shipIndex) => store.gameW.game.catalog![shipIndex]).filter(Boolean)
+  );
+  return getOutcomesHelper(shipInputs);
+}
+
+export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
   const shipGroups: ShipGroupsType = Object.entries(
     utils.groupByF(
-      store.gameW.game.fleets.flatMap((f, fI) =>
-        f
-          .map((shipIndex) => store.gameW.game.catalog![shipIndex])
-          .filter(Boolean)
-          .flatMap((ship) =>
-            utils.repeat(
-              {
-                ship,
-                damage: 0,
-                fI,
-                sortx: ship.values.initiative * 2 - fI,
-              },
-              ship.values.count
-            )
+      shipInputs.flatMap((f, fI) =>
+        f.flatMap((ship) =>
+          utils.repeat(
+            {
+              ship,
+              damage: 0,
+              fI,
+              sortx: ship.values.initiative * 2 - fI,
+            },
+            ship.values.count
           )
+        )
       ),
       (o) => o.sortx.toString()
     )
@@ -58,10 +62,6 @@ function getOutcomes(): OutcomeType[] {
     .sort((a, b) => b.sorty - a.sorty)
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
   if (shipGroups.length !== 2) return [];
-  return getOutcomesHelper(shipGroups);
-}
-
-export function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
   const probabilities = Object.values(
     utils.groupByF(
       getProbabilities(true, shipGroups.concat(null), {}, 0).map((p) => {
