@@ -49,9 +49,9 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
               ship,
               damage: 0,
               fI,
-              sortx: ship.values.initiative * 2 - fI,
+              sortx: (ship.values.initiative || 0) * 2 - fI,
             },
-            ship.values.count
+            ship.values.count || 1
           )
         )
       ),
@@ -213,7 +213,7 @@ function getChildren(
           .map(({ k, count }) => ({
             value: parseInt(k.split("_")[1]),
             count,
-            computer: ship.values.computer,
+            computer: ship.values.computer || 0,
           }))
       ),
       (d) => JSON.stringify([d.computer, d.value])
@@ -234,7 +234,9 @@ function getChildren(
       pr.rolls
     )
       .map((sg) =>
-        sg === null ? null : sg.filter((s) => s.damage < s.ship.values.hull + 1)
+        sg === null
+          ? null
+          : sg.filter((s) => s.damage < (s.ship.values.hull || 0) + 1)
       )
       .filter((sg) => sg === null || sg.length > 0),
   }));

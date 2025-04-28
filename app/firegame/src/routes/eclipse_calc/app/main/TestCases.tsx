@@ -190,9 +190,9 @@ export default function TestCases(): string[] {
       ],
     },
   ];
-  const c = cases.find((c) => c.name === "sudden_death_1_cannon")!;
-  console.log(194, getOutcomesHelper(c.groups));
-  return [];
+  //   const c = cases.find((c) => c.name === "missile_vs_killer_missile")!;
+  //   console.log(194, getOutcomesHelper(c.groups));
+  //   return [];
   return cases
     .filter((c) => {
       try {
@@ -201,6 +201,8 @@ export default function TestCases(): string[] {
           0.01
         );
       } catch (e) {
+        console.log(c.name);
+        console.error(e);
         return true;
       }
     })

@@ -19,17 +19,17 @@ export function assignDamage(
     .map((r) =>
       ((t) => t && (t.damage += r.value))(
         targets
-          .filter((t) => r.roll - t.ship.values.shield >= 6)
+          .filter((t) => r.roll - (t.ship.values.shield || 0) >= 6)
           // prefer order
           .map((t) => [
             // not overkilling
-            t.damage + r.value <= t.ship.values.hull + 1 ? 0 : 1,
+            t.damage + r.value <= (t.ship.values.hull || 0) + 1 ? 0 : 1,
             // damaging
-            t.damage <= t.ship.values.hull + 1 ? 0 : 1,
+            t.damage <= (t.ship.values.hull || 0) + 1 ? 0 : 1,
             // killing
-            t.damage + r.value >= t.ship.values.hull + 1 ? 0 : 1,
+            t.damage + r.value >= (t.ship.values.hull || 0) + 1 ? 0 : 1,
             // shield
-            -t.ship.values.shield,
+            -(t.ship.values.shield || 0),
             t,
           ])
           .sort()
