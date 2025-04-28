@@ -147,13 +147,12 @@ function getProbabilities(
       .map((o) => ({
         ...o,
         sortX: o.childShipGroups
-          .flatMap((sg) => sg!)
+          .flatMap((sg) => sg || [])
           .map((sg) => sg.damage)
           .reduce((a, b) => a + b, 0),
       }))
       .sort((a, b) => b.sortX - a.sortX)
       .flatMap(({ childProbability, childShipGroups }) =>
-        // todo.x
         getProbabilities(isMissiles, childShipGroups, cached, depth + 1).map(
           ({ probability, ...o }) => ({
             ...o,
@@ -161,6 +160,9 @@ function getProbabilities(
           })
         )
       );
+    if (isMissiles) {
+      return childProbabilities;
+    }
     const groupedChildren = utils.groupByF(childProbabilities, (cpp) =>
       ((cpp as PlaceholderType).placeholderKey === sourceKey).toString()
     );
@@ -344,7 +346,7 @@ const shipGroupsTest: ShipGroupsType = [
           cannons_4: 0,
           computer: 1,
           count: 1,
-          hull: 1,
+          hull: 0,
           initiative: 0,
           missiles_1: 0,
           missiles_2: 0,
@@ -359,9 +361,5 @@ const shipGroupsTest: ShipGroupsType = [
   ],
 ];
 
-console.log(337);
-console.log(getProbabilities(false, shipGroupsTest, {}, 0));
-console.log(339);
-
-// const p = getOutcomesHelper(shipGroupsTest)![0].probability;
-// if (p !== 0.9474) alert(["todo.changed", p]);
+const p = getOutcomesHelper(shipGroupsTest)![0].probability;
+if (p !== 0.9474) alert(["todo.changed", p]);
