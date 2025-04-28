@@ -350,4 +350,4 @@ console.log(getProbabilities(false, shipGroupsTest, {}, 0));
 console.log(339);
 
 // const p = getOutcomesHelper(shipGroupsTest)![0].probability;
-// if (p !== 0.9474) alert(["changed", p]);
+// if (p !== 0.9474) alert(["todo.changed", p]);
