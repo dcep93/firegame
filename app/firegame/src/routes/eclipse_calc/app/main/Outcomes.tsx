@@ -64,14 +64,19 @@ function getOutcomes(): OutcomeType[] {
 function getOutcomesHelper(shipGroups: ShipGroupsType): OutcomeType[] {
   const probabilities = Object.values(
     utils.groupByF(
-      getProbabilities(true, shipGroups.concat(null), {}, 0),
+      getProbabilities(true, shipGroups.concat(null), {}, 0).map((p) => {
+        if ((p as PlaceholderType).placeholderKey) {
+          throw new Error("getOutcomesHelper.placeholderKey");
+        }
+        return p as OutcomeType;
+      }),
       (o) => JSON.stringify(o.survivingShips)
     )
   ).map((arr) => ({
     ...arr[0],
     probability: arr.map((a) => a.probability).reduce((a, b) => a + b, 0),
   }));
-  return probabilities
+  return (probabilities as OutcomeType[])
     .map((o) => ({
       ...o,
       probability: parseFloat(o.probability.toFixed(4)),
@@ -101,7 +106,7 @@ function getProbabilities(
   shipGroups: ShipGroupsType,
   cached: { [key: string]: (OutcomeType | PlaceholderType)[] },
   depth: number
-): OutcomeType[] {
+): (OutcomeType | PlaceholderType)[] {
   const flatShips = shipGroups.flatMap((ss) => (ss === null ? [] : ss));
   const shipsByFi = utils.groupByF(flatShips, (s) => s.fI.toString());
   const numFactions = Object.keys(shipsByFi).length;
@@ -127,9 +132,8 @@ function getProbabilities(
     ];
   }
   const csk = cached[sourceKey];
-  // todo.x verify recursive
   if (csk) {
-    return csk as OutcomeType[];
+    return csk;
   }
   cached[sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
   const nextShipGroups = shipGroups.map((sg) =>
@@ -157,8 +161,18 @@ function getProbabilities(
           })
         )
       );
-    cached[sourceKey] = childProbabilities;
-    return childProbabilities;
+    const groupedChildren = utils.groupByF(childProbabilities, (cpp) =>
+      ((cpp as PlaceholderType).placeholderKey === sourceKey).toString()
+    );
+    const recursiveQuotient = (groupedChildren["true"] || [])
+      .map((p) => p.probability)
+      .reduce((a, b) => a + b, 0);
+    const recursiveProbabilities = groupedChildren["false"].map((cpp) => ({
+      ...cpp,
+      probability: cpp.probability / (1 - recursiveQuotient),
+    }));
+    cached[sourceKey] = recursiveProbabilities;
+    return recursiveProbabilities;
   }
   // end of missiles
   const cannonProbs = getProbabilities(false, nextShipGroups, {}, depth + 1);
