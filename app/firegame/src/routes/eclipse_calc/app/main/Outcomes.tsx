@@ -119,7 +119,6 @@ function getProbabilities(
   if (numFactions === 1) {
     return [
       ((fI) => ({
-        sourceKey,
         probability: 1,
         fI,
         survivingShips: Object.fromEntries(
