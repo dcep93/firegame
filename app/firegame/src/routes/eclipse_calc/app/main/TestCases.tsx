@@ -79,6 +79,30 @@ export default function TestCases(): string[] {
       ],
     },
     {
+      name: "manual__hull_vs_hull",
+      expected: -1,
+      groups: [
+        [
+          {
+            name: "good",
+            values: {
+              hull: 1,
+              cannons_1: 1,
+            },
+          },
+        ],
+        [
+          {
+            name: "evil",
+            values: {
+              hull: 1,
+              cannons_1: 1,
+            },
+          },
+        ],
+      ],
+    },
+    {
       name: "missile_vs_killer_missile",
       expected: 85 / 128,
       groups: [
@@ -195,7 +219,7 @@ export default function TestCases(): string[] {
       (c) =>
         [
           // filter
-          "missile_vs_killer_missile",
+          "manual__hull_vs_hull",
         ].includes(c.name) === true
     )
     .filter((c) => {

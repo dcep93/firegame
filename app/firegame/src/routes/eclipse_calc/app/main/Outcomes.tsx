@@ -62,7 +62,7 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
     .sort((a, b) => b.sorty - a.sorty)
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
   if (shipGroups.length !== 2) return [];
-  const rawProbs = getProbabilities(true, shipGroups.concat(null), {}, 0);
+  const rawProbs = getProbabilities(true, shipGroups.concat(null), null, 0);
   console.log({ rawProbs });
   const probabilities = Object.values(
     utils.groupByF(
@@ -106,7 +106,7 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
 function getProbabilities(
   isMissiles: boolean,
   shipGroups: ShipGroupsType,
-  cached: { [key: string]: (OutcomeType | PlaceholderType)[] },
+  cached: { [key: string]: (OutcomeType | PlaceholderType)[] } | null,
   depth: number
 ): (OutcomeType | PlaceholderType)[] {
   const flatShips = shipGroups.flatMap((ss) => (ss === null ? [] : ss));
@@ -134,12 +134,12 @@ function getProbabilities(
       }))(parseInt(Object.keys(shipsByFi)[0])),
     ];
   }
-  const csk = cached[sourceKey];
-  if (csk) {
-    return csk;
-  }
   if (!isMissiles) {
-    cached[sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
+    const csk = cached![sourceKey];
+    if (csk) {
+      return csk;
+    }
+    cached![sourceKey] = [{ probability: 1, placeholderKey: sourceKey }];
   }
   const nextShipGroups = shipGroups.map((sg) =>
     sg === null ? null : sg.map((o) => ({ ...o }))
@@ -168,6 +168,7 @@ function getProbabilities(
     if (isMissiles) {
       return childProbabilities;
     }
+    cached![sourceKey] = childProbabilities;
     const groupedChildren = utils.groupByF(childProbabilities, (cpp) =>
       ((cpp as PlaceholderType).placeholderKey === sourceKey).toString()
     );
@@ -178,7 +179,7 @@ function getProbabilities(
       ...cpp,
       probability: cpp.probability / (1 - recursiveQuotient),
     }));
-    cached[sourceKey] = recursiveProbabilities;
+    cached![sourceKey] = recursiveProbabilities;
     return recursiveProbabilities;
   }
   // end of missiles
