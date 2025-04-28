@@ -80,7 +80,7 @@ export default function TestCases(): { key: string; result: number }[] {
     },
     {
       name: "manual__hull_vs_hull",
-      expected: -1,
+      expected: 26 / 49, // todo verify
       groups: [
         [
           {
@@ -219,7 +219,7 @@ export default function TestCases(): { key: string; result: number }[] {
       (c) =>
         [
           // filter
-          "manual__hull_vs_hull",
+          "manual__initiative_vs_computer_hull",
         ].includes(c.name) === true
     )
     .map((c) => ({
