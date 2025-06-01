@@ -126,7 +126,9 @@ function getProbabilities(
         survivingShips: Object.fromEntries(
           Object.entries(
             utils.groupByF(Object.values(shipsByFi)[0], (s) => s.ship.name)
-          ).map(([name, arr]) => [name, arr.length])
+          )
+            .map(([name, arr]) => [name, arr.length])
+            .sort()
         ),
         cumProb: 0,
         winner: ["good", "evil"][fI],
