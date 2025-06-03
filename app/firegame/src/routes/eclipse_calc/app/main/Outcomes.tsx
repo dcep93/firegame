@@ -63,8 +63,8 @@ export function getOutcomesHelper(shipInputs: ShipType[][]): OutcomeType[] {
     .map(([sortStr, o]) => ({ sorty: parseInt(sortStr), o }))
     .sort((a, b) => b.sorty - a.sorty)
     .map(({ o }) => o.map(({ sortx, ...oo }) => oo));
-  const rawProbs = getProbabilities(shipGroups.concat(null), null, 0);
   if (shipGroups.length < 2) return [];
+  const rawProbs = getProbabilities(shipGroups.concat(null), null, 0);
   const probabilities = Object.values(
     utils.groupByF(
       rawProbs.map((p) => {
