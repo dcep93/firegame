@@ -109,6 +109,7 @@ function getProbabilities(
   cannonCache: { [key: string]: (OutcomeType | PlaceholderType)[] } | null,
   depth: number
 ): (OutcomeType | PlaceholderType)[] {
+  if (depth > 10) return [];
   const flatShips = shipGroups.flatMap((ss) => (ss === null ? [] : ss));
   const shipsByFi = utils.groupByF(flatShips, (s) => s.fI.toString());
   const numFactions = Object.keys(shipsByFi).length;
