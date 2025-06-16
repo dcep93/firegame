@@ -68,7 +68,7 @@ class Main extends React.Component {
             Object.entries(d).map(([size, values]) => ({
               color,
               size,
-              values,
+              values: { ...values, count: 1 },
             })),
           ])
         ),
