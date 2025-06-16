@@ -8,18 +8,11 @@ import Outcomes from "./Outcomes";
 
 class Main extends React.Component {
   render() {
-    if (store.me.roomId === -1) {
-      window.location.href = `/${store.me.gameName}/${Math.floor(
-        Math.random() * 1000
-      )}`;
-      return null;
-    }
     // return null;
     const catalog = store.gameW.game.catalog || [];
     store.gameW.game.catalog = catalog;
     return (
       <div>
-        <div className={styles.bubble}>room: {store.me.roomId}</div>
         <div>
           <div className={styles.flex}>
             {store.gameW.game.fleets.map((f, fI) => (
