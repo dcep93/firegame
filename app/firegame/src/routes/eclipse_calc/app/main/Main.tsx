@@ -167,15 +167,15 @@ class Main extends React.Component {
                           )
                           .map(({ size, sizeIndex }) => (
                             <option
-                              key={`${color}.${size}`}
-                              value={`${color}.${size}`}
+                              key={`${color}.${sizeIndex}`}
+                              value={`${color}.${sizeIndex}`}
                               disabled={
                                 sizeIndex < 0 ||
                                 (f.color === color &&
                                   f.sizes?.includes(sizeIndex))
                               }
                             >
-                              {size === "" ? color : size}
+                              {sizeIndex < 0 ? color : size}
                             </option>
                           ))
                     )}
