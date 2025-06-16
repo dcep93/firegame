@@ -35,8 +35,9 @@ type PRolls = {
 }[];
 
 function getOutcomes(): OutcomeType[] {
-  const shipInputs = store.gameW.game.fleets.map((f) =>
-    f.map((shipIndex) => store.gameW.game.catalog![shipIndex]).filter(Boolean)
+  const game = store.gameW.game.users[store.me.userId];
+  const shipInputs = game.fleets.map((f) =>
+    (f.sizes || []).map((size) => game.catalog![f.color][size]).filter(Boolean)
   );
   return getOutcomesHelper(shipInputs);
 }
@@ -117,7 +118,7 @@ function getProbabilities(
     throw new Error("getProbabilities.numFactions.zero");
   }
   const sourceKey = JSON.stringify(
-    flatShips.map((fs) => ({ ...fs, ship: fs.ship.name }))
+    flatShips.map((fs) => ({ ...fs, ship: `${fs.ship.color}.${fs.ship.size}` }))
   );
   if (numFactions === 1) {
     return [
@@ -127,7 +128,10 @@ function getProbabilities(
         fI,
         survivingShips: Object.fromEntries(
           Object.entries(
-            utils.groupByF(Object.values(shipsByFi)[0], (s) => s.ship.name)
+            utils.groupByF(
+              Object.values(shipsByFi)[0],
+              (fs) => `${fs.ship.color}.${fs.ship.size}`
+            )
           )
             .map(([name, arr]) => [name, arr.length])
             .sort()

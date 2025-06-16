@@ -6,8 +6,12 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
 
-  fleets: number[][];
-  catalog: ShipType[] | null;
+  users: {
+    [userId: string]: {
+      fleets: { color: string; sizes: number[] | null }[];
+      catalog: { [color: string]: ShipType[] };
+    };
+  };
 };
 
 export type Params = {
@@ -20,7 +24,8 @@ export type PlayerType = {
 };
 
 export type ShipType = {
-  name: string;
+  color: string;
+  size: string;
   values: { [key: string]: number };
 };
 
@@ -29,8 +34,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     params,
     currentPlayer: 0,
     players: [],
-    fleets: [[-1], [-1]],
-    catalog: null,
+    users: {},
   };
   return Promise.resolve(game).then(setPlayers);
 }

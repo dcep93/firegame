@@ -10,7 +10,8 @@ export default function TestCases(): {}[] {
       groups: [
         [
           {
-            name: "good",
+            color: "good",
+            size: "",
             values: {
               cannons_1: 1,
               computer: 1,
@@ -20,7 +21,8 @@ export default function TestCases(): {}[] {
         ],
         [
           {
-            name: "evil",
+            color: "evil",
+            size: "",
             values: {
               cannons_1: 1,
               initiative: 1,
@@ -35,7 +37,8 @@ export default function TestCases(): {}[] {
       groups: [
         [
           {
-            name: "good",
+            color: "good",
+            size: "",
             values: {
               initiative: 5,
               computer: 2,
@@ -46,7 +49,8 @@ export default function TestCases(): {}[] {
         ],
         [
           {
-            name: "evil",
+            color: "evil",
+            size: "",
             values: {
               initiative: 4,
               computer: 1,
@@ -63,7 +67,8 @@ export default function TestCases(): {}[] {
       groups: [
         [
           {
-            name: "good",
+            color: "good",
+            size: "",
             values: {
               hull: 1,
               cannons_1: 1,
@@ -72,7 +77,8 @@ export default function TestCases(): {}[] {
         ],
         [
           {
-            name: "evil",
+            color: "evil",
+            size: "",
             values: {
               hull: 1,
               cannons_1: 1,
@@ -87,7 +93,8 @@ export default function TestCases(): {}[] {
       groups: [
         [
           {
-            name: "good",
+            color: "good",
+            size: "",
             values: {
               initiative: 4,
               hull: 1,
@@ -100,7 +107,8 @@ export default function TestCases(): {}[] {
         ],
         [
           {
-            name: "evil",
+            color: "evil",
+            size: "",
             values: {
               initiative: 5,
               hull: 1,
@@ -119,7 +127,8 @@ export default function TestCases(): {}[] {
       groups: [
         [
           {
-            name: "good",
+            color: "good",
+            size: "",
             values: {
               initiative: 5,
               hull: 1,
@@ -132,7 +141,8 @@ export default function TestCases(): {}[] {
         ],
         [
           {
-            name: "evil",
+            color: "evil",
+            size: "",
             values: {
               initiative: 4,
               hull: 1,
@@ -151,7 +161,8 @@ export default function TestCases(): {}[] {
       groups: [
         [
           {
-            name: "good",
+            color: "good",
+            size: "",
             values: {
               initiative: 6,
               hull: 2,
@@ -166,7 +177,8 @@ export default function TestCases(): {}[] {
         ],
         [
           {
-            name: "evil",
+            color: "evil",
+            size: "",
             values: {
               initiative: 4,
               hull: 2,

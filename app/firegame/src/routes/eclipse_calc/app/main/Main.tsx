@@ -1,21 +1,90 @@
 import React from "react";
-import utils, { store } from "../utils/utils";
+import { store } from "../utils/utils";
 
 import styles from "../../../../shared/styles.module.css";
-import { wordList } from "../../../spy/app/utils/utils";
+import Sidebar from "../sidebar/Sidebar";
 import { ShipType } from "../utils/NewGame";
 import Outcomes from "./Outcomes";
 
 class Main extends React.Component {
   render() {
-    // return null;
-    const catalog = store.gameW.game.catalog || [];
-    store.gameW.game.catalog = catalog;
+    console.log(store.gameW.game);
+    if (!store.gameW.game) {
+      setTimeout(() => new Sidebar({}).startNewGame());
+      return null;
+    }
+    if (!store.gameW.game?.users) {
+      store.gameW.game.users = {};
+    }
+    const game = store.gameW.game.users[store.me.userId];
+    if (!game) {
+      store.gameW.game.users[store.me.userId] = {
+        catalog: Object.fromEntries(
+          Object.entries({
+            "JR NPC": {
+              _ancient: {
+                initiative: 2,
+                cannons_1: 2,
+                hull: 1,
+                computer: 1,
+              },
+              __medium: {
+                initiative: 3,
+                cannons_1: 3,
+                hull: 2,
+                computer: 2,
+              },
+              ___death_star: {
+                initiative: 0,
+                cannons_1: 4,
+                hull: 7,
+                computer: 2,
+              },
+            },
+            "SR NPC": {
+              _ancient: {
+                initiative: 1,
+                cannons_2: 1,
+                hull: 2,
+                computer: 1,
+              },
+              __medium: {
+                initiative: 1,
+                missiles_2: 2,
+                cannons_4: 1,
+                hull: 3,
+                computer: 1,
+              },
+              ___death_star: {
+                initiative: 2,
+                missiles_1: 4,
+                cannons_4: 1,
+                hull: 3,
+                computer: 2,
+              },
+            },
+          }).map(([color, d]) => [
+            color,
+            Object.entries(d).map(([size, values]) => ({
+              color,
+              size,
+              values,
+            })),
+          ])
+        ),
+        fleets: [
+          { color: "", sizes: null },
+          { color: "", sizes: null },
+        ],
+      };
+      setTimeout(() => store.update("joined"));
+      return null;
+    }
     return (
       <div>
         <div>
           <div className={styles.flex}>
-            {store.gameW.game.fleets.map((f, fI) => (
+            {game.fleets.map((f, fI) => (
               <div
                 className={styles.bubble}
                 key={fI}
@@ -32,72 +101,89 @@ class Main extends React.Component {
                     onChange={(e) =>
                       (({ targetValue }) =>
                         Promise.resolve().then(() =>
-                          targetValue >= 0
-                            ? Promise.resolve()
-                                .then(() => f.push(targetValue))
-                                .then(() =>
-                                  store.update(
-                                    `added ${catalog[targetValue].name}`
-                                  )
-                                )
+                          targetValue.length === 2
+                            ? Promise.resolve().then(() => {
+                                const size = parseInt(targetValue[1]);
+                                if (f.color === targetValue[0] && f.sizes) {
+                                  f.sizes.push(size);
+                                } else {
+                                  f.color = targetValue[0];
+                                  f.sizes = [size];
+                                }
+                                store.update(`added ${size}`);
+                              })
                             : Promise.resolve()
-                                .then(() => catalog.map((ca) => ca.name))
-                                .then((existingNames) =>
-                                  utils
-                                    .randomFrom(
-                                      wordList.filter(
-                                        (w) => !existingNames.includes(w)
-                                      )
-                                    )
-                                    .toUpperCase()
-                                )
-                                .then((name) =>
-                                  Promise.resolve()
-                                    .then(() => f.push(catalog.length))
-                                    .then(() =>
-                                      catalog.push({
-                                        name,
-                                        values: {
-                                          count: 1,
-                                          initiative: 1,
-                                          hull: 0,
-                                          computer: 0,
-                                          shield: 0,
-                                          cannons_1: 1,
-                                          cannons_2: 0,
-                                          cannons_3: 0,
-                                          cannons_4: 0,
-                                          missiles_1: 0,
-                                          missiles_2: 0,
-                                          missiles_3: 0,
-                                          missiles_4: 0,
-                                        },
-                                      })
-                                    )
-                                    .then(() => store.update(`spawned ${name}`))
+                                .then(() => prompt("enter new color name"))
+                                .then((color) =>
+                                  !color
+                                    ? Promise.resolve()
+                                    : Promise.resolve()
+                                        .then(
+                                          () =>
+                                            (game.catalog[color] = [
+                                              "interceptor,cruiser,dreadnought,starbase",
+                                            ].map((size) => ({
+                                              color,
+                                              size,
+                                              values: {
+                                                count: 1,
+                                                initiative: 1,
+                                                hull: 0,
+                                                computer: 0,
+                                                shield: 0,
+                                                cannons_1: 1,
+                                                cannons_2: 0,
+                                                cannons_3: 0,
+                                                cannons_4: 0,
+                                                missiles_1: 0,
+                                                missiles_2: 0,
+                                                missiles_3: 0,
+                                                missiles_4: 0,
+                                              },
+                                            })))
+                                        )
+                                        .then(() =>
+                                          store.update(`defined ${color}`)
+                                        )
                                 )
                         ))({
-                        targetValue: parseInt(e.target.value),
+                        targetValue: e.target.value.split("."),
                       })
                     }
                   >
                     <option value={"-1"}>add ship</option>
-                    <option value={"-2"}>new ship</option>
-                    {catalog
-                      .map((c, i) => ({ c, i }))
-                      .filter(({ i }) => !f.includes(i))
-                      .map(({ c, i }) => (
-                        <option key={i} value={i}>
-                          {c.name}
-                        </option>
-                      ))}
+                    <option value={"-2"}>new color</option>
+                    {Object.entries(game.catalog || {}).flatMap(
+                      ([color, sizes]) =>
+                        [{ size: "", sizeIndex: -1 }]
+                          .concat(
+                            sizes.map((ship, sizeIndex) => ({
+                              size: ship.size,
+                              sizeIndex,
+                            }))
+                          )
+                          .map(({ size, sizeIndex }) => (
+                            <option
+                              key={`${color}.${size}`}
+                              value={`${color}.${size}`}
+                              disabled={
+                                sizeIndex < 0 ||
+                                (f.color === color &&
+                                  f.sizes?.includes(sizeIndex))
+                              }
+                            >
+                              {size === "" ? color : size}
+                            </option>
+                          ))
+                    )}
                   </select>
                 </div>
+                <div>color: {f.color}</div>
                 <div>
                   <div>
-                    {f
-                      .map((shipIndex, shipI) => ({
-                        ship: store.gameW.game.catalog![shipIndex],
+                    {(f.sizes || [])
+                      .map((sizeIndex, shipI) => ({
+                        ship: game.catalog[f.color][sizeIndex],
                         shipI,
                       }))
                       .filter(({ ship }) => ship)
@@ -108,9 +194,7 @@ class Main extends React.Component {
                             <button
                               onClick={() =>
                                 store.update(
-                                  `deleted ${
-                                    catalog[f.splice(shipI, 1)[0]!].name
-                                  }`
+                                  `deleted ${f.sizes!.splice(shipI, 1)[0]!}`
                                 )
                               }
                             >
@@ -127,7 +211,7 @@ class Main extends React.Component {
               <button
                 onClick={() =>
                   Promise.resolve()
-                    .then(() => store.gameW.game.fleets.reverse())
+                    .then(() => game.fleets.reverse())
                     .then(() => store.update("swapped fleets"))
                 }
               >
@@ -147,23 +231,7 @@ class Main extends React.Component {
 function Ship(props: { ship: ShipType }) {
   return (
     <div>
-      <div>{props.ship.name}</div>
-      <div>
-        <button
-          onClick={() =>
-            (({ newName, oldName }) =>
-              newName &&
-              Promise.resolve()
-                .then(() => (props.ship.name = newName))
-                .then(() => store.update(`renamed ${oldName} to ${newName}`)))({
-              oldName: props.ship.name,
-              newName: prompt(`enter a new name for ${props.ship.name}`),
-            })
-          }
-        >
-          change name
-        </button>
-      </div>
+      <div>{props.ship.size}</div>
       <div style={{ paddingLeft: "1em", fontFamily: "Courier New" }}>
         {Object.entries(props.ship.values)
           .sort()
@@ -187,7 +255,7 @@ function Ship(props: { ship: ShipType }) {
                       .then(() => (props.ship.values[valueKey] += v))
                       .then(() =>
                         store.update(
-                          `${props.ship.name}.${valueKey}.${value}.${k}`
+                          `${props.ship.size}.${valueKey}.${value}.${k}`
                         )
                       )
                   }
