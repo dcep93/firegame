@@ -8,7 +8,6 @@ import Outcomes from "./Outcomes";
 
 class Main extends React.Component {
   render() {
-    console.log(store.gameW.game);
     if (!store.gameW.game) {
       setTimeout(() => new Sidebar({}).startNewGame());
       return null;
@@ -17,24 +16,25 @@ class Main extends React.Component {
       store.gameW.game.users = {};
     }
     const game = store.gameW.game.users[store.me.userId];
+    console.log(game);
     if (!game) {
       store.gameW.game.users[store.me.userId] = {
         catalog: Object.fromEntries(
           Object.entries({
             "JR NPC": {
-              _ancient: {
+              ancient: {
                 initiative: 2,
                 cannons_1: 2,
                 hull: 1,
                 computer: 1,
               },
-              __medium: {
+              medium: {
                 initiative: 3,
                 cannons_1: 3,
                 hull: 2,
                 computer: 2,
               },
-              ___death_star: {
+              death_star: {
                 initiative: 0,
                 cannons_1: 4,
                 hull: 7,
@@ -42,20 +42,20 @@ class Main extends React.Component {
               },
             },
             "SR NPC": {
-              _ancient: {
+              ancient: {
                 initiative: 1,
                 cannons_2: 1,
                 hull: 2,
                 computer: 1,
               },
-              __medium: {
+              medium: {
                 initiative: 1,
                 missiles_2: 2,
                 cannons_4: 1,
                 hull: 3,
                 computer: 1,
               },
-              ___death_star: {
+              death_star: {
                 initiative: 2,
                 missiles_1: 4,
                 cannons_4: 1,
@@ -121,7 +121,10 @@ class Main extends React.Component {
                                         .then(
                                           () =>
                                             (game.catalog[color] = [
-                                              "interceptor,cruiser,dreadnought,starbase",
+                                              "interceptor",
+                                              "cruiser",
+                                              "dreadnought",
+                                              "starbase",
                                             ].map((size) => ({
                                               color,
                                               size,
