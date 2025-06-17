@@ -130,7 +130,7 @@ function getProbabilities(
           Object.entries(
             utils.groupByF(
               Object.values(shipsByFi)[0],
-              (fs) => `${fs.ship.color}.${fs.ship.size}`
+              (fs) => `${fs.ship.color}.${fs.ship.size}.${fI}`
             )
           )
             .map(([name, arr]) => [name, arr.length])
