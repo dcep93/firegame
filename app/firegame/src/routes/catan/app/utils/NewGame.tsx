@@ -37,6 +37,8 @@ export type Params = {
   citiesAndKnights: boolean;
 };
 
+export type PortType = "generic" | ResourceCard;
+
 export type PlayerType = {
   userId: string;
   userName: string;
@@ -47,6 +49,8 @@ export type PlayerType = {
   roads: number;
   playedKnights: number;
   victoryPoints: number;
+  devCards: number;
+  ports: PortType[];
 };
 
 export type RollType = {
@@ -59,6 +63,12 @@ export type SetupPhase = {
   active: boolean;
   order: number[];
   index: number;
+  step: "settlement" | "road";
+};
+
+export type Port = {
+  edge: [number, number];
+  type: PortType;
 };
 
 export type GameType = {
@@ -69,6 +79,7 @@ export type GameType = {
   vertices?: Vertex[];
   roads?: RoadSegment[];
   robberTileIndex?: number;
+  ports?: Port[];
   bank?: {
     resources: ResourceCounts;
     commodities: CommodityCounts;
@@ -147,6 +158,53 @@ const buildBoard = (resources: Resource[], numbers: number[]) => {
   return { tiles, vertices };
 };
 
+const buildPorts = (tiles: Tile[]) => {
+  const edgeCounts = new Map<string, { edge: [number, number]; count: number }>();
+
+  tiles.forEach((tile) => {
+    const verts = tile.vertices || [];
+    verts.forEach((vertexId, index) => {
+      const next = verts[(index + 1) % verts.length];
+      const edge: [number, number] =
+        vertexId < next ? [vertexId, next] : [next, vertexId];
+      const key = edge.join("-");
+      const existing = edgeCounts.get(key);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        edgeCounts.set(key, { edge, count: 1 });
+      }
+    });
+  });
+
+  const outerEdges = Array.from(edgeCounts.values())
+    .filter((edge) => edge.count === 1)
+    .map((edge) => edge.edge);
+
+  const portTypes: PortType[] = [
+    "generic",
+    "generic",
+    "generic",
+    "generic",
+    "wood",
+    "brick",
+    "sheep",
+    "wheat",
+    "ore",
+  ];
+
+  const shuffledPorts = utils.shuffle([...portTypes]);
+  const shuffledEdges = utils.shuffle([...outerEdges]).slice(
+    0,
+    shuffledPorts.length
+  );
+
+  return shuffledEdges.map((edge, index) => ({
+    edge,
+    type: shuffledPorts[index],
+  }));
+};
+
 function NewGame(params: Params): Promise<GameType> {
   const baseResources = [
     ...utils.repeat("wood", 4),
@@ -161,6 +219,7 @@ function NewGame(params: Params): Promise<GameType> {
 
   const { tiles, vertices } = buildBoard(shuffledResources, shuffledNumbers);
   const robberTileIndex = tiles.findIndex((tile) => tile.resource === "desert");
+  const ports = buildPorts(tiles);
 
   const game: GameType = {
     params,
@@ -170,6 +229,7 @@ function NewGame(params: Params): Promise<GameType> {
     vertices,
     roads: [],
     robberTileIndex: robberTileIndex >= 0 ? robberTileIndex : undefined,
+    ports,
     bank: {
       resources: { ...baseBankResources },
       commodities: params.citiesAndKnights
@@ -204,6 +264,8 @@ function NewGame(params: Params): Promise<GameType> {
       roads: 0,
       playedKnights: 0,
       victoryPoints: 0,
+      devCards: 0,
+      ports: [],
     }));
 
   const playerCount = game.players.length;
@@ -213,6 +275,7 @@ function NewGame(params: Params): Promise<GameType> {
     active: true,
     order,
     index: 0,
+    step: "settlement",
   };
   game.currentPlayer = order[0] ?? 0;
 

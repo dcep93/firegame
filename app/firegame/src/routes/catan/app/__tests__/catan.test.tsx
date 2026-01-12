@@ -94,6 +94,8 @@ const makePlayer = (
   roads: 0,
   playedKnights: 0,
   victoryPoints: 0,
+  devCards: 0,
+  ports: [],
 });
 
 describe("Catan game logic", () => {
@@ -229,10 +231,10 @@ describe("Catan game logic", () => {
     setStore(game);
 
     render(<Main />);
-    fireEvent.click(
-      screen.getByRole("button", { name: /build settlement/i })
-    );
     fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /confirm/i })
+    );
 
     expect(game.players[0].resources).toEqual({
       wood: 0,
@@ -267,10 +269,10 @@ describe("Catan game logic", () => {
     setStore(game);
 
     render(<Main />);
-    fireEvent.click(
-      screen.getByRole("button", { name: /upgrade to city/i })
-    );
     fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /confirm/i })
+    );
 
     expect(game.players[0].resources).toEqual({
       wood: 0,
@@ -299,25 +301,31 @@ describe("Catan game logic", () => {
       ],
       roads: [],
       hasRolled: false,
-      setupPhase: { active: true, order: [0, 1, 1, 0], index: 0 },
+      setupPhase: { active: true, order: [0, 1, 1, 0], index: 0, step: "settlement" },
     };
     setStore(game);
 
     const { rerender } = render(<Main />);
 
     fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
+    fireEvent.click(screen.getByRole("button", { name: /confirm/i }));
     expect(game.players[0].settlements).toBe(1);
     expect(game.players[0].victoryPoints).toBe(1);
+    expect(game.currentPlayer).toBe(0);
+
+    fireEvent.click(screen.getByRole("button", { name: /edge-0/i }));
+    fireEvent.click(screen.getByRole("button", { name: /confirm/i }));
     expect(game.currentPlayer).toBe(1);
 
     (store as any).me = { ...baseMe, userId: "u2" };
     rerender(<Main />);
 
     fireEvent.click(screen.getByRole("button", { name: /vertex-1/i }));
+    fireEvent.click(screen.getByRole("button", { name: /confirm/i }));
     expect(game.players[1].settlements).toBe(1);
     expect(game.players[1].victoryPoints).toBe(1);
     expect(game.currentPlayer).toBe(1);
-    expect(game.setupPhase?.index).toBe(2);
+    expect(game.setupPhase?.index).toBe(1);
   });
 
   test("setup second settlement grants adjacent resources", () => {
@@ -340,13 +348,14 @@ describe("Catan game logic", () => {
         resources: { wood: 19, sheep: 19, wheat: 19, brick: 19, ore: 19 },
         commodities: { cloth: 0, coin: 0, paper: 0 },
       },
-      setupPhase: { active: true, order: [0], index: 0 },
+      setupPhase: { active: true, order: [0], index: 0, step: "settlement" },
     };
     setStore(game);
 
     render(<Main />);
 
     fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
+    fireEvent.click(screen.getByRole("button", { name: /confirm/i }));
 
     expect(game.players[0].resources).toEqual({
       wood: 1,

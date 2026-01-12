@@ -33,6 +33,12 @@ const tileSize = 96;
 const vertexSize = 18;
 const edgeWidth = 12;
 
+const maxPieces = {
+  settlements: 5,
+  cities: 4,
+  roads: 19,
+};
+
 const commodityMap: Record<ResourceCard, Commodity | undefined> = {
   wood: undefined,
   brick: undefined,
@@ -57,11 +63,15 @@ function Main() {
   const currentPlayer = utils.getCurrent(game);
   const myIndex = utils.myIndex(game);
   const me = myIndex >= 0 ? game.players[myIndex] : null;
-  const [placementMode, setPlacementMode] = React.useState<
-    "settlement" | "city" | "road" | null
-  >(null);
+  const [pendingAction, setPendingAction] = React.useState<null | {
+    type: "settlement" | "city" | "road";
+    label: string;
+    cost: Partial<ResourceCounts>;
+    target: number | [number, number];
+  }>(null);
 
   const isSetupActive = game.setupPhase?.active ?? false;
+  const setupStep = game.setupPhase?.step ?? "settlement";
   const canRoll = utils.isMyTurn(game) && !game.hasRolled && !isSetupActive;
   const canAct =
     utils.isMyTurn(game) &&
@@ -71,12 +81,6 @@ function Main() {
     !isSetupActive &&
     game.hasRolled &&
     !!game.pendingRobber;
-
-  React.useEffect(() => {
-    if (isSetupActive && placementMode !== "settlement") {
-      setPlacementMode("settlement");
-    }
-  }, [isSetupActive, placementMode]);
 
   const totalResources = (resources: ResourceCounts) =>
     Object.values(resources).reduce((sum, value) => sum + value, 0);
@@ -223,7 +227,7 @@ function Main() {
     );
 
   const canPlaceRoad = (edge: [number, number]) => {
-    if (!canAct || placementMode !== "road") return false;
+    if (!canAct || (isSetupActive && setupStep !== "road")) return false;
     if (isEdgeOccupied(edge)) return false;
     const playerIndex = game.currentPlayer;
     if (!hasAnyBuilding(playerIndex) && getPlayerEdges(playerIndex).length === 0)
@@ -235,7 +239,7 @@ function Main() {
   };
 
   const canPlaceSettlement = (vertexId: number) => {
-    if (!canAct || placementMode !== "settlement") return false;
+    if (!canAct || (isSetupActive && setupStep !== "settlement")) return false;
     const vertex = getVertex(vertexId);
     if (!vertex || vertex.building) return false;
     if (hasAdjacentBuilding(vertexId)) return false;
@@ -249,7 +253,7 @@ function Main() {
   };
 
   const canPlaceCity = (vertexId: number) => {
-    if (!canAct || placementMode !== "city") return false;
+    if (!canAct || isSetupActive) return false;
     const vertex = getVertex(vertexId);
     if (!vertex?.building) return false;
     return (
@@ -418,106 +422,169 @@ function Main() {
     utils.incrementPlayerTurn(game);
     game.hasRolled = false;
     game.pendingRobber = false;
-    setPlacementMode(null);
+    setPendingAction(null);
     store.update("ended their turn");
   };
 
-  const buildRoad = () => {
+  const buyDevCard = () => {
     if (!canAct || isSetupActive) return;
-    const cost = { brick: 1, wood: 1 };
+    const cost = { sheep: 1, wheat: 1, ore: 1 };
     if (!canAfford(cost)) return;
-    setPlacementMode("road");
+    applyCost(cost);
+    game.players[game.currentPlayer].devCards += 1;
+    store.update("bought a development card");
   };
 
-  const buildSettlement = () => {
+  const playDevCard = () => {
     if (!canAct || isSetupActive) return;
+    const player = game.players[game.currentPlayer];
+    if (player.devCards < 1) return;
+    player.devCards -= 1;
+    store.update("played a development card");
+  };
+
+  const assignPorts = (vertexId: number) => {
+    const ports = game.ports || [];
+    const player = game.players[game.currentPlayer];
+    ports.forEach((port) => {
+      if (port.edge.includes(vertexId)) {
+        if (!player.ports.includes(port.type)) {
+          player.ports.push(port.type);
+        }
+      }
+    });
+  };
+
+  const finalizeSetupStep = () => {
+    if (!game.setupPhase) return;
+    game.setupPhase.index += 1;
+    if (game.setupPhase.index >= game.setupPhase.order.length) {
+      game.setupPhase.active = false;
+      game.currentPlayer = game.setupPhase.order[0] ?? 0;
+      game.setupPhase.step = "settlement";
+    } else {
+      game.currentPlayer = game.setupPhase.order[game.setupPhase.index];
+      game.setupPhase.step = "settlement";
+    }
+  };
+
+  const placeSettlement = (vertexId: number) => {
+    const player = game.players[game.currentPlayer];
     const cost = { brick: 1, wood: 1, sheep: 1, wheat: 1 };
-    if (!canAfford(cost)) return;
-    setPlacementMode("settlement");
+    if (!isSetupActive && !canAfford(cost)) return;
+    if (!canPlaceSettlement(vertexId)) return;
+    if (!isSetupActive) applyCost(cost);
+    const vertex = getVertex(vertexId);
+    if (!vertex) return;
+    vertex.building = { playerIndex: game.currentPlayer, type: "settlement" };
+    player.settlements += 1;
+    player.victoryPoints += 1;
+    assignPorts(vertexId);
+    const gainedResources: ResourceCard[] = [];
+    if (isSetupActive && player.settlements === 2) {
+      game.tiles.forEach((tile) => {
+        if (tile.resource !== "desert" && tile.vertices?.includes(vertexId)) {
+          const resource = tile.resource as ResourceCard;
+          if (grantResource(game.currentPlayer, resource)) {
+            gainedResources.push(resource);
+          }
+        }
+      });
+    }
+    if (isSetupActive && game.setupPhase) {
+      game.setupPhase.step = "road";
+    }
+    store.update(
+      gainedResources.length > 0
+        ? `built a settlement and gained ${gainedResources.join(", ")}`
+        : "built a settlement"
+    );
   };
 
-  const upgradeCity = () => {
-    if (!canAct || isSetupActive) return;
+  const placeCity = (vertexId: number) => {
+    const player = game.players[game.currentPlayer];
     const cost = { ore: 3, wheat: 2 };
     if (!canAfford(cost)) return;
-    setPlacementMode("city");
+    if (!canPlaceCity(vertexId)) return;
+    applyCost(cost);
+    const vertex = getVertex(vertexId);
+    if (!vertex?.building) return;
+    vertex.building.type = "city";
+    player.settlements -= 1;
+    player.cities += 1;
+    player.victoryPoints += 1;
+    store.update("upgraded to a city");
+  };
+
+  const placeRoad = (edge: [number, number]) => {
+    const cost = { brick: 1, wood: 1 };
+    if (!isSetupActive && !canAfford(cost)) return;
+    if (!canPlaceRoad(edge)) return;
+    if (!isSetupActive) applyCost(cost);
+    if (!game.roads) game.roads = [];
+    game.roads.push({ playerIndex: game.currentPlayer, edge });
+    game.players[game.currentPlayer].roads += 1;
+    if (isSetupActive) {
+      finalizeSetupStep();
+    }
+    store.update("built a road");
   };
 
   const handleVertexClick = (vertexId: number) => {
-    const player = game.players[game.currentPlayer];
-    if (placementMode === "settlement") {
-      const cost = { brick: 1, wood: 1, sheep: 1, wheat: 1 };
-      if (!isSetupActive && !canAfford(cost)) return;
-      if (!canPlaceSettlement(vertexId)) return;
-      if (!isSetupActive) applyCost(cost);
-      const vertex = getVertex(vertexId);
-      if (!vertex) return;
-      vertex.building = { playerIndex: game.currentPlayer, type: "settlement" };
-      player.settlements += 1;
-      player.victoryPoints += 1;
-      const gainedResources: ResourceCard[] = [];
-      if (isSetupActive && player.settlements === 2) {
-        game.tiles.forEach((tile) => {
-          if (
-            tile.resource !== "desert" &&
-            tile.vertices?.includes(vertexId)
-          ) {
-            const resource = tile.resource as ResourceCard;
-            if (grantResource(game.currentPlayer, resource)) {
-              gainedResources.push(resource);
-            }
-          }
-        });
-      }
-      if (isSetupActive && game.setupPhase) {
-        game.setupPhase.index += 1;
-        if (game.setupPhase.index >= game.setupPhase.order.length) {
-          game.setupPhase.active = false;
-          game.currentPlayer = 0;
-        } else {
-          game.currentPlayer = game.setupPhase.order[game.setupPhase.index];
-        }
-      }
-      setPlacementMode(null);
-      store.update(
-        gainedResources.length > 0
-          ? `built a settlement and gained ${gainedResources.join(", ")}`
-          : "built a settlement"
-      );
-    } else if (placementMode === "city") {
-      const cost = { ore: 3, wheat: 2 };
-      if (!canAfford(cost)) return;
-      if (!canPlaceCity(vertexId)) return;
-      applyCost(cost);
-      const vertex = getVertex(vertexId);
-      if (!vertex?.building) return;
-      vertex.building.type = "city";
-      player.settlements -= 1;
-      player.cities += 1;
-      player.victoryPoints += 1;
-      setPlacementMode(null);
-      store.update("upgraded to a city");
+    const settlementCost = { brick: 1, wood: 1, sheep: 1, wheat: 1 };
+    const cityCost = { ore: 3, wheat: 2 };
+    const canAffordSettlement = isSetupActive || canAfford(settlementCost);
+    const canAffordCity = canAfford(cityCost);
+
+    if (canPlaceCity(vertexId) && canAffordCity) {
+      setPendingAction({
+        type: "city",
+        label: "Upgrade to a city",
+        cost: cityCost,
+        target: vertexId,
+      });
+      return;
+    }
+
+    if (canPlaceSettlement(vertexId) && canAffordSettlement) {
+      setPendingAction({
+        type: "settlement",
+        label: "Build a settlement",
+        cost: settlementCost,
+        target: vertexId,
+      });
     }
   };
 
   const handleEdgeClick = (edge: [number, number]) => {
-    if (placementMode !== "road") return;
     const cost = { brick: 1, wood: 1 };
-    if (!canAfford(cost)) return;
-    if (!canPlaceRoad(edge)) return;
-    applyCost(cost);
-    if (!game.roads) game.roads = [];
-    game.roads.push({ playerIndex: game.currentPlayer, edge });
-    game.players[game.currentPlayer].roads += 1;
-    setPlacementMode(null);
-    store.update("built a road");
+    const canAffordRoad = isSetupActive || canAfford(cost);
+    if (!canPlaceRoad(edge) || !canAffordRoad) return;
+    setPendingAction({
+      type: "road",
+      label: "Build a road",
+      cost,
+      target: edge,
+    });
+  };
+
+  const confirmPlacement = () => {
+    if (!pendingAction) return;
+    if (pendingAction.type === "settlement") {
+      placeSettlement(pendingAction.target as number);
+    } else if (pendingAction.type === "city") {
+      placeCity(pendingAction.target as number);
+    } else {
+      placeRoad(pendingAction.target as [number, number]);
+    }
+    setPendingAction(null);
   };
 
   const handleRobberMove = (tileIndex: number) => {
     if (!canMoveRobber) return;
     game.robberTileIndex = tileIndex;
     game.pendingRobber = false;
-    setPlacementMode(null);
+    setPendingAction(null);
     const tile = game.tiles[tileIndex];
     const opponents = new Set<number>();
     (tile.vertices || []).forEach((vertexId) => {
@@ -545,6 +612,30 @@ function Main() {
     }
   };
 
+  const devCardCost = { sheep: 1, wheat: 1, ore: 1 };
+
+  const setupMessage =
+    isSetupActive && setupStep === "road"
+      ? "Setup: place a road"
+      : isSetupActive
+      ? "Setup: place a settlement"
+      : null;
+  const pendingAffordable = pendingAction
+    ? isSetupActive || canAfford(pendingAction.cost)
+    : true;
+
+  const playerCount = game.players.length;
+  const baseOrder = utils.count(playerCount);
+  const startIndex =
+    myIndex >= 0
+      ? myIndex
+      : game.setupPhase?.order[0] !== undefined
+      ? game.setupPhase.order[0]
+      : 0;
+  const orderedIndices = baseOrder
+    .slice(startIndex)
+    .concat(baseOrder.slice(0, startIndex));
+
   return (
     <div className={css.wrapper}>
       <div className={css.statusCard}>
@@ -563,16 +654,9 @@ function Main() {
           Your hand:{" "}
           <strong>{me ? `${totalCards(me)} cards` : "Spectating"}</strong>
         </div>
-        {isSetupActive && (
-          <div className={css.alert}>Setup: place a settlement</div>
-        )}
+        {setupMessage && <div className={css.alert}>{setupMessage}</div>}
         {game.pendingRobber && (
           <div className={css.alert}>Move the robber</div>
-        )}
-        {placementMode && (
-          <div className={css.alert}>
-            Place a {placementMode.replace("road", "road segment")}
-          </div>
         )}
       </div>
       <div className={css.actions}>
@@ -580,87 +664,95 @@ function Main() {
           Roll dice
         </button>
         <button
-          onClick={buildRoad}
-          disabled={
-            !canAct ||
-            isSetupActive ||
-            !canAfford({
-              brick: 1,
-              wood: 1,
-            })
-          }
+          onClick={buyDevCard}
+          disabled={!canAct || isSetupActive || !canAfford(devCardCost)}
         >
-          Build road (1 brick, 1 wood)
+          Buy dev card (sheep, wheat, ore)
         </button>
         <button
-          onClick={buildSettlement}
+          onClick={playDevCard}
           disabled={
             !canAct ||
             isSetupActive ||
-            !canAfford({ brick: 1, wood: 1, sheep: 1, wheat: 1 })
+            game.players[game.currentPlayer].devCards < 1
           }
         >
-          Build settlement (brick, wood, sheep, wheat)
-        </button>
-        <button
-          onClick={upgradeCity}
-          disabled={
-            !canAct ||
-            isSetupActive ||
-            !canAfford({ ore: 3, wheat: 2 }) ||
-            game.players[game.currentPlayer].settlements < 1
-          }
-        >
-          Upgrade to city (3 ore, 2 wheat)
+          Play dev card
         </button>
         <button onClick={endTurn} disabled={!canAct || isSetupActive}>
           End turn
         </button>
       </div>
       <div className={css.players}>
-        {game.players.map((player, index) => (
-          <div
-            key={player.userId}
-            className={[
-              css.playerCard,
-              index === game.currentPlayer ? css.activePlayer : "",
-            ].join(" ")}
-          >
-            <div className={css.playerHeader}>
-              <strong>{player.userName}</strong>
-              {index === utils.myIndex(game) && (
-                <span className={css.playerBadge}>You</span>
-              )}
-            </div>
-            <div className={css.playerStats}>
-              <span>{player.victoryPoints} VP</span>
-              <span>{player.settlements} settlements</span>
-              <span>{player.cities} cities</span>
-              <span>{player.roads} roads</span>
-            </div>
-            <div className={css.resourceGrid}>
-              {Object.entries(player.resources).map(([resource, amount]) => (
-                <div key={resource} className={css.resourceItem}>
-                  <span className={css.resourceLabel}>{resource}</span>
-                  <span className={css.resourceCount}>{amount}</span>
+        {orderedIndices.map((index) => {
+          const player = game.players[index];
+          const color = getPlayerColor(index);
+          return (
+            <React.Fragment key={player.userId}>
+              <div
+                className={[
+                  css.playerCard,
+                  index === game.currentPlayer ? css.activePlayer : "",
+                ].join(" ")}
+                style={{ ["--player-color" as string]: color } as React.CSSProperties}
+              >
+                <div className={css.playerHeader}>
+                  <strong>{player.userName}</strong>
+                  {index === utils.myIndex(game) && (
+                    <span className={css.playerBadge}>You</span>
+                  )}
                 </div>
-              ))}
-              {game.params.citiesAndKnights &&
-                Object.entries(player.commodities).map(
-                  ([commodity, amount]) => (
-                    <div key={commodity} className={css.resourceItem}>
-                      <span className={css.resourceLabel}>{commodity}</span>
-                      <span className={css.resourceCount}>{amount}</span>
-                    </div>
-                  )
+                <div className={css.playerStats}>
+                  <span>{player.victoryPoints} VP</span>
+                  <span>
+                    {player.settlements}/{maxPieces.settlements} settlements
+                  </span>
+                  <span>
+                    {player.cities}/{maxPieces.cities} cities
+                  </span>
+                  <span>
+                    {player.roads}/{maxPieces.roads} roads
+                  </span>
+                  <span>{player.devCards} dev cards</span>
+                </div>
+                {player.ports.length > 0 && (
+                  <div className={css.portList}>
+                    Ports:{" "}
+                    {player.ports
+                      .map((port) =>
+                        port === "generic" ? "3:1" : `${port} 2:1`
+                      )
+                      .join(", ")}
+                  </div>
                 )}
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className={css.settings}>
-        Cities &amp; Knights:{" "}
-        <strong>{game.params.citiesAndKnights ? "Enabled" : "Off"}</strong>
+                <div className={css.resourceGrid}>
+                  {Object.entries(player.resources).map(
+                    ([resource, amount]) => (
+                      <div key={resource} className={css.resourceItem}>
+                        <span className={css.resourceLabel}>{resource}</span>
+                        <span className={css.resourceCount}>{amount}</span>
+                      </div>
+                    )
+                  )}
+                  {game.params.citiesAndKnights &&
+                    Object.entries(player.commodities).map(
+                      ([commodity, amount]) => (
+                        <div key={commodity} className={css.resourceItem}>
+                          <span className={css.resourceLabel}>{commodity}</span>
+                          <span className={css.resourceCount}>{amount}</span>
+                        </div>
+                      )
+                    )}
+                </div>
+              </div>
+              {myIndex >= 0 && index === myIndex && (
+                <div className={css.playerDivider} aria-hidden="true">
+                  |
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
       <div className={css.board}>
         <div
@@ -728,8 +820,31 @@ function Main() {
                     : undefined,
                   opacity: isOwned ? 1 : 0.45,
                 }}
-                disabled={!canPlaceRoad(edge)}
+                disabled={
+                  !canPlaceRoad(edge) ||
+                  (!isSetupActive && !canAfford({ brick: 1, wood: 1 }))
+                }
               />
+            );
+          })}
+          {(game.ports || []).map((port, index) => {
+            const v1 = getVertex(port.edge[0]);
+            const v2 = getVertex(port.edge[1]);
+            if (!v1 || !v2) return null;
+            const start = toBoardCoords(v1.x, v1.y);
+            const end = toBoardCoords(v2.x, v2.y);
+            const midX = (start.left + end.left) / 2;
+            const midY = (start.top + end.top) / 2;
+            return (
+              <div
+                key={`port-${index}`}
+                className={css.portMarker}
+                style={{ left: midX, top: midY }}
+              >
+                <span className={css.portLabel}>
+                  {port.type === "generic" ? "3:1" : `${port.type} 2:1`}
+                </span>
+              </div>
             );
           })}
           {vertices.map((vertex) => {
@@ -764,7 +879,16 @@ function Main() {
                   borderColor: ownerColor || "#cbd5f5",
                 }}
                 disabled={
-                  !canPlaceSettlement(vertex.id) && !canPlaceCity(vertex.id)
+                  (!canPlaceSettlement(vertex.id) ||
+                    (!isSetupActive &&
+                      !canAfford({
+                        brick: 1,
+                        wood: 1,
+                        sheep: 1,
+                        wheat: 1,
+                      }))) &&
+                  (!canPlaceCity(vertex.id) ||
+                    !canAfford({ ore: 3, wheat: 2 }))
                 }
                 title={
                   owner
@@ -776,6 +900,30 @@ function Main() {
           })}
         </div>
       </div>
+      {pendingAction && (
+        <div className={css.confirmOverlay} role="dialog" aria-modal="true">
+          <div className={css.confirmCard}>
+            <h3>{pendingAction.label}</h3>
+            <p>Are you sure you want to continue?</p>
+            <div className={css.confirmActions}>
+              <button
+                type="button"
+                onClick={() => setPendingAction(null)}
+                className={css.secondaryButton}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmPlacement}
+                disabled={!pendingAffordable}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

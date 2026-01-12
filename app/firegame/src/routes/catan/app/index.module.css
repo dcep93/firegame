@@ -39,8 +39,9 @@
 
 .players {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 210px));
   gap: 16px;
+  align-items: start;
 }
 
 .playerCard {
@@ -51,10 +52,13 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border-top: 4px solid var(--player-color, #2b59c3);
+  border-left: 4px solid var(--player-color, #2b59c3);
+  max-width: 210px;
 }
 
 .activePlayer {
-  border: 2px solid #2b59c3;
+  border: 2px solid var(--player-color, #2b59c3);
 }
 
 .playerHeader {
@@ -64,7 +68,7 @@
 }
 
 .playerBadge {
-  background: #2b59c3;
+  background: var(--player-color, #2b59c3);
   color: white;
   padding: 2px 8px;
   border-radius: 999px;
@@ -77,6 +81,22 @@
   gap: 8px;
   font-size: 13px;
   color: #5a6072;
+}
+
+.portList {
+  font-size: 12px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.playerDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #94a3b8;
+  font-weight: 700;
+  padding: 0 4px;
 }
 
 .resourceGrid {
@@ -206,4 +226,79 @@
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
+}
+
+.portMarker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.portLabel {
+  background: #111827;
+  color: #f8fafc;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.9;
+}
+
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.confirmCard {
+  background: white;
+  padding: 20px 24px;
+  border-radius: 16px;
+  min-width: 280px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirmCard h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.confirmCard p {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.confirmActions button {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 600;
+  background: #1d4ed8;
+  color: white;
+  cursor: pointer;
+}
+
+.confirmActions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  background: #e2e8f0 !important;
+  color: #1f2937 !important;
 }
