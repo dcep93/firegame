@@ -2,6 +2,8 @@ import { LobbyType } from "../../../../shared/store";
 import utils, { store } from "./utils";
 
 export type Resource = "wood" | "sheep" | "wheat" | "brick" | "ore" | "desert";
+export type ResourceCard = Exclude<Resource, "desert">;
+export type ResourceCounts = Record<ResourceCard, number>;
 
 export type Tile = {
   resource: Resource;
@@ -16,6 +18,17 @@ export type Params = {
 export type PlayerType = {
   userId: string;
   userName: string;
+  resources: ResourceCounts;
+  settlements: number;
+  cities: number;
+  roads: number;
+  victoryPoints: number;
+};
+
+export type RollType = {
+  dice: [number, number];
+  total: number;
+  playerIndex: number;
 };
 
 export type GameType = {
@@ -23,6 +36,8 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
   tiles: Tile[];
+  hasRolled: boolean;
+  lastRoll?: RollType;
 };
 
 const baseNumbers = [
@@ -53,6 +68,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
     currentPlayer: 0,
     players: [],
     tiles,
+    hasRolled: false,
   };
 
   game.players = utils
@@ -61,6 +77,17 @@ function NewGame(params: Params): PromiseLike<GameType> {
     .map(([userId, userName]) => ({
       userId,
       userName,
+      resources: {
+        wood: 0,
+        sheep: 0,
+        wheat: 0,
+        brick: 0,
+        ore: 0,
+      },
+      settlements: 2,
+      cities: 0,
+      roads: 2,
+      victoryPoints: 2,
     }));
 
   return Promise.resolve(game);
