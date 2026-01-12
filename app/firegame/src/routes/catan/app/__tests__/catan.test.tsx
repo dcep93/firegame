@@ -320,6 +320,45 @@ describe("Catan game logic", () => {
     expect(game.setupPhase?.index).toBe(2);
   });
 
+  test("setup second settlement grants adjacent resources", () => {
+    const game: GameType = {
+      params: { lobby: baseLobby, citiesAndKnights: false },
+      currentPlayer: 0,
+      players: [
+        { ...makePlayer("u1", "Alice"), settlements: 1, victoryPoints: 1 },
+        makePlayer("u2", "Bob"),
+      ],
+      tiles: [
+        { resource: "wood", vertices: [0] },
+        { resource: "brick", vertices: [0] },
+        { resource: "desert", vertices: [0] },
+      ],
+      vertices: [{ id: 0, x: 0, y: 0 }],
+      roads: [],
+      hasRolled: false,
+      bank: {
+        resources: { wood: 19, sheep: 19, wheat: 19, brick: 19, ore: 19 },
+        commodities: { cloth: 0, coin: 0, paper: 0 },
+      },
+      setupPhase: { active: true, order: [0], index: 0 },
+    };
+    setStore(game);
+
+    render(<Main />);
+
+    fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
+
+    expect(game.players[0].resources).toEqual({
+      wood: 1,
+      sheep: 0,
+      wheat: 0,
+      brick: 1,
+      ore: 0,
+    });
+    expect(game.players[0].settlements).toBe(2);
+    expect(game.players[0].victoryPoints).toBe(2);
+  });
+
   test("spectators see a safe hand summary", () => {
     const game: GameType = {
       params: { lobby: baseLobby, citiesAndKnights: false },

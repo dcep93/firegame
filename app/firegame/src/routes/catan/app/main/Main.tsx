@@ -20,6 +20,15 @@ const resourceColors: Record<Tile["resource"], string> = {
   desert: "#d9c38f",
 };
 
+const playerColors = [
+  "#2563eb",
+  "#dc2626",
+  "#16a34a",
+  "#f97316",
+  "#9333ea",
+  "#0891b2",
+];
+
 const tileSize = 96;
 const vertexSize = 18;
 const edgeWidth = 12;
@@ -30,6 +39,17 @@ const commodityMap: Record<ResourceCard, Commodity | undefined> = {
   sheep: "cloth",
   wheat: "paper",
   ore: "coin",
+};
+
+const adjustHexColor = (hex: string, amount: number) => {
+  const normalized = hex.replace("#", "");
+  if (normalized.length !== 6) return hex;
+  const num = parseInt(normalized, 16);
+  const clamp = (value: number) => Math.min(255, Math.max(0, value));
+  const r = clamp((num >> 16) + amount);
+  const g = clamp(((num >> 8) & 0xff) + amount);
+  const b = clamp((num & 0xff) + amount);
+  return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
 };
 
 function Main() {
@@ -71,6 +91,9 @@ function Main() {
           ? totalCommodities(player.commodities)
           : 0)
       : 0;
+
+  const getPlayerColor = (playerIndex: number) =>
+    playerColors[playerIndex % playerColors.length];
 
   const canAfford = (cost: Partial<ResourceCounts>) =>
     Object.entries(cost).every(([resource, amount]) => {
@@ -432,6 +455,20 @@ function Main() {
       vertex.building = { playerIndex: game.currentPlayer, type: "settlement" };
       player.settlements += 1;
       player.victoryPoints += 1;
+      const gainedResources: ResourceCard[] = [];
+      if (isSetupActive && player.settlements === 2) {
+        game.tiles.forEach((tile) => {
+          if (
+            tile.resource !== "desert" &&
+            tile.vertices?.includes(vertexId)
+          ) {
+            const resource = tile.resource as ResourceCard;
+            if (grantResource(game.currentPlayer, resource)) {
+              gainedResources.push(resource);
+            }
+          }
+        });
+      }
       if (isSetupActive && game.setupPhase) {
         game.setupPhase.index += 1;
         if (game.setupPhase.index >= game.setupPhase.order.length) {
@@ -442,7 +479,11 @@ function Main() {
         }
       }
       setPlacementMode(null);
-      store.update("built a settlement");
+      store.update(
+        gainedResources.length > 0
+          ? `built a settlement and gained ${gainedResources.join(", ")}`
+          : "built a settlement"
+      );
     } else if (placementMode === "city") {
       const cost = { ore: 3, wheat: 2 };
       if (!canAfford(cost)) return;
@@ -683,9 +724,7 @@ function Main() {
                   width: length,
                   transform: `rotate(${angle}deg)`,
                   backgroundColor: isOwned
-                    ? roadOwner === game.currentPlayer
-                      ? "#2b59c3"
-                      : "#9aa3b2"
+                    ? getPlayerColor(roadOwner ?? 0)
                     : undefined,
                   opacity: isOwned ? 1 : 0.45,
                 }}
@@ -701,6 +740,10 @@ function Main() {
               vertex.building?.playerIndex !== undefined
                 ? game.players[vertex.building.playerIndex]
                 : null;
+            const ownerColor =
+              vertex.building?.playerIndex !== undefined
+                ? getPlayerColor(vertex.building.playerIndex)
+                : null;
             return (
               <button
                 key={`vertex-${vertex.id}`}
@@ -712,11 +755,13 @@ function Main() {
                   left: coords.left - vertexSize / 2,
                   top: coords.top - vertexSize / 2,
                   backgroundColor: isCity
-                    ? "#1f2937"
+                    ? ownerColor
+                      ? adjustHexColor(ownerColor, -30)
+                      : "#1f2937"
                     : isSettlement
-                    ? "#f59e0b"
+                    ? ownerColor || "#f59e0b"
                     : "#f9fafb",
-                  borderColor: owner ? "#2b59c3" : "#cbd5f5",
+                  borderColor: ownerColor || "#cbd5f5",
                 }}
                 disabled={
                   !canPlaceSettlement(vertex.id) && !canPlaceCity(vertex.id)
