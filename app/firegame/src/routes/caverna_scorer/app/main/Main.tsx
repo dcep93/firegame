@@ -17,6 +17,24 @@ const categories = [
 
 export default function Main() {
   const ref = React.useRef<HTMLInputElement>(null);
+  const updateTimer = React.useRef<number | null>(null);
+  React.useEffect(
+    () => () => {
+      if (updateTimer.current !== null) {
+        window.clearTimeout(updateTimer.current);
+      }
+    },
+    []
+  );
+  const scheduleUpdate = () => {
+    if (updateTimer.current !== null) {
+      window.clearTimeout(updateTimer.current);
+    }
+    updateTimer.current = window.setTimeout(() => {
+      store.update("updated scores");
+      updateTimer.current = null;
+    }, 300);
+  };
   const newPlayer = () =>
     Promise.resolve(ref.current!.value).then((playerName) =>
       Promise.resolve()
@@ -34,14 +52,19 @@ export default function Main() {
     categoryIndex: number,
     value: string
   ) =>
-    Promise.resolve().then(() => {
+    Promise.resolve().then((): boolean => {
+      const previousValue =
+        store.gameW.game.scoreSheet![playerName][categoryIndex];
       if (value.trim() === "") {
+        if (previousValue === undefined) return false;
         delete store.gameW.game.scoreSheet![playerName][categoryIndex];
-        return;
+        return true;
       }
       const parsedValue = Number.parseInt(value, 10);
-      if (Number.isNaN(parsedValue)) return;
+      if (Number.isNaN(parsedValue)) return false;
+      if (previousValue === parsedValue) return false;
       store.gameW.game.scoreSheet![playerName][categoryIndex] = parsedValue;
+      return true;
     });
 
   return (
@@ -99,7 +122,7 @@ export default function Main() {
                       store.gameW.game.scoreSheet![playerName][i]?.toString() ||
                       ""
                     }
-                    onInput={(e) =>
+                    onChange={(e) =>
                       Promise.resolve()
                         .then(() =>
                           updateScore(
@@ -108,7 +131,9 @@ export default function Main() {
                             (e.target as HTMLInputElement).value
                           )
                         )
-                        .then(() => store.update("."))
+                        .then((didUpdate) => {
+                          if (didUpdate) scheduleUpdate();
+                        })
                     }
                   />
                 </div>
