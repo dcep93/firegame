@@ -55,6 +55,12 @@ export type RollType = {
   playerIndex: number;
 };
 
+export type SetupPhase = {
+  active: boolean;
+  order: number[];
+  index: number;
+};
+
 export type GameType = {
   params: Params;
   currentPlayer: number;
@@ -70,6 +76,7 @@ export type GameType = {
   hasRolled: boolean;
   lastRoll?: RollType;
   pendingRobber?: boolean;
+  setupPhase?: SetupPhase;
 };
 
 const baseNumbers = [
@@ -85,9 +92,9 @@ const baseBankResources: ResourceCounts = {
 };
 
 const baseBankCommodities: CommodityCounts = {
-  cloth: 6,
-  coin: 6,
-  paper: 6,
+  cloth: 0,
+  coin: 0,
+  paper: 0,
 };
 
 const cornerAngles = [30, 90, 150, 210, 270, 330].map(
@@ -140,7 +147,7 @@ const buildBoard = (resources: Resource[], numbers: number[]) => {
   return { tiles, vertices };
 };
 
-function NewGame(params: Params): PromiseLike<GameType> {
+function NewGame(params: Params): Promise<GameType> {
   const baseResources = [
     ...utils.repeat("wood", 4),
     ...utils.repeat("sheep", 4),
@@ -165,7 +172,9 @@ function NewGame(params: Params): PromiseLike<GameType> {
     robberTileIndex: robberTileIndex >= 0 ? robberTileIndex : undefined,
     bank: {
       resources: { ...baseBankResources },
-      commodities: { ...baseBankCommodities },
+      commodities: params.citiesAndKnights
+        ? { cloth: 6, coin: 6, paper: 6 }
+        : { ...baseBankCommodities },
     },
     hasRolled: false,
   };
@@ -183,17 +192,29 @@ function NewGame(params: Params): PromiseLike<GameType> {
         brick: 0,
         ore: 0,
       },
-      commodities: {
-        cloth: 0,
-        coin: 0,
-        paper: 0,
-      },
-      settlements: 2,
+      commodities: params.citiesAndKnights
+        ? {
+            cloth: 0,
+            coin: 0,
+            paper: 0,
+          }
+        : { ...baseBankCommodities },
+      settlements: 0,
       cities: 0,
-      roads: 2,
+      roads: 0,
       playedKnights: 0,
-      victoryPoints: 2,
+      victoryPoints: 0,
     }));
+
+  const playerCount = game.players.length;
+  const forward = utils.count(playerCount);
+  const order = [...forward, ...[...forward].reverse()];
+  game.setupPhase = {
+    active: true,
+    order,
+    index: 0,
+  };
+  game.currentPlayer = order[0] ?? 0;
 
   return Promise.resolve(game);
 }

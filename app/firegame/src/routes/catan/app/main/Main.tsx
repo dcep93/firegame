@@ -35,16 +35,28 @@ const commodityMap: Record<ResourceCard, Commodity | undefined> = {
 function Main() {
   const game = store.gameW.game;
   const currentPlayer = utils.getCurrent(game);
-  const me = utils.getMe(game);
+  const myIndex = utils.myIndex(game);
+  const me = myIndex >= 0 ? game.players[myIndex] : null;
   const [placementMode, setPlacementMode] = React.useState<
     "settlement" | "city" | "road" | null
   >(null);
 
-  const canRoll = utils.isMyTurn(game) && !game.hasRolled;
+  const isSetupActive = game.setupPhase?.active ?? false;
+  const canRoll = utils.isMyTurn(game) && !game.hasRolled && !isSetupActive;
   const canAct =
-    utils.isMyTurn(game) && game.hasRolled && !game.pendingRobber;
+    utils.isMyTurn(game) &&
+    (isSetupActive || (game.hasRolled && !game.pendingRobber));
   const canMoveRobber =
-    utils.isMyTurn(game) && game.hasRolled && !!game.pendingRobber;
+    utils.isMyTurn(game) &&
+    !isSetupActive &&
+    game.hasRolled &&
+    !!game.pendingRobber;
+
+  React.useEffect(() => {
+    if (isSetupActive && placementMode !== "settlement") {
+      setPlacementMode("settlement");
+    }
+  }, [isSetupActive, placementMode]);
 
   const totalResources = (resources: ResourceCounts) =>
     Object.values(resources).reduce((sum, value) => sum + value, 0);
@@ -52,8 +64,13 @@ function Main() {
   const totalCommodities = (commodities: CommodityCounts) =>
     Object.values(commodities).reduce((sum, value) => sum + value, 0);
 
-  const totalCards = (player: typeof game.players[number]) =>
-    totalResources(player.resources) + totalCommodities(player.commodities);
+  const totalCards = (player: typeof game.players[number] | null) =>
+    player
+      ? totalResources(player.resources) +
+        (game.params.citiesAndKnights
+          ? totalCommodities(player.commodities)
+          : 0)
+      : 0;
 
   const canAfford = (cost: Partial<ResourceCounts>) =>
     Object.entries(cost).every(([resource, amount]) => {
@@ -199,6 +216,7 @@ function Main() {
     const vertex = getVertex(vertexId);
     if (!vertex || vertex.building) return false;
     if (hasAdjacentBuilding(vertexId)) return false;
+    if (isSetupActive) return true;
     if (!hasAnyBuilding(game.currentPlayer)) return true;
     return (game.roads || []).some(
       (road) =>
@@ -373,7 +391,7 @@ function Main() {
   };
 
   const endTurn = () => {
-    if (!canAct) return;
+    if (!canAct || isSetupActive) return;
     utils.incrementPlayerTurn(game);
     game.hasRolled = false;
     game.pendingRobber = false;
@@ -382,21 +400,21 @@ function Main() {
   };
 
   const buildRoad = () => {
-    if (!canAct) return;
+    if (!canAct || isSetupActive) return;
     const cost = { brick: 1, wood: 1 };
     if (!canAfford(cost)) return;
     setPlacementMode("road");
   };
 
   const buildSettlement = () => {
-    if (!canAct) return;
+    if (!canAct || isSetupActive) return;
     const cost = { brick: 1, wood: 1, sheep: 1, wheat: 1 };
     if (!canAfford(cost)) return;
     setPlacementMode("settlement");
   };
 
   const upgradeCity = () => {
-    if (!canAct) return;
+    if (!canAct || isSetupActive) return;
     const cost = { ore: 3, wheat: 2 };
     if (!canAfford(cost)) return;
     setPlacementMode("city");
@@ -406,14 +424,23 @@ function Main() {
     const player = game.players[game.currentPlayer];
     if (placementMode === "settlement") {
       const cost = { brick: 1, wood: 1, sheep: 1, wheat: 1 };
-      if (!canAfford(cost)) return;
+      if (!isSetupActive && !canAfford(cost)) return;
       if (!canPlaceSettlement(vertexId)) return;
-      applyCost(cost);
+      if (!isSetupActive) applyCost(cost);
       const vertex = getVertex(vertexId);
       if (!vertex) return;
       vertex.building = { playerIndex: game.currentPlayer, type: "settlement" };
       player.settlements += 1;
       player.victoryPoints += 1;
+      if (isSetupActive && game.setupPhase) {
+        game.setupPhase.index += 1;
+        if (game.setupPhase.index >= game.setupPhase.order.length) {
+          game.setupPhase.active = false;
+          game.currentPlayer = 0;
+        } else {
+          game.currentPlayer = game.setupPhase.order[game.setupPhase.index];
+        }
+      }
       setPlacementMode(null);
       store.update("built a settlement");
     } else if (placementMode === "city") {
@@ -493,8 +520,11 @@ function Main() {
         </div>
         <div>
           Your hand:{" "}
-          <strong>{totalCards(me)} cards</strong>
+          <strong>{me ? `${totalCards(me)} cards` : "Spectating"}</strong>
         </div>
+        {isSetupActive && (
+          <div className={css.alert}>Setup: place a settlement</div>
+        )}
         {game.pendingRobber && (
           <div className={css.alert}>Move the robber</div>
         )}
@@ -512,6 +542,7 @@ function Main() {
           onClick={buildRoad}
           disabled={
             !canAct ||
+            isSetupActive ||
             !canAfford({
               brick: 1,
               wood: 1,
@@ -524,6 +555,7 @@ function Main() {
           onClick={buildSettlement}
           disabled={
             !canAct ||
+            isSetupActive ||
             !canAfford({ brick: 1, wood: 1, sheep: 1, wheat: 1 })
           }
         >
@@ -533,13 +565,14 @@ function Main() {
           onClick={upgradeCity}
           disabled={
             !canAct ||
+            isSetupActive ||
             !canAfford({ ore: 3, wheat: 2 }) ||
             game.players[game.currentPlayer].settlements < 1
           }
         >
           Upgrade to city (3 ore, 2 wheat)
         </button>
-        <button onClick={endTurn} disabled={!canAct}>
+        <button onClick={endTurn} disabled={!canAct || isSetupActive}>
           End turn
         </button>
       </div>
@@ -571,12 +604,15 @@ function Main() {
                   <span className={css.resourceCount}>{amount}</span>
                 </div>
               ))}
-              {Object.entries(player.commodities).map(([commodity, amount]) => (
-                <div key={commodity} className={css.resourceItem}>
-                  <span className={css.resourceLabel}>{commodity}</span>
-                  <span className={css.resourceCount}>{amount}</span>
-                </div>
-              ))}
+              {game.params.citiesAndKnights &&
+                Object.entries(player.commodities).map(
+                  ([commodity, amount]) => (
+                    <div key={commodity} className={css.resourceItem}>
+                      <span className={css.resourceLabel}>{commodity}</span>
+                      <span className={css.resourceCount}>{amount}</span>
+                    </div>
+                  )
+                )}
             </div>
           </div>
         ))}

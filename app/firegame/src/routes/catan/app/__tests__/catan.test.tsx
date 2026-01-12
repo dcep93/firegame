@@ -89,11 +89,11 @@ const makePlayer = (
     coin: 0,
     paper: 0,
   },
-  settlements: 2,
+  settlements: 0,
   cities: 0,
-  roads: 2,
+  roads: 0,
   playedKnights: 0,
-  victoryPoints: 2,
+  victoryPoints: 0,
 });
 
 describe("Catan game logic", () => {
@@ -147,14 +147,34 @@ describe("Catan game logic", () => {
       coin: 0,
       paper: 0,
     });
+    expect(gameA.setupPhase?.active).toBe(true);
+    expect(gameA.setupPhase?.order).toEqual([0, 1, 1, 0]);
     expect(gameA.currentPlayer).toBe(0);
+  });
+
+  test("newGame base game omits starting commodities in the bank", async () => {
+    setBaseStore();
+    const params: Params = {
+      lobby: baseLobby,
+      citiesAndKnights: false,
+    };
+    const game = await withSeed(2024, () => NewGame(params));
+
+    expect(game.bank?.commodities).toEqual({
+      cloth: 0,
+      coin: 0,
+      paper: 0,
+    });
   });
 
   test("roll dice grants resources for matching tiles", () => {
     const game: GameType = {
       params: { lobby: baseLobby, citiesAndKnights: false },
       currentPlayer: 0,
-      players: [makePlayer("u1", "Alice"), makePlayer("u2", "Bob")],
+      players: [
+        { ...makePlayer("u1", "Alice"), settlements: 1, victoryPoints: 1 },
+        makePlayer("u2", "Bob"),
+      ],
       tiles: [
         { resource: "wood", number: 5, vertices: [0] },
         { resource: "desert" },
@@ -189,12 +209,16 @@ describe("Catan game logic", () => {
       params: { lobby: baseLobby, citiesAndKnights: false },
       currentPlayer: 0,
       players: [
-        makePlayer("u1", "Alice", {
-          brick: 1,
-          wood: 1,
-          sheep: 1,
-          wheat: 1,
-        }),
+        {
+          ...makePlayer("u1", "Alice", {
+            brick: 1,
+            wood: 1,
+            sheep: 1,
+            wheat: 1,
+          }),
+          settlements: 2,
+          victoryPoints: 2,
+        },
         makePlayer("u2", "Bob"),
       ],
       tiles: [{ resource: "desert", vertices: [0] }],
@@ -226,7 +250,11 @@ describe("Catan game logic", () => {
       params: { lobby: baseLobby, citiesAndKnights: false },
       currentPlayer: 0,
       players: [
-        makePlayer("u1", "Alice", { ore: 3, wheat: 2 }),
+        {
+          ...makePlayer("u1", "Alice", { ore: 3, wheat: 2 }),
+          settlements: 1,
+          victoryPoints: 2,
+        },
         makePlayer("u2", "Bob"),
       ],
       tiles: [{ resource: "desert", vertices: [0] }],
@@ -236,7 +264,6 @@ describe("Catan game logic", () => {
       roads: [],
       hasRolled: true,
     };
-    game.players[0].settlements = 1;
     setStore(game);
 
     render(<Main />);
@@ -255,5 +282,60 @@ describe("Catan game logic", () => {
     expect(game.players[0].settlements).toBe(0);
     expect(game.players[0].cities).toBe(1);
     expect(game.players[0].victoryPoints).toBe(3);
+  });
+
+  test("setup phase places settlements in snake order without cost", () => {
+    const game: GameType = {
+      params: { lobby: baseLobby, citiesAndKnights: false },
+      currentPlayer: 0,
+      players: [makePlayer("u1", "Alice"), makePlayer("u2", "Bob")],
+      tiles: [
+        { resource: "desert", vertices: [0] },
+        { resource: "desert", vertices: [1] },
+      ],
+      vertices: [
+        { id: 0, x: 0, y: 0 },
+        { id: 1, x: 2, y: 0 },
+      ],
+      roads: [],
+      hasRolled: false,
+      setupPhase: { active: true, order: [0, 1, 1, 0], index: 0 },
+    };
+    setStore(game);
+
+    const { rerender } = render(<Main />);
+
+    fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
+    expect(game.players[0].settlements).toBe(1);
+    expect(game.players[0].victoryPoints).toBe(1);
+    expect(game.currentPlayer).toBe(1);
+
+    (store as any).me = { ...baseMe, userId: "u2" };
+    rerender(<Main />);
+
+    fireEvent.click(screen.getByRole("button", { name: /vertex-1/i }));
+    expect(game.players[1].settlements).toBe(1);
+    expect(game.players[1].victoryPoints).toBe(1);
+    expect(game.currentPlayer).toBe(1);
+    expect(game.setupPhase?.index).toBe(2);
+  });
+
+  test("spectators see a safe hand summary", () => {
+    const game: GameType = {
+      params: { lobby: baseLobby, citiesAndKnights: false },
+      currentPlayer: 0,
+      players: [makePlayer("u1", "Alice"), makePlayer("u2", "Bob")],
+      tiles: [{ resource: "desert", vertices: [0] }],
+      vertices: [{ id: 0, x: 0, y: 0 }],
+      roads: [],
+      hasRolled: false,
+    };
+    setStore(game);
+    (store as any).me = { ...baseMe, userId: "spectator" };
+
+    render(<Main />);
+
+    expect(screen.getByText(/your hand:/i)).toBeInTheDocument();
+    expect(screen.getByText(/spectating/i)).toBeInTheDocument();
   });
 });
