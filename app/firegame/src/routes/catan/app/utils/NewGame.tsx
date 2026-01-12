@@ -25,15 +25,12 @@ export type GameType = {
   tiles: Tile[];
 };
 
-const repeat = <X,>(value: X, count: number): X[] =>
-  Array.from({ length: count }, () => value);
-
 const baseResources = [
-  ...repeat("wood", 4),
-  ...repeat("sheep", 4),
-  ...repeat("wheat", 4),
-  ...repeat("brick", 3),
-  ...repeat("ore", 3),
+  ...utils.repeat("wood", 4),
+  ...utils.repeat("sheep", 4),
+  ...utils.repeat("wheat", 4),
+  ...utils.repeat("brick", 3),
+  ...utils.repeat("ore", 3),
   "desert",
 ] as Resource[];
 
