@@ -17,24 +17,9 @@ const categories = [
 
 export default function Main() {
   const ref = React.useRef<HTMLInputElement>(null);
-  const updateTimer = React.useRef<number | null>(null);
-  React.useEffect(
-    () => () => {
-      if (updateTimer.current !== null) {
-        window.clearTimeout(updateTimer.current);
-      }
-    },
-    []
-  );
-  const scheduleUpdate = () => {
-    if (updateTimer.current !== null) {
-      window.clearTimeout(updateTimer.current);
-    }
-    updateTimer.current = window.setTimeout(() => {
-      store.update("updated scores");
-      updateTimer.current = null;
-    }, 300);
-  };
+  const [editingValues, setEditingValues] = React.useState<
+    Record<string, string>
+  >({});
   const newPlayer = () =>
     Promise.resolve(ref.current!.value).then((playerName) =>
       Promise.resolve()
@@ -66,6 +51,8 @@ export default function Main() {
       store.gameW.game.scoreSheet![playerName][categoryIndex] = parsedValue;
       return true;
     });
+  const inputKey = (playerName: string, categoryIndex: number) =>
+    `${playerName}:${categoryIndex}`;
 
   return (
     <div>
@@ -119,22 +106,31 @@ export default function Main() {
                 <div key={i}>
                   <input
                     value={
+                      editingValues[inputKey(playerName, i)] ??
                       store.gameW.game.scoreSheet![playerName][i]?.toString() ||
                       ""
                     }
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const key = inputKey(playerName, i);
+                      const value = (e.target as HTMLInputElement).value;
+                      setEditingValues((prev) => ({ ...prev, [key]: value }));
+                    }}
+                    onBlur={(e) => {
+                      const key = inputKey(playerName, i);
+                      const value = (e.target as HTMLInputElement).value;
                       Promise.resolve()
-                        .then(() =>
-                          updateScore(
-                            playerName,
-                            i,
-                            (e.target as HTMLInputElement).value
-                          )
-                        )
+                        .then(() => updateScore(playerName, i, value))
                         .then((didUpdate) => {
-                          if (didUpdate) scheduleUpdate();
-                        })
-                    }
+                          setEditingValues((prev) => {
+                            const next = { ...prev };
+                            delete next[key];
+                            return next;
+                          });
+                          if (didUpdate) {
+                            store.update("updated scores");
+                          }
+                        });
+                    }}
                   />
                 </div>
               ))}
