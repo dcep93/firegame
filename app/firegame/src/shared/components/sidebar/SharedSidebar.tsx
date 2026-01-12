@@ -44,7 +44,9 @@ abstract class SharedSidebar extends React.Component {
       <div>
         {this.renderNewGameExtras()}
         <div>
-          <button onClick={this.startNewGame.bind(this)}>New Game</button>
+          <button onClick={this.startNewGame.bind(this)} data-demo="new-game">
+            New Game
+          </button>
         </div>
         <div>
           <button

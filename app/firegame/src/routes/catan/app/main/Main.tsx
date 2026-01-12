@@ -63,6 +63,7 @@ function Main() {
   const currentPlayer = utils.getCurrent(game);
   const myIndex = utils.myIndex(game);
   const me = myIndex >= 0 ? game.players[myIndex] : null;
+  const isDemoMode = game.params.isDemo ?? false;
   const [pendingAction, setPendingAction] = React.useState<null | {
     type: "settlement" | "city" | "road";
     label: string;
@@ -72,12 +73,13 @@ function Main() {
 
   const isSetupActive = game.setupPhase?.active ?? false;
   const setupStep = game.setupPhase?.step ?? "settlement";
-  const canRoll = utils.isMyTurn(game) && !game.hasRolled && !isSetupActive;
+  const canRoll =
+    (isDemoMode || utils.isMyTurn(game)) && !game.hasRolled && !isSetupActive;
   const canAct =
-    utils.isMyTurn(game) &&
+    (isDemoMode || utils.isMyTurn(game)) &&
     (isSetupActive || (game.hasRolled && !game.pendingRobber));
   const canMoveRobber =
-    utils.isMyTurn(game) &&
+    (isDemoMode || utils.isMyTurn(game)) &&
     !isSetupActive &&
     game.hasRolled &&
     !!game.pendingRobber;
@@ -100,12 +102,14 @@ function Main() {
     playerColors[playerIndex % playerColors.length];
 
   const canAfford = (cost: Partial<ResourceCounts>) =>
+    isDemoMode ||
     Object.entries(cost).every(([resource, amount]) => {
       const key = resource as ResourceCard;
       return game.players[game.currentPlayer].resources[key] >= (amount || 0);
     });
 
   const applyCost = (cost: Partial<ResourceCounts>) => {
+    if (isDemoMode) return;
     Object.entries(cost).forEach(([resource, amount]) => {
       const key = resource as ResourceCard;
       game.players[game.currentPlayer].resources[key] -= amount || 0;
@@ -659,7 +663,7 @@ function Main() {
         {game.pendingRobber && <div className={css.alert}>Move the robber</div>}
       </div>
       <div className={css.actions}>
-        <button onClick={rollDice} disabled={!canRoll}>
+        <button onClick={rollDice} disabled={!canRoll} data-demo="roll-dice">
           Roll dice
         </button>
         <button
@@ -813,6 +817,7 @@ function Main() {
                 type="button"
                 onClick={() => handleEdgeClick(edge)}
                 aria-label={`edge-${edge[0]}-${edge[1]}`}
+                data-demo="edge"
                 className={css.edge}
                 style={{
                   left: midX - length / 2,
@@ -869,6 +874,7 @@ function Main() {
                 type="button"
                 onClick={() => handleVertexClick(vertex.id)}
                 aria-label={`vertex-${vertex.id}`}
+                data-demo="vertex"
                 className={css.vertex}
                 style={{
                   left: coords.left - vertexSize / 2,
@@ -920,6 +926,7 @@ function Main() {
                 type="button"
                 onClick={confirmPlacement}
                 disabled={!pendingAffordable}
+                data-demo="confirm"
               >
                 Confirm
               </button>

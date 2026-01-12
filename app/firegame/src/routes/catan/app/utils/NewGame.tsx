@@ -35,6 +35,7 @@ export type Tile = {
 export type Params = {
   lobby: LobbyType;
   citiesAndKnights: boolean;
+  isDemo?: boolean;
 };
 
 export type PortType = "generic" | ResourceCard;
@@ -206,6 +207,10 @@ const buildPorts = (tiles: Tile[]) => {
 };
 
 function NewGame(params: Params): Promise<GameType> {
+  const normalizedParams = {
+    ...params,
+    isDemo: params.isDemo ?? false,
+  };
   const baseResources = [
     ...utils.repeat("wood", 4),
     ...utils.repeat("sheep", 4),
@@ -222,7 +227,7 @@ function NewGame(params: Params): Promise<GameType> {
   const ports = buildPorts(tiles);
 
   const game: GameType = {
-    params,
+    params: normalizedParams,
     currentPlayer: 0,
     players: [],
     tiles,
@@ -232,7 +237,7 @@ function NewGame(params: Params): Promise<GameType> {
     ports,
     bank: {
       resources: { ...baseBankResources },
-      commodities: params.citiesAndKnights
+      commodities: normalizedParams.citiesAndKnights
         ? { cloth: 6, coin: 6, paper: 6 }
         : { ...baseBankCommodities },
     },
@@ -252,7 +257,7 @@ function NewGame(params: Params): Promise<GameType> {
         brick: 0,
         ore: 0,
       },
-      commodities: params.citiesAndKnights
+      commodities: normalizedParams.citiesAndKnights
         ? {
             cloth: 0,
             coin: 0,

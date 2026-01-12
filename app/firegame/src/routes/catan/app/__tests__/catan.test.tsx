@@ -8,6 +8,16 @@ import NewGame, {
   Resource,
   ResourceCard,
 } from "../utils/NewGame";
+import {
+  baseGameScript,
+  citiesAndKnightsScript,
+} from "../utils/gameScripts";
+import {
+  createDomDemoDriver,
+  hasScriptWinner,
+  runGameScript,
+  withSeed,
+} from "../utils/demoRunner";
 import store from "../../../../shared/store";
 
 const baseLobby = {
@@ -45,28 +55,6 @@ const setStore = (game: GameType) => {
 const setBaseStore = () => {
   (store as any).me = { ...baseMe };
   (store as any).lobby = { ...baseLobby };
-};
-
-const seedRandom = (seed: number) => {
-  let t = seed;
-  return () => {
-    t |= 0;
-    t = (t + 0x6d2b79f5) | 0;
-    let r = Math.imul(t ^ (t >>> 15), 1 | t);
-    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
-    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
-  };
-};
-
-const withSeed = async <T,>(seed: number, fn: () => Promise<T> | T) => {
-  const randomSpy = jest
-    .spyOn(Math, "random")
-    .mockImplementation(seedRandom(seed));
-  try {
-    return await fn();
-  } finally {
-    randomSpy.mockRestore();
-  }
 };
 
 const makePlayer = (
@@ -385,5 +373,33 @@ describe("Catan game logic", () => {
 
     expect(screen.getByText(/your hand:/i)).toBeInTheDocument();
     expect(screen.getByText(/spectating/i)).toBeInTheDocument();
+  });
+
+  test.each([
+    ["base", baseGameScript, false],
+    ["cities and knights", citiesAndKnightsScript, true],
+  ])("demo script produces a winner (%s)", async (_label, script, ckEnabled) => {
+    setBaseStore();
+    const params: Params = {
+      lobby: baseLobby,
+      citiesAndKnights: ckEnabled,
+      isDemo: true,
+    };
+    const game = await withSeed(1337, () => NewGame(params));
+    setStore(game);
+
+    const { rerender } = render(<Main />);
+    const driver = createDomDemoDriver(() => store.gameW.game);
+
+    await runGameScript(script, driver, {
+      beforeEach: () => {
+        expect(hasScriptWinner(store.gameW.game)).toBe(false);
+      },
+      afterEach: () => {
+        rerender(<Main />);
+      },
+    });
+
+    expect(hasScriptWinner(store.gameW.game)).toBe(true);
   });
 });
