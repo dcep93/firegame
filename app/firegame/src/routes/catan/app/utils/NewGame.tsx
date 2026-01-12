@@ -50,7 +50,7 @@ export type PlayerType = {
   playedKnights: number;
   victoryPoints: number;
   devCards: number;
-  ports: PortType[];
+  ports?: PortType[];
 };
 
 export type RollType = {
@@ -90,9 +90,7 @@ export type GameType = {
   setupPhase?: SetupPhase;
 };
 
-const baseNumbers = [
-  2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12,
-];
+const baseNumbers = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
 
 const baseBankResources: ResourceCounts = {
   wood: 19,
@@ -159,7 +157,10 @@ const buildBoard = (resources: Resource[], numbers: number[]) => {
 };
 
 const buildPorts = (tiles: Tile[]) => {
-  const edgeCounts = new Map<string, { edge: [number, number]; count: number }>();
+  const edgeCounts = new Map<
+    string,
+    { edge: [number, number]; count: number }
+  >();
 
   tiles.forEach((tile) => {
     const verts = tile.vertices || [];
@@ -194,10 +195,9 @@ const buildPorts = (tiles: Tile[]) => {
   ];
 
   const shuffledPorts = utils.shuffle([...portTypes]);
-  const shuffledEdges = utils.shuffle([...outerEdges]).slice(
-    0,
-    shuffledPorts.length
-  );
+  const shuffledEdges = utils
+    .shuffle([...outerEdges])
+    .slice(0, shuffledPorts.length);
 
   return shuffledEdges.map((edge, index) => ({
     edge,

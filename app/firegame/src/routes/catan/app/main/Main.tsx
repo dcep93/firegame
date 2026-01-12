@@ -1,4 +1,5 @@
 import React from "react";
+import css from "../index.module.css";
 import {
   Commodity,
   CommodityCounts,
@@ -9,7 +10,6 @@ import {
   Vertex,
 } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
-import css from "../index.module.css";
 
 const resourceColors: Record<Tile["resource"], string> = {
   wood: "#7fb069",
@@ -88,7 +88,7 @@ function Main() {
   const totalCommodities = (commodities: CommodityCounts) =>
     Object.values(commodities).reduce((sum, value) => sum + value, 0);
 
-  const totalCards = (player: typeof game.players[number] | null) =>
+  const totalCards = (player: (typeof game.players)[number] | null) =>
     player
       ? totalResources(player.resources) +
         (game.params.citiesAndKnights
@@ -150,8 +150,7 @@ function Main() {
 
   const vertices = game.vertices || [];
 
-  const getVertex = (id: number) =>
-    vertices.find((vertex) => vertex.id === id);
+  const getVertex = (id: number) => vertices.find((vertex) => vertex.id === id);
 
   const getTileCenter = (tile: Tile) => {
     const verts = tile.vertices || [];
@@ -198,8 +197,7 @@ function Main() {
 
   const hasAdjacentBuilding = (vertexId: number) =>
     vertices.some(
-      (vertex) =>
-        vertex.building && adjacencyMap.get(vertexId)?.has(vertex.id)
+      (vertex) => vertex.building && adjacencyMap.get(vertexId)?.has(vertex.id)
     );
 
   const hasAnyBuilding = (playerIndex: number) =>
@@ -210,7 +208,10 @@ function Main() {
       (road) => road.edge[0] === edge[0] && road.edge[1] === edge[1]
     );
 
-  const isEdgeConnectedToPlayer = (edge: [number, number], playerIndex: number) =>
+  const isEdgeConnectedToPlayer = (
+    edge: [number, number],
+    playerIndex: number
+  ) =>
     (game.roads || []).some(
       (road) =>
         road.playerIndex === playerIndex &&
@@ -230,7 +231,10 @@ function Main() {
     if (!canAct || (isSetupActive && setupStep !== "road")) return false;
     if (isEdgeOccupied(edge)) return false;
     const playerIndex = game.currentPlayer;
-    if (!hasAnyBuilding(playerIndex) && getPlayerEdges(playerIndex).length === 0)
+    if (
+      !hasAnyBuilding(playerIndex) &&
+      getPlayerEdges(playerIndex).length === 0
+    )
       return true;
     return (
       isEdgeConnectedToPlayer(edge, playerIndex) ||
@@ -247,8 +251,7 @@ function Main() {
     if (!hasAnyBuilding(game.currentPlayer)) return true;
     return (game.roads || []).some(
       (road) =>
-        road.playerIndex === game.currentPlayer &&
-        road.edge.includes(vertexId)
+        road.playerIndex === game.currentPlayer && road.edge.includes(vertexId)
     );
   };
 
@@ -355,7 +358,8 @@ function Main() {
       game.pendingRobber = true;
       game.players.forEach((player, index) => {
         const cardCount =
-          totalResources(player.resources) + totalCommodities(player.commodities);
+          totalResources(player.resources) +
+          totalCommodities(player.commodities);
         if (cardCount > 7) {
           discardRandomCard(index, Math.floor(cardCount / 2));
         }
@@ -412,9 +416,7 @@ function Main() {
         ? `and ${gained.join(", ")}`
         : "and found no matching tiles";
 
-    store.update(
-      `rolled ${total} (${die1} + ${die2}) ${gainSummary}`.trim()
-    );
+    store.update(`rolled ${total} (${die1} + ${die2}) ${gainSummary}`.trim());
   };
 
   const endTurn = () => {
@@ -448,6 +450,7 @@ function Main() {
     const player = game.players[game.currentPlayer];
     ports.forEach((port) => {
       if (port.edge.includes(vertexId)) {
+        if (!player.ports) player.ports = [];
         if (!player.ports.includes(port.type)) {
           player.ports.push(port.type);
         }
@@ -602,9 +605,7 @@ function Main() {
       const stolen = stealFromPlayer(targetIndex);
       store.update(
         stolen
-          ? `moved the robber and stole a card from ${
-              game.players[targetIndex].userName
-            }`
+          ? `moved the robber and stole a card from ${game.players[targetIndex].userName}`
           : "moved the robber"
       );
     } else {
@@ -655,9 +656,7 @@ function Main() {
           <strong>{me ? `${totalCards(me)} cards` : "Spectating"}</strong>
         </div>
         {setupMessage && <div className={css.alert}>{setupMessage}</div>}
-        {game.pendingRobber && (
-          <div className={css.alert}>Move the robber</div>
-        )}
+        {game.pendingRobber && <div className={css.alert}>Move the robber</div>}
       </div>
       <div className={css.actions}>
         <button onClick={rollDice} disabled={!canRoll}>
@@ -694,7 +693,9 @@ function Main() {
                   css.playerCard,
                   index === game.currentPlayer ? css.activePlayer : "",
                 ].join(" ")}
-                style={{ ["--player-color" as string]: color } as React.CSSProperties}
+                style={
+                  { ["--player-color" as string]: color } as React.CSSProperties
+                }
               >
                 <div className={css.playerHeader}>
                   <strong>{player.userName}</strong>
@@ -715,11 +716,11 @@ function Main() {
                   </span>
                   <span>{player.devCards} dev cards</span>
                 </div>
-                {player.ports.length > 0 && (
+                {player.ports?.length && (
                   <div className={css.portList}>
                     Ports:{" "}
-                    {player.ports
-                      .map((port) =>
+                    {player
+                      .ports!.map((port) =>
                         port === "generic" ? "3:1" : `${port} 2:1`
                       )
                       .join(", ")}
@@ -793,7 +794,10 @@ function Main() {
             const end = toBoardCoords(v2.x, v2.y);
             const midX = (start.left + end.left) / 2;
             const midY = (start.top + end.top) / 2;
-            const length = Math.hypot(end.left - start.left, end.top - start.top);
+            const length = Math.hypot(
+              end.left - start.left,
+              end.top - start.top
+            );
             const angle =
               (Math.atan2(end.top - start.top, end.left - start.left) * 180) /
               Math.PI;
@@ -887,8 +891,7 @@ function Main() {
                         sheep: 1,
                         wheat: 1,
                       }))) &&
-                  (!canPlaceCity(vertex.id) ||
-                    !canAfford({ ore: 3, wheat: 2 }))
+                  (!canPlaceCity(vertex.id) || !canAfford({ ore: 3, wheat: 2 }))
                 }
                 title={
                   owner
