@@ -29,6 +29,20 @@ export default function Main() {
         )
         .then(() => store.update(`${playerName} joined`))
     );
+  const updateScore = (
+    playerName: string,
+    categoryIndex: number,
+    value: string
+  ) =>
+    Promise.resolve().then(() => {
+      if (value.trim() === "") {
+        delete store.gameW.game.scoreSheet![playerName][categoryIndex];
+        return;
+      }
+      const parsedValue = Number.parseInt(value, 10);
+      if (Number.isNaN(parsedValue)) return;
+      store.gameW.game.scoreSheet![playerName][categoryIndex] = parsedValue;
+    });
 
   return (
     <div>
@@ -81,15 +95,18 @@ export default function Main() {
               {categories.map((c, i) => (
                 <div key={i}>
                   <input
-                    defaultValue={store.gameW.game.scoreSheet![playerName][
-                      i
-                    ]?.toString()}
-                    onChange={(e) =>
+                    value={
+                      store.gameW.game.scoreSheet![playerName][i]?.toString() ||
+                      ""
+                    }
+                    onInput={(e) =>
                       Promise.resolve()
-                        .then(
-                          () =>
-                            (store.gameW.game.scoreSheet![playerName][i] =
-                              parseInt(e.target.value))
+                        .then(() =>
+                          updateScore(
+                            playerName,
+                            i,
+                            (e.target as HTMLInputElement).value
+                          )
                         )
                         .then(() => store.update("."))
                     }
