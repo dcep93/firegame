@@ -25,20 +25,19 @@ export type GameType = {
   tiles: Tile[];
 };
 
-const baseResources = [
-  ...utils.repeat("wood", 4),
-  ...utils.repeat("sheep", 4),
-  ...utils.repeat("wheat", 4),
-  ...utils.repeat("brick", 3),
-  ...utils.repeat("ore", 3),
-  "desert",
-] as Resource[];
-
 const baseNumbers = [
   2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12,
 ];
 
 function NewGame(params: Params): PromiseLike<GameType> {
+  const baseResources = [
+    ...utils.repeat("wood", 4),
+    ...utils.repeat("sheep", 4),
+    ...utils.repeat("wheat", 4),
+    ...utils.repeat("brick", 3),
+    ...utils.repeat("ore", 3),
+    "desert",
+  ] as Resource[];
   const shuffledResources = utils.shuffle([...baseResources]);
   const shuffledNumbers = utils.shuffle([...baseNumbers]);
 
