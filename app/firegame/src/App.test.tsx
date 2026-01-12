@@ -1,9 +1,11 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-test('renders learn react link', () => {
+test("renders the game list with catan", () => {
+  const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const catanLink = screen.getByRole("link", { name: /catan/i });
+  expect(catanLink).toBeInTheDocument();
+  logSpy.mockRestore();
 });
