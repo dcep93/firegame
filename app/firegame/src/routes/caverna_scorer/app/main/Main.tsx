@@ -107,7 +107,7 @@ export default function Main() {
                   <input
                     value={
                       editingValues[inputKey(playerName, i)] ??
-                      store.gameW.game.scoreSheet![playerName][i]?.toString() ||
+                      store.gameW.game.scoreSheet![playerName][i]?.toString() ??
                       ""
                     }
                     onChange={(e) => {
