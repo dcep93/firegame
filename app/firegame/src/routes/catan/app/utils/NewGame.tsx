@@ -3,11 +3,33 @@ import utils, { store } from "./utils";
 
 export type Resource = "wood" | "sheep" | "wheat" | "brick" | "ore" | "desert";
 export type ResourceCard = Exclude<Resource, "desert">;
+export type Commodity = "cloth" | "coin" | "paper";
 export type ResourceCounts = Record<ResourceCard, number>;
+export type CommodityCounts = Record<Commodity, number>;
+
+export type BuildingType = "settlement" | "city";
+
+export type Building = {
+  playerIndex: number;
+  type: BuildingType;
+};
+
+export type Vertex = {
+  id: number;
+  x: number;
+  y: number;
+  building?: Building;
+};
+
+export type RoadSegment = {
+  playerIndex: number;
+  edge: [number, number];
+};
 
 export type Tile = {
   resource: Resource;
   number?: number;
+  vertices?: number[];
 };
 
 export type Params = {
@@ -19,9 +41,11 @@ export type PlayerType = {
   userId: string;
   userName: string;
   resources: ResourceCounts;
+  commodities: CommodityCounts;
   settlements: number;
   cities: number;
   roads: number;
+  playedKnights: number;
   victoryPoints: number;
 };
 
@@ -36,13 +60,85 @@ export type GameType = {
   currentPlayer: number;
   players: PlayerType[];
   tiles: Tile[];
+  vertices?: Vertex[];
+  roads?: RoadSegment[];
+  robberTileIndex?: number;
+  bank?: {
+    resources: ResourceCounts;
+    commodities: CommodityCounts;
+  };
   hasRolled: boolean;
   lastRoll?: RollType;
+  pendingRobber?: boolean;
 };
 
 const baseNumbers = [
   2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12,
 ];
+
+const baseBankResources: ResourceCounts = {
+  wood: 19,
+  sheep: 19,
+  wheat: 19,
+  brick: 19,
+  ore: 19,
+};
+
+const baseBankCommodities: CommodityCounts = {
+  cloth: 6,
+  coin: 6,
+  paper: 6,
+};
+
+const cornerAngles = [30, 90, 150, 210, 270, 330].map(
+  (deg) => (deg * Math.PI) / 180
+);
+
+const axialCoords = () => {
+  const coords: { q: number; r: number }[] = [];
+  for (let r = -2; r <= 2; r += 1) {
+    const qMin = Math.max(-2, -r - 2);
+    const qMax = Math.min(2, -r + 2);
+    for (let q = qMin; q <= qMax; q += 1) {
+      coords.push({ q, r });
+    }
+  }
+  return coords;
+};
+
+const buildBoard = (resources: Resource[], numbers: number[]) => {
+  const vertexMap = new Map<string, number>();
+  const vertices: Vertex[] = [];
+
+  const tiles: Tile[] = resources.map((resource, index) => {
+    const { q, r } = axialCoords()[index];
+    const centerX = Math.sqrt(3) * (q + r / 2);
+    const centerY = (3 / 2) * r;
+    const vertexIndices = cornerAngles.map((angle) => {
+      const x = centerX + Math.cos(angle);
+      const y = centerY + Math.sin(angle);
+      const key = `${x.toFixed(4)},${y.toFixed(4)}`;
+      if (!vertexMap.has(key)) {
+        const id = vertices.length;
+        vertexMap.set(key, id);
+        vertices.push({ id, x, y });
+      }
+      return vertexMap.get(key)!;
+    });
+
+    if (resource === "desert") {
+      return { resource, vertices: vertexIndices };
+    }
+
+    return {
+      resource,
+      number: numbers.shift(),
+      vertices: vertexIndices,
+    };
+  });
+
+  return { tiles, vertices };
+};
 
 function NewGame(params: Params): PromiseLike<GameType> {
   const baseResources = [
@@ -56,18 +152,21 @@ function NewGame(params: Params): PromiseLike<GameType> {
   const shuffledResources = utils.shuffle([...baseResources]);
   const shuffledNumbers = utils.shuffle([...baseNumbers]);
 
-  const tiles = shuffledResources.map((resource) => {
-    if (resource === "desert") {
-      return { resource };
-    }
-    return { resource, number: shuffledNumbers.shift() };
-  });
+  const { tiles, vertices } = buildBoard(shuffledResources, shuffledNumbers);
+  const robberTileIndex = tiles.findIndex((tile) => tile.resource === "desert");
 
   const game: GameType = {
     params,
     currentPlayer: 0,
     players: [],
     tiles,
+    vertices,
+    roads: [],
+    robberTileIndex: robberTileIndex >= 0 ? robberTileIndex : undefined,
+    bank: {
+      resources: { ...baseBankResources },
+      commodities: { ...baseBankCommodities },
+    },
     hasRolled: false,
   };
 
@@ -84,9 +183,15 @@ function NewGame(params: Params): PromiseLike<GameType> {
         brick: 0,
         ore: 0,
       },
+      commodities: {
+        cloth: 0,
+        coin: 0,
+        paper: 0,
+      },
       settlements: 2,
       cities: 0,
       roads: 2,
+      playedKnights: 0,
       victoryPoints: 2,
     }));
 

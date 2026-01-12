@@ -84,9 +84,15 @@ const makePlayer = (
     ore: 0,
     ...resources,
   },
+  commodities: {
+    cloth: 0,
+    coin: 0,
+    paper: 0,
+  },
   settlements: 2,
   cities: 0,
   roads: 2,
+  playedKnights: 0,
   victoryPoints: 2,
 });
 
@@ -136,6 +142,11 @@ describe("Catan game logic", () => {
       brick: 0,
       ore: 0,
     });
+    expect(gameA.players[0].commodities).toEqual({
+      cloth: 0,
+      coin: 0,
+      paper: 0,
+    });
     expect(gameA.currentPlayer).toBe(0);
   });
 
@@ -145,9 +156,11 @@ describe("Catan game logic", () => {
       currentPlayer: 0,
       players: [makePlayer("u1", "Alice"), makePlayer("u2", "Bob")],
       tiles: [
-        { resource: "wood", number: 5 },
+        { resource: "wood", number: 5, vertices: [0] },
         { resource: "desert" },
       ],
+      vertices: [{ id: 0, x: 0, y: 0, building: { playerIndex: 0, type: "settlement" } }],
+      roads: [],
       hasRolled: false,
     };
     setStore(game);
@@ -184,7 +197,9 @@ describe("Catan game logic", () => {
         }),
         makePlayer("u2", "Bob"),
       ],
-      tiles: [{ resource: "desert" }],
+      tiles: [{ resource: "desert", vertices: [0] }],
+      vertices: [{ id: 0, x: 0, y: 0 }],
+      roads: [],
       hasRolled: true,
     };
     setStore(game);
@@ -193,6 +208,7 @@ describe("Catan game logic", () => {
     fireEvent.click(
       screen.getByRole("button", { name: /build settlement/i })
     );
+    fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
 
     expect(game.players[0].resources).toEqual({
       wood: 0,
@@ -213,7 +229,11 @@ describe("Catan game logic", () => {
         makePlayer("u1", "Alice", { ore: 3, wheat: 2 }),
         makePlayer("u2", "Bob"),
       ],
-      tiles: [{ resource: "desert" }],
+      tiles: [{ resource: "desert", vertices: [0] }],
+      vertices: [
+        { id: 0, x: 0, y: 0, building: { playerIndex: 0, type: "settlement" } },
+      ],
+      roads: [],
       hasRolled: true,
     };
     game.players[0].settlements = 1;
@@ -223,6 +243,7 @@ describe("Catan game logic", () => {
     fireEvent.click(
       screen.getByRole("button", { name: /upgrade to city/i })
     );
+    fireEvent.click(screen.getByRole("button", { name: /vertex-0/i }));
 
     expect(game.players[0].resources).toEqual({
       wood: 0,
