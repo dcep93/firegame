@@ -1,6 +1,5 @@
 import React from "react";
 import Main from "./main/Main";
-import TestCases from "./main/TestCases";
 
 export default class EclipseCalc extends React.Component {
   render() {
@@ -8,4 +7,4 @@ export default class EclipseCalc extends React.Component {
   }
 }
 
-console.log({ testCaseFailures: TestCases() });
+// console.log({ testCaseFailures: TestCases() });
