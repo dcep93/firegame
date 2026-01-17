@@ -2,7 +2,7 @@ import _7wd from "../routes/7wd/app/X7wd";
 import azul from "../routes/azul/app/Azul";
 import blacknwhite from "../routes/blacknwhite/app/BlackNWhite";
 import bohnanza from "../routes/bohnanza/app/Bohnanza";
-import catan from "../routes/catan/app/Catan";
+import catann from "../routes/catan/app/Catann";
 import Caverna from "../routes/caverna/app/Caverna";
 import CavernaScorer from "../routes/caverna_scorer/app/CavernaScorer";
 import Eclipse from "../routes/eclipse/app/Eclipse";
@@ -37,7 +37,7 @@ const ex = {
   _7wd,
   loveletter,
   bohnanza,
-  catan,
+  catann,
   splendor,
   five,
   ModernArt,
