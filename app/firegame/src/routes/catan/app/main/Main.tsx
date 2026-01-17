@@ -5,7 +5,7 @@ export default function Main() {
       <iframe
         title={src}
         src={src}
-        style={{ width: "100vW", height: "100vH" }}
+        style={{ width: "100vW", height: "100vH", border: 0 }}
       />
     </div>
   );
