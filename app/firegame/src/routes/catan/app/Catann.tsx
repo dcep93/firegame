@@ -2,7 +2,7 @@ import React from "react";
 
 class Catan extends React.Component {
   render() {
-    const src = `${window.location.origin}/public_catann`;
+    const src = `${window.location.origin}/public_catann?${Date.now()}`;
     return (
       <div>
         <iframe
