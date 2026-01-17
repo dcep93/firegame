@@ -1,4 +1,5 @@
 function main() {
+  console.log("overrides.js::main");
   overrideXHR();
   overrideWebsocket();
 }
@@ -36,9 +37,17 @@ function overrideXHR() {
           hasJoinedColonistDiscordServer: false,
           karma: 20,
           karmaCompletedGameCount: 20,
-          membershipPaymentMethod: null,
+          membershipPaymentMethod: "Stripe",
           membershipPending: false,
           isMuted: false,
+          items: {
+            getCurrentMembership: () => ({
+              image: "icon_profile_membership",
+              pending: false,
+              type: "Premium",
+            }),
+            hasAccessToPremiumMode: () => true,
+          },
           ownedItems: [],
           //   totalCompletedGameCount: 441,
           //   ckTotalGameCount: 0,
@@ -46,7 +55,7 @@ function overrideXHR() {
           username: "username",
           language: null,
           //   usernameChangeAttemptsLeft: 0,
-          forceSubscription: false,
+          forceSubscription: true,
           //   vliHash:
           //     "be7ff6257c114e96bf8bd088e74f557e7d0763d174985bb66a9f00b0df4e0661",
           expiresAt: "3000-01-01T00:00:00.000Z",
