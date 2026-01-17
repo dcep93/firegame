@@ -4,6 +4,8 @@ function main() {
   overrideWebsocket();
 }
 
+const FUTURE = "3000-01-01T00:00:00.000Z";
+
 function overrideXHR() {
   const OrigXHR = window.XMLHttpRequest;
 
@@ -17,6 +19,11 @@ function overrideXHR() {
     if (__meta.url === "/api/header/friend-requests-received")
       return JSON.stringify([]);
     if (__meta.url === "/api/find-game-ranked-state") return JSON.stringify([]);
+    if (__meta.url === "/api/show-feedback-form")
+      return JSON.stringify({
+        shouldShow: false,
+        lastShown: FUTURE,
+      });
     if (__meta.url === "/api/profile/friends")
       return JSON.stringify({
         friends: [],
@@ -50,7 +57,7 @@ function overrideXHR() {
           forceSubscription: true,
           //   vliHash:
           //     "be7ff6257c114e96bf8bd088e74f557e7d0763d174985bb66a9f00b0df4e0661",
-          expiresAt: "3000-01-01T00:00:00.000Z",
+          expiresAt: FUTURE,
         },
         // csrfToken:
         //   "f8f6dfb42fb8eb7f534b0fc9b3aa01000dbf64475c90ac7263b94297059b414f6fe11edef4f28581c61af04c8784956d9325b72705e76a2853a6e679e0dadd55",
