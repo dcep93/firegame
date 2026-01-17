@@ -31,7 +31,7 @@ function overrideXHR() {
           colonistVersion: 1080,
           giftedMemberships: [],
           icon: 11,
-          id: "35001253",
+          id: "420",
           interactedWithSite: true,
           isLoggedIn: true,
           hasJoinedColonistDiscordServer: false,
@@ -121,6 +121,134 @@ function overrideXHR() {
   window.XMLHttpRequest = InterceptedXHR;
 }
 
-function overrideWebsocket() {}
+function overrideWebsocket() {
+  const OrigWebSocket = window.WebSocket;
+
+  function patchMembershipFlags(value) {
+    if (!value || typeof value !== "object") return false;
+
+    const seen = new Set();
+    let changed = false;
+
+    const visit = (obj) => {
+      if (!obj || typeof obj !== "object") return;
+      if (seen.has(obj)) return;
+      seen.add(obj);
+
+      if (Object.prototype.hasOwnProperty.call(obj, "isTestFreeExpansionsAndMaps")) {
+        obj.isTestFreeExpansionsAndMaps = true;
+        changed = true;
+      }
+      if (Object.prototype.hasOwnProperty.call(obj, "isTournament")) {
+        obj.isTournament = true;
+        changed = true;
+      }
+      if (Object.prototype.hasOwnProperty.call(obj, "accessLevel")) {
+        if (obj.accessLevel < 1) {
+          obj.accessLevel = 1;
+          changed = true;
+        }
+      }
+      if (Object.prototype.hasOwnProperty.call(obj, "membershipPending")) {
+        if (obj.membershipPending) {
+          obj.membershipPending = false;
+          changed = true;
+        }
+      }
+
+      for (const key of Object.keys(obj)) {
+        visit(obj[key]);
+      }
+    };
+
+    visit(value);
+    return changed;
+  }
+
+  function patchMessageEvent(event) {
+    if (!event || typeof event.data !== "string") return event;
+
+    let parsed;
+    try {
+      parsed = JSON.parse(event.data);
+    } catch {
+      return event;
+    }
+
+    if (!patchMembershipFlags(parsed)) return event;
+
+    return new MessageEvent("message", {
+      data: JSON.stringify(parsed),
+      origin: event.origin,
+      lastEventId: event.lastEventId,
+      source: event.source,
+      ports: event.ports,
+    });
+  }
+
+  function InterceptedWebSocket(url, protocols) {
+    const ws = protocols
+      ? new OrigWebSocket(url, protocols)
+      : new OrigWebSocket(url);
+
+    const origAddEventListener = ws.addEventListener.bind(ws);
+    const origRemoveEventListener = ws.removeEventListener.bind(ws);
+    const messageListenerMap = new Map();
+    let onmessageWrapped = null;
+
+    function wrapMessageListener(listener) {
+      return function (event) {
+        return listener.call(this, patchMessageEvent(event));
+      };
+    }
+
+    ws.addEventListener = function (type, listener, options) {
+      if (type === "message" && typeof listener === "function") {
+        const wrapped = wrapMessageListener(listener);
+        messageListenerMap.set(listener, wrapped);
+        return origAddEventListener(type, wrapped, options);
+      }
+      return origAddEventListener(type, listener, options);
+    };
+
+    ws.removeEventListener = function (type, listener, options) {
+      if (type === "message" && messageListenerMap.has(listener)) {
+        const wrapped = messageListenerMap.get(listener);
+        messageListenerMap.delete(listener);
+        return origRemoveEventListener(type, wrapped, options);
+      }
+      return origRemoveEventListener(type, listener, options);
+    };
+
+    Object.defineProperty(ws, "onmessage", {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return onmessageWrapped;
+      },
+      set(handler) {
+        if (onmessageWrapped) {
+          origRemoveEventListener("message", onmessageWrapped);
+        }
+        if (typeof handler === "function") {
+          onmessageWrapped = wrapMessageListener(handler);
+          origAddEventListener("message", onmessageWrapped);
+        } else {
+          onmessageWrapped = handler;
+        }
+      },
+    });
+
+    return ws;
+  }
+
+  InterceptedWebSocket.prototype = OrigWebSocket.prototype;
+  Object.getOwnPropertyNames(OrigWebSocket).forEach((k) => {
+    try {
+      InterceptedWebSocket[k] = OrigWebSocket[k];
+    } catch {}
+  });
+  window.WebSocket = InterceptedWebSocket;
+}
 
 main();
