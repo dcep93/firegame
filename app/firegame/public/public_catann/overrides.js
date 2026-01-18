@@ -7,6 +7,75 @@ function main() {
 
 const FUTURE = "3000-01-01T00:00:00.000Z";
 
+const USER_STATE = {
+  userState: {
+    accessLevel: 1,
+    colonistCoins: 0,
+    colonistVersion: 1080,
+    giftedMemberships: [],
+    icon: 11,
+    id: "420",
+    interactedWithSite: true,
+    isLoggedIn: true,
+    hasJoinedColonistDiscordServer: false,
+    karma: 20,
+    karmaCompletedGameCount: 20,
+    membershipPaymentMethod: "Stripe",
+    membershipPending: false,
+    membership: 5,
+    membershipEndDate: FUTURE,
+    isMuted: false,
+    ownedItems: [
+      // Expansions (category 1)
+      { category: 1, type: 0 }, // Seafarers4P
+      { category: 1, type: 1 }, // CitiesAndKnights4P
+      { category: 1, type: 2 }, // TradersAndBarbarians
+      { category: 1, type: 3 }, // ExplorersAndPirates
+      { category: 1, type: 4 }, // Classic56P
+      { category: 1, type: 5 }, // Classic78P
+      { category: 1, type: 6 }, // Seafarers56P
+      { category: 1, type: 7 }, // CitiesAndKnights56P
+      { category: 1, type: 8 }, // CitiesAndKnightsSeafarers4P
+      { category: 1, type: 9 }, // CitiesAndKnightsSeafarers56P
+      // Maps (category 2)
+      { category: 2, type: 0 }, // Earth
+      { category: 2, type: 1 }, // USA
+      { category: 2, type: 2 }, // UK
+      { category: 2, type: 3 }, // Diamond
+      { category: 2, type: 4 }, // Gear
+      { category: 2, type: 5 }, // Lakes
+      { category: 2, type: 6 }, // Pond
+      { category: 2, type: 7 }, // Twirl
+      { category: 2, type: 8 }, // Classic4PRandom
+      { category: 2, type: 9 }, // ShuffleBoard
+      { category: 2, type: 10 }, // BlackForest
+      { category: 2, type: 11 }, // Volcano
+      { category: 2, type: 12 }, // GoldRush
+    ],
+    //   totalCompletedGameCount: 441,
+    //   ckTotalGameCount: 0,
+    //   ckNextRerollAt: "2026-01-17T19:30:46.992Z",
+    username: "username",
+    language: null,
+    //   usernameChangeAttemptsLeft: 0,
+    forceSubscription: true,
+    //   vliHash:
+    //     "be7ff6257c114e96bf8bd088e74f557e7d0763d174985bb66a9f00b0df4e0661",
+    expiresAt: FUTURE,
+  },
+  // csrfToken:
+  //   "f8f6dfb42fb8eb7f534b0fc9b3aa01000dbf64475c90ac7263b94297059b414f6fe11edef4f28581c61af04c8784956d9325b72705e76a2853a6e679e0dadd55",
+  abTests: {
+    //   CHAT_TOXICITY_SHOW_MONITORED_WARNING:
+    //     "SHOW_CHAT_IS_MONITORED_WARNING",
+    //   CK_MONETIZATION_DICE_ROLL: "FREE_PLAYS_THEN_DICE_ROLL",
+    //   GIFTING_CHANGE_BEST_VALUE_HINT: "SHOW_MOST_POPULAR",
+    //   MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
+    //   REACTIVATE_DISCORD_INACTIVE_USERS:
+    //     "GROUP_A_YOU_HAVE_NOT_PLAYED_FOR_A_WHILE",
+  },
+};
+
 function overrideXHR() {
   const OrigXHR = window.XMLHttpRequest;
 
@@ -37,48 +106,7 @@ function overrideXHR() {
       };
     }
     if (__meta.url === "/api/user-state") {
-      return {
-        userState: {
-          accessLevel: 1,
-          colonistCoins: 0,
-          colonistVersion: 1080,
-          giftedMemberships: [],
-          icon: 11,
-          id: "420",
-          interactedWithSite: true,
-          isLoggedIn: true,
-          hasJoinedColonistDiscordServer: false,
-          karma: 20,
-          karmaCompletedGameCount: 20,
-          membershipPaymentMethod: "Stripe",
-          membershipPending: false,
-          membership: 5,
-          membershipEndDate: FUTURE,
-          isMuted: false,
-          ownedItems: [],
-          //   totalCompletedGameCount: 441,
-          //   ckTotalGameCount: 0,
-          //   ckNextRerollAt: "2026-01-17T19:30:46.992Z",
-          username: "username",
-          language: null,
-          //   usernameChangeAttemptsLeft: 0,
-          forceSubscription: true,
-          //   vliHash:
-          //     "be7ff6257c114e96bf8bd088e74f557e7d0763d174985bb66a9f00b0df4e0661",
-          expiresAt: FUTURE,
-        },
-        // csrfToken:
-        //   "f8f6dfb42fb8eb7f534b0fc9b3aa01000dbf64475c90ac7263b94297059b414f6fe11edef4f28581c61af04c8784956d9325b72705e76a2853a6e679e0dadd55",
-        abTests: {
-          //   CHAT_TOXICITY_SHOW_MONITORED_WARNING:
-          //     "SHOW_CHAT_IS_MONITORED_WARNING",
-          //   CK_MONETIZATION_DICE_ROLL: "FREE_PLAYS_THEN_DICE_ROLL",
-          //   GIFTING_CHANGE_BEST_VALUE_HINT: "SHOW_MOST_POPULAR",
-          //   MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
-          //   REACTIVATE_DISCORD_INACTIVE_USERS:
-          //     "GROUP_A_YOU_HAVE_NOT_PLAYED_FOR_A_WHILE",
-        },
-      };
+      return USER_STATE;
     }
     throw new Error(`not implemented: ${JSON.stringify(__meta)}`);
   }
