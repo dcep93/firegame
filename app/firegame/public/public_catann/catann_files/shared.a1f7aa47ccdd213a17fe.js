@@ -14936,6 +14936,7 @@
                 case b.FL:
                   console.log(
                     "ws close",
+                    this.firstUserSessionId,
                     this.getWebSocketUrl().then(console.log),
                     {
                       code: t.code,
