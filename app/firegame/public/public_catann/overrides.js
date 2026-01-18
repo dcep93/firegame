@@ -30,6 +30,11 @@ function overrideXHR() {
         friendRequestsSent: [],
         friendRequestsReceived: [],
       });
+    if (__meta.url === "/api/room-list.json") {
+      return {
+        rooms: [],
+      };
+    }
     if (__meta.url === "/api/user-state") {
       return {
         userState: {
@@ -46,6 +51,8 @@ function overrideXHR() {
           karmaCompletedGameCount: 20,
           membershipPaymentMethod: "Stripe",
           membershipPending: false,
+          membership: 5,
+          membershipEndDate: FUTURE,
           isMuted: false,
           ownedItems: [],
           //   totalCompletedGameCount: 441,
