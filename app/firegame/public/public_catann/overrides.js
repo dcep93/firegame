@@ -2,6 +2,7 @@ function main() {
   console.log("overrides.js::main");
   overrideXHR();
   overrideWebsocket();
+  overrideServiceWorker();
 }
 
 const FUTURE = "3000-01-01T00:00:00.000Z";
@@ -257,6 +258,21 @@ function overrideWebsocket() {
     } catch {}
   });
   window.WebSocket = InterceptedWebSocket;
+}
+
+function overrideServiceWorker() {
+  const origRegister = navigator.serviceWorker.register;
+  navigator.serviceWorker.register = function (...args) {
+    const [path, options] = args;
+    let nextPath = path;
+    if (typeof nextPath === "string") {
+      if (/\/?service-worker$/.test(nextPath)) {
+        nextPath = `${nextPath}.js`;
+      }
+      nextPath = `/public_catann${nextPath}`;
+    }
+    return origRegister.call(this, nextPath, options);
+  };
 }
 
 main();
