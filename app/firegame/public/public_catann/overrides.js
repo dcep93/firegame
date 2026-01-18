@@ -64,7 +64,7 @@ const USER_STATE = {
     expiresAt: FUTURE,
   },
   // csrfToken:
-  //   "f8f6dfb42fb8eb7f534b0fc9b3aa01000dbf64475c90ac7263b94297059b414f6fe11edef4f28581c61af04c8784956d9325b72705e76a2853a6e679e0dadd55",
+  //   "e3eb1249fa0460b5c60c8c51c405365f88d9b20a0c0e9b6b1684a2b048b4aad0ab6e1f8424b0185bb61b1f6373f9324a94644e964ce348927fc8347eedd7d16b",
   abTests: {
     //   CHAT_TOXICITY_SHOW_MONITORED_WARNING:
     //     "SHOW_CHAT_IS_MONITORED_WARNING",
@@ -108,6 +108,7 @@ function overrideXHR() {
     if (__meta.url === "/api/user-state") {
       return JSON.stringify(USER_STATE);
     }
+    // codex: dont remove this, its for debugging
     const e = `not implemented: ${JSON.stringify(__meta)}`;
     console.log(e);
     throw new Error(e);
