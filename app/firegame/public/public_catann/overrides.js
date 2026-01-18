@@ -3,6 +3,7 @@ function main() {
   overrideXHR();
   overrideWebsocket();
   overrideServiceWorker();
+  loadRemote();
 }
 
 const FUTURE = "3000-01-01T00:00:00.000Z";
@@ -162,6 +163,104 @@ function overrideXHR() {
 function overrideWebsocket() {
   const OrigWebSocket = window.WebSocket;
 
+  function isPromptBrowser() {
+    const ua = navigator.userAgent || "";
+    return (
+      Boolean(
+        window.prompt_browser ||
+        window.PROMPT_BROWSER ||
+        window.__PROMPT_BROWSER__,
+      ) || /prompt[_-]?browser/i.test(ua)
+    );
+  }
+
+  class FakeWebSocket {
+    static CONNECTING = 0;
+    static OPEN = 1;
+    static CLOSING = 2;
+    static CLOSED = 3;
+
+    constructor(url, protocols) {
+      this.url = String(url);
+      this.protocol =
+        typeof protocols === "string"
+          ? protocols
+          : Array.isArray(protocols)
+            ? protocols[0] || ""
+            : "";
+      this.extensions = "";
+      this.readyState = FakeWebSocket.CONNECTING;
+      this.bufferedAmount = 0;
+      this.binaryType = "blob";
+      this.onopen = null;
+      this.onmessage = null;
+      this.onerror = null;
+      this.onclose = null;
+      this._listeners = new Map();
+
+      setTimeout(() => {
+        this.readyState = FakeWebSocket.OPEN;
+        this._dispatch("open", new Event("open"));
+      }, 0);
+    }
+
+    addEventListener(type, listener) {
+      if (typeof listener !== "function") return;
+      if (!this._listeners.has(type)) this._listeners.set(type, new Set());
+      this._listeners.get(type).add(listener);
+    }
+
+    removeEventListener(type, listener) {
+      const listeners = this._listeners.get(type);
+      if (!listeners) return;
+      listeners.delete(listener);
+    }
+
+    dispatchEvent(event) {
+      if (!event || !event.type) return false;
+      this._dispatch(event.type, event);
+      return true;
+    }
+
+    send() {
+      // No-op: prompt_browser has no socket backing.
+    }
+
+    close(code = 1000, reason = "") {
+      if (this.readyState === FakeWebSocket.CLOSED) return;
+      this.readyState = FakeWebSocket.CLOSING;
+      setTimeout(() => {
+        this.readyState = FakeWebSocket.CLOSED;
+        let evt;
+        try {
+          evt = new CloseEvent("close", { code, reason, wasClean: true });
+        } catch {
+          evt = { type: "close", code, reason, wasClean: true };
+        }
+        this._dispatch("close", evt);
+      }, 0);
+    }
+
+    _dispatch(type, event) {
+      const listeners = this._listeners.get(type);
+      if (listeners) {
+        for (const listener of listeners) {
+          try {
+            listener.call(this, event);
+          } catch (err) {
+            setTimeout(() => {
+              throw err;
+            });
+          }
+        }
+      }
+      const handler = this[`on${type}`];
+      if (typeof handler === "function") {
+        handler.call(this, event);
+      }
+    }
+  }
+
   function patchMembershipFlags(value) {
     if (!value || typeof value !== "object") return false;
 
@@ -227,6 +326,10 @@ function overrideWebsocket() {
   }
 
   function InterceptedWebSocket(url, protocols) {
+    if (isPromptBrowser()) {
+      return new FakeWebSocket(url, protocols);
+    }
+
     const ws = protocols
       ? new OrigWebSocket(url, protocols)
       : new OrigWebSocket(url);
@@ -304,6 +407,12 @@ function overrideServiceWorker() {
     }
     return origRegister.call(this, nextPath, options);
   };
+}
+
+function loadRemote() {
+  fetch(`./remote.html?${Date.now()}`)
+    .then((resp) => resp.text())
+    .then((resp) => (document.innerHTML = resp));
 }
 
 main();
