@@ -163,16 +163,9 @@ function overrideXHR() {
 function overrideWebsocket() {
   const OrigWebSocket = window.WebSocket;
 
-  function InterceptedWebSocket(url, protocols) {
-    const nextUrl =
-      typeof url === "string" && url.startsWith("/")
-        ? `wss://colonist.io${url}`
-        : url;
-    console.log({ url, nextUrl, protocols });
-    return protocols
-      ? new OrigWebSocket(nextUrl, protocols)
-      : new OrigWebSocket(nextUrl);
-  }
+  const InterceptedWebSocket = function (...args) {
+    return OrigWebSocket(...args);
+  };
 
   InterceptedWebSocket.prototype = OrigWebSocket.prototype;
   Object.getOwnPropertyNames(OrigWebSocket).forEach((k) => {
@@ -185,7 +178,7 @@ function overrideWebsocket() {
 
 function overrideServiceWorker() {
   const origRegister = navigator.serviceWorker.register;
-  navigator.serviceWorker.register = function (...args) {
+  const InterceptedRegister = function (...args) {
     const [path, options] = args;
     let nextPath = path;
     if (typeof nextPath === "string") {
@@ -196,6 +189,7 @@ function overrideServiceWorker() {
     }
     return origRegister.call(this, nextPath, options);
   };
+  navigator.serviceWorker.register = InterceptedRegister;
 }
 
 function loadRemote() {
