@@ -161,18 +161,62 @@ function overrideXHR() {
 }
 
 function overrideWebsocket() {
-  const OrigWebSocket = window.WebSocket;
+  const socketsById = new Map();
+  let nextSocketId = 1;
 
-  const InterceptedWebSocket = function (...args) {
-    return OrigWebSocket(...args);
-  };
+  class InterceptedWebSocket extends EventTarget {
+    constructor(...createArgs) {
+      super();
+      this.id = nextSocketId++;
+      this.readyState = 1;
+      socketsById.set(this.id, this);
+      window.parent?.postMessage(
+        { id: this.id, data: { InterceptedWebSocket: createArgs } },
+        "*",
+      );
+      queueMicrotask(() => {
+        if (typeof this.onopen === "function") {
+          this.onopen(new Event("open"));
+        }
+        this.dispatchEvent(new Event("open"));
+      });
+    }
 
-  InterceptedWebSocket.prototype = OrigWebSocket.prototype;
-  Object.getOwnPropertyNames(OrigWebSocket).forEach((k) => {
-    try {
-      InterceptedWebSocket[k] = OrigWebSocket[k];
-    } catch {}
+    send(data) {
+      window.parent?.postMessage({ id: this.id, data }, "*");
+    }
+
+    close() {
+      this.readyState = 3;
+      socketsById.delete(this.id);
+      if (typeof this.onclose === "function") {
+        this.onclose(new CloseEvent("close"));
+      }
+      this.dispatchEvent(new CloseEvent("close"));
+    }
+
+    receive(data) {
+      const messageEvent = new MessageEvent("message", { data });
+      if (typeof this.onmessage === "function") {
+        this.onmessage(messageEvent);
+      }
+      this.dispatchEvent(messageEvent);
+    }
+  }
+
+  InterceptedWebSocket.CONNECTING = 0;
+  InterceptedWebSocket.OPEN = 1;
+  InterceptedWebSocket.CLOSING = 2;
+  InterceptedWebSocket.CLOSED = 3;
+
+  window.addEventListener("message", (event) => {
+    const { id, data } = event.data || {};
+    if (!id || !socketsById.has(id)) {
+      return;
+    }
+    socketsById.get(id).receive(data);
   });
+
   window.WebSocket = InterceptedWebSocket;
 }
 

@@ -1,4 +1,7 @@
 import React from "react";
+import InterceptedWebSocket from "./InterceptedWebSocket";
+
+InterceptedWebSocket();
 
 class Catan extends React.Component {
   render() {
