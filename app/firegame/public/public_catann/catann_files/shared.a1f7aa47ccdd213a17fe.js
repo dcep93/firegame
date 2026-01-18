@@ -14934,6 +14934,15 @@
               switch (t.code) {
                 case b.p5:
                 case b.FL:
+                  console.log(
+                    "ws close",
+                    this.getWebSocketUrl().then(console.log),
+                    {
+                      code: t.code,
+                      reason: t.reason,
+                      wasClean: t.wasClean,
+                    },
+                  );
                   e.resolve("permanentlyFailed");
                   break;
                 case b.gu:
@@ -15175,7 +15184,6 @@
             this.removeWarnings());
         }
         displayReconnectBanner() {
-          console.trace("displayReconnectBanner");
           const e = {
             key: "strings:homePage.loadingError.prompt",
             options: {
