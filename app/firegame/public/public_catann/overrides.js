@@ -1,7 +1,7 @@
 function main() {
   console.log("overrides.js::main");
   overrideXHR();
-  // overrideWebsocket();
+  overrideWebsocket();
   overrideServiceWorker();
   loadRemote();
 }
