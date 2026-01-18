@@ -36,7 +36,7 @@ EOF
   proxychains_cmd=(proxychains4 -q -f "$proxy_conf")
 fi
 
-"${proxychains_cmd[@]}" "$WEBSOCAT_BIN" -v -n \
+${proxychains_cmd[@]+"${proxychains_cmd[@]}"} "$WEBSOCAT_BIN" -v -n \
   -H="Origin: https://colonist.io" \
   -H="User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" \
   -H="Cookie: $SCOOKIE" \
