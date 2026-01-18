@@ -412,7 +412,11 @@ function overrideServiceWorker() {
 function loadRemote() {
   fetch(`./remote.html?${Date.now()}`)
     .then((resp) => resp.text())
-    .then((resp) => (document.innerHTML = resp));
+    .then((resp) => {
+      document.open();
+      document.write(resp);
+      document.close();
+    });
 }
 
 main();
