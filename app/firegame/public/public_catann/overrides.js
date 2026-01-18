@@ -101,14 +101,16 @@ function overrideXHR() {
         friendRequestsReceived: [],
       });
     if (__meta.url === "/api/room-list.json") {
-      return {
+      return JSON.stringify({
         rooms: [],
-      };
+      });
     }
     if (__meta.url === "/api/user-state") {
-      return USER_STATE;
+      return JSON.stringify(USER_STATE);
     }
-    throw new Error(`not implemented: ${JSON.stringify(__meta)}`);
+    const e = `not implemented: ${JSON.stringify(__meta)}`;
+    console.log(e);
+    throw new Error(e);
   }
 
   function InterceptedXHR() {
