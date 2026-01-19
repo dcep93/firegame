@@ -115,7 +115,7 @@ export default function handleMessage(
         id: `${State.LobbyStateUpdate}`,
         data: {
           type: LobbyState.SessionState,
-          payload: { id: store.me.userId },
+          payload: { id: "asdf" },
         },
       });
     }
