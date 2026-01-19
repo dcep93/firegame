@@ -196,8 +196,11 @@ function overrideWebsocket() {
       this.dispatchEvent(new CloseEvent("close"));
     }
 
-    receive(data) {
-      const messageEvent = new MessageEvent("message", { data });
+    receive(serverData) {
+      const data = JSON.stringify(serverData);
+      const messageEvent = new MessageEvent("message", {
+        data,
+      });
       if (typeof this.onmessage === "function") {
         this.onmessage(messageEvent);
       }
