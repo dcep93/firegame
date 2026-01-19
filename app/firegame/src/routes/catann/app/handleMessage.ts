@@ -81,7 +81,9 @@ export default function handleMessage(
     console.log("handleMessage", parsed);
     if (parsed._header[1] === ServerActionType.RoomCommand) {
       if (parsed.type === "startGame") {
-        return sendResponse(newGame());
+        const newFirebaseData = { GAME: newGame() };
+        setFirebaseData(newFirebaseData, { parsed });
+        return sendResponse(newFirebaseData.GAME);
       }
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");

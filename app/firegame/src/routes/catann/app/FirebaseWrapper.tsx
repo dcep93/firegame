@@ -41,8 +41,7 @@ export default function FirebaseWrapper() {
         firebaseData = unserialized;
         console.log("rendered", firebaseData);
         if (firebaseData.GAME) {
-          console.log({ firebaseData });
-          alert("game exists");
+          sendToMainSocket?.(firebaseData.GAME);
           return;
         }
         if (
@@ -106,6 +105,14 @@ function unSerializeFirebase(serialized: any): any {
     return {};
   }
   if (Array.isArray(serialized)) {
+    const definedEntries = serialized
+      .map((s, i) => ({ s, i }))
+      .filter(({ s }) => s !== undefined);
+    if (definedEntries.length !== serialized.length) {
+      return Object.fromEntries(
+        definedEntries.map(({ s, i }) => [i, unSerializeFirebase(s)]),
+      );
+    }
     return serialized.map(unSerializeFirebase);
   }
   if (serialized && typeof serialized === "object") {

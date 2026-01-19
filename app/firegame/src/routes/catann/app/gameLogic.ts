@@ -106,7 +106,7 @@ export const newUserState = () => {
 export const newRoom = () => {
   console.log("newRoom");
   return {
-    id: "137",
+    id: State.RoomEvent.toString(),
     data: {
       roomId: `roomIdx${store.me.roomId.toString()}`,
       type: "StateUpdated",
@@ -1128,14 +1128,17 @@ export const newGame = () => {
     },
   };
 };
+
 export const spoofHostRoom = () => {
-  return {
-    ...firebaseData.ROOM,
-    data: {
-      ...firebaseData.ROOM.data,
-      sessions: (firebaseData.ROOM.data.sessions.slice() as any[]).sort(
-        (a, b) => (a.userId === store.me.userId ? -1 : 1),
-      ),
-    },
-  };
+  return (
+    firebaseData.GAME ?? {
+      ...firebaseData.ROOM,
+      data: {
+        ...firebaseData.ROOM.data,
+        sessions: (firebaseData.ROOM.data.sessions.slice() as any[]).sort(
+          (a, b) => (a.userId === store.me.userId ? -1 : 1),
+        ),
+      },
+    }
+  );
 };
