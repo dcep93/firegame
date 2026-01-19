@@ -61,6 +61,7 @@ function setData(newData: any) {
   firebase.set(`${roomPath()}/catann`, serializeFirebase(newData));
 }
 
+// TODO just handle empties
 function serializeFirebase(data: any) {
   return JSON.stringify(data);
 }
