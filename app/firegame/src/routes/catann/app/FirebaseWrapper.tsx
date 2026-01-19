@@ -35,7 +35,12 @@ export default function FirebaseWrapper() {
         if (JSON.stringify(firebase_data) === JSON.stringify(unserialized))
           return;
         firebase_data = unserialized;
-        console.log("rendered", firebase_data);
+        console.log(
+          "rendered",
+          firebase_data,
+          "TODO",
+          firebase_data.ROOM.data.friendlyRobber,
+        );
         if (firebase_data.GAME) {
           console.log({ firebase_data });
           alert("game exists");
@@ -62,7 +67,7 @@ function setData(newData: any, change: any) {
   // also only change diffs
   firebase.set(
     `${roomPath()}/catann`,
-    serializeFirebase({ ...newData, ...change }),
+    serializeFirebase({ ...newData, change }),
   );
 }
 

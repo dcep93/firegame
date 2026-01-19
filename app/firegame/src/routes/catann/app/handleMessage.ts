@@ -30,7 +30,6 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
-      firebase_data.ROOM.data.roomId = `roomIdx${store.me.roomId.toString()}`;
       console.debug("handleMessage.init", { clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
