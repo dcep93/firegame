@@ -174,10 +174,7 @@ function overrideWebsocket() {
       this.id = nextSocketId++;
       this.readyState = 1;
       socketsById.set(this.id, this);
-      window.parent?.postMessage(
-        { id: this.id, data: { InterceptedWebSocket: createArgs } },
-        "*",
-      );
+      this.send({ InterceptedWebSocket: createArgs });
       queueMicrotask(() => {
         if (typeof this.onopen === "function") {
           this.onopen(new Event("open"));
@@ -215,6 +212,7 @@ function overrideWebsocket() {
 
   window.__socketBridgeHandler = (event) => {
     const { id, serverData } = event.data || {};
+    if (!serverData) return;
     socketsById.get(id).receive(serverData);
   };
 
