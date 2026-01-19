@@ -37,9 +37,13 @@ function main({
 }) {
   console.log(38);
   overrideXHR();
+  console.log(40);
   overrideWebsocket();
+  console.log(42);
   overrideServiceWorker();
+  console.log(44);
   loadRemote();
+  console.log(46);
 
   const USER_STATE = {
     userState: {

@@ -88,7 +88,7 @@ export default function handleMessage(
             sessions: [
               {
                 roomSessionId: "1141816",
-                userSessionId: "08621E.5658810",
+                userSessionId,
                 userId: "101878616",
                 isBot: false,
                 isReadyToPlay: true,
