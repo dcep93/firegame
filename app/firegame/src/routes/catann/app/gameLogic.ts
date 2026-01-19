@@ -3,6 +3,7 @@ import { State } from "./catann_files_enums";
 import { FUTURE } from "./handleMessage";
 
 export const newUserState = () => {
+  console.log("newUserState");
   return {
     userState: {
       userSessionId: store.me.userId,
@@ -102,6 +103,7 @@ export const newUserState = () => {
 };
 
 export const newRoom = () => {
+  console.log("newRoom");
   return {
     id: "137",
     data: {
@@ -132,6 +134,7 @@ export const newRoom = () => {
 };
 
 export const newRoomMe = () => {
+  console.log("newRoomMe");
   return {
     roomSessionId: "1141816",
     userSessionId: store.me.userId,
@@ -151,6 +154,7 @@ export const newRoomMe = () => {
 };
 
 export const newGame = () => {
+  console.log("newGame");
   return {
     id: State.GameStateUpdate.toString(),
     data: {

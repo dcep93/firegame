@@ -20,7 +20,7 @@ export default function FirebaseWrapper() {
   useEffect(
     () =>
       void firebase.connect(roomPath(), (liveData) => {
-        console.log("fetched", { firebase_data, liveData });
+        console.debug("fetched", { firebase_data, liveData });
         if (!liveData) return;
         if (!liveData.catann) {
           setData({
@@ -28,7 +28,11 @@ export default function FirebaseWrapper() {
           });
           return;
         }
-        firebase_data = unSerializeFirebase(liveData.catann);
+        const unserialized = unSerializeFirebase(liveData.catann);
+        if (JSON.stringify(firebase_data) === JSON.stringify(unserialized))
+          return;
+        firebase_data = unserialized;
+        console.log("rendered", { firebase_data });
         if (firebase_data.GAME) {
           console.log({ firebase_data });
           alert("game exists");
@@ -43,7 +47,6 @@ export default function FirebaseWrapper() {
           setData(firebase_data);
           return;
         }
-        console.log("rendered", { firebase_data });
       }),
     [],
   );
