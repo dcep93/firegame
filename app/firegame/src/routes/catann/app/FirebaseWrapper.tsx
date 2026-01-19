@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import firebase from "../../../firegame/firebase";
+import { gamePath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
 
 export function handleServerUpdate(clientData: any) {
@@ -6,10 +8,12 @@ export function handleServerUpdate(clientData: any) {
     data.ROOM.data.sessions.find((s: any) => s.userId === store.me.userId),
     clientData,
   );
-  console.log(data.ROOM);
+  setData(data);
+  console.log(data.ROOM, clientData);
 }
 
 export var data: any = {};
+var liveData: typeof data;
 
 export default function FirebaseWrapper() {
   useEffect(() => {
@@ -23,13 +27,14 @@ export default function FirebaseWrapper() {
       return;
     }
     data = store.gameW.game;
+    liveData = { ...data };
     console.log({ data });
   }, [store]);
   return <div></div>;
 }
 
 function setData(newData: any) {
-  // firebase.set(gamePath(), newData);
+  firebase.set(gamePath(), newData);
   data = newData;
 }
 
