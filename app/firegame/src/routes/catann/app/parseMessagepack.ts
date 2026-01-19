@@ -261,6 +261,27 @@ export function packServerData(serverData: any) {
         val & 0xff,
       );
     };
+    const pushUint64 = (val: number) => {
+      const hi = Math.floor(val / 2 ** 32);
+      const lo = val >>> 0;
+      pushUint32(hi);
+      pushUint32(lo);
+    };
+    const pushInt64 = (val: number) => {
+      const hi = Math.floor(val / 2 ** 32);
+      const lo = val - hi * 2 ** 32;
+      pushUint32(hi >>> 0);
+      pushUint32(lo >>> 0);
+    };
+    const pushFloat64 = (val: number) => {
+      const buffer = new ArrayBuffer(8);
+      const view = new DataView(buffer);
+      view.setFloat64(0, val);
+      const data = new Uint8Array(buffer);
+      for (let i = 0; i < data.length; i += 1) {
+        push(data[i]);
+      }
+    };
 
     const encodeInner = (val: any) => {
       if (val === null) {
@@ -279,6 +300,11 @@ export function packServerData(serverData: any) {
       if (typeof val === "number") {
         if (!Number.isFinite(val)) {
           throw new Error(`Unsupported number: ${val}`);
+        }
+        if (!Number.isInteger(val)) {
+          push(0xcb);
+          pushFloat64(val);
+          return;
         }
         if (Number.isInteger(val)) {
           if (val >= 0 && val <= 0x7f) {
@@ -303,6 +329,11 @@ export function packServerData(serverData: any) {
             pushUint32(val);
             return;
           }
+          if (val > 0xffffffff && val <= Number.MAX_SAFE_INTEGER) {
+            push(0xcf);
+            pushUint64(val);
+            return;
+          }
           if (val >= -0x80 && val <= 0x7f) {
             push(0xd0, val & 0xff);
             return;
@@ -315,6 +346,11 @@ export function packServerData(serverData: any) {
           if (val >= -0x80000000 && val <= 0x7fffffff) {
             push(0xd2);
             pushUint32(val >>> 0);
+            return;
+          }
+          if (val < -0x80000000 && val >= Number.MIN_SAFE_INTEGER) {
+            push(0xd3);
+            pushInt64(val);
             return;
           }
         }
