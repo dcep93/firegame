@@ -1,4 +1,4 @@
-import parseClientData from "./parseClientData";
+import { parseClientData } from "./parseMessagepack";
 
 const userSessionId = "08621E.5580914";
 

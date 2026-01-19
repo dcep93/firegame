@@ -1,5 +1,6 @@
 import store, { MeType } from "../../../shared/store";
 import handleMessage, { FUTURE } from "./handleMessage";
+import { packServerData } from "./parseMessagepack";
 
 export const isDev = process.env.NODE_ENV === "development";
 
@@ -7,7 +8,10 @@ window.addEventListener("message", (event) => {
   const { id, clientData } = event.data || {};
   if (!clientData) return;
   handleMessage(clientData, (serverData) =>
-    event.source!.postMessage({ id, serverData }, { targetOrigin: "*" }),
+    event.source!.postMessage(
+      { id, data: packServerData(serverData) },
+      { targetOrigin: "*" },
+    ),
   );
 });
 
@@ -257,8 +261,7 @@ function main({
         this.dispatchEvent(new CloseEvent("close"));
       }
 
-      receive(serverData: unknown) {
-        const data = JSON.stringify(serverData);
+      receive(data: unknown) {
         const messageEvent = new MessageEvent("message", {
           data,
         });

@@ -15007,7 +15007,9 @@
           }
         }
         handleWebSocketMessage(e) {
+          console.log({ e });
           const t = V.D4(e.data);
+          alert("success");
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
               "======",
