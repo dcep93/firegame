@@ -1,5 +1,5 @@
 import store, { MeType } from "../../../shared/store";
-import handleMessage, { FUTURE } from "./handleMessage";
+import handleMessage, { FUTURE, ROOM, sendToMainSocket } from "./handleMessage";
 import { packServerData } from "./parseMessagepack";
 
 export const isDev = process.env.NODE_ENV === "development";
@@ -178,12 +178,19 @@ function main({
         return Promise.resolve(JSON.stringify(USER_STATE));
       }
       if (url === "/api/profile-edit/icon") {
-        console.log(USER_STATE.userState);
+        const parsed = JSON.parse(sendArgs[0]);
         USER_STATE.userState = {
           ...USER_STATE.userState,
-          ...JSON.parse(sendArgs[0]),
+          ...parsed,
         };
-        console.log(USER_STATE.userState);
+        Object.assign(
+          ROOM.data.sessions.find(
+            (s: { roomSessionId: string }) =>
+              s.roomSessionId === parsed.roomSessionId,
+          ),
+          parsed,
+        );
+        sendToMainSocket?.(ROOM);
         return Promise.resolve(
           JSON.stringify({ success: true, userState: USER_STATE.userState }),
         );

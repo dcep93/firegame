@@ -11,7 +11,7 @@ import { parseClientData } from "./parseMessagepack";
 
 const userSessionId = "08621E.5580914";
 
-const ROOM = {
+export const ROOM = {
   id: "137",
   data: {
     type: "StateUpdated",
@@ -95,6 +95,8 @@ export const FUTURE = (() => {
   return future.toISOString();
 })();
 
+export var sendToMainSocket: ((serverData: any) => void) | undefined;
+
 export default function handleMessage(
   clientData: any,
   sendResponse: (serverData: any) => void,
@@ -105,6 +107,9 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
+      console.log({ clientData, sendToMainSocket });
+      if (sendToMainSocket !== undefined) throw new Error("sendToMainSocket");
+      sendToMainSocket = sendResponse;
       sendResponse({ type: "Connected", userSessionId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
