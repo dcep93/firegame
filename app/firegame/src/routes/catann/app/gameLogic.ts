@@ -131,6 +131,25 @@ export const newRoom = () => {
   };
 };
 
+export const newRoomMe = () => {
+  return {
+    roomSessionId: "1141816",
+    userSessionId: store.me.userId,
+    userId: store.me.userId,
+    isBot: false,
+    isReadyToPlay: true,
+    selectedColor: "red",
+    username: store.me.userId,
+    isMember: false,
+    icon: 12,
+    profilePictureUrl: null,
+    karmaCompletedGames: 0,
+    karmaTotalGames: 0,
+    availableColors: ["red", "blue", "orange", "green"],
+    botDifficulty: null,
+  };
+};
+
 export const newGame = () => {
   return {
     id: State.GameStateUpdate.toString(),
