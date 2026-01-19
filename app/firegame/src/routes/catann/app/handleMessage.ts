@@ -10,10 +10,8 @@ import {
 } from "./catann_files_enums";
 import { parseClientData } from "./parseMessagepack";
 
-const userSessionId = "08621E.5580914";
-
 export const ROOM = {
-  id: "1",
+  id: "137",
   data: {
     type: "StateUpdated",
     updateSequence: Date.now(),
@@ -39,12 +37,12 @@ export const ROOM = {
     sessions: [
       {
         roomSessionId: "1141816",
-        userSessionId,
+        userSessionId: "",
         userId: "101878616",
         isBot: false,
         isReadyToPlay: true,
         selectedColor: "red",
-        username: "player1#1001",
+        username: "username#45",
         isMember: false,
         icon: 12,
         profilePictureUrl: null,
@@ -111,13 +109,13 @@ export default function handleMessage(
       console.log({ clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
-      sendResponse({ type: "Connected", userSessionId });
+      sendResponse({ type: "Connected", userSessionId: store.me.userId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
         id: `${State.LobbyStateUpdate}`,
         data: {
           type: LobbyState.SessionState,
-          payload: { id: userSessionId },
+          payload: { id: store.me.userId },
         },
       });
     }
