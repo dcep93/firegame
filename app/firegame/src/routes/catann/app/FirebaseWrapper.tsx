@@ -15,6 +15,7 @@ export function handleClientUpdate(clientData: any) {
 }
 
 export var firebaseData: any = {};
+var seenData = firebaseData;
 
 export default function FirebaseWrapper() {
   useEffect(
@@ -32,6 +33,7 @@ export default function FirebaseWrapper() {
           return;
         }
         const unserialized = unSerializeFirebase(liveData.catann);
+        seenData = unSerializeFirebase(liveData.catann);
         if (JSON.stringify(firebaseData) === JSON.stringify(unserialized))
           return;
         firebaseData = unserialized;

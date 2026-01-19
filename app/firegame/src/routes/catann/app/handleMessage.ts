@@ -8,7 +8,7 @@ import {
   SocketRouteType,
   State,
 } from "./catann_files_enums";
-import { firebaseData } from "./FirebaseWrapper";
+import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
 import { newGame } from "./gameLogic";
 import { parseClientData } from "./parseMessagepack";
 
@@ -83,6 +83,7 @@ export default function handleMessage(
         const capitalKey = parsed.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
         firebaseData.ROOM.data[key] = parsed[key];
+        setFirebaseData(firebaseData, { parsed });
         return sendResponse(firebaseData.ROOM);
       }
       if (parsed.type === "selectColor") {
@@ -90,6 +91,7 @@ export default function handleMessage(
           (s: { roomSessionId: string }) =>
             s.roomSessionId === parsed.roomSessionId,
         ).selectedColor = parsed.color;
+        setFirebaseData(firebaseData, { parsed });
         return sendResponse(firebaseData.ROOM);
       }
     }
