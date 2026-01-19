@@ -84,6 +84,33 @@ function main({
         { category: 2, type: 10 }, // BlackForest
         { category: 2, type: 11 }, // Volcano
         { category: 2, type: 12 }, // GoldRush
+        // Avatars (category 3)
+        { category: 3, type: 0 }, // FounderHat
+        { category: 3, type: 1 }, // ColonistHat
+        { category: 3, type: 2 }, // SettlerHat
+        { category: 3, type: 3 }, // ChristmasHat
+        { category: 3, type: 4 }, // Player
+        { category: 3, type: 5 }, // PirateShip
+        { category: 3, type: 6 }, // MedalGold
+        { category: 3, type: 7 }, // MedalSilver
+        { category: 3, type: 8 }, // MedalBronze
+        { category: 3, type: 9 }, // Elephant
+        { category: 3, type: 10 }, // Avocado
+        { category: 3, type: 11 }, // Cactus
+        { category: 3, type: 12 }, // Crown
+        { category: 3, type: 13 }, // Swords
+        { category: 3, type: 14 }, // Helmet
+        { category: 3, type: 15 }, // Snorkel
+        { category: 3, type: 16 }, // Scarf
+        { category: 3, type: 17 }, // Tie
+        { category: 3, type: 18 }, // Worker
+        { category: 3, type: 19 }, // Sombrero
+        { category: 3, type: 20 }, // Farmer
+        { category: 3, type: 21 }, // RobberSanta
+        { category: 3, type: 22 }, // RobberLunar
+        { category: 3, type: 23 }, // RobberCupid
+        { category: 3, type: 24 }, // Mummy
+        { category: 3, type: 25 }, // Gifter
       ],
       //   totalCompletedGameCount: 441,
       //   ckTotalGameCount: 0,
