@@ -275,7 +275,7 @@ function main() {
   }
 
   function loadRemote() {
-    fetch(`./remote.html?${Date.now()}`)
+    fetch(`/public_catann/remote.html?${Date.now()}`)
       .then((resp) => resp.text())
       .then((resp) =>
         resp.replaceAll(
@@ -286,6 +286,7 @@ function main() {
       .then((resp) => {
         document.open();
         document.write(resp);
+        alert(1);
         document.close();
         if (window.__socketBridgeHandler) {
           window.addEventListener("message", window.__socketBridgeHandler);
