@@ -2,23 +2,22 @@ import React from "react";
 import IframeScriptString from "./IframeScriptString";
 
 class Catann extends React.Component {
-  private iframeRef = React.createRef<HTMLIFrameElement>();
   private didInitIframe = false;
 
-  private handleIframeLoad = () => {
-    if (this.didInitIframe) return;
-    const iframe = this.iframeRef.current;
-    const doc = iframe?.contentDocument;
-    if (!doc) return;
-    this.didInitIframe = true;
-    doc.open();
-    doc.write(
-      `<!doctype html><html><head><base href="/"></head><body><script>${IframeScriptString()};</script></body></html>`,
-    );
-    doc.close();
-  };
-
   render() {
+    const iframeRef = React.createRef<HTMLIFrameElement>();
+    const handleIframeLoad = () => {
+      if (this.didInitIframe) return;
+      const iframe = iframeRef.current;
+      const doc = iframe?.contentDocument;
+      if (!doc) return;
+      this.didInitIframe = true;
+      doc.open();
+      doc.write(
+        `<!doctype html><html><head><base href="/"></head><body><script>${IframeScriptString()};</script></body></html>`,
+      );
+      doc.close();
+    };
     return (
       <div
         style={{
@@ -29,10 +28,10 @@ class Catann extends React.Component {
         }}
       >
         <iframe
-          ref={this.iframeRef}
+          ref={iframeRef}
           title={"iframe"}
           src={"/#room420"}
-          onLoad={this.handleIframeLoad}
+          onLoad={handleIframeLoad}
           style={{
             width: "100%",
             height: "100%",

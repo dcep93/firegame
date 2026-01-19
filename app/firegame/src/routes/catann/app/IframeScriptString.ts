@@ -262,6 +262,7 @@ function main({
       }
 
       receive(data: unknown) {
+        console.log("received", data);
         const messageEvent = new MessageEvent("message", {
           data,
         });
