@@ -12,7 +12,6 @@ window.addEventListener("message", (event) => {
 
 class Catann extends React.Component {
   render() {
-    const src = `${window.location.origin}/public_catann/#coin9247`;
     return (
       <div
         style={{
@@ -23,8 +22,8 @@ class Catann extends React.Component {
         }}
       >
         <iframe
-          title={src}
-          srcDoc={`<script>${IframeScriptString}</script>`}
+          title={"iframe"}
+          srcDoc={`<!doctype html><html><head><base href="/"></head><body><script>history.replaceState(null,"","/");</script><script>${IframeScriptString}; alert(window.location.pathname);</script></body></html>`}
           style={{
             width: "100%",
             height: "100%",
