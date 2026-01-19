@@ -58,4 +58,4 @@ function gamePath(): string {
   return `${roomPath()}/game`;
 }
 
-export { gamePath, init, lobbyPath, mePath, namespace, update };
+export { gamePath, init, lobbyPath, mePath, namespace, roomPath, update };

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import firebase from "../../../firegame/firebase";
-import { gamePath } from "../../../firegame/writer/utils";
+import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
 
 export function handleServerUpdate(clientData: any) {
@@ -12,11 +12,19 @@ export function handleServerUpdate(clientData: any) {
 }
 
 export var data: any = {};
-var liveData: typeof data;
 
 export default function FirebaseWrapper() {
+  const [liveData, setLiveData] = useState<any>(null);
+  useEffect(
+    () =>
+      void firebase.connect(roomPath(), (newData) => {
+        console.log({ data, newData, liveData });
+        setLiveData(newData);
+      }),
+    [],
+  );
   useEffect(() => {
-    console.log("fetched", { store });
+    console.log("fetched", { liveData });
     if (!store.gameW?.game) {
       if (data.ROOM) return;
       defaultRoom.data.sessions[0].userSessionId = store.me.userId;
@@ -25,14 +33,14 @@ export default function FirebaseWrapper() {
       return;
     }
     data = store.gameW.game;
-    liveData = { ...data };
     console.log("rendered", { data });
-  }, [store]);
+  }, [liveData]);
   return <div></div>;
 }
 
 function setData(newData: any) {
-  firebase.set(gamePath(), newData);
+  console.log({ newData });
+  // firebase.set(gamePath(), newData);
   data = newData;
 }
 
