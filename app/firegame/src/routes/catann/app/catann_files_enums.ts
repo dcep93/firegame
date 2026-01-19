@@ -6,6 +6,17 @@ export enum SocketRouteType {
   SocketRouter = 4,
 }
 
+export enum State {
+  GameStateUpdate = 130,
+  MatchmakingStateUpdate = 131,
+  LobbyStateUpdate = 133,
+  ChannelStateUpdate = 134,
+  GeneralStateUpdate = 135,
+  SocketMonitorUpdate = 136,
+  RoomEvent = 137,
+  ShuffleStateUpdate = 139,
+}
+
 export enum ServerActionType {
   GameAction = 1,
   LobbyAction = 2,
@@ -36,6 +47,21 @@ export enum LobbyAction {
   WatchRoomList = 14,
   StopWatchingRoomList = 15,
   AutoRejoinGame = 16,
+}
+
+export enum LobbyState {
+  AutoRejoinGame = 1,
+  SessionState = 2,
+  UserStateUpdate = 3,
+  LobbyDisconnectData = 4,
+  SendPopup = 5,
+  ShowCornerPopup = 6,
+  SendBroadcast = 7,
+  SocketTest = 8,
+  ServerUpdating = 9,
+  ReloadClient = 10,
+  ServerUpdated = 11,
+  RoomListUpdate = 12,
 }
 
 export enum ChannelAction {

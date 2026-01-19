@@ -1,7 +1,9 @@
 import {
   GeneralAction,
   LobbyAction,
+  LobbyState,
   ServerActionType,
+  State,
   ShuffleQueueAction,
   SocketRouteType,
 } from "./catann_files_enums";
@@ -28,12 +30,10 @@ export default function handleMessage(
       sendResponse({ type: "Connected", userSessionId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
-        id: "133",
+        id: `${State.LobbyStateUpdate}`,
         data: {
-          type: ServerActionType.LobbyAction,
-          payload: {
-            id: userSessionId,
-          },
+          type: LobbyState.SessionState,
+          payload: { id: userSessionId },
         },
       });
     }
