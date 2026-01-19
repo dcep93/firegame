@@ -1,11 +1,10 @@
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
-import { recorded_sha } from "../recorded_sha";
 import GameWrapper from "./components/GameWrapper";
 import Home from "./components/Home";
 import games from "./games";
 
 function App() {
-  console.log(recorded_sha);
+  // console.log(recorded_sha);
   return (
     <BrowserRouter>
       <Routes>
@@ -45,7 +44,7 @@ function getRoutes(): JSX.Element {
             />
           }
         />
-      </Route>
+      </Route>,
     );
   }
   return <>{routes}</>;

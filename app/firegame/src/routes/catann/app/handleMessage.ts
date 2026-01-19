@@ -123,7 +123,6 @@ export default function handleMessage(
     return;
   }
   const parsed = parseClientData(clientData);
-  console.log(parsed);
   if (parsed._header[0] === SocketRouteType.RouteToServerType) {
     if (parsed._header[1] === ServerActionType.GeneralAction) {
       if (
@@ -152,6 +151,7 @@ export default function handleMessage(
         return;
       }
     }
+    console.log(parsed);
     if (parsed._header[1] === ServerActionType.RoomCommand) {
       if (parsed.type === "startGame") {
         return sendResponse({

@@ -384,10 +384,15 @@ function main({
       .then((resp) =>
         !isDev
           ? resp
-          : resp.replaceAll(
-              "https://cdn.colonist.io/dist/js",
-              "/public_catann/catann_files",
-            ),
+          : resp
+              .replaceAll(
+                "https://cdn.colonist.io/dist/js",
+                "/public_catann/catann_files",
+              )
+              .replaceAll(
+                "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileLoaded",
+                "",
+              ),
       )
       .then((resp) => {
         window.history.replaceState(null, "", "/#room420");
