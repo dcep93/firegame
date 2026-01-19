@@ -3,7 +3,6 @@ export default function InterceptedWebSocket() {
     if (!targetWindow) {
       return;
     }
-    console.log("sent", payload);
     targetWindow.postMessage(payload, "*");
   };
 

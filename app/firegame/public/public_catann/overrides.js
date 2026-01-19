@@ -209,14 +209,14 @@ function overrideWebsocket() {
   InterceptedWebSocket.CLOSING = 2;
   InterceptedWebSocket.CLOSED = 3;
 
-  window.addEventListener("message", (event) => {
-    console.log("received", event);
+  const socketBridgeHandler = (event) => {
     const { id, data } = event.data || {};
     if (!id || !socketsById.has(id)) {
       return;
     }
     socketsById.get(id).receive(data);
-  });
+  };
+  window.__socketBridgeHandler = socketBridgeHandler;
 
   window.WebSocket = InterceptedWebSocket;
 }
@@ -244,6 +244,7 @@ function loadRemote() {
       document.open();
       document.write(resp);
       document.close();
+      window.addEventListener("message", window.__socketBridgeHandler);
     });
 }
 
