@@ -68,11 +68,42 @@ export function setFirebaseData(newData: any, change: any) {
   );
 }
 
+const EMPTY_ARRAY = "__EMPTY_ARRAY__";
+const EMPTY_OBJECT = "__EMPTY_OBJECT__";
+
 // TODO just handle empties
-function serializeFirebase(data: any) {
-  return JSON.stringify(data);
+function serializeFirebase(unserialized: any): any {
+  if (Array.isArray(unserialized)) {
+    if (unserialized.length === 0) {
+      return EMPTY_ARRAY;
+    }
+    return unserialized.map(serializeFirebase);
+  }
+  if (unserialized && typeof unserialized === "object") {
+    if (Object.keys(unserialized).length === 0) {
+      return EMPTY_OBJECT;
+    }
+    return Object.fromEntries(
+      Object.entries(unserialized).map(([k, v]) => [k, serializeFirebase(v)]),
+    );
+  }
+  return unserialized;
 }
 
-function unSerializeFirebase(dataStr: string) {
-  return JSON.parse(dataStr);
+function unSerializeFirebase(serialized: any): any {
+  if (serialized === EMPTY_ARRAY) {
+    return [];
+  }
+  if (serialized === EMPTY_OBJECT) {
+    return {};
+  }
+  if (Array.isArray(serialized)) {
+    return serialized.map(unSerializeFirebase);
+  }
+  if (serialized && typeof serialized === "object") {
+    return Object.fromEntries(
+      Object.entries(serialized).map(([k, v]) => [k, unSerializeFirebase(v)]),
+    );
+  }
+  return serialized;
 }
