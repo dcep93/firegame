@@ -8,7 +8,7 @@ import {
   SocketRouteType,
   State,
 } from "./catann_files_enums";
-import { data } from "./FirebaseWrapper";
+import { firebase_data } from "./FirebaseWrapper";
 import { parseClientData } from "./parseMessagepack";
 
 export const FUTURE = (() => {
@@ -29,7 +29,7 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
-      data.ROOM.data.roomId = `roomIdx${store.me.roomId.toString()}`;
+      firebase_data.ROOM.data.roomId = `roomIdx${store.me.roomId.toString()}`;
       console.log("handleMessage.init", { clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
@@ -66,7 +66,7 @@ export default function handleMessage(
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
-        return sendResponse(data.ROOM);
+        return sendResponse(firebase_data.ROOM);
       }
     }
     if (parsed._header[1] === ServerActionType.ShuffleAction) {
@@ -1051,15 +1051,15 @@ export default function handleMessage(
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        data.ROOM[key] = parsed[key];
-        return sendResponse(data.ROOM);
+        firebase_data.ROOM[key] = parsed[key];
+        return sendResponse(firebase_data.ROOM);
       }
       if (parsed.type === "selectColor") {
-        data.ROOM.data.sessions.find(
+        firebase_data.ROOM.data.sessions.find(
           (s: { roomSessionId: string }) =>
             s.roomSessionId === parsed.roomSessionId,
         ).selectedColor = parsed.color;
-        return sendResponse(data.ROOM);
+        return sendResponse(firebase_data.ROOM);
       }
     }
   }
