@@ -33,13 +33,13 @@ export default function handleMessage(
       console.log({ clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
-      sendResponse({ type: "Connected", userSessionId: "asdf" });
+      sendResponse({ type: "Connected", userSessionId: store.me.userId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
         id: `${State.LobbyStateUpdate}`,
         data: {
           type: LobbyState.SessionState,
-          payload: { id: "asdf" },
+          payload: { id: store.me.userId },
         },
       });
     }
@@ -1004,7 +1004,7 @@ export default function handleMessage(
               },
               playerUserStates: [
                 {
-                  userId: "asdf",
+                  userId: store.me.userId,
                   username: "Scheck#2093",
                   databaseIcon: 12,
                   selectedColor: 1,
