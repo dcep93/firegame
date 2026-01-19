@@ -70,7 +70,7 @@ export default function handleMessage(
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
-        return sendResponse(firebaseData.ROOM);
+        return sendResponse(spoofHostRoom());
       }
     }
     if (parsed._header[1] === ServerActionType.ShuffleAction) {
@@ -88,7 +88,7 @@ export default function handleMessage(
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
         firebaseData.ROOM.data[key] = parsed[key];
         setFirebaseData(firebaseData, { parsed });
-        return sendResponse(firebaseData.ROOM);
+        return sendResponse(spoofHostRoom());
       }
       if (parsed.type === "selectColor") {
         firebaseData.ROOM.data.sessions.find(
@@ -96,7 +96,7 @@ export default function handleMessage(
             s.roomSessionId === parsed.roomSessionId,
         ).selectedColor = parsed.color;
         setFirebaseData(firebaseData, { parsed });
-        return sendResponse(firebaseData.ROOM);
+        return sendResponse(spoofHostRoom());
       }
       if (parsed.type === "leave") {
         setFirebaseData(null, { parsed });
@@ -109,4 +109,16 @@ export default function handleMessage(
   const e = `not implemented: ${JSON.stringify(parsed)}`;
   // console.error(e);
   throw new Error(e);
+}
+
+function spoofHostRoom() {
+  return {
+    ...firebaseData.ROOM,
+    data: {
+      ...firebaseData.ROOM.data,
+      sessions: (firebaseData.ROOM.data.sessions.slice() as any[]).sort(
+        (a, b) => (a.userId === store.me.userId ? -1 : 1),
+      ),
+    },
+  };
 }
