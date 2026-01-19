@@ -59,7 +59,7 @@ const defaultRoom = {
     sessions: [
       {
         roomSessionId: "1141816",
-        userSessionId: "",
+        userSessionId: "asdf",
         userId: "101878616",
         isBot: false,
         isReadyToPlay: true,
