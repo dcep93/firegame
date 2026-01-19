@@ -190,6 +190,221 @@ export function parseClientData(clientData: Record<string, number>) {
 }
 
 export function packServerData(serverData: any) {
-  const dataStr = JSON.stringify(serverData);
-  return dataStr;
+  if (
+    serverData &&
+    typeof serverData === "object" &&
+    (serverData.type === "Connected" ||
+      serverData.type === "SessionEstablished")
+  ) {
+    return JSON.stringify(serverData);
+  }
+
+  const encodeText = (() => {
+    if (typeof TextEncoder !== "undefined") {
+      const encoder = new TextEncoder();
+      return (value: string) => encoder.encode(value);
+    }
+    return (value: string) => {
+      const bytes: number[] = [];
+      for (let i = 0; i < value.length; i += 1) {
+        let code = value.charCodeAt(i);
+        if (code >= 0xd800 && code <= 0xdbff && i + 1 < value.length) {
+          const next = value.charCodeAt(i + 1);
+          if ((next & 0xfc00) === 0xdc00) {
+            code = ((code - 0xd800) << 10) + (next - 0xdc00) + 0x10000;
+            i += 1;
+          }
+        }
+        if (code <= 0x7f) {
+          bytes.push(code);
+        } else if (code <= 0x7ff) {
+          bytes.push(0xc0 | (code >> 6), 0x80 | (code & 0x3f));
+        } else if (code <= 0xffff) {
+          bytes.push(
+            0xe0 | (code >> 12),
+            0x80 | ((code >> 6) & 0x3f),
+            0x80 | (code & 0x3f),
+          );
+        } else {
+          bytes.push(
+            0xf0 | (code >> 18),
+            0x80 | ((code >> 12) & 0x3f),
+            0x80 | ((code >> 6) & 0x3f),
+            0x80 | (code & 0x3f),
+          );
+        }
+      }
+      return new Uint8Array(bytes);
+    };
+  })();
+
+  const encodeValue = (value: any): Uint8Array => {
+    if (value === undefined) {
+      value = null;
+    }
+
+    const bytes: number[] = [];
+    const push = (...vals: number[]) => {
+      for (const val of vals) {
+        bytes.push(val & 0xff);
+      }
+    };
+
+    const pushUint16 = (val: number) => {
+      push((val >> 8) & 0xff, val & 0xff);
+    };
+    const pushUint32 = (val: number) => {
+      push(
+        (val >>> 24) & 0xff,
+        (val >>> 16) & 0xff,
+        (val >>> 8) & 0xff,
+        val & 0xff,
+      );
+    };
+
+    const encodeInner = (val: any) => {
+      if (val === null) {
+        push(0xc0);
+        return;
+      }
+      if (val === false) {
+        push(0xc2);
+        return;
+      }
+      if (val === true) {
+        push(0xc3);
+        return;
+      }
+
+      if (typeof val === "number") {
+        if (!Number.isFinite(val)) {
+          throw new Error(`Unsupported number: ${val}`);
+        }
+        if (Number.isInteger(val)) {
+          if (val >= 0 && val <= 0x7f) {
+            push(val);
+            return;
+          }
+          if (val >= -32 && val < 0) {
+            push(0xe0 | (val + 32));
+            return;
+          }
+          if (val >= 0 && val <= 0xff) {
+            push(0xcc, val);
+            return;
+          }
+          if (val >= 0 && val <= 0xffff) {
+            push(0xcd);
+            pushUint16(val);
+            return;
+          }
+          if (val >= 0 && val <= 0xffffffff) {
+            push(0xce);
+            pushUint32(val);
+            return;
+          }
+          if (val >= -0x80 && val <= 0x7f) {
+            push(0xd0, val & 0xff);
+            return;
+          }
+          if (val >= -0x8000 && val <= 0x7fff) {
+            push(0xd1);
+            pushUint16(val & 0xffff);
+            return;
+          }
+          if (val >= -0x80000000 && val <= 0x7fffffff) {
+            push(0xd2);
+            pushUint32(val >>> 0);
+            return;
+          }
+        }
+        throw new Error(`Unsupported number type: ${val}`);
+      }
+
+      if (typeof val === "string") {
+        const textBytes = encodeText(val);
+        const length = textBytes.length;
+        if (length <= 0x1f) {
+          push(0xa0 | length);
+        } else if (length <= 0xff) {
+          push(0xd9, length);
+        } else if (length <= 0xffff) {
+          push(0xda);
+          pushUint16(length);
+        } else {
+          push(0xdb);
+          pushUint32(length);
+        }
+        for (let i = 0; i < textBytes.length; i += 1) {
+          push(textBytes[i]);
+        }
+        return;
+      }
+
+      if (Array.isArray(val)) {
+        const length = val.length;
+        if (length <= 0x0f) {
+          push(0x90 | length);
+        } else if (length <= 0xffff) {
+          push(0xdc);
+          pushUint16(length);
+        } else {
+          push(0xdd);
+          pushUint32(length);
+        }
+        for (const item of val) {
+          encodeInner(item);
+        }
+        return;
+      }
+
+      if (typeof val === "object") {
+        const keys = Object.keys(val);
+        const length = keys.length;
+        if (length <= 0x0f) {
+          push(0x80 | length);
+        } else if (length <= 0xffff) {
+          push(0xde);
+          pushUint16(length);
+        } else {
+          push(0xdf);
+          pushUint32(length);
+        }
+        for (const key of keys) {
+          encodeInner(key);
+          encodeInner(val[key]);
+        }
+        return;
+      }
+
+      throw new Error(`Unsupported value type: ${typeof val}`);
+    };
+
+    encodeInner(value);
+    return new Uint8Array(bytes);
+  };
+
+  if (
+    serverData &&
+    typeof serverData === "object" &&
+    Array.isArray(serverData._header) &&
+    serverData._header.length >= 2 &&
+    typeof serverData.channel === "string"
+  ) {
+    const payload: Record<string, any> = { ...serverData };
+    delete payload._header;
+    delete payload.channel;
+    const header = serverData._header;
+    const channelBytes = encodeText(serverData.channel);
+    const payloadBytes = encodeValue(payload);
+    const out = new Uint8Array(3 + channelBytes.length + payloadBytes.length);
+    out[0] = header[0] ?? 0;
+    out[1] = header[1] ?? 0;
+    out[2] = channelBytes.length;
+    out.set(channelBytes, 3);
+    out.set(payloadBytes, 3 + channelBytes.length);
+    return out.buffer;
+  }
+
+  return encodeValue(serverData).buffer;
 }
