@@ -87,7 +87,7 @@ const ROOM = {
       },
     ],
   },
-};
+} as any;
 
 export const FUTURE = (() => {
   const future = new Date();
@@ -118,6 +118,7 @@ export default function handleMessage(
     return;
   }
   const parsed = parseClientData(clientData);
+  console.log(parsed);
   if (parsed._header[0] === SocketRouteType.RouteToServerType) {
     if (parsed._header[1] === ServerActionType.GeneralAction) {
       if (
@@ -1122,18 +1123,15 @@ export default function handleMessage(
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        console.log({
-          parsed,
-          key,
-          x: {
-            ...ROOM,
-            data: { ...ROOM.data, [key]: parsed[key] },
-          },
-        });
-        return sendResponse({
-          ...ROOM,
-          data: { ...ROOM.data, [key]: parsed[key] },
-        });
+        ROOM[key] = parsed[key];
+        return sendResponse(ROOM);
+      }
+      if (parsed.type === "selectColor") {
+        ROOM.data.sessions.find(
+          (s: { roomSessionId: string }) =>
+            s.roomSessionId === parsed.roomSessionId,
+        ).selectedColor = parsed.color;
+        return sendResponse(ROOM);
       }
     }
   }
