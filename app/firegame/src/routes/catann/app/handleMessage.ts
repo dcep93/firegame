@@ -118,6 +118,14 @@ export default function handleMessage(
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
+        console.log({
+          parsed,
+          key,
+          x: {
+            ...ROOM,
+            data: { ...ROOM.data, [key]: parsed[key] },
+          },
+        });
         return sendResponse({
           ...ROOM,
           data: { ...ROOM.data, [key]: parsed[key] },

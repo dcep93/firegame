@@ -22,7 +22,12 @@
     },
     648: (e, t, s) => {
       "use strict";
-      s.d(t, { QM: () => r, Sq: () => n, ey: () => i, uC: () => o });
+      s.d(t, {
+        QM: () => r,
+        Sq: () => n,
+        ey: () => i,
+        uC: () => o,
+      });
       var i = (function (e) {
           return (
             (e.ContentFrameReady = "content-frame-ready"),
@@ -68,7 +73,9 @@
     },
     655: (e, t, s) => {
       "use strict";
-      s.d(t, { m: () => m });
+      s.d(t, {
+        m: () => m,
+      });
       var i = s(12658),
         n = s(68492),
         r = s(72589),
@@ -96,7 +103,11 @@
         static async getRequestHandler(e, t, s, n = !0, r) {
           let o = e;
           (t && (o += "/" + t), a.r.isUserOnDiscord && (o = "/.proxy" + o));
-          const c = { ...this.defaultConfig, headers: r, params: s },
+          const c = {
+              ...this.defaultConfig,
+              headers: r,
+              params: s,
+            },
             l = new p(await i.A.get(o, c));
           return (
             this.storeAuthToken(l),
@@ -121,13 +132,20 @@
         ) {
           if (!m.csrfToken && !a.r.isUserOnDiscordMobile) {
             const e = new l.Ak(
-              { key: "strings:popups.errors.general.title" },
-              { key: "strings:popups.errors.clientNotReady" },
+              {
+                key: "strings:popups.errors.general.title",
+              },
+              {
+                key: "strings:popups.errors.clientNotReady",
+              },
               d.R.ServiceUnavailable,
             );
             return void o.r.showDefaultErrorPopup(e);
           }
-          const r = { "Content-Type": n, "x-csrf-token": m.csrfToken };
+          const r = {
+            "Content-Type": n,
+            "x-csrf-token": m.csrfToken,
+          };
           a.r.isUserOnDiscord && (e = "/.proxy" + e);
           const c = new p(
             await i.A.post(e, s, {
@@ -159,7 +177,9 @@
           null != s && o.r.handleError(s);
         }
         static get defaultConfig() {
-          return { validateStatus: (e) => !0 };
+          return {
+            validateStatus: (e) => !0,
+          };
         }
       }
       ((m.csrfToken = ""),
@@ -230,7 +250,9 @@
     },
     1261: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => o });
+      s.d(t, {
+        i: () => o,
+      });
       var i = s(67908),
         n = s(9029),
         r = s(18587);
@@ -298,7 +320,9 @@
     },
     1750: (e, t, s) => {
       "use strict";
-      s.d(t, { m: () => i });
+      s.d(t, {
+        m: () => i,
+      });
       var i,
         n = s(52609);
       !(function (e) {
@@ -312,7 +336,9 @@
     },
     1767: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => T });
+      s.d(t, {
+        Y: () => T,
+      });
       var i = s(19733),
         n = s(17399),
         r = s(4508),
@@ -361,7 +387,9 @@
           if (null == this.viewData.responseButtons) return;
           const e = (0, a.Le)(this.content, "notification_response_buttons"),
             t = (0, a.Le)(e, "notification_response_button btn_general");
-          ((0, a.RH)(t, { key: "strings:colonistCommon.buttons.accept" }),
+          ((0, a.RH)(t, {
+            key: "strings:colonistCommon.buttons.accept",
+          }),
             (0, a.G0)(t, () => {
               var e;
               (this.callbackOnClick(),
@@ -373,7 +401,9 @@
             e,
             "notification_response_button notification_ignore_button btn_general",
           );
-          ((0, a.RH)(s, { key: "strings:colonistCommon.buttons.ignore" }),
+          ((0, a.RH)(s, {
+            key: "strings:colonistCommon.buttons.ignore",
+          }),
             (0, a.G0)(s, () => {
               var e;
               (this.callbackOnClick(),
@@ -484,7 +514,9 @@
                   openNewTab: !0,
                   text: {
                     key: "strings:popups.notification.giftMembershipReceived.checkButton",
-                    options: { context: d.r.isUserOnDiscord ? "discord" : "" },
+                    options: {
+                      context: d.r.isUserOnDiscord ? "discord" : "",
+                    },
                   },
                 },
               };
@@ -505,7 +537,9 @@
                   openNewTab: !0,
                   text: {
                     key: "strings:popups.notification.giftMembershipReceived.checkButton",
-                    options: { context: d.r.isUserOnDiscord ? "discord" : "" },
+                    options: {
+                      context: d.r.isUserOnDiscord ? "discord" : "",
+                    },
                   },
                 },
               };
@@ -563,7 +597,9 @@
               return {
                 text: {
                   key: "strings:popups.notification.youAreNowFriendsWith",
-                  options: { username: null == t ? void 0 : t.username },
+                  options: {
+                    username: null == t ? void 0 : t.username,
+                  },
                 },
                 image:
                   null !== (n = null == t ? void 0 : t.icon) && void 0 !== n
@@ -603,7 +639,9 @@
                       username: null == t ? void 0 : t.username,
                     },
                   },
-                  { membershipType: f },
+                  {
+                    membershipType: f,
+                  },
                 ),
                 image:
                   null !== (l = null == t ? void 0 : t.icon) && void 0 !== l
@@ -619,9 +657,15 @@
                 text: (0, p.dN)(
                   {
                     key: y,
-                    options: { duration: e.duration, hash: e.hash, context: b },
+                    options: {
+                      duration: e.duration,
+                      hash: e.hash,
+                      context: b,
+                    },
                   },
-                  { membershipType: v },
+                  {
+                    membershipType: v,
+                  },
                 ),
                 image:
                   null !== (u = null == t ? void 0 : t.icon) && void 0 !== u
@@ -644,7 +688,9 @@
                       context: 1 == e.referralCount ? "one" : "other",
                     },
                   },
-                  { itemName: S.name },
+                  {
+                    itemName: S.name,
+                  },
                 ),
                 image: S.image,
                 secondaryLink: {
@@ -681,9 +727,13 @@
                 text: (0, p.dN)(
                   {
                     key: "strings:popups.notification.freeAvatarUnlocked.body",
-                    options: { itemName: k.name },
+                    options: {
+                      itemName: k.name,
+                    },
                   },
-                  { itemName: k.name },
+                  {
+                    itemName: k.name,
+                  },
                 ),
                 image: k.image,
                 secondaryLink: {
@@ -708,7 +758,9 @@
               return {
                 text: {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: e.message },
+                  options: {
+                    value: e.message,
+                  },
                 },
                 image: o.am.GameModeBase,
               };
@@ -736,7 +788,10 @@
               return {
                 text: {
                   key: "strings:roomPage.userInvitedToRoom",
-                  options: { username: e.senderUsername, roomId: e.roomId },
+                  options: {
+                    username: e.senderUsername,
+                    roomId: e.roomId,
+                  },
                 },
                 image: e.senderIcon,
                 responseButtons: {
@@ -750,7 +805,9 @@
               return {
                 text: {
                   key: "strings:popups.notification.userSentYouFriendRequest",
-                  options: { username: e.username },
+                  options: {
+                    username: e.username,
+                  },
                 },
                 image: o.am.Friends,
                 responseButtons: {
@@ -902,7 +959,10 @@
           this.cachedFriendRequests.push(e);
           const s = {
               dateReceived: t,
-              typeData: { type: r.j.FriendRequestReceived, username: e },
+              typeData: {
+                type: r.j.FriendRequestReceived,
+                username: e,
+              },
             },
             i = this.addCTANotification(s);
           this.userNameNotificationMap.set(e, i);
@@ -1024,8 +1084,12 @@
         static displayAccountDeletionPopup() {
           new URLSearchParams(window.location.search).has("account-deleted") &&
             (i.r.createSimplePopup(
-              { key: "strings:popups.accountDeletionConfirmation.title" },
-              { key: "strings:popups.accountDeletionConfirmation.body" },
+              {
+                key: "strings:popups.accountDeletionConfirmation.title",
+              },
+              {
+                key: "strings:popups.accountDeletionConfirmation.body",
+              },
             ),
             (0, n.CK)());
         }
@@ -1041,7 +1105,9 @@
     },
     1863: (e, t, s) => {
       "use strict";
-      s.d(t, { z: () => i });
+      s.d(t, {
+        z: () => i,
+      });
       var i,
         n = s(83008),
         r = s(18587),
@@ -1163,7 +1229,9 @@
     },
     2552: (e, t, s) => {
       "use strict";
-      s.d(t, { e: () => c });
+      s.d(t, {
+        e: () => c,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(76092),
@@ -1193,8 +1261,12 @@
         }
         createSwitchImageText() {
           const e = this.showingTitleImage
-              ? { key: "strings:game.endGame.shareImagePopup.viewResults" }
-              : { key: "strings:game.endGame.shareImagePopup.viewTitle" },
+              ? {
+                  key: "strings:game.endGame.shareImagePopup.viewResults",
+                }
+              : {
+                  key: "strings:game.endGame.shareImagePopup.viewTitle",
+                },
             t = (0, n.Wr)(this.body, e, "switch-image-text");
           (0, n.G0)(t, () => this.displayOtherImage());
         }
@@ -1213,7 +1285,9 @@
           if (null != e)
             try {
               await navigator.clipboard.write([
-                new ClipboardItem({ [e.type]: e }),
+                new ClipboardItem({
+                  [e.type]: e,
+                }),
               ]);
             } catch (e) {
               (console.error(
@@ -1265,8 +1339,12 @@
         }
         constructor(e, t, s = !1) {
           (super(
-            { key: "strings:game.endGame.shareImagePopup.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:game.endGame.shareImagePopup.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -1328,7 +1406,9 @@
     },
     3797: (e, t, s) => {
       "use strict";
-      s.d(t, { P: () => r });
+      s.d(t, {
+        P: () => r,
+      });
       var i = s(13618),
         n = s(18587);
       function r(e, t) {
@@ -1352,7 +1432,10 @@
     },
     4508: (e, t, s) => {
       "use strict";
-      s.d(t, { j: () => n, t: () => i });
+      s.d(t, {
+        j: () => n,
+        t: () => i,
+      });
       const i = 100;
       var n = (function (e) {
         return (
@@ -1386,7 +1469,9 @@
     },
     4651: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => o });
+      s.d(t, {
+        S: () => o,
+      });
       var i = s(69714),
         n = s(75589),
         r = s(42389);
@@ -1444,7 +1529,9 @@
     },
     6074: (e, t, s) => {
       "use strict";
-      s.d(t, { a: () => c });
+      s.d(t, {
+        a: () => c,
+      });
       var i = s(95176),
         n = s(76092),
         r = s(19966),
@@ -1460,8 +1547,12 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:popups.keepPlayingOnWeb.title" },
-            { key: "strings:popups.keepPlayingOnWeb.body" },
+            {
+              key: "strings:popups.keepPlayingOnWeb.title",
+            },
+            {
+              key: "strings:popups.keepPlayingOnWeb.body",
+            },
             () => {},
             () => {},
             !0,
@@ -1503,7 +1594,9 @@
     },
     7099: (e, t, s) => {
       "use strict";
-      s.d(t, { T: () => k });
+      s.d(t, {
+        T: () => k,
+      });
       var i = s(67908),
         n = s(87290),
         r = s(22194),
@@ -1698,17 +1791,23 @@
           const s = "-" == e.winRate ? e.winRate : `${e.winRate}%`;
           (this.createStatDiv(
             t,
-            { key: "strings:leaderboardPage.tableHeaders.rating" },
+            {
+              key: "strings:leaderboardPage.tableHeaders.rating",
+            },
             e.skillRating,
           ),
             this.createStatDiv(
               t,
-              { key: "strings:leaderboardPage.tableHeaders.games" },
+              {
+                key: "strings:leaderboardPage.tableHeaders.games",
+              },
               e.gamesPlayed,
             ),
             this.createStatDiv(
               t,
-              { key: "strings:leaderboardPage.tableHeaders.winPercentage" },
+              {
+                key: "strings:leaderboardPage.tableHeaders.winPercentage",
+              },
               s,
             ));
         }
@@ -1724,7 +1823,9 @@
             t,
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: i },
+              options: {
+                value: i,
+              },
             },
             s,
           );
@@ -2008,7 +2109,9 @@
         return (d(i, e, t, s), i);
       }
       function O(e, t) {
-        const s = { key: `strings:imgAlts.${n.h4.getEnumKey(t, i.am)}` };
+        const s = {
+          key: `strings:imgAlts.${n.h4.getEnumKey(t, i.am)}`,
+        };
         e.alt = c(s.key, s.options);
       }
       function N(e, t) {
@@ -2062,7 +2165,10 @@
     },
     9127: (e, t, s) => {
       "use strict";
-      s.d(t, { P7: () => n, WA: () => i });
+      s.d(t, {
+        P7: () => n,
+        WA: () => i,
+      });
       var i = (function (e) {
           return (
             (e[(e.Offline = 0)] = "Offline"),
@@ -2099,7 +2205,9 @@
     },
     9602: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => i });
+      s.d(t, {
+        Q: () => i,
+      });
       var i,
         n = s(42389),
         r = s(18587);
@@ -2124,7 +2232,9 @@
     },
     9620: (e, t, s) => {
       "use strict";
-      s.d(t, { A: () => b });
+      s.d(t, {
+        A: () => b,
+      });
       var i = s(98487),
         n = s(78311),
         r = s(95078),
@@ -2202,12 +2312,16 @@
           ((0, a.Cr)(c, void 0, l),
             (0, a.Cr)(c, void 0, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: d },
+              options: {
+                value: d,
+              },
             }),
             i && b.addOpponentsColumn(e, c),
             (0, a.Cr)(c, "right", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: (0, o.b3)(e.duration / 1e3) },
+              options: {
+                value: (0, o.b3)(e.duration / 1e3),
+              },
             }),
             this.addReplayColumn(e, s, c),
             (c.onclick = (t) => {
@@ -2244,7 +2358,9 @@
             h = (0, a.cE)(
               r,
               "",
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "",
             );
           ((0, a.zO)(h, n.am.ReplayIcon),
@@ -2283,7 +2399,9 @@
           const s = e.isHuman ? e.username : "Bot",
             i = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s },
+              options: {
+                value: s,
+              },
             };
           if (!(e.username === c.t) && e.isHuman) {
             const e = (0, a.cE)(t, "", i, "");
@@ -2346,14 +2464,20 @@
             r = n.insertRow();
           ((0, a.Cr)(r, void 0, {
             key: "strings:game.settings.gameInfoTab.id.value",
-            options: { id: e.setting.id },
+            options: {
+              id: e.setting.id,
+            },
           }),
             (0, a.Cr)(
               r,
               void 0,
               (0, p.dN)(
-                { key: "strings:game.settings.gameInfoTab.map.value" },
-                { mapName: h.X.getMapName(e.setting.mapSetting) },
+                {
+                  key: "strings:game.settings.gameInfoTab.map.value",
+                },
+                {
+                  mapName: h.X.getMapName(e.setting.mapSetting),
+                },
               ),
             ));
           const o = n.insertRow();
@@ -2361,16 +2485,24 @@
             o,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.gameMode.value" },
-              { modeName: s.name },
+              {
+                key: "strings:game.settings.gameInfoTab.gameMode.value",
+              },
+              {
+                modeName: s.name,
+              },
             ),
           ),
             (0, a.Cr)(
               o,
               void 0,
               (0, p.dN)(
-                { key: "strings:game.settings.gameInfoTab.extension.value" },
-                { extensionName: (0, m.Dw)(e.setting.extensionSetting) },
+                {
+                  key: "strings:game.settings.gameInfoTab.extension.value",
+                },
+                {
+                  extensionName: (0, m.Dw)(e.setting.extensionSetting),
+                },
               ),
             ));
           const c = n.insertRow();
@@ -2378,13 +2510,19 @@
             c,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.scenario.value" },
-              { scenarioName: (0, m.g1)(e.setting.scenarioSetting) },
+              {
+                key: "strings:game.settings.gameInfoTab.scenario.value",
+              },
+              {
+                scenarioName: (0, m.g1)(e.setting.scenarioSetting),
+              },
             ),
           ),
             (0, a.Cr)(c, void 0, {
               key: "strings:game.settings.gameInfoTab.vpToWin.value",
-              options: { value: e.setting.victoryPointsToWin },
+              options: {
+                value: e.setting.victoryPointsToWin,
+              },
             }));
           const l = n.insertRow(),
             d = {
@@ -2396,8 +2534,12 @@
             l,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.turnTimer.value" },
-              { turnTimer: m.mt.getSpeedSettingText(e.setting.gameSpeed) },
+              {
+                key: "strings:game.settings.gameInfoTab.turnTimer.value",
+              },
+              {
+                turnTimer: m.mt.getSpeedSettingText(e.setting.gameSpeed),
+              },
             ),
           ),
             (0, a.Cr)(
@@ -2407,7 +2549,9 @@
                 {
                   key: "strings:game.settings.gameInfoTab.friendlyRobber.value",
                 },
-                { friendlyRobberState: d },
+                {
+                  friendlyRobberState: d,
+                },
               ),
             ));
           const g = n.insertRow(),
@@ -2420,16 +2564,24 @@
             g,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.karma.value" },
-              { karmaState: f },
+              {
+                key: "strings:game.settings.gameInfoTab.karma.value",
+              },
+              {
+                karmaState: f,
+              },
             ),
           ),
             (0, a.Cr)(
               g,
               void 0,
               (0, p.dN)(
-                { key: "strings:game.settings.gameInfoTab.dice.value" },
-                { diceSetting: (0, m.Zd)(e.setting.diceSetting) },
+                {
+                  key: "strings:game.settings.gameInfoTab.dice.value",
+                },
+                {
+                  diceSetting: (0, m.Zd)(e.setting.diceSetting),
+                },
               ),
             ));
           const y = n.insertRow(),
@@ -2442,18 +2594,26 @@
             y,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.bankCards.value" },
-              { bankCardsVisibility: b },
+              {
+                key: "strings:game.settings.gameInfoTab.bankCards.value",
+              },
+              {
+                bankCardsVisibility: b,
+              },
             ),
           ),
             (0, a.Cr)(y, void 0, {
               key: "strings:profilePage.history.table.turns.value",
-              options: { turnCount: e.turnCount },
+              options: {
+                turnCount: e.turnCount,
+              },
             }));
           const v = n.insertRow();
           (0, a.Cr)(v, void 0, {
             key: "strings:game.settings.gameInfoTab.cardDiscardLimit.value",
-            options: { value: e.setting.cardDiscardLimit },
+            options: {
+              value: e.setting.cardDiscardLimit,
+            },
           });
         }
         constructor(e = !1) {
@@ -2468,7 +2628,9 @@
     },
     9707: (e, t, s) => {
       "use strict";
-      s.d(t, { u: () => n });
+      s.d(t, {
+        u: () => n,
+      });
       var i = s(76714);
       class n {
         constructor(e) {
@@ -2511,7 +2673,9 @@
     },
     10369: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => c });
+      s.d(t, {
+        r: () => c,
+      });
       var i = s(69508),
         n = s(19720),
         r = s(95176),
@@ -2541,7 +2705,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.description,
             n = new r.y(
               s,
@@ -2558,7 +2724,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.getDisplayMessage(),
             n = new r.y(
               s,
@@ -2575,7 +2743,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.description,
             n = o.N.isUserOnMobileAppOrWeb()
               ? "/mobile/store#membership"
@@ -2600,7 +2770,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.description,
             n = new r.y(
               s,
@@ -2643,7 +2815,9 @@
     },
     10644: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => r });
+      s.d(t, {
+        Q: () => r,
+      });
       var i = s(19966),
         n = s(9029);
       class r {
@@ -2692,11 +2866,17 @@
       function r(e, t, s) {
         return e + (t - e) * s;
       }
-      s.d(t, { Cc: () => r, Yf: () => n, qE: () => i });
+      s.d(t, {
+        Cc: () => r,
+        Yf: () => n,
+        qE: () => i,
+      });
     },
     11148: (e, t, s) => {
       "use strict";
-      s.d(t, { C: () => h });
+      s.d(t, {
+        C: () => h,
+      });
       var i = s(67908),
         n = s(63778),
         r = s(69714),
@@ -3164,7 +3344,9 @@
     },
     11480: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => b });
+      s.d(t, {
+        y: () => b,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(95176),
@@ -3186,7 +3368,9 @@
             this.body,
             {
               key: "strings:popups.freePlayDiceRoll.success",
-              options: { roll: e },
+              options: {
+                roll: e,
+              },
             },
             "",
             "",
@@ -3205,7 +3389,9 @@
             this.body,
             {
               key: "strings:popups.freePlayDiceRoll.failure",
-              options: { roll: e },
+              options: {
+                roll: e,
+              },
             },
             "",
             "",
@@ -3253,10 +3439,14 @@
         }
         constructor() {
           (super(
-            { key: "strings:popups.freePlayDiceRoll.title" },
+            {
+              key: "strings:popups.freePlayDiceRoll.title",
+            },
             {
               key: "strings:popups.freePlayDiceRoll.body",
-              options: { eligibleRolls: b.getEligibleRollsText() },
+              options: {
+                eligibleRolls: b.getEligibleRollsText(),
+              },
             },
             () => {},
             () => {},
@@ -3295,7 +3485,9 @@
     },
     11743: (e, t, s) => {
       "use strict";
-      s.d(t, { v: () => u });
+      s.d(t, {
+        v: () => u,
+      });
       var i = s(78311),
         n = s(95176),
         r = s(18587),
@@ -3321,7 +3513,9 @@
             ).getDefaultPrice();
             (0, c.i5)(t, "", {
               key: "strings:storePage.sections.membership.billing.paidMonthly",
-              options: { amount: e },
+              options: {
+                amount: e,
+              },
             });
           }
         }
@@ -3334,7 +3528,9 @@
           (0, d.j0)(
             e,
             {
-              listTitle: { key: "strings:popups.becomeAMember.tooltip.title" },
+              listTitle: {
+                key: "strings:popups.becomeAMember.tooltip.title",
+              },
               list: "strings:popups.becomeAMember.tooltip.body",
             },
             "bottom-end",
@@ -3352,8 +3548,12 @@
         }
         constructor(e, t, s = () => {}, i = !1) {
           (super(
-            { key: "strings:roomPage.becomeAMember" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:roomPage.becomeAMember",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {
               (e(), null != t && u.sendAnalyticEvent(t));
             },
@@ -3419,7 +3619,9 @@
     },
     13047: (e, t, s) => {
       "use strict";
-      s.d(t, { $: () => i });
+      s.d(t, {
+        $: () => i,
+      });
       const i = 287;
     },
     13250: (e, t, s) => {
@@ -3437,7 +3639,10 @@
     },
     13359: (e, t, s) => {
       "use strict";
-      s.d(t, { T: () => r, q: () => o });
+      s.d(t, {
+        T: () => r,
+        q: () => o,
+      });
       var i = s(74710),
         n = s(18587),
         r = (function (e) {
@@ -3501,12 +3706,17 @@
           );
         }
         static extractHashAndValue(e) {
-          alert("extractHashAndValue");
           const t = e.indexOf("#");
           if (-1 == t || t == e.length - 1)
-            return { hash: void 0, value: void 0 };
+            return {
+              hash: void 0,
+              value: void 0,
+            };
           const s = e.slice(t + 1).split("=");
-          return { hash: s[0], value: s.length > 1 ? s[1] : void 0 };
+          return {
+            hash: s[0],
+            value: s.length > 1 ? s[1] : void 0,
+          };
         }
         static getLanguagePrefix() {
           const e = new Map([
@@ -3625,7 +3835,9 @@
           : S("https://apps.apple.com/us/app/colonist-io/id6444831129", !0);
       }
       function g(e) {
-        return (0, n.A)(e, i.R$.secondsAsMilliseconds(2), { trailing: !1 });
+        return (0, n.A)(e, i.R$.secondsAsMilliseconds(2), {
+          trailing: !1,
+        });
       }
       let f = !1;
       function y(e) {
@@ -3721,7 +3933,9 @@
     },
     15549: (e, t, s) => {
       "use strict";
-      s.d(t, { P: () => h });
+      s.d(t, {
+        P: () => h,
+      });
       var i = s(83008),
         n = s(5603),
         r = s(78311),
@@ -3817,8 +4031,12 @@
           );
           if (null == e) return;
           const t = (0, a.dN)(
-            { key: "strings:roomPage.notifications.changedMap" },
-            { map: e.name },
+            {
+              key: "strings:roomPage.notifications.changedMap",
+            },
+            {
+              map: e.name,
+            },
           );
           this.showNotification(t);
         }
@@ -3834,8 +4052,12 @@
           );
           if (null == e) return;
           const t = (0, a.dN)(
-            { key: "strings:roomPage.notifications.changedGameMode" },
-            { gameMode: e.name },
+            {
+              key: "strings:roomPage.notifications.changedGameMode",
+            },
+            {
+              gameMode: e.name,
+            },
           );
           this.showNotification(t);
         }
@@ -3936,7 +4158,9 @@
             this.newRoomState.hostSession.roomSessionId &&
             this.showNotification({
               key: "strings:roomPage.notifications.newHostIs",
-              options: { username: this.newRoomState.hostSession.username },
+              options: {
+                username: this.newRoomState.hostSession.username,
+              },
             });
         }
         notifyPlayerDisconnected() {
@@ -3946,7 +4170,9 @@
               (this.oldRoomState.hostSession.roomSessionId == t.roomSessionId
                 ? this.showNotification({
                     key: "strings:roomPage.notifications.hostDisconnected",
-                    options: { username: t.username },
+                    options: {
+                      username: t.username,
+                    },
                   })
                 : null != t.userId &&
                     this.newRoomState.kickedUserIds.includes(t.userId)
@@ -3959,7 +4185,9 @@
                     })
                   : this.showNotification({
                       key: "strings:roomPage.notifications.userDisconnected",
-                      options: { username: t.username },
+                      options: {
+                        username: t.username,
+                      },
                     }));
         }
         notifyPlayerConnected() {
@@ -3970,7 +4198,9 @@
               (t.isBot ||
                 this.showNotification({
                   key: "strings:roomPage.notifications.userConnected",
-                  options: { username: t.username },
+                  options: {
+                    username: t.username,
+                  },
                 }));
         }
         notifyPlayerColorChanged() {
@@ -4041,7 +4271,9 @@
     },
     17057: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => i });
+      s.d(t, {
+        g: () => i,
+      });
       class i {}
     },
     17071: (e, t, s) => {
@@ -4050,12 +4282,16 @@
     },
     17112: (e, t, s) => {
       "use strict";
-      s.d(t, { K: () => i });
+      s.d(t, {
+        K: () => i,
+      });
       class i {}
     },
     17130: (e, t, s) => {
       "use strict";
-      s.d(t, { x: () => d });
+      s.d(t, {
+        x: () => d,
+      });
       var i = s(655),
         n = s(32398),
         r = s(81888),
@@ -4101,8 +4337,12 @@
                     ? location.href
                     : await e();
                 return null == s
-                  ? new Blob([""], { type: t })
-                  : new Blob([s], { type: t });
+                  ? new Blob([""], {
+                      type: t,
+                    })
+                  : new Blob([s], {
+                      type: t,
+                    });
               })(),
             });
           try {
@@ -4113,7 +4353,9 @@
               n = (0, a.cE)(
                 document.body,
                 i,
-                { key: "strings:colonistCommon.utils.emptyString" },
+                {
+                  key: "strings:colonistCommon.utils.emptyString",
+                },
                 "",
               );
             ((n.target = "_blank"), n.click());
@@ -4152,7 +4394,12 @@
     },
     17326: (e, t, s) => {
       "use strict";
-      s.d(t, { Lo: () => r, RD: () => i, j3: () => o, zz: () => n });
+      s.d(t, {
+        Lo: () => r,
+        RD: () => i,
+        j3: () => o,
+        zz: () => n,
+      });
       var i = (function (e) {
           return (
             (e.Popup = "popup"),
@@ -4225,7 +4472,6 @@
         for (const e of t) console.info(e);
       }
       function d() {
-        alert("d");
         window.history.replaceState(
           null,
           "",
@@ -4253,7 +4499,9 @@
     },
     17972: (e, t, s) => {
       "use strict";
-      s.d(t, { f: () => r });
+      s.d(t, {
+        f: () => r,
+      });
       var i = s(78311),
         n = s(92524);
       class r {
@@ -4277,7 +4525,9 @@
               type: i.IM.Holiday2023AllAccessPass,
               title: {
                 key: "strings:storePage.sections.holiday_sale.title",
-                options: { context: "full" },
+                options: {
+                  context: "full",
+                },
               },
               price: 699,
               discordSKUId: e.passAllAccessHoliday2023,
@@ -4289,7 +4539,9 @@
               i.IM.GiftPlusMonthly,
               new r({
                 type: i.IM.GiftPlusMonthly,
-                title: { key: "strings:storePage.membership.title.plus" },
+                title: {
+                  key: "strings:storePage.membership.title.plus",
+                },
                 price: 899,
                 discordSKUId: e.giftMembershipPlus,
                 lobbyImage: i.am.StoreMembershipPlus,
@@ -4300,7 +4552,9 @@
               i.IM.GiftPremiumMonthly,
               new r({
                 type: i.IM.GiftPremiumMonthly,
-                title: { key: "strings:storePage.membership.title.premium" },
+                title: {
+                  key: "strings:storePage.membership.title.premium",
+                },
                 price: 1899,
                 discordSKUId: e.giftMembershipPremium,
                 lobbyImage: i.am.StoreMembershipPremium,
@@ -4311,7 +4565,9 @@
               i.IM.GiftEliteMonthly,
               new r({
                 type: i.IM.GiftEliteMonthly,
-                title: { key: "strings:storePage.membership.title.elite" },
+                title: {
+                  key: "strings:storePage.membership.title.elite",
+                },
                 price: 2499,
                 discordSKUId: e.giftMembershipElite,
                 lobbyImage: i.am.StoreMembershipElite,
@@ -4322,7 +4578,9 @@
               i.IM.GiftPlusYearly,
               new r({
                 type: i.IM.GiftPlusYearly,
-                title: { key: "strings:storePage.membership.title.plus" },
+                title: {
+                  key: "strings:storePage.membership.title.plus",
+                },
                 price: 8388,
                 discordSKUId: e.giftMembershipPlusYearly,
                 lobbyImage: i.am.StoreMembershipPlus,
@@ -4333,7 +4591,9 @@
               i.IM.GiftPremiumYearly,
               new r({
                 type: i.IM.GiftPremiumYearly,
-                title: { key: "strings:storePage.membership.title.premium" },
+                title: {
+                  key: "strings:storePage.membership.title.premium",
+                },
                 price: 17988,
                 discordSKUId: e.giftMembershipPremiumYearly,
                 lobbyImage: i.am.StoreMembershipPremium,
@@ -4344,7 +4604,9 @@
               i.IM.GiftEliteYearly,
               new r({
                 type: i.IM.GiftEliteYearly,
-                title: { key: "strings:storePage.membership.title.elite" },
+                title: {
+                  key: "strings:storePage.membership.title.elite",
+                },
                 price: 23988,
                 discordSKUId: e.giftMembershipEliteYearly,
                 lobbyImage: i.am.StoreMembershipElite,
@@ -4373,7 +4635,12 @@
     },
     18514: (e, t, s) => {
       "use strict";
-      s.d(t, { aA: () => m, a7: () => u, vX: () => h, nJ: () => p });
+      s.d(t, {
+        aA: () => m,
+        a7: () => u,
+        vX: () => h,
+        nJ: () => p,
+      });
       var i = s(88082),
         n = s(83057),
         r = s(74710),
@@ -4425,9 +4692,13 @@
               lng: a.r.language,
               fallbackLng: r.F2.defaultLanguage,
               ns: r.WO.Strings,
-              backend: { loadPath: (e, t) => d[t][e] },
+              backend: {
+                loadPath: (e, t) => d[t][e],
+              },
               defaultNS: r.WO.Strings,
-              interpolation: { skipOnVariables: !1 },
+              interpolation: {
+                skipOnVariables: !1,
+              },
             }),
             c._.registerChangeListener((e) => {
               if (null == e) return;
@@ -4449,7 +4720,9 @@
         getLanguageName(e, t) {
           const s = null != t ? t : this.defaultLocale;
           try {
-            return new Intl.DisplayNames(s, { type: "language" }).of(e);
+            return new Intl.DisplayNames(s, {
+              type: "language",
+            }).of(e);
           } catch (t) {
             return r.F2.languageEnglishNames[e];
           }
@@ -4457,7 +4730,9 @@
         getCountryName(e, t) {
           const s = null != t ? t : this.defaultLocale;
           try {
-            return new Intl.DisplayNames(s, { type: "region" }).of(e);
+            return new Intl.DisplayNames(s, {
+              type: "region",
+            }).of(e);
           } catch (e) {
             return;
           }
@@ -4497,7 +4772,9 @@
     },
     18587: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => r });
+      s.d(t, {
+        r: () => r,
+      });
       var i = s(41931),
         n = s(96990);
       class r {}
@@ -4553,7 +4830,9 @@
     },
     19644: (e, t, s) => {
       "use strict";
-      s.d(t, { R: () => r });
+      s.d(t, {
+        R: () => r,
+      });
       var i = s(11743),
         n = s(78311);
       class r extends i.v {
@@ -4595,7 +4874,9 @@
     },
     19720: (e, t, s) => {
       "use strict";
-      s.d(t, { L: () => p });
+      s.d(t, {
+        L: () => p,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(78311),
@@ -4616,7 +4897,9 @@
           ((0, n.zO)(e, r.am.GoogleIcon),
             (0, n.i5)(e, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "google" },
+              options: {
+                context: "google",
+              },
             }));
           const t = (0, n.Le)(
             this.loginButtonsDiv,
@@ -4626,7 +4909,9 @@
           ((0, n.zO)(t, r.am.DiscordIcon),
             (0, n.i5)(t, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "discord" },
+              options: {
+                context: "discord",
+              },
             }));
           const s = (0, n.Le)(
             this.loginButtonsDiv,
@@ -4636,7 +4921,9 @@
           ((0, n.zO)(s, r.am.AppleIcon),
             (0, n.i5)(s, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "apple" },
+              options: {
+                context: "apple",
+              },
             }),
             (0, n.G0)(
               e,
@@ -4667,8 +4954,12 @@
         }
         constructor(e = !1, t) {
           (super(
-            { key: "strings:homePage.header.login" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:homePage.header.login",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -4697,7 +4988,9 @@
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t },
+                options: {
+                  value: t,
+                },
               },
               "",
               "",
@@ -4712,7 +5005,9 @@
     },
     19733: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => r });
+      s.d(t, {
+        r: () => r,
+      });
       var i = s(95176),
         n = s(17399);
       class r {
@@ -4723,7 +5018,9 @@
             () => {},
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           );
         }
         static createForceRefreshPopup(e, t) {
@@ -4733,7 +5030,9 @@
             () => window.location.reload(),
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           );
         }
         static createLargePopup(e, t) {
@@ -4743,7 +5042,9 @@
             () => {},
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           ),
             this.popup.makeLarge());
         }
@@ -4769,7 +5070,9 @@
     },
     19966: (e, t, s) => {
       "use strict";
-      s.d(t, { CA: () => y });
+      s.d(t, {
+        CA: () => y,
+      });
       var i = s(83008),
         n = s(78311),
         r = s(18587),
@@ -4788,7 +5091,10 @@
           if (null == this.logRocket) return;
           if (null == c._.userState) return;
           const s = c._.userState.getPlayerKarmaStatusText();
-          s.options = { ...s.options, lng: "en" };
+          s.options = {
+            ...s.options,
+            lng: "en",
+          };
           const i = a.a7.t(s.key, s.options);
           this.logRocket.identify(e.id, {
             name: c._.userState.username,
@@ -4816,7 +5122,11 @@
       }
       var d = s(72282);
       const u = [
-        { browserName: "Chrome", browserVersion: "15.0.87", osName: "Linux" },
+        {
+          browserName: "Chrome",
+          browserVersion: "15.0.87",
+          osName: "Linux",
+        },
       ];
       function h() {
         const e = {
@@ -4855,7 +5165,9 @@
               ),
               this.highlightController.identify(
                 null === (t = c._.userState) || void 0 === t ? void 0 : t.id,
-                { context: e.context },
+                {
+                  context: e.context,
+                },
               )));
         }
         stopRecording() {
@@ -5070,7 +5382,10 @@
             (h() ||
               (function (e, t, s) {
                 if (r.r.isUserOnDiscord) return;
-                gtag("event", e, { event_label: t, value: s });
+                gtag("event", e, {
+                  event_label: t,
+                  value: s,
+                });
               })(e, t, s));
         }
         ((e.onEvent = function (e, t) {
@@ -5138,7 +5453,10 @@
                   : i.eloType,
               ...e.dimensions,
             };
-            await g({ ...e, dimensions: o });
+            await g({
+              ...e,
+              dimensions: o,
+            });
           }),
           (e.sendAnalyticEventOnce = async function (e) {
             if (null == e.floatValue && o.has(e.type)) return;
@@ -5165,7 +5483,9 @@
                 h() ||
                 null === (t = window.dataLayer) ||
                 void 0 === t ||
-                t.push({ event: e }));
+                t.push({
+                  event: e,
+                }));
           }));
       })(y || (y = {}));
     },
@@ -5187,7 +5507,10 @@
     },
     20751: (e, t, s) => {
       "use strict";
-      s.d(t, { L: () => c, U: () => l });
+      s.d(t, {
+        L: () => c,
+        U: () => l,
+      });
       var i = s(53015),
         n = s(64038),
         r = s(30911),
@@ -5220,7 +5543,9 @@
           ],
           name: {
             key: "strings:storePage.sections.avatar.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.Avatars,
           analyticsPopupTriggered:
@@ -5247,7 +5572,9 @@
           ],
           name: {
             key: "strings:storePage.sections.map.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.Maps,
           analyticsPopupTriggered:
@@ -5261,7 +5588,9 @@
           possibleRewards: [new n.Ph(), new n.ef(), new n.Hl()],
           name: {
             key: "strings:storePage.sections.color.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.AllColors,
           analyticsPopupTriggered:
@@ -5284,7 +5613,9 @@
           ],
           name: {
             key: "strings:storePage.sections.expansion.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.Expansions,
           analyticsPopupTriggered:
@@ -5296,7 +5627,9 @@
           referralCount: 50,
           storeItemCategory: i.n9.Membership,
           possibleRewards: [new c()],
-          name: { key: "strings:storePage.sections.membership.title" },
+          name: {
+            key: "strings:storePage.sections.membership.title",
+          },
           image: o.am.Memberships,
           analyticsPopupTriggered:
             a.dN.ReferralProgramStorePopupTriggeredLevel5,
@@ -5318,21 +5651,35 @@
               key: "strings:game.gameState.gameLogs.couldNotsendChatMessage",
             };
           case "disabled":
-            return { key: "strings:game.gameState.gameLogs.chatIsDisabled" };
+            return {
+              key: "strings:game.gameState.gameLogs.chatIsDisabled",
+            };
           case "badLanguage":
-            return { key: "strings:game.gameState.gameLogs.useProperLanguage" };
+            return {
+              key: "strings:game.gameState.gameLogs.useProperLanguage",
+            };
           case "tooLong":
-            return { key: "strings:game.gameState.gameLogs.messageTooLong" };
+            return {
+              key: "strings:game.gameState.gameLogs.messageTooLong",
+            };
           case "spam":
-            return { key: "strings:game.gameState.gameLogs.pleaseDoNotSpam" };
+            return {
+              key: "strings:game.gameState.gameLogs.pleaseDoNotSpam",
+            };
           case "wrongCommand":
-            return { key: "strings:commands.errors.wrongCommand" };
+            return {
+              key: "strings:commands.errors.wrongCommand",
+            };
           case "commandCrashed":
-            return { key: "strings:commands.errors.commandCrashed" };
+            return {
+              key: "strings:commands.errors.commandCrashed",
+            };
           case "muted":
             return {
               key: "strings:game.gameState.gameLogs.youHaveBeenMuted",
-              options: { date: t },
+              options: {
+                date: t,
+              },
             };
           case "notSignedIn":
             return {
@@ -5347,23 +5694,36 @@
               {
                 key: "strings:commands.messages.emojiTutorial",
                 options: {
-                  exampleString: '"lumbÃ©r/brÃ­ck"',
+                  exampleString: '"lumbér/bríck"',
                   exampleEmojis:
                     "lumberbricksheepgrain ore:road:settlementcity",
                 },
               },
               {
                 key: "strings:commands.messages.chatTutorial",
-                options: { exampleString: '"/disablechat"' },
+                options: {
+                  exampleString: '"/disablechat"',
+                },
               },
             ];
           case "chatEnabled":
-            return [{ key: "strings:commands.messages.chatEnabled" }];
+            return [
+              {
+                key: "strings:commands.messages.chatEnabled",
+              },
+            ];
           case "chatDisabled":
-            return [{ key: "strings:commands.messages.chatDisabled" }];
+            return [
+              {
+                key: "strings:commands.messages.chatDisabled",
+              },
+            ];
         }
       }
-      s.d(t, { $: () => n, b: () => i });
+      s.d(t, {
+        $: () => n,
+        b: () => i,
+      });
     },
     21099: (e, t, s) => {
       "use strict";
@@ -5427,7 +5787,11 @@
     },
     22067: (e, t, s) => {
       "use strict";
-      s.d(t, { M1: () => n, Q: () => o, l: () => r });
+      s.d(t, {
+        M1: () => n,
+        Q: () => o,
+        l: () => r,
+      });
       var i = s(98487);
       const n = {
           [i.ro.Base30s]: {
@@ -5503,7 +5867,12 @@
     },
     22194: (e, t, s) => {
       "use strict";
-      s.d(t, { os: () => i, Yt: () => n, Gb: () => u, Ob: () => r });
+      s.d(t, {
+        os: () => i,
+        Yt: () => n,
+        Gb: () => u,
+        Ob: () => r,
+      });
       var i = (function (e) {
           return (
             (e[(e.Grandmaster = 0)] = "Grandmaster"),
@@ -5553,7 +5922,9 @@
             },
             description: {
               key: "strings:game.endGame.rankedUpdate.lockedDescription",
-              options: { count: e },
+              options: {
+                count: e,
+              },
             },
           };
         }
@@ -5577,7 +5948,10 @@
             (this.type = r.RankedLocked),
             (this.numberOfGamesPlayed = e),
             (this.requiredNumberOfGames = t),
-            (this.defaultEndGameData = { amount: "-", highest: !1 }));
+            (this.defaultEndGameData = {
+              amount: "-",
+              highest: !1,
+            }));
         }
       }
       class c {
@@ -5601,9 +5975,13 @@
           return {
             title: {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `${this.currentMMR}` },
+              options: {
+                value: `${this.currentMMR}`,
+              },
             },
-            description: { key: "strings:colonistCommon.utils.emptyString" },
+            description: {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
           };
         }
         getEndGameScreenMMRChangeText() {
@@ -5623,7 +6001,9 @@
         getFindGamePopupStatusText() {
           return {
             key: "strings:colonistCommon.rankedState.rating",
-            options: { rating: this.currentMMR },
+            options: {
+              rating: this.currentMMR,
+            },
           };
         }
         static deserialize(e) {
@@ -5671,7 +6051,9 @@
             },
             description: {
               key: "strings:game.endGame.rankedUpdate.placementDescription",
-              options: { count: e },
+              options: {
+                count: e,
+              },
             },
           };
         }
@@ -5698,7 +6080,10 @@
             (this.type = r.Placement),
             (this.numberOfPlacementGamesFinished = e),
             (this.numberOfPlacementGamesRequired = t),
-            (this.defaultEndGameData = { amount: "-", highest: !1 }));
+            (this.defaultEndGameData = {
+              amount: "-",
+              highest: !1,
+            }));
         }
       }
       class u {
@@ -5743,7 +6128,9 @@
     },
     23288: (e, t, s) => {
       "use strict";
-      s.d(t, { U: () => i });
+      s.d(t, {
+        U: () => i,
+      });
       class i {
         constructor(e) {
           this.roomState = e;
@@ -5757,7 +6144,11 @@
     },
     23355: (e, t, s) => {
       "use strict";
-      s.d(t, { K_: () => C, xp: () => P, F9: () => k });
+      s.d(t, {
+        K_: () => C,
+        xp: () => P,
+        F9: () => k,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(78311),
@@ -5844,7 +6235,9 @@
           );
           (0, n.RH)(t, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e },
+            options: {
+              value: e,
+            },
           });
         }
         static setUserIcon(e) {
@@ -5873,7 +6266,9 @@
         }
         static setItems(e) {
           const t = document.getElementById("profile_popup_profile_items_div");
-          (0, n.RH)(t, { key: "strings:colonistCommon.utils.emptyString" });
+          (0, n.RH)(t, {
+            key: "strings:colonistCommon.utils.emptyString",
+          });
           const s = m.r.isUserOnMobileAppOrWeb && f.P_.isSceneGame();
           for (const i of e) {
             const e = m.r.isUserOnDiscord
@@ -5885,7 +6280,9 @@
                 : (0, n.cE)(
                     t,
                     `${e}#${r}`,
-                    { key: "strings:colonistCommon.utils.emptyString" },
+                    {
+                      key: "strings:colonistCommon.utils.emptyString",
+                    },
                     "",
                     "",
                     !0,
@@ -5990,7 +6387,9 @@
               i,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t },
+                options: {
+                  value: t,
+                },
               },
               "sticky_player_info_username",
               "profile_popup_sticky_player_info_username",
@@ -6017,7 +6416,9 @@
           );
           (0, n.n8)(
             t,
-            { key: "strings:profilePage.overview.title" },
+            {
+              key: "strings:profilePage.overview.title",
+            },
             "",
             "",
             "H2",
@@ -6030,7 +6431,9 @@
           ),
             (0, n.n8)(
               i,
-              { key: "strings:profilePage.overview.table.totalGames.title" },
+              {
+                key: "strings:profilePage.overview.table.totalGames.title",
+              },
               "",
               "",
               "H3",
@@ -6039,7 +6442,9 @@
               i,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_total_games_stat",
@@ -6052,7 +6457,9 @@
           ),
             (0, n.n8)(
               r,
-              { key: "strings:profilePage.overview.table.winPercentage.title" },
+              {
+                key: "strings:profilePage.overview.table.winPercentage.title",
+              },
               "",
               "",
               "H3",
@@ -6061,7 +6468,9 @@
               r,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_win_ratio_stat",
@@ -6074,7 +6483,9 @@
           ),
             (0, n.n8)(
               o,
-              { key: "strings:profilePage.overview.table.karma.title" },
+              {
+                key: "strings:profilePage.overview.table.karma.title",
+              },
               "",
               "",
               "H3",
@@ -6083,7 +6494,9 @@
               o,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?/?" },
+                options: {
+                  value: "?/?",
+                },
               },
               "",
               "profile_popup_karma_stat",
@@ -6096,7 +6509,9 @@
           ),
             (0, n.n8)(
               a,
-              { key: "strings:profilePage.overview.table.pointsPerGame.title" },
+              {
+                key: "strings:profilePage.overview.table.pointsPerGame.title",
+              },
               "",
               "",
               "H3",
@@ -6105,7 +6520,9 @@
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_pg_stat",
@@ -6118,7 +6535,9 @@
           ),
             (0, n.n8)(
               c,
-              { key: "strings:profilePage.overview.table.points.title" },
+              {
+                key: "strings:profilePage.overview.table.points.title",
+              },
               "",
               "",
               "H3",
@@ -6127,7 +6546,9 @@
               c,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_points_stat",
@@ -6148,7 +6569,9 @@
             s = (0, n.Le)(t, "profile_ranked_section_header");
           ((0, n.n8)(
             s,
-            { key: "strings:profilePage.navigationTabs.ranked" },
+            {
+              key: "strings:profilePage.navigationTabs.ranked",
+            },
             "",
             "",
             "H2",
@@ -6165,7 +6588,9 @@
             "profile_popup_ranked_mode_player_info_card_base",
             r.am.GameModeBase,
             "settlers of catan base game icon",
-            { key: "strings:leaderboardPage.gameModes.baseGame" },
+            {
+              key: "strings:leaderboardPage.gameModes.baseGame",
+            },
             "base",
           ),
             P.createRankedCard(
@@ -6173,7 +6598,9 @@
               "profile_popup_ranked_mode_player_info_card_1v1",
               r.am.GameMode1v1,
               "colonist 1v1 game mode icon",
-              { key: "strings:leaderboardPage.gameModes.1v1" },
+              {
+                key: "strings:leaderboardPage.gameModes.1v1",
+              },
               "1v1",
             ),
             this.createRankedCard(
@@ -6181,7 +6608,9 @@
               "profile_popup_ranked_mode_player_info_card_citiesandknights",
               r.am.GameModeCnK,
               "settlers of catan cities and knights icon",
-              { key: "strings:leaderboardPage.gameModes.citiesAndKnights" },
+              {
+                key: "strings:leaderboardPage.gameModes.citiesAndKnights",
+              },
               "citiesandknights",
             ));
         }
@@ -6211,7 +6640,9 @@
           );
           (0, n.n8)(
             t,
-            { key: "strings:profilePage.history.title" },
+            {
+              key: "strings:profilePage.history.title",
+            },
             "",
             "",
             "H2",
@@ -6255,7 +6686,9 @@
           );
           (0, n.n8)(
             t,
-            { key: "strings:profilePage.navigationTabs.items" },
+            {
+              key: "strings:profilePage.navigationTabs.items",
+            },
             "",
             "",
             "H2",
@@ -6272,7 +6705,9 @@
           (super(
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `${e}'s Profile` },
+              options: {
+                value: `${e}'s Profile`,
+              },
             },
             void 0,
             () => {},
@@ -6333,7 +6768,13 @@
         }
         return {
           key: e.key,
-          options: { ...e.options, ...s, interpolation: { escapeValue: !i } },
+          options: {
+            ...e.options,
+            ...s,
+            interpolation: {
+              escapeValue: !i,
+            },
+          },
         };
       }
       function n(e) {
@@ -6349,7 +6790,9 @@
         for (const e of t) if (null != e.options) return !0;
         return !1;
       }
-      s.d(t, { d: () => i });
+      s.d(t, {
+        d: () => i,
+      });
     },
     23918: (e, t, s) => {
       "use strict";
@@ -6361,7 +6804,9 @@
     },
     24127: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => c });
+      s.d(t, {
+        r: () => c,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(50482),
@@ -6392,7 +6837,9 @@
             ),
             (0, i.Wr)(
               this.headerDiv,
-              { key: "strings:storePage.bestValue" },
+              {
+                key: "strings:storePage.bestValue",
+              },
               "store_page_membership_best_value_banner",
             ));
         }
@@ -6460,17 +6907,29 @@
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           );
         }
         static createInfoPopupForMapsAndExpansions() {
           o.r.create(
-            { key: "strings:storePage.FAQ.title" },
-            { key: "strings:storePage.FAQ.body" },
+            {
+              key: "strings:storePage.FAQ.title",
+            },
+            {
+              key: "strings:storePage.FAQ.body",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           );
         }
         constructor(e, t) {
@@ -6535,8 +6994,12 @@
         class t extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
-              { key: "strings:popups.errors.matchmakingError.disabled" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
+              {
+                key: "strings:popups.errors.matchmakingError.disabled",
+              },
               u.R.ServiceUnavailable,
             );
           }
@@ -6545,7 +7008,9 @@
         class s extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.finishWatchingAd",
               },
@@ -6557,7 +7022,9 @@
         class i extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.alreadySearchingForMatch",
               },
@@ -6569,10 +7036,14 @@
         class n extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.internalServerError",
-                options: { email: p.gq.SUPPORT_EMAIL },
+                options: {
+                  email: p.gq.SUPPORT_EMAIL,
+                },
               },
               u.R.InternalServerError,
             );
@@ -6582,8 +7053,12 @@
         class r extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
-              { key: "strings:popups.errors.matchmakingError.invalidRequest" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
+              {
+                key: "strings:popups.errors.matchmakingError.invalidRequest",
+              },
               u.R.BadRequest,
             );
           }
@@ -6592,7 +7067,9 @@
         class o extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.connectedToMultipleGames",
               },
@@ -6604,7 +7081,9 @@
         class a extends h.Ak {
           constructor(e, t) {
             super(
-              { key: "strings:popups.errors.matchmakingInfo.title" },
+              {
+                key: "strings:popups.errors.matchmakingInfo.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingInfo.playMoreToUnlockRanked",
                 options: {
@@ -6621,7 +7100,9 @@
         class c extends h.Ak {
           constructor(e, t) {
             super(
-              { key: "strings:popups.errors.matchmakingInfo.title" },
+              {
+                key: "strings:popups.errors.matchmakingInfo.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingInfo.playMoreToUnlockShuffle",
                 options: {
@@ -6638,10 +7119,14 @@
         class l extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:colonistCommon.serverStatus.serverUpdating",
-                options: { discordLink: p.gq.DISCORD_CHANNEL },
+                options: {
+                  discordLink: p.gq.DISCORD_CHANNEL,
+                },
               },
               u.R.ServiceUnavailable,
             );
@@ -6651,7 +7136,9 @@
         class d extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.alreadyPlayingRankedGame",
               },
@@ -6663,7 +7150,9 @@
         class m extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.invalidRankedMode",
               },
@@ -6891,16 +7380,25 @@
                 badge: {
                   text: {
                     key: "strings:colonistCommon.utils.#buffer",
-                    options: { value: `${t}/${e}` },
+                    options: {
+                      value: `${t}/${e}`,
+                    },
                   },
                   icon: p.am.IconSwords,
                 },
               };
             const s = A.y.shuffleQueueData,
               i = A.y.shufflePlayerData;
-            if (null == s) return { description: void 0, badge: void 0 };
+            if (null == s)
+              return {
+                description: void 0,
+                badge: void 0,
+              };
             if (o._.userState.items.hasMembership() || null == i)
-              return { description: B(s), badge: void 0 };
+              return {
+                description: B(s),
+                badge: void 0,
+              };
             const r = i.totalGameCount,
               a = i.freeGamesTotalCount;
             if (r < a) {
@@ -6910,7 +7408,9 @@
                 badge: {
                   text: {
                     key: "strings:homePage.matchmakingSelect.freeGamesLeft",
-                    options: { count: e },
+                    options: {
+                      count: e,
+                    },
                   },
                   icon: p.am.StoreGiftMembership,
                 },
@@ -6937,14 +7437,20 @@
               },
             };
           })();
-        if (!x(e)) return { description: void 0, badge: void 0 };
+        if (!x(e))
+          return {
+            description: void 0,
+            badge: void 0,
+          };
         if (
           !(null === (s = o._.userState) || void 0 === s
             ? void 0
             : s.isLoggedIn)
         )
           return {
-            description: { key: "strings:homePage.ranked.logInToPlayRanked" },
+            description: {
+              key: "strings:homePage.ranked.logInToPlayRanked",
+            },
             badge: void 0,
           };
         if (G(e)) {
@@ -7082,14 +7588,19 @@
               badge: {
                 text: {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: Math.round(s) },
+                  options: {
+                    value: Math.round(s),
+                  },
                 },
                 icon: n,
               },
             };
           }
         }
-        return { description: void 0, badge: void 0 };
+        return {
+          description: void 0,
+          badge: void 0,
+        };
       }
       function B(e) {
         const t = (0, P.gz)(e.mapId),
@@ -7097,14 +7608,25 @@
         return t
           ? s
             ? (0, m.dN)(
-                { key: "strings:homePage.shuffleQueue.mapAndMode" },
-                { map: t, mode: s },
+                {
+                  key: "strings:homePage.shuffleQueue.mapAndMode",
+                },
+                {
+                  map: t,
+                  mode: s,
+                },
               )
             : (0, m.dN)(
-                { key: "strings:homePage.shuffleQueue.mapOnly" },
-                { map: t },
+                {
+                  key: "strings:homePage.shuffleQueue.mapOnly",
+                },
+                {
+                  map: t,
+                },
               )
-          : { key: "strings:homePage.shuffleQueue.mapAndModeUnknown" };
+          : {
+              key: "strings:homePage.shuffleQueue.mapAndModeUnknown",
+            };
       }
       function D(e) {
         const t = e.title,
@@ -7115,7 +7637,9 @@
           () => {},
           () => {},
           !0,
-          { showXButton: !1 },
+          {
+            showXButton: !1,
+          },
         ).show();
       }
       function E() {
@@ -7224,7 +7748,9 @@
     },
     24415: (e, t, s) => {
       "use strict";
-      s.d(t, { D: () => x });
+      s.d(t, {
+        D: () => x,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(50482),
@@ -7268,14 +7794,20 @@
                     }
                   : {
                       key: "strings:colonistCommon.utils.#buffer",
-                      options: { value: "" },
+                      options: {
+                        value: "",
+                      },
                     },
               n = (0, o.dN)(
-                { key: "strings:homePage.lobbyPage.playerHoverText" },
+                {
+                  key: "strings:homePage.lobbyPage.playerHoverText",
+                },
                 {
                   username: {
                     key: "strings:colonistCommon.utils.#buffer",
-                    options: { value: t.username },
+                    options: {
+                      value: t.username,
+                    },
                   },
                   karmaText: s,
                 },
@@ -7323,7 +7855,9 @@
         }
         addNoTrollsIcon() {
           const e = (0, i.zO)(this.noTrollsIcon, n.am.IconNoTroll);
-          (0, a.vy)(e, { key: "strings:roomPage.options.noTrollsGame.title" });
+          (0, a.vy)(e, {
+            key: "strings:roomPage.options.noTrollsGame.title",
+          });
         }
         static changedNoTrollsData(e, t) {
           return null == t || t.minimumKarma != e;
@@ -7359,7 +7893,9 @@
             a =
               null != o
                 ? o
-                : { key: "strings:colonistCommon.utils.emptyString" },
+                : {
+                    key: "strings:colonistCommon.utils.emptyString",
+                  },
             c =
               null ===
                 (s = d.X.getMapDataForMap(
@@ -7370,7 +7906,9 @@
             l =
               null != c
                 ? c
-                : { key: "strings:colonistCommon.utils.emptyString" };
+                : {
+                    key: "strings:colonistCommon.utils.emptyString",
+                  };
           if (null == c || null == o)
             return (
               (0, p.vV)("update", ["Error no such mode " + e.gameModeSetting]),
@@ -7721,9 +8259,16 @@
           const e = await w.m.getRequestHandler(T.l.apiGetRoomList(), void 0);
           if (null == e) return;
           const { rooms: t } = e.json;
-          this.update({ full: !1, rooms: t });
+          this.update({
+            full: !1,
+            rooms: t,
+          });
           for (const [e, s] of this.rooms) {
-            t.some((t) => t.id === e) || (s.room = { ...s.room, visible: !1 });
+            t.some((t) => t.id === e) ||
+              (s.room = {
+                ...s.room,
+                visible: !1,
+              });
           }
         }
         clearRooms() {
@@ -7778,7 +8323,11 @@
         }
       }
       function L(e) {
-        return { ...e, gameMapSetting: e.map, gameModeSetting: e.mode };
+        return {
+          ...e,
+          gameMapSetting: e.map,
+          gameModeSetting: e.mode,
+        };
       }
       class B {
         show() {
@@ -7902,8 +8451,12 @@
         }
         openJoinRoomPopup() {
           const e = new G.e(
-            { key: "strings:homePage.lobbyPage.popups.enterRoomID.title" },
-            { key: "strings:homePage.lobbyPage.popups.enterRoomID.body" },
+            {
+              key: "strings:homePage.lobbyPage.popups.enterRoomID.title",
+            },
+            {
+              key: "strings:homePage.lobbyPage.popups.enterRoomID.body",
+            },
             async (e) =>
               await this.handleJoinRoom(e.trim().toLocaleLowerCase()),
             () => {},
@@ -7965,7 +8518,9 @@
     },
     25150: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => C });
+      s.d(t, {
+        Y: () => C,
+      });
       var i = s(53015),
         n = s(51988),
         r = s(9029),
@@ -8017,7 +8572,9 @@
             (s.style.marginRight = "5px"),
             (0, r.i5)(e, "", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t },
+              options: {
+                value: t,
+              },
             }));
         }
         setState(e) {
@@ -8066,7 +8623,9 @@
                 "block"),
               (0, r.RH)(this.usernameChangeAttemptsLeftContainer, {
                 key: "strings:homePage.header.changeUsername.usernameChangeAttemptsLeftNote",
-                options: { count: this.state.usernameChangeAttemptsLeft },
+                options: {
+                  count: this.state.usernameChangeAttemptsLeft,
+                },
               }))
             : (this.usernameChangeAttemptsLeftContainer.style.display = "none");
         }
@@ -8098,7 +8657,10 @@
                 })
               : this.showNotEnoughCoinsToChangeUsernamePopup(() => {
                   const e = document.getElementById("coins");
-                  null == e || e.scrollIntoView({ behavior: "smooth" });
+                  null == e ||
+                    e.scrollIntoView({
+                      behavior: "smooth",
+                    });
                 });
         }
         static showOutOfAttemptsAsGuestPopup() {
@@ -8107,10 +8669,14 @@
         showConfirmUsernameChangeWithAttemptsLeftPopup(e) {
           const t = {
             key: "strings:homePage.header.changeUsername.confirm.body",
-            options: { count: this.state.usernameChangeAttemptsLeft - 1 },
+            options: {
+              count: this.state.usernameChangeAttemptsLeft - 1,
+            },
           };
           u.r.create(
-            { key: "strings:homePage.header.changeUsername.confirm.title" },
+            {
+              key: "strings:homePage.header.changeUsername.confirm.title",
+            },
             t,
             () => {
               (this.setVisible(!1), this.updateUsername(e, !1));
@@ -8146,12 +8712,16 @@
             key: "strings:homePage.header.changeUsername.confirm.body",
             options: {
               context: "coins",
-              interpolation: { escapeValue: !1 },
+              interpolation: {
+                escapeValue: !1,
+              },
               price: t.outerHTML,
             },
           };
           u.r.create(
-            { key: "strings:homePage.header.changeUsername.confirm.title" },
+            {
+              key: "strings:homePage.header.changeUsername.confirm.title",
+            },
             s,
             () => {
               (this.setVisible(!1), this.updateUsername(e, !0));
@@ -8210,7 +8780,9 @@
           }
         }
         updateCustomValidityAndErrorMessage() {
-          let e = { key: "strings:colonistCommon.utils.emptyString" };
+          let e = {
+            key: "strings:colonistCommon.utils.emptyString",
+          };
           switch (this.usernameValidationState) {
             case 5:
               return (
@@ -8270,7 +8842,9 @@
                     "suggestion-text",
                     {
                       key: "strings:colonistCommon.utils.#buffer",
-                      options: { value: t },
+                      options: {
+                        value: t,
+                      },
                     },
                   );
                 (0, r.G0)(s, () => {
@@ -8287,13 +8861,17 @@
               ? e
               : {
                   key: "strings:homePage.header.changeUsername.title",
-                  options: { context: i },
+                  options: {
+                    context: i,
+                  },
                 },
             null != t
               ? t
               : {
                   key: "strings:homePage.header.changeUsername.body",
-                  options: { context: i },
+                  options: {
+                    context: i,
+                  },
                 },
             (e) => {
               this.submit(e);
@@ -8312,7 +8890,9 @@
           ((this.usernameValidationMessage = (0, r.i5)(
             n,
             "popup-footnote warning-text",
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
           )),
             (this.suggestedUsernamesContainer = (0, r.Le)(
               n,
@@ -8320,7 +8900,9 @@
             )),
             (this.usernameChangeAttemptsLeftContainer = (0, r.Wr)(
               this.form,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "popup-footnote",
             )),
             this.setFocusStyles(this.input),
@@ -8337,7 +8919,10 @@
     },
     25720: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => k, Y: () => C });
+      s.d(t, {
+        H: () => k,
+        Y: () => C,
+      });
       var i = s(9029),
         n = s(42389),
         r = s(98487),
@@ -8382,7 +8967,9 @@
               )),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:game.playerOptionsPopup.report" },
+                  {
+                    key: "strings:game.playerOptionsPopup.report",
+                  },
                   "player-options-dropdown-button-text-red",
                 )));
               break;
@@ -8395,12 +8982,16 @@
               this.buttonText = t
                 ? (0, i.Wr)(
                     this.buttonContainer,
-                    { key: "strings:game.playerOptionsPopup.unmute" },
+                    {
+                      key: "strings:game.playerOptionsPopup.unmute",
+                    },
                     "player-options-dropdown-button-text",
                   )
                 : (0, i.Wr)(
                     this.buttonContainer,
-                    { key: "strings:game.playerOptionsPopup.mute" },
+                    {
+                      key: "strings:game.playerOptionsPopup.mute",
+                    },
                     "player-options-dropdown-button-text",
                   );
               break;
@@ -8411,7 +9002,9 @@
               )),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:game.playerOptionsPopup.viewProfile" },
+                  {
+                    key: "strings:game.playerOptionsPopup.viewProfile",
+                  },
                   "player-options-dropdown-button-text",
                 )));
               break;
@@ -8422,7 +9015,9 @@
               )),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:game.playerOptionsPopup.addFriend" },
+                  {
+                    key: "strings:game.playerOptionsPopup.addFriend",
+                  },
                   "player-options-dropdown-button-text",
                 )));
               break;
@@ -8436,8 +9031,12 @@
                 n.IH.gameController.myColor,
                 a,
               )
-                ? { key: "strings:game.playerOptionsPopup.unblockTrades" }
-                : { key: "strings:game.playerOptionsPopup.blockTrades" };
+                ? {
+                    key: "strings:game.playerOptionsPopup.unblockTrades",
+                  }
+                : {
+                    key: "strings:game.playerOptionsPopup.blockTrades",
+                  };
               this.buttonText = (0, i.Wr)(
                 this.buttonContainer,
                 l,
@@ -8452,7 +9051,9 @@
                 (0, i.zO)(this.buttonContainer, o.am.StoreGiftMembershipDark),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:storePage.sendGift" },
+                  {
+                    key: "strings:storePage.sendGift",
+                  },
                   "player-options-dropdown-button-text",
                 )));
           }
@@ -8657,10 +9258,14 @@
         }
         createAddFriendPopup() {
           new d.y(
-            { key: "strings:popups.addFriend.title" },
+            {
+              key: "strings:popups.addFriend.title",
+            },
             {
               key: "strings:popups.addFriend.body",
-              options: { username: this.player.username },
+              options: {
+                username: this.player.username,
+              },
             },
             () => {
               l.v.addFriendAction(this.player.username);
@@ -8797,11 +9402,16 @@
         })(window.location.href);
         history.replaceState(null, "", e);
       }
-      s.d(t, { UY: () => n, mh: () => i });
+      s.d(t, {
+        UY: () => n,
+        mh: () => i,
+      });
     },
     26406: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => l });
+      s.d(t, {
+        S: () => l,
+      });
       var i = s(98487),
         n = s(95176),
         r = s(9029),
@@ -8844,25 +9454,33 @@
             },
           },
         ],
-        c = { key: "strings:popups.reportPopup.reportedPopupText" };
+        c = {
+          key: "strings:popups.reportPopup.reportedPopupText",
+        };
       class l {
         static createReportPopup(e, t, s = c) {
           const i = {
             key: "strings:popups.reportPopup.body",
-            options: { playerUsername: e },
+            options: {
+              playerUsername: e,
+            },
           };
           let l;
           const d = new n.y(
             {
               key: "strings:popups.reportPopup.title",
-              options: { playerUsername: e },
+              options: {
+                playerUsername: e,
+              },
             },
             i,
             () => {
               if ("" == l) return;
               t(e, l);
               const i = new n.y(
-                { key: "strings:popups.reportPopup.reported" },
+                {
+                  key: "strings:popups.reportPopup.reported",
+                },
                 s,
                 () => {},
                 () => {},
@@ -9014,7 +9632,10 @@
     },
     27630: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => l, V: () => c });
+      s.d(t, {
+        Y: () => l,
+        V: () => c,
+      });
       var i = s(95176),
         n = s(42389),
         r = s(23288);
@@ -9105,7 +9726,10 @@
     },
     29249: (e, t, s) => {
       "use strict";
-      s.d(t, { n: () => i, q: () => n });
+      s.d(t, {
+        n: () => i,
+        q: () => n,
+      });
       var i = (function (e) {
         return (
           (e[(e.Information = 0)] = "Information"),
@@ -9129,7 +9753,9 @@
     },
     29962: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => i });
+      s.d(t, {
+        O: () => i,
+      });
       class i {}
       ((i.PLUS = 7499), (i.PREMIUM = 14999), (i.ELITE = 19999));
     },
@@ -9151,7 +9777,10 @@
     },
     30911: (e, t, s) => {
       "use strict";
-      s.d(t, { Z: () => r, k: () => o });
+      s.d(t, {
+        Z: () => r,
+        k: () => o,
+      });
       var i = s(53015),
         n = s(63778);
       const r = 2;
@@ -9209,7 +9838,11 @@
     },
     31166: (e, t, s) => {
       "use strict";
-      s.d(t, { AB: () => a, WC: () => r, hc: () => o });
+      s.d(t, {
+        AB: () => a,
+        WC: () => r,
+        hc: () => o,
+      });
       var i = s(41931),
         n = s(5603);
       const r = /^(251|517|837)$/.test(s.j) ? null : n.A,
@@ -9236,7 +9869,12 @@
     },
     31567: (e, t, s) => {
       "use strict";
-      s.d(t, { LE: () => c, N6: () => u, gz: () => l, kl: () => d });
+      s.d(t, {
+        LE: () => c,
+        N6: () => u,
+        gz: () => l,
+        kl: () => d,
+      });
       var i = s(98487),
         n = s(83633),
         r = s(84235),
@@ -9256,14 +9894,18 @@
               };
             case i.p9.Seafarers4P:
             case i.p9.Seafarers56P:
-              return { key: "strings:homePage.shuffleQueue.modes.seafarers" };
+              return {
+                key: "strings:homePage.shuffleQueue.modes.seafarers",
+              };
             case i.p9.CitiesAndKnightsSeafarers4P:
             case i.p9.CitiesAndKnightsSeafarers56P:
               return {
                 key: "strings:homePage.shuffleQueue.modes.cnkSeafarers",
               };
             case i.p9.ColonistRush4P:
-              return { key: "strings:homePage.shuffleQueue.modes.rush" };
+              return {
+                key: "strings:homePage.shuffleQueue.modes.rush",
+              };
             default:
               return;
           }
@@ -9274,77 +9916,135 @@
             case i.Qy.Classic4P:
             case i.Qy.Classic56P:
             case i.Qy.Classic78P:
-              return { key: "strings:homePage.shuffleQueue.maps.standard" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.standard",
+              };
             case i.Qy.Classic4PRandom:
-              return { key: "strings:homePage.shuffleQueue.maps.random" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.random",
+              };
             case i.Qy.Earth:
             case i.Qy.EarthSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.earth" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.earth",
+              };
             case i.Qy.USA:
-              return { key: "strings:homePage.shuffleQueue.maps.usa" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.usa",
+              };
             case i.Qy.UK:
             case i.Qy.UKSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.uk" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.uk",
+              };
             case i.Qy.Diamond:
-              return { key: "strings:homePage.shuffleQueue.maps.diamond" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.diamond",
+              };
             case i.Qy.Gear:
-              return { key: "strings:homePage.shuffleQueue.maps.gear" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.gear",
+              };
             case i.Qy.Lakes:
-              return { key: "strings:homePage.shuffleQueue.maps.lakes" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.lakes",
+              };
             case i.Qy.Pond:
-              return { key: "strings:homePage.shuffleQueue.maps.pond" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.pond",
+              };
             case i.Qy.Twirl:
-              return { key: "strings:homePage.shuffleQueue.maps.twirl" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.twirl",
+              };
             case i.Qy.ShuffleBoard:
-              return { key: "strings:homePage.shuffleQueue.maps.shuffleBoard" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.shuffleBoard",
+              };
             case i.Qy.BlackForest:
-              return { key: "strings:homePage.shuffleQueue.maps.blackForest" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.blackForest",
+              };
             case i.Qy.Volcano:
-              return { key: "strings:homePage.shuffleQueue.maps.volcano" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.volcano",
+              };
             case i.Qy.GoldRush:
-              return { key: "strings:homePage.shuffleQueue.maps.goldRush" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.goldRush",
+              };
             case i.Qy.KingOfTheHill:
               return {
                 key: "strings:homePage.shuffleQueue.maps.kingOfTheHill",
               };
             case i.Qy.Circle:
-              return { key: "strings:homePage.shuffleQueue.maps.circle" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.circle",
+              };
             case i.Qy.Kite:
-              return { key: "strings:homePage.shuffleQueue.maps.kite" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.kite",
+              };
             case i.Qy.Romania:
-              return { key: "strings:homePage.shuffleQueue.maps.romania" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.romania",
+              };
             case i.Qy.MiniBase:
-              return { key: "strings:homePage.shuffleQueue.maps.miniBase" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.miniBase",
+              };
             case i.Qy.Monopoly:
-              return { key: "strings:homePage.shuffleQueue.maps.monopoly" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.monopoly",
+              };
             case i.Qy.MountainOfRiches:
               return {
                 key: "strings:homePage.shuffleQueue.maps.mountainOfRiches",
               };
             case i.Qy.Doggo:
-              return { key: "strings:homePage.shuffleQueue.maps.doggo" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.doggo",
+              };
             case i.Qy.Duel:
-              return { key: "strings:homePage.shuffleQueue.maps.duel" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.duel",
+              };
             case i.Qy.TradeIslands:
             case i.Qy.TradeIslandsSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.tradeIslands" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.tradeIslands",
+              };
             case i.Qy.Vietnam:
-              return { key: "strings:homePage.shuffleQueue.maps.vietnam" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.vietnam",
+              };
             case i.Qy.TurningTidesSeafarers:
             case i.Qy.TurningTidesClassic:
-              return { key: "strings:homePage.shuffleQueue.maps.turningTides" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.turningTides",
+              };
             case i.Qy.TwoIsles:
-              return { key: "strings:homePage.shuffleQueue.maps.twoIsles" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.twoIsles",
+              };
             case i.Qy.JellyFish:
-              return { key: "strings:homePage.shuffleQueue.maps.jellyfish" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.jellyfish",
+              };
             case i.Qy.Istanbul:
             case i.Qy.IstanbulSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.istanbul" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.istanbul",
+              };
             case i.Qy.Europe:
             case i.Qy.EuropeSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.europe" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.europe",
+              };
             case i.Qy.Stripes:
-              return { key: "strings:homePage.shuffleQueue.maps.stripes" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.stripes",
+              };
             case i.Qy.MonopolyIslands:
             case i.Qy.MonopolyIslandsSeafarers:
               return {
@@ -9359,11 +10059,15 @@
             case i.Qy.SS2FourIslands3P:
             case i.Qy.SS2FourIslands4P:
             case i.Qy.SS2SixIslands56P:
-              return { key: "strings:homePage.shuffleQueue.maps.fourIslands" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.fourIslands",
+              };
             case i.Qy.SS3FogIslands3P:
             case i.Qy.SS3FogIslands4P:
             case i.Qy.SS3FogIslands56P:
-              return { key: "strings:homePage.shuffleQueue.maps.fogIslands" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.fogIslands",
+              };
             case i.Qy.SS4ThroughTheDesert3P:
             case i.Qy.SS4ThroughTheDesert4P:
             case i.Qy.SS4ThroughTheDesert56P:
@@ -9567,7 +10271,9 @@
     },
     31735: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => o });
+      s.d(t, {
+        M: () => o,
+      });
       var i = s(9029),
         n = s(27532);
       const r = s.p + "assets/icon_arrow_white.1cfd43894bd6514a469d.svg";
@@ -9594,14 +10300,18 @@
         }
         async convertImage() {
           const e = (await s.e(526).then(s.t.bind(s, 53827, 23))).default,
-            t = await e(this.container, { useCORS: !0 });
+            t = await e(this.container, {
+              useCORS: !0,
+            });
           return new Promise((e, s) => {
             t.toBlob((t) => {
               t
                 ? ((this.imageFile = new File(
                     [t],
                     "colonist-game-results.png",
-                    { type: t.type },
+                    {
+                      type: t.type,
+                    },
                   )),
                   e(this.imageFile))
                 : e(void 0);
@@ -9612,7 +10322,9 @@
           (0, i.WL)(
             this.container,
             n,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "share-image-logo",
           );
         }
@@ -9621,14 +10333,18 @@
           ((0, i.WL)(
             e,
             r,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "share-image-url-arrow",
           ),
             (0, i.Wr)(
               e,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "colonist.io" },
+                options: {
+                  value: "colonist.io",
+                },
               },
               "share-image-url",
             ));
@@ -9656,11 +10372,15 @@
       function i(e) {
         return Math.floor(e);
       }
-      s.d(t, { Q: () => i });
+      s.d(t, {
+        Q: () => i,
+      });
     },
     32332: (e, t, s) => {
       "use strict";
-      s.d(t, { A: () => S });
+      s.d(t, {
+        A: () => S,
+      });
       var i = s(87290),
         n = s(50482),
         r = s(94499),
@@ -9680,19 +10400,29 @@
           for (const e of t) {
             const t = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             };
             (0, o.t2)(n, t, "");
           }
         }
         constructor() {
           (super(
-            { key: "strings:homePage.ranked.infoPopup.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:homePage.ranked.infoPopup.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           ),
             (this.body.style.flexDirection = "column"),
             (0, o.RH)(this.body, {
@@ -9737,18 +10467,24 @@
               "strings:homePage.ranked.infoPopup.gameSettings.description",
             );
           (this.createListWithHeaderAndItems(
-            { key: "strings:homePage.ranked.infoPopup.howItWorks.title" },
+            {
+              key: "strings:homePage.ranked.infoPopup.howItWorks.title",
+            },
             t,
           ),
             this.createListWithHeaderAndItems(
-              { key: "strings:homePage.ranked.infoPopup.gameSettings.title" },
+              {
+                key: "strings:homePage.ranked.infoPopup.gameSettings.title",
+              },
               s,
             ));
           ((0, o.Wr)(
             this.faqSection,
             {
               key: "strings:homePage.ranked.infoPopup.forMoreDetailsCheckOutFAQ",
-              options: { faqUrl: "/faq#ranked" },
+              options: {
+                faqUrl: "/faq#ranked",
+              },
             },
             "popup_ranked_game_description_faq",
           ),
@@ -9771,7 +10507,9 @@
           const t = `${"number" == typeof e.rank && !g.r.isUserOnMobileAppOrWeb ? "#" : ""}${e.rank}`;
           (0, o.RH)(this.tdRank, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: t },
+            options: {
+              value: t,
+            },
           });
           const s = e.membershipType;
           if (void 0 !== s) {
@@ -9805,14 +10543,18 @@
             n = S.getCountryOrContinentName(e),
             r = {
               key: "strings:leaderboardPage.changeRegion.currentRegion",
-              options: { currentRegion: c.a7.t(n.key, n.options) },
+              options: {
+                currentRegion: c.a7.t(n.key, n.options),
+              },
             };
           e.myData &&
             ((i.style.cursor = "pointer"),
             (0, o.G0)(i, () => y.h.showChangeRegionPopup(), !1, !0));
           const a = e.myData
             ? s
-              ? { key: "strings:leaderboardPage.changeRegion.chooseRegion" }
+              ? {
+                  key: "strings:leaderboardPage.changeRegion.chooseRegion",
+                }
               : r
             : n;
           ((0, m.vy)(i, a, "right"),
@@ -9822,7 +10564,9 @@
           return (0, o.WL)(
             (0, o.Sw)(),
             b,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "flag",
           );
         }
@@ -9849,13 +10593,17 @@
           return e.countryCode
             ? {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: c.vX.getCountryName(e.countryCode) },
+                options: {
+                  value: c.vX.getCountryName(e.countryCode),
+                },
               }
             : e.continentCode
               ? {
                   key: `strings:leaderboardPage.tabs.continents.${e.continentCode}`,
                 }
-              : { key: "strings:leaderboardPage.earth" };
+              : {
+                  key: "strings:leaderboardPage.earth",
+                };
         }
         static getDivisionImage(e) {
           const t = r.j.getRankedDivisionImage(e),
@@ -9925,7 +10673,9 @@
     },
     32398: (e, t, s) => {
       "use strict";
-      s.d(t, { l: () => n });
+      s.d(t, {
+        l: () => n,
+      });
       var i = s(18587);
       class n {
         static socketServerWSS() {
@@ -10153,7 +10903,9 @@
     },
     33292: (e, t, s) => {
       "use strict";
-      s.d(t, { a: () => u });
+      s.d(t, {
+        a: () => u,
+      });
       var i = s(92524),
         n = s(64265),
         r = s(50482),
@@ -10207,11 +10959,15 @@
           (e.billedAnnually
             ? (0, l.RH)(this.itemPrice, {
                 key: "strings:storePage.sections.membership.billing.yearlyPayment",
-                options: { amount: e.getAnnualPrice() },
+                options: {
+                  amount: e.getAnnualPrice(),
+                },
               })
             : (0, l.RH)(this.itemPrice, {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "$" + this.product.getDefaultPrice() },
+                options: {
+                  value: "$" + this.product.getDefaultPrice(),
+                },
               }),
             (0, l.RH)(this.itemName, this.product.getProductName()),
             this.generateMembershipRenewalCheckoutText(),
@@ -10220,7 +10976,9 @@
         generateCoinCheckoutText() {
           ((0, l.RH)(this.itemPrice, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: this.product.getDefaultPrice() },
+            options: {
+              value: this.product.getDefaultPrice(),
+            },
           }),
             (0, l.RH)(this.itemName, this.product.getProductName()),
             (this.itemImage.src = (0, c.tu)(this.product.lobbyImage)));
@@ -10229,7 +10987,9 @@
           const e = document.getElementById("membership-renewal-info"),
             t = {
               key: "strings:storePage.checkout.membershipRenewalInfo",
-              options: { date: this.calculateMembershipRenewalDate() },
+              options: {
+                date: this.calculateMembershipRenewalDate(),
+              },
             };
           (0, l.RH)(e, t);
         }
@@ -10303,7 +11063,10 @@
     },
     33418: (e, t, s) => {
       "use strict";
-      s.d(t, { H5: () => o, gl: () => r });
+      s.d(t, {
+        H5: () => o,
+        gl: () => r,
+      });
       var i = s(63778);
       class n {
         getProductionForCornerPieceAndTile(e, t) {
@@ -10420,7 +11183,9 @@
     },
     33724: (e, t, s) => {
       "use strict";
-      s.d(t, { j: () => o });
+      s.d(t, {
+        j: () => o,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(90676);
@@ -10461,7 +11226,9 @@
           )),
             (0, n.i5)(this.sliderTrackContainer, "room-settings-slider-label", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.min },
+              options: {
+                value: this.min,
+              },
             }));
           const e = (0, n.Le)(
             this.sliderTrackContainer,
@@ -10479,18 +11246,24 @@
             (this.sliderTrack = (0, n.Le)(e, "room-settings-slider-track")),
             (this.sliderThumb = (0, n.i5)(e, "room-settings-slider-thumb", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.defaultValue },
+              options: {
+                value: this.defaultValue,
+              },
             })),
             (0, n.i5)(this.sliderTrackContainer, "room-settings-slider-label", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.max },
+              options: {
+                value: this.max,
+              },
             }),
             (this.textDisplay = (0, n.i5)(
               this.sliderContainer,
               "room-settings-slider-text-display",
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: this.defaultValue },
+                options: {
+                  value: this.defaultValue,
+                },
               },
             )),
             (this.slider.oninput = () => this.handleOnInput()),
@@ -10518,7 +11291,9 @@
           ((this.sliderThumb.style.left = `${r}px`),
             (0, n.oB)(this.sliderThumb, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             }));
           const o = e != this.defaultValue;
           (this.sliderContainer.classList.toggle("modified", o),
@@ -10537,7 +11312,9 @@
             ),
             (0, n.oB)(this.textDisplay, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             }));
         }
         updateSliderConfig(e, t) {
@@ -10596,7 +11373,11 @@
     },
     33832: (e, t, s) => {
       "use strict";
-      s.d(t, { fT: () => i, UA: () => r, iV: () => n });
+      s.d(t, {
+        fT: () => i,
+        UA: () => r,
+        iV: () => n,
+      });
       var i = (function (e) {
         return (
           (e.AppForeground = "app_foreground"),
@@ -10635,7 +11416,10 @@
     },
     34104: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => L, h: () => B });
+      s.d(t, {
+        r: () => L,
+        h: () => B,
+      });
       var i = s(78311),
         n = s(9029);
       class r {
@@ -10753,7 +11537,9 @@
               : s.totalGameCount;
           if (null != i && 0 != i) return;
           const r = (0, n.Le)(e, "mm-new-badge");
-          (0, n.oB)(r, { key: "strings:homePage.matchmakingSelect.newBadge" });
+          (0, n.oB)(r, {
+            key: "strings:homePage.matchmakingSelect.newBadge",
+          });
         }
         createBotCards() {
           const e = [
@@ -10835,8 +11621,12 @@
                 card: {
                   icon: g,
                   category: 1,
-                  title: { key: "strings:homePage.unranked.shuffle" },
-                  ...(null != s.description && { subtitle: s.description }),
+                  title: {
+                    key: "strings:homePage.unranked.shuffle",
+                  },
+                  ...(null != s.description && {
+                    subtitle: s.description,
+                  }),
                   time: (0, S.h$)(v.Nw.UnrankedShuffle),
                   playerCount: (0, S.K4)(v.Nw.UnrankedShuffle),
                   nextRotationISO:
@@ -10845,7 +11635,9 @@
                       : e.endDate,
                   matchType: v.Nw.UnrankedShuffle,
                 },
-                ...(s.badge && { badge: s.badge }),
+                ...(s.badge && {
+                  badge: s.badge,
+                }),
               },
             ];
           for (const { card: e, badge: t } of i) this.generateCard(e, t);
@@ -10894,12 +11686,16 @@
                   title: {
                     key: "strings:homePage.matchmakingSelect.cards.1v1",
                   },
-                  ...(i.description && { subtitle: i.description }),
+                  ...(i.description && {
+                    subtitle: i.description,
+                  }),
                   time: (0, S.h$)(v.Nw.RankedClassic1v1),
                   playerCount: (0, S.K4)(v.Nw.RankedClassic1v1),
                   matchType: v.Nw.RankedClassic1v1,
                 },
-                ...(i.badge && { badge: i.badge }),
+                ...(i.badge && {
+                  badge: i.badge,
+                }),
               },
               {
                 card: {
@@ -10908,12 +11704,16 @@
                   title: {
                     key: "strings:homePage.matchmakingSelect.cards.4Player",
                   },
-                  ...(s.description && { subtitle: s.description }),
+                  ...(s.description && {
+                    subtitle: s.description,
+                  }),
                   time: (0, S.h$)(v.Nw.RankedClassic4P),
                   playerCount: (0, S.K4)(v.Nw.RankedClassic4P),
                   matchType: v.Nw.RankedClassic4P,
                 },
-                ...(s.badge && { badge: s.badge }),
+                ...(s.badge && {
+                  badge: s.badge,
+                }),
               },
               {
                 card: {
@@ -10922,12 +11722,16 @@
                   title: {
                     key: "strings:homePage.matchmakingSelect.cards.citiesAndKnights",
                   },
-                  ...(n.description && { subtitle: n.description }),
+                  ...(n.description && {
+                    subtitle: n.description,
+                  }),
                   time: (0, S.h$)(v.Nw.RankedCitiesAndKnights4P),
                   playerCount: (0, S.K4)(v.Nw.RankedCitiesAndKnights4P),
                   matchType: v.Nw.RankedCitiesAndKnights4P,
                 },
-                ...(n.badge && { badge: n.badge }),
+                ...(n.badge && {
+                  badge: n.badge,
+                }),
               },
             ];
           this.cnKProgressText =
@@ -10955,13 +11759,17 @@
             const t = (0, n.Le)(c, "mm-mode-card-detail");
             ((0, n.WL)(t, h, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.botCount.toString() },
+              options: {
+                value: e.botCount.toString(),
+              },
             }),
               (0, n.Wr)(
                 t,
                 {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: e.botCount.toString() },
+                  options: {
+                    value: e.botCount.toString(),
+                  },
                 },
                 "",
               ));
@@ -10975,7 +11783,9 @@
           const d = {
             element: s,
             data: e,
-            ...(null != l && { badge: l }),
+            ...(null != l && {
+              badge: l,
+            }),
             infoIcon: (0, n.zO)(
               s,
               i.am.InfoIcon,
@@ -11163,7 +11973,9 @@
           i &&
             (0, n.oB)(i, {
               key: this.cnKProgressText.key,
-              options: { time: s },
+              options: {
+                time: s,
+              },
             });
         }
         shouldUpdateCnKCardCountdownTimer() {
@@ -11254,18 +12066,24 @@
           if (i)
             return void (0, n.oB)(i, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s.toString() },
+              options: {
+                value: s.toString(),
+              },
             });
           const r = (0, n.Le)(t, "mm-mode-card-detail mm-mode-card-time");
           ((0, n.WL)(r, d, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: s.toString() },
+            options: {
+              value: s.toString(),
+            },
           }),
             (0, n.Wr)(
               r,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: s.toString() },
+                options: {
+                  value: s.toString(),
+                },
               },
               "",
             ));
@@ -11275,7 +12093,9 @@
           if (i)
             return void (0, n.oB)(i, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s.toString() },
+              options: {
+                value: s.toString(),
+              },
             });
           const r = (0, n.Le)(
             t,
@@ -11283,13 +12103,17 @@
           );
           ((0, n.WL)(r, u, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: s.toString() },
+            options: {
+              value: s.toString(),
+            },
           }),
             (0, n.Wr)(
               r,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: s.toString() },
+                options: {
+                  value: s.toString(),
+                },
               },
               "",
             ));
@@ -11341,7 +12165,9 @@
     },
     34221: (e, t, s) => {
       "use strict";
-      s.d(t, { h: () => h });
+      s.d(t, {
+        h: () => h,
+      });
       var i = s(18514),
         n = s(32398),
         r = s(655),
@@ -11385,7 +12211,9 @@
           );
           ((this.continentsSelectElement = p.createSelector(
             e,
-            { key: "strings:colonistCommon.continent" },
+            {
+              key: "strings:colonistCommon.continent",
+            },
             (e) => {
               (null != e && "" != e.trim()
                 ? this.popup.enableCheckButton()
@@ -11395,12 +12223,16 @@
           )),
             (this.countriesSelectElement = p.createSelector(
               e,
-              { key: "strings:colonistCommon.country" },
+              {
+                key: "strings:colonistCommon.country",
+              },
               (e) => this.setState(e),
             )),
             (this.statesSelectElement = p.createSelector(
               e,
-              { key: "strings:colonistCommon.region" },
+              {
+                key: "strings:colonistCommon.region",
+              },
               () => {},
             )),
             this.setContinents(),
@@ -11430,8 +12262,12 @@
           if (null == h) return;
           if (!h.isSuccess) return;
           const p = new o.y(
-            { key: "strings:popups.changeRegion.title" },
-            { key: "strings:popups.changeRegion.success" },
+            {
+              key: "strings:popups.changeRegion.title",
+            },
+            {
+              key: "strings:popups.changeRegion.success",
+            },
             () => {},
             () => {},
             !0,
@@ -11454,13 +12290,21 @@
             t = [];
           for (const s of e) {
             const e = i.a7.t(`strings:leaderboardPage.tabs.continents.${s}`);
-            t.push({ name: e, code: s });
+            t.push({
+              name: e,
+              code: s,
+            });
           }
           t.sort((e, t) => e.name.localeCompare(t.name));
           for (const e of t)
             (0, a.fg)(this.continentsSelectElement, e.code, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name, interpolation: { escapeValue: !1 } },
+              options: {
+                value: e.name,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
         }
         setCountries(e) {
@@ -11486,13 +12330,22 @@
             s = [];
           for (const e of t) {
             const t = i.vX.getCountryName(e);
-            null != t && s.push({ name: t, code: e });
+            null != t &&
+              s.push({
+                name: t,
+                code: e,
+              });
           }
           s.sort((e, t) => e.name.localeCompare(t.name));
           for (const e of s)
             (0, a.fg)(this.countriesSelectElement, e.code, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name, interpolation: { escapeValue: !1 } },
+              options: {
+                value: e.name,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
         }
         setState(e) {
@@ -11507,28 +12360,45 @@
             return;
           const t = this.regions.filter((t) => t.countryCode == e),
             s = [];
-          for (const e of t) s.push({ name: e.regionName, code: e.regionCode });
+          for (const e of t)
+            s.push({
+              name: e.regionName,
+              code: e.regionCode,
+            });
           s.sort((e, t) => e.name.localeCompare(t.name));
           for (const e of s)
             (0, a.fg)(this.statesSelectElement, e.code, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name, interpolation: { escapeValue: !1 } },
+              options: {
+                value: e.name,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
         }
         static setDefaultOption(e) {
-          (0, a.fg)(e, "", { key: "strings:popups.changeRegion.doNotDisplay" });
+          (0, a.fg)(e, "", {
+            key: "strings:popups.changeRegion.doNotDisplay",
+          });
         }
         static setEmptyOption(e) {
           (0, a.fg)(e, "", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: "" },
+            options: {
+              value: "",
+            },
           });
         }
         constructor() {
           ((this.regions = []),
             (this.popup = new o.y(
-              { key: "strings:popups.changeRegion.title" },
-              { key: "strings:popups.changeRegion.body" },
+              {
+                key: "strings:popups.changeRegion.title",
+              },
+              {
+                key: "strings:popups.changeRegion.body",
+              },
               () => this.handleChangeRegion(),
               () => {},
               !0,
@@ -11554,7 +12424,9 @@
     },
     34493: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => m });
+      s.d(t, {
+        O: () => m,
+      });
       var i = s(76092),
         n = s(53015),
         r = s(78311),
@@ -11625,8 +12497,12 @@
               }
             });
           (super(
-            { key: "strings:homePage.becomeAMember" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:homePage.becomeAMember",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {
               const e = {
                 type: i.k0.ABTestClickAnalytics,
@@ -11644,10 +12520,14 @@
             key: "strings:colonistCommon.utils.emptyString",
           });
           const b = (0, a.dN)(
-            { key: "strings:popups.membershipIncentive.body" },
+            {
+              key: "strings:popups.membershipIncentive.body",
+            },
             {
               value: y
-                ? { key: "strings:popups.membershipIncentive.optionMaps" }
+                ? {
+                    key: "strings:popups.membershipIncentive.optionMaps",
+                  }
                 : {
                     key: "strings:popups.membershipIncentive.optionExpansions",
                   },
@@ -11674,7 +12554,10 @@
     },
     34554: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => r, q: () => o });
+      s.d(t, {
+        N: () => r,
+        q: () => o,
+      });
       var i = s(29249),
         n = s(78311),
         r = (function (e) {
@@ -11702,7 +12585,9 @@
     34617: (e, t, s) => {
       "use strict";
       var i;
-      (s.d(t, { v: () => d }),
+      (s.d(t, {
+        v: () => d,
+      }),
         (function (e) {
           e.isIStripeCheckoutRequestStatus = function (e) {
             return "boolean" == typeof e.status && "string" == typeof e.message;
@@ -11745,7 +12630,9 @@
         l = s(81888);
       class d {
         static async addFriendAction(e, t) {
-          const s = { username: e },
+          const s = {
+              username: e,
+            },
             i = await o.m.postRequestHandler(
               a.l.apiUserProfileAddFriend(),
               void 0,
@@ -11758,14 +12645,20 @@
             u = c
               ? {
                   key: "strings:popups.notification.youAreNowFriendsWith",
-                  options: { username: e },
+                  options: {
+                    username: e,
+                  },
                 }
-              : { key: "strings:profilePage.friends.friendRequestSent" };
+              : {
+                  key: "strings:profilePage.friends.friendRequestSent",
+                };
           (r.OV.showNotification(n.am.Friends, u), t && t(c));
           for (const e of d.callbackActionOnFriendRequestSent) e();
         }
         static async removeFriendAction(e, t) {
-          const s = { username: e };
+          const s = {
+            username: e,
+          };
           null !=
             (await o.m.postRequestHandler(
               a.l.apiUserProfileRemoveFriend(),
@@ -11776,17 +12669,23 @@
             (l._.refresh(),
             r.OV.showNotification(n.am.Friends, {
               key: "strings:popups.friendRequests.removed",
-              options: { username: e },
+              options: {
+                username: e,
+              },
             }),
             "function" == typeof t && t());
         }
         static showRemoveFriendPopup(e, t) {
           const s = {
             key: "strings:profilePage.friends.removeFriend.body",
-            options: { username: e },
+            options: {
+              username: e,
+            },
           };
           new c.y(
-            { key: "strings:profilePage.friends.removeFriend.title" },
+            {
+              key: "strings:profilePage.friends.removeFriend.title",
+            },
             s,
             t,
             () => {},
@@ -11819,7 +12718,9 @@
           return null == t ? [] : t.json;
         }
         static async friendRequestResponded(e, t) {
-          const s = { username: e },
+          const s = {
+              username: e,
+            },
             i = t
               ? a.l.apiUserProfileAcceptFriend()
               : a.l.apiUserProfileRemoveFriend();
@@ -11847,7 +12748,9 @@
     },
     34777: (e, t, s) => {
       "use strict";
-      s.d(t, { $: () => h });
+      s.d(t, {
+        $: () => h,
+      });
       var i = s(9029),
         n = s(83008),
         r = s(655),
@@ -11855,30 +12758,94 @@
         a = s(18587),
         c = s(78311);
       const l = [
-          { gameId: "191197897", playerColor: 2 },
-          { gameId: "191197330", playerColor: 1 },
-          { gameId: "191196681", playerColor: 4 },
-          { gameId: "191198102", playerColor: 2 },
-          { gameId: "191199121", playerColor: 2 },
-          { gameId: "191196320", playerColor: 5 },
-          { gameId: "191196489", playerColor: 5 },
-          { gameId: "191196952", playerColor: 1 },
-          { gameId: "191197221", playerColor: 11 },
-          { gameId: "191197079", playerColor: 1 },
-          { gameId: "191196444", playerColor: 4 },
-          { gameId: "191197644", playerColor: 1 },
-          { gameId: "191197558", playerColor: 5 },
-          { gameId: "191196948", playerColor: 12 },
-          { gameId: "191196835", playerColor: 6 },
-          { gameId: "191196714", playerColor: 1 },
+          {
+            gameId: "191197897",
+            playerColor: 2,
+          },
+          {
+            gameId: "191197330",
+            playerColor: 1,
+          },
+          {
+            gameId: "191196681",
+            playerColor: 4,
+          },
+          {
+            gameId: "191198102",
+            playerColor: 2,
+          },
+          {
+            gameId: "191199121",
+            playerColor: 2,
+          },
+          {
+            gameId: "191196320",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196489",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196952",
+            playerColor: 1,
+          },
+          {
+            gameId: "191197221",
+            playerColor: 11,
+          },
+          {
+            gameId: "191197079",
+            playerColor: 1,
+          },
+          {
+            gameId: "191196444",
+            playerColor: 4,
+          },
+          {
+            gameId: "191197644",
+            playerColor: 1,
+          },
+          {
+            gameId: "191197558",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196948",
+            playerColor: 12,
+          },
+          {
+            gameId: "191196835",
+            playerColor: 6,
+          },
+          {
+            gameId: "191196714",
+            playerColor: 1,
+          },
         ],
         d = [
-          { gameId: "191208779", playerColor: 11 },
-          { gameId: "191208784", playerColor: 5 },
-          { gameId: "191208346", playerColor: 3 },
-          { gameId: "191208573", playerColor: 5 },
+          {
+            gameId: "191208779",
+            playerColor: 11,
+          },
+          {
+            gameId: "191208784",
+            playerColor: 5,
+          },
+          {
+            gameId: "191208346",
+            playerColor: 3,
+          },
+          {
+            gameId: "191208573",
+            playerColor: 5,
+          },
         ],
-        u = [{ slug: "gQYTA2vXZQV9fT2n" }];
+        u = [
+          {
+            slug: "gQYTA2vXZQV9fT2n",
+          },
+        ];
       class h {
         static async loadContent() {
           try {
@@ -11910,13 +12877,17 @@
               r = (0, i.Le)(n, "result-info");
             (0, i.i5)(r, "result-title", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `Table ${s + 1}` },
+              options: {
+                value: `Table ${s + 1}`,
+              },
             });
             const o = h.getReplayUrl(t),
               a = (0, i.cE)(
                 n,
                 o,
-                { key: "strings:colonistCommon.utils.emptyString" },
+                {
+                  key: "strings:colonistCommon.utils.emptyString",
+                },
                 "replay-btn",
                 void 0,
                 !0,
@@ -11948,9 +12919,13 @@
             o = document.getElementById("championship25-partners-grid");
           ((0, i.oB)(t, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: `Partners (${e.length})` },
+            options: {
+              value: `Partners (${e.length})`,
+            },
           }),
-            (0, i.RH)(o, { key: "strings:colonistCommon.utils.emptyString" }));
+            (0, i.RH)(o, {
+              key: "strings:colonistCommon.utils.emptyString",
+            }));
           const c = n.lv.shuffle(e);
           for (const e of c) {
             const t = (0, i.Le)(o, "partner-item");
@@ -11965,7 +12940,9 @@
             const n = (0, i.Le)(t, "partner-name");
             ((0, i.oB)(n, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name },
+              options: {
+                value: e.name,
+              },
             }),
               s.push(t));
           }
@@ -11995,7 +12972,12 @@
     },
     34865: (e, t, s) => {
       "use strict";
-      if ((s.d(t, { n: () => n }), !/^(251|517|837)$/.test(s.j)))
+      if (
+        (s.d(t, {
+          n: () => n,
+        }),
+        !/^(251|517|837)$/.test(s.j))
+      )
         var i = s(23288);
       class n extends (/^(251|517|837)$/.test(s.j) ? null : i.U) {
         shouldShowWarning() {
@@ -12022,7 +13004,9 @@
     },
     34997: (e, t, s) => {
       "use strict";
-      s.d(t, { D: () => r });
+      s.d(t, {
+        D: () => r,
+      });
       var i = s(11743),
         n = s(78311);
       class r extends i.v {
@@ -12030,7 +13014,9 @@
           return [
             {
               image: n.am.NoAds,
-              title: { key: "strings:popups.becomeAMember.perks.noAds.title" },
+              title: {
+                key: "strings:popups.becomeAMember.perks.noAds.title",
+              },
               description: {
                 key: "strings:popups.becomeAMember.perks.noAds.description",
               },
@@ -12046,7 +13032,9 @@
             },
             {
               image: n.am.Colors,
-              title: { key: "strings:popups.becomeAMember.perks.colors.title" },
+              title: {
+                key: "strings:popups.becomeAMember.perks.colors.title",
+              },
               description: {
                 key: "strings:popups.becomeAMember.perks.colors.description",
               },
@@ -12064,7 +13052,9 @@
     },
     35078: (e, t, s) => {
       "use strict";
-      s.d(t, { J: () => i });
+      s.d(t, {
+        J: () => i,
+      });
       var i = (function (e) {
         return (
           (e[(e.Leaderboard = 0)] = "Leaderboard"),
@@ -12083,7 +13073,9 @@
     },
     35363: (e, t, s) => {
       "use strict";
-      s.d(t, { C: () => c });
+      s.d(t, {
+        C: () => c,
+      });
       var i = s(87506),
         n = s(18587),
         r = s(76092),
@@ -12146,7 +13138,10 @@
             c.sendAdsPerformanceData(r.k0.VideoAdsNeverLoaded));
         }
         static sendAdsPerformanceData(e) {
-          const t = { type: e, category: r.eX.AdsPerformance };
+          const t = {
+            type: e,
+            category: r.eX.AdsPerformance,
+          };
           o.CA.sendAnalyticEvent(t);
         }
         static buildLoadingAdBackground(e) {
@@ -12188,7 +13183,9 @@
     },
     35606: (e, t, s) => {
       "use strict";
-      s.d(t, { n: () => r });
+      s.d(t, {
+        n: () => r,
+      });
       var i = s(11776),
         n = s(83633);
       class r {
@@ -12225,7 +13222,9 @@
     },
     35700: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => i });
+      s.d(t, {
+        i: () => i,
+      });
       var i,
         n = s(63778);
       !(function (e) {
@@ -12559,7 +13558,9 @@
     },
     35742: (e, t, s) => {
       "use strict";
-      s.d(t, { u: () => n });
+      s.d(t, {
+        u: () => n,
+      });
       var i = s(72589);
       class n {
         handleUrlHash() {
@@ -12700,7 +13701,9 @@
     },
     38854: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => o });
+      s.d(t, {
+        M: () => o,
+      });
       var i = s(9029),
         n = s(78311);
       class r {
@@ -12764,8 +13767,7 @@
             r = (0, i.Wr)(this.container, this.name, "item-scroll-cell-text");
           var o, a;
           ((s.draggable = !1),
-            r.textContent &&
-              (r.textContent = r.textContent.replace(/-/g, "â€‘")),
+            r.textContent && (r.textContent = r.textContent.replace(/-/g, "‑")),
             t.showInfoIcon &&
               (0, i.zO)(
                 this.container,
@@ -12815,7 +13817,10 @@
           const t = this.scrollWrapper.scrollLeft,
             s = this.getMaxScrollPosition(),
             i = Math.max(0, Math.min(s, t + e));
-          this.scrollWrapper.scrollTo({ left: i, behavior: "smooth" });
+          this.scrollWrapper.scrollTo({
+            left: i,
+            behavior: "smooth",
+          });
         }
         getMaxScrollPosition() {
           return Math.max(
@@ -12896,7 +13901,9 @@
     },
     38910: (e, t, s) => {
       "use strict";
-      s.d(t, { X: () => a });
+      s.d(t, {
+        X: () => a,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(76092),
@@ -12916,7 +13923,9 @@
               this.tabOrderNumberContainer,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: `${e}` },
+                options: {
+                  value: `${e}`,
+                },
               },
               "",
             )),
@@ -13024,7 +14033,13 @@
             "store-gift-overlay-main-cta-button",
           );
           return (
-            (0, n.Wr)(e, { key: "strings:storePage.checkout.checkout" }, ""),
+            (0, n.Wr)(
+              e,
+              {
+                key: "strings:storePage.checkout.checkout",
+              },
+              "",
+            ),
             (0, n.G0)(e, () => {
               e.classList.contains("disabled") || this.checkoutAction();
             }),
@@ -13065,7 +14080,10 @@
     },
     39139: (e, t, s) => {
       "use strict";
-      s.d(t, { W: () => S, E: () => k });
+      s.d(t, {
+        W: () => S,
+        E: () => k,
+      });
       var i = s(76092),
         n = s(655),
         r = s(32398),
@@ -13081,7 +14099,12 @@
         }
         createStars() {
           const e = (0, a.Le)(this.body, "popup-feedback-form-stars-container"),
-            t = Array.from({ length: S }, () => d.createStar(e));
+            t = Array.from(
+              {
+                length: S,
+              },
+              () => d.createStar(e),
+            );
           (this.addStarsClickListeners(t),
             d.animateStarsOnHover(t),
             (e.onmouseout = () => d.resetStars(t)));
@@ -13112,7 +14135,9 @@
           const i = (0, a.WL)(
             e,
             l,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "popup-feedback-form-star-image",
           );
           return (
@@ -13123,12 +14148,20 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:popups.feedbackForm.title" },
-            { key: "strings:popups.feedbackForm.body" },
+            {
+              key: "strings:popups.feedbackForm.title",
+            },
+            {
+              key: "strings:popups.feedbackForm.body",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           ),
             (this.feedbackFormController = e));
         }
@@ -13179,7 +14212,12 @@
             "popup-feedback-form-textarea-character-count",
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: "0/300", interpolation: { escapeValue: !1 } },
+              options: {
+                value: "0/300",
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             },
           );
           (e.addEventListener("input", (e) => {
@@ -13226,7 +14264,12 @@
               this.header,
               "popup-feedback-form-stars-container",
             ),
-            t = Array.from({ length: S }, () => d.createStar(e, !0, !0));
+            t = Array.from(
+              {
+                length: S,
+              },
+              () => d.createStar(e, !0, !0),
+            );
           (this.setStarsColorBasedOnRating(t), this.addStarsClickListeners(t));
         }
         setStarsColorBasedOnRating(e) {
@@ -13250,8 +14293,12 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:popups.feedbackForm.improve" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:popups.feedbackForm.improve",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -13320,15 +14367,21 @@
                   e.call(this);
               };
               return void f.r.create(
-                { key: "strings:popups.errors.general.title" },
+                {
+                  key: "strings:popups.errors.general.title",
+                },
                 {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: e.message },
+                  options: {
+                    value: e.message,
+                  },
                 },
                 t,
                 t,
                 !1,
-                { showXButton: !1 },
+                {
+                  showXButton: !1,
+                },
               );
             }
             (await n.m.postRequestHandler(
@@ -13386,7 +14439,9 @@
     },
     39509: (e, t, s) => {
       "use strict";
-      s.d(t, { o: () => a });
+      s.d(t, {
+        o: () => a,
+      });
       var i = s(19733),
         n = s(42389),
         r = s(78311),
@@ -13397,10 +14452,14 @@
             key: t
               ? "strings:roomPage.notifications.failedToSelectPlayerCount"
               : "strings:roomPage.notifications.invalidGameModeSelected",
-            options: { playerCount: e },
+            options: {
+              playerCount: e,
+            },
           };
           i.r.createSimplePopup(
-            { key: "strings:popups.informationView.title" },
+            {
+              key: "strings:popups.informationView.title",
+            },
             s,
           );
         }),
@@ -13413,7 +14472,9 @@
             n.OV.show(
               {
                 key: "strings:colonistCommon.serverStatus.serverUpdating",
-                options: { discordLink: r.gq.DISCORD_CHANNEL },
+                options: {
+                  discordLink: r.gq.DISCORD_CHANNEL,
+                },
               },
               o.n.Information,
             );
@@ -13421,7 +14482,10 @@
           e.onFailedToStartGamePlayersNotReady((e) => {
             n.OV.showNotification(r.am.Lightning, {
               key: "strings:roomPage.notifications.usersNotReadyToPlay",
-              options: { usernames: e, count: e.length },
+              options: {
+                usernames: e,
+                count: e.length,
+              },
             });
           }),
           e.onFailedToSelectUsedColor(() => {
@@ -13522,11 +14586,20 @@
           const e = this.description.key,
             t = {
               key: "strings:popups.errors.authError.standardErrorMessage",
-              options: { email: n.gq.SUPPORT_EMAIL },
+              options: {
+                email: n.gq.SUPPORT_EMAIL,
+              },
             };
           return (0, i.dN)(
-            { key: "strings:popups.errors.authError.displayMessage" },
-            { errorMessage: { key: e }, standardErrorMessage: t },
+            {
+              key: "strings:popups.errors.authError.displayMessage",
+            },
+            {
+              errorMessage: {
+                key: e,
+              },
+              standardErrorMessage: t,
+            },
           );
         }
         static deserialize(e) {
@@ -13572,7 +14645,9 @@
     },
     41418: (e, t, s) => {
       "use strict";
-      s.d(t, { q: () => a });
+      s.d(t, {
+        q: () => a,
+      });
       var i = s(19966),
         n = s(76092),
         r = s(98487),
@@ -13582,7 +14657,10 @@
           this.send(r.$d.CreateTrade, e);
         }
         executeTrade(e, t) {
-          const s = { tradeId: e, playerToExecuteTradeWith: t };
+          const s = {
+            tradeId: e,
+            playerToExecuteTradeWith: t,
+          };
           this.send(r.$d.ExecuteTrade, s);
         }
         updateTradeResponse(e) {
@@ -13725,7 +14803,11 @@
         }
         sendConfirmBuildAnalytic() {}
         async sendGameAnalyticOnce(e, t) {
-          const s = { type: e, category: n.eX.Game, floatValue: t };
+          const s = {
+            type: e,
+            category: n.eX.Game,
+            floatValue: t,
+          };
           await i.CA.sendAnalyticEventOnce(s);
         }
         confirmCityUpgrade(e) {
@@ -13768,7 +14850,10 @@
           this.send(r.$d.ClickedRematch, !0);
         }
         clickedVote(e, t) {
-          this.send(r.$d.Vote, { id: e, accepted: t });
+          this.send(r.$d.Vote, {
+            id: e,
+            accepted: t,
+          });
         }
         requestActionSwap(e) {
           this.send(r.$d.RequestActionSwap, e);
@@ -13795,7 +14880,10 @@
           this.send(r.$d.GameChatSubmit, e);
         }
         reportPlayer(e, t) {
-          const s = { reportReason: e, reportedPlayerColor: t };
+          const s = {
+            reportReason: e,
+            reportedPlayerColor: t,
+          };
           this.send(r.$d.ReportPlayer, s);
         }
         requestGameState() {
@@ -13832,7 +14920,9 @@
     },
     41931: (e, t, s) => {
       "use strict";
-      s.d(t, { p: () => l });
+      s.d(t, {
+        p: () => l,
+      });
       var i = s(71068),
         n = s(78311),
         r = s(52955);
@@ -14227,7 +15317,10 @@
                   (await navigator.serviceWorker.ready,
                     null === (t = navigator.serviceWorker.controller) ||
                       void 0 === t ||
-                      t.postMessage({ type: "languageChange", language: e }));
+                      t.postMessage({
+                        type: "languageChange",
+                        language: e,
+                      }));
                 }
               })(e));
           }),
@@ -14257,7 +15350,10 @@
           (e.setLastSelectedMatchmakingMode = function (e) {
             c.set(
               $,
-              JSON.stringify({ category: e.category, matchType: e.matchType }),
+              JSON.stringify({
+                category: e.category,
+                matchType: e.matchType,
+              }),
             );
           }),
           (e.getLastSelectedMatchmakingMode = function () {
@@ -14273,7 +15369,9 @@
     },
     42003: (e, t, s) => {
       "use strict";
-      s.d(t, { h: () => r });
+      s.d(t, {
+        h: () => r,
+      });
       var i = s(9029),
         n = s(23355);
       class r {
@@ -14318,7 +15416,10 @@
     },
     42380: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => i, s: () => n });
+      s.d(t, {
+        M: () => i,
+        s: () => n,
+      });
       const i = /^(251|517|837|85)$/.test(s.j)
         ? null
         : ["valentines", "easter", "halloween", "thanksgiving", "christmas"];
@@ -14350,23 +15451,68 @@
       n.holidayDates = [
         {
           name: "valentines",
-          dates: { start: { month: 1, day: 24 }, end: { month: 2, day: 18 } },
+          dates: {
+            start: {
+              month: 1,
+              day: 24,
+            },
+            end: {
+              month: 2,
+              day: 18,
+            },
+          },
         },
         {
           name: "easter",
-          dates: { start: { month: 3, day: 20 }, end: { month: 4, day: 30 } },
+          dates: {
+            start: {
+              month: 3,
+              day: 20,
+            },
+            end: {
+              month: 4,
+              day: 30,
+            },
+          },
         },
         {
           name: "halloween",
-          dates: { start: { month: 10, day: 10 }, end: { month: 11, day: 5 } },
+          dates: {
+            start: {
+              month: 10,
+              day: 10,
+            },
+            end: {
+              month: 11,
+              day: 5,
+            },
+          },
         },
         {
           name: "thanksgiving",
-          dates: { start: { month: 11, day: 6 }, end: { month: 11, day: 30 } },
+          dates: {
+            start: {
+              month: 11,
+              day: 6,
+            },
+            end: {
+              month: 11,
+              day: 30,
+            },
+          },
         },
         {
           name: "christmas",
-          dates: { start: { month: 12, day: 1 }, end: { month: 1, day: 12 } },
+          dates: {
+            start: {
+              month: 12,
+              day: 1,
+            },
+            end: {
+              month: 1,
+              day: 12,
+            },
+          },
           extendsToNewYear: !0,
         },
       ];
@@ -14583,8 +15729,12 @@
         }
         static showWebGLPopup() {
           const e = new f.y(
-            { key: "strings:homePage.popups.webGLInactive.title" },
-            { key: "strings:homePage.popups.webGLInactive.body" },
+            {
+              key: "strings:homePage.popups.webGLInactive.title",
+            },
+            {
+              key: "strings:homePage.popups.webGLInactive.body",
+            },
             () => {
               window.location.replace(
                 "https://blog.colonist.io/how-to-enable-webgl/",
@@ -14592,7 +15742,9 @@
             },
             () => {},
             !1,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           );
           (e.changeCheckButtonText({
             key: "strings:homePage.popups.webGLInactive.showMeHow",
@@ -14604,12 +15756,19 @@
         }
         static showWebGLPopupOnMobileApp() {
           const e = new f.y(
-            { key: "strings:homePage.popups.webGLInactiveOnMobileApp.title" },
-            { key: "strings:homePage.popups.webGLInactiveOnMobileApp.body" },
+            {
+              key: "strings:homePage.popups.webGLInactiveOnMobileApp.title",
+            },
+            {
+              key: "strings:homePage.popups.webGLInactiveOnMobileApp.body",
+            },
             () => {},
             () => {},
             !1,
-            { showXButton: !1, showCheckButton: !1 },
+            {
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           );
           (e.addBodyContent({
             key: "strings:homePage.popups.webGLInactiveOnMobileApp.nov12IOS187issue",
@@ -14740,7 +15899,9 @@
           if (e.typeData.type === L.j.UserReportedWarning)
             return {
               image: b.am.DangerIcon,
-              text: { key: "strings:popups.notification.reportedUserWarning" },
+              text: {
+                key: "strings:popups.notification.reportedUserWarning",
+              },
               duration: M.Re.SECONDS_IN_MINUTE * M.Re.MILLISECONDS,
             };
           throw new Error(
@@ -14826,7 +15987,10 @@
                         arguments,
                       );
                     }),
-              (s._hjSettings = { hjid: i.r.hotjarTrackingCode, hjsv: 6 }),
+              (s._hjSettings = {
+                hjid: i.r.hotjarTrackingCode,
+                hjsv: 6,
+              }),
               (o = n.getElementsByTagName("head")[0]),
               ((a = n.createElement("script")).async = 1),
               (a.src =
@@ -14936,16 +16100,6 @@
               switch (t.code) {
                 case b.p5:
                 case b.FL:
-                  console.log(
-                    "ws close",
-                    this.firstUserSessionId,
-                    this.getWebSocketUrl().then(console.log),
-                    {
-                      code: t.code,
-                      reason: t.reason,
-                      wasClean: t.wasClean,
-                    },
-                  );
                   e.resolve("permanentlyFailed");
                   break;
                 case b.gu:
@@ -15095,7 +16249,9 @@
         sendPing(e) {
           const t = {
             id: `${X.zd.State.SocketMonitorUpdate}`,
-            data: { timestamp: e },
+            data: {
+              timestamp: e,
+            },
           };
           this.send($.SocketRouter, b.lo.Echo, "", t, !1);
         }
@@ -15209,7 +16365,9 @@
               at.show(
                 e,
                 ee.n.SocketError,
-                { key: "strings:colonistCommon.buttons.reload" },
+                {
+                  key: "strings:colonistCommon.buttons.reload",
+                },
                 () => location.reload(),
                 void 0,
                 !1,
@@ -15388,8 +16546,12 @@
       class le extends f.y {
         constructor() {
           (super(
-            { key: "strings:popups.patchNote.announcement" },
-            { key: "strings:popups.errors.serverUpdate" },
+            {
+              key: "strings:popups.patchNote.announcement",
+            },
+            {
+              key: "strings:popups.errors.serverUpdate",
+            },
             () => {},
             () => {},
             !1,
@@ -15401,7 +16563,10 @@
       }
       class de {
         static send(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           ot.controller.sender.sendToServerType(b.lo.ShuffleAction, "lobby", s);
         }
         static requestShuffleQueueData() {
@@ -15886,7 +17051,12 @@
               ge.A.play(ge.h.YourTurn);
             }),
             this.gameStateHandlers.set(he.Eo.InfoMessage, (e) => {
-              new fe({ key: "strings:popups.informationView.title" }, e);
+              new fe(
+                {
+                  key: "strings:popups.informationView.title",
+                },
+                e,
+              );
             }),
             this.gameStateHandlers.set(
               he.Eo.ResetTradeStateAtEndOfTurn,
@@ -16260,7 +17430,9 @@
         }
         onSeedOrderSelected(e) {
           this.protocol.onEvent("SeedOrderSelected", ({ seedOrder: t }) => {
-            e({ seedOrder: t.map((e) => [e[0], Oe[e[1]]]) });
+            e({
+              seedOrder: t.map((e) => [e[0], Oe[e[1]]]),
+            });
           });
         }
         onPlayOrderSelected(e) {
@@ -16356,19 +17528,28 @@
           });
         }
         setReadyToStart(e) {
-          this.protocol.send("setReadyToStart", { ready: e });
+          this.protocol.send("setReadyToStart", {
+            ready: e,
+          });
         }
         selectColor(e, t) {
-          this.protocol.send("selectColor", { roomSessionId: e, color: Ue[t] });
+          this.protocol.send("selectColor", {
+            roomSessionId: e,
+            color: Ue[t],
+          });
         }
         startGame() {
-          this.protocol.send("startGame", { clientVersion: b.$m });
+          this.protocol.send("startGame", {
+            clientVersion: b.$m,
+          });
         }
         startSeedOrderSelection() {
           this.protocol.send("startSeedOrderSelection", {});
         }
         kickPlayer(e) {
-          this.protocol.send("kickPlayer", { roomSessionId: e });
+          this.protocol.send("kickPlayer", {
+            roomSessionId: e,
+          });
         }
         addBot() {
           this.protocol.send("addBot", {});
@@ -16380,7 +17561,9 @@
           });
         }
         setPrivateGame(e) {
-          this.protocol.send("setPrivateGame", { privateGame: e });
+          this.protocol.send("setPrivateGame", {
+            privateGame: e,
+          });
         }
         toggleNoTrolls() {
           this.protocol.send("toggleNoTrolls", {});
@@ -16389,37 +17572,60 @@
           this.protocol.send("togglePlayOrderSelection", {});
         }
         setGameMode(e) {
-          this.protocol.send("setGameMode", { gameMode: Ne[e] });
+          this.protocol.send("setGameMode", {
+            gameMode: Ne[e],
+          });
         }
         setMap(e) {
-          this.protocol.send("setMap", { map: He[e] });
+          this.protocol.send("setMap", {
+            map: He[e],
+          });
         }
         setDiceType(e) {
-          this.protocol.send("setDiceType", { diceType: Ke[e] });
+          this.protocol.send("setDiceType", {
+            diceType: Ke[e],
+          });
         }
         setVictoryPointsToWin(e) {
-          this.protocol.send("setVictoryPointsToWin", { victoryPoints: e });
+          this.protocol.send("setVictoryPointsToWin", {
+            victoryPoints: e,
+          });
         }
         setGameSpeed(e) {
-          this.protocol.send("setGameSpeed", { gameSpeed: qe[e] });
+          this.protocol.send("setGameSpeed", {
+            gameSpeed: qe[e],
+          });
         }
         setCardDiscardLimit(e) {
-          this.protocol.send("setCardDiscardLimit", { limit: e });
+          this.protocol.send("setCardDiscardLimit", {
+            limit: e,
+          });
         }
         setFriendlyRobber(e) {
-          this.protocol.send("setFriendlyRobber", { friendlyRobber: e });
+          this.protocol.send("setFriendlyRobber", {
+            friendlyRobber: e,
+          });
         }
         setHideBankCards(e) {
-          this.protocol.send("setHiddenBankCards", { hiddenBankCards: e });
+          this.protocol.send("setHiddenBankCards", {
+            hiddenBankCards: e,
+          });
         }
         setMaxPlayers(e) {
-          this.protocol.send("setMaxPlayers", { maxPlayers: e });
+          this.protocol.send("setMaxPlayers", {
+            maxPlayers: e,
+          });
         }
         setSeedOrder(e, t) {
-          this.protocol.send("setSeedOrder", { color: Ue[e], order: t });
+          this.protocol.send("setSeedOrder", {
+            color: Ue[e],
+            order: t,
+          });
         }
         setPlayOrder(e) {
-          this.protocol.send("setPlayOrder", { order: e });
+          this.protocol.send("setPlayOrder", {
+            order: e,
+          });
         }
         startPlayOrderSelection() {
           this.protocol.send("startPlayOrderSelection", {});
@@ -16428,7 +17634,9 @@
           this.protocol.send("leave", {});
         }
         submitChatText(e) {
-          this.protocol.send("submitChatText", { text: e });
+          this.protocol.send("submitChatText", {
+            text: e,
+          });
         }
         constructor(e) {
           this.protocol = e;
@@ -16662,9 +17870,19 @@
           (Be.K4.Fast,
           Be.K4.Normal,
           Be.K4.Slow,
-          { fast: Be.K4.Fast, normal: Be.K4.Normal, slow: Be.K4.Slow }),
-        ze = { [Be.R1.BotEasy]: "easy", [Be.R1.BotMedium]: "medium" },
-        je = { easy: Be.R1.BotEasy, medium: Be.R1.BotMedium },
+          {
+            fast: Be.K4.Fast,
+            normal: Be.K4.Normal,
+            slow: Be.K4.Slow,
+          }),
+        ze = {
+          [Be.R1.BotEasy]: "easy",
+          [Be.R1.BotMedium]: "medium",
+        },
+        je = {
+          easy: Be.R1.BotEasy,
+          medium: Be.R1.BotMedium,
+        },
         Ye = {
           none: Ge.None,
           clickReady: Ge.ClickReady,
@@ -16964,14 +18182,19 @@
           await o.aA.init();
           if (!(await r._.init())) {
             new f.y(
-              { key: "strings:popups.errors.initializationError.title" },
+              {
+                key: "strings:popups.errors.initializationError.title",
+              },
               {
                 key: "strings:popups.errors.initializationError.initializationFailed",
               },
               () => window.location.reload(),
               () => {},
               !1,
-              { showXButton: !1, showXonHeader: !1 },
+              {
+                showXButton: !1,
+                showXonHeader: !1,
+              },
             ).show();
             const e = 2147483647;
             await (0, M.cb)(e);
@@ -17005,7 +18228,13 @@
           a.Ts({
             dsn: t,
             release: `Colonist:v${i.r.versionNumber}`,
-            integrations: [c.dp(), l.w({ maskAllText: !1, blockAllMedia: !1 })],
+            integrations: [
+              c.dp(),
+              l.w({
+                maskAllText: !1,
+                blockAllMedia: !1,
+              }),
+            ],
             tracesSampleRate: i.r.frontendSentryTraceSampleRate,
             replaysSessionSampleRate: 5e-4,
             replaysOnErrorSampleRate: 5e-4,
@@ -17097,7 +18326,9 @@
     },
     42466: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => i });
+      s.d(t, {
+        y: () => i,
+      });
       class i {
         static trackPopup(e) {
           i.activePopups.push(e);
@@ -17136,12 +18367,17 @@
     },
     42845: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => i });
+      s.d(t, {
+        N: () => i,
+      });
       class i {
         addData(e) {
           if (!this.orderBroken) {
             if (
-              (this.data.push({ added: Date.now(), data: e }),
+              (this.data.push({
+                added: Date.now(),
+                data: e,
+              }),
               this.data.length > 10)
             )
               return (
@@ -17228,7 +18464,14 @@
     },
     44517: (e, t, s) => {
       "use strict";
-      if ((s.d(t, { a: () => o, s: () => r }), 837 != s.j)) var i = s(53879);
+      if (
+        (s.d(t, {
+          a: () => o,
+          s: () => r,
+        }),
+        837 != s.j)
+      )
+        var i = s(53879);
       class n {
         sendEvent(e) {
           const t = this.STORAGE_KEY_PREFIX + r[e];
@@ -17295,7 +18538,9 @@
     },
     45857: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => r });
+      s.d(t, {
+        H: () => r,
+      });
       var i = s(95176),
         n = s(9029);
       class r extends i.y {
@@ -17327,8 +18572,12 @@
         }
         constructor(e, t) {
           (super(
-            { key: "strings:popups.assetsLoading" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:popups.assetsLoading",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             t,
             !0,
@@ -17359,7 +18608,9 @@
     },
     45973: (e, t, s) => {
       "use strict";
-      s.d(t, { B: () => i });
+      s.d(t, {
+        B: () => i,
+      });
       class i {}
       ((i.globalLeaderboardUrl = ""),
         (i.maximumLeaderboardAPIRankingRangeLimit = 100),
@@ -17372,7 +18623,9 @@
     },
     46456: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => n });
+      s.d(t, {
+        y: () => n,
+      });
       var i = s(83008);
       class n {
         static get shuffleQueueData() {
@@ -17418,7 +18671,9 @@
     },
     46903: (e, t, s) => {
       "use strict";
-      s.d(t, { p: () => i });
+      s.d(t, {
+        p: () => i,
+      });
       class i {}
     },
     46995: (e, t, s) => {
@@ -17485,7 +18740,9 @@
     },
     48755: (e, t, s) => {
       "use strict";
-      s.d(t, { L: () => o });
+      s.d(t, {
+        L: () => o,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(95176);
@@ -17543,8 +18800,12 @@
               visible: !this.isTournamentRoom,
             },
             {
-              header: { key: "strings:roomPage.orderSelection.title" },
-              text: { key: "strings:roomPage.orderSelection.description" },
+              header: {
+                key: "strings:roomPage.orderSelection.title",
+              },
+              text: {
+                key: "strings:roomPage.orderSelection.description",
+              },
               image: n.am.ProfileRanked,
               visible: this.isTournamentRoom,
             },
@@ -17565,12 +18826,20 @@
         }
         constructor(e = !1) {
           (super(
-            { key: "strings:roomPage.rules.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:roomPage.rules.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           ),
             (this.isTournamentRoom = e));
           const t = this.getRulesInformationBodyElements();
@@ -17599,7 +18868,9 @@
     },
     49937: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => l });
+      s.d(t, {
+        N: () => l,
+      });
       class i {}
       ((i.PROBABILITY_OF_SHOWING_FEEDBACK_FORM = 0.1),
         (i.DAYS_BETWEEN_FEEDBACK_FORMS = 90));
@@ -17748,8 +19019,18 @@
           const e = this.billedAnnually
               ? "strings:storePage.membership.frequency.annual"
               : "strings:colonistCommon.utils.emptyString",
-            t = { title: this.membershipTitle, frequency: { key: e } };
-          return (0, i.dN)({ key: "strings:storePage.membership.body" }, t);
+            t = {
+              title: this.membershipTitle,
+              frequency: {
+                key: e,
+              },
+            };
+          return (0, i.dN)(
+            {
+              key: "strings:storePage.membership.body",
+            },
+            t,
+          );
         }
         getDefaultPrice() {
           return "" + this.price / 100;
@@ -17951,7 +19232,9 @@
     },
     50506: (e, t, s) => {
       "use strict";
-      s.d(t, { k: () => f });
+      s.d(t, {
+        k: () => f,
+      });
       var i = s(83008),
         n = s(9127),
         r = s(9029),
@@ -17977,13 +19260,17 @@
           const d = (0, r.Le)(l, "room_friend_username_and_status"),
             u = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t },
+              options: {
+                value: t,
+              },
             };
           (0, r.i5)(d, "room_friend_username", u);
           const h = this.getTextAndClassNameForOnlineStatus(s),
             p = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: h.textStatus },
+              options: {
+                value: h.textStatus,
+              },
             };
           ((this.statusText = (0, r.i5)(d, "room_friend_status_text", p)),
             this.statusText.classList.add(h.className),
@@ -18303,7 +19590,9 @@
     },
     51988: (e, t, s) => {
       "use strict";
-      s.d(t, { F: () => r });
+      s.d(t, {
+        F: () => r,
+      });
       var i = s(20751),
         n = s(64038);
       class r {
@@ -18390,7 +19679,9 @@
     },
     52312: (e, t, s) => {
       "use strict";
-      s.d(t, { t: () => A });
+      s.d(t, {
+        t: () => A,
+      });
       var i = s(76092),
         n = s(50482),
         r = s(92524),
@@ -18410,7 +19701,9 @@
         constructor() {
           var e;
           (super(
-            { key: "strings:popups.errors.discordRedirectToWeb.title" },
+            {
+              key: "strings:popups.errors.discordRedirectToWeb.title",
+            },
             {
               key: "strings:popups.errors.discordRedirectToWeb.body",
               options: {
@@ -18460,12 +19753,18 @@
             );
           (0, S.zO)(c, i.image);
           const l = (0, _.dN)(
-            { key: "strings:storePage.membership.body" },
+            {
+              key: "strings:storePage.membership.body",
+            },
             {
               title: i.title,
               frequency: a.billedAnnually
-                ? { key: "strings:storePage.membership.frequency.annual" }
-                : { key: "strings:storePage.membership.frequency.monthly" },
+                ? {
+                    key: "strings:storePage.membership.frequency.annual",
+                  }
+                : {
+                    key: "strings:storePage.membership.frequency.monthly",
+                  },
             },
           );
           (0, S.n8)(c, l, "", "", "H3");
@@ -18513,7 +19812,9 @@
             t = (0, S.cE)(
               this.membershipStatusContainer,
               "",
-              { key: "strings:profilePage.settings.membership.becomeMember" },
+              {
+                key: "strings:profilePage.settings.membership.becomeMember",
+              },
               "button_cta_main",
             );
           ((0, S.G0)(t, () => A.becomeMemberClickAction(), !0),
@@ -18525,7 +19826,10 @@
         }
         static becomeMemberClickAction() {
           C.WC.play(C.hc.Click);
-          const e = { type: i.k0.ClickedStore, category: i.eX.Store };
+          const e = {
+            type: i.k0.ClickedStore,
+            category: i.eX.Store,
+          };
           (k.CA.sendAnalyticEvent(e),
             (0, v.Yf)("/store#membership", void 0, !0));
         }
@@ -18545,7 +19849,9 @@
           for (const e of this.currentUserLoginState) {
             const t = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.email },
+              options: {
+                value: e.email,
+              },
             };
             switch (e.providerId) {
               case i.sG.Google:
@@ -18591,8 +19897,12 @@
         }
         static async handleDisconnect(e) {
           h.r.create(
-            { key: "strings:profilePage.removeAccount.title" },
-            { key: "strings:profilePage.removeAccount.body" },
+            {
+              key: "strings:profilePage.removeAccount.title",
+            },
+            {
+              key: "strings:profilePage.removeAccount.body",
+            },
             async () => {
               null != (await d.m.getRequestHandler(e, void 0)) &&
                 location.reload();
@@ -18603,10 +19913,16 @@
         static async checkIfUsernameMatchesInput(e, t) {
           if (e.toLowerCase() != t.toLocaleLowerCase())
             return void h.r.createSimplePopup(
-              { key: "strings:popups.errors.general.title" },
-              { key: "strings:profilePage.deleteAccount.usernamesDontMatch" },
+              {
+                key: "strings:popups.errors.general.title",
+              },
+              {
+                key: "strings:profilePage.deleteAccount.usernamesDontMatch",
+              },
             );
-          const s = { username: t };
+          const s = {
+            username: t,
+          };
           null !=
             (await d.m.postRequestHandler(
               l.l.apiDeleteProfile(),
@@ -18622,10 +19938,14 @@
           if (null == o._.userState) return;
           const e = o._.userState.username,
             t = new p.e(
-              { key: "strings:profilePage.deleteAccount.title" },
+              {
+                key: "strings:profilePage.deleteAccount.title",
+              },
               {
                 key: "strings:profilePage.deleteAccount.body",
-                options: { username: e },
+                options: {
+                  username: e,
+                },
               },
               (t) => A.checkIfUsernameMatchesInput(e, t),
               () => {},
@@ -18647,8 +19967,12 @@
         }
         static handleLogout() {
           new y.y(
-            { key: "strings:homePage.header.logoutPopup.title" },
-            { key: "strings:homePage.header.logoutPopup.body" },
+            {
+              key: "strings:homePage.header.logoutPopup.title",
+            },
+            {
+              key: "strings:homePage.header.logoutPopup.body",
+            },
             async () => {
               null !=
                 (await d.m.postRequestHandler(l.l.logout(), void 0, void 0)) &&
@@ -18939,7 +20263,9 @@
     },
     53503: (e, t, s) => {
       "use strict";
-      s.d(t, { T: () => r });
+      s.d(t, {
+        T: () => r,
+      });
       var i = s(50482),
         n = s(81888);
       class r {
@@ -19012,7 +20338,9 @@
     },
     53879: (e, t, s) => {
       "use strict";
-      s.d(t, { U: () => i });
+      s.d(t, {
+        U: () => i,
+      });
       class i {
         static isAvailable() {
           return "function" == typeof BroadcastChannel;
@@ -19053,13 +20381,19 @@
     },
     55159: (e, t, s) => {
       "use strict";
-      s.d(t, { E: () => n });
+      s.d(t, {
+        E: () => n,
+      });
       var i = s(95176);
       class n extends i.y {
         constructor(e) {
           (super(
-            { key: "strings:roomPage.leaveRoom.title" },
-            { key: "strings:roomPage.leaveRoom.body" },
+            {
+              key: "strings:roomPage.leaveRoom.title",
+            },
+            {
+              key: "strings:roomPage.leaveRoom.body",
+            },
             e,
             () => {},
             !1,
@@ -19083,7 +20417,9 @@
     },
     55853: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => u });
+      s.d(t, {
+        Y: () => u,
+      });
       var i = s(78311),
         n = s(9127),
         r = s(69714),
@@ -19138,7 +20474,9 @@
           if (e.response) return;
           const t = {
             key: "strings:roomPage.declinedInvite",
-            options: { username: e.responderUsername },
+            options: {
+              username: e.responderUsername,
+            },
           };
           this.showNotification(i.am.Lightning, t);
         }
@@ -19169,7 +20507,10 @@
           );
         }
         addFriendRequestNotificationToPanel(e) {
-          const t = { type: c.j.FriendRequestReceived, username: e.username };
+          const t = {
+            type: c.j.FriendRequestReceived,
+            username: e.username,
+          };
           this.addCTANotificationToPanel(
             t,
             e.dateCreated,
@@ -19200,7 +20541,10 @@
         showFriendRequestPopupNotification(e) {
           const t = {
             key: "strings:popups.notification.userSentYouFriendRequest",
-            options: { context: "noLink", username: e.username },
+            options: {
+              context: "noLink",
+              username: e.username,
+            },
           };
           this.showNotification(i.am.Friends, t);
         }
@@ -19226,7 +20570,9 @@
             s &&
             this.showNotification(e.icon, {
               key: "strings:roomPage.friendOnline",
-              options: { username: e.username },
+              options: {
+                username: e.username,
+              },
             }),
             this.lastNotificationTimeForUser.set(e.userId, Date.now()));
           e.onlineStatus == n.WA.Offline
@@ -19278,7 +20624,9 @@
     },
     56561: (e, t, s) => {
       "use strict";
-      s.d(t, { X: () => n });
+      s.d(t, {
+        X: () => n,
+      });
       var i = s(95176);
       class n extends i.y {
         constructor(e) {
@@ -19286,7 +20634,9 @@
           super(
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: "Debug Device Info" },
+              options: {
+                value: "Debug Device Info",
+              },
             },
             {
               key: "strings:colonistCommon.utils.#buffer",
@@ -19300,14 +20650,20 @@
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showCheckButton: !1, showXButton: !1 },
+            {
+              showXonHeader: !0,
+              showCheckButton: !1,
+              showXButton: !1,
+            },
           );
         }
       }
     },
     56820: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => r });
+      s.d(t, {
+        M: () => r,
+      });
       var i = s(5603),
         n = s(9029);
       class r {
@@ -19333,7 +20689,10 @@
           const t = r.getDiscountString();
           ((0, n.oB)(this.annualTab, {
             key: "strings:storePage.membership.frequency.annual",
-            options: { context: "store", discount: `${t}` },
+            options: {
+              context: "store",
+              discount: `${t}`,
+            },
           }),
             (0, n.G0)(this.monthlyTab, () => {
               (i.A.play(i.h.Click), (e.membershipToggleYearlyActive = !1));
@@ -19438,7 +20797,9 @@
     },
     59200: (e, t, s) => {
       "use strict";
-      s.d(t, { f: () => i });
+      s.d(t, {
+        f: () => i,
+      });
       var i,
         n = s(18514);
       !(function (e) {
@@ -19458,7 +20819,9 @@
     },
     59610: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => o });
+      s.d(t, {
+        g: () => o,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(75900);
@@ -19474,7 +20837,9 @@
               s,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: e },
+                options: {
+                  value: e,
+                },
               },
               "edit-profile-username",
               void 0,
@@ -19482,7 +20847,9 @@
             ));
         }
         constructor(e) {
-          (super(e, { key: "strings:homePage.popups.changeColor.title" }),
+          (super(e, {
+            key: "strings:homePage.popups.changeColor.title",
+          }),
             this.toggleContainer.classList.add("hidden"),
             this.colorSelectorContainer.classList.add("small-popup"),
             this.setTab(r.p.Color));
@@ -19500,7 +20867,9 @@
     },
     59712: (e, t, s) => {
       "use strict";
-      s.d(t, { x: () => o });
+      s.d(t, {
+        x: () => o,
+      });
       var i = s(17326),
         n = s(61896);
       let r;
@@ -19521,7 +20890,9 @@
     60038: (e, t, s) => {
       "use strict";
       var i;
-      (s.d(t, { N: () => i }),
+      (s.d(t, {
+        N: () => i,
+      }),
         (function (e) {
           ((e.isFirstDivisionBoundaryHigherThan = function (t, s) {
             return e.isFirstDivisionHigherThan(
@@ -19550,20 +20921,29 @@
     },
     60144: (e, t, s) => {
       "use strict";
-      s.d(t, { a: () => r });
+      s.d(t, {
+        a: () => r,
+      });
       var i = s(655),
         n = s(32398);
       class r {
         static async updateUsername(e, t = !1) {
-          const s = { username: e, shouldPurchaseIfNoAttemptsLeft: t };
+          const s = {
+            username: e,
+            shouldPurchaseIfNoAttemptsLeft: t,
+          };
           return this.updateProfile("username", s);
         }
         static async updatePreferredColor(e) {
-          const t = { preferredColor: e };
+          const t = {
+            preferredColor: e,
+          };
           await this.updateProfile("preferred-color", t);
         }
         static async updateIcon(e) {
-          const t = { icon: e };
+          const t = {
+            icon: e,
+          };
           await this.updateProfile("icon", t);
         }
         static async updateProfile(e, t) {
@@ -19590,7 +20970,9 @@
     },
     60341: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => h });
+      s.d(t, {
+        c: () => h,
+      });
       var i = s(17326),
         n = s(18514),
         r = s(41931),
@@ -19687,7 +21069,9 @@
     },
     60883: (e, t, s) => {
       "use strict";
-      s.d(t, { D: () => l });
+      s.d(t, {
+        D: () => l,
+      });
       var i = s(60144),
         n = s(25150),
         r = s(95176),
@@ -19706,10 +21090,14 @@
         showConfirmUsernameChangeWithAttemptsLeftPopup(e) {
           const t = {
             key: "strings:homePage.header.changeUsername.confirm.body",
-            options: { count: this.state.usernameChangeAttemptsLeft - 1 },
+            options: {
+              count: this.state.usernameChangeAttemptsLeft - 1,
+            },
           };
           o.r.create(
-            { key: "strings:homePage.header.changeUsername.confirm.title" },
+            {
+              key: "strings:homePage.header.changeUsername.confirm.title",
+            },
             t,
             () => {
               this.updateUsername(e, !1);
@@ -19721,15 +21109,21 @@
           this.removePopup();
           const t = {
               key: "strings:homePage.header.changeUsername.successDiscord",
-              options: { username: e },
+              options: {
+                username: e,
+              },
             },
             s = new r.y(
-              { key: "strings:storePage.success.success" },
+              {
+                key: "strings:storePage.success.success",
+              },
               t,
               () => {},
               () => {},
               !0,
-              { showXButton: !1 },
+              {
+                showXButton: !1,
+              },
             );
           ((s.removeAction = this.continuationAction), s.show());
         }
@@ -19766,7 +21160,9 @@
     },
     61498: (e, t, s) => {
       "use strict";
-      s.d(t, { v: () => h });
+      s.d(t, {
+        v: () => h,
+      });
       var i = s(78311),
         n = s(98487),
         r = s(9029),
@@ -19851,7 +21247,9 @@
               n.Nw.UnrankedClassic1v1,
               {
                 icon: i.am.GameMode1v1,
-                title: { key: "strings:homePage.matchmakingSelect.cards.1v1" },
+                title: {
+                  key: "strings:homePage.matchmakingSelect.cards.1v1",
+                },
                 time: (0, a.h$)(n.Nw.UnrankedClassic1v1),
                 playerCount: (0, a.K4)(n.Nw.UnrankedClassic1v1),
                 about: {
@@ -19883,7 +21281,9 @@
               n.Nw.UnrankedShuffle,
               {
                 icon: i.am.GameModeShuffle,
-                title: { key: "strings:homePage.unranked.shuffle" },
+                title: {
+                  key: "strings:homePage.unranked.shuffle",
+                },
                 time: (0, a.h$)(n.Nw.UnrankedShuffle),
                 playerCount: (0, a.K4)(n.Nw.UnrankedShuffle),
                 about: {
@@ -19898,7 +21298,9 @@
               n.Nw.RankedClassic1v1,
               {
                 icon: i.am.GameModeRanked1v1,
-                title: { key: "strings:homePage.matchmakingSelect.cards.1v1" },
+                title: {
+                  key: "strings:homePage.matchmakingSelect.cards.1v1",
+                },
                 time: (0, a.h$)(n.Nw.RankedClassic1v1),
                 playerCount: (0, a.K4)(n.Nw.RankedClassic1v1),
                 about: {
@@ -19989,12 +21391,16 @@
           (null != t.time &&
             (0, r.oB)(this.timeElement, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t.time.toString() },
+              options: {
+                value: t.time.toString(),
+              },
             }),
             null != t.playerCount &&
               (0, r.oB)(this.playerCountElement, {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t.playerCount.toString() },
+                options: {
+                  value: t.playerCount.toString(),
+                },
               }));
           const i = e == n.Nw.UnrankedShuffle && null == s;
           (this.infoElement.classList.toggle("hidden", i),
@@ -20009,7 +21415,9 @@
               this.aboutElement.parentElement,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t },
+                options: {
+                  value: t,
+                },
               },
               "",
               "mm-details-shuffle-map-mode",
@@ -20025,7 +21433,9 @@
               p,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: e },
+                options: {
+                  value: e,
+                },
               },
               "",
               "",
@@ -20042,7 +21452,9 @@
               t,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: s },
+                options: {
+                  value: s,
+                },
               },
               "",
             ),
@@ -20050,7 +21462,9 @@
                 t,
                 {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: i },
+                  options: {
+                    value: i,
+                  },
                 },
                 "",
               ));
@@ -20097,7 +21511,10 @@
     },
     61570: (e, t, s) => {
       "use strict";
-      s.d(t, { t: () => y, b: () => b });
+      s.d(t, {
+        t: () => y,
+        b: () => b,
+      });
       var i = s(78311),
         n = s(53015),
         r = s(30911),
@@ -20374,11 +21791,15 @@
           s
         );
       }
-      s.d(t, { p: () => i });
+      s.d(t, {
+        p: () => i,
+      });
     },
     61896: (e, t, s) => {
       "use strict";
-      s.d(t, { k: () => d });
+      s.d(t, {
+        k: () => d,
+      });
       var i = s(78311),
         n = s(17326),
         r = s(9029),
@@ -20448,7 +21869,9 @@
     },
     61919: (e, t, s) => {
       "use strict";
-      s.d(t, { f: () => p });
+      s.d(t, {
+        f: () => p,
+      });
       var i = s(19966),
         n = s(31464),
         r = s(95176),
@@ -20461,9 +21884,13 @@
           (super(
             {
               key: "strings:popups.patchNote.newUpdate",
-              options: { version: e[0].version },
+              options: {
+                version: e[0].version,
+              },
             },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -20474,7 +21901,9 @@
               key: "strings:colonistCommon.utils.emptyString",
             }),
             new a.h(
-              { key: "strings:popups.patchNote.announcement" },
+              {
+                key: "strings:popups.patchNote.announcement",
+              },
               t,
               this.body,
               "popup-patchnote-div",
@@ -20495,7 +21924,9 @@
             `${l.vX.getLanguagePathPrefix()}/patch-notes`,
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: "View All" },
+              options: {
+                value: "View All",
+              },
             },
             "",
           );
@@ -20572,7 +22003,9 @@
     },
     62374: (e, t, s) => {
       "use strict";
-      s.d(t, { m: () => c });
+      s.d(t, {
+        m: () => c,
+      });
       var i = s(655),
         n = s(19733),
         r = s(19966),
@@ -20591,8 +22024,12 @@
           const d = l.json;
           await a._.refresh();
           const u = d.status
-            ? { key: "strings:storePage.success.success" }
-            : { key: "strings:popups.errors.general.title" };
+            ? {
+                key: "strings:storePage.success.success",
+              }
+            : {
+                key: "strings:popups.errors.general.title",
+              };
           return (
             d.status &&
               r.CA.sendGoogleAnalyticsEvent(
@@ -20612,14 +22049,20 @@
             (await i.m.postRequestHandler(
               o.l.apiActivateGiftMembership(),
               void 0,
-              { itemId: e },
+              {
+                itemId: e,
+              },
             ))
           )
             return;
           await a._.refresh();
           return n.r.createSimplePopup(
-            { key: "strings:storePage.success.success" },
-            { key: "strings:storePage.sections.membership.activated" },
+            {
+              key: "strings:storePage.success.success",
+            },
+            {
+              key: "strings:storePage.sections.membership.activated",
+            },
           );
         }
         static async cancelGiftedMembership() {
@@ -20893,7 +22336,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Gold),
-            (this.name = { key: "strings:colonistCommon.playerColors.Gold" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Gold",
+            }),
             (this.price = 3e5),
             (this.image = n.am.StoreColorGold),
             (this.activeInStore = !1));
@@ -20904,7 +22349,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Silver),
-            (this.name = { key: "strings:colonistCommon.playerColors.Silver" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Silver",
+            }),
             (this.price = 3e5),
             (this.image = n.am.StoreColorSilver),
             (this.activeInStore = !1));
@@ -20915,7 +22362,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Bronze),
-            (this.name = { key: "strings:colonistCommon.playerColors.Bronze" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Bronze",
+            }),
             (this.price = 3e5),
             (this.image = n.am.StoreColorBronze),
             (this.activeInStore = !1));
@@ -20926,7 +22375,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Black),
-            (this.name = { key: "strings:colonistCommon.playerColors.Black" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Black",
+            }),
             (this.price = 0),
             (this.image = n.am.StoreColorBlack),
             (this.activeInStore = !0));
@@ -20937,7 +22388,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Purple),
-            (this.name = { key: "strings:colonistCommon.playerColors.Purple" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Purple",
+            }),
             (this.price = 2500),
             (this.image = n.am.StoreColorPurple),
             (this.activeInStore = !0));
@@ -20961,7 +22414,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.White),
-            (this.name = { key: "strings:colonistCommon.playerColors.White" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.White",
+            }),
             (this.price = 1e3),
             (this.image = n.am.StoreColorWhite),
             (this.activeInStore = !0));
@@ -20972,7 +22427,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Pink),
-            (this.name = { key: "strings:colonistCommon.playerColors.Pink" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Pink",
+            }),
             (this.price = 3e5),
             (this.imagePath = n.am.StoreColorPink),
             (this.activeInStore = !1));
@@ -20983,7 +22440,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.RobberCupid),
-            (this.name = { key: "strings:storePage.icons.cupidRobber" }),
+            (this.name = {
+              key: "strings:storePage.icons.cupidRobber",
+            }),
             (this.price = 250),
             (this.image = n.am.IconRobberCupid),
             (this.activeInStore = !0));
@@ -20994,7 +22453,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.RobberLunar),
-            (this.name = { key: "strings:storePage.icons.lunarRobber" }),
+            (this.name = {
+              key: "strings:storePage.icons.lunarRobber",
+            }),
             (this.price = 250),
             (this.image = n.am.IconRobberLunar),
             (this.activeInStore = !0));
@@ -21005,7 +22466,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.RobberSanta),
-            (this.name = { key: "strings:storePage.icons.santaRobber" }),
+            (this.name = {
+              key: "strings:storePage.icons.santaRobber",
+            }),
             (this.price = 250),
             (this.image = n.am.IconRobberSanta),
             (this.activeInStore = !1));
@@ -21016,7 +22479,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.PirateShip),
-            (this.name = { key: "strings:storePage.icons.pirateShip" }),
+            (this.name = {
+              key: "strings:storePage.icons.pirateShip",
+            }),
             (this.price = 250),
             (this.image = n.am.IconPirateShip),
             (this.activeInStore = !0));
@@ -21027,7 +22492,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.ChristmasHat),
-            (this.name = { key: "strings:storePage.icons.christmasHat" }),
+            (this.name = {
+              key: "strings:storePage.icons.christmasHat",
+            }),
             (this.price = 250),
             (this.image = n.am.IconChristmasHat),
             (this.activeInStore = !0));
@@ -21038,7 +22505,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Elephant),
-            (this.name = { key: "strings:storePage.icons.elephant" }),
+            (this.name = {
+              key: "strings:storePage.icons.elephant",
+            }),
             (this.price = 250),
             (this.image = n.am.IconElephant),
             (this.activeInStore = !1));
@@ -21049,7 +22518,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Avocado),
-            (this.name = { key: "strings:storePage.icons.avocado" }),
+            (this.name = {
+              key: "strings:storePage.icons.avocado",
+            }),
             (this.price = 250),
             (this.image = n.am.IconAvocado),
             (this.activeInStore = !0));
@@ -21060,7 +22531,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Cactus),
-            (this.name = { key: "strings:storePage.icons.cactus" }),
+            (this.name = {
+              key: "strings:storePage.icons.cactus",
+            }),
             (this.price = 250),
             (this.image = n.am.IconCactus),
             (this.activeInStore = !0));
@@ -21071,13 +22544,17 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Gifter),
-            (this.name = { key: "strings:storePage.icons.gifter" }),
+            (this.name = {
+              key: "strings:storePage.icons.gifter",
+            }),
             (this.text = {
               key: "strings:storePage.sections.avatar.unlockByGifting",
             }),
             (this.image = n.am.IconGifter),
             (this.activeInStore = !0),
-            (this.bannerText = { key: "strings:storePage.newItem" }),
+            (this.bannerText = {
+              key: "strings:storePage.newItem",
+            }),
             (this.hideOnDiscordMobile = !0));
         }
       }
@@ -21086,7 +22563,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Crown),
-            (this.name = { key: "strings:storePage.icons.crown" }),
+            (this.name = {
+              key: "strings:storePage.icons.crown",
+            }),
             (this.price = 250),
             (this.image = n.am.IconCrown),
             (this.activeInStore = !0));
@@ -21097,7 +22576,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Swords),
-            (this.name = { key: "strings:storePage.icons.swords" }),
+            (this.name = {
+              key: "strings:storePage.icons.swords",
+            }),
             (this.price = 250),
             (this.image = n.am.IconSwords),
             (this.activeInStore = !0));
@@ -21108,7 +22589,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Sombrero),
-            (this.name = { key: "strings:storePage.icons.sombrero" }),
+            (this.name = {
+              key: "strings:storePage.icons.sombrero",
+            }),
             (this.price = 100),
             (this.image = n.am.IconSombrero),
             (this.activeInStore = !0));
@@ -21119,7 +22602,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Farmer),
-            (this.name = { key: "strings:storePage.icons.farmer" }),
+            (this.name = {
+              key: "strings:storePage.icons.farmer",
+            }),
             (this.price = 100),
             (this.image = n.am.IconFarmer),
             (this.activeInStore = !0));
@@ -21130,7 +22615,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Helmet),
-            (this.name = { key: "strings:storePage.icons.helmet" }),
+            (this.name = {
+              key: "strings:storePage.icons.helmet",
+            }),
             (this.price = 100),
             (this.image = n.am.IconHelmet),
             (this.activeInStore = !0));
@@ -21141,7 +22628,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Snorkel),
-            (this.name = { key: "strings:storePage.icons.snorkel" }),
+            (this.name = {
+              key: "strings:storePage.icons.snorkel",
+            }),
             (this.price = 100),
             (this.image = n.am.IconSnorkel),
             (this.activeInStore = !0));
@@ -21152,7 +22641,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Scarf),
-            (this.name = { key: "strings:storePage.icons.scarf" }),
+            (this.name = {
+              key: "strings:storePage.icons.scarf",
+            }),
             (this.price = 100),
             (this.image = n.am.IconScarf),
             (this.activeInStore = !0));
@@ -21163,7 +22654,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Tie),
-            (this.name = { key: "strings:storePage.icons.tie" }),
+            (this.name = {
+              key: "strings:storePage.icons.tie",
+            }),
             (this.price = 100),
             (this.image = n.am.IconTie),
             (this.activeInStore = !0));
@@ -21174,7 +22667,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Worker),
-            (this.name = { key: "strings:storePage.icons.worker" }),
+            (this.name = {
+              key: "strings:storePage.icons.worker",
+            }),
             (this.price = 100),
             (this.image = n.am.IconWorker),
             (this.activeInStore = !0));
@@ -21185,7 +22680,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Mummy),
-            (this.name = { key: "strings:storePage.icons.mummy" }),
+            (this.name = {
+              key: "strings:storePage.icons.mummy",
+            }),
             (this.price = 400),
             (this.image = n.am.IconMummy),
             (this.activeInStore = !1));
@@ -21196,7 +22693,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Player),
-            (this.name = { key: "strings:storePage.icons.colonist" }),
+            (this.name = {
+              key: "strings:storePage.icons.colonist",
+            }),
             (this.price = 0),
             (this.image = n.am.User),
             (this.activeInStore = !0));
@@ -21207,7 +22706,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.FounderHat),
-            (this.name = { key: "strings:storePage.icons.founderHat" }),
+            (this.name = {
+              key: "strings:storePage.icons.founderHat",
+            }),
             (this.price = 1e5),
             (this.image = n.am.IconFounderHat),
             (this.activeInStore = !1));
@@ -21218,7 +22719,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.ColonistHat),
-            (this.name = { key: "strings:storePage.icons.colonisthat" }),
+            (this.name = {
+              key: "strings:storePage.icons.colonisthat",
+            }),
             (this.price = 5e4),
             (this.image = n.am.IconColonistHat),
             (this.activeInStore = !1));
@@ -21229,7 +22732,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.SettlerHat),
-            (this.name = { key: "strings:storePage.icons.settlerHat" }),
+            (this.name = {
+              key: "strings:storePage.icons.settlerHat",
+            }),
             (this.price = 25e3),
             (this.image = n.am.IconSettlerHat),
             (this.activeInStore = !1));
@@ -21438,7 +22943,9 @@
           (super(...e),
             (this.category = i.n9.PresalePack),
             (this.type = i.h8.SettlerPack),
-            (this.name = { key: "strings:storePage.packs.settler.title" }),
+            (this.name = {
+              key: "strings:storePage.packs.settler.title",
+            }),
             (this.description = "strings:storePage.packs.settler.description"),
             (this.price = 999999999),
             (this.image = n.am.SettlerPack));
@@ -21449,7 +22956,9 @@
           (super(...e),
             (this.category = i.n9.PresalePack),
             (this.type = i.h8.ColonistPack),
-            (this.name = { key: "strings:storePage.packs.colonist.title" }),
+            (this.name = {
+              key: "strings:storePage.packs.colonist.title",
+            }),
             (this.description = "strings:storePage.packs.colonist.description"),
             (this.price = 999999999),
             (this.image = n.am.ColonistPack));
@@ -21460,7 +22969,9 @@
           (super(...e),
             (this.category = i.n9.PresalePack),
             (this.type = i.h8.FounderPack),
-            (this.name = { key: "strings:storePage.packs.founder.title" }),
+            (this.name = {
+              key: "strings:storePage.packs.founder.title",
+            }),
             (this.description = "strings:storePage.packs.founder.description"),
             (this.price = 999999999),
             (this.image = n.am.FounderPack));
@@ -21483,7 +22994,10 @@
     },
     64265: (e, t, s) => {
       "use strict";
-      s.d(t, { AB: () => o, lg: () => r });
+      s.d(t, {
+        AB: () => o,
+        lg: () => r,
+      });
       var i = s(78311),
         n = s(92524),
         r = (function (e) {
@@ -21501,7 +23015,9 @@
         getProductName() {
           return {
             key: "strings:storePage.coins.title",
-            options: { count: this.getTotalCoinAmount() },
+            options: {
+              count: this.getTotalCoinAmount(),
+            },
           };
         }
         getDefaultPrice() {
@@ -21575,7 +23091,9 @@
                 discordSKUId: e.coin4,
                 mobileIAPSKUId: "coin_id_4",
                 lobbyImage: i.am.CoinStack4,
-                bannerText: { key: "strings:storePage.bestSeller" },
+                bannerText: {
+                  key: "strings:storePage.bestSeller",
+                },
                 isActive: () => !0,
               }),
             ),
@@ -21603,7 +23121,9 @@
                 discordSKUId: e.coin6,
                 mobileIAPSKUId: "coin_id_6",
                 lobbyImage: i.am.CoinStack6,
-                bannerText: { key: "strings:storePage.bestValue" },
+                bannerText: {
+                  key: "strings:storePage.bestValue",
+                },
                 isActive: () => !0,
               }),
             ));
@@ -21631,7 +23151,9 @@
       async function i(e = 0) {
         await new Promise((t) => setTimeout(t, e));
       }
-      s.d(t, { c: () => i });
+      s.d(t, {
+        c: () => i,
+      });
     },
     64543: (e, t, s) => {
       "use strict";
@@ -21643,7 +23165,9 @@
     },
     65015: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => r });
+      s.d(t, {
+        g: () => r,
+      });
       var i = s(9029),
         n = s(32332);
       class r extends n.A {
@@ -21681,7 +23205,10 @@
     },
     65429: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => h, j: () => u });
+      s.d(t, {
+        Y: () => h,
+        j: () => u,
+      });
       var i = s(78311),
         n = s(38854),
         r = s(42389),
@@ -21742,7 +23269,9 @@
           var e, t, s, n, o, a;
           return [
             {
-              name: { key: "strings:roomPage.options.privateGame.title" },
+              name: {
+                key: "strings:roomPage.options.privateGame.title",
+              },
               image: i.am.PrivateGame,
               available: !0,
               selected:
@@ -21758,7 +23287,9 @@
               visible: !this.isTournamentRoom(),
             },
             {
-              name: { key: "strings:roomPage.options.hideBankCards.title" },
+              name: {
+                key: "strings:roomPage.options.hideBankCards.title",
+              },
               image: i.am.HideBankCards,
               available: !0,
               selected: this.roomState.gameSetting.hideBankCards,
@@ -21767,7 +23298,9 @@
               visible: !0,
             },
             {
-              name: { key: "strings:roomPage.options.friendlyRobber.title" },
+              name: {
+                key: "strings:roomPage.options.friendlyRobber.title",
+              },
               image: i.am.Robber,
               available: !0,
               selected: this.roomState.gameSetting.friendlyRobber,
@@ -21776,7 +23309,9 @@
               visible: !0,
             },
             {
-              name: { key: "strings:roomPage.options.dice.titleMobile" },
+              name: {
+                key: "strings:roomPage.options.dice.titleMobile",
+              },
               image: i.am.Dice6,
               available: !0,
               selected: this.roomState.gameSetting.diceSetting == i.ZP.Balanced,
@@ -21785,7 +23320,9 @@
               visible: !0,
             },
             {
-              name: { key: "strings:roomPage.options.noTrollsGame.title" },
+              name: {
+                key: "strings:roomPage.options.noTrollsGame.title",
+              },
               image: i.am.IconNoTroll,
               available:
                 null !==
@@ -21809,7 +23346,9 @@
               visible: !this.isTournamentRoom(),
             },
             {
-              name: { key: "strings:roomPage.orderSelection.title" },
+              name: {
+                key: "strings:roomPage.orderSelection.title",
+              },
               image: i.am.ProfileRanked,
               available: !0,
               selected: this.roomState.gameSetting.playOrderSelectionActive,
@@ -21892,7 +23431,9 @@
             ? {
                 key: "strings:roomPage.notifications.noTrollsGameDisabledWhenPrivate",
               }
-            : { key: "strings:roomPage.options.noTrollsGame.becomeAMember" };
+            : {
+                key: "strings:roomPage.options.noTrollsGame.becomeAMember",
+              };
           c.r.isUserOnMobileAppOrWeb
             ? r.OV.show(s, a.n.Information, void 0, void 0, void 0, void 0, 3e3)
             : r.OV.showNotification(i.am.Lightning, s);
@@ -21938,7 +23479,9 @@
     },
     66876: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => ss });
+      s.d(t, {
+        S: () => ss,
+      });
       var i = s(42389),
         n = s(35700),
         r = s(74710),
@@ -22288,7 +23831,9 @@
                 window.outerHeight +
                 "<br>outerWidth: " +
                 window.outerWidth,
-              interpolation: { escapeValue: !1 },
+              interpolation: {
+                escapeValue: !1,
+              },
             },
           };
         }
@@ -22527,7 +24072,12 @@
     },
     67431: (e, t, s) => {
       "use strict";
-      s.d(t, { $c: () => r, Kk: () => o, R0: () => n, fG: () => a });
+      s.d(t, {
+        $c: () => r,
+        Kk: () => o,
+        R0: () => n,
+        fG: () => a,
+      });
       var i = s(52609);
       function n(e) {
         const t = e.parent;
@@ -22555,7 +24105,9 @@
     },
     67707: (e, t, s) => {
       "use strict";
-      s.d(t, { E: () => i });
+      s.d(t, {
+        E: () => i,
+      });
       class i {
         static deserialize(e) {
           const t = new i();
@@ -22577,7 +24129,9 @@
     },
     68492: (e, t, s) => {
       "use strict";
-      s.d(t, { F: () => r });
+      s.d(t, {
+        F: () => r,
+      });
       var i = s(69508),
         n = s(41207);
       class r {
@@ -22613,7 +24167,10 @@
     },
     69508: (e, t, s) => {
       "use strict";
-      s.d(t, { R: () => n, w: () => i });
+      s.d(t, {
+        R: () => n,
+        w: () => i,
+      });
       var i = (function (e) {
           return (
             (e[(e.DefaultError = 0)] = "DefaultError"),
@@ -22641,7 +24198,9 @@
     },
     69714: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => f });
+      s.d(t, {
+        Q: () => f,
+      });
       var i = s(19966),
         n = s(78046),
         r = s(76092),
@@ -22706,12 +24265,19 @@
         }
         static inviteFriendToRoom(e, t) {
           if (!p.v.canUseOnlineFriendService()) return;
-          const s = { receiverUserId: e, roomId: t };
+          const s = {
+            receiverUserId: e,
+            roomId: t,
+          };
           this.sendGeneral(h.P7.InviteFriendToRoom, s);
         }
         static respondToFriendRoomInvite(e, t, s) {
           if (!p.v.canUseOnlineFriendService()) return;
-          const i = { roomId: e, accept: t, senderUserId: s };
+          const i = {
+            roomId: e,
+            accept: t,
+            senderUserId: s,
+          };
           this.sendGeneral(h.P7.RespondToFriendRoomInvite, i);
         }
         static getAllFriendRoomInvitesReceived() {
@@ -22751,7 +24317,10 @@
               i.CA.Category.Lobby,
               i.CA.Label.ClickedCreateRoom,
             ));
-          const t = { roomType: e, clientVersion: l.$m };
+          const t = {
+            roomType: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.ClickedCreateRoom, t);
         }
         static async clickedJoinRoom(e) {
@@ -22766,7 +24335,10 @@
               i.CA.Category.Lobby,
               i.CA.Label.ClickedJoinRoom,
             ));
-          const t = { gameId: e, clientVersion: l.$m };
+          const t = {
+            gameId: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.ClickedJoinRoom, t);
         }
         static async clickedSpectateGame(e) {
@@ -22775,13 +24347,19 @@
               i.CA.Category.Lobby,
               i.CA.Label.ClickedSpectate,
             ));
-          const t = { gameId: e, clientVersion: l.$m };
+          const t = {
+            gameId: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.ClickedSpectateGame, t);
         }
         static reconnectGame(e, t) {
           n.W.continueAfterAssetsLoad(() => {
             i.CA.sendGoogleAnalyticsEvent(i.CA.Category.Lobby, t);
-            const s = { gameId: e, clientVersion: l.$m };
+            const s = {
+              gameId: e,
+              clientVersion: l.$m,
+            };
             this.sendLobby(a.Dj.ReconnectGame, s);
           });
         }
@@ -22801,7 +24379,10 @@
             if (e instanceof l.lc) return void this.updateURLToRoom("");
             throw e;
           }
-          const t = { gameId: e, clientVersion: l.$m };
+          const t = {
+            gameId: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.AccessGameLink, t);
         }
         static startBeginnerMode(e) {
@@ -22814,11 +24395,13 @@
           this.sendLobby(a.Dj.ClickedStartBeginnerMode, t);
         }
         static start1v1BeginnerBotGame() {
-          const e = { clientVersion: l.$m, bots: [c.R1.BotEasy] };
+          const e = {
+            clientVersion: l.$m,
+            bots: [c.R1.BotEasy],
+          };
           this.sendLobby(a.Dj.Clicked1v1BeginnerBotGame, e);
         }
         static updateURLToRoom(e) {
-          alert("updateURLToRoom");
           window.location.hash != "#" + e && window.location.assign("#" + e);
         }
         static joinChannel(e, t, s, i) {
@@ -22839,12 +24422,18 @@
         }
         static clickedJoinChannelRoomOrGame(e, t) {
           n.W.continueAfterAssetsLoad(() => {
-            const s = { channelId: e, roomType: t };
+            const s = {
+              channelId: e,
+              roomType: t,
+            };
             this.sendChannel(a.s4.ChannelJoinRoomOrGame, s);
           });
         }
         static sendLobby(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           o.sZ.controller.sender.sendToServerType(
             l.lo.LobbyAction,
             "lobby",
@@ -22853,7 +24442,10 @@
           );
         }
         static sendChannel(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           o.sZ.controller.sender.sendToServerType(
             l.lo.ChannelAction,
             "lobby",
@@ -22862,7 +24454,10 @@
           );
         }
         static sendGeneral(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           o.sZ.controller.sender.sendToServerType(
             l.lo.GeneralAction,
             "lobby",
@@ -22871,7 +24466,12 @@
           );
         }
         static sendAnalyticEvent(e, t, s, n) {
-          const r = { type: e, category: t, stringValue: s, floatValue: n };
+          const r = {
+            type: e,
+            category: t,
+            stringValue: s,
+            floatValue: n,
+          };
           i.CA.sendAnalyticEvent(r);
         }
         static async waitUntilGameCanBeStarted() {
@@ -22886,7 +24486,9 @@
     },
     70137: (e, t, s) => {
       "use strict";
-      s.d(t, { t: () => u });
+      s.d(t, {
+        t: () => u,
+      });
       var i = s(9029),
         n = s(13618),
         r = s(18587),
@@ -22902,7 +24504,9 @@
           ((0, i.zO)(s, a.am.GoogleIcon),
             (0, i.i5)(s, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "google" },
+              options: {
+                context: "google",
+              },
             }));
           const r = (0, i.Le)(
             t,
@@ -22912,13 +24516,17 @@
           ((0, i.zO)(r, a.am.DiscordIcon),
             (0, i.i5)(r, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "discord" },
+              options: {
+                context: "discord",
+              },
             }));
           const o = (0, i.Le)(t, "popup-signup-btn popup-signup-apple-btn", "");
           ((0, i.zO)(o, a.am.AppleIcon),
             (0, i.i5)(o, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "apple" },
+              options: {
+                context: "apple",
+              },
             }));
           const u = (0, i.Le)(
               t,
@@ -22958,8 +24566,12 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:game.endGame.signupPopup.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:game.endGame.signupPopup.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -22973,7 +24585,9 @@
             t,
             {
               key: "strings:game.endGame.signupPopup.description",
-              options: { playedGameCount: e },
+              options: {
+                playedGameCount: e,
+              },
             },
             "",
           ),
@@ -22998,7 +24612,9 @@
     },
     70970: (e, t, s) => {
       "use strict";
-      s.d(t, { F: () => n });
+      s.d(t, {
+        F: () => n,
+      });
       var i = s(83008);
       class n {
         static async generateClearanceCookie() {
@@ -23088,7 +24704,9 @@
     },
     71318: (e, t, s) => {
       "use strict";
-      s.d(t, { W: () => C });
+      s.d(t, {
+        W: () => C,
+      });
       var i = s(54801),
         n = s(67908),
         r = s(85801),
@@ -23126,7 +24744,10 @@
                       o.developmentCardsUsed[
                         o.developmentCardsUsed.length - 1
                       ] == d.O3.Monopoly &&
-                      t.push({ actionIndex: n, type: "monopolyPlayed" });
+                      t.push({
+                        actionIndex: n,
+                        type: "monopolyPlayed",
+                      });
                   }
                 }
                 return t;
@@ -23154,8 +24775,16 @@
                       }
                   }
                 }
-                null != s && t.push({ actionIndex: s, type: "largestArmy" });
-                null != i && t.push({ actionIndex: i, type: "longestRoad" });
+                null != s &&
+                  t.push({
+                    actionIndex: s,
+                    type: "largestArmy",
+                  });
+                null != i &&
+                  t.push({
+                    actionIndex: i,
+                    type: "longestRoad",
+                  });
                 return t;
               })(e),
             )),
@@ -23170,7 +24799,9 @@
         b = s(74710);
       function v(e) {
         return (0, b.dN)(
-          { key: "strings:popups.errors.replay.errorAndMembershipPrompt" },
+          {
+            key: "strings:popups.errors.replay.errorAndMembershipPrompt",
+          },
           {
             errorMessage: e,
             membershipPrompt: {
@@ -23181,7 +24812,9 @@
       }
       function S(e) {
         return (0, b.dN)(
-          { key: "strings:popups.errors.replay.errorAndMembershipPrompt" },
+          {
+            key: "strings:popups.errors.replay.errorAndMembershipPrompt",
+          },
           {
             errorMessage: e,
             membershipPrompt: {
@@ -23194,8 +24827,12 @@
         class t extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.invalidPlayerColor" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.invalidPlayerColor",
+              },
               y.R.BadRequest,
             );
           }
@@ -23204,8 +24841,12 @@
         class s extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.invalidGameId" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.invalidGameId",
+              },
               y.R.BadRequest,
             );
           }
@@ -23214,8 +24855,12 @@
         class i extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.invalidUrlSlug" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.invalidUrlSlug",
+              },
               y.R.BadRequest,
             );
           }
@@ -23224,8 +24869,12 @@
         class n extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.gameNotFound" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.gameNotFound",
+              },
               y.R.BadRequest,
             );
           }
@@ -23234,8 +24883,12 @@
         class r extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.userNotInGame" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.userNotInGame",
+              },
               y.R.BadRequest,
             );
           }
@@ -23244,7 +24897,9 @@
         class o extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToCreateReplayLink",
               }),
@@ -23256,7 +24911,9 @@
         class a extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToWatchOwnReplay",
               }),
@@ -23268,7 +24925,9 @@
         class c extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToWatchAnotherPlayerReplay",
               }),
@@ -23280,7 +24939,9 @@
         class l extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToChangeReplayPerspective",
               }),
@@ -23292,7 +24953,9 @@
         class d extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.invalidMembershipTryingToWatchAnotherPlayerReplay",
               }),
@@ -23304,10 +24967,14 @@
         class u extends f.je {
           constructor(e) {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               S({
                 key: "strings:popups.errors.replay.plusMembershipLimitReach",
-                options: { limit: e },
+                options: {
+                  limit: e,
+                },
               }),
               y.R.BadRequest,
             );
@@ -23317,8 +24984,12 @@
         class h extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              S({ key: "strings:popups.errors.replay.invalidMembership" }),
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              S({
+                key: "strings:popups.errors.replay.invalidMembership",
+              }),
               y.R.BadRequest,
             );
           }
@@ -23561,7 +25232,10 @@
           const n = (0, i.mg)(s);
           (delete n.gameLogState,
             this.socketActionController.gameStateUpdated(
-              { diff: n, timeLeftInState: 0 },
+              {
+                diff: n,
+                timeLeftInState: 0,
+              },
               t,
             ));
         }
@@ -23575,7 +25249,10 @@
           const n = (0, i.mg)(s);
           (delete n.gameLogState,
             this.socketActionController.gameStateUpdated(
-              { diff: n, timeLeftInState: 0 },
+              {
+                diff: n,
+                timeLeftInState: 0,
+              },
               t,
             ));
         }
@@ -23734,7 +25411,9 @@
     72589: (e, t, s) => {
       "use strict";
       var i;
-      (s.d(t, { c: () => i }),
+      (s.d(t, {
+        c: () => i,
+      }),
         (function (e) {
           function t(e, t, s) {
             return Math.max(Math.min(e, s), t);
@@ -23780,7 +25459,9 @@
         class t extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.waitingForAdblockState",
               },
@@ -23792,8 +25473,12 @@
         class s extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.invalidSeason" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.invalidSeason",
+              },
               r.R.BadRequest,
             );
           }
@@ -23802,8 +25487,12 @@
         class i extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.betaSeason" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.betaSeason",
+              },
               r.R.ServiceUnavailable,
             );
           }
@@ -23812,7 +25501,9 @@
         class a extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.unableToEnterRankedCitiesAndKnights",
               },
@@ -23824,7 +25515,9 @@
         class c extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.noAccessToCitiesAndKnights",
               },
@@ -23836,8 +25529,12 @@
         class l extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.noActiveSeason" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.noActiveSeason",
+              },
               r.R.ServiceUnavailable,
             );
           }
@@ -23846,8 +25543,12 @@
         class d extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.noSeasonAnnounced" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.noSeasonAnnounced",
+              },
               r.R.ServiceUnavailable,
             );
           }
@@ -23856,7 +25557,9 @@
         class u extends o.Ak {
           constructor(e) {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.nextSeasonNotStarted",
                 options: {
@@ -23871,8 +25574,12 @@
         class h extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.logInForRanked" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.logInForRanked",
+              },
               r.R.BadRequest,
             );
           }
@@ -23957,7 +25664,9 @@
     },
     73264: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => v });
+      s.d(t, {
+        O: () => v,
+      });
       var i = s(9029),
         n = s(50482),
         r = s(19966),
@@ -23984,9 +25693,14 @@
           return this.membershipProduct.billedAnnually
             ? {
                 key: "strings:storePage.sections.membership.billing.annually",
-                options: { context: t, amount: s },
+                options: {
+                  context: t,
+                  amount: s,
+                },
               }
-            : { key: "strings:storePage.sections.membership.billing.monthly" };
+            : {
+                key: "strings:storePage.sections.membership.billing.monthly",
+              };
         }
         createDefaultAction() {
           (0, i.G0)(this.productDiv, () => {
@@ -24022,7 +25736,10 @@
             this.priceDiv,
             {
               key: "strings:storePage.sections.membership.billing.paidMonthly",
-              options: { context: "strikethrough", amount: `${e}` },
+              options: {
+                context: "strikethrough",
+                amount: `${e}`,
+              },
             },
             "strikethrough-price",
             "",
@@ -24195,7 +25912,9 @@
         static createManageSubscriptionOnDiscordPopup() {
           const e = v.getManageSubscriptionOnDiscordPopupBody();
           h.r.createSimplePopup(
-            { key: "strings:storePage.manageMembership.title" },
+            {
+              key: "strings:storePage.manageMembership.title",
+            },
             e,
           );
         }
@@ -24209,11 +25928,15 @@
           return n.Zt.isAnnualMembership(t.type)
             ? {
                 key: "strings:storePage.manageMembership.body",
-                options: { context: "waitForExpiration" },
+                options: {
+                  context: "waitForExpiration",
+                },
               }
             : {
                 key: "strings:storePage.manageMembership.body",
-                options: { context: "updateOnDiscord" },
+                options: {
+                  context: "updateOnDiscord",
+                },
               };
         }
         static async cancelGiftedMembership() {
@@ -24254,7 +25977,11 @@
             this.priceDiv,
             {
               key: "strings:storePage.sections.membership.billing.paidMonthly",
-              options: { context: "biggerPrice", amount: d, currency: h },
+              options: {
+                context: "biggerPrice",
+                amount: d,
+                currency: h,
+              },
             },
             "",
             "",
@@ -24262,7 +25989,9 @@
           (s.billedAnnually && this.showStrikeThroughPrice(),
             (this.disclaimerText = (0, i.Wr)(
               this.productDiv,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "store_page_membership_disclaimer",
               "",
             )));
@@ -24279,7 +26008,9 @@
             )),
             (this.subscribeButtonText = (0, i.Wr)(
               this.subscribeButton,
-              { key: "strings:storePage.sections.membership.action.subscribe" },
+              {
+                key: "strings:storePage.sections.membership.action.subscribe",
+              },
               "",
               "",
             )),
@@ -24352,7 +26083,9 @@
     },
     74589: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => c });
+      s.d(t, {
+        i: () => c,
+      });
       var i = s(98487),
         n = s(42389),
         r = s(9029);
@@ -24360,7 +26093,9 @@
         setMaxPlayerCount(e, t) {
           (0, r.RH)(this.maxPlayersInput, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: `${e}/${t}` },
+            options: {
+              value: `${e}/${t}`,
+            },
           });
         }
         constructor(e) {
@@ -24473,8 +26208,8 @@
       var i = (function (e) {
         return ((e.Strings = "strings"), e);
       })({});
-      const n = "î€€",
-        r = "î€";
+      const n = "",
+        r = "";
       var o = s(23813);
       s(52955);
       var a,
@@ -24510,8 +26245,13 @@
         }
         static addReturnObjectOption(e) {
           return null == e
-            ? { returnObjects: !0 }
-            : { ...e, returnObjects: !0 };
+            ? {
+                returnObjects: !0,
+              }
+            : {
+                ...e,
+                returnObjects: !0,
+              };
         }
         constructor(e) {
           this.i18n = e;
@@ -24599,7 +26339,9 @@
     },
     75589: (e, t, s) => {
       "use strict";
-      s.d(t, { G: () => r });
+      s.d(t, {
+        G: () => r,
+      });
       var i = s(81888),
         n = s(78311);
       class r {
@@ -24616,15 +26358,23 @@
           switch (e) {
             case n.Qb.EliteMonthly:
             case n.Qb.EliteYearly:
-              return { key: "strings:storePage.membership.title.elite" };
+              return {
+                key: "strings:storePage.membership.title.elite",
+              };
             case n.Qb.PlusMonthly:
             case n.Qb.PlusYearly:
-              return { key: "strings:storePage.membership.title.plus" };
+              return {
+                key: "strings:storePage.membership.title.plus",
+              };
             case n.Qb.PremiumMonthly:
             case n.Qb.PremiumYearly:
-              return { key: "strings:storePage.membership.title.premium" };
+              return {
+                key: "strings:storePage.membership.title.premium",
+              };
             case n.Qb.Holiday2023AllAccessPass:
-              return { key: "strings:colonistCommon.utils.bug" };
+              return {
+                key: "strings:colonistCommon.utils.bug",
+              };
           }
         }
       }
@@ -24646,7 +26396,10 @@
     },
     75900: (e, t, s) => {
       "use strict";
-      s.d(t, { p: () => P, h: () => _ });
+      s.d(t, {
+        p: () => P,
+        h: () => _,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(53015),
@@ -24690,7 +26443,9 @@
                     {
                       key: "strings:homePage.header.avatarSelector.avatarChanged",
                     },
-                    { icon: i.name },
+                    {
+                      icon: i.name,
+                    },
                   );
                   (null === d.OV ||
                     void 0 === d.OV ||
@@ -24700,7 +26455,9 @@
               : (0, n.G0)(o, () => {
                   const e = {
                     key: "strings:homePage.header.storePurchaseIconPrompt",
-                    options: { iconName: u.a7.t(i.name.key, i.name.options) },
+                    options: {
+                      iconName: u.a7.t(i.name.key, i.name.options),
+                    },
                   };
                   l.r.create(
                     {
@@ -24724,7 +26481,9 @@
           (0, n.cE)(
             s,
             f.avatarStoreLink,
-            { key: "strings:homePage.header.avatarSelector.getMoreAvatars" },
+            {
+              key: "strings:homePage.header.avatarSelector.getMoreAvatars",
+            },
             "",
             "",
             !0,
@@ -24802,7 +26561,9 @@
               {
                 key: "strings:homePage.header.defaultColorSelector.colorChanged",
               },
-              { color: i },
+              {
+                color: i,
+              },
             ),
             r = v.j.getPlayerColorBuildings(e).settlement;
           d.OV.showNotification(r, n);
@@ -24842,7 +26603,9 @@
         }
         static displayColorNotOwnedPopup(e) {
           const t = (0, h.dN)(
-            { key: "strings:homePage.header.storePurchaseColorPrompt" },
+            {
+              key: "strings:homePage.header.storePurchaseColorPrompt",
+            },
             {
               color: {
                 key: `strings:colonistCommon.playerColors.${b.h4.getEnumKey(e, k.DS)}`,
@@ -24926,7 +26689,11 @@
             void 0,
             void 0,
             () =>
-              new _({ ...e, tab: this.tab, selectedColor: this.selectedColor }),
+              new _({
+                ...e,
+                tab: this.tab,
+                selectedColor: this.selectedColor,
+              }),
           ).show();
         }
         createUsernameEditor(e) {
@@ -24951,7 +26718,9 @@
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: r },
+                options: {
+                  value: r,
+                },
               },
               "edit-profile-username",
               void 0,
@@ -24975,7 +26744,9 @@
               this.toggleButtonAvatar,
               {
                 key: "strings:storePage.sections.avatar.title",
-                options: { context: "one" },
+                options: {
+                  context: "one",
+                },
               },
               "",
             ),
@@ -24988,7 +26759,9 @@
               this.toggleButtonColor,
               {
                 key: "strings:storePage.sections.color.title",
-                options: { context: "one" },
+                options: {
+                  context: "one",
+                },
               },
               "",
             ),
@@ -25019,12 +26792,18 @@
         constructor(e, t) {
           var s;
           (super(
-            null != t ? t : { key: "strings:homePage.header.editProfile" },
+            null != t
+              ? t
+              : {
+                  key: "strings:homePage.header.editProfile",
+                },
             void 0,
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0 },
+            {
+              showXonHeader: !0,
+            },
           ),
             (this.tab = 0),
             (this.editUsernameAction = () => this.createUsernameController(e)),
@@ -25861,7 +27640,9 @@
     },
     76389: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => P });
+      s.d(t, {
+        N: () => P,
+      });
       var i = s(655),
         n = s(32398),
         r = s(19966),
@@ -25977,7 +27758,9 @@
             e > 0 &&
               (0, o.i5)(t, "", {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: ` (${e})` },
+                options: {
+                  value: ` (${e})`,
+                },
               }));
         }
         highlightTab(e) {
@@ -25990,15 +27773,21 @@
         static getHeaderText(e) {
           switch (e.id) {
             case "friendspage_friends_tab":
-              return { key: "strings:profilePage.friends.title" };
+              return {
+                key: "strings:profilePage.friends.title",
+              };
             case "friendspage_friendrequests_tab":
-              return { key: "strings:profilePage.friends.tabs.requests.title" };
+              return {
+                key: "strings:profilePage.friends.tabs.requests.title",
+              };
             case "friendspage_requestssent_tab":
               return {
                 key: "strings:profilePage.friends.tabs.requestsSent.title",
               };
             default:
-              return { key: "strings:colonistCommon.utils.emptyString" };
+              return {
+                key: "strings:colonistCommon.utils.emptyString",
+              };
           }
         }
         constructor(e) {
@@ -26114,7 +27903,12 @@
             this.userFriendsData.friendRequestsReceived.splice(s, 1),
             t)
           ) {
-            const t = { username: e, onlineStatus: { isOnline: !1 } };
+            const t = {
+              username: e,
+              onlineStatus: {
+                isOnline: !1,
+              },
+            };
             (this.createFriendTableRow(t),
               this.userFriendsData.friends.push(t));
           }
@@ -26125,7 +27919,9 @@
             ));
         }
         async cancelFriendRequestAction(e) {
-          const t = { username: e };
+          const t = {
+            username: e,
+          };
           if (
             null ==
             (await i.m.postRequestHandler(
@@ -26152,7 +27948,9 @@
           (0, o.G0)(s, () => k.xp.init(e.username));
           ((0, o.Cr)(s, "underline_on_hover ellipsis", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e.username },
+            options: {
+              value: e.username,
+            },
           }),
             (0, o.Cr)(s, void 0, C.getStatusText(t)),
             (0, o.Cr)(
@@ -26160,7 +27958,9 @@
               void 0,
               (function (e) {
                 if (null == e)
-                  return { key: "strings:colonistCommon.utils.emptyString" };
+                  return {
+                    key: "strings:colonistCommon.utils.emptyString",
+                  };
                 switch (e) {
                   case "Playing Cities & Knights 4P":
                     return {
@@ -26236,7 +28036,9 @@
           (0, o.G0)(t, () => k.xp.init(e));
           (0, o.Cr)(t, "underline_on_hover", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e },
+            options: {
+              value: e,
+            },
           });
           const s = (0, o.Cr)(t),
             i = (0, o.Le)(s, "friendspage_friends_action_buttons_container"),
@@ -26268,7 +28070,9 @@
           ((0, o.G0)(t, () => k.xp.init(e)),
             (0, o.Cr)(t, "underline_on_hover", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             }));
           const s = (0, o.Cr)(t),
             i = (0, o.Le)(s, "friendspage_friends_action_buttons_container"),
@@ -26286,9 +28090,13 @@
         }
         static getStatusText(e) {
           if (e.isOnline)
-            return { key: "strings:profilePage.friends.status.online" };
+            return {
+              key: "strings:profilePage.friends.status.online",
+            };
           if (!e.lastOnlineDate)
-            return { key: "strings:profilePage.friends.status.offline" };
+            return {
+              key: "strings:profilePage.friends.status.offline",
+            };
           const t = f.Re.getDaysHoursMinutesBetweenDates(
             new Date(),
             new Date(e.lastOnlineDate),
@@ -26347,7 +28155,10 @@
         static getLastOnlineText(e, t) {
           return {
             key: "strings:profilePage.friends.status.lastOnline",
-            options: { context: t, count: -e },
+            options: {
+              context: t,
+              count: -e,
+            },
           };
         }
         constructor(e) {
@@ -26380,7 +28191,9 @@
               ((0, o.cE)(
                 s,
                 "",
-                { key: "strings:profilePage.friends.loginToAddFriends" },
+                {
+                  key: "strings:profilePage.friends.loginToAddFriends",
+                },
                 "",
               ).onpointerdown = (e) => {
                 (e.preventDefault(), new u.L());
@@ -26469,14 +28282,18 @@
               t.push({
                 id: (0, k.F9)("profile_dropdown_gift_membership", this.isPopup),
                 class: "",
-                text: { key: "strings:storePage.sendGift" },
+                text: {
+                  key: "strings:storePage.sendGift",
+                },
                 action: () => this.sendGiftDropdownAction(),
                 icon: h.am.StoreGiftMembershipDark,
               }),
             t.push({
               id: (0, k.F9)("profile_dropdown_report", this.isPopup),
               class: "component-dropdown-red",
-              text: { key: "strings:game.endGame.report" },
+              text: {
+                key: "strings:game.endGame.report",
+              },
               action: () => {
                 this.reportProfileDropdownAction();
               },
@@ -26549,7 +28366,9 @@
           l.S.createReportPopup(
             this.username,
             (e, t) => {
-              const s = { reason: t };
+              const s = {
+                reason: t,
+              };
               i.m.postRequestHandler(
                 n.l.apiReportPlayer(e),
                 void 0,
@@ -26557,7 +28376,9 @@
                 "application/json",
               );
             },
-            { key: "strings:popups.reportPopup.success" },
+            {
+              key: "strings:popups.reportPopup.success",
+            },
           );
         }
         constructor(e, t, s, i = !1) {
@@ -26571,7 +28392,9 @@
               friend: {
                 id: (0, k.F9)("profile_dropdown_removeFriend", this.isPopup),
                 class: "component-dropdown-red",
-                text: { key: "strings:profilePage.friends.removeFriend.title" },
+                text: {
+                  key: "strings:profilePage.friends.removeFriend.title",
+                },
                 action: () => {
                   this.showRemoveFriendPopup();
                 },
@@ -26579,7 +28402,9 @@
               notFriend: {
                 id: (0, k.F9)("profile_dropdown_add_friend", this.isPopup),
                 class: "",
-                text: { key: "strings:game.playerOptionsPopup.addFriend" },
+                text: {
+                  key: "strings:game.playerOptionsPopup.addFriend",
+                },
                 action: () => {
                   this.addFriendDropdownAction();
                 },
@@ -26587,7 +28412,9 @@
               pending: {
                 id: (0, k.F9)("profile_dropdown_pending", this.isPopup),
                 class: "component-dropdown-disabled",
-                text: { key: "strings:profilePage.friends.friendRequestSent" },
+                text: {
+                  key: "strings:profilePage.friends.friendRequestSent",
+                },
               },
             }),
             this.init());
@@ -26596,7 +28423,9 @@
     },
     76714: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => n });
+      s.d(t, {
+        c: () => n,
+      });
       var i = s(83008);
       class n {
         getCurrentSeasonTiming(e) {
@@ -26645,7 +28474,9 @@
     },
     76749: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => m });
+      s.d(t, {
+        H: () => m,
+      });
       var i = s(9029),
         n = s(42389),
         r = s(19733),
@@ -26689,10 +28520,17 @@
               key: "strings:colonistCommon.utils.#buffer",
               options: {
                 value: `<div class='room-map-preview-grid'><center><img src='${d}' alt='${e}' style='width: 70%'></center>`,
-                interpolation: { escapeValue: !1 },
+                interpolation: {
+                  escapeValue: !1,
+                },
               },
             };
-          r.r.createSimplePopup({ key: "strings:roomPage.turnTimers" }, t);
+          r.r.createSimplePopup(
+            {
+              key: "strings:roomPage.turnTimers",
+            },
+            t,
+          );
         }
         updateOptions(e) {
           const t = u.qq.getModeDataForMode(e.gameSetting.modeSetting);
@@ -26721,7 +28559,9 @@
               null != t
                 ? p.mt.getSpeedSettingText(t).key
                 : "strings:colonistCommon.utils.bug";
-          (0, i.RH)(this.view.speedInput, { key: s });
+          (0, i.RH)(this.view.speedInput, {
+            key: s,
+          });
         }
         update(e) {
           (this.view.updateOptions(e),
@@ -26807,7 +28647,9 @@
     },
     77885: (e, t, s) => {
       "use strict";
-      s.d(t, { d: () => u });
+      s.d(t, {
+        d: () => u,
+      });
       var i = s(31166),
         n = s(9029),
         r = s(18587),
@@ -26820,7 +28662,9 @@
         setCoins(e) {
           (0, n.RH)(this.userCoinsDiv, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e },
+            options: {
+              value: e,
+            },
           });
         }
         initCoinClick() {
@@ -26866,7 +28710,9 @@
     },
     78018: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => h });
+      s.d(t, {
+        c: () => h,
+      });
       var i = s(73264),
         n = s(50482),
         r = s(9029),
@@ -26883,14 +28729,18 @@
           (super(e, t, m, void 0, h),
             (0, r.RH)(this.priceDiv, {
               key: p(m.billedAnnually),
-              options: { count: s.periods },
+              options: {
+                count: s.periods,
+              },
             }));
           const g = l.Re.addYears(l.Re.toDate(s.giftedAt), d.Z),
             f = l.Re.formatDateDistance(new Date(), g),
             y = u.a7.t(f.key, f.options);
           ((0, r.RH)(this.disclaimerText, {
             key: "strings:storePage.sections.membership.giftWithExpiry",
-            options: { expiry: y },
+            options: {
+              expiry: y,
+            },
           }),
             (0, r.RH)(this.subscribeButtonText, {
               key: "strings:storePage.sections.membership.action.activate",
@@ -27586,7 +29436,9 @@
     },
     78347: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => r });
+      s.d(t, {
+        H: () => r,
+      });
       var i = s(9029),
         n = s(95176);
       class r extends n.y {
@@ -27595,7 +29447,9 @@
             n = r.getAltText(e);
           ((0, i.WL)(this.body, t, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: n },
+            options: {
+              value: n,
+            },
           }),
             this.show());
         }
@@ -27608,11 +29462,15 @@
         constructor(e, t) {
           (super(
             e,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           ),
             this.container.classList.add("popup-patch-note-image"),
             this.loadImage(t));
@@ -27621,7 +29479,9 @@
     },
     78491: (e, t, s) => {
       "use strict";
-      s.d(t, { V: () => r });
+      s.d(t, {
+        V: () => r,
+      });
       var i = s(9029),
         n = s(35742);
       class r extends n.u {
@@ -27638,7 +29498,9 @@
     },
     78524: (e, t, s) => {
       "use strict";
-      s.d(t, { Z: () => r });
+      s.d(t, {
+        Z: () => r,
+      });
       var i = s(78311),
         n = s(50482);
       class r extends n.Zt {
@@ -27650,7 +29512,9 @@
             type: i.Qb.PlusMonthly,
             price: 899,
             discordSKUId: e.giftMembershipPlus,
-            membershipTitle: { key: "strings:storePage.membership.title.plus" },
+            membershipTitle: {
+              key: "strings:storePage.membership.title.plus",
+            },
             membershipColor: "membership_type1",
             lobbyImage: i.am.StoreMembershipPlus,
             perks: [new n.vN(), new n.WM(), new n.Io()],
@@ -27710,7 +29574,9 @@
             price: 8388,
             discordSKUId: e.giftMembershipPlusYearly,
             mobileIAPSKUId: n.a8.PlusYearly,
-            membershipTitle: { key: "strings:storePage.membership.title.plus" },
+            membershipTitle: {
+              key: "strings:storePage.membership.title.plus",
+            },
             membershipColor: "membership_type1",
             lobbyImage: i.am.StoreMembershipPlus,
             perks: [new n.vN(), new n.WM(), new n.Io()],
@@ -27770,7 +29636,9 @@
     },
     78537: (e, t, s) => {
       "use strict";
-      s.d(t, { q: () => o });
+      s.d(t, {
+        q: () => o,
+      });
       var i = s(45973),
         n = s(65015),
         r = s(9029);
@@ -27841,7 +29709,9 @@
     },
     78876: (e, t, s) => {
       "use strict";
-      s.d(t, { l: () => o });
+      s.d(t, {
+        l: () => o,
+      });
       var i = s(83633),
         n = s(41931),
         r = s(42389);
@@ -27888,7 +29758,9 @@
     },
     79163: (e, t, s) => {
       "use strict";
-      s.d(t, { I: () => x });
+      s.d(t, {
+        I: () => x,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(38910),
@@ -27991,7 +29863,9 @@
           ((this.userIcon = (0, n.WL)(
             e,
             u,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "user-icon",
           )),
             (this.recipientUsernameInputField = (0, n.M3)(
@@ -28001,25 +29875,33 @@
             (this.searchIcon = (0, n.WL)(
               e,
               h,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "search-icon",
             )),
             (this.spinnerIcon = (0, n.WL)(
               e,
               p,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "spinner-icon",
             )),
             (this.crossIcon = (0, n.WL)(
               e,
               m,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "cross-icon",
             )),
             (this.checkMarkIcon = (0, n.WL)(
               e,
               g,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "checkmark-icon",
             )),
             this.spinnerIcon.classList.add("hidden"),
@@ -28093,7 +29975,10 @@
                 () => {},
                 () => {},
                 !0,
-                { showXButton: !1, showCheckButton: !0 },
+                {
+                  showXButton: !1,
+                  showCheckButton: !0,
+                },
               );
               (null === (e = t.contentContainer.parentElement) ||
                 void 0 === e ||
@@ -28210,14 +30095,18 @@
           }),
             (this.membershipPrice = (0, n.n8)(
               this.priceDiv,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "",
               "",
               "H1",
             )),
             (0, n.RH)(this.membershipPrice, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: null != s ? s : `$${e}` },
+              options: {
+                value: null != s ? s : `$${e}`,
+              },
             }),
             this.disclaimerText.replaceChildren());
         }
@@ -28228,8 +30117,12 @@
           if (!this.membershipProduct.bestValue) return;
           const e =
             "SHOW_MOST_POPULAR" == v._.abTests.GIFTING_CHANGE_BEST_VALUE_HINT
-              ? { key: "strings:storePage.mostPopular" }
-              : { key: "strings:storePage.bestValue" };
+              ? {
+                  key: "strings:storePage.mostPopular",
+                }
+              : {
+                  key: "strings:storePage.bestValue",
+                };
           (this.productDiv.classList.add(
             "store_page_membership_best_value_border",
           ),
@@ -28249,7 +30142,9 @@
               this.priceDiv,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: `<s>$${t}</s>` },
+                options: {
+                  value: `<s>$${t}</s>`,
+                },
               },
               "strikethrough-price",
               "",
@@ -28340,7 +30235,9 @@
           ((this.toggleButtonMonthly = (0, n.Le)(e, "toggle-tab")),
             (0, n.Wr)(
               this.toggleButtonMonthly,
-              { key: "strings:storePage.membership.frequency.oneMonth" },
+              {
+                key: "strings:storePage.membership.frequency.oneMonth",
+              },
               "",
             ),
             (0, n.G0)(this.toggleButtonMonthly, () => this.setTabAnnual(!1)),
@@ -28350,7 +30247,10 @@
             this.toggleButtonAnnual,
             {
               key: "strings:storePage.membership.frequency.oneYear",
-              options: { context: "store", discount: t },
+              options: {
+                context: "store",
+                discount: t,
+              },
             },
             "",
           ),
@@ -28422,14 +30322,21 @@
         getSelectedTierInfoText(e) {
           const t = this.selectedGiftTier,
             s = R.isSelectedTierAnnual(t)
-              ? { key: "strings:storePage.membership.frequency.oneYear" }
-              : { key: "strings:storePage.membership.frequency.oneMonth" },
+              ? {
+                  key: "strings:storePage.membership.frequency.oneYear",
+                }
+              : {
+                  key: "strings:storePage.membership.frequency.oneMonth",
+                },
             i = A.G.getMembershipTitleFromType(e);
           return (0, _.dN)(
             {
               key: "strings:storePage.sections.giftOverlay.tierSelection.selectedTier",
             },
-            { frequency: s, tier: i },
+            {
+              frequency: s,
+              tier: i,
+            },
           );
         }
         static setDiscordGiftPrice(e) {
@@ -28514,7 +30421,9 @@
           );
           const s = (0, n.i5)(t, "input-counter", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: "0/150" },
+            options: {
+              value: "0/150",
+            },
           });
           ((this.messageInput = (0, n.aW)(
             e,
@@ -28548,7 +30457,6 @@
       class x {
         init() {
           const e = window.location.hash;
-          alert("x.init");
           let t;
           if ("#gift" == e) {
             var s;
@@ -28573,7 +30481,9 @@
           ((0, n.G0)(t, () => this.goToHomepage()),
             (0, n.n8)(
               e,
-              { key: "strings:storePage.sections.giftOverlay.title" },
+              {
+                key: "strings:storePage.sections.giftOverlay.title",
+              },
               "",
               "",
               "H2",
@@ -28726,17 +30636,23 @@
                   message: i.message,
                 },
               },
-              { giftTier: n },
+              {
+                giftTier: n,
+              },
             );
           return (
             new d.y(
-              { key: "strings:imgAlts.StoreGiftMembership" },
+              {
+                key: "strings:imgAlts.StoreGiftMembership",
+              },
               r,
               async () => {
                 const e = await a.m.postRequestHandler(
                   c.l.apiRedeemGiftFromHash(),
                   void 0,
-                  { hash: t },
+                  {
+                    hash: t,
+                  },
                 );
                 (null == e ? void 0 : e.status) == D.R.Ok &&
                   (0, B.Yf)((0, B.mE)());
@@ -28795,7 +30711,9 @@
     },
     81808: (e, t, s) => {
       "use strict";
-      s.d(t, { k: () => c });
+      s.d(t, {
+        k: () => c,
+      });
       var i = s(50482),
         n = s(29962),
         r = s(9029),
@@ -28807,7 +30725,10 @@
             t = Math.round(100 * (1 - n.O.PREMIUM / e));
           (0, r.oB)(this.annualTab, {
             key: "strings:storePage.membership.frequency.annual",
-            options: { context: "store", discount: t },
+            options: {
+              context: "store",
+              discount: t,
+            },
           });
         }
         constructor(e) {
@@ -28823,7 +30744,9 @@
     },
     81888: (e, t, s) => {
       "use strict";
-      s.d(t, { _: () => c });
+      s.d(t, {
+        _: () => c,
+      });
       var i = s(61570),
         n = s(655),
         r = s(32398),
@@ -28943,7 +30866,9 @@
     },
     81931: (e, t, s) => {
       "use strict";
-      s.d(t, { b: () => a });
+      s.d(t, {
+        b: () => a,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(90676),
@@ -29039,7 +30964,9 @@
     },
     81966: (e, t, s) => {
       "use strict";
-      s.d(t, { e: () => o });
+      s.d(t, {
+        e: () => o,
+      });
       var i = s(5603),
         n = s(95176),
         r = s(9029);
@@ -29085,7 +31012,9 @@
             "character-counter",
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `${e}/${t}` },
+              options: {
+                value: `${e}/${t}`,
+              },
             },
           )),
             this.input.addEventListener("input", () => {
@@ -29098,7 +31027,9 @@
             s = this.input.maxLength;
           ((0, r.RH)(this.characterCounter, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: `${e}/${s}` },
+            options: {
+              value: `${e}/${s}`,
+            },
           }),
             e < t
               ? this.characterCounter.classList.add("invalid")
@@ -29128,7 +31059,9 @@
     },
     82535: (e, t, s) => {
       "use strict";
-      s.d(t, { B: () => c });
+      s.d(t, {
+        B: () => c,
+      });
       var i = s(92524),
         n = s(655),
         r = s(32398),
@@ -29149,18 +31082,27 @@
         static async gotCheckoutSession(e) {
           if (!e.status)
             return void o.r.createSimplePopup(
-              { key: "strings:storePage.errors.fail" },
+              {
+                key: "strings:storePage.errors.fail",
+              },
               e.message,
             );
           const t = {
             key: "strings:colonistCommon.utils.#buffer",
             options: {
               value: (
-                await stripe.redirectToCheckout({ sessionId: e.session.id })
+                await stripe.redirectToCheckout({
+                  sessionId: e.session.id,
+                })
               ).error.message,
             },
           };
-          o.r.createSimplePopup({ key: "strings:storePage.errors.fail" }, t);
+          o.r.createSimplePopup(
+            {
+              key: "strings:storePage.errors.fail",
+            },
+            t,
+          );
         }
         static async executeXsollaColonistCoinPurchaseSession(e, t) {
           const s = `${r.l.apiPayGetStoreXsollaSession()}/${e}/${t}`,
@@ -29417,7 +31359,11 @@
               Math.floor(i / a.minutesAsSeconds(1)) % e.SECONDS_IN_MINUTE;
             return (
               (i -= a.minutesAsSeconds(o)),
-              { days: n, hours: r, minutes: o }
+              {
+                days: n,
+                hours: r,
+                minutes: o,
+              }
             );
           }
           function n(e, t = new Date()) {
@@ -29562,10 +31508,19 @@
               const s = i(e, t),
                 { days: n, hours: r, minutes: o } = s;
               return n > 0
-                ? { dateType: "day", duration: n }
+                ? {
+                    dateType: "day",
+                    duration: n,
+                  }
                 : r > 0
-                  ? { dateType: "hour", duration: r }
-                  : { dateType: "minute", duration: o };
+                  ? {
+                      dateType: "hour",
+                      duration: r,
+                    }
+                  : {
+                      dateType: "minute",
+                      duration: o,
+                    };
             }),
             (e.getOneWeekInThePast = function () {
               return n(-e.DAYS_IN_WEEK);
@@ -29644,17 +31599,23 @@
               if (i < 1)
                 return {
                   key: "strings:colonistCommon.dates.day",
-                  options: { count: 1 },
+                  options: {
+                    count: 1,
+                  },
                 };
               if (i < e.DAYS_IN_MONTH)
                 return {
                   key: "strings:colonistCommon.dates.day",
-                  options: { count: Math.round(i) },
+                  options: {
+                    count: Math.round(i),
+                  },
                 };
               const n = i / e.DAYS_IN_MONTH;
               return {
                 key: "strings:colonistCommon.dates.month",
-                options: { count: Math.round(n) },
+                options: {
+                  count: Math.round(n),
+                },
               };
             }),
             (e.formatCountdownString = function (t) {
@@ -29676,29 +31637,39 @@
               if (n >= 1)
                 return {
                   key: "strings:colonistCommon.timeLeft.days",
-                  options: { count: Math.floor(n) },
+                  options: {
+                    count: Math.floor(n),
+                  },
                 };
               const r = i / e.SECONDS_IN_HOUR;
               if (r >= 1)
                 return {
                   key: "strings:colonistCommon.timeLeft.hours",
-                  options: { count: Math.floor(r) },
+                  options: {
+                    count: Math.floor(r),
+                  },
                 };
               const o = i / e.SECONDS_IN_MINUTE;
               if (o >= 1)
                 return {
                   key: "strings:colonistCommon.timeLeft.minutes",
-                  options: { count: Math.floor(o) },
+                  options: {
+                    count: Math.floor(o),
+                  },
                 };
               const a = i % e.SECONDS_IN_MINUTE;
               return a >= 1
                 ? {
                     key: "strings:colonistCommon.timeLeft.seconds",
-                    options: { count: Math.floor(a) },
+                    options: {
+                      count: Math.floor(a),
+                    },
                   }
                 : {
                     key: "strings:colonistCommon.timeLeft.seconds",
-                    options: { count: 0 },
+                    options: {
+                      count: 0,
+                    },
                   };
             }),
             (e.getTimeAgoTextFromDate = function (t) {
@@ -29707,41 +31678,55 @@
               if (i < e.SECONDS_IN_MINUTE)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.second",
-                  options: { count: i },
+                  options: {
+                    count: i,
+                  },
                 };
               const n = Math.floor(i / e.SECONDS_IN_MINUTE);
               if (n < e.MINUTES_IN_HOUR)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.minute",
-                  options: { count: n },
+                  options: {
+                    count: n,
+                  },
                 };
               const r = Math.floor(n / e.MINUTES_IN_HOUR);
               if (r < e.HOURS_IN_DAY)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.hour",
-                  options: { count: r },
+                  options: {
+                    count: r,
+                  },
                 };
               const o = Math.floor(r / e.HOURS_IN_DAY);
               if (o < e.DAYS_IN_WEEK)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.day",
-                  options: { count: o },
+                  options: {
+                    count: o,
+                  },
                 };
               const a = Math.floor(o / e.DAYS_IN_WEEK);
               if (a < e.WEEKS_IN_MONTH)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.week",
-                  options: { count: a },
+                  options: {
+                    count: a,
+                  },
                 };
               const c = Math.floor(o / e.DAYS_IN_MONTH);
               return c < e.MONTHS_IN_YEAR
                 ? {
                     key: "strings:popups.notification.timeAbbreviations.month",
-                    options: { count: c },
+                    options: {
+                      count: c,
+                    },
                   }
                 : {
                     key: "strings:popups.notification.timeAbbreviations.year",
-                    options: { count: Math.floor(o / e.DAYS_IN_YEAR) },
+                    options: {
+                      count: Math.floor(o / e.DAYS_IN_YEAR),
+                    },
                   };
             }));
         })(o || (o = {})),
@@ -29946,7 +31931,10 @@
     },
     83633: (e, t, s) => {
       "use strict";
-      s.d(t, { M1: () => n.M1, qq: () => i.q });
+      s.d(t, {
+        M1: () => n.M1,
+        qq: () => i.q,
+      });
       (s(21514), s(30093));
       var i = s(48104),
         n = (s(69094), s(22067));
@@ -29958,7 +31946,9 @@
     },
     84192: (e, t, s) => {
       "use strict";
-      s.d(t, { z: () => g });
+      s.d(t, {
+        z: () => g,
+      });
       var i = s(5603),
         n = s(35700),
         r = s(59712),
@@ -29974,7 +31964,12 @@
           const t = this.italics ? " italics" : "",
             s = (0, o.i5)(e, t, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.text, interpolation: { escapeValue: !1 } },
+              options: {
+                value: this.text,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
           this.handleVPText(s);
         }
@@ -30101,7 +32096,9 @@
     },
     84240: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => i });
+      s.d(t, {
+        S: () => i,
+      });
       class i {
         constructor() {
           this.serverUpdated = !1;
@@ -30114,7 +32111,9 @@
     },
     84324: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => i });
+      s.d(t, {
+        i: () => i,
+      });
       var i,
         n,
         r = s(83008);
@@ -30265,17 +32264,28 @@
         ) {
           if (s) return void s();
           const e = document.getElementById("coins");
-          return void (null == e || e.scrollIntoView({ behavior: "smooth" }));
+          return void (
+            null == e ||
+            e.scrollIntoView({
+              behavior: "smooth",
+            })
+          );
         }
         const n = (0, a.dN)(
           {
             key: "strings:storePage.purchaseItem?.body",
-            options: { price: i },
+            options: {
+              price: i,
+            },
           },
-          { itemName: e.name },
+          {
+            itemName: e.name,
+          },
         );
         new o.y(
-          { key: "strings:storePage.purchaseItem?.title" },
+          {
+            key: "strings:storePage.purchaseItem?.title",
+          },
           n,
           () => {
             t();
@@ -30286,10 +32296,14 @@
       }
       function m(e, t) {
         new o.y(
-          { key: "strings:storePage.purchaseItem?.title" },
+          {
+            key: "strings:storePage.purchaseItem?.title",
+          },
           {
             key: "strings:storePage.purchaseItem?.body",
-            options: { context: "founder" },
+            options: {
+              context: "founder",
+            },
           },
           () => {
             t();
@@ -30303,14 +32317,18 @@
         (null === (s = c._.userState) || void 0 === s ? void 0 : s.isLoggedIn)
           ? (null == t ? void 0 : t.includes("#"))
             ? new o.y(
-                { key: "strings:popups.errors.giftMembership.title" },
+                {
+                  key: "strings:popups.errors.giftMembership.title",
+                },
                 {
                   key: "strings:popups.errors.giftMembership.guestsCantReceiveGifts",
                 },
                 () => {},
                 () => {},
                 !1,
-                { showXButton: !1 },
+                {
+                  showXButton: !1,
+                },
               ).show()
             : e()
           : new r.L();
@@ -30324,7 +32342,9 @@
         )
           return {
             key: "strings:storePage.manageMembership.body",
-            options: { context: "updateOnWeb" },
+            options: {
+              context: "updateOnWeb",
+            },
           };
         const s =
           null === (t = c._.userState) || void 0 === t
@@ -30334,9 +32354,13 @@
         return d.Zt.isAnnualMembership(s.type)
           ? {
               key: "strings:storePage.manageMembership.body",
-              options: { context: "waitForExpiration" },
+              options: {
+                context: "waitForExpiration",
+              },
             }
-          : { key: "strings:storePage.manageMembership.body" };
+          : {
+              key: "strings:storePage.manageMembership.body",
+            };
       }
       function y(e) {
         switch (e) {
@@ -30363,13 +32387,17 @@
     },
     84805: (e, t, s) => {
       "use strict";
-      s.d(t, { K: () => l });
+      s.d(t, {
+        K: () => l,
+      });
       var i = s(78311),
         n = s(655),
         r = s(9029);
       class o {
         createSidebar() {
-          const e = { key: "strings:colonistCommon.utils.emptyString" };
+          const e = {
+            key: "strings:colonistCommon.utils.emptyString",
+          };
           for (const t of this.sidebarTabs) {
             const s = (0, r.cE)(
                 this.parentElement,
@@ -30395,28 +32423,36 @@
         createSidebar() {
           const e = [
             {
-              text: { key: "strings:profilePage.overview.title" },
+              text: {
+                key: "strings:profilePage.overview.title",
+              },
               class: "icon_profile_overview",
               href: "#overview",
               imageSrc: i.am.ProfileOverview,
               id: (0, a.F9)("tab-input-overview", this.isPopup),
             },
             {
-              text: { key: "strings:profilePage.navigationTabs.ranked" },
+              text: {
+                key: "strings:profilePage.navigationTabs.ranked",
+              },
               class: "icon_profile_ranked",
               href: "#ranked",
               imageSrc: i.am.ProfileRanked,
               id: (0, a.F9)("tab-input-ranked", this.isPopup),
             },
             {
-              text: { key: "strings:profilePage.navigationTabs.history" },
+              text: {
+                key: "strings:profilePage.navigationTabs.history",
+              },
               class: "icon_profile_history",
               href: "#history",
               imageSrc: i.am.ProfileHistory,
               id: (0, a.F9)("tab-input-game-history", this.isPopup),
             },
             {
-              text: { key: "strings:profilePage.navigationTabs.items" },
+              text: {
+                key: "strings:profilePage.navigationTabs.items",
+              },
               class: "icon_profile_items",
               href: "#items",
               imageSrc: i.am.ProfileItems,
@@ -30425,14 +32461,18 @@
           ];
           this.isPopup ||
             (e.push({
-              text: { key: "strings:profilePage.navigationTabs.friends" },
+              text: {
+                key: "strings:profilePage.navigationTabs.friends",
+              },
               class: "icon_profile_friends",
               href: "#friends",
               imageSrc: i.am.Friends,
               id: (0, a.F9)("tab-input-friends", this.isPopup),
             }),
             e.push({
-              text: { key: "strings:profilePage.navigationTabs.account" },
+              text: {
+                key: "strings:profilePage.navigationTabs.account",
+              },
               class: "icon_profile_settings",
               href: "#settings",
               imageSrc: i.am.ProfileSettings,
@@ -30458,7 +32498,6 @@
         }
         showSectionFromHash() {
           const e = window.location.hash.replace("#", "");
-          alert("showSection");
           if ("" == e) return !1;
           for (let t = 0; t < this.sections.length; t++) {
             if (1 == this.sections[t].id.includes(e))
@@ -30562,7 +32601,9 @@
     },
     85452: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => h });
+      s.d(t, {
+        Q: () => h,
+      });
       var i = s(18587),
         n = s(67908),
         r = s(18514),
@@ -30585,7 +32626,9 @@
           )
             return void (e.innerText = r.a7.t(
               "strings:homePage.ctas.play.title",
-              { context: "discord" },
+              {
+                context: "discord",
+              },
             ));
           if (t.type == n.mt.ChannelStatus.Game)
             return void (e.innerText = r.a7.t(
@@ -30617,7 +32660,10 @@
     },
     85801: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => r, g: () => n });
+      s.d(t, {
+        N: () => r,
+        g: () => n,
+      });
       var i = s(41931),
         n = (function (e) {
           return (
@@ -30699,7 +32745,9 @@
     },
     86020: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => i });
+      s.d(t, {
+        N: () => i,
+      });
       class i {}
     },
     86204: (e, t, s) => {
@@ -30784,7 +32832,12 @@
     },
     87290: (e, t, s) => {
       "use strict";
-      s.d(t, { KY: () => d, Yt: () => c, du: () => l, os: () => o });
+      s.d(t, {
+        KY: () => d,
+        Yt: () => c,
+        du: () => l,
+        os: () => o,
+      });
       var i = s(74710),
         n = s(92856),
         r = s(22194);
@@ -30798,12 +32851,16 @@
       function l(e, t) {
         const s = t == c.None ? "" : c[t];
         return (0, i.dN)(
-          { key: "strings:leaderboardPage.rankedFullDivision" },
+          {
+            key: "strings:leaderboardPage.rankedFullDivision",
+          },
           {
             rankedDivision: a(e),
             rankedSubDivision: {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s },
+              options: {
+                value: s,
+              },
             },
           },
         );
@@ -30825,14 +32882,19 @@
     },
     87506: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => a });
+      s.d(t, {
+        O: () => a,
+      });
       var i = s(78046),
         n = s(42389),
         r = s(26658),
         o = s(78311);
       class a {
         static send(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           n.sZ.controller.sender.sendToServerType(
             o.lo.MatchmakingAction,
             "lobby",
@@ -30895,7 +32957,9 @@
               (Math.abs(i.x - s.x) > 20 || Math.abs(i.y - s.y) > 20 || t());
           }));
       }
-      s.d(t, { _: () => i });
+      s.d(t, {
+        _: () => i,
+      });
     },
     87775: (e, t, s) => {
       "use strict";
@@ -30920,7 +32984,9 @@
     },
     88206: (e, t, s) => {
       "use strict";
-      s.d(t, { d: () => l });
+      s.d(t, {
+        d: () => l,
+      });
       var i = s(45973),
         n = s(65015),
         r = s(9029),
@@ -30930,7 +32996,9 @@
         update(e) {
           if ((super.update(e), null == e.unrankedOverrideMessage)) return;
           const t = o.r.isUserOnMobileAppOrWeb
-            ? { key: "strings:colonistCommon.utils.n/a" }
+            ? {
+                key: "strings:colonistCommon.utils.n/a",
+              }
             : e.unrankedOverrideMessage;
           ((0, r.RH)(this.customMessage, t),
             (0, r.G0)(this.customMessage, () => {}, !1, !0));
@@ -31105,7 +33173,9 @@
     },
     90051: (e, t, s) => {
       "use strict";
-      s.d(t, { K: () => n });
+      s.d(t, {
+        K: () => n,
+      });
       var i = s(5603);
       class n {
         addNotificationsToPanel(e) {
@@ -31261,7 +33331,9 @@
                         u,
                         {
                           key: "strings:colonistCommon.utils.#buffer",
-                          options: { value: e.listTitle },
+                          options: {
+                            value: e.listTitle,
+                          },
                         },
                         "tooltip-list-title",
                         void 0,
@@ -31273,7 +33345,9 @@
                           t,
                           {
                             key: "strings:colonistCommon.utils.#buffer",
-                            options: { value: e },
+                            options: {
+                              value: e,
+                            },
                           },
                           "",
                         );
@@ -31332,9 +33406,15 @@
                             placement: h,
                             middleware: [
                               (0, i.cY)(t),
-                              (0, i.UU)({ padding: t }),
-                              (0, i.BN)({ padding: t }),
-                              (0, i.UE)({ element: l }),
+                              (0, i.UU)({
+                                padding: t,
+                              }),
+                              (0, i.BN)({
+                                padding: t,
+                              }),
+                              (0, i.UE)({
+                                element: l,
+                              }),
                               (0, i.jD)(),
                             ],
                           },
@@ -31406,7 +33486,9 @@
     },
     91173: (e, t, s) => {
       "use strict";
-      s.d(t, { V: () => g });
+      s.d(t, {
+        V: () => g,
+      });
       var i = s(74710),
         n = s(83008),
         r = s(655),
@@ -31434,7 +33516,9 @@
             const o = `${i} (${n.$x.capitalizeFirstLetter(r)})`;
             (0, c.fg)(e, t, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: o },
+              options: {
+                value: o,
+              },
             });
           }),
             (e.selectedIndex = this.supportedLanguages.indexOf(
@@ -31450,7 +33534,9 @@
             this.selectedLanguage == this.currentLanguage)
           )
             return;
-          const e = { language: this.selectedLanguage };
+          const e = {
+            language: this.selectedLanguage,
+          };
           (await r.m.postRequestHandler(
             o.l.apiSetUserLanguage(),
             void 0,
@@ -31464,8 +33550,12 @@
         }
         constructor() {
           (super(
-            { key: "strings:homePage.footer.changeLanguagePopupTitle" },
-            { key: "strings:homePage.footer.changeLanguagePopupBody" },
+            {
+              key: "strings:homePage.footer.changeLanguagePopupTitle",
+            },
+            {
+              key: "strings:homePage.footer.changeLanguagePopupBody",
+            },
             () => {},
             () => {},
             !0,
@@ -31491,7 +33581,9 @@
           }),
             (0, m.vy)(
               t,
-              { key: "strings:homePage.footer.changeLanguageButtonTooltip" },
+              {
+                key: "strings:homePage.footer.changeLanguageButtonTooltip",
+              },
               "top",
               void 0,
               "small",
@@ -31500,7 +33592,9 @@
           s &&
             (0, c.oB)(s, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: a.r.language },
+              options: {
+                value: a.r.language,
+              },
             });
         }
       }
@@ -31551,7 +33645,11 @@
     },
     92524: (e, t, s) => {
       "use strict";
-      s.d(t, { g5: () => i, hg: () => r, l6: () => n });
+      s.d(t, {
+        g5: () => i,
+        hg: () => r,
+        l6: () => n,
+      });
       (s(64265), s(50482), s(17972));
       var i = (function (e) {
           return (
@@ -31590,7 +33688,9 @@
     },
     92856: (e, t, s) => {
       "use strict";
-      s.d(t, { h: () => i });
+      s.d(t, {
+        h: () => i,
+      });
       var i,
         n = s(83008);
       !(function (e) {
@@ -31626,7 +33726,9 @@
     },
     94226: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => i });
+      s.d(t, {
+        c: () => i,
+      });
       class i {
         emitEvent(e, t) {
           var s;
@@ -31641,7 +33743,10 @@
           this.eventHandlers.delete(e);
         }
         send(e, t) {
-          this.sendFromClientToServer({ type: e, ...t });
+          this.sendFromClientToServer({
+            type: e,
+            ...t,
+          });
         }
         constructor(e) {
           ((this.eventHandlers = new Map()), (this.sendFromClientToServer = e));
@@ -31650,7 +33755,9 @@
     },
     94499: (e, t, s) => {
       "use strict";
-      s.d(t, { j: () => Gr });
+      s.d(t, {
+        j: () => Gr,
+      });
       var i = s(63778),
         n = s(22194),
         r = s(78311),
@@ -32858,7 +34965,9 @@
     },
     95078: (e, t, s) => {
       "use strict";
-      s.d(t, { l: () => i });
+      s.d(t, {
+        l: () => i,
+      });
       var i,
         n = s(83008);
       !(function (e) {
@@ -32881,13 +34990,17 @@
     },
     95107: (e, t, s) => {
       "use strict";
-      s.d(t, { v: () => i });
+      s.d(t, {
+        v: () => i,
+      });
       class i {}
       ((i.DEFAULT_PARAMETER_VALUE = "1"), (i.suppressPopupsOnLoad = !1));
     },
     95176: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => d });
+      s.d(t, {
+        y: () => d,
+      });
       var i = s(9029),
         n = s(85801),
         r = s(42466),
@@ -33019,7 +35132,10 @@
               (this.container.classList.add("popup-focus-mobile"),
                 t &&
                   setTimeout(() => {
-                    e.scrollIntoView({ behavior: "smooth", block: "center" });
+                    e.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
                   }, 100));
             }),
             e.addEventListener("focusout", () => {
@@ -33074,7 +35190,9 @@
     },
     96104: (e, t, s) => {
       "use strict";
-      s.d(t, { o: () => u });
+      s.d(t, {
+        o: () => u,
+      });
       var i = s(655),
         n = s(32398),
         r = s(9029),
@@ -33112,13 +35230,17 @@
         }
         setItems(e) {
           const t = document.getElementById("profile_items_div");
-          (0, r.RH)(t, { key: "strings:colonistCommon.utils.emptyString" });
+          (0, r.RH)(t, {
+            key: "strings:colonistCommon.utils.emptyString",
+          });
           for (const s of e) {
             const e = (0, d.bl)(s.category),
               i = (0, r.cE)(
                 t,
                 `/store#${e}`,
-                { key: "strings:colonistCommon.utils.emptyString" },
+                {
+                  key: "strings:colonistCommon.utils.emptyString",
+                },
                 "",
               );
             ((0, r.zO)(i, s.image), (0, r.n8)(i, s.name, "", "", "H4"));
@@ -33214,7 +35336,9 @@
     },
     96328: (e, t, s) => {
       "use strict";
-      s.d(t, { o: () => d });
+      s.d(t, {
+        o: () => d,
+      });
       var i = s(9029),
         n = s(84445),
         r = s(19966),
@@ -33241,7 +35365,9 @@
             a = (0, i.Le)(r, "store_page_coin_product_header"),
             c = {
               key: "strings:storePage.coins.title",
-              options: { count: t.baseCoinAmount + t.bonusCoinAmount },
+              options: {
+                count: t.baseCoinAmount + t.bonusCoinAmount,
+              },
             };
           (0, i.n8)(a, c, "", "", "H2");
           if (0 != t.bonusCoinAmount) {
@@ -33249,7 +35375,9 @@
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t.baseCoinAmount + " " },
+                options: {
+                  value: t.baseCoinAmount + " ",
+                },
               },
               "",
             );
@@ -33257,7 +35385,9 @@
               e,
               {
                 key: "strings:storePage.coins.bonusAmount",
-                options: { count: t.bonusCoinAmount },
+                options: {
+                  count: t.bonusCoinAmount,
+                },
               },
               "store_page_coin_product_bonus",
             );
@@ -33296,7 +35426,9 @@
     },
     96990: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => n });
+      s.d(t, {
+        N: () => n,
+      });
       var i = s(33832);
       class n {
         static isUserOnTabletApp() {
@@ -33397,7 +35529,9 @@
     },
     97392: (e, t, s) => {
       "use strict";
-      s.d(t, { Z: () => B });
+      s.d(t, {
+        Z: () => B,
+      });
       var i = s(98487),
         n = s(9029),
         r = s(78311),
@@ -33430,7 +35564,9 @@
             (this.userName = (0, n.i5)(
               this.usernameContainer,
               "room_player_username",
-              { key: "strings:profilePage.friends.tableHeaders.player" },
+              {
+                key: "strings:profilePage.friends.tableHeaders.player",
+              },
             )),
             this.renderUsernameInfoIcon(),
             (this.karmaContainer = (0, n.Le)(
@@ -33472,12 +35608,16 @@
         renderKarma() {
           ((this.karmaText = (0, n.Wr)(
             this.karmaContainer,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "room_player_karma_text",
           )),
             (0, h.vy)(
               this.karmaContainer,
-              { key: "strings:homePage.overview.karma" },
+              {
+                key: "strings:homePage.overview.karma",
+              },
               void 0,
               void 0,
               "small",
@@ -33488,7 +35628,9 @@
           c.h4.iterateEnum(i.R1, (e) => {
             (0, n.fg)(this.difficultySelectorContainer, e, {
               key: "strings:colonistCommon.botDifficulties.difficulty",
-              options: { context: e },
+              options: {
+                context: e,
+              },
             });
           });
         }
@@ -33626,7 +35768,9 @@
         setUsername(e) {
           (0, n.RH)(this.userName, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: ` ${e} ` },
+            options: {
+              value: ` ${e} `,
+            },
           });
         }
         updateStatus(e) {
@@ -33790,7 +35934,9 @@
         static resetTabTitleAndFavIcon() {
           ((0, n.oB)(this.pageTitle, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: this.defaultTitle },
+            options: {
+              value: this.defaultTitle,
+            },
           }),
             (this.favicon.href = this.defaultFavIcon));
         }
@@ -33953,10 +36099,14 @@
         static showHostActionsPopup(e) {
           const t = {
             key: "strings:roomPage.hostActions.body",
-            options: { username: e.username },
+            options: {
+              username: e.username,
+            },
           };
           b.r.create(
-            { key: "strings:roomPage.hostActions.title" },
+            {
+              key: "strings:roomPage.hostActions.title",
+            },
             t,
             () => {
               B.kickPlayer(e);
@@ -33979,10 +36129,14 @@
         static showKickPlayerPopup(e) {
           const t = {
             key: "strings:roomPage.hostActions.kickPlayer",
-            options: { username: e.username },
+            options: {
+              username: e.username,
+            },
           };
           b.r.create(
-            { key: "strings:roomPage.hostActions.kick" },
+            {
+              key: "strings:roomPage.hostActions.kick",
+            },
             t,
             () => {
               B.kickPlayer(e);
@@ -34029,7 +36183,9 @@
                   };
                   (P.CA.sendAnalyticEvent(s), I.v.addFriendAction(e));
                 },
-                tooltip: { key: "strings:game.playerOptionsPopup.addFriend" },
+                tooltip: {
+                  key: "strings:game.playerOptionsPopup.addFriend",
+                },
               }),
             a)
           ) {
@@ -34050,14 +36206,18 @@
               },
               tooltip: {
                 key: "strings:game.tooltips.giftMembership",
-                options: { username: t.username },
+                options: {
+                  username: t.username,
+                },
               },
             });
           }
           if (i)
             s.push({
               icon: r.am.Pencil,
-              tooltip: { key: "strings:homePage.header.editProfile" },
+              tooltip: {
+                key: "strings:homePage.header.editProfile",
+              },
             });
           else if (this.isItMe(e.hostSession)) {
             const e = t.isBot
@@ -34068,7 +36228,9 @@
               action: e,
               tooltip: {
                 key: "strings:game.tooltips.kickPlayer",
-                options: { username: t.username },
+                options: {
+                  username: t.username,
+                },
               },
             });
           }
@@ -34129,13 +36291,17 @@
     },
     97861: (e, t, s) => {
       "use strict";
-      s.d(t, { X: () => i });
+      s.d(t, {
+        X: () => i,
+      });
       class i {
         subscribe(e, t) {
           return (
             null == this.events[e] && (this.events[e] = []),
             this.events[e].push(t),
-            { unsubscribe: () => this.unsubscribe(e, t) }
+            {
+              unsubscribe: () => this.unsubscribe(e, t),
+            }
           );
         }
         subscribeOnce(e, t) {
@@ -34165,7 +36331,9 @@
     },
     98056: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => r });
+      s.d(t, {
+        g: () => r,
+      });
       var i = s(92524),
         n = s(9029);
       class r {
@@ -34239,3 +36407,4 @@
     },
   },
 ]);
+//# sourceMappingURL=shared.a1f7aa47ccdd213a17fe.js.map
