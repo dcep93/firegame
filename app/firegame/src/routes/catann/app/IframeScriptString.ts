@@ -55,6 +55,8 @@ function main({
       }
       if (url.startsWith("/api/analytic-events"))
         return Promise.resolve(JSON.stringify(true));
+      if (url.startsWith("/api/validate-username/"))
+        return Promise.resolve(JSON.stringify(true));
       if (url.startsWith("/cdn-cgi/rum"))
         return Promise.resolve(JSON.stringify(true));
       if (url === "/api/header/friend-requests-received")

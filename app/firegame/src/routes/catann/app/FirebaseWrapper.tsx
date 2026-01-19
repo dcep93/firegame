@@ -19,6 +19,7 @@ export var firebaseData: any = {};
 var seenData = firebaseData;
 
 export default function FirebaseWrapper() {
+  console.log("connecting firebase wrapper", seenData);
   useEffect(
     () =>
       void firebase.connect(roomPath(), (liveData) => {
