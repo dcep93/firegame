@@ -1,7 +1,11 @@
 import React from "react";
-import InterceptedWebSocket from "./InterceptedWebSocket";
+import getServerResponse from "./getServerResponse";
 
-InterceptedWebSocket();
+window.addEventListener("message", (event) => {
+  const { id, clientData } = event.data || {};
+  const serverData = getServerResponse(clientData);
+  event.source!.postMessage({ id, serverData }, { targetOrigin: "*" });
+});
 
 class Catan extends React.Component {
   render() {

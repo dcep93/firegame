@@ -186,8 +186,8 @@ function overrideWebsocket() {
       });
     }
 
-    send(data) {
-      window.parent?.postMessage({ id: this.id, data }, "*");
+    send(clientData) {
+      window.parent?.postMessage({ id: this.id, clientData }, "*");
     }
 
     close() {
@@ -213,14 +213,10 @@ function overrideWebsocket() {
   InterceptedWebSocket.CLOSING = 2;
   InterceptedWebSocket.CLOSED = 3;
 
-  const socketBridgeHandler = (event) => {
-    const { id, data } = event.data || {};
-    if (!id || !socketsById.has(id)) {
-      return;
-    }
-    socketsById.get(id).receive(data);
+  window.__socketBridgeHandler = (event) => {
+    const { id, serverData } = event.data || {};
+    socketsById.get(id).receive(serverData);
   };
-  window.__socketBridgeHandler = socketBridgeHandler;
 
   window.WebSocket = InterceptedWebSocket;
 }
