@@ -16,7 +16,7 @@ export default function FirebaseWrapper() {
     console.log({ store });
     if (!store.gameW) {
       if (data.ROOM) return;
-      defaultRoom.data.sessions[0].userSessionId = store.me.userId;
+      defaultRoom.data.sessions[0].userSessionId = "asdf";
       defaultRoom.data.sessions[0].userId = store.me.userId;
       defaultRoom.roomId = `roomIdx${store.me.roomId.toString()}`;
       setData({ ROOM: defaultRoom });
