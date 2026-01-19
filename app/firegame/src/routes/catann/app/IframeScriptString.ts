@@ -157,7 +157,6 @@ function main() {
 
       const origSend = xhr.send;
       xhr.send = function (...sendArgs: Parameters<XMLHttpRequest["send"]>) {
-        const [body] = sendArgs;
         const __meta = xhr.__meta;
         getPayload(__meta).then((payload) => {
           if (!payload) {
