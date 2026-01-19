@@ -1,5 +1,4 @@
 import React from "react";
-import store from "../../../shared/store";
 import handleMessage from "./handleMessage";
 
 window.addEventListener("message", (event) => {
@@ -12,8 +11,6 @@ window.addEventListener("message", (event) => {
 
 class Catan extends React.Component {
   render() {
-    const roomId = store.me?.roomId;
-    if (roomId === undefined) return null;
     const src = `${window.location.origin}/public_catann/#coin9247`;
     return (
       <div
