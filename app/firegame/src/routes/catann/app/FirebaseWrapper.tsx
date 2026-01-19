@@ -64,7 +64,7 @@ export function setFirebaseData(newData: any, change: any) {
   // also only change diffs
   firebase.set(
     `${roomPath()}/catann`,
-    serializeFirebase({ ...newData, change }),
+    !newData ? null : serializeFirebase({ ...newData, change }),
   );
 }
 

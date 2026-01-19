@@ -62,7 +62,11 @@ export default function handleMessage(
       }
     }
     if (parsed._header[1] === ServerActionType.LobbyAction) {
-      if ([LobbyAction.SetAdBlockStatus].includes(parsed.action)) {
+      if (
+        [LobbyAction.SetAdBlockStatus, LobbyAction.WatchRoomList].includes(
+          parsed.action,
+        )
+      ) {
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
@@ -93,6 +97,11 @@ export default function handleMessage(
         ).selectedColor = parsed.color;
         setFirebaseData(firebaseData, { parsed });
         return sendResponse(firebaseData.ROOM);
+      }
+      if (parsed.type === "leave") {
+        setFirebaseData(null, { parsed });
+        window.location.reload();
+        return;
       }
     }
   }
