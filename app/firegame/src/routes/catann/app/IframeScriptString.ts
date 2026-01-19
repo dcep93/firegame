@@ -283,6 +283,8 @@ function main() {
         ),
       )
       .then((resp) => {
+        window.history.replaceState(null, "", "/");
+        alert(window.location.pathname);
         document.open();
         document.write(resp);
         document.close();

@@ -11,6 +11,22 @@ window.addEventListener("message", (event) => {
 });
 
 class Catann extends React.Component {
+  private iframeRef = React.createRef<HTMLIFrameElement>();
+  private didInitIframe = false;
+
+  private handleIframeLoad = () => {
+    if (this.didInitIframe) return;
+    const iframe = this.iframeRef.current;
+    const doc = iframe?.contentDocument;
+    if (!doc) return;
+    this.didInitIframe = true;
+    doc.open();
+    doc.write(
+      `<!doctype html><html><head><base href="/"></head><body><script>${IframeScriptString};</script></body></html>`,
+    );
+    doc.close();
+  };
+
   render() {
     return (
       <div
@@ -22,8 +38,10 @@ class Catann extends React.Component {
         }}
       >
         <iframe
+          ref={this.iframeRef}
           title={"iframe"}
-          srcDoc={`<!doctype html><html><head><base href="/"></head><body><script>history.replaceState(null,"","/");</script><script>${IframeScriptString}; alert(window.location.pathname);</script></body></html>`}
+          src={"/public_catann/bridge.html"}
+          onLoad={this.handleIframeLoad}
           style={{
             width: "100%",
             height: "100%",
