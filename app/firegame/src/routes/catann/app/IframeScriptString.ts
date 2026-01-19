@@ -1,5 +1,5 @@
 import store, { MeType } from "../../../shared/store";
-import handleMessage from "./handleMessage";
+import handleMessage, { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
 
@@ -22,18 +22,20 @@ declare global {
   }
 }
 
-function main({ me, isDev }: { me: MeType; isDev: boolean }) {
+function main({
+  me,
+  isDev,
+  future,
+}: {
+  me: MeType;
+  isDev: boolean;
+  future: string;
+}) {
   console.log("overrides.js::main");
   overrideXHR();
   overrideWebsocket();
   overrideServiceWorker();
   loadRemote();
-
-  const FUTURE = (() => {
-    const future = new Date();
-    future.setFullYear(future.getFullYear() + 1);
-    return future.toISOString();
-  })();
 
   const USER_STATE = {
     userState: {
@@ -51,7 +53,7 @@ function main({ me, isDev }: { me: MeType; isDev: boolean }) {
       membershipPaymentMethod: "Stripe",
       membershipPending: false,
       membership: 5,
-      membershipEndDate: FUTURE,
+      membershipEndDate: future,
       isMuted: false,
       ownedItems: [
         // Expansions (category 1)
@@ -89,7 +91,7 @@ function main({ me, isDev }: { me: MeType; isDev: boolean }) {
       forceSubscription: true,
       //   vliHash:
       //     "be7ff6257c114e96bf8bd088e74f557e7d0763d174985bb66a9f00b0df4e0661",
-      expiresAt: FUTURE,
+      expiresAt: future,
     },
     // csrfToken:
     //   "e3eb1249fa0460b5c60c8c51c405365f88d9b20a0c0e9b6b1684a2b048b4aad0ab6e1f8424b0185bb61b1f6373f9324a94644e964ce348927fc8347eedd7d16b",
@@ -124,7 +126,7 @@ function main({ me, isDev }: { me: MeType; isDev: boolean }) {
         return Promise.resolve(
           JSON.stringify({
             shouldShow: false,
-            lastShown: FUTURE,
+            lastShown: future,
           }),
         );
       if (url === "/api/profile/friends")
@@ -319,5 +321,5 @@ function main({ me, isDev }: { me: MeType; isDev: boolean }) {
 }
 
 const IframeScriptString = () =>
-  `(${main.toString()})(${JSON.stringify({ me: store.me, isDev })});`;
+  `(${main.toString()})(${JSON.stringify({ me: store.me, isDev, future: FUTURE })});`;
 export default IframeScriptString;
