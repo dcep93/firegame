@@ -18,6 +18,7 @@ export default function FirebaseWrapper() {
       if (data.ROOM) return;
       console.log("FirebaseWrapper.19");
       defaultRoom.data.sessions[0].userId = store.me.userId;
+      defaultRoom.roomId = `roomIdx#${store.me.roomId.toString()}`;
       setData({ ROOM: defaultRoom });
       return;
     }
@@ -32,7 +33,7 @@ function setData(newData: any) {
   data = newData;
 }
 
-const defaultRoom = {
+export const defaultRoom = {
   id: "137",
   data: {
     type: "StateUpdated",

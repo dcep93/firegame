@@ -8,84 +8,8 @@ import {
   SocketRouteType,
   State,
 } from "./catann_files_enums";
+import { data, defaultRoom } from "./FirebaseWrapper";
 import { parseClientData } from "./parseMessagepack";
-
-export const ROOM = {
-  id: "137",
-  data: {
-    type: "StateUpdated",
-    updateSequence: Date.now(),
-    private: true,
-    playOrderSelectionActive: false,
-    minimumKarma: 0,
-    gameMode: "classic4P",
-    map: "classic4P",
-    diceType: "balanced",
-    victoryPointsToWin: 10,
-    victoryPointsRecommendedLimit: 22,
-    victoryPointsMaxAllowed: 20,
-    cardDiscardLimit: 7,
-    maxPlayers: 4,
-    gameSpeed: "base120s",
-    botSpeed: "normal",
-    hiddenBankCards: false,
-    friendlyRobber: true,
-    isTournament: false,
-    isTestFreeExpansionsAndMaps: false,
-    kickedUserIds: [],
-    creationPhase: "settings",
-    sessions: [
-      {
-        roomSessionId: "1141816",
-        userSessionId: "asdf",
-        userId: "101878616",
-        isBot: false,
-        isReadyToPlay: true,
-        selectedColor: "red",
-        username: "username#45",
-        isMember: false,
-        icon: 12,
-        profilePictureUrl: null,
-        karmaCompletedGames: 0,
-        karmaTotalGames: 0,
-        availableColors: ["red", "blue", "orange", "green"],
-        botDifficulty: null,
-      },
-      {
-        roomSessionId: "1141817",
-        userSessionId: "08621E.5580920",
-        userId: "201878617",
-        isBot: false,
-        isReadyToPlay: true,
-        selectedColor: "blue",
-        username: "player2#2002",
-        isMember: false,
-        icon: 8,
-        profilePictureUrl: null,
-        karmaCompletedGames: 0,
-        karmaTotalGames: 0,
-        availableColors: ["red", "blue", "orange", "green"],
-        botDifficulty: null,
-      },
-      {
-        roomSessionId: "1141818",
-        userSessionId: "08621E.5580921",
-        userId: "301878618",
-        isBot: false,
-        isReadyToPlay: true,
-        selectedColor: "orange",
-        username: "player3#3003",
-        isMember: false,
-        icon: 5,
-        profilePictureUrl: null,
-        karmaCompletedGames: 0,
-        karmaTotalGames: 0,
-        availableColors: ["red", "blue", "orange", "green"],
-        botDifficulty: null,
-      },
-    ],
-  },
-} as any;
 
 export const FUTURE = (() => {
   const future = new Date();
@@ -105,17 +29,16 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
-      ROOM.data.roomId = `room${store.me.roomId.toString()}`;
       console.log({ clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
-      sendResponse({ type: "Connected", userSessionId: "asdf" });
+      sendResponse({ type: "Connected", userSessionId: store.me.userId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
         id: `${State.LobbyStateUpdate}`,
         data: {
           type: LobbyState.SessionState,
-          payload: { id: "asdf" },
+          payload: { id: store.me.userId },
         },
       });
     }
@@ -142,7 +65,7 @@ export default function handleMessage(
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
-        return sendResponse(ROOM);
+        return sendResponse(defaultRoom);
       }
     }
     if (parsed._header[1] === ServerActionType.ShuffleAction) {
@@ -1127,15 +1050,15 @@ export default function handleMessage(
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        ROOM[key] = parsed[key];
-        return sendResponse(ROOM);
+        data.ROOM[key] = parsed[key];
+        return sendResponse(data.ROOM);
       }
       if (parsed.type === "selectColor") {
-        ROOM.data.sessions.find(
+        data.ROOM.data.sessions.find(
           (s: { roomSessionId: string }) =>
             s.roomSessionId === parsed.roomSessionId,
         ).selectedColor = parsed.color;
-        return sendResponse(ROOM);
+        return sendResponse(data.ROOM);
       }
     }
   }
