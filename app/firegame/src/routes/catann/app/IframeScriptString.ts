@@ -1,3 +1,5 @@
+import store, { MeType } from "../../../shared/store";
+
 type XhrMeta = {
   method?: string;
   url?: string;
@@ -9,7 +11,7 @@ declare global {
   }
 }
 
-function main() {
+function main({ me }: { me: MeType }) {
   console.log("overrides.js::main");
   overrideXHR();
   overrideWebsocket();
@@ -284,7 +286,6 @@ function main() {
       )
       .then((resp) => {
         window.history.replaceState(null, "", "/");
-        alert(window.location.pathname);
         document.open();
         document.write(resp);
         document.close();
@@ -295,5 +296,6 @@ function main() {
   }
 }
 
-const IframeScriptString = `(${main.toString()})();`;
+const IframeScriptString = () =>
+  `(${main.toString()})(${JSON.stringify({ me: store.me })});`;
 export default IframeScriptString;

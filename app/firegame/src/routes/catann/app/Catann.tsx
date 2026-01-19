@@ -22,7 +22,7 @@ class Catann extends React.Component {
     this.didInitIframe = true;
     doc.open();
     doc.write(
-      `<!doctype html><html><head><base href="/"></head><body><script>${IframeScriptString};</script></body></html>`,
+      `<!doctype html><html><head><base href="/"></head><body><script>${IframeScriptString()};</script></body></html>`,
     );
     doc.close();
   };
