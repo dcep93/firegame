@@ -1,5 +1,5 @@
 import store, { MeType } from "../../../shared/store";
-import { handleServerUpdate } from "./FirebaseWrapper";
+import { handleClientUpdate } from "./FirebaseWrapper";
 import { newUserState } from "./gameLogic";
 import handleMessage, { FUTURE } from "./handleMessage";
 import { packServerData } from "./parseMessagepack";
@@ -9,7 +9,7 @@ export const isDev = process.env.NODE_ENV === "development";
 window.addEventListener("message", (event) => {
   const { id, clientData, catann } = event.data || {};
   if (!catann) return;
-  if (!id) return handleServerUpdate(clientData);
+  if (!id) return handleClientUpdate(clientData);
   handleMessage(clientData, (serverData) =>
     event.source!.postMessage(
       { id, serverData: packServerData(serverData) },

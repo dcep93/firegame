@@ -4,26 +4,26 @@ import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
 import { newRoom, newRoomMe } from "./gameLogic";
 
-export function handleServerUpdate(clientData: any) {
+export function handleClientUpdate(clientData: any) {
   Object.assign(
-    firebase_data.ROOM.data.sessions.find(
+    firebaseData.ROOM.data.sessions.find(
       (s: any) => s.userId === store.me.userId,
     ),
     clientData,
   );
-  setData(firebase_data, { handleServerUpdate: clientData });
+  setFirebaseData(firebaseData, { handleClientUpdate: clientData });
 }
 
-export var firebase_data: any = {};
+export var firebaseData: any = {};
 
 export default function FirebaseWrapper() {
   useEffect(
     () =>
       void firebase.connect(roomPath(), (liveData) => {
-        console.debug("fetched", { firebase_data, liveData });
+        console.debug("fetched", { firebaseData, liveData });
         if (!liveData) return;
         if (!liveData.catann) {
-          setData(
+          setFirebaseData(
             {
               ROOM: newRoom(),
             },
@@ -32,27 +32,27 @@ export default function FirebaseWrapper() {
           return;
         }
         const unserialized = unSerializeFirebase(liveData.catann);
-        if (JSON.stringify(firebase_data) === JSON.stringify(unserialized))
+        if (JSON.stringify(firebaseData) === JSON.stringify(unserialized))
           return;
-        firebase_data = unserialized;
+        firebaseData = unserialized;
         console.log(
           "rendered",
-          firebase_data,
+          firebaseData,
           "TODO",
-          firebase_data.ROOM.data.friendlyRobber,
+          firebaseData.ROOM.data.friendlyRobber,
         );
-        if (firebase_data.GAME) {
-          console.log({ firebase_data });
+        if (firebaseData.GAME) {
+          console.log({ firebaseData });
           alert("game exists");
           return;
         }
         if (
-          !firebase_data.ROOM.data.sessions.find(
+          !firebaseData.ROOM.data.sessions.find(
             (s: any) => s.userId === store.me.userId,
           )
         ) {
-          firebase_data.ROOM.data.sessions.push(newRoomMe());
-          setData(firebase_data, { newRoomMe: true });
+          firebaseData.ROOM.data.sessions.push(newRoomMe());
+          setFirebaseData(firebaseData, { newRoomMe: true });
           return;
         }
       }),
@@ -61,7 +61,7 @@ export default function FirebaseWrapper() {
   return <div></div>;
 }
 
-function setData(newData: any, change: any) {
+export function setFirebaseData(newData: any, change: any) {
   console.log("setting", newData, change);
   // TODO reduce writes by using update instead of set
   // also only change diffs

@@ -8,7 +8,7 @@ import {
   SocketRouteType,
   State,
 } from "./catann_files_enums";
-import { firebase_data } from "./FirebaseWrapper";
+import { firebaseData } from "./FirebaseWrapper";
 import { newGame } from "./gameLogic";
 import { parseClientData } from "./parseMessagepack";
 
@@ -66,7 +66,7 @@ export default function handleMessage(
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
-        return sendResponse(firebase_data.ROOM);
+        return sendResponse(firebaseData.ROOM);
       }
     }
     if (parsed._header[1] === ServerActionType.ShuffleAction) {
@@ -82,15 +82,15 @@ export default function handleMessage(
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        firebase_data.ROOM.data[key] = parsed[key];
-        return sendResponse(firebase_data.ROOM);
+        firebaseData.ROOM.data[key] = parsed[key];
+        return sendResponse(firebaseData.ROOM);
       }
       if (parsed.type === "selectColor") {
-        firebase_data.ROOM.data.sessions.find(
+        firebaseData.ROOM.data.sessions.find(
           (s: { roomSessionId: string }) =>
             s.roomSessionId === parsed.roomSessionId,
         ).selectedColor = parsed.color;
-        return sendResponse(firebase_data.ROOM);
+        return sendResponse(firebaseData.ROOM);
       }
     }
   }
