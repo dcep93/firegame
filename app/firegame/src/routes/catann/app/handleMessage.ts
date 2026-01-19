@@ -45,6 +45,7 @@ export default function handleMessage(
       if (
         [
           GeneralAction.ChangeOnlineStatus,
+          GeneralAction.GetAllFriendsOnlineStatus,
           GeneralAction.RegisterToFriendService,
           GeneralAction.RegisterToNotificationService,
           GeneralAction.GetAllRoomInvitesReceived,
@@ -55,11 +56,7 @@ export default function handleMessage(
       }
     }
     if (parsed._header[1] === ServerActionType.LobbyAction) {
-      if (
-        [LobbyAction.SaveClientReferrer, LobbyAction.SetAdBlockStatus].includes(
-          parsed.action,
-        )
-      ) {
+      if ([LobbyAction.SetAdBlockStatus].includes(parsed.action)) {
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
