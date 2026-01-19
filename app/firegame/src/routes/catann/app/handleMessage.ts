@@ -31,7 +31,6 @@ export default function handleMessage(
         },
       });
     }
-    console.log(clientData);
     return;
   }
   const parsed = parseClientData(clientData);
