@@ -190,6 +190,7 @@ export function parseClientData(clientData: Record<string, number>) {
 }
 
 export function packServerData(serverData: any) {
+  if (!serverData) throw new Error("packServerData");
   if (
     serverData &&
     typeof serverData === "object" &&

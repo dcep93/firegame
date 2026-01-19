@@ -37,12 +37,7 @@ export default function FirebaseWrapper() {
         if (JSON.stringify(firebaseData) === JSON.stringify(unserialized))
           return;
         firebaseData = unserialized;
-        console.log(
-          "rendered",
-          firebaseData,
-          "TODO",
-          firebaseData.ROOM.data.friendlyRobber,
-        );
+        console.log("rendered", firebaseData);
         if (firebaseData.GAME) {
           console.log({ firebaseData });
           alert("game exists");
