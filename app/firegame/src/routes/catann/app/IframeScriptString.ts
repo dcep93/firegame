@@ -395,7 +395,7 @@ function main({
       )
       .then((resp) => {
         console.log(me);
-        window.history.replaceState(null, "", `/#room${me.roomId}`);
+        window.history.replaceState(null, "", `/#roomIdx${me.roomId}`);
         document.open();
         document.write(resp);
         document.close();

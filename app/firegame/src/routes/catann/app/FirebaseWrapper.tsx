@@ -60,7 +60,7 @@ export const defaultRoom = {
     sessions: [
       {
         roomSessionId: "1141816",
-        userSessionId: "asdf",
+        userSessionId: "u_d59cbe2bee24e",
         userId: "101878616",
         isBot: false,
         isReadyToPlay: true,
