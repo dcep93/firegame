@@ -35,15 +35,10 @@ function main({
   isDev: boolean;
   future: string;
 }) {
-  console.log(38);
   overrideXHR();
-  console.log(40);
   overrideWebsocket();
-  console.log(42);
   overrideServiceWorker();
-  console.log(44);
   loadRemote();
-  console.log(46);
 
   const USER_STATE = {
     userState: {
@@ -226,8 +221,6 @@ function main({
     const socketsById = new Map();
     let nextSocketId = 1;
 
-    console.log(229);
-
     function InterceptedWebSocket(this: EventTarget, ...createArgs: unknown[]) {
       const socket = new EventTarget();
       Object.setPrototypeOf(socket, InterceptedWebSocket.prototype);
@@ -313,15 +306,11 @@ function main({
       this.dispatchEvent(messageEvent);
     };
 
-    console.log(281);
-
     window.__socketBridgeHandler = (event) => {
       const { id, serverData } = event.data || {};
       if (!serverData) return;
       socketsById.get(id)?.receive(serverData);
     };
-
-    console.log(289);
 
     window.WebSocket = InterceptedWebSocket as unknown as typeof WebSocket;
   }

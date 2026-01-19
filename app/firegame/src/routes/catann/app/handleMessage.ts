@@ -3,13 +3,59 @@ import {
   LobbyAction,
   LobbyState,
   ServerActionType,
-  State,
   ShuffleQueueAction,
   SocketRouteType,
+  State,
 } from "./catann_files_enums";
 import { parseClientData } from "./parseMessagepack";
 
 const userSessionId = "08621E.5580914";
+
+const ROOM = {
+  id: "137",
+  data: {
+    type: "StateUpdated",
+    roomId: "room420",
+    updateSequence: 1768799061895,
+    private: true,
+    playOrderSelectionActive: false,
+    minimumKarma: 0,
+    gameMode: "classic4P",
+    map: "classic4P",
+    diceType: "balanced",
+    victoryPointsToWin: 10,
+    victoryPointsRecommendedLimit: 22,
+    victoryPointsMaxAllowed: 20,
+    cardDiscardLimit: 7,
+    maxPlayers: 4,
+    gameSpeed: "base120s",
+    botSpeed: "normal",
+    hiddenBankCards: false,
+    friendlyRobber: true,
+    isTournament: false,
+    isTestFreeExpansionsAndMaps: false,
+    kickedUserIds: [],
+    creationPhase: "settings",
+    sessions: [
+      {
+        roomSessionId: "1141816",
+        userSessionId,
+        userId: "101878616",
+        isBot: false,
+        isReadyToPlay: true,
+        selectedColor: "red",
+        username: "Scheck#2093",
+        isMember: false,
+        icon: 12,
+        profilePictureUrl: null,
+        karmaCompletedGames: 0,
+        karmaTotalGames: 0,
+        availableColors: ["red", "blue", "orange", "green"],
+        botDifficulty: null,
+      },
+    ],
+  },
+};
 
 export const FUTURE = (() => {
   const future = new Date();
@@ -60,56 +106,22 @@ export default function handleMessage(
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
-        return sendResponse({
-          id: "137",
-          data: {
-            type: "StateUpdated",
-            roomId: "room420",
-            updateSequence: 1768799061895,
-            private: true,
-            playOrderSelectionActive: false,
-            minimumKarma: 0,
-            gameMode: "classic4P",
-            map: "classic4P",
-            diceType: "balanced",
-            victoryPointsToWin: 10,
-            victoryPointsRecommendedLimit: 22,
-            victoryPointsMaxAllowed: 20,
-            cardDiscardLimit: 7,
-            maxPlayers: 4,
-            gameSpeed: "base120s",
-            botSpeed: "normal",
-            hiddenBankCards: false,
-            friendlyRobber: true,
-            isTournament: false,
-            isTestFreeExpansionsAndMaps: false,
-            kickedUserIds: [],
-            creationPhase: "settings",
-            sessions: [
-              {
-                roomSessionId: "1141816",
-                userSessionId,
-                userId: "101878616",
-                isBot: false,
-                isReadyToPlay: true,
-                selectedColor: "red",
-                username: "Scheck#2093",
-                isMember: false,
-                icon: 12,
-                profilePictureUrl: null,
-                karmaCompletedGames: 0,
-                karmaTotalGames: 0,
-                availableColors: ["red", "blue", "orange", "green"],
-                botDifficulty: null,
-              },
-            ],
-          },
-        });
+        return sendResponse(ROOM);
       }
     }
     if (parsed._header[1] === ServerActionType.ShuffleAction) {
       if ([ShuffleQueueAction.GetShuffleQueueData].includes(parsed.action)) {
         return;
+      }
+    }
+    if (parsed._header[1] === ServerActionType.RoomCommand) {
+      if (parsed.type.startsWith("set")) {
+        const capitalKey = parsed.type.replace(/^set/, "");
+        const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
+        return sendResponse({
+          ...ROOM,
+          data: { ...ROOM.data, [key]: parsed[key] },
+        });
       }
     }
   }
