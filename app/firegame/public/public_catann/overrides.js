@@ -111,7 +111,7 @@ function overrideXHR() {
     }
     // codex: dont remove this, its for debugging
     const e = `not implemented: ${JSON.stringify(__meta)}`;
-    console.log(e);
+    console.error(e);
     throw new Error(e);
   }
 
@@ -210,6 +210,7 @@ function overrideWebsocket() {
   InterceptedWebSocket.CLOSED = 3;
 
   window.addEventListener("message", (event) => {
+    console.log("received", event);
     const { id, data } = event.data || {};
     if (!id || !socketsById.has(id)) {
       return;
