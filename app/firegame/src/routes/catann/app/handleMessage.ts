@@ -13,10 +13,10 @@ import { parseClientData } from "./parseMessagepack";
 const userSessionId = "08621E.5580914";
 
 export const ROOM = {
-  id: "137",
+  id: "1",
   data: {
     type: "StateUpdated",
-    updateSequence: 1768799061895,
+    updateSequence: Date.now(),
     private: true,
     playOrderSelectionActive: false,
     minimumKarma: 0,
