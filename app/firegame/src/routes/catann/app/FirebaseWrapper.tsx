@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
@@ -17,41 +17,36 @@ export function handleServerUpdate(clientData: any) {
 export var firebase_data: any = {};
 
 export default function FirebaseWrapper() {
-  const [liveData, setLiveData] = useState<any>(null);
   useEffect(
     () =>
-      void firebase.connect(roomPath(), (newData) => {
-        // console.log({ data, newData, liveData });
-        setLiveData(unSerializeFirebase(newData));
+      void firebase.connect(roomPath(), (liveData) => {
+        console.log("fetched", { firebase_data, liveData });
+        if (!liveData) return;
+        if (!liveData.catann) {
+          setData({
+            ROOM: newRoom(),
+          });
+          return;
+        }
+        firebase_data = unSerializeFirebase(liveData.catann);
+        if (firebase_data.GAME) {
+          console.log({ firebase_data });
+          alert("game exists");
+          return;
+        }
+        if (
+          !firebase_data.ROOM.data.sessions.find(
+            (s: any) => s.userId === store.me.userId,
+          )
+        ) {
+          firebase_data.ROOM.data.sessions.push(newRoomMe());
+          setData(firebase_data);
+          return;
+        }
+        console.log("rendered", { firebase_data });
       }),
     [],
   );
-  useEffect(() => {
-    console.log("fetched", { liveData });
-    if (!liveData) return;
-    if (!liveData.catann) {
-      setData({
-        ROOM: newRoom(),
-      });
-      return;
-    }
-    firebase_data = liveData.catann;
-    if (firebase_data.GAME) {
-      console.log({ firebase_data });
-      alert("game exists");
-      return;
-    }
-    if (
-      !firebase_data.ROOM.data.sessions.find(
-        (s: any) => s.userId === store.me.userId,
-      )
-    ) {
-      firebase_data.ROOM.data.sessions.push(newRoomMe());
-      setData(firebase_data);
-      return;
-    }
-    console.log("rendered", { firebase_data });
-  }, [liveData]);
   return <div></div>;
 }
 
