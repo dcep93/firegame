@@ -9,7 +9,6 @@ export function handleServerUpdate(clientData: any) {
     clientData,
   );
   setData(data);
-  console.log(data.ROOM, clientData);
 }
 
 export var data: any = {};
@@ -17,7 +16,7 @@ var liveData: typeof data;
 
 export default function FirebaseWrapper() {
   useEffect(() => {
-    console.log({ store });
+    console.log("fetched", { store });
     if (!store.gameW) {
       if (data.ROOM) return;
       defaultRoom.data.sessions[0].userSessionId = store.me.userId;
@@ -28,7 +27,7 @@ export default function FirebaseWrapper() {
     }
     data = store.gameW.game;
     liveData = { ...data };
-    console.log({ data });
+    console.log("rendered", { data });
   }, [store]);
   return <div></div>;
 }

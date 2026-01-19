@@ -30,7 +30,7 @@ export default function handleMessage(
       )
     ) {
       data.ROOM.data.roomId = `roomIdx${store.me.roomId.toString()}`;
-      console.log({ clientData, sendToMainSocket });
+      console.log("handleMessage.init", { clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
       sendResponse({ type: "Connected", userSessionId: store.me.userId });
@@ -74,7 +74,7 @@ export default function handleMessage(
         return;
       }
     }
-    console.log(parsed);
+    console.log("handleMessage", parsed);
     if (parsed._header[1] === ServerActionType.RoomCommand) {
       if (parsed.type === "startGame") {
         return sendResponse({
