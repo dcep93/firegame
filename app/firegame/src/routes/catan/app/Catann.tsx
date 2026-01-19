@@ -14,7 +14,7 @@ class Catan extends React.Component {
   render() {
     const roomId = store.me?.roomId;
     if (roomId === undefined) return null;
-    const src = `${window.location.origin}/public_catann?${Date.now()}#coin9247`;
+    const src = `${window.location.origin}/public_catann/#coin9247`;
     return (
       <div
         style={{
