@@ -35,6 +35,7 @@ function main({
   isDev: boolean;
   future: string;
 }) {
+  console.log(38);
   overrideXHR();
   overrideWebsocket();
   overrideServiceWorker();
