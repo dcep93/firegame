@@ -123,8 +123,8 @@ function main({
       //     "be7ff6257c114e96bf8bd088e74f557e7d0763d174985bb66a9f00b0df4e0661",
       expiresAt: future,
     },
-    // csrfToken:
-    //   "e3eb1249fa0460b5c60c8c51c405365f88d9b20a0c0e9b6b1684a2b048b4aad0ab6e1f8424b0185bb61b1f6373f9324a94644e964ce348927fc8347eedd7d16b",
+    csrfToken:
+      "e3eb1249fa0460b5c60c8c51c405365f88d9b20a0c0e9b6b1684a2b048b4aad0ab6e1f8424b0185bb61b1f6373f9324a94644e964ce348927fc8347eedd7d16b",
     abTests: {
       //   CHAT_TOXICITY_SHOW_MONITORED_WARNING:
       //     "SHOW_CHAT_IS_MONITORED_WARNING",
@@ -139,7 +139,7 @@ function main({
   function overrideXHR() {
     const OrigXHR = window.XMLHttpRequest;
 
-    function getPayload(__meta: XhrMeta) {
+    function getPayload(__meta: XhrMeta, sendArgs: any) {
       const url = __meta.url;
       if (!url || !url.startsWith("/")) {
         return Promise.resolve(undefined);
@@ -177,6 +177,17 @@ function main({
       if (url === "/api/user-state") {
         return Promise.resolve(JSON.stringify(USER_STATE));
       }
+      if (url === "/api/profile-edit/icon") {
+        console.log(USER_STATE.userState);
+        USER_STATE.userState = {
+          ...USER_STATE.userState,
+          ...JSON.parse(sendArgs[0]),
+        };
+        console.log(USER_STATE.userState);
+        return Promise.resolve(
+          JSON.stringify({ success: true, userState: USER_STATE.userState }),
+        );
+      }
       // codex: dont remove this, its for debugging
       const e = `not implemented: ${JSON.stringify(__meta)}`;
       console.error(e);
@@ -211,8 +222,7 @@ function main({
 
       const origSend = xhr.send;
       xhr.send = function (...sendArgs: Parameters<XMLHttpRequest["send"]>) {
-        const __meta = xhr.__meta;
-        getPayload(__meta).then((payload) => {
+        getPayload(xhr.__meta, sendArgs).then((payload) => {
           if (!payload) {
             return origSend.apply(xhr, sendArgs);
           }
