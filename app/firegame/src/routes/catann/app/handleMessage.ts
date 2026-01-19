@@ -1,3 +1,8 @@
+import {
+  GeneralAction,
+  ServerActionType,
+  SocketRouteType,
+} from "./catann_files_enums";
 import { parseClientData } from "./parseMessagepack";
 
 const userSessionId = "08621E.5580914";
@@ -23,7 +28,7 @@ export default function handleMessage(
       sendResponse({
         id: "133",
         data: {
-          type: 2,
+          type: ServerActionType.LobbyAction,
           payload: {
             id: userSessionId,
           },
@@ -33,34 +38,12 @@ export default function handleMessage(
     return;
   }
   const parsed = parseClientData(clientData);
-  if (parsed.channel === "lobby") {
-    if (parsed.action === 9) {
-      // return sendResponse({
-      //   id: "139",
-      //   data: {
-      //     type: 1,
-      //     payload: {
-      //       playerCount: 5,
-      //       modeId: 2,
-      //       mapId: 33,
-      //       endDate: FUTURE,
-      //     },
-      //   },
-      // });
-    }
-    if (parsed.action === 1) {
-      // return sendResponse({
-      //   id: "139",
-      //   data: {
-      //     type: 1,
-      //     payload: {
-      //       playerCount: 5,
-      //       modeId: 2,
-      //       mapId: 33,
-      //       endDate: FUTURE,
-      //     },
-      //   },
-      // });
+  if (parsed._header[0] === SocketRouteType.RouteToServerType) {
+    if (parsed._header[1] === ServerActionType.GeneralAction) {
+      const action = GeneralAction[parsed.action];
+      if (action == GeneralAction.RegisterToFriendService) {
+        return;
+      }
     }
   }
   // codex: dont remove this, its for debugging
