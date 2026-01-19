@@ -62,9 +62,11 @@ export default function handleMessage(
     }
     if (parsed._header[1] === ServerActionType.LobbyAction) {
       if (
-        [LobbyAction.SetAdBlockStatus, LobbyAction.WatchRoomList].includes(
-          parsed.action,
-        )
+        [
+          LobbyAction.SetAdBlockStatus,
+          LobbyAction.WatchRoomList,
+          LobbyAction.SaveClientReferrer,
+        ].includes(parsed.action)
       ) {
         return;
       }
