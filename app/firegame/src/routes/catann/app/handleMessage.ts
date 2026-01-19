@@ -1,6 +1,8 @@
 import {
   GeneralAction,
+  LobbyAction,
   ServerActionType,
+  ShuffleQueueAction,
   SocketRouteType,
 } from "./catann_files_enums";
 import { parseClientData } from "./parseMessagepack";
@@ -40,8 +42,29 @@ export default function handleMessage(
   const parsed = parseClientData(clientData);
   if (parsed._header[0] === SocketRouteType.RouteToServerType) {
     if (parsed._header[1] === ServerActionType.GeneralAction) {
-      const action = GeneralAction[parsed.action];
-      if (action == GeneralAction.RegisterToFriendService) {
+      if (
+        [
+          GeneralAction.ChangeOnlineStatus,
+          GeneralAction.RegisterToFriendService,
+          GeneralAction.RegisterToNotificationService,
+          GeneralAction.GetAllRoomInvitesReceived,
+          GeneralAction.GetNotifications,
+        ].includes(parsed.action)
+      ) {
+        return;
+      }
+    }
+    if (parsed._header[1] === ServerActionType.LobbyAction) {
+      if (
+        [LobbyAction.SaveClientReferrer, LobbyAction.SetAdBlockStatus].includes(
+          parsed.action,
+        )
+      ) {
+        return;
+      }
+    }
+    if (parsed._header[1] === ServerActionType.ShuffleAction) {
+      if ([ShuffleQueueAction.GetShuffleQueueData].includes(parsed.action)) {
         return;
       }
     }
