@@ -3485,7 +3485,6 @@
           if (void 0 === window.location.hash) return;
           if ("" == window.location.hash) return;
           if (!this.isUrlPathRoot()) return;
-          alert("success");
           const e = window.location.hash.substr(1, window.location.hash.length);
           return Object.values(r).some((t) => e.startsWith(t)) || null == e
             ? void 0
@@ -3494,7 +3493,6 @@
         static isUrlPathRoot() {
           const e = new RegExp(String.raw`\/${n.r.language}\/?`),
             t = location.pathname.replace(e, "/");
-          console.log({ e, t });
           return (
             "/" == t ||
             "/mobile" == t ||

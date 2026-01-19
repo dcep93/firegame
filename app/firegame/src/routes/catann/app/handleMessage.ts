@@ -62,6 +62,53 @@ export default function handleMessage(
       ) {
         return;
       }
+      if (parsed.action === LobbyAction.AccessGameLink) {
+        return sendResponse({
+          id: "137",
+          data: {
+            type: "StateUpdated",
+            roomId: "room420",
+            updateSequence: 1768799061895,
+            private: true,
+            playOrderSelectionActive: false,
+            minimumKarma: 0,
+            gameMode: "classic4P",
+            map: "classic4P",
+            diceType: "balanced",
+            victoryPointsToWin: 10,
+            victoryPointsRecommendedLimit: 22,
+            victoryPointsMaxAllowed: 20,
+            cardDiscardLimit: 7,
+            maxPlayers: 4,
+            gameSpeed: "base120s",
+            botSpeed: "normal",
+            hiddenBankCards: false,
+            friendlyRobber: true,
+            isTournament: false,
+            isTestFreeExpansionsAndMaps: false,
+            kickedUserIds: [],
+            creationPhase: "settings",
+            sessions: [
+              {
+                roomSessionId: "1141816",
+                userSessionId: "08621E.5658810",
+                userId: "101878616",
+                isBot: false,
+                isReadyToPlay: true,
+                selectedColor: "red",
+                username: "Scheck#2093",
+                isMember: false,
+                icon: 12,
+                profilePictureUrl: null,
+                karmaCompletedGames: 0,
+                karmaTotalGames: 0,
+                availableColors: ["red", "blue", "orange", "green"],
+                botDifficulty: null,
+              },
+            ],
+          },
+        });
+      }
     }
     if (parsed._header[1] === ServerActionType.ShuffleAction) {
       if ([ShuffleQueueAction.GetShuffleQueueData].includes(parsed.action)) {

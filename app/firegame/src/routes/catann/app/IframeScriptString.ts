@@ -311,7 +311,7 @@ function main({
             ),
       )
       .then((resp) => {
-        window.history.replaceState(null, "", "/");
+        window.history.replaceState(null, "", "/#room420");
         document.open();
         document.write(resp);
         document.close();
