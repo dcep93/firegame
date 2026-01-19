@@ -4,7 +4,7 @@ import store from "../../shared/store";
 
 import writer from "../writer/writer";
 
-import Catann from "../../routes/catan/app/Catann";
+import Catann from "../../routes/catann/app/Catann";
 import EclipseCalc from "../../routes/eclipse_calc/app/EclipseCalc";
 import LoadingPage from "./LoadingPage";
 import LoginPage from "./LoginPage";

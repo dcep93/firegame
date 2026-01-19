@@ -9,7 +9,7 @@ window.addEventListener("message", (event) => {
   );
 });
 
-class Catan extends React.Component {
+class Catann extends React.Component {
   render() {
     const src = `${window.location.origin}/public_catann/#coin9247`;
     return (
@@ -35,4 +35,4 @@ class Catan extends React.Component {
   }
 }
 
-export default Catan;
+export default Catann;
