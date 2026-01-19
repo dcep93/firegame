@@ -24,14 +24,15 @@ class GameWrapper extends React.Component<{
   }
 
   render() {
-    if (this.props.component.name === Catann.name) {
-      return <Catann />;
-    }
     if (!store.lobby) {
       return <LoadingPage />;
     }
     if (!store.lobby[store.me.userId]) {
       if (this.props.component.name === EclipseCalc.name) {
+        setTimeout(() => writer.setUsername(store.me.roomId.toString()));
+        return null;
+      }
+      if (this.props.component.name === Catann.name) {
         setTimeout(() => writer.setUsername(store.me.roomId.toString()));
         return null;
       }

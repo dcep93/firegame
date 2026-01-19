@@ -17,11 +17,10 @@ var liveData: typeof data;
 export default function FirebaseWrapper() {
   useEffect(() => {
     console.log("fetched", { store });
-    if (!store.gameW) {
+    if (!store.gameW?.game) {
       if (data.ROOM) return;
       defaultRoom.data.sessions[0].userSessionId = store.me.userId;
       defaultRoom.data.sessions[0].userId = store.me.userId;
-      defaultRoom.roomId = `roomIdx${store.me.roomId.toString()}`;
       setData({ ROOM: defaultRoom });
       return;
     }

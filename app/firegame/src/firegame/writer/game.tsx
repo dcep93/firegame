@@ -38,12 +38,13 @@ function receiveGameUpdate<T>(record: RecordType<T>): void {
   if (record) {
     const timestamp = Object.keys(record)[0];
     const gameWrapper = record[timestamp];
-    if (Firebase.now() - gameWrapper.info.timestamp < GAME_EXPIRE_TIME) {
-      // @ts-ignore read only
-      store.gameW = gameWrapper;
-      update();
+    if (Firebase.now() - gameWrapper.info?.timestamp > GAME_EXPIRE_TIME) {
       return;
     }
+    // @ts-ignore read only
+    store.gameW = gameWrapper;
+    update();
+    return;
   }
   if (store.gameW) return;
   const gameWrapper: GameWrapperType<T | null> = {
