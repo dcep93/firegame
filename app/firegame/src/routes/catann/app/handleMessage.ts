@@ -9,7 +9,7 @@ import {
   State,
 } from "./catann_files_enums";
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
-import { newGame } from "./gameLogic";
+import { newGame, spoofHostRoom } from "./gameLogic";
 import { parseClientData } from "./parseMessagepack";
 
 export const FUTURE = (() => {
@@ -109,16 +109,4 @@ export default function handleMessage(
   const e = `not implemented: ${JSON.stringify(parsed)}`;
   // console.error(e);
   throw new Error(e);
-}
-
-function spoofHostRoom() {
-  return {
-    ...firebaseData.ROOM,
-    data: {
-      ...firebaseData.ROOM.data,
-      sessions: (firebaseData.ROOM.data.sessions.slice() as any[]).sort(
-        (a, b) => (a.userId === store.me.userId ? -1 : 1),
-      ),
-    },
-  };
 }

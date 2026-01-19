@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
-import { newRoom, newRoomMe } from "./gameLogic";
+import { newRoom, newRoomMe, spoofHostRoom } from "./gameLogic";
+import { sendToMainSocket } from "./handleMessage";
 
 export function handleClientUpdate(clientData: any) {
   Object.assign(
@@ -52,6 +53,7 @@ export default function FirebaseWrapper() {
           setFirebaseData(firebaseData, { newRoomMe: true });
           return;
         }
+        sendToMainSocket?.(spoofHostRoom());
       }),
     [],
   );
@@ -64,7 +66,12 @@ export function setFirebaseData(newData: any, change: any) {
   // also only change diffs
   firebase.set(
     `${roomPath()}/catann`,
-    !newData ? null : serializeFirebase({ ...newData, change }),
+    !newData
+      ? null
+      : serializeFirebase({
+          ...newData,
+          __meta: { change, me: store.me, now: Date.now() },
+        }),
   );
 }
 

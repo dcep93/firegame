@@ -1,5 +1,6 @@
 import store from "../../../shared/store";
 import { State } from "./catann_files_enums";
+import { firebaseData } from "./FirebaseWrapper";
 import { FUTURE } from "./handleMessage";
 
 export const newUserState = () => {
@@ -1124,6 +1125,17 @@ export const newGame = () => {
         timeLeftInState: 180,
       },
       sequence: 4,
+    },
+  };
+};
+export const spoofHostRoom = () => {
+  return {
+    ...firebaseData.ROOM,
+    data: {
+      ...firebaseData.ROOM.data,
+      sessions: (firebaseData.ROOM.data.sessions.slice() as any[]).sort(
+        (a, b) => (a.userId === store.me.userId ? -1 : 1),
+      ),
     },
   };
 };
