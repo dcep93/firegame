@@ -1,5 +1,6 @@
 import React from "react";
 import handleMessage from "./handleMessage";
+import IframeScriptString from "./IframeScriptString";
 
 window.addEventListener("message", (event) => {
   const { id, clientData } = event.data || {};
@@ -23,7 +24,7 @@ class Catann extends React.Component {
       >
         <iframe
           title={src}
-          src={src}
+          srcDoc={`<script>${IframeScriptString}</script>`}
           style={{
             width: "100%",
             height: "100%",

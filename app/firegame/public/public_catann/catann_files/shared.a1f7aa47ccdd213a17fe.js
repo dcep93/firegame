@@ -3485,6 +3485,7 @@
           if (void 0 === window.location.hash) return;
           if ("" == window.location.hash) return;
           if (!this.isUrlPathRoot()) return;
+          alert("success");
           const e = window.location.hash.substr(1, window.location.hash.length);
           return Object.values(r).some((t) => e.startsWith(t)) || null == e
             ? void 0
@@ -3493,6 +3494,7 @@
         static isUrlPathRoot() {
           const e = new RegExp(String.raw`\/${n.r.language}\/?`),
             t = location.pathname.replace(e, "/");
+          console.log({ e, t });
           return (
             "/" == t ||
             "/mobile" == t ||
@@ -3501,6 +3503,7 @@
           );
         }
         static extractHashAndValue(e) {
+          alert("extractHashAndValue");
           const t = e.indexOf("#");
           if (-1 == t || t == e.length - 1)
             return { hash: void 0, value: void 0 };
@@ -4224,6 +4227,7 @@
         for (const e of t) console.info(e);
       }
       function d() {
+        alert("d");
         window.history.replaceState(
           null,
           "",
@@ -22816,6 +22820,7 @@
           this.sendLobby(a.Dj.Clicked1v1BeginnerBotGame, e);
         }
         static updateURLToRoom(e) {
+          alert("updateURLToRoom");
           window.location.hash != "#" + e && window.location.assign("#" + e);
         }
         static joinChannel(e, t, s, i) {
@@ -28545,6 +28550,7 @@
       class x {
         init() {
           const e = window.location.hash;
+          alert("x.init");
           let t;
           if ("#gift" == e) {
             var s;
@@ -30454,6 +30460,7 @@
         }
         showSectionFromHash() {
           const e = window.location.hash.replace("#", "");
+          alert("showSection");
           if ("" == e) return !1;
           for (let t = 0; t < this.sections.length; t++) {
             if (1 == this.sections[t].id.includes(e))
