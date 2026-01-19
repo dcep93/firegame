@@ -1,8 +1,7 @@
 import store, { MeType } from "../../../shared/store";
 import handleMessage from "./handleMessage";
 
-// @ts-expect-error — Vite injects import.meta.env at build time
-export const isDev = import.meta.env?.DEV;
+export const isDev = process.env.NODE_ENV === "development";
 
 window.addEventListener("message", (event) => {
   const { id, clientData } = event.data || {};
