@@ -107,7 +107,7 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
-      ROOM.data.roomId = store.me.roomId.toString();
+      ROOM.data.roomId = `room${store.me.roomId.toString()}`;
       console.log({ clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;

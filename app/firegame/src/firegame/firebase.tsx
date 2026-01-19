@@ -64,7 +64,7 @@ function latestChild(path: string, callback: (value: BlobType) => void): void {
       var val = snapshot.val();
       if (val) firebaseId = Object.keys(val)[0];
       callback(val);
-    }
+    },
   );
 }
 

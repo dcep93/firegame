@@ -1,6 +1,6 @@
 import store, { MeType } from "../../../shared/store";
+import { handleServerUpdate } from "./FirebaseWrapper";
 import handleMessage, { FUTURE } from "./handleMessage";
-import handleServerUpdate from "./handleServerUpdate";
 import { packServerData } from "./parseMessagepack";
 
 export const isDev = process.env.NODE_ENV === "development";
@@ -394,7 +394,7 @@ function main({
       )
       .then((resp) => {
         console.log(me);
-        window.history.replaceState(null, "", `/#${me.roomId}`);
+        window.history.replaceState(null, "", `/#room${me.roomId}`);
         document.open();
         document.write(resp);
         document.close();

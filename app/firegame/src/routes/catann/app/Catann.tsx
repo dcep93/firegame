@@ -1,4 +1,5 @@
 import React from "react";
+import FirebaseWrapper from "./FirebaseWrapper";
 import IframeScriptString from "./IframeScriptString";
 
 class Catann extends React.Component {
@@ -27,6 +28,7 @@ class Catann extends React.Component {
           overscrollBehavior: "none",
         }}
       >
+        <FirebaseWrapper />
         <iframe
           ref={iframeRef}
           title={"iframe"}
