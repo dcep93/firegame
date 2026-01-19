@@ -31,7 +31,7 @@ export default function handleMessage(
       )
     ) {
       firebase_data.ROOM.data.roomId = `roomIdx${store.me.roomId.toString()}`;
-      console.log("handleMessage.init", { clientData, sendToMainSocket });
+      console.debug("handleMessage.init", { clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
       sendResponse({ type: "Connected", userSessionId: store.me.userId });
@@ -83,7 +83,7 @@ export default function handleMessage(
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        firebase_data.ROOM[key] = parsed[key];
+        firebase_data.ROOM.data[key] = parsed[key];
         return sendResponse(firebase_data.ROOM);
       }
       if (parsed.type === "selectColor") {

@@ -256,7 +256,6 @@ function main({
     };
 
     window.__socketBridgeHandler = (event) => {
-      console.log(259, event.data);
       const { id, serverData } = event.data || {};
       if (!serverData) return;
       socketsById.get(id).receive(serverData);
