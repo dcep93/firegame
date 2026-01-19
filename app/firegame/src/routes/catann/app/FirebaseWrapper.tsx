@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
+import { newRoom } from "./gameLogic";
 
 export function handleServerUpdate(clientData: any) {
   Object.assign(
@@ -30,7 +31,7 @@ export default function FirebaseWrapper() {
     if (!liveData) return;
     if (!liveData.catann) {
       setData({
-        ROOM: emptyRoom,
+        ROOM: newRoom(),
       });
       return;
     }
@@ -73,31 +74,3 @@ function setData(newData: any) {
   firebase.set(`${roomPath()}/catann`, newData);
   firebase_data = newData;
 }
-
-const emptyRoom = {
-  id: "137",
-  data: {
-    type: "StateUpdated",
-    updateSequence: Date.now(),
-    private: true,
-    playOrderSelectionActive: false,
-    minimumKarma: 0,
-    gameMode: "classic4P",
-    map: "classic4P",
-    diceType: "balanced",
-    victoryPointsToWin: 10,
-    victoryPointsRecommendedLimit: 22,
-    victoryPointsMaxAllowed: 20,
-    cardDiscardLimit: 7,
-    maxPlayers: 4,
-    gameSpeed: "base120s",
-    botSpeed: "normal",
-    hiddenBankCards: false,
-    friendlyRobber: true,
-    isTournament: false,
-    isTestFreeExpansionsAndMaps: false,
-    kickedUserIds: [],
-    creationPhase: "settings",
-    sessions: [],
-  },
-} as any;

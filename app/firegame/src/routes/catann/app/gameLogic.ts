@@ -101,6 +101,36 @@ export const newUserState = () => {
   };
 };
 
+export const newRoom = () => {
+  return {
+    id: "137",
+    data: {
+      type: "StateUpdated",
+      updateSequence: Date.now(),
+      private: true,
+      playOrderSelectionActive: false,
+      minimumKarma: 0,
+      gameMode: "classic4P",
+      map: "classic4P",
+      diceType: "balanced",
+      victoryPointsToWin: 10,
+      victoryPointsRecommendedLimit: 22,
+      victoryPointsMaxAllowed: 20,
+      cardDiscardLimit: 7,
+      maxPlayers: 4,
+      gameSpeed: "base120s",
+      botSpeed: "normal",
+      hiddenBankCards: false,
+      friendlyRobber: true,
+      isTournament: false,
+      isTestFreeExpansionsAndMaps: false,
+      kickedUserIds: [],
+      creationPhase: "settings",
+      sessions: [],
+    },
+  };
+};
+
 export const newGame = () => {
   return {
     id: State.GameStateUpdate.toString(),
