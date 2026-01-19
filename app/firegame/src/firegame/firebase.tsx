@@ -74,6 +74,7 @@ function push(path: string, obj: BlobType): void {
 }
 
 function connect(path: string, callback: (value: BlobType) => void): void {
+  console.trace({ path });
   onValue(ref(database, path), (snapshot: ResultType) => {
     var val = snapshot.val();
     callback(val);

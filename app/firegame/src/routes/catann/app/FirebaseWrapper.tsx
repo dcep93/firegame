@@ -13,8 +13,10 @@ export var data: any = {};
 
 export default function FirebaseWrapper() {
   useEffect(() => {
+    console.log({ store });
     if (!store.gameW) {
       if (data.ROOM) return;
+      console.log("FirebaseWrapper.19");
       defaultRoom.data.sessions[0].userId = store.me.userId;
       setData({ ROOM: defaultRoom });
       return;
@@ -26,6 +28,7 @@ export default function FirebaseWrapper() {
 }
 
 function setData(newData: any) {
+  // firebase.set(gamePath(), newData);
   data = newData;
 }
 
