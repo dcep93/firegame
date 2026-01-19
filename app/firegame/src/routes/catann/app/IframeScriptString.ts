@@ -228,55 +228,90 @@ function main({
 
     console.log(229);
 
-    class InterceptedWebSocket extends EventTarget {
-      static CONNECTING = 0;
-      static OPEN = 1;
-      static CLOSING = 2;
-      static CLOSED = 3;
-
-      id: number;
-      readyState: number;
-      onopen: ((event: Event) => void) | null = null;
-      onclose: ((event: CloseEvent) => void) | null = null;
-      onmessage: ((event: MessageEvent) => void) | null = null;
-
-      constructor(...createArgs: unknown[]) {
-        super();
-        this.id = nextSocketId++;
-        this.readyState = 1;
-        socketsById.set(this.id, this);
-        this.send({ InterceptedWebSocket: createArgs });
-        queueMicrotask(() => {
-          if (typeof this.onopen === "function") {
-            this.onopen(new Event("open"));
+    function InterceptedWebSocket(this: EventTarget, ...createArgs: unknown[]) {
+      const socket = new EventTarget();
+      Object.setPrototypeOf(socket, InterceptedWebSocket.prototype);
+      (socket as unknown as { id: number }).id = nextSocketId++;
+      (socket as unknown as { readyState: number }).readyState = 1;
+      (
+        socket as unknown as { onopen: ((event: Event) => void) | null }
+      ).onopen = null;
+      (
+        socket as unknown as { onclose: ((event: CloseEvent) => void) | null }
+      ).onclose = null;
+      (
+        socket as unknown as {
+          onmessage: ((event: MessageEvent) => void) | null;
+        }
+      ).onmessage = null;
+      socketsById.set((socket as unknown as { id: number }).id, socket);
+      (
+        socket as unknown as {
+          send: (clientData: unknown) => void;
+        }
+      ).send({ InterceptedWebSocket: createArgs });
+      queueMicrotask(() => {
+        const onopen = (
+          socket as unknown as {
+            onopen: ((event: Event) => void) | null;
           }
-          this.dispatchEvent(new Event("open"));
-        });
-      }
+        ).onopen;
+        if (typeof onopen === "function") {
+          onopen(new Event("open"));
+        }
+        socket.dispatchEvent(new Event("open"));
+      });
+      return socket as unknown as WebSocket;
+    }
 
-      send(clientData: unknown) {
-        window.parent?.postMessage({ id: this.id, clientData }, "*");
-      }
+    InterceptedWebSocket.prototype = Object.create(EventTarget.prototype);
+    InterceptedWebSocket.prototype.constructor = InterceptedWebSocket;
+    InterceptedWebSocket.CONNECTING = 0;
+    InterceptedWebSocket.OPEN = 1;
+    InterceptedWebSocket.CLOSING = 2;
+    InterceptedWebSocket.CLOSED = 3;
 
-      close() {
+    (InterceptedWebSocket.prototype as unknown as WebSocket).send = function (
+      this: { id: number },
+      clientData: unknown,
+    ) {
+      window.parent?.postMessage({ id: this.id, clientData }, "*");
+    };
+
+    (InterceptedWebSocket.prototype as unknown as WebSocket).close =
+      function (this: {
+        id: number;
+        readyState: number;
+        onclose: ((event: CloseEvent) => void) | null;
+        dispatchEvent: (event: Event) => boolean;
+      }) {
         this.readyState = 3;
         socketsById.delete(this.id);
         if (typeof this.onclose === "function") {
           this.onclose(new CloseEvent("close"));
         }
         this.dispatchEvent(new CloseEvent("close"));
-      }
+      };
 
-      receive(data: unknown) {
-        const messageEvent = new MessageEvent("message", {
-          data,
-        });
-        if (typeof this.onmessage === "function") {
-          this.onmessage(messageEvent);
-        }
-        this.dispatchEvent(messageEvent);
+    (
+      InterceptedWebSocket.prototype as unknown as {
+        receive: (data: unknown) => void;
       }
-    }
+    ).receive = function (
+      this: {
+        onmessage: ((event: MessageEvent) => void) | null;
+        dispatchEvent: (event: Event) => boolean;
+      },
+      data: unknown,
+    ) {
+      const messageEvent = new MessageEvent("message", {
+        data,
+      });
+      if (typeof this.onmessage === "function") {
+        this.onmessage(messageEvent);
+      }
+      this.dispatchEvent(messageEvent);
+    };
 
     console.log(281);
 
