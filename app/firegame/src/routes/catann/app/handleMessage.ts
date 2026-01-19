@@ -108,7 +108,7 @@ export default function handleMessage(
       )
     ) {
       console.log({ clientData, sendToMainSocket });
-      if (sendToMainSocket !== undefined) throw new Error("sendToMainSocket");
+      if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
       sendResponse({ type: "Connected", userSessionId });
       sendResponse({ type: "SessionEstablished" });

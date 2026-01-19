@@ -1,12 +1,14 @@
 import store, { MeType } from "../../../shared/store";
-import handleMessage, { FUTURE, ROOM, sendToMainSocket } from "./handleMessage";
+import handleMessage, { FUTURE } from "./handleMessage";
+import handleServerUpdate from "./handleServerUpdate";
 import { packServerData } from "./parseMessagepack";
 
 export const isDev = process.env.NODE_ENV === "development";
 
 window.addEventListener("message", (event) => {
-  const { id, clientData } = event.data || {};
-  if (!clientData) return;
+  const { id, clientData, catann } = event.data || {};
+  if (!catann) return;
+  if (!id) return handleServerUpdate(clientData);
   handleMessage(clientData, (serverData) =>
     event.source!.postMessage(
       { id, serverData: packServerData(serverData) },
@@ -183,14 +185,15 @@ function main({
           ...USER_STATE.userState,
           ...parsed,
         };
-        Object.assign(
-          ROOM.data.sessions.find(
-            (s: { roomSessionId: string }) =>
-              s.roomSessionId === parsed.roomSessionId,
-          ),
-          parsed,
-        );
-        sendToMainSocket?.(ROOM);
+        window.parent?.postMessage({ catann: true, clientData: parsed }, "*");
+        // Object.assign(
+        //   ROOM.data.sessions.find(
+        //     (s: { roomSessionId: string }) =>
+        //       s.roomSessionId === parsed.roomSessionId,
+        //   ),
+        //   parsed,
+        // );
+        // sendToMainSocket?.(ROOM);
         return Promise.resolve(
           JSON.stringify({ success: true, userState: USER_STATE.userState }),
         );
@@ -312,7 +315,10 @@ function main({
       this: { id: number },
       clientData: unknown,
     ) {
-      window.parent?.postMessage({ id: this.id, clientData }, "*");
+      window.parent?.postMessage(
+        { catann: true, id: this.id, clientData },
+        "*",
+      );
     };
 
     (InterceptedWebSocket.prototype as unknown as WebSocket).close =
