@@ -1,4 +1,16 @@
 import store, { MeType } from "../../../shared/store";
+import handleMessage from "./handleMessage";
+
+// @ts-expect-error — Vite injects import.meta.env at build time
+export const isDev = import.meta.env?.DEV;
+
+window.addEventListener("message", (event) => {
+  const { id, clientData } = event.data || {};
+  if (!clientData) return;
+  handleMessage(clientData, (serverData) =>
+    event.source!.postMessage({ id, serverData }, { targetOrigin: "*" }),
+  );
+});
 
 type XhrMeta = {
   method?: string;
@@ -11,7 +23,7 @@ declare global {
   }
 }
 
-function main({ me }: { me: MeType }) {
+function main({ me, isDev }: { me: MeType; isDev: boolean }) {
   console.log("overrides.js::main");
   overrideXHR();
   overrideWebsocket();
@@ -288,10 +300,12 @@ function main({ me }: { me: MeType }) {
     fetch(`/public_catann/remote.html?${Date.now()}`)
       .then((resp) => resp.text())
       .then((resp) =>
-        resp.replaceAll(
-          "https://cdn.colonist.io/dist/js",
-          "/public_catann/catann_files",
-        ),
+        !isDev
+          ? resp
+          : resp.replaceAll(
+              "https://cdn.colonist.io/dist/js",
+              "/public_catann/catann_files",
+            ),
       )
       .then((resp) => {
         window.history.replaceState(null, "", "/");
@@ -306,5 +320,5 @@ function main({ me }: { me: MeType }) {
 }
 
 const IframeScriptString = () =>
-  `(${main.toString()})(${JSON.stringify({ me: store.me })});`;
+  `(${main.toString()})(${JSON.stringify({ me: store.me, isDev })});`;
 export default IframeScriptString;

@@ -1,14 +1,5 @@
 import React from "react";
-import handleMessage from "./handleMessage";
 import IframeScriptString from "./IframeScriptString";
-
-window.addEventListener("message", (event) => {
-  const { id, clientData } = event.data || {};
-  if (!clientData) return;
-  handleMessage(clientData, (serverData) =>
-    event.source!.postMessage({ id, serverData }, { targetOrigin: "*" }),
-  );
-});
 
 class Catann extends React.Component {
   private iframeRef = React.createRef<HTMLIFrameElement>();
@@ -40,7 +31,7 @@ class Catann extends React.Component {
         <iframe
           ref={this.iframeRef}
           title={"iframe"}
-          src={"/public_catann/bridge.html"}
+          src={"/#room420"}
           onLoad={this.handleIframeLoad}
           style={{
             width: "100%",
