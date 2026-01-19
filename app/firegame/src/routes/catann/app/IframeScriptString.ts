@@ -38,7 +38,7 @@ function main({
   console.log(38);
   overrideXHR();
   console.log(40);
-  // overrideWebsocket();
+  overrideWebsocket();
   console.log(42);
   overrideServiceWorker();
   console.log(44);
@@ -226,6 +226,8 @@ function main({
     const socketsById = new Map();
     let nextSocketId = 1;
 
+    console.log(229);
+
     class InterceptedWebSocket extends EventTarget {
       static CONNECTING = 0;
       static OPEN = 1;
@@ -276,11 +278,15 @@ function main({
       }
     }
 
+    console.log(281);
+
     window.__socketBridgeHandler = (event) => {
       const { id, serverData } = event.data || {};
       if (!serverData) return;
       socketsById.get(id)?.receive(serverData);
     };
+
+    console.log(289);
 
     window.WebSocket = InterceptedWebSocket as unknown as typeof WebSocket;
   }
