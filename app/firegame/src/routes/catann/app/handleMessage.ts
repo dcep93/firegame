@@ -20,7 +20,7 @@ export default function handleMessage(
   }
   const parsed = parseClientData(clientData);
   if (parsed.channel === "lobby") {
-    return;
+    // return;
   }
   // codex: dont remove this, its for debugging
   const e = `not implemented: ${JSON.stringify(parsed)}`;
