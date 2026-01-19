@@ -1,3 +1,4 @@
+import store from "../../../shared/store";
 import {
   GeneralAction,
   LobbyAction,
@@ -15,7 +16,6 @@ export const ROOM = {
   id: "137",
   data: {
     type: "StateUpdated",
-    roomId: "room420",
     updateSequence: 1768799061895,
     private: true,
     playOrderSelectionActive: false,
@@ -107,6 +107,7 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
+      ROOM.data.roomId = store.me.roomId.toString();
       console.log({ clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;

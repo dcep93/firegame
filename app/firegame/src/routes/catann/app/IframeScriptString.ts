@@ -49,7 +49,7 @@ function main({
       colonistVersion: 1080,
       giftedMemberships: [],
       icon: 11,
-      id: "420",
+      id: me.userId,
       interactedWithSite: true,
       isLoggedIn: true,
       hasJoinedColonistDiscordServer: false,
@@ -117,7 +117,7 @@ function main({
       //   totalCompletedGameCount: 441,
       //   ckTotalGameCount: 0,
       //   ckNextRerollAt: "2026-01-17T19:30:46.992Z",
-      username: "username",
+      username: me.userId,
       language: null,
       //   usernameChangeAttemptsLeft: 0,
       forceSubscription: true,
@@ -186,14 +186,6 @@ function main({
           ...parsed,
         };
         window.parent?.postMessage({ catann: true, clientData: parsed }, "*");
-        // Object.assign(
-        //   ROOM.data.sessions.find(
-        //     (s: { roomSessionId: string }) =>
-        //       s.roomSessionId === parsed.roomSessionId,
-        //   ),
-        //   parsed,
-        // );
-        // sendToMainSocket?.(ROOM);
         return Promise.resolve(
           JSON.stringify({ success: true, userState: USER_STATE.userState }),
         );
@@ -401,7 +393,8 @@ function main({
               ),
       )
       .then((resp) => {
-        window.history.replaceState(null, "", "/#room420");
+        console.log(me);
+        window.history.replaceState(null, "", `/#${me.roomId}`);
         document.open();
         document.write(resp);
         document.close();
