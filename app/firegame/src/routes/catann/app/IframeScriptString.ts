@@ -96,39 +96,48 @@ function main({ me }: { me: MeType }) {
   function overrideXHR() {
     const OrigXHR = window.XMLHttpRequest;
 
-    async function getPayload(__meta: XhrMeta) {
+    function getPayload(__meta: XhrMeta) {
       const url = __meta.url;
       if (!url || !url.startsWith("/")) {
-        return;
+        return Promise.resolve(undefined);
       }
-      if (url.startsWith("/api/analytic-events")) return JSON.stringify(true);
-      if (url.startsWith("/cdn-cgi/rum")) return JSON.stringify(true);
+      if (url.startsWith("/api/analytic-events"))
+        return Promise.resolve(JSON.stringify(true));
+      if (url.startsWith("/cdn-cgi/rum"))
+        return Promise.resolve(JSON.stringify(true));
       if (url === "/api/header/friend-requests-received")
-        return JSON.stringify([]);
-      if (url === "/api/find-game-ranked-state") return JSON.stringify([]);
+        return Promise.resolve(JSON.stringify([]));
+      if (url === "/api/find-game-ranked-state")
+        return Promise.resolve(JSON.stringify([]));
       if (url === "/api/show-feedback-form")
-        return JSON.stringify({
-          shouldShow: false,
-          lastShown: FUTURE,
-        });
+        return Promise.resolve(
+          JSON.stringify({
+            shouldShow: false,
+            lastShown: FUTURE,
+          }),
+        );
       if (url === "/api/profile/friends")
-        return JSON.stringify({
-          friends: [],
-          friendRequestsSent: [],
-          friendRequestsReceived: [],
-        });
+        return Promise.resolve(
+          JSON.stringify({
+            friends: [],
+            friendRequestsSent: [],
+            friendRequestsReceived: [],
+          }),
+        );
       if (url === "/api/room-list.json") {
-        return JSON.stringify({
-          rooms: [],
-        });
+        return Promise.resolve(
+          JSON.stringify({
+            rooms: [],
+          }),
+        );
       }
       if (url === "/api/user-state") {
-        return JSON.stringify(USER_STATE);
+        return Promise.resolve(JSON.stringify(USER_STATE));
       }
       // codex: dont remove this, its for debugging
       const e = `not implemented: ${JSON.stringify(__meta)}`;
       console.error(e);
-      throw new Error(e);
+      return Promise.reject(new Error(e));
     }
 
     function InterceptedXHR(this: XMLHttpRequest) {
