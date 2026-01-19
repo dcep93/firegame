@@ -31,7 +31,6 @@ export default function handleMessage(
       )
     ) {
       console.debug("handleMessage.init", { clientData, sendToMainSocket });
-      if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
       sendResponse({ type: "Connected", userSessionId: store.me.userId });
       sendResponse({ type: "SessionEstablished" });
