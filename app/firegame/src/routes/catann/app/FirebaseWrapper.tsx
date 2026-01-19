@@ -22,7 +22,7 @@ export default function FirebaseWrapper() {
     () =>
       void firebase.connect(roomPath(), (newData) => {
         // console.log({ data, newData, liveData });
-        setLiveData(newData);
+        setLiveData(unSerializeFirebase(newData));
       }),
     [],
   );
@@ -57,6 +57,16 @@ export default function FirebaseWrapper() {
 
 function setData(newData: any) {
   console.log("setting", { newData });
-  firebase.set(`${roomPath()}/catann`, newData);
   firebase_data = newData;
+  // TODO reduce writes by using update instead of set
+  // also only change diffs
+  firebase.set(`${roomPath()}/catann`, serializeFirebase(newData));
+}
+
+function serializeFirebase(data: any) {
+  return JSON.stringify(data);
+}
+
+function unSerializeFirebase(dataStr: string) {
+  return JSON.parse(dataStr);
 }
