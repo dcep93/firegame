@@ -95,33 +95,32 @@ function main() {
     const OrigXHR = window.XMLHttpRequest;
 
     async function getPayload(__meta: XhrMeta) {
-      if (!__meta.url.startsWith("/")) {
+      const url = __meta.url;
+      if (!url || !url.startsWith("/")) {
         return;
       }
-      if (__meta.url.startsWith("/api/analytic-events"))
-        return JSON.stringify(true);
-      if (__meta.url.startsWith("/cdn-cgi/rum")) return JSON.stringify(true);
-      if (__meta.url === "/api/header/friend-requests-received")
+      if (url.startsWith("/api/analytic-events")) return JSON.stringify(true);
+      if (url.startsWith("/cdn-cgi/rum")) return JSON.stringify(true);
+      if (url === "/api/header/friend-requests-received")
         return JSON.stringify([]);
-      if (__meta.url === "/api/find-game-ranked-state")
-        return JSON.stringify([]);
-      if (__meta.url === "/api/show-feedback-form")
+      if (url === "/api/find-game-ranked-state") return JSON.stringify([]);
+      if (url === "/api/show-feedback-form")
         return JSON.stringify({
           shouldShow: false,
           lastShown: FUTURE,
         });
-      if (__meta.url === "/api/profile/friends")
+      if (url === "/api/profile/friends")
         return JSON.stringify({
           friends: [],
           friendRequestsSent: [],
           friendRequestsReceived: [],
         });
-      if (__meta.url === "/api/room-list.json") {
+      if (url === "/api/room-list.json") {
         return JSON.stringify({
           rooms: [],
         });
       }
-      if (__meta.url === "/api/user-state") {
+      if (url === "/api/user-state") {
         return JSON.stringify(USER_STATE);
       }
       // codex: dont remove this, its for debugging
@@ -138,7 +137,7 @@ function main() {
       xhr.open = function (...args: Parameters<XMLHttpRequest["open"]>) {
         const [method, url] = args;
         xhr.__meta.method = method?.toUpperCase?.() || "GET";
-        xhr.__meta.url = url;
+        xhr.__meta.url = typeof url === "string" ? url : url?.toString?.();
         return origOpen.apply(xhr, args);
       };
 
