@@ -9,7 +9,7 @@ window.addEventListener("message", (event) => {
   if (!clientData) return;
   handleMessage(clientData, (serverData) =>
     event.source!.postMessage(
-      { id, data: packServerData(serverData) },
+      { id, serverData: packServerData(serverData) },
       { targetOrigin: "*" },
     ),
   );
@@ -35,7 +35,6 @@ function main({
   isDev: boolean;
   future: string;
 }) {
-  console.log("overrides.js::main");
   overrideXHR();
   overrideWebsocket();
   overrideServiceWorker();
@@ -262,7 +261,6 @@ function main({
       }
 
       receive(data: unknown) {
-        console.log("received", data);
         const messageEvent = new MessageEvent("message", {
           data,
         });

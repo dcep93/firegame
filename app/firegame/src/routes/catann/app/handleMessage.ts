@@ -18,7 +18,6 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
-      console.log("sending 3");
       sendResponse({ type: "Connected", userSessionId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
