@@ -286,7 +286,6 @@ function main() {
       .then((resp) => {
         document.open();
         document.write(resp);
-        alert(1);
         document.close();
         if (window.__socketBridgeHandler) {
           window.addEventListener("message", window.__socketBridgeHandler);
