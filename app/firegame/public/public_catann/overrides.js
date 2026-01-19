@@ -6,7 +6,11 @@ function main() {
   loadRemote();
 }
 
-const FUTURE = "3000-01-01T00:00:00.000Z";
+const FUTURE = (() => {
+  const future = new Date();
+  future.setFullYear(future.getFullYear() + 1);
+  return future.toISOString();
+})();
 
 const USER_STATE = {
   userState: {
