@@ -17,9 +17,8 @@ class Catan extends React.Component {
         style={{
           width: "100vW",
           height: "100vH",
-          border: 0,
           overflow: "hidden",
-          margin: 0,
+          overscrollBehavior: "none",
         }}
       >
         <iframe
@@ -29,8 +28,6 @@ class Catan extends React.Component {
             width: "100%",
             height: "100%",
             border: 0,
-            overflow: "hidden",
-            margin: 0,
           }}
         />
       </div>
