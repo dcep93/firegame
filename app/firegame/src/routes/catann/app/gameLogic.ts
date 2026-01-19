@@ -9,7 +9,7 @@ export const newUserState = () => {
     userState: {
       userSessionId: store.me.userId,
       accessLevel: 1,
-      colonistCoins: 0,
+      colonistCoins: 108_000,
       colonistVersion: 1080,
       giftedMemberships: [],
       icon: 11,

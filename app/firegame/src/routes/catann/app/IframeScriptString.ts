@@ -56,7 +56,9 @@ function main({
       if (url.startsWith("/api/analytic-events"))
         return Promise.resolve(JSON.stringify(true));
       if (url.startsWith("/api/validate-username/"))
-        return Promise.resolve(JSON.stringify(true));
+        return Promise.resolve(
+          JSON.stringify({ isAvailable: true, containsToxicWord: false }),
+        );
       if (url.startsWith("/cdn-cgi/rum"))
         return Promise.resolve(JSON.stringify(true));
       if (url === "/api/header/friend-requests-received")
@@ -89,6 +91,17 @@ function main({
         return Promise.resolve(JSON.stringify(userState));
       }
       if (url === "/api/profile-edit/icon") {
+        const parsed = JSON.parse(sendArgs[0]);
+        userState.userState = {
+          ...userState.userState,
+          ...parsed,
+        };
+        window.parent?.postMessage({ catann: true, clientData: parsed }, "*");
+        return Promise.resolve(
+          JSON.stringify({ success: true, userState: userState.userState }),
+        );
+      }
+      if (url === "/api/profile-edit/username") {
         const parsed = JSON.parse(sendArgs[0]);
         userState.userState = {
           ...userState.userState,
