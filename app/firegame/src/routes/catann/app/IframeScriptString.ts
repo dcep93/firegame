@@ -133,13 +133,27 @@ function main() {
       const xhr = new OrigXHR() as XMLHttpRequest & { __meta: XhrMeta };
       xhr.__meta = {};
 
-      const origOpen = xhr.open;
-      xhr.open = function (...args: Parameters<XMLHttpRequest["open"]>) {
-        const [method, url] = args;
+      const origOpen = xhr.open.bind(xhr);
+      function interceptedOpen(method: string, url: string | URL): void;
+      function interceptedOpen(
+        method: string,
+        url: string | URL,
+        async: boolean,
+        username?: string | null,
+        password?: string | null,
+      ): void;
+      function interceptedOpen(
+        method: string,
+        url: string | URL,
+        async?: boolean,
+        username?: string | null,
+        password?: string | null,
+      ) {
         xhr.__meta.method = method?.toUpperCase?.() || "GET";
         xhr.__meta.url = typeof url === "string" ? url : url?.toString?.();
-        return origOpen.apply(xhr, args);
-      };
+        return origOpen(method, url, async as boolean, username, password);
+      }
+      xhr.open = interceptedOpen as typeof xhr.open;
 
       const origSend = xhr.send;
       xhr.send = function (...sendArgs: Parameters<XMLHttpRequest["send"]>) {
@@ -280,5 +294,5 @@ function main() {
   }
 }
 
-const IframeScriptString = `${main.toString()}; ${main.name}()`;
+const IframeScriptString = `(${main.toString()})();`;
 export default IframeScriptString;
