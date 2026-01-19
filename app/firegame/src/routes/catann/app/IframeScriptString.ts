@@ -1,3 +1,14 @@
+type XhrMeta = {
+  method?: string;
+  url?: string;
+};
+
+declare global {
+  interface Window {
+    __socketBridgeHandler?: (event: MessageEvent) => void;
+  }
+}
+
 function main() {
   console.log("overrides.js::main");
   overrideXHR();
@@ -83,7 +94,7 @@ function main() {
   function overrideXHR() {
     const OrigXHR = window.XMLHttpRequest;
 
-    async function getPayload(__meta) {
+    async function getPayload(__meta: XhrMeta) {
       if (!__meta.url.startsWith("/")) {
         return;
       }
@@ -119,12 +130,12 @@ function main() {
       throw new Error(e);
     }
 
-    function InterceptedXHR() {
-      const xhr = new OrigXHR();
+    function InterceptedXHR(this: XMLHttpRequest) {
+      const xhr = new OrigXHR() as XMLHttpRequest & { __meta: XhrMeta };
       xhr.__meta = {};
 
       const origOpen = xhr.open;
-      xhr.open = function (...args) {
+      xhr.open = function (...args: Parameters<XMLHttpRequest["open"]>) {
         const [method, url] = args;
         xhr.__meta.method = method?.toUpperCase?.() || "GET";
         xhr.__meta.url = url;
@@ -132,11 +143,12 @@ function main() {
       };
 
       const origSend = xhr.send;
-      xhr.send = function (body) {
+      xhr.send = function (...sendArgs: Parameters<XMLHttpRequest["send"]>) {
+        const [body] = sendArgs;
         const __meta = xhr.__meta;
         getPayload(__meta).then((payload) => {
           if (!payload) {
-            return origSend.call(xhr, body);
+            return origSend.apply(xhr, sendArgs);
           }
 
           Object.defineProperty(xhr, "readyState", { value: 4 });
@@ -158,10 +170,12 @@ function main() {
     InterceptedXHR.prototype = OrigXHR.prototype;
     Object.getOwnPropertyNames(OrigXHR).forEach((k) => {
       try {
-        InterceptedXHR[k] = OrigXHR[k];
+        (InterceptedXHR as unknown as Record<string, unknown>)[k] = (
+          OrigXHR as unknown as Record<string, unknown>
+        )[k];
       } catch {}
     });
-    window.XMLHttpRequest = InterceptedXHR;
+    window.XMLHttpRequest = InterceptedXHR as unknown as typeof XMLHttpRequest;
   }
 
   function overrideWebsocket() {
@@ -169,7 +183,18 @@ function main() {
     let nextSocketId = 1;
 
     class InterceptedWebSocket extends EventTarget {
-      constructor(...createArgs) {
+      static CONNECTING = 0;
+      static OPEN = 1;
+      static CLOSING = 2;
+      static CLOSED = 3;
+
+      id: number;
+      readyState: number;
+      onopen: ((event: Event) => void) | null = null;
+      onclose: ((event: CloseEvent) => void) | null = null;
+      onmessage: ((event: MessageEvent) => void) | null = null;
+
+      constructor(...createArgs: unknown[]) {
         super();
         this.id = nextSocketId++;
         this.readyState = 1;
@@ -183,7 +208,7 @@ function main() {
         });
       }
 
-      send(clientData) {
+      send(clientData: unknown) {
         window.parent?.postMessage({ id: this.id, clientData }, "*");
       }
 
@@ -196,7 +221,7 @@ function main() {
         this.dispatchEvent(new CloseEvent("close"));
       }
 
-      receive(serverData) {
+      receive(serverData: unknown) {
         const data = JSON.stringify(serverData);
         const messageEvent = new MessageEvent("message", {
           data,
@@ -208,23 +233,21 @@ function main() {
       }
     }
 
-    InterceptedWebSocket.CONNECTING = 0;
-    InterceptedWebSocket.OPEN = 1;
-    InterceptedWebSocket.CLOSING = 2;
-    InterceptedWebSocket.CLOSED = 3;
-
     window.__socketBridgeHandler = (event) => {
       const { id, serverData } = event.data || {};
       if (!serverData) return;
-      socketsById.get(id).receive(serverData);
+      socketsById.get(id)?.receive(serverData);
     };
 
-    window.WebSocket = InterceptedWebSocket;
+    window.WebSocket = InterceptedWebSocket as unknown as typeof WebSocket;
   }
 
   function overrideServiceWorker() {
     const origRegister = navigator.serviceWorker.register;
-    const InterceptedRegister = function (...args) {
+    const InterceptedRegister = function (
+      this: ServiceWorkerContainer,
+      ...args: Parameters<ServiceWorkerContainer["register"]>
+    ) {
       const [path, options] = args;
       let nextPath = path;
       if (typeof nextPath === "string") {
@@ -251,7 +274,9 @@ function main() {
         document.open();
         document.write(resp);
         document.close();
-        window.addEventListener("message", window.__socketBridgeHandler);
+        if (window.__socketBridgeHandler) {
+          window.addEventListener("message", window.__socketBridgeHandler);
+        }
       });
   }
 }
