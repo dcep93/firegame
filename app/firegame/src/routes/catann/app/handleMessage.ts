@@ -8,7 +8,7 @@ import {
   SocketRouteType,
   State,
 } from "./catann_files_enums";
-import { data, defaultRoom } from "./FirebaseWrapper";
+import { data } from "./FirebaseWrapper";
 import { parseClientData } from "./parseMessagepack";
 
 export const FUTURE = (() => {
@@ -29,16 +29,17 @@ export default function handleMessage(
         "wss://socket.svr.colonist.io/",
       )
     ) {
+      data.ROOM.data.roomId = `roomIdx${store.me.roomId.toString()}`;
       console.log({ clientData, sendToMainSocket });
       if (sendToMainSocket !== undefined) window.location.reload();
       sendToMainSocket = sendResponse;
-      sendResponse({ type: "Connected", userSessionId: store.me.userId });
+      sendResponse({ type: "Connected", userSessionId: "asdf" });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
         id: `${State.LobbyStateUpdate}`,
         data: {
           type: LobbyState.SessionState,
-          payload: { id: store.me.userId },
+          payload: { id: "asdf" },
         },
       });
     }
@@ -65,7 +66,7 @@ export default function handleMessage(
         return;
       }
       if (parsed.action === LobbyAction.AccessGameLink) {
-        return sendResponse(defaultRoom);
+        return sendResponse(data.ROOM);
       }
     }
     if (parsed._header[1] === ServerActionType.ShuffleAction) {
@@ -1003,7 +1004,7 @@ export default function handleMessage(
               },
               playerUserStates: [
                 {
-                  userId: "101878616",
+                  userId: "asdf",
                   username: "Scheck#2093",
                   databaseIcon: 12,
                   selectedColor: 1,

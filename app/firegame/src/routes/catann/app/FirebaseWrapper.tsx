@@ -16,7 +16,6 @@ export default function FirebaseWrapper() {
     console.log({ store });
     if (!store.gameW) {
       if (data.ROOM) return;
-      console.log("FirebaseWrapper.19");
       defaultRoom.data.sessions[0].userSessionId = store.me.userId;
       defaultRoom.data.sessions[0].userId = store.me.userId;
       defaultRoom.roomId = `roomIdx${store.me.roomId.toString()}`;
@@ -34,7 +33,7 @@ function setData(newData: any) {
   data = newData;
 }
 
-export const defaultRoom = {
+const defaultRoom = {
   id: "137",
   data: {
     type: "StateUpdated",
@@ -61,8 +60,8 @@ export const defaultRoom = {
     sessions: [
       {
         roomSessionId: "1141816",
-        userSessionId: "u_d59cbe2bee24e",
-        userId: "u_d59cbe2bee24e",
+        userSessionId: "asdf",
+        userId: "asdf",
         isBot: false,
         isReadyToPlay: true,
         selectedColor: "red",

@@ -44,7 +44,7 @@ function main({
 
   const USER_STATE = {
     userState: {
-      userSessionId: me.userId,
+      userSessionId: "asdf",
       accessLevel: 1,
       colonistCoins: 0,
       colonistVersion: 1080,
