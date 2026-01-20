@@ -20,6 +20,16 @@ export const FUTURE = (() => {
 
 export var sendToMainSocket: (serverData: any) => void;
 
+const GAME_ACTION = {
+  WantToBuildSettlement: 14,
+  ConfirmBuildSettlement: 15,
+  ConfirmBuildSettlementSkippingSelection: 16,
+} as const;
+
+const CORNER_BUILDING_TYPE = {
+  Settlement: 1,
+} as const;
+
 export default function handleMessage(
   clientData: any,
   sendResponse: typeof sendToMainSocket,
@@ -66,6 +76,11 @@ export default function handleMessage(
     ) {
       if (firebaseData.GAME) {
         return sendResponse(sequenced(firebaseData.GAME));
+      }
+    }
+    if (parsed._header[1] === ServerActionType.GameAction) {
+      if (applyGameAction(parsed)) {
+        return;
       }
     }
     return;
@@ -145,3 +160,68 @@ const sequenced = (game: any) => ({
     sequence: (game.data.sequence += 1),
   },
 });
+
+const applyGameAction = (parsed: {
+  action?: number;
+  payload?: unknown;
+}) => {
+  if (!firebaseData.GAME) return false;
+  if (
+    parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
+    parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
+    parsed.action !== GAME_ACTION.WantToBuildSettlement
+  ) {
+    return false;
+  }
+
+  if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
+    return true;
+  }
+
+  const cornerIndex = resolveCornerIndex(parsed.payload);
+  if (cornerIndex === null) {
+    return true;
+  }
+
+  const gameData = firebaseData.GAME;
+  const gameState = gameData.data.payload.gameState;
+  const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
+  if (!cornerState) {
+    return true;
+  }
+
+  const playerColor = gameData.data.payload.playerColor ?? 1;
+  gameState.mapState.tileCornerStates[String(cornerIndex)] = {
+    ...cornerState,
+    owner: playerColor,
+    buildingType: CORNER_BUILDING_TYPE.Settlement,
+  };
+
+  const settlementState = gameState.mechanicSettlementState?.[playerColor];
+  if (settlementState?.bankSettlementAmount > 0) {
+    settlementState.bankSettlementAmount -= 1;
+  }
+
+  setFirebaseData(
+    { ...firebaseData, GAME: sequenced(gameData) },
+    {
+      action: parsed.action,
+      cornerIndex,
+    },
+  );
+  return true;
+};
+
+const resolveCornerIndex = (payload: unknown) => {
+  if (typeof payload === "number" && Number.isFinite(payload)) {
+    return payload;
+  }
+  if (payload && typeof payload === "object") {
+    const record = payload as Record<string, unknown>;
+    const possibleIndex = record.cornerIndex ?? record.corner ?? record.index;
+    if (typeof possibleIndex === "number" && Number.isFinite(possibleIndex)) {
+      return possibleIndex;
+    }
+  }
+  return null;
+};
