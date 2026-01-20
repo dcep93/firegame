@@ -99,7 +99,7 @@ function main({
           ...userState.userState,
           ...parsed,
         };
-        window.parent?.postMessage({ catann: true, clientData: parsed }, "*");
+        window.parent!.postMessage({ catann: true, clientData: parsed }, "*");
         return Promise.resolve(
           JSON.stringify({ success: true, userState: userState.userState }),
         );
@@ -110,7 +110,7 @@ function main({
           ...userState.userState,
           ...parsed,
         };
-        window.parent?.postMessage({ catann: true, clientData: parsed }, "*");
+        window.parent!.postMessage({ catann: true, clientData: parsed }, "*");
         return Promise.resolve(
           JSON.stringify({ success: true, userState: userState.userState }),
         );
@@ -232,7 +232,7 @@ function main({
       this: { id: number },
       clientData: unknown,
     ) {
-      window.parent?.postMessage(
+      window.parent!.postMessage(
         { catann: true, id: this.id, clientData },
         "*",
       );
