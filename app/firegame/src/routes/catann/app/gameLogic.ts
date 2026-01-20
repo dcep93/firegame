@@ -165,9 +165,7 @@ export const newGame = () => {
       type: 4,
       payload: {
         playerColor: 1,
-        playOrder: sessions
-          .map((_, i) => i)
-          .sort((a, b) => Math.random() - 0.5),
+        playOrder: [1],
         gameState: {
           diceState: {
             diceThrown: false,
@@ -279,12 +277,11 @@ export const newGame = () => {
             isActive: true,
           },
         },
-        playerUserStates: sessions.map((s) => ({
+        playerUserStates: sessions.map((s, i) => ({
           userId: s.userId,
           username: s.username,
           databaseIcon: s.icon,
-          selectedColor:
-            1 + (s.availableColors as any[]).indexOf(s.selectedColor),
+          selectedColor: 1,
           isBot: false,
           deviceType: 1,
           countryCode: "US",

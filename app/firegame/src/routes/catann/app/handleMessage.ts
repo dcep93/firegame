@@ -83,7 +83,7 @@ export default function handleMessage(
     if (parsed._header[1] === ServerActionType.RoomCommand) {
       if (parsed.type === "startGame") {
         const newFirebaseData = { GAME: newGame() };
-        setFirebaseData(newFirebaseData, { parsed });
+        // setFirebaseData(newFirebaseData, { parsed });
         return sendResponse(newFirebaseData.GAME);
       }
       if (parsed.type.startsWith("set")) {
