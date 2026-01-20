@@ -157,19 +157,12 @@ export const newRoomMe = () => {
 
 export const newGame = () => {
   console.log("newGame");
-  const room = firebaseData.ROOM;
-  const sessions = room.data.sessions as any[];
   return {
-    id: State.GameStateUpdate.toString(),
+    id: "130",
     data: {
       type: 4,
-      sequence: 1,
+      sequence: 3,
       payload: {
-        serverId: "mockServerId",
-        databaseGameId: room.data.roomId,
-        gameSettingId: room.data.roomId,
-        shouldResetGameClient: false,
-        isReconnectingSession: false,
         playerColor: 1,
         playOrder: [1],
         gameState: {
@@ -190,11 +183,11 @@ export const newGame = () => {
           },
           mapState: newMapState(),
           currentState: {
-            completedTurns: 0,
+            completedTurns: 1,
             turnState: 0,
             actionState: 1,
             currentTurnPlayerColor: 1,
-            startTime: Date.now(),
+            startTime: 1_768_893_514_269,
             allocatedTime: 180,
           },
           tradeState: {
@@ -209,7 +202,9 @@ export const newGame = () => {
           playerStates: {
             "1": {
               color: 1,
-              victoryPointsState: {},
+              victoryPointsState: {
+                "0": 1,
+              },
               bankTradeRatiosState: {
                 "1": 4,
                 "2": 4,
@@ -237,11 +232,40 @@ export const newGame = () => {
                 type: 44,
               },
             },
+            "2": {
+              text: {
+                type: 4,
+                playerColor: 1,
+                pieceEnum: 2,
+              },
+              from: 1,
+            },
+            "3": {
+              text: {
+                type: 4,
+                playerColor: 1,
+                pieceEnum: 0,
+              },
+              from: 1,
+            },
+            "4": {
+              text: {
+                type: 44,
+              },
+            },
+            "5": {
+              text: {
+                type: 24,
+                playerColor: 1,
+                is10SecondRuleDisabled: true,
+              },
+              from: 1,
+            },
           },
           gameChatState: {},
           mechanicSettlementState: {
             "1": {
-              bankSettlementAmount: 5,
+              bankSettlementAmount: 4,
             },
           },
           mechanicCityState: {
@@ -251,7 +275,7 @@ export const newGame = () => {
           },
           mechanicRoadState: {
             "1": {
-              bankRoadAmount: 15,
+              bankRoadAmount: 14,
             },
           },
           mechanicDevelopmentCardsState: {
@@ -272,35 +296,37 @@ export const newGame = () => {
           },
           mechanicLongestRoadState: {
             "1": {
-              longestRoad: 0,
+              longestRoad: 1,
             },
           },
           mechanicLargestArmyState: {
             "1": {},
           },
           mechanicRobberState: {
-            locationTileIndex: 2,
+            locationTileIndex: 5,
             isActive: true,
           },
         },
-        playerUserStates: sessions.map((s, i) => ({
-          userId: s.userId,
-          username: s.username,
-          databaseIcon: s.icon,
-          selectedColor: 1,
-          isBot: false,
-          deviceType: 1,
-          countryCode: "US",
-          regionUpdated: null,
-          membership: null,
-          profilePictureUrl: null,
-        })),
+        playerUserStates: [
+          {
+            userId: "101895182",
+            username: "Palila#6136",
+            databaseIcon: 12,
+            selectedColor: 1,
+            isBot: false,
+            deviceType: 1,
+            countryCode: "US",
+            regionUpdated: null,
+            membership: null,
+            profilePictureUrl: null,
+          },
+        ],
         gameDetails: {
           isRanked: false,
           isDiscord: false,
         },
         gameSettings: {
-          id: room.data.roomId,
+          id: "stone1270",
           channelId: null,
           gameType: 3,
           privateGame: false,
@@ -319,9 +345,9 @@ export const newGame = () => {
           gameSpeed: 2,
           botSpeed: 1,
           hideBankCards: false,
-          friendlyRobber: false,
+          friendlyRobber: true,
         },
-        timeLeftInState: 180,
+        timeLeftInState: 170.993,
       },
     },
   };
@@ -334,98 +360,98 @@ const newMapState = () => {
       "0": {
         x: 0,
         y: -2,
-        type: 4,
-        diceNumber: 8,
+        type: 3,
+        diceNumber: 12,
       },
       "1": {
         x: -1,
         y: -1,
         type: 5,
-        diceNumber: 10,
+        diceNumber: 9,
       },
       "2": {
         x: -2,
         y: 0,
-        type: 0,
-        diceNumber: 0,
+        type: 3,
+        diceNumber: 10,
       },
       "3": {
         x: -2,
         y: 1,
-        type: 5,
-        diceNumber: 9,
+        type: 4,
+        diceNumber: 8,
       },
       "4": {
         x: -2,
         y: 2,
-        type: 1,
-        diceNumber: 12,
+        type: 4,
+        diceNumber: 3,
       },
       "5": {
         x: -1,
         y: 2,
-        type: 1,
-        diceNumber: 11,
+        type: 0,
+        diceNumber: 0,
       },
       "6": {
         x: 0,
         y: 2,
         type: 3,
-        diceNumber: 4,
+        diceNumber: 6,
       },
       "7": {
         x: 1,
         y: 1,
-        type: 3,
-        diceNumber: 8,
+        type: 5,
+        diceNumber: 2,
       },
       "8": {
         x: 2,
         y: 0,
-        type: 4,
+        type: 1,
         diceNumber: 5,
       },
       "9": {
         x: 2,
         y: -1,
-        type: 5,
-        diceNumber: 2,
+        type: 2,
+        diceNumber: 8,
       },
       "10": {
         x: 2,
         y: -2,
-        type: 1,
-        diceNumber: 6,
+        type: 4,
+        diceNumber: 4,
       },
       "11": {
         x: 1,
         y: -2,
-        type: 3,
-        diceNumber: 3,
+        type: 2,
+        diceNumber: 11,
       },
       "12": {
         x: 0,
         y: -1,
-        type: 2,
-        diceNumber: 4,
+        type: 3,
+        diceNumber: 6,
       },
       "13": {
         x: -1,
         y: 0,
-        type: 3,
+        type: 5,
         diceNumber: 5,
       },
       "14": {
         x: -1,
         y: 1,
-        type: 2,
-        diceNumber: 6,
+        type: 1,
+        diceNumber: 4,
       },
       "15": {
         x: 0,
         y: 1,
-        type: 4,
-        diceNumber: 3,
+        type: 1,
+        diceNumber: 9,
       },
       "16": {
         x: 1,
@@ -436,13 +462,13 @@ const newMapState = () => {
       "17": {
         x: 1,
         y: -1,
-        type: 4,
-        diceNumber: 9,
+        type: 2,
+        diceNumber: 3,
       },
       "18": {
         x: 0,
         y: 0,
-        type: 2,
+        type: 4,
         diceNumber: 11,
       },
     },
@@ -696,6 +722,8 @@ const newMapState = () => {
         x: 0,
         y: -1,
         z: 1,
+        owner: 1,
+        buildingType: 1,
       },
       "50": {
         x: -1,
@@ -1028,6 +1056,8 @@ const newMapState = () => {
         x: 0,
         y: 0,
         z: 0,
+        owner: 1,
+        type: 1,
       },
       "62": {
         x: 0,
@@ -1085,7 +1115,7 @@ const newMapState = () => {
         x: 0,
         y: -2,
         z: 0,
-        type: 2,
+        type: 3,
       },
       "1": {
         x: -2,
@@ -1097,13 +1127,13 @@ const newMapState = () => {
         x: -1,
         y: 3,
         z: 0,
-        type: 5,
+        type: 6,
       },
       "3": {
         x: 3,
         y: 0,
         z: 1,
-        type: 4,
+        type: 5,
       },
       "4": {
         x: -1,
@@ -1121,19 +1151,19 @@ const newMapState = () => {
         x: 1,
         y: 2,
         z: 0,
-        type: 3,
+        type: 1,
       },
       "7": {
         x: 2,
         y: -3,
         z: 2,
-        type: 1,
+        type: 4,
       },
       "8": {
         x: 3,
         y: -2,
         z: 2,
-        type: 6,
+        type: 2,
       },
     },
   };
