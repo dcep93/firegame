@@ -21,13 +21,36 @@ export const FUTURE = (() => {
 export var sendToMainSocket: (serverData: any) => void;
 
 const GAME_ACTION = {
+  WantToBuildRoad: 10,
+  ConfirmBuildRoad: 11,
+  ConfirmBuildRoadSkippingSelection: 12,
   WantToBuildSettlement: 14,
   ConfirmBuildSettlement: 15,
   ConfirmBuildSettlementSkippingSelection: 16,
 } as const;
 
+const ACTION_STATE = {
+  InitialPlacementPlaceSettlement: 1,
+  InitialPlacementRoadPlacement: 3,
+} as const;
+
 const CORNER_BUILDING_TYPE = {
   Settlement: 1,
+} as const;
+
+const EDGE_BUILDING_TYPE = {
+  Road: 1,
+} as const;
+
+const EDGE_DIRECTION = {
+  NorthWest: 0,
+  West: 1,
+  SouthWest: 2,
+} as const;
+
+const CORNER_DIRECTION = {
+  North: 0,
+  South: 1,
 } as const;
 
 export default function handleMessage(
@@ -167,6 +190,9 @@ const sequenced = (game: any) => ({
 const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
   if (!firebaseData.GAME) return false;
   if (
+    parsed.action !== GAME_ACTION.ConfirmBuildRoad &&
+    parsed.action !== GAME_ACTION.ConfirmBuildRoadSkippingSelection &&
+    parsed.action !== GAME_ACTION.WantToBuildRoad &&
     parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
     parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
     parsed.action !== GAME_ACTION.WantToBuildSettlement
@@ -177,38 +203,94 @@ const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
   if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
     return true;
   }
-
-  const cornerIndex = resolveCornerIndex(parsed.payload);
-  if (cornerIndex === null) {
+  if (parsed.action === GAME_ACTION.WantToBuildRoad) {
     return true;
   }
 
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
-  const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
-  if (!cornerState) {
+  const playerColor = gameData.data.payload.playerColor ?? 1;
+  if (
+    parsed.action === GAME_ACTION.ConfirmBuildSettlement ||
+    parsed.action === GAME_ACTION.ConfirmBuildSettlementSkippingSelection
+  ) {
+    const cornerIndex = resolveCornerIndex(parsed.payload);
+    if (cornerIndex === null) {
+      return true;
+    }
+
+    const cornerState =
+      gameState.mapState.tileCornerStates[String(cornerIndex)];
+    if (!cornerState) {
+      return true;
+    }
+
+    gameState.mapState.tileCornerStates[String(cornerIndex)] = {
+      ...cornerState,
+      owner: playerColor,
+      buildingType: CORNER_BUILDING_TYPE.Settlement,
+    };
+
+    const settlementState = gameState.mechanicSettlementState?.[playerColor];
+    if (settlementState?.bankSettlementAmount > 0) {
+      settlementState.bankSettlementAmount -= 1;
+    }
+
+    gameState.currentState.actionState =
+      ACTION_STATE.InitialPlacementRoadPlacement;
+
+    const updatedGame = sequenced(gameData);
+    setFirebaseData(
+      { ...firebaseData, GAME: updatedGame },
+      {
+        action: parsed.action,
+        cornerIndex,
+      },
+    );
+    sendEdgeHighlights(updatedGame, playerColor);
     return true;
   }
 
-  const playerColor = gameData.data.payload.playerColor ?? 1;
-  gameState.mapState.tileCornerStates[String(cornerIndex)] = {
-    ...cornerState,
-    owner: playerColor,
-    buildingType: CORNER_BUILDING_TYPE.Settlement,
-  };
+  if (
+    parsed.action === GAME_ACTION.ConfirmBuildRoad ||
+    parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection
+  ) {
+    const edgeIndex = resolveEdgeIndex(parsed.payload);
+    if (edgeIndex === null) {
+      return true;
+    }
 
-  const settlementState = gameState.mechanicSettlementState?.[playerColor];
-  if (settlementState?.bankSettlementAmount > 0) {
-    settlementState.bankSettlementAmount -= 1;
+    const edgeState = gameState.mapState.tileEdgeStates[String(edgeIndex)];
+    if (!edgeState) {
+      return true;
+    }
+
+    gameState.mapState.tileEdgeStates[String(edgeIndex)] = {
+      ...edgeState,
+      owner: playerColor,
+      type: EDGE_BUILDING_TYPE.Road,
+    };
+
+    const roadState = gameState.mechanicRoadState?.[playerColor];
+    if (roadState?.bankRoadAmount > 0) {
+      roadState.bankRoadAmount -= 1;
+    }
+
+    gameState.currentState.actionState =
+      ACTION_STATE.InitialPlacementPlaceSettlement;
+
+    const updatedGame = sequenced(gameData);
+    setFirebaseData(
+      { ...firebaseData, GAME: updatedGame },
+      {
+        action: parsed.action,
+        edgeIndex,
+      },
+    );
+    sendCornerHighlights(updatedGame);
+    return true;
   }
 
-  setFirebaseData(
-    { ...firebaseData, GAME: sequenced(gameData) },
-    {
-      action: parsed.action,
-      cornerIndex,
-    },
-  );
   return true;
 };
 
@@ -225,3 +307,113 @@ const resolveCornerIndex = (payload: unknown) => {
   }
   return null;
 };
+
+const resolveEdgeIndex = (payload: unknown) => {
+  if (typeof payload === "number" && Number.isFinite(payload)) {
+    return payload;
+  }
+  if (payload && typeof payload === "object") {
+    const record = payload as Record<string, unknown>;
+    const possibleIndex = record.edgeIndex ?? record.edge ?? record.index;
+    if (typeof possibleIndex === "number" && Number.isFinite(possibleIndex)) {
+      return possibleIndex;
+    }
+  }
+  return null;
+};
+
+const sendEdgeHighlights = (gameData: any, playerColor: number) => {
+  const edgeStates = gameData.data.payload.gameState.mapState.tileEdgeStates;
+  const cornerStates = gameData.data.payload.gameState.mapState.tileCornerStates;
+  const ownedCornerKeys = new Set(
+    Object.values(cornerStates)
+      .filter(
+        (cornerState: any) =>
+          cornerState?.owner === playerColor &&
+          cornerState?.buildingType === CORNER_BUILDING_TYPE.Settlement,
+      )
+      .map((cornerState: any) =>
+        serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
+      ),
+  );
+  const edgeIndices = Object.keys(edgeStates)
+    .map((key) => Number.parseInt(key, 10))
+    .filter((value) => Number.isFinite(value))
+    .filter((index) => {
+      const edgeState = edgeStates[String(index)];
+      if (!edgeState) {
+        return false;
+      }
+      const endpoints = edgeEndpoints(edgeState);
+      return endpoints.some((endpoint) =>
+        ownedCornerKeys.has(
+          serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+        ),
+      );
+    });
+
+  const highlightSequence = (gameData.data.sequence ?? 0) + 1;
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: 31,
+      sequence: highlightSequence,
+      payload: edgeIndices,
+    },
+  });
+  if (typeof gameData.data.sequence === "number") {
+    gameData.data.sequence = highlightSequence;
+  }
+  if (typeof firebaseData?.GAME?.data?.sequence === "number") {
+    firebaseData.GAME.data.sequence = highlightSequence;
+  }
+};
+
+const sendCornerHighlights = (gameData: any) => {
+  const cornerIndices = Object.keys(
+    gameData.data.payload.gameState.mapState.tileCornerStates,
+  )
+    .map((key) => Number.parseInt(key, 10))
+    .filter((value) => Number.isFinite(value));
+
+  const highlightSequence = (gameData.data.sequence ?? 0) + 1;
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: 30,
+      sequence: highlightSequence,
+      payload: cornerIndices,
+    },
+  });
+  if (typeof gameData.data.sequence === "number") {
+    gameData.data.sequence = highlightSequence;
+  }
+  if (typeof firebaseData?.GAME?.data?.sequence === "number") {
+    firebaseData.GAME.data.sequence = highlightSequence;
+  }
+};
+
+const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
+  switch (edgeState.z) {
+    case EDGE_DIRECTION.NorthWest:
+      return [
+        { x: edgeState.x, y: edgeState.y - 1, z: CORNER_DIRECTION.South },
+        { x: edgeState.x, y: edgeState.y, z: CORNER_DIRECTION.North },
+      ];
+    case EDGE_DIRECTION.West:
+      return [
+        { x: edgeState.x - 1, y: edgeState.y + 1, z: CORNER_DIRECTION.North },
+        { x: edgeState.x, y: edgeState.y - 1, z: CORNER_DIRECTION.South },
+      ];
+    case EDGE_DIRECTION.SouthWest:
+      return [
+        { x: edgeState.x, y: edgeState.y, z: CORNER_DIRECTION.South },
+        { x: edgeState.x - 1, y: edgeState.y + 1, z: CORNER_DIRECTION.North },
+      ];
+    default:
+      return [];
+  }
+};
+
+const serializeCornerKey = (x: number, y: number, z: number) =>
+  `${x}:${y}:${z}`;

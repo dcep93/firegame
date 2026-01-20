@@ -45,10 +45,27 @@ function receiveFirebaseDataCatann(catann: any) {
   if (firebaseData.GAME) {
     if (!seenData.GAME) {
       seenData = firebaseData;
-      sendToMainSocket?.(newFirstGameState());
-      sendToMainSocket?.(firebaseData.GAME);
-      sendToMainSocket?.(gameStarter());
-      sendToMainSocket?.(newInitialCornerHighlights(firebaseData.GAME));
+      const firstGameState = newFirstGameState();
+      const gameStateUpdate = firebaseData.GAME;
+      const gameStartUpdate = gameStarter();
+      const cornerHighlights = newInitialCornerHighlights(gameStateUpdate);
+
+      sendToMainSocket?.(firstGameState);
+      sendToMainSocket?.(gameStateUpdate);
+      sendToMainSocket?.(gameStartUpdate);
+      sendToMainSocket?.(cornerHighlights);
+
+      const maxSequence = Math.max(
+        gameStateUpdate.data.sequence ?? 0,
+        gameStartUpdate.data.sequence ?? 0,
+        cornerHighlights.data.sequence ?? 0,
+      );
+      if (
+        typeof gameStateUpdate.data.sequence === "number" &&
+        gameStateUpdate.data.sequence < maxSequence
+      ) {
+        gameStateUpdate.data.sequence = maxSequence;
+      }
       return;
     }
     sendToMainSocket?.(firebaseData.GAME);
