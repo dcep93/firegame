@@ -47,17 +47,15 @@ export default function handleMessage(
   const parsed = parseClientData(clientData);
   if (parsed._header[0] === SocketRouteType.SocketRouter) {
     if (parsed._header[1] === ServerActionType.Echo) {
-      return sendResponse(
-        parsed.data.callback ?? {
-          id: State.SocketMonitorUpdate.toString(),
-          data: {
-            timestamp:
-              typeof parsed.data?.timestamp === "number"
-                ? parsed.data.timestamp
-                : Date.now(),
-          },
+      return sendResponse({
+        id: State.SocketMonitorUpdate.toString(),
+        data: {
+          timestamp:
+            typeof parsed.data?.timestamp === "number"
+              ? parsed.data.timestamp
+              : Date.now(),
         },
-      );
+      });
     }
     return;
   }

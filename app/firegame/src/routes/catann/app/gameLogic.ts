@@ -1140,6 +1140,7 @@ const newMapState = () => {
 };
 
 export const gameStarter = () => {
+  console.log("gameStarter");
   return {
     id: "130",
     data: {

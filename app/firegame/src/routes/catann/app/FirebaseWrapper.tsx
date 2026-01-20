@@ -31,7 +31,7 @@ function receiveFirebaseDataCatann(catann: any) {
     return;
   }
   const unserialized = unSerializeFirebase(catann, []);
-  seenData = unSerializeFirebase(catann, []);
+  // seenData = unSerializeFirebase(catann, []);
   if (JSON.stringify(firebaseData) === JSON.stringify(unserialized)) return;
   firebaseData = unserialized;
   console.log("rendered", firebaseData);

@@ -1,7 +1,7 @@
 import store, { MeType } from "../../../shared/store";
 import { handleClientUpdate } from "./FirebaseWrapper";
 import { newUserState } from "./gameLogic";
-import handleMessage, { FUTURE } from "./handleMessage";
+import handleMessage, { FUTURE, sendToMainSocket } from "./handleMessage";
 import { packServerData } from "./parseMessagepack";
 
 export const isDev = process.env.NODE_ENV === "development";
@@ -9,6 +9,7 @@ export const isDev = process.env.NODE_ENV === "development";
 window.addEventListener("message", (event) => {
   const { id, clientData, catann } = event.data || {};
   if (!catann) return;
+  if (clientData.callback) return sendToMainSocket(clientData.callback);
   if (!id) return handleClientUpdate(clientData);
   handleMessage(clientData, (serverData, callback) =>
     event.source!.postMessage(
@@ -275,7 +276,10 @@ function main({
       if (!serverData) return;
       socketsById.get(id).receive(serverData);
       callback &&
-        event.source!.postMessage({ callback }, { targetOrigin: "*" });
+        event.source!.postMessage(
+          { catann: true, clientData: { callback } },
+          { targetOrigin: "*" },
+        );
     };
 
     window.WebSocket = InterceptedWebSocket as unknown as typeof WebSocket;
