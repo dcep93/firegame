@@ -21,6 +21,31 @@ class GameWrapper extends React.Component<{
       this.props.gameName,
       this.forceUpdate.bind(this),
     );
+    // TODO remove
+    if (this.props.component.name === Catann.name) {
+      const userId = store.me?.userId;
+      if (userId) {
+        if (!store.lobby) {
+          // @ts-ignore: initialize mock lobby state for catann
+          store.lobby = { [userId]: userId };
+        }
+        if (!store.gameW) {
+          // @ts-ignore: initialize mock game wrapper for catann
+          store.gameW = {
+            info: {
+              id: 0,
+              timestamp: Date.now(),
+              host: userId,
+              message: "local catann session",
+              playerId: userId,
+              playerName: userId,
+            },
+            game: null,
+          };
+        }
+        this.forceUpdate();
+      }
+    }
   }
 
   render() {

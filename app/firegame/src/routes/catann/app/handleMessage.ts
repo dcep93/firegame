@@ -18,11 +18,11 @@ export const FUTURE = (() => {
   return future.toISOString();
 })();
 
-export var sendToMainSocket: ((serverData: any) => void) | undefined;
+export var sendToMainSocket: (serverData: any, callback?: any) => void;
 
 export default function handleMessage(
   clientData: any,
-  sendResponse: (serverData: any) => void,
+  sendResponse: typeof sendToMainSocket,
 ) {
   if (clientData.InterceptedWebSocket) {
     if (
@@ -47,15 +47,17 @@ export default function handleMessage(
   const parsed = parseClientData(clientData);
   if (parsed._header[0] === SocketRouteType.SocketRouter) {
     if (parsed._header[1] === ServerActionType.Echo) {
-      return sendResponse({
-        id: State.SocketMonitorUpdate.toString(),
-        data: {
-          timestamp:
-            typeof parsed.data?.timestamp === "number"
-              ? parsed.data.timestamp
-              : Date.now(),
+      return sendResponse(
+        parsed.data.callback ?? {
+          id: State.SocketMonitorUpdate.toString(),
+          data: {
+            timestamp:
+              typeof parsed.data?.timestamp === "number"
+                ? parsed.data.timestamp
+                : Date.now(),
+          },
         },
-      });
+      );
     }
     return;
   }
@@ -65,13 +67,7 @@ export default function handleMessage(
       parsed.payload === parsed.channel
     ) {
       if (firebaseData.GAME) {
-        return sendResponse({
-          ...firebaseData.GAME,
-          data: {
-            ...firebaseData.GAME.data,
-            sequence: (firebaseData.GAME.data.sequence += 1),
-          },
-        });
+        return sendResponse(sequenced(firebaseData.GAME));
       }
     }
     return;
@@ -143,3 +139,11 @@ export default function handleMessage(
   // console.error(e);
   throw new Error(e);
 }
+
+const sequenced = (game: any) => ({
+  ...game,
+  data: {
+    ...game.data,
+    sequence: (game.data.sequence += 1),
+  },
+});

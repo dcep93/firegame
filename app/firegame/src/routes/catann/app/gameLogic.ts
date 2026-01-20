@@ -1139,6 +1139,35 @@ const newMapState = () => {
   };
 };
 
+export const gameStarter = () => {
+  return {
+    id: "130",
+    data: {
+      type: 91,
+      payload: {
+        diff: {
+          playerStates: {
+            "1": {
+              isConnected: true,
+            },
+          },
+          gameLogState: {
+            "3": {
+              text: {
+                type: 0,
+                playerColor: 1,
+              },
+              from: 1,
+            },
+          },
+        },
+        timeLeftInState: 167.958,
+      },
+      sequence: 8,
+    },
+  };
+};
+
 export const spoofHostRoom = () => {
   return (
     firebaseData.GAME ?? {

@@ -10,9 +10,9 @@ window.addEventListener("message", (event) => {
   const { id, clientData, catann } = event.data || {};
   if (!catann) return;
   if (!id) return handleClientUpdate(clientData);
-  handleMessage(clientData, (serverData) =>
+  handleMessage(clientData, (serverData, callback) =>
     event.source!.postMessage(
-      { id, serverData: packServerData(serverData) },
+      { id, serverData: packServerData(serverData), callback },
       { targetOrigin: "*" },
     ),
   );
@@ -271,9 +271,11 @@ function main({
     };
 
     window.__socketBridgeHandler = (event) => {
-      const { id, serverData } = event.data || {};
+      const { id, serverData, callback } = event.data || {};
       if (!serverData) return;
       socketsById.get(id).receive(serverData);
+      callback &&
+        event.source!.postMessage({ callback }, { targetOrigin: "*" });
     };
 
     window.WebSocket = InterceptedWebSocket as unknown as typeof WebSocket;
