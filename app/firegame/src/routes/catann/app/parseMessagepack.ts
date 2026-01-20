@@ -191,6 +191,8 @@ export function parseClientData(clientData: Record<string, number>) {
 
 export function packServerData(serverData: any) {
   if (!serverData) throw new Error("packServerData");
+  if (serverData.id !== "136")
+    console.log({ serverData: JSON.stringify(serverData) });
   if (
     serverData &&
     typeof serverData === "object" &&

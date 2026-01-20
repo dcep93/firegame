@@ -55,6 +55,9 @@ export default function handleMessage(
     return;
   }
   const parsed = parseClientData(clientData);
+  const p = JSON.stringify(parsed);
+  if (p !== '{"channel":"","_header":[4,8],"id":"136","data":{}}')
+    console.log({ p });
   if (parsed._header[0] === SocketRouteType.SocketRouter) {
     if (parsed._header[1] === ServerActionType.Echo) {
       return sendResponse({
@@ -161,10 +164,7 @@ const sequenced = (game: any) => ({
   },
 });
 
-const applyGameAction = (parsed: {
-  action?: number;
-  payload?: unknown;
-}) => {
+const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
   if (!firebaseData.GAME) return false;
   if (
     parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
