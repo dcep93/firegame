@@ -18,61 +18,69 @@ export function handleClientUpdate(clientData: any) {
 export var firebaseData: any = {};
 var seenData = firebaseData;
 
+const SHOULD_MOCK = true;
+
+function receiveFirebaseDataCatann(catann: any) {
+  if (!catann) {
+    setFirebaseData(
+      {
+        ROOM: newRoom(),
+      },
+      { newRoom: true },
+    );
+    return;
+  }
+  const unserialized = unSerializeFirebase(catann, []);
+  seenData = unSerializeFirebase(catann, []);
+  if (JSON.stringify(firebaseData) === JSON.stringify(unserialized)) return;
+  firebaseData = unserialized;
+  console.log("rendered", firebaseData);
+  if (firebaseData.GAME) {
+    sendToMainSocket?.(firebaseData.GAME);
+    return;
+  }
+  if (
+    !firebaseData.ROOM.data.sessions.find(
+      (s: any) => s.userId === store.me.userId,
+    )
+  ) {
+    firebaseData.ROOM.data.sessions.push(newRoomMe());
+    setFirebaseData(firebaseData, { newRoomMe: true });
+    return;
+  }
+  sendToMainSocket?.(spoofHostRoom());
+}
+
 export default function FirebaseWrapper() {
   console.log("connecting firebase wrapper", seenData);
-  useEffect(
-    () =>
-      void firebase.connect(roomPath(), (liveData) => {
-        console.debug("fetched", { firebaseData, liveData });
-        if (!liveData) return;
-        if (!liveData.catann) {
-          setFirebaseData(
-            {
-              ROOM: newRoom(),
-            },
-            { newRoom: true },
-          );
-          return;
-        }
-        const unserialized = unSerializeFirebase(liveData.catann, []);
-        seenData = unSerializeFirebase(liveData.catann, []);
-        if (JSON.stringify(firebaseData) === JSON.stringify(unserialized))
-          return;
-        firebaseData = unserialized;
-        console.log("rendered", firebaseData);
-        if (firebaseData.GAME) {
-          sendToMainSocket?.(firebaseData.GAME);
-          return;
-        }
-        if (
-          !firebaseData.ROOM.data.sessions.find(
-            (s: any) => s.userId === store.me.userId,
-          )
-        ) {
-          firebaseData.ROOM.data.sessions.push(newRoomMe());
-          setFirebaseData(firebaseData, { newRoomMe: true });
-          return;
-        }
-        sendToMainSocket?.(spoofHostRoom());
-      }),
-    [],
-  );
+  useEffect(() => {
+    if (SHOULD_MOCK) {
+      receiveFirebaseDataCatann(undefined);
+      return;
+    }
+    firebase.connect(roomPath(), (liveData) => {
+      console.debug("fetched", { firebaseData, liveData });
+      if (!liveData) return;
+      receiveFirebaseDataCatann(liveData.catann);
+    });
+  }, []);
   return <div></div>;
 }
 
 export function setFirebaseData(newData: any, change: any) {
   console.log("setting", newData, change);
+  const catann = {
+    ...newData,
+    __meta: { change, me: store.me, now: Date.now() },
+  };
   // TODO reduce writes by using update instead of set
   // also only change diffs
-  firebase.set(
-    `${roomPath()}/catann`,
-    !newData
-      ? null
-      : serializeFirebase({
-          ...newData,
-          __meta: { change, me: store.me, now: Date.now() },
-        }),
-  );
+  SHOULD_MOCK
+    ? receiveFirebaseDataCatann(catann)
+    : firebase.set(
+        `${roomPath()}/catann`,
+        !newData ? null : serializeFirebase(catann),
+      );
 }
 
 const FirebaseWrapperKey = "__firebase_wrapper__";
