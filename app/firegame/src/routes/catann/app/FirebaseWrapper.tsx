@@ -75,40 +75,41 @@ export function setFirebaseData(newData: any, change: any) {
   );
 }
 
-const EMPTY_ARRAY = "__EMPTY_ARRAY__";
-const EMPTY_OBJECT = "__EMPTY_OBJECT__";
+const FirebaseWrapperKey = "__firebase_wrapper__";
+const arrayType = "array";
+const objectType = "object";
 
-// TODO just handle empties
 function serializeFirebase(unserialized: any): any {
   if (Array.isArray(unserialized)) {
     if (unserialized.length === 0) {
-      return EMPTY_ARRAY;
+      return { [FirebaseWrapperKey]: arrayType };
     }
     return unserialized.map(serializeFirebase);
   }
   if (unserialized && typeof unserialized === "object") {
-    if (Object.keys(unserialized).length === 0) {
-      return EMPTY_OBJECT;
-    }
-    return Object.fromEntries(
+    const obj = Object.fromEntries(
       Object.entries(unserialized).map(([k, v]) => [k, serializeFirebase(v)]),
     );
+    if (
+      Object.keys(obj)
+        .map((k) => parseInt(k))
+        .sort()
+        .findIndex((k, i) => k !== i) === -1
+    ) {
+      obj[FirebaseWrapperKey] = objectType;
+    }
+    return obj;
   }
   return unserialized;
 }
 
 function unSerializeFirebase(serialized: any): any {
-  if (serialized === EMPTY_ARRAY) {
-    return [];
-  }
-  if (serialized === EMPTY_OBJECT) {
-    return {};
-  }
   if (Array.isArray(serialized)) {
     const definedEntries = serialized
       .map((s, i) => ({ s, i }))
       .filter(({ s }) => s !== undefined);
     if (definedEntries.length !== serialized.length) {
+      console.log("unSerializeFirebase", { definedEntries, serialized });
       return Object.fromEntries(
         definedEntries.map(({ s, i }) => [i, unSerializeFirebase(s)]),
       );
@@ -116,6 +117,14 @@ function unSerializeFirebase(serialized: any): any {
     return serialized.map(unSerializeFirebase);
   }
   if (serialized && typeof serialized === "object") {
+    if (serialized[FirebaseWrapperKey]) {
+      if (serialized[FirebaseWrapperKey] === arrayType) {
+        return [];
+      }
+      if (serialized[FirebaseWrapperKey] === objectType) {
+        delete serialized[FirebaseWrapperKey];
+      }
+    }
     return Object.fromEntries(
       Object.entries(serialized).map(([k, v]) => [k, unSerializeFirebase(v)]),
     );
