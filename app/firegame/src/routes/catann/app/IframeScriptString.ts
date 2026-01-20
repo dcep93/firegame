@@ -27,6 +27,7 @@ type XhrMeta = {
 declare global {
   interface Window {
     __socketBridgeHandler?: (event: MessageEvent) => void;
+    __gameStarted?: boolean;
   }
 }
 
@@ -275,6 +276,16 @@ function main({
       const { id, serverData, callback } = event.data || {};
       if (!serverData) return;
       socketsById.get(id).receive(serverData);
+      if (!window.__gameStarted) {
+        window.__gameStarted = true;
+        setTimeout(
+          () =>
+            document
+              .querySelector<HTMLButtonElement>("#room_center_start_button")!
+              .click(),
+          1000,
+        );
+      }
       callback &&
         event.source!.postMessage(
           { catann: true, clientData: { callback } },
