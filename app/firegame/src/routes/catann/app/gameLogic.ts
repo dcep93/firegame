@@ -163,7 +163,13 @@ export const newGame = () => {
     id: State.GameStateUpdate.toString(),
     data: {
       type: 4,
+      sequence: 1,
       payload: {
+        serverId: "mockServerId",
+        databaseGameId: room.data.roomId,
+        gameSettingId: room.data.roomId,
+        shouldResetGameClient: false,
+        isReconnectingSession: false,
         playerColor: 1,
         playOrder: [1],
         gameState: {
@@ -317,7 +323,6 @@ export const newGame = () => {
         },
         timeLeftInState: 180,
       },
-      sequence: 4,
     },
   };
 };

@@ -45,6 +45,37 @@ export default function handleMessage(
     return;
   }
   const parsed = parseClientData(clientData);
+  if (parsed._header[0] === SocketRouteType.SocketRouter) {
+    if (parsed._header[1] === ServerActionType.Echo) {
+      return sendResponse({
+        id: State.SocketMonitorUpdate.toString(),
+        data: {
+          timestamp:
+            typeof parsed.data?.timestamp === "number"
+              ? parsed.data.timestamp
+              : Date.now(),
+        },
+      });
+    }
+    return;
+  }
+  if (parsed._header[0] === SocketRouteType.RouteToServerDirect) {
+    if (
+      parsed._header[1] === ServerActionType.GameAction &&
+      parsed.payload === parsed.channel
+    ) {
+      if (firebaseData.GAME) {
+        return sendResponse({
+          ...firebaseData.GAME,
+          data: {
+            ...firebaseData.GAME.data,
+            sequence: (firebaseData.GAME.data.sequence += 1),
+          },
+        });
+      }
+    }
+    return;
+  }
   if (parsed._header[0] === SocketRouteType.RouteToServerType) {
     if (parsed._header[1] === ServerActionType.GeneralAction) {
       if (
@@ -82,9 +113,8 @@ export default function handleMessage(
     console.log("handleMessage", parsed);
     if (parsed._header[1] === ServerActionType.RoomCommand) {
       if (parsed.type === "startGame") {
-        const newFirebaseData = { GAME: newGame() };
-        setFirebaseData(newFirebaseData, { parsed });
-        return sendResponse(newFirebaseData.GAME);
+        setFirebaseData({ GAME: newGame() }, { parsed });
+        return;
       }
       if (parsed.type.startsWith("set")) {
         const capitalKey = parsed.type.replace(/^set/, "");
