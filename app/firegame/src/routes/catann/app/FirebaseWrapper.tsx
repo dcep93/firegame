@@ -34,8 +34,8 @@ export default function FirebaseWrapper() {
           );
           return;
         }
-        const unserialized = unSerializeFirebase(liveData.catann);
-        seenData = unSerializeFirebase(liveData.catann);
+        const unserialized = unSerializeFirebase(liveData.catann, []);
+        seenData = unSerializeFirebase(liveData.catann, []);
         if (JSON.stringify(firebaseData) === JSON.stringify(unserialized))
           return;
         firebaseData = unserialized;
@@ -93,8 +93,7 @@ function serializeFirebase(unserialized: any): any {
     if (
       Object.keys(obj)
         .map((k) => parseInt(k))
-        .sort()
-        .findIndex((k, i) => k !== i) === -1
+        .findIndex((k) => isNaN(k)) === -1
     ) {
       obj[FirebaseWrapperKey] = objectType;
     }
@@ -103,30 +102,22 @@ function serializeFirebase(unserialized: any): any {
   return unserialized;
 }
 
-function unSerializeFirebase(serialized: any): any {
+function unSerializeFirebase(serialized: any, path: any[]): any {
   if (Array.isArray(serialized)) {
-    const definedEntries = serialized
-      .map((s, i) => ({ s, i }))
-      .filter(({ s }) => s !== undefined);
-    if (definedEntries.length !== serialized.length) {
-      console.log("unSerializeFirebase", { definedEntries, serialized });
-      return Object.fromEntries(
-        definedEntries.map(({ s, i }) => [i, unSerializeFirebase(s)]),
-      );
-    }
-    return serialized.map(unSerializeFirebase);
+    return serialized.map((s, i) => unSerializeFirebase(s, path.concat(i)));
   }
   if (serialized && typeof serialized === "object") {
-    if (serialized[FirebaseWrapperKey]) {
-      if (serialized[FirebaseWrapperKey] === arrayType) {
+    switch (serialized[FirebaseWrapperKey]) {
+      case arrayType:
         return [];
-      }
-      if (serialized[FirebaseWrapperKey] === objectType) {
+      case objectType:
         delete serialized[FirebaseWrapperKey];
-      }
     }
     return Object.fromEntries(
-      Object.entries(serialized).map(([k, v]) => [k, unSerializeFirebase(v)]),
+      Object.entries(serialized).map(([k, v]) => [
+        k,
+        unSerializeFirebase(v, path.concat(k)),
+      ]),
     );
   }
   return serialized;
