@@ -18,7 +18,7 @@ export const FUTURE = (() => {
   return future.toISOString();
 })();
 
-export var sendToMainSocket: (serverData: any, callback?: any) => void;
+export var sendToMainSocket: (serverData: any) => void;
 
 export default function handleMessage(
   clientData: any,
@@ -107,7 +107,7 @@ export default function handleMessage(
     console.log("handleMessage", parsed);
     if (parsed._header[1] === ServerActionType.RoomCommand) {
       if (parsed.type === "startGame") {
-        setFirebaseData({ GAME: newGame() }, { parsed });
+        setFirebaseData({ ...firebaseData, GAME: newGame() }, { parsed });
         return;
       }
       if (parsed.type.startsWith("set")) {

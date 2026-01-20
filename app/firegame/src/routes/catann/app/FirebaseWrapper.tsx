@@ -2,7 +2,14 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
-import { newRoom, newRoomMe, spoofHostRoom } from "./gameLogic";
+import {
+  gameStarter,
+  newFirstGameState,
+  newInitialCornerHighlights,
+  newRoom,
+  newRoomMe,
+  spoofHostRoom,
+} from "./gameLogic";
 import { sendToMainSocket } from "./handleMessage";
 
 export function handleClientUpdate(clientData: any) {
@@ -36,10 +43,14 @@ function receiveFirebaseDataCatann(catann: any) {
   firebaseData = unserialized;
   console.log("rendered", firebaseData);
   if (firebaseData.GAME) {
-    // const callback = seenData.GAME ? undefined : gameStarter();
-    // if (callback) {
-    //   seenData = firebaseData;
-    // }
+    if (!seenData.GAME) {
+      seenData = firebaseData;
+      sendToMainSocket?.(newFirstGameState());
+      sendToMainSocket?.(firebaseData.GAME);
+      sendToMainSocket?.(gameStarter());
+      sendToMainSocket?.(newInitialCornerHighlights(firebaseData.GAME));
+      return;
+    }
     sendToMainSocket?.(firebaseData.GAME);
     return;
   }
