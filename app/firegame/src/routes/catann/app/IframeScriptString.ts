@@ -27,6 +27,7 @@ type XhrMeta = {
 declare global {
   interface Window {
     __socketBridgeHandler?: (event: MessageEvent) => void;
+    // TODO remove
     __gameStarted?: boolean;
   }
 }
