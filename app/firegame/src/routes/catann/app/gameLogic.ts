@@ -157,13 +157,17 @@ export const newRoomMe = () => {
 
 export const newGame = () => {
   console.log("newGame");
+  const room = firebaseData.ROOM;
+  const sessions = room.data.sessions as any[];
   return {
     id: State.GameStateUpdate.toString(),
     data: {
       type: 4,
       payload: {
         playerColor: 1,
-        playOrder: [1],
+        playOrder: sessions
+          .map((_, i) => i)
+          .sort((a, b) => Math.random() - 0.5),
         gameState: {
           diceState: {
             diceThrown: false,
@@ -275,26 +279,25 @@ export const newGame = () => {
             isActive: true,
           },
         },
-        playerUserStates: [
-          {
-            userId: store.me.userId, // TODO
-            username: "Scheck#2093",
-            databaseIcon: 12,
-            selectedColor: 1,
-            isBot: false,
-            deviceType: 1,
-            countryCode: "US",
-            regionUpdated: null,
-            membership: null,
-            profilePictureUrl: null,
-          },
-        ],
+        playerUserStates: sessions.map((s) => ({
+          userId: s.userId,
+          username: s.username,
+          databaseIcon: s.icon,
+          selectedColor:
+            1 + (s.availableColors as any[]).indexOf(s.selectedColor),
+          isBot: false,
+          deviceType: 1,
+          countryCode: "US",
+          regionUpdated: null,
+          membership: null,
+          profilePictureUrl: null,
+        })),
         gameDetails: {
           isRanked: false,
           isDiscord: false,
         },
         gameSettings: {
-          id: "deal7974", // TODO
+          id: room.data.roomId,
           channelId: null,
           gameType: 3,
           privateGame: false,
