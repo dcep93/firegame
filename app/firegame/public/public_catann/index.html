@@ -108,8 +108,8 @@
         socketServerWSS = "wss://socket.svr.colonist.io/",
         isUserOnDiscord = false,
         isUserOnDiscordMobile = false,
-        onlineCount = "7,187",
-        gamesToday = "239,960",
+        onlineCount = "6,829",
+        gamesToday = "253,359",
         logRocketId = "pt522i/colonist",
         vliPreRoll = "pw_13717",
         discordSDKClientId = "1106787098452832296",
@@ -136,7 +136,7 @@
           giftMembershipPremiumYearly: "1327895756299829269",
           giftMembershipEliteYearly: "1327895893789380659",
         },
-        versionNumber = 287,
+        versionNumber = 288,
         analyticsActive = true,
         canPurchaseCoinsOnDiscord = true,
         showConsoleLogUI = false,
@@ -193,7 +193,7 @@
     ></script>
     <script
       defer="defer"
-      src="https://cdn.colonist.io/dist/js/patchnotes.9762bd84a067622528a5.js"
+      src="https://cdn.colonist.io/dist/js/patchnotes.c5e90982af9c1d65d98a.js"
     ></script>
     <script
       defer="defer"
@@ -201,11 +201,11 @@
     ></script>
     <script
       defer="defer"
-      src="https://cdn.colonist.io/dist/js/ui-game.50531ff07c403b09be28.js"
+      src="https://cdn.colonist.io/dist/js/ui-game.7cbf53940f4f50959d28.js"
     ></script>
     <script
       defer="defer"
-      src="https://cdn.colonist.io/dist/js/shared.a1f7aa47ccdd213a17fe.js"
+      src="https://cdn.colonist.io/dist/js/shared.2e64f6b05192fcfb5586.js"
     ></script>
     <script
       defer="defer"
@@ -213,7 +213,7 @@
     ></script>
     <script
       defer="defer"
-      src="https://cdn.colonist.io/dist/js/shared-web.2aa9155cf51ba83c99e5.js"
+      src="https://cdn.colonist.io/dist/js/shared-web.5ad3c6943bbcbc7bf031.js"
     ></script>
     <script
       defer="defer"
@@ -232,7 +232,7 @@
       rel="stylesheet"
     />
     <link
-      href="https://cdn.colonist.io/dist/css/web.1005d903a356714171f9.css"
+      href="https://cdn.colonist.io/dist/css/web.f7fd811afe54d80f53f3.css"
       rel="stylesheet"
     />
   </head>
@@ -518,7 +518,7 @@
           <div class="m-mainpage-menu" id="m-mainpage-menu-left">
             <div class="m-mainpage-menu-header font-regular-bold">
               <button class="m-mainpage-button-version">
-                <a href="/patch-notes">v287</a>
+                <a href="/patch-notes">v288</a>
               </button>
               <img
                 src="https://cdn.colonist.io/dist/assets/icon_x.5efbc794816c7abe462b.svg"
@@ -653,7 +653,7 @@
       <div class="m-mainpage-menu" id="m-mainpage-menu">
         <div class="m-mainpage-menu-header font-regular-bold">
           <button class="m-mainpage-button-version">
-            <a href="/patch-notes">v287</a>
+            <a href="/patch-notes">v288</a>
           </button>
           <img
             src="https://cdn.colonist.io/dist/assets/icon_x.5efbc794816c7abe462b.svg"
@@ -780,10 +780,6 @@
           </div>
         </div>
       </div>
-      <script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileLoaded"
-        async
-      ></script>
       <script>
         function turnstileLoaded() {
           (turnstile.render("#turnstile-widget", {
@@ -871,10 +867,6 @@
             data-use_fedcm_for_prompt="true"
             data-auto_select="false"
           ></div>
-          <script
-            src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileLoaded"
-            async
-          ></script>
           <script>
             function turnstileLoaded() {
               (turnstile.render("#turnstile-widget", {
@@ -1034,9 +1026,9 @@
               </div>
               <div class="landing_page_social_proof">
                 <span class="landing_page_social_proof_item">
-                  <b>7,187</b> online </span
+                  <b>6,829</b> online </span
                 ><span class="landing_page_social_proof_item">
-                  <b>239,960</b> games today
+                  <b>253,359</b> games today
                 </span>
               </div>
               <div class="button_cta_landingpage_container">
@@ -1160,7 +1152,7 @@
                     alt="Back"
                   />
                 </div>
-                <h2 class="mm-details-title" id="mm-details-title"></h2>
+                <h1 class="mm-details-title" id="mm-details-title"></h1>
               </div>
               <div class="mm-details-content" id="mm-details-content">
                 <div
@@ -1182,24 +1174,33 @@
                     />
                     <p id="mm-details-player-count"></p>
                   </div>
-                </div>
-                <div class="mm-details-description">
-                  <h3>About</h3>
-                  <p id="mm-details-about"></p>
-                </div>
-                <div class="mm-details-rules">
-                  <h3>How to Play</h3>
                   <div
-                    class="mm-details-rules-list"
-                    id="mm-details-rules-list"
-                  ></div>
+                    class="mm-details-info-item"
+                    id="mm-details-bot-count-container"
+                  >
+                    <img
+                      src="https://cdn.colonist.io/dist/assets/icon_bot_count.7337ba934e6e992feb8e.svg"
+                      alt=""
+                    />
+                    <p id="mm-details-bot-count"></p>
+                  </div>
                 </div>
-                <div class="mm-details-faq">
-                  <h3>Frequently Asked Questions</h3>
-                  <div
-                    class="mm-details-faq-list"
-                    id="mm-details-faq-list"
-                  ></div>
+                <div class="mm-details-content-container">
+                  <div>
+                    <h2>About</h2>
+                    <p id="mm-details-about"></p>
+                  </div>
+                  <div>
+                    <h2>How to Play</h2>
+                    <div id="mm-details-rules-list"></div>
+                  </div>
+                  <div class="mm-details-faq">
+                    <h2>Frequently Asked Questions</h2>
+                    <div
+                      class="mm-details-faq-list"
+                      id="mm-details-faq-list"
+                    ></div>
+                  </div>
                 </div>
               </div>
               <button class="mm-mode-card-button" id="mm-details-play-button">
