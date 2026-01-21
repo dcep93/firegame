@@ -1,9 +1,15 @@
-confirm understanding of this file by echoing the git sha and path to this file
+Confirm understanding by echoing the git SHA and the path to this file.
 
-you should have playwright already installed, do not install it
+Requirements:
+- Playwright is already installed; do not install it.
+- Install dev dependencies before running run_test.sh.
+- Do not include yarn files or any lock files in your diff.
 
-run_test.sh takes about a minute, and will generate an output image in folder /workspace/firegame/app/firegame/test-results
+run_test.sh:
+- Takes about a minute to run.
+- Generates an output image in /workspace/firegame/app/firegame/test-results.
 
-host that image locally using python -m http.server, visit the correct path for that image, and take a screenshot of it
-
-Before running run_test.sh, install dev dependencies. Do not include yarn files or lock files in your diff.
+After run_test.sh:
+- Host the image locally with python -m http.server.
+- Visit the correct path for the image.
+- Take a screenshot of the hosted image.
