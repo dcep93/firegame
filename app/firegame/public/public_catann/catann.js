@@ -7,7 +7,8 @@
   };
   overrideXHR();
   overrideWebsocket();
-  overrideServiceWorker();
+  //   overrideServiceWorker();
+  choreo();
   //   loadIndex();
 
   function overrideXHR() {
@@ -387,6 +388,22 @@
           window.addEventListener("message", window.__socketBridgeHandler);
         }
       });
+  }
+
+  function choreo() {
+    console.log("choreo");
+    setTimeout(() => {
+      document.body.querySelector(".web-sidebar-lobby").click();
+      setTimeout(() => {
+        document.body.querySelector("#m-lobby-create-room-btn").click();
+        setTimeout(() => {
+          console.log(document.body.querySelector("#room_center_start_button"));
+          __socketActivity.splice(0);
+          document.body.querySelector("#room_center_start_button").click();
+          setTimeout(() => console.log(__socketActivity.slice()), 1000);
+        }, 5000);
+      }, 5000);
+    }, 5000);
   }
 })({
   me: {
