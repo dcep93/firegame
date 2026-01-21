@@ -36,8 +36,8 @@ In another shell:
 
 ```bash
 # 6) Validate URL returns 200
-curl -I http://localhost:8001/final-position.png
-curl http://localhost:8001/final-position.png -o /dev/null
+curl -I http://localhost:8001/screenshot.png
+curl http://localhost:8001/screenshot.png -o /dev/null
 ```
 
 Screenshot capture (browser tool / Playwright):
@@ -52,7 +52,7 @@ async def main():
     async with async_playwright() as p:
         browser = await p.firefox.launch()
         page = await browser.new_page(viewport={"width": 800, "height": 600})
-        response = await page.goto('http://127.0.0.1:8001/final-position.png', wait_until='networkidle')
+        response = await page.goto('http://127.0.0.1:8001/screenshot.png', wait_until='networkidle')
         status = response.status if response else 'no-response'
         print(f"status:{status}")  # should be 200
         await page.wait_for_timeout(1000)
