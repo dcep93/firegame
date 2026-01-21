@@ -1,6 +1,5 @@
 (function main(_ref) {
   let { me, isDev, future, userState } = _ref;
-  alert(1);
   window.parent = {
     postMessage: () => {
       throw new Error("postMessage");
@@ -183,8 +182,18 @@
   }
 
   function overrideWebsocket() {
+    const OrigWebSocket = window.WebSocket;
     const socketsById = new Map();
     let nextSocketId = 1;
+    const socketActivity =
+      window.__socketActivity || (window.__socketActivity = []);
+
+    function recordSocketActivity(socketInitAddress, type, data) {
+      socketActivity.push({
+        socketInitAddress,
+        [type]: data,
+      });
+    }
 
     function InterceptedWebSocket() {
       const socket = new EventTarget();
@@ -204,9 +213,39 @@
         createArgs[_key2] = arguments[_key2];
       }
 
-      socket.send({
-        InterceptedWebSocket: createArgs,
-      });
+      socket.initAddress = createArgs[0];
+      socket._realSocket = OrigWebSocket
+        ? new OrigWebSocket(...createArgs)
+        : null;
+      if (socket._realSocket) {
+        socket._realSocket.onmessage = (event) => {
+          socket.receive(event.data);
+        };
+        socket._realSocket.onclose = (event) => {
+          socket.readyState = 3;
+          if (typeof socket.onclose === "function") {
+            socket.onclose(event);
+          }
+          socket.dispatchEvent(event);
+        };
+        socket._realSocket.onerror = (event) => {
+          if (typeof socket.onerror === "function") {
+            socket.onerror(event);
+          }
+          socket.dispatchEvent(event);
+        };
+        socket._realSocket.onopen = () => {
+          const onopen = socket.onopen;
+          if (typeof onopen === "function") {
+            onopen(new Event("open"));
+          }
+          socket.dispatchEvent(new Event("open"));
+        };
+      } else {
+        socket.send({
+          InterceptedWebSocket: createArgs,
+        });
+      }
       queueMicrotask(() => {
         const onopen = socket.onopen;
 
@@ -227,18 +266,18 @@
     InterceptedWebSocket.CLOSED = 3;
 
     InterceptedWebSocket.prototype.send = function (clientData) {
-      window.parent.postMessage(
-        {
-          catann: true,
-          id: this.id,
-          clientData,
-        },
-        "*",
-      );
+      recordSocketActivity(this.initAddress, "send", clientData);
+      if (this._realSocket) {
+        this._realSocket.send(clientData);
+        return;
+      }
     };
 
     InterceptedWebSocket.prototype.close = function () {
       this.readyState = 3;
+      if (this._realSocket) {
+        this._realSocket.close();
+      }
       socketsById.delete(this.id);
 
       if (typeof this.onclose === "function") {
@@ -249,6 +288,7 @@
     };
 
     InterceptedWebSocket.prototype.receive = function (data) {
+      recordSocketActivity(this.initAddress, "receive", data);
       const messageEvent = new MessageEvent("message", {
         data,
       });
