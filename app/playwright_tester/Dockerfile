@@ -14,4 +14,4 @@ COPY firegame/ ./
 
 ENV CI=true
 
-RUN npx playwright test src/routes/catann/playwright_test.ts
+RUN playwright test src/routes/catann/playwright_test.ts
