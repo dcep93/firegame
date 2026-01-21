@@ -26,7 +26,7 @@ ls
 # pick the folder just created, then:
 cd <test-results-subfolder>
 ls
-# expect: final-position.png
+# expect: screenshot.png
 
 # 5) Host image locally
 python -m http.server 8001
