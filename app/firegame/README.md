@@ -19,6 +19,21 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### Playwright test (Catann)
+
+The Catann Playwright test is run via `bash /workspace/firegame/app/run_test.sh`.
+If Playwright browsers or system dependencies are missing, install them first:
+
+```sh
+npm install
+npx playwright install
+sudo apt-get update
+sudo apt-get install -y \
+  libx11-xcb1 libxrandr2 libxcomposite1 libxcursor1 libxdamage1 libxfixes3 \
+  libxi6 libgtk-3-0t64 libatk1.0-0t64 libcairo-gobject2 libgdk-pixbuf-2.0-0 \
+  libasound2t64 libgbm1
+```
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\

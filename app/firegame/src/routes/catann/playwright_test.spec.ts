@@ -61,7 +61,7 @@ test.afterAll(() => {
   }
 });
 
-test("load /catann and place a settlement", async ({ page }) => {
+test("load /catann and place a settlement", async ({ page }, testInfo) => {
   try {
     await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
 
@@ -202,6 +202,11 @@ test("load /catann and place a settlement", async ({ page }) => {
         },
       )
       .not.toBe(beforeSettlement);
+
+    await page.screenshot({
+      path: testInfo.outputPath("final-position.png"),
+      fullPage: true,
+    });
   } catch (error) {
     if (!page.isClosed()) {
       const screenshot = await page.screenshot({ fullPage: true });
