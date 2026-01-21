@@ -192,8 +192,7 @@ test("load /catann and place a settlement", async ({ page }) => {
 
     await expect
       .poll(
-        () =>
-          canvasHandle.evaluate((canvas) => canvas.toDataURL("image/png")),
+        () => canvasHandle.evaluate((canvas) => canvas.toDataURL("image/png")),
         {
           timeout: 100,
         },
