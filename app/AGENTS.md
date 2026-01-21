@@ -1,31 +1,73 @@
-Confirm understanding by echoing the git SHA and the path to this file.
+# One-shot run_test
 
-Requirements:
-- Playwright is already installed; do not install it.
-- Install dev dependencies before running run_test.sh.
-- Do not include yarn files or any lock files in your diff.
+Use this file when the prompt is exactly: run_test
 
-Install prerequisites (estimated duration):
-- npm ci (install dev dependencies) ~1 minute.
-- npx playwright install (download browsers) ~2-4 minutes depending on network speed.
-- npx playwright install-deps (system packages) ~3-6 minutes depending on apt speed.
+```bash
+# 0) Confirm location + this file
+cd /workspace/firegame
+printf "%s %s\n" "$(git rev-parse HEAD)" "/workspace/firegame/app/AGENTS.md"
 
-run_test.sh:
-- Takes about a minute to run.
-- Generates an output image in /workspace/firegame/app/firegame/test-results.
+# 1) Install dev deps (must happen before run_test.sh)
+cd /workspace/firegame/app/firegame
+npm ci
 
-After run_test.sh:
-- Host the image locally with python -m http.server.
-- Visit the correct path for the image.
-- Take a screenshot of the hosted image.
+# 2) Install Playwright browsers + OS deps (Playwright is already installed)
+#    - do NOT install playwright itself
+npx playwright install
+npx playwright install-deps
 
-When the user prompt is just "run_test":
-- Treat it as a full run: prerequisites → run_test.sh → find the output image → host it → validate URL → take screenshot.
-- One-shot screenshot workflow:
-  1) cd into the test-results subfolder that contains the output image.
-  2) Run `ls` to confirm the exact filename.
-  3) Start `python -m http.server <port>` in that directory.
-  4) Verify the exact URL returns 200 with `curl -I http://localhost:<port>/<filename>`.
-  5) Capture a screenshot of that exact URL.
-  6) Include the python server logs in the final response.
-- If the browser tool fails with Chromium, retry with Firefox.
+# 3) Run tests
+cd /workspace/firegame/app
+bash ./run_test.sh
+
+# 4) Locate output image
+cd /workspace/firegame/app/firegame/test-results
+ls
+# pick the folder just created, then:
+cd <test-results-subfolder>
+ls
+# expect: final-position.png
+
+# 5) Host image locally
+python -m http.server 8001
+```
+
+In another shell:
+
+```bash
+# 6) Validate URL returns 200
+curl -I http://localhost:8001/final-position.png
+curl http://localhost:8001/final-position.png -o /dev/null
+```
+
+Screenshot capture (browser tool / Playwright):
+
+```python
+# Use this with browser_container tool.
+# NOTE: Keep the port 8001 and URL exactly as below.
+import asyncio
+from playwright.async_api import async_playwright
+
+async def main():
+    async with async_playwright() as p:
+        browser = await p.firefox.launch()
+        page = await browser.new_page(viewport={"width": 800, "height": 600})
+        response = await page.goto('http://127.0.0.1:8001/final-position.png', wait_until='networkidle')
+        status = response.status if response else 'no-response'
+        print(f"status:{status}")  # should be 200
+        await page.wait_for_timeout(1000)
+        await page.screenshot(path='artifacts/final-position.png', full_page=True)
+        await browser.close()
+
+asyncio.run(main())
+```
+
+After screenshot:
+
+```bash
+# 7) Stop the server (Ctrl+C) and copy server logs into final response.
+```
+
+Notes:
+- Do not add yarn files or any lock files to the diff.
+- If Chromium fails, retry with Firefox.
