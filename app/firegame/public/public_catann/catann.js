@@ -214,10 +214,25 @@
       }
 
       socket.initAddress = createArgs[0];
+      Object.defineProperty(socket, "binaryType", {
+        get() {
+          if (this._realSocket) return this._realSocket.binaryType;
+          return this._binaryType || "blob";
+        },
+        set(value) {
+          this._binaryType = value;
+          if (this._realSocket) {
+            this._realSocket.binaryType = value;
+          }
+        },
+      });
       socket._realSocket = OrigWebSocket
         ? new OrigWebSocket(...createArgs)
         : null;
       if (socket._realSocket) {
+        if (socket._binaryType) {
+          socket._realSocket.binaryType = socket._binaryType;
+        }
         socket._realSocket.onmessage = (event) => {
           socket.receive(event.data);
         };
@@ -245,16 +260,16 @@
         socket.send({
           InterceptedWebSocket: createArgs,
         });
+        queueMicrotask(() => {
+          const onopen = socket.onopen;
+
+          if (typeof onopen === "function") {
+            onopen(new Event("open"));
+          }
+
+          socket.dispatchEvent(new Event("open"));
+        });
       }
-      queueMicrotask(() => {
-        const onopen = socket.onopen;
-
-        if (typeof onopen === "function") {
-          onopen(new Event("open"));
-        }
-
-        socket.dispatchEvent(new Event("open"));
-      });
       return socket;
     }
 
