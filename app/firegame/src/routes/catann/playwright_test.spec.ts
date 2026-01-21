@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
-import http from "http";
+import * as http from "http";
 
 const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
@@ -132,10 +132,11 @@ test("load /catann and place a settlement", async ({ page }) => {
       .poll(
         () =>
           canvasHandle.evaluate((canvas) => {
-            const ctx = canvas.getContext("2d");
+            const htmlCanvas = canvas as HTMLCanvasElement;
+            const ctx = htmlCanvas.getContext("2d");
             if (!ctx) return false;
-            const width = canvas.width;
-            const height = canvas.height;
+            const width = htmlCanvas.width;
+            const height = htmlCanvas.height;
             const stepX = Math.max(1, Math.floor(width / 10));
             const stepY = Math.max(1, Math.floor(height / 10));
             for (let x = 0; x < width; x += stepX) {
@@ -184,15 +185,18 @@ test("load /catann and place a settlement", async ({ page }) => {
       throw new Error("No settlement confirmation appeared after clicking.");
     }
 
-    const beforeSettlement = await canvasHandle.evaluate((canvas) =>
-      canvas.toDataURL("image/png"),
+    const beforeSettlement = await canvasHandle.evaluate(
+      (canvas) => (canvas as HTMLCanvasElement).toDataURL("image/png"),
     );
 
     await confirmButton.click();
 
     await expect
       .poll(
-        () => canvasHandle.evaluate((canvas) => canvas.toDataURL("image/png")),
+        () =>
+          canvasHandle.evaluate((canvas) =>
+            (canvas as HTMLCanvasElement).toDataURL("image/png"),
+          ),
         {
           timeout: 100,
         },
