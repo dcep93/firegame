@@ -7,11 +7,12 @@ RUN npm install -g playwright \
 
 RUN corepack enable
 
-COPY firegame/package.json firegame/yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY app/firegame/package.json ./
+# RUN yarn install --frozen-lockfile
 
-COPY firegame/ ./
+# COPY firegame/ ./
 
-ENV CI=true
+# ENV CI=true
 
-RUN playwright test src/routes/catann/playwright_test.ts
+# RUN playwright test src/routes/catann/playwright_test.ts
+RUN false
