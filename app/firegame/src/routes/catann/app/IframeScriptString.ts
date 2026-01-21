@@ -45,7 +45,7 @@ function main({
   overrideXHR();
   overrideWebsocket();
   overrideServiceWorker();
-  loadRemote();
+  loadIndex();
 
   function overrideXHR() {
     const OrigXHR = window.XMLHttpRequest;
@@ -310,8 +310,8 @@ function main({
     navigator.serviceWorker.register = InterceptedRegister;
   }
 
-  function loadRemote() {
-    fetch(`/public_catann/remote.html?${Date.now()}`)
+  function loadIndex() {
+    fetch(`/public_catann/index.html?${Date.now()}`)
       .then((resp) => resp.text())
       .then((resp) =>
         !isDev
