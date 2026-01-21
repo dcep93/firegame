@@ -1,7 +1,7 @@
 confirm understanding of this file by echoing the git sha and path to this file
 
-when performing run_test.sh, it will generate an output image in folder test-results. you need to render that output image in your response.
+you should have playwright already installed, do not install it
 
-install Playwright browsers before running Playwright tests (e.g., run `npx playwright install -g` if needed). this should not cause yarn files to get committed.
+run_test.sh takes about a minute, and will generate an output image in folder /workspace/firegame/app/firegame/test-results
 
-host that image locally using python -m http.server and take a screenshot of it
+host that image locally using python -m http.server, visit the correct path for that image, and take a screenshot of it
