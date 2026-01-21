@@ -5,6 +5,9 @@ import http from 'http';
 const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 60_000;
+const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
+
+test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
 
 let serverProcess: ChildProcessWithoutNullStreams | undefined;
 
@@ -35,8 +38,9 @@ const waitForServer = async (url: string, timeoutMs: number) => {
   throw new Error(`Timed out waiting for ${url}`);
 };
 
-test.beforeAll(async () => {
-  serverProcess = spawn('yarn', ['start'], {
+test.beforeAll(async ({}, testInfo) => {
+  testInfo.setTimeout(PLAYWRIGHT_TIMEOUT_MS);
+  serverProcess = spawn('npm', ['start'], {
     cwd: process.cwd(),
     env: {
       ...process.env,
