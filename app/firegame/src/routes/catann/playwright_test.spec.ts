@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
-import http from 'http';
+import { expect, test } from "@playwright/test";
+import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+import http from "http";
 
 const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
@@ -27,7 +27,7 @@ const waitForServer = async (url: string, timeoutMs: number) => {
             reject(new Error(`Unexpected status code: ${res.statusCode}`));
           }
         });
-        req.on('error', reject);
+        req.on("error", reject);
       });
       return;
     } catch (error) {
@@ -40,16 +40,16 @@ const waitForServer = async (url: string, timeoutMs: number) => {
 
 test.beforeAll(async ({}, testInfo) => {
   testInfo.setTimeout(PLAYWRIGHT_TIMEOUT_MS);
-  serverProcess = spawn('npm', ['start'], {
+  serverProcess = spawn("npm", ["start"], {
     cwd: process.cwd(),
     env: {
       ...process.env,
-      BROWSER: 'none',
-      HOST: '0.0.0.0',
+      BROWSER: "none",
+      HOST: "0.0.0.0",
       PORT: `${APP_PORT}`,
-      CI: 'true',
+      CI: "true",
     },
-    stdio: 'pipe',
+    stdio: "pipe",
   });
 
   await waitForServer(APP_URL, SERVER_START_TIMEOUT_MS);
@@ -57,11 +57,13 @@ test.beforeAll(async ({}, testInfo) => {
 
 test.afterAll(() => {
   if (serverProcess && !serverProcess.killed) {
-    serverProcess.kill('SIGTERM');
+    serverProcess.kill("SIGTERM");
   }
 });
 
-test('load / and make sure the text CATANN is on the screen', async ({ page }) => {
-  await page.goto(APP_URL, { waitUntil: 'domcontentloaded' });
-  await expect(page.getByText('CATANN', { exact: false })).toBeVisible();
+test("load / and make sure the text CATANN is on the screen", async ({
+  page,
+}) => {
+  await page.goto(APP_URL, { waitUntil: "domcontentloaded" });
+  await expect(page.getByText("CATANN", { exact: false })).toBeVisible();
 });
