@@ -189,11 +189,429 @@
     const socketActivity =
       window.__socketActivity || (window.__socketActivity = []);
 
+    function decodeSocketBytes(bytes) {
+      if (!bytes || bytes.length < 3) return undefined;
+
+      let offset = 0;
+      const header = [bytes[offset++], bytes[offset++]];
+      const channelLength = bytes[offset++] ?? 0;
+      if (bytes.length < offset + channelLength) return undefined;
+
+      const channelBytes = bytes.slice(offset, offset + channelLength);
+      offset += channelLength;
+
+      const isPrintableAscii = (data) =>
+        data.every((byte) => byte >= 32 && byte <= 126);
+
+      const decodeText = (() => {
+        if (typeof TextDecoder !== "undefined") {
+          const decoder = new TextDecoder("utf-8");
+          return (data) => decoder.decode(data);
+        }
+        return (data) => String.fromCharCode(...Array.from(data));
+      })();
+
+      if (!isPrintableAscii(channelBytes)) return undefined;
+      const channel = decodeText(channelBytes);
+
+      const decodeValue = () => {
+        if (offset >= bytes.length) return undefined;
+        const byte = bytes[offset++];
+        if (byte === undefined) return undefined;
+
+        if (byte <= 0x7f) return byte;
+        if (byte >= 0xe0) return byte - 0x100;
+
+        if (byte >= 0xa0 && byte <= 0xbf) {
+          const length = byte & 0x1f;
+          if (offset + length > bytes.length) return undefined;
+          const value = decodeText(bytes.slice(offset, offset + length));
+          offset += length;
+          return value;
+        }
+
+        if (byte >= 0x90 && byte <= 0x9f) {
+          const length = byte & 0x0f;
+          const arr = new Array(length);
+          for (let i = 0; i < length; i += 1) {
+            arr[i] = decodeValue();
+          }
+          return arr;
+        }
+
+        if (byte >= 0x80 && byte <= 0x8f) {
+          const length = byte & 0x0f;
+          const obj = {};
+          for (let i = 0; i < length; i += 1) {
+            const key = decodeValue();
+            obj[String(key)] = decodeValue();
+          }
+          return obj;
+        }
+
+        switch (byte) {
+          case 0xc0:
+            return null;
+          case 0xc2:
+            return false;
+          case 0xc3:
+            return true;
+          case 0xcc: {
+            if (offset + 1 > bytes.length) return undefined;
+            const value = bytes[offset];
+            offset += 1;
+            return value;
+          }
+          case 0xcd: {
+            if (offset + 2 > bytes.length) return undefined;
+            const value = (bytes[offset] << 8) | bytes[offset + 1];
+            offset += 2;
+            return value;
+          }
+          case 0xce: {
+            if (offset + 4 > bytes.length) return undefined;
+            const value =
+              bytes[offset] * 2 ** 24 +
+              (bytes[offset + 1] << 16) +
+              (bytes[offset + 2] << 8) +
+              bytes[offset + 3];
+            offset += 4;
+            return value;
+          }
+          case 0xd0: {
+            if (offset + 1 > bytes.length) return undefined;
+            const value = (bytes[offset] << 24) >> 24;
+            offset += 1;
+            return value;
+          }
+          case 0xd1: {
+            if (offset + 2 > bytes.length) return undefined;
+            const value = (bytes[offset] << 8) | bytes[offset + 1];
+            offset += 2;
+            return (value << 16) >> 16;
+          }
+          case 0xd2: {
+            if (offset + 4 > bytes.length) return undefined;
+            const value =
+              (bytes[offset] << 24) |
+              (bytes[offset + 1] << 16) |
+              (bytes[offset + 2] << 8) |
+              bytes[offset + 3];
+            offset += 4;
+            return value;
+          }
+          case 0xd9: {
+            const length = bytes[offset];
+            if (offset + 1 + length > bytes.length) return undefined;
+            offset += 1;
+            const value = decodeText(bytes.slice(offset, offset + length));
+            offset += length;
+            return value;
+          }
+          case 0xda: {
+            const length = (bytes[offset] << 8) | bytes[offset + 1];
+            if (offset + 2 + length > bytes.length) return undefined;
+            offset += 2;
+            const value = decodeText(bytes.slice(offset, offset + length));
+            offset += length;
+            return value;
+          }
+          case 0xdb: {
+            const length =
+              bytes[offset] * 2 ** 24 +
+              (bytes[offset + 1] << 16) +
+              (bytes[offset + 2] << 8) +
+              bytes[offset + 3];
+            if (offset + 4 + length > bytes.length) return undefined;
+            offset += 4;
+            const value = decodeText(bytes.slice(offset, offset + length));
+            offset += length;
+            return value;
+          }
+          case 0xdc: {
+            const length = (bytes[offset] << 8) | bytes[offset + 1];
+            if (offset + 2 > bytes.length) return undefined;
+            offset += 2;
+            const arr = new Array(length);
+            for (let i = 0; i < length; i += 1) {
+              arr[i] = decodeValue();
+            }
+            return arr;
+          }
+          case 0xdd: {
+            const length =
+              bytes[offset] * 2 ** 24 +
+              (bytes[offset + 1] << 16) +
+              (bytes[offset + 2] << 8) +
+              bytes[offset + 3];
+            if (offset + 4 > bytes.length) return undefined;
+            offset += 4;
+            const arr = new Array(length);
+            for (let i = 0; i < length; i += 1) {
+              arr[i] = decodeValue();
+            }
+            return arr;
+          }
+          case 0xde: {
+            const length = (bytes[offset] << 8) | bytes[offset + 1];
+            if (offset + 2 > bytes.length) return undefined;
+            offset += 2;
+            const obj = {};
+            for (let i = 0; i < length; i += 1) {
+              const key = decodeValue();
+              obj[String(key)] = decodeValue();
+            }
+            return obj;
+          }
+          case 0xdf: {
+            const length =
+              bytes[offset] * 2 ** 24 +
+              (bytes[offset + 1] << 16) +
+              (bytes[offset + 2] << 8) +
+              bytes[offset + 3];
+            if (offset + 4 > bytes.length) return undefined;
+            offset += 4;
+            const obj = {};
+            for (let i = 0; i < length; i += 1) {
+              const key = decodeValue();
+              obj[String(key)] = decodeValue();
+            }
+            return obj;
+          }
+          default:
+            return undefined;
+        }
+      };
+
+      const payload = decodeValue();
+      if (payload && typeof payload === "object" && !Array.isArray(payload)) {
+        return { channel, _header: header, ...payload };
+      }
+
+      return { channel, _header: header, payload };
+    }
+
+    function decodeMessagepack(bytes) {
+      let offset = 0;
+
+      const decodeText = (() => {
+        if (typeof TextDecoder !== "undefined") {
+          const decoder = new TextDecoder("utf-8");
+          return (data) => decoder.decode(data);
+        }
+        return (data) => String.fromCharCode(...Array.from(data));
+      })();
+
+      const read = (length) => {
+        if (offset + length > bytes.length) return null;
+        const slice = bytes.slice(offset, offset + length);
+        offset += length;
+        return slice;
+      };
+
+      const readUInt = (length) => {
+        const slice = read(length);
+        if (!slice) return undefined;
+        let value = 0;
+        for (let i = 0; i < slice.length; i += 1) {
+          value = (value << 8) | slice[i];
+        }
+        return value >>> 0;
+      };
+
+      const readInt = (length) => {
+        const slice = read(length);
+        if (!slice) return undefined;
+        let value = 0;
+        for (let i = 0; i < slice.length; i += 1) {
+          value = (value << 8) | slice[i];
+        }
+        const signBit = 1 << (length * 8 - 1);
+        if (value & signBit) {
+          value = value - 2 ** (length * 8);
+        }
+        return value;
+      };
+
+      const readFloat = (length) => {
+        const slice = read(length);
+        if (!slice) return undefined;
+        const view = new DataView(
+          slice.buffer,
+          slice.byteOffset,
+          slice.byteLength,
+        );
+        return length === 4 ? view.getFloat32(0) : view.getFloat64(0);
+      };
+
+      const decodeValue = () => {
+        if (offset >= bytes.length) return undefined;
+        const byte = bytes[offset++];
+
+        if (byte <= 0x7f) return byte;
+        if (byte >= 0xe0) return byte - 0x100;
+
+        if (byte >= 0xa0 && byte <= 0xbf) {
+          const length = byte & 0x1f;
+          const slice = read(length);
+          if (!slice) return undefined;
+          return decodeText(slice);
+        }
+
+        if (byte >= 0x90 && byte <= 0x9f) {
+          const length = byte & 0x0f;
+          const arr = new Array(length);
+          for (let i = 0; i < length; i += 1) {
+            arr[i] = decodeValue();
+          }
+          return arr;
+        }
+
+        if (byte >= 0x80 && byte <= 0x8f) {
+          const length = byte & 0x0f;
+          const obj = {};
+          for (let i = 0; i < length; i += 1) {
+            const key = decodeValue();
+            obj[String(key)] = decodeValue();
+          }
+          return obj;
+        }
+
+        switch (byte) {
+          case 0xc0:
+            return null;
+          case 0xc2:
+            return false;
+          case 0xc3:
+            return true;
+          case 0xc4: {
+            const length = readUInt(1);
+            const slice = length !== undefined ? read(length) : null;
+            return slice ? slice : undefined;
+          }
+          case 0xc5: {
+            const length = readUInt(2);
+            const slice = length !== undefined ? read(length) : null;
+            return slice ? slice : undefined;
+          }
+          case 0xc6: {
+            const length = readUInt(4);
+            const slice = length !== undefined ? read(length) : null;
+            return slice ? slice : undefined;
+          }
+          case 0xca:
+            return readFloat(4);
+          case 0xcb:
+            return readFloat(8);
+          case 0xcc:
+            return readUInt(1);
+          case 0xcd:
+            return readUInt(2);
+          case 0xce:
+            return readUInt(4);
+          case 0xd0:
+            return readInt(1);
+          case 0xd1:
+            return readInt(2);
+          case 0xd2:
+            return readInt(4);
+          case 0xd9: {
+            const length = readUInt(1);
+            const slice = length !== undefined ? read(length) : null;
+            return slice ? decodeText(slice) : undefined;
+          }
+          case 0xda: {
+            const length = readUInt(2);
+            const slice = length !== undefined ? read(length) : null;
+            return slice ? decodeText(slice) : undefined;
+          }
+          case 0xdb: {
+            const length = readUInt(4);
+            const slice = length !== undefined ? read(length) : null;
+            return slice ? decodeText(slice) : undefined;
+          }
+          case 0xdc: {
+            const length = readUInt(2);
+            if (length === undefined) return undefined;
+            const arr = new Array(length);
+            for (let i = 0; i < length; i += 1) {
+              arr[i] = decodeValue();
+            }
+            return arr;
+          }
+          case 0xdd: {
+            const length = readUInt(4);
+            if (length === undefined) return undefined;
+            const arr = new Array(length);
+            for (let i = 0; i < length; i += 1) {
+              arr[i] = decodeValue();
+            }
+            return arr;
+          }
+          case 0xde: {
+            const length = readUInt(2);
+            if (length === undefined) return undefined;
+            const obj = {};
+            for (let i = 0; i < length; i += 1) {
+              const key = decodeValue();
+              obj[String(key)] = decodeValue();
+            }
+            return obj;
+          }
+          case 0xdf: {
+            const length = readUInt(4);
+            if (length === undefined) return undefined;
+            const obj = {};
+            for (let i = 0; i < length; i += 1) {
+              const key = decodeValue();
+              obj[String(key)] = decodeValue();
+            }
+            return obj;
+          }
+          default:
+            return undefined;
+        }
+      };
+
+      return decodeValue();
+    }
+
+    function unpackSocketData(type, data) {
+      try {
+        if (data instanceof ArrayBuffer) {
+          const bytes = new Uint8Array(data);
+          return type === "receive"
+            ? decodeMessagepack(bytes)
+            : decodeSocketBytes(bytes);
+        }
+        if (ArrayBuffer.isView(data)) {
+          const bytes = new Uint8Array(
+            data.buffer,
+            data.byteOffset,
+            data.byteLength,
+          );
+          return type === "receive"
+            ? decodeMessagepack(bytes)
+            : decodeSocketBytes(bytes);
+        }
+        if (typeof data === "string") {
+          return data;
+        }
+      } catch (error) {
+        return { error: String(error?.message || error) };
+      }
+      return undefined;
+    }
+
     function recordSocketActivity(socketInitAddress, type, data) {
-      socketActivity.push({
-        socketInitAddress,
-        [type]: data,
-      });
+      const parsed = unpackSocketData(type, data);
+      const entry = {
+        // socketInitAddress,
+        type,
+        data: parsed !== undefined ? parsed : { error: "socket unpack failed" },
+      };
+      // console.log("socket activity", entry);
+      socketActivity.push(entry);
     }
 
     function InterceptedWebSocket() {
@@ -401,9 +819,9 @@
           __socketActivity.splice(0);
           document.body.querySelector("#room_center_start_button").click();
           setTimeout(() => console.log(__socketActivity.slice()), 1000);
-        }, 5000);
-      }, 5000);
-    }, 5000);
+        }, 2000);
+      }, 2000);
+    }, 2000);
   }
 })({
   me: {
