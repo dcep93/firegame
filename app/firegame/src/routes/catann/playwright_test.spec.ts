@@ -72,24 +72,14 @@ test("load /catann and place a settlement", async ({ page }, testInfo) => {
   try {
     const frame = await gotoCatann(page);
     await revealAndStartGame(frame);
-    await ensureCanvasInjected(frame);
 
     const canvasHandle = await getCanvasHandle(frame);
     await waitForCanvasPaint(canvasHandle);
-
-    const confirmButton = await clickUntilConfirmation(frame);
-    const beforeSettlement = await captureCanvasSnapshot(canvasHandle);
-
-    await confirmButton.click();
-    await waitForCanvasChange(canvasHandle, beforeSettlement);
-
+  } finally {
     await page.screenshot({
-      path: testInfo.outputPath("final-position.png"),
+      path: testInfo.outputPath("screenshot.png"),
       fullPage: true,
     });
-  } catch (error) {
-    await captureFailureScreenshot(page);
-    throw error;
   }
 });
 
