@@ -1,4 +1,11 @@
-import { expect, test } from "@playwright/test";
+import {
+  expect,
+  test,
+  type ElementHandle,
+  type FrameLocator,
+  type Locator,
+  type Page,
+} from "@playwright/test";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import * as http from "http";
 
@@ -63,155 +70,192 @@ test.afterAll(() => {
 
 test("load /catann and place a settlement", async ({ page }, testInfo) => {
   try {
-    await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
+    const frame = await gotoCatann(page);
+    await revealAndStartGame(frame);
+    await ensureCanvasInjected(frame);
 
-    const frame = page.frameLocator('iframe[title="iframe"]');
+    const canvasHandle = await getCanvasHandle(frame);
+    await waitForCanvasPaint(canvasHandle);
 
-    const startButton = frame.locator("#room_center_start_button");
-    await startButton.evaluate((button) => {
-      button.removeAttribute("hidden");
-      let element: HTMLElement | null = button as HTMLElement;
-      while (element) {
-        element.style.display = "block";
-        element.style.visibility = "visible";
-        element.style.opacity = "1";
-        element = element.parentElement;
-      }
-      document.body.style.display = "block";
-      document.body.style.visibility = "visible";
-      document.documentElement.style.display = "block";
-      document.documentElement.style.visibility = "visible";
-    });
-    await expect(startButton).toBeVisible({ timeout: 1000 });
-    await startButton.click({ force: true, timeout: 1000 });
-
-    await frame.locator("body").evaluate(() => {
-      if (document.querySelector("canvas")) return;
-      const canvas = document.createElement("canvas");
-      canvas.width = 800;
-      canvas.height = 600;
-      canvas.style.width = "800px";
-      canvas.style.height = "600px";
-      canvas.style.display = "block";
-      canvas.style.visibility = "visible";
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.fillStyle = "rgba(0, 0, 0, 1)";
-        ctx.fillRect(0, 0, 10, 10);
-      }
-      const confirmButton = document.createElement("button");
-      confirmButton.className = "confirmButton-J9JP_iO6";
-      confirmButton.textContent = "Confirm";
-      confirmButton.style.display = "none";
-      confirmButton.style.visibility = "hidden";
-      document.body.appendChild(canvas);
-      document.body.appendChild(confirmButton);
-      canvas.addEventListener("click", () => {
-        confirmButton.style.display = "block";
-        confirmButton.style.visibility = "visible";
-      });
-      confirmButton.addEventListener("click", () => {
-        if (ctx) {
-          ctx.fillStyle = "rgba(255, 0, 0, 1)";
-          ctx.fillRect(20, 20, 10, 10);
-        }
-        confirmButton.style.display = "none";
-        confirmButton.style.visibility = "hidden";
-      });
-    });
-
-    const gameCanvas = frame.locator("canvas");
-    await expect(gameCanvas).toBeVisible({ timeout: 100 });
-
-    const canvasHandle = await gameCanvas.elementHandle();
-    if (!canvasHandle) {
-      throw new Error("Unable to locate game canvas.");
-    }
-
-    await expect
-      .poll(
-        () =>
-          canvasHandle.evaluate((canvas) => {
-            const htmlCanvas = canvas as HTMLCanvasElement;
-            const ctx = htmlCanvas.getContext("2d");
-            if (!ctx) return false;
-            const width = htmlCanvas.width;
-            const height = htmlCanvas.height;
-            const stepX = Math.max(1, Math.floor(width / 10));
-            const stepY = Math.max(1, Math.floor(height / 10));
-            for (let x = 0; x < width; x += stepX) {
-              for (let y = 0; y < height; y += stepY) {
-                const data = ctx.getImageData(x, y, 1, 1).data;
-                if (data[3] > 0) {
-                  return true;
-                }
-              }
-            }
-            return false;
-          }),
-        {
-          timeout: 100,
-        },
-      )
-      .toBe(true);
-
-    const boundingBox = await gameCanvas.boundingBox();
-    if (!boundingBox) {
-      throw new Error("Canvas has no bounding box.");
-    }
-
-    const confirmButton = frame.locator(".confirmButton-J9JP_iO6");
-    const candidatePositions = [
-      { x: boundingBox.width * 0.5, y: boundingBox.height * 0.2 },
-      { x: boundingBox.width * 0.4, y: boundingBox.height * 0.25 },
-      { x: boundingBox.width * 0.6, y: boundingBox.height * 0.25 },
-      { x: boundingBox.width * 0.35, y: boundingBox.height * 0.35 },
-      { x: boundingBox.width * 0.65, y: boundingBox.height * 0.35 },
-    ];
-
-    let confirmationFound = false;
-    for (const position of candidatePositions) {
-      await gameCanvas.click({ position });
-      try {
-        await expect(confirmButton).toBeVisible({ timeout: 100 });
-        confirmationFound = true;
-        break;
-      } catch {
-        // keep trying other vertices
-      }
-    }
-
-    if (!confirmationFound) {
-      throw new Error("No settlement confirmation appeared after clicking.");
-    }
-
-    const beforeSettlement = await canvasHandle.evaluate(
-      (canvas) => (canvas as HTMLCanvasElement).toDataURL("image/png"),
-    );
+    const confirmButton = await clickUntilConfirmation(frame);
+    const beforeSettlement = await captureCanvasSnapshot(canvasHandle);
 
     await confirmButton.click();
-
-    await expect
-      .poll(
-        () =>
-          canvasHandle.evaluate((canvas) =>
-            (canvas as HTMLCanvasElement).toDataURL("image/png"),
-          ),
-        {
-          timeout: 100,
-        },
-      )
-      .not.toBe(beforeSettlement);
+    await waitForCanvasChange(canvasHandle, beforeSettlement);
 
     await page.screenshot({
       path: testInfo.outputPath("final-position.png"),
       fullPage: true,
     });
   } catch (error) {
-    if (!page.isClosed()) {
-      const screenshot = await page.screenshot({ fullPage: true });
-      console.error(screenshot.toString("hex"));
-    }
+    await captureFailureScreenshot(page);
     throw error;
   }
 });
+
+const gotoCatann = async (page: Page): Promise<FrameLocator> => {
+  await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
+  return page.frameLocator('iframe[title="iframe"]');
+};
+
+const revealAndStartGame = async (frame: FrameLocator) => {
+  const startButton = frame.locator("#room_center_start_button");
+  await startButton.evaluate((button) => {
+    button.removeAttribute("hidden");
+    let element: HTMLElement | null = button as HTMLElement;
+    while (element) {
+      element.style.display = "block";
+      element.style.visibility = "visible";
+      element.style.opacity = "1";
+      element = element.parentElement;
+    }
+    document.body.style.display = "block";
+    document.body.style.visibility = "visible";
+    document.documentElement.style.display = "block";
+    document.documentElement.style.visibility = "visible";
+  });
+  await expect(startButton).toBeVisible({ timeout: 1000 });
+  await startButton.click({ force: true, timeout: 1000 });
+};
+
+const ensureCanvasInjected = async (frame: FrameLocator) => {
+  await frame.locator("body").evaluate(() => {
+    if (document.querySelector("canvas")) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = 800;
+    canvas.height = 600;
+    canvas.style.width = "800px";
+    canvas.style.height = "600px";
+    canvas.style.display = "block";
+    canvas.style.visibility = "visible";
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = "rgba(0, 0, 0, 1)";
+      ctx.fillRect(0, 0, 10, 10);
+    }
+    const confirmButton = document.createElement("button");
+    confirmButton.className = "confirmButton-J9JP_iO6";
+    confirmButton.textContent = "Confirm";
+    confirmButton.style.display = "none";
+    confirmButton.style.visibility = "hidden";
+    document.body.appendChild(canvas);
+    document.body.appendChild(confirmButton);
+    canvas.addEventListener("click", () => {
+      confirmButton.style.display = "block";
+      confirmButton.style.visibility = "visible";
+    });
+    confirmButton.addEventListener("click", () => {
+      if (ctx) {
+        ctx.fillStyle = "rgba(255, 0, 0, 1)";
+        ctx.fillRect(20, 20, 10, 10);
+      }
+      confirmButton.style.display = "none";
+      confirmButton.style.visibility = "hidden";
+    });
+  });
+};
+
+const getCanvasHandle = async (
+  frame: FrameLocator,
+): Promise<ElementHandle<HTMLCanvasElement>> => {
+  const gameCanvas = frame.locator("canvas");
+  await expect(gameCanvas).toBeVisible({ timeout: 100 });
+  const canvasHandle = await gameCanvas.elementHandle();
+  if (!canvasHandle) {
+    throw new Error("Unable to locate game canvas.");
+  }
+  return canvasHandle as ElementHandle<HTMLCanvasElement>;
+};
+
+const waitForCanvasPaint = async (
+  canvasHandle: ElementHandle<HTMLCanvasElement>,
+) => {
+  await expect
+    .poll(
+      () =>
+        canvasHandle.evaluate((canvas) => {
+          const htmlCanvas = canvas as HTMLCanvasElement;
+          const ctx = htmlCanvas.getContext("2d");
+          if (!ctx) return false;
+          const width = htmlCanvas.width;
+          const height = htmlCanvas.height;
+          const stepX = Math.max(1, Math.floor(width / 10));
+          const stepY = Math.max(1, Math.floor(height / 10));
+          for (let x = 0; x < width; x += stepX) {
+            for (let y = 0; y < height; y += stepY) {
+              const data = ctx.getImageData(x, y, 1, 1).data;
+              if (data[3] > 0) {
+                return true;
+              }
+            }
+          }
+          return false;
+        }),
+      {
+        timeout: 100,
+      },
+    )
+    .toBe(true);
+};
+
+const clickUntilConfirmation = async (
+  frame: FrameLocator,
+): Promise<Locator> => {
+  const gameCanvas = frame.locator("canvas");
+  const boundingBox = await gameCanvas.boundingBox();
+  if (!boundingBox) {
+    throw new Error("Canvas has no bounding box.");
+  }
+
+  const confirmButton = frame.locator(".confirmButton-J9JP_iO6");
+  const candidatePositions = [
+    { x: boundingBox.width * 0.5, y: boundingBox.height * 0.2 },
+    { x: boundingBox.width * 0.4, y: boundingBox.height * 0.25 },
+    { x: boundingBox.width * 0.6, y: boundingBox.height * 0.25 },
+    { x: boundingBox.width * 0.35, y: boundingBox.height * 0.35 },
+    { x: boundingBox.width * 0.65, y: boundingBox.height * 0.35 },
+  ];
+
+  for (const position of candidatePositions) {
+    await gameCanvas.click({ position });
+    try {
+      await expect(confirmButton).toBeVisible({ timeout: 100 });
+      return confirmButton;
+    } catch {
+      // keep trying other vertices
+    }
+  }
+
+  throw new Error("No settlement confirmation appeared after clicking.");
+};
+
+const captureCanvasSnapshot = async (
+  canvasHandle: ElementHandle<HTMLCanvasElement>,
+) =>
+  canvasHandle.evaluate((canvas) =>
+    (canvas as HTMLCanvasElement).toDataURL("image/png"),
+  );
+
+const waitForCanvasChange = async (
+  canvasHandle: ElementHandle<HTMLCanvasElement>,
+  previousSnapshot: string,
+) => {
+  await expect
+    .poll(
+      () =>
+        canvasHandle.evaluate((canvas) =>
+          (canvas as HTMLCanvasElement).toDataURL("image/png"),
+        ),
+      {
+        timeout: 100,
+      },
+    )
+    .not.toBe(previousSnapshot);
+};
+
+const captureFailureScreenshot = async (page: Page) => {
+  if (!page.isClosed()) {
+    const screenshot = await page.screenshot({ fullPage: true });
+    console.error(screenshot.toString("hex"));
+  }
+};
