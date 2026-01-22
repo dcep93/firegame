@@ -3,6 +3,7 @@ set -e
 set +x
 
 git rev-parse head
+cd app/firegame
 cat package.json
 yarn install
 npx -y playwright install
