@@ -32,6 +32,20 @@ test("load /catann and place a settlement", async ({ page }, testInfo) => {
   const pageErrors: { message: string; stack?: string }[] = [];
   let iframeUrl: string | null = null;
 
+  page.on("requestfailed", (req) => {
+    console.log("REQUESTFAILED", req.url(), req.failure()?.errorText);
+  });
+
+  page.on("response", (res) => {
+    const s = res.status();
+    if (s >= 400) console.log("HTTP", s, res.url());
+  });
+
+  page.on("console", (msg) => {
+    // keep, but also print live for CI visibility
+    console.log("CONSOLE", msg.type(), msg.text());
+  });
+
   page.on("console", (msg) => {
     consoleEntries.push({
       type: msg.type(),
