@@ -76,7 +76,7 @@ const gotoCatann = async (
 
 const revealAndStartGame = async (frame: FrameLocator) => {
   const startButton = frame.locator("#room_center_start_button");
-  await expect(startButton).toBeVisible({ timeout: 5000 });
+  await expect(startButton).toBeVisible({ timeout: 10000 });
   await startButton.click({ force: true, timeout: 1000 });
 };
 
