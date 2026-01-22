@@ -5,9 +5,23 @@ screenshot, and use persistent caches in Codex to speed up repeated runs.
 Packages should already be installed, so bail out instead of installing
 anything. Always show the screenshot in the response—even when the test
 fails—if `screenshot.png` exists. Always include the full `test_catann.sh`
-output in the response whether the test passes or fails.
+output in the response whether the test passes or fails. This skill should
+ensure the dev server is running (starting `yarn start` if it is not), and it
+keeps the dev server running for hot reloads.
 
-## 1) Run tests, storing the output
+## 1) Start the dev server (keep this running)
+
+```bash
+cd /workspace/firegame/app
+yarn start
+```
+
+Keep this command running for hot reloads. If the dev server is already up,
+you can skip this step.
+
+## 2) Run tests, storing the output
+
+In another shell:
 
 ```bash
 cd /workspace/firegame/app
@@ -17,7 +31,7 @@ timeout 300s bash ./test_catann.sh --codex
 If the timeout is hit, report it as a failure and proceed to collect the
 screenshot (if available) for debugging.
 
-## 2) Locate output image
+## 3) Locate output image
 
 ```bash
 cd /workspace/firegame/app/firegame/test-results
@@ -28,13 +42,13 @@ ls
 # expect: screenshot.png
 ```
 
-## 3) Host image locally
+## 4) Host image locally
 
 ```bash
 python -m http.server 8001
 ```
 
-## 4) Validate URL returns 200
+## 5) Validate URL returns 200
 
 In another shell:
 
@@ -43,7 +57,7 @@ curl -I http://localhost:8001/screenshot.png
 curl http://localhost:8001/screenshot.png -o /dev/null
 ```
 
-## 5) Screenshot capture (browser tool / Playwright)
+## 6) Screenshot capture (browser tool / Playwright)
 
 ```python
 # Use this with browser_container tool.
@@ -67,14 +81,14 @@ asyncio.run(main())
 
 After screenshot:
 
-# 6) Stop the server (Ctrl+C) and test_catann.sh logs into final response.
+# 7) Stop the server (Ctrl+C) and test_catann.sh logs into final response.
 
 ## Fix mode
 
 If the prompt explicitly requests, fix the failing test and rerun it until
 it passes, then continue with the screenshot steps.
 
-## 7) Attach the screenshot (always, if it exists)
+## 8) Attach the screenshot (always, if it exists)
 
 If `screenshot.png` exists, attach it in the response even on failure using the
 image tool, e.g.:
