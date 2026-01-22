@@ -76,7 +76,7 @@ const gotoCatann = async (
 
 const revealAndStartGame = async (frame: FrameLocator) => {
   const startButton = frame.locator("#room_center_start_button");
-  await expect(startButton).toBeVisible({ timeout: 10_000 });
+  await expect(startButton).toBeVisible({ timeout: 3000 });
   await startButton.click({ force: true, timeout: 1000 });
 };
 
@@ -84,7 +84,7 @@ const getCanvasHandle = async (
   frame: FrameLocator,
 ): Promise<ElementHandle<HTMLCanvasElement>> => {
   const gameCanvas = frame.locator("canvas");
-  await expect(gameCanvas).toBeVisible({ timeout: 100 });
+  await expect(gameCanvas).toBeVisible({ timeout: 10000 });
   const canvasHandle = await gameCanvas.elementHandle();
   if (!canvasHandle) {
     throw new Error("Unable to locate game canvas.");
