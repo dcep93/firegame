@@ -5,7 +5,6 @@ import {
   type FrameLocator,
   type Page,
 } from "@playwright/test";
-import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import * as http from "http";
 
 const APP_PORT = 3000;
@@ -15,8 +14,6 @@ const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
 
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
-
-let serverProcess: ChildProcessWithoutNullStreams | undefined;
 
 const starting_settlement = async (iframe: FrameLocator) => {
   await revealAndStartGame(iframe);
@@ -179,23 +176,6 @@ const waitForServer = async (url: string, timeoutMs: number) => {
 
 test.beforeAll(async ({}, testInfo) => {
   testInfo.setTimeout(PLAYWRIGHT_TIMEOUT_MS);
-  serverProcess = spawn("npm", ["start"], {
-    cwd: process.cwd(),
-    env: {
-      ...process.env,
-      BROWSER: "none",
-      HOST: "0.0.0.0",
-      PORT: `${APP_PORT}`,
-      CI: "true",
-    },
-    stdio: "pipe",
-  });
 
   await waitForServer(APP_URL, SERVER_START_TIMEOUT_MS);
-});
-
-test.afterAll(() => {
-  if (serverProcess && !serverProcess.killed) {
-    serverProcess.kill("SIGTERM");
-  }
 });
