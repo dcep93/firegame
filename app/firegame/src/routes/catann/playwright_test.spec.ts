@@ -3,7 +3,6 @@ import {
   test,
   type ElementHandle,
   type FrameLocator,
-  type Locator,
   type Page,
 } from "@playwright/test";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
@@ -108,43 +107,6 @@ const revealAndStartGame = async (frame: FrameLocator) => {
   await startButton.click({ force: true, timeout: 1000 });
 };
 
-const ensureCanvasInjected = async (frame: FrameLocator) => {
-  await frame.locator("body").evaluate(() => {
-    if (document.querySelector("canvas")) return;
-    const canvas = document.createElement("canvas");
-    canvas.width = 800;
-    canvas.height = 600;
-    canvas.style.width = "800px";
-    canvas.style.height = "600px";
-    canvas.style.display = "block";
-    canvas.style.visibility = "visible";
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = "rgba(0, 0, 0, 1)";
-      ctx.fillRect(0, 0, 10, 10);
-    }
-    const confirmButton = document.createElement("button");
-    confirmButton.className = "confirmButton-J9JP_iO6";
-    confirmButton.textContent = "Confirm";
-    confirmButton.style.display = "none";
-    confirmButton.style.visibility = "hidden";
-    document.body.appendChild(canvas);
-    document.body.appendChild(confirmButton);
-    canvas.addEventListener("click", () => {
-      confirmButton.style.display = "block";
-      confirmButton.style.visibility = "visible";
-    });
-    confirmButton.addEventListener("click", () => {
-      if (ctx) {
-        ctx.fillStyle = "rgba(255, 0, 0, 1)";
-        ctx.fillRect(20, 20, 10, 10);
-      }
-      confirmButton.style.display = "none";
-      confirmButton.style.visibility = "hidden";
-    });
-  });
-};
-
 const getCanvasHandle = async (
   frame: FrameLocator,
 ): Promise<ElementHandle<HTMLCanvasElement>> => {
@@ -186,66 +148,4 @@ const waitForCanvasPaint = async (
       },
     )
     .toBe(true);
-};
-
-const clickUntilConfirmation = async (
-  frame: FrameLocator,
-): Promise<Locator> => {
-  const gameCanvas = frame.locator("canvas");
-  const boundingBox = await gameCanvas.boundingBox();
-  if (!boundingBox) {
-    throw new Error("Canvas has no bounding box.");
-  }
-
-  const confirmButton = frame.locator(".confirmButton-J9JP_iO6");
-  const candidatePositions = [
-    { x: boundingBox.width * 0.5, y: boundingBox.height * 0.2 },
-    { x: boundingBox.width * 0.4, y: boundingBox.height * 0.25 },
-    { x: boundingBox.width * 0.6, y: boundingBox.height * 0.25 },
-    { x: boundingBox.width * 0.35, y: boundingBox.height * 0.35 },
-    { x: boundingBox.width * 0.65, y: boundingBox.height * 0.35 },
-  ];
-
-  for (const position of candidatePositions) {
-    await gameCanvas.click({ position });
-    try {
-      await expect(confirmButton).toBeVisible({ timeout: 100 });
-      return confirmButton;
-    } catch {
-      // keep trying other vertices
-    }
-  }
-
-  throw new Error("No settlement confirmation appeared after clicking.");
-};
-
-const captureCanvasSnapshot = async (
-  canvasHandle: ElementHandle<HTMLCanvasElement>,
-) =>
-  canvasHandle.evaluate((canvas) =>
-    (canvas as HTMLCanvasElement).toDataURL("image/png"),
-  );
-
-const waitForCanvasChange = async (
-  canvasHandle: ElementHandle<HTMLCanvasElement>,
-  previousSnapshot: string,
-) => {
-  await expect
-    .poll(
-      () =>
-        canvasHandle.evaluate((canvas) =>
-          (canvas as HTMLCanvasElement).toDataURL("image/png"),
-        ),
-      {
-        timeout: 100,
-      },
-    )
-    .not.toBe(previousSnapshot);
-};
-
-const captureFailureScreenshot = async (page: Page) => {
-  if (!page.isClosed()) {
-    const screenshot = await page.screenshot({ fullPage: true });
-    console.error(screenshot.toString("hex"));
-  }
 };

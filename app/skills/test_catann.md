@@ -10,7 +10,7 @@ fails—if `screenshot.png` exists.
 
 ```bash
 cd /workspace/firegame/app
-timeout 300s bash ./test_catann.sh
+timeout 300s bash ./test_catann.sh --codex
 ```
 
 If the timeout is hit, report it as a failure and proceed to collect the
