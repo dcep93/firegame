@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
-set +x
+echo 2
+set -xe
 
-git rev-parse head
+git rev-parse HEAD
 cd app/firegame
 cat package.json
 yarn install
