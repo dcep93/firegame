@@ -13,6 +13,7 @@ const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 60_000;
 const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
 
+test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
 
 let serverProcess: ChildProcessWithoutNullStreams | undefined;
