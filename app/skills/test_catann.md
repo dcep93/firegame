@@ -27,7 +27,7 @@ if [ ! -d node_modules ]; then
 fi
 ```
 
-## 3) Install Playwright browsers + OS deps (Playwright is already installed)
+## 3) Install Playwright browsers + OS deps
 ```bash
 cd /workspace/firegame/app/firegame
 npx playwright install
