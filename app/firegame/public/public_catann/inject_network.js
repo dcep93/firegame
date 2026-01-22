@@ -186,8 +186,7 @@
     const OrigWebSocket = window.WebSocket;
     const socketsById = new Map();
     let nextSocketId = 1;
-    const socketActivity =
-      window.__socketActivity || (window.__socketActivity = []);
+    window.__socketActivity = [];
 
     function decodeSocketBytes(bytes) {
       if (!bytes || bytes.length < 3) return undefined;
@@ -611,7 +610,7 @@
         data: parsed !== undefined ? parsed : { error: "socket unpack failed" },
       };
       // console.log("socket activity", entry);
-      socketActivity.push(entry);
+      __socketActivity.push(entry);
     }
 
     function InterceptedWebSocket() {
@@ -817,8 +816,6 @@
         setTimeout(() => {
           console.log(document.body.querySelector("#room_center_start_button"));
           __socketActivity.splice(0);
-          document.body.querySelector("#room_center_start_button").click();
-          setTimeout(() => console.log(__socketActivity.slice()), 1000);
         }, 2000);
       }, 2000);
     }, 2000);
@@ -834,81 +831,40 @@
   future: "2027-01-21T03:44:02.401Z",
   userState: {
     userState: {
-      userSessionId: "u_3e83c5cc68115",
       accessLevel: 1,
-      colonistCoins: 108000,
-      colonistVersion: 1080,
+      colonistCoins: 0,
+      colonistVersion: 2880,
       giftedMemberships: [],
-      icon: 11,
-      id: "u_3e83c5cc68115",
+      icon: 12,
+      id: "101920700",
       interactedWithSite: true,
-      isLoggedIn: true,
+      isLoggedIn: false,
       hasJoinedColonistDiscordServer: false,
-      karma: 20,
-      karmaCompletedGameCount: 20,
-      membershipPaymentMethod: "Stripe",
+      karma: 0,
+      karmaCompletedGameCount: 0,
+      membershipPaymentMethod: null,
       membershipPending: false,
-      membership: 5,
-      membershipEndDate: "2027-01-21T03:44:02.401Z",
       isMuted: false,
-      ownedItems: [
-        { category: 1, type: 0 },
-        { category: 1, type: 1 },
-        { category: 1, type: 2 },
-        { category: 1, type: 3 },
-        { category: 1, type: 4 },
-        { category: 1, type: 5 },
-        { category: 1, type: 6 },
-        { category: 1, type: 7 },
-        { category: 1, type: 8 },
-        { category: 1, type: 9 },
-        { category: 2, type: 0 },
-        { category: 2, type: 1 },
-        { category: 2, type: 2 },
-        { category: 2, type: 3 },
-        { category: 2, type: 4 },
-        { category: 2, type: 5 },
-        { category: 2, type: 6 },
-        { category: 2, type: 7 },
-        { category: 2, type: 8 },
-        { category: 2, type: 9 },
-        { category: 2, type: 10 },
-        { category: 2, type: 11 },
-        { category: 2, type: 12 },
-        { category: 3, type: 0 },
-        { category: 3, type: 1 },
-        { category: 3, type: 2 },
-        { category: 3, type: 3 },
-        { category: 3, type: 4 },
-        { category: 3, type: 5 },
-        { category: 3, type: 6 },
-        { category: 3, type: 7 },
-        { category: 3, type: 8 },
-        { category: 3, type: 9 },
-        { category: 3, type: 10 },
-        { category: 3, type: 11 },
-        { category: 3, type: 12 },
-        { category: 3, type: 13 },
-        { category: 3, type: 14 },
-        { category: 3, type: 15 },
-        { category: 3, type: 16 },
-        { category: 3, type: 17 },
-        { category: 3, type: 18 },
-        { category: 3, type: 19 },
-        { category: 3, type: 20 },
-        { category: 3, type: 21 },
-        { category: 3, type: 22 },
-        { category: 3, type: 23 },
-        { category: 3, type: 24 },
-        { category: 3, type: 25 },
-      ],
-      username: "u_3e83c5cc68115",
+      ownedItems: [],
+      totalCompletedGameCount: 0,
+      ckTotalGameCount: 0,
+      ckNextRerollAt: "2026-01-22T06:43:43.663Z",
+      username: "Marney#3748",
       language: null,
+      usernameChangeAttemptsLeft: 1,
       forceSubscription: true,
-      expiresAt: "2027-01-21T03:44:02.401Z",
+      expiresAt: "2026-02-21T05:43:43.661Z",
     },
     csrfToken:
-      "d5463e1a7bef063362fdecbe9f23431c495aa220433797dd0ff90d17387788f499915ee2aa709798c5713d9dae69593b4c53e663217863ce29127d4abcd513ad",
-    abTests: {},
+      "340aab85ebe728e148ffe9b893cfcfd5ee2a83d20937d16f83fba6b0f8fa616ed9cf7d903d0de377776ee396616b86332d51012422ec656307fe8d842ec01849",
+    abTests: {
+      BOT_GAME_TAB_CTA: "DEFAULT",
+      CHAT_TOXICITY_SHOW_MONITORED_WARNING: "SHOW_CHAT_IS_MONITORED_WARNING",
+      CK_MONETIZATION_DICE_ROLL: "ONLY_DICE_ROLL",
+      GIFTING_CHANGE_BEST_VALUE_HINT: "SHOW_MOST_POPULAR",
+      MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
+      REACTIVATE_DISCORD_INACTIVE_USERS: "GROUP_C_GET_FREE_AVATAR",
+      REFERRAL_PROGRAM: "DEFAULT",
+    },
   },
 });
