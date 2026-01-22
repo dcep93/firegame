@@ -1,5 +1,4 @@
 #!/bin/bash
-echo 2
 set -xe
 
 git rev-parse HEAD
