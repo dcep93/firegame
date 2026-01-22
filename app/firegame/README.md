@@ -21,7 +21,7 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### Playwright test (Catann)
 
-The Catann Playwright test is run via `bash /workspace/firegame/app/run_test.sh`.
+The Catann Playwright test is run via `bash /workspace/firegame/app/test_catann.sh`.
 If Playwright browsers or system dependencies are missing, install them first:
 
 ```sh
