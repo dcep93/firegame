@@ -19,18 +19,6 @@ if [ "$HAS_CODEX_FLAG" -ne "$CODEX_HOME_IS_SET" ]; then
     exit 1
 fi
 
-PLAYWRIGHT_ARGS=(test "src/routes/catann/playwright_test.spec.ts" "$@")
+cd "$(dirname "${BASH_SOURCE[0]}")/firegame"
 
-APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/firegame"
-PLAYWRIGHT_DEP="node_modules/.bin/playwright"
-
-if [ -x "${APP_DIR}/${PLAYWRIGHT_DEP}" ]; then
-    PLAYWRIGHT_BIN="${APP_DIR}/${PLAYWRIGHT_DEP}"
-# elif command -v playwright >/dev/null 2>&1; then
-#     PLAYWRIGHT_BIN="playwright"
-else
-    echo "Playwright is not installed. Use the Dockerfile or install dependencies locally."
-    exit 1
-fi
-
-(cd "${APP_DIR}" && "${PLAYWRIGHT_BIN}" "${PLAYWRIGHT_ARGS[@]}")
+npx playwright test src/routes/catann/playwright_test.spec.ts
