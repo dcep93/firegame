@@ -1,16 +1,20 @@
 # Skill: test_catann
 
-Run the Catann Playwright test, capture the final screenshot, and use
-persistent caches in Codex to speed up repeated runs. Packages should already be installed, bail out instead of installing anything.
-Always show the screenshot in the response, even when the test fails, if
-`screenshot.png` exists.
+Run the Catann Playwright test with a 5-minute timeout, capture the final
+screenshot, and use persistent caches in Codex to speed up repeated runs.
+Packages should already be installed, so bail out instead of installing
+anything. Always show the screenshot in the response—even when the test
+fails—if `screenshot.png` exists.
 
 ## 1) Run tests
 
 ```bash
 cd /workspace/firegame/app
-bash ./test_catann.sh
+timeout 300s bash ./test_catann.sh
 ```
+
+If the timeout is hit, report it as a failure and proceed to collect the
+screenshot (if available) for debugging.
 
 ## 2) Locate output image
 
@@ -29,7 +33,7 @@ ls
 python -m http.server 8001
 ```
 
-# 4) Validate URL returns 200
+## 4) Validate URL returns 200
 
 In another shell:
 
