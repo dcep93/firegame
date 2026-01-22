@@ -4,7 +4,8 @@ Run the Catann Playwright test with a 5-minute timeout, capture the final
 screenshot, and use persistent caches in Codex to speed up repeated runs.
 Packages should already be installed, so bail out instead of installing
 anything. Always show the screenshot in the response—even when the test
-fails—if `screenshot.png` exists.
+fails—if `screenshot.png` exists. Always include the full `test_catann.sh`
+output in the response whether the test passes or fails.
 
 ## 1) Run tests, storing the output
 
