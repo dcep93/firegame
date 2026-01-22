@@ -70,7 +70,7 @@ After screenshot:
 
 ## Fix mode
 
-If the prompt includes a `--fix` flag, fix the failing test and rerun it until
+If the prompt explicitly requests, fix the failing test and rerun it until
 it passes, then continue with the screenshot steps.
 
 ## 7) Attach the screenshot (always, if it exists)
