@@ -9,16 +9,6 @@ cd /workspace/firegame
 printf "%s %s\n" "$(git rev-parse HEAD)" "/workspace/firegame/app/skills/test_catann.md"
 ```
 
-## 1) Configure persistent caches (Codex sessions)
-Use a shared cache directory that should persist between Codex sessions in the
-Codex web UI. This caches npm downloads and Playwright browser binaries.
-```bash
-export CODEX_CACHE_DIR="/workspace/.codex_cache"
-mkdir -p "${CODEX_CACHE_DIR}/npm" "${CODEX_CACHE_DIR}/ms-playwright"
-export npm_config_cache="${CODEX_CACHE_DIR}/npm"
-export PLAYWRIGHT_BROWSERS_PATH="${CODEX_CACHE_DIR}/ms-playwright"
-```
-
 ## 2) Install dev deps (only if missing)
 ```bash
 cd /workspace/firegame/app/firegame
