@@ -1,6 +1,7 @@
 // clientData: {0: 2, 1: 7, 2: 5, 3: 108, 4: 111, 5: 98, 6: 98, 7: 121, 8: 130, 9: 166, 10: 97, 11: 99, 12: 116, 13: 105, 14: 111, 15: 110, 16: 1, 17: 167, 18: 112, 19: 97, 20: 121, 21: 108, 22: 111, 23: 97, 24: 100, 25: 128}
 // parsed: { channel: "lobby", _header: [2, 7], action: 1, payload: {} }
 export function parseClientData(clientData: Record<string, number>) {
+  console.log("clientData:", clientData);
   const byteKeys = Object.keys(clientData)
     .map((key) => Number(key))
     .filter((key) => Number.isFinite(key))
@@ -190,7 +191,7 @@ export function parseClientData(clientData: Record<string, number>) {
 }
 
 export function packServerData(serverData: any) {
-  if (!serverData) throw new Error("packServerData");
+  console.log("packServerData:", serverData);
   if (serverData.id !== "136")
     console.log({ serverData: JSON.stringify(serverData) });
   if (
