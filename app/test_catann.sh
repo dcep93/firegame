@@ -23,6 +23,30 @@ cd "$(dirname "${BASH_SOURCE[0]}")/firegame"
 
 APP_URL="http://127.0.0.1:3000"
 LOG_FILE="${LOG_FILE:-/tmp/catann_yarn_start.log}"
+INIT_TIME_FILE="${INIT_TIME_FILE:-/tmp/catann_init_time}"
+
+init_start_time() {
+    date +%s >"$INIT_TIME_FILE"
+}
+
+print_elapsed_since_init() {
+    local init_time
+    init_time="$(cat "$INIT_TIME_FILE" 2>/dev/null || true)"
+    if [[ ! "$init_time" =~ ^[0-9]+$ ]]; then
+        init_start_time
+        init_time="$(cat "$INIT_TIME_FILE")"
+    fi
+    local now elapsed minutes seconds
+    now="$(date +%s)"
+    if [ "$now" -lt "$init_time" ]; then
+        init_start_time
+        init_time="$(cat "$INIT_TIME_FILE")"
+    fi
+    elapsed=$((now - init_time))
+    minutes=$((elapsed / 60))
+    seconds=$((elapsed % 60))
+    printf "%02d:%02d\n" "$minutes" "$seconds"
+}
 
 is_server_alive() {
     curl --silent --fail --max-time 2 "$APP_URL" >/dev/null 2>&1
@@ -49,11 +73,14 @@ wait_for_server() {
 if [ "$HAS_CODEX_FLAG" -eq 0 ]; then
     if ! is_server_alive; then
         echo "Starting yarn start (logs: $LOG_FILE)..."
+        init_start_time
         nohup yarn start >"$LOG_FILE" 2>&1 &
         wait_for_server 60
     else
-        echo "Server already running at $APP_URL"
+        print_elapsed_since_init
     fi
+else
+    echo "Assuming server is running in codex environment (uptime: $(print_elapsed_since_init))"
 fi
 
 npx playwright test src/routes/catann/test/playwright_test.spec.ts
