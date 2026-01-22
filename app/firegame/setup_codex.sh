@@ -2,5 +2,5 @@
 set -e
 
 yarn install
-npx playwright install
-npx playwright install-deps
+npx -y playwright install
+npx -y playwright install-deps
