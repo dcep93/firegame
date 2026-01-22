@@ -101,19 +101,55 @@ const waitForCanvasPaint = async (
       () =>
         canvasHandle.evaluate((canvas) => {
           const htmlCanvas = canvas as HTMLCanvasElement;
+          if (htmlCanvas.width === 0 || htmlCanvas.height === 0) {
+            return false;
+          }
           const ctx = htmlCanvas.getContext("2d");
-          if (!ctx) return false;
-          const width = htmlCanvas.width;
-          const height = htmlCanvas.height;
-          const stepX = Math.max(1, Math.floor(width / 10));
-          const stepY = Math.max(1, Math.floor(height / 10));
-          for (let x = 0; x < width; x += stepX) {
-            for (let y = 0; y < height; y += stepY) {
-              const data = ctx.getImageData(x, y, 1, 1).data;
-              if (data[3] > 0) {
-                return true;
+          if (ctx) {
+            const width = htmlCanvas.width;
+            const height = htmlCanvas.height;
+            const stepX = Math.max(1, Math.floor(width / 10));
+            const stepY = Math.max(1, Math.floor(height / 10));
+            for (let x = 0; x < width; x += stepX) {
+              for (let y = 0; y < height; y += stepY) {
+                const data = ctx.getImageData(x, y, 1, 1).data;
+                if (data[3] > 0) {
+                  return true;
+                }
               }
             }
+            return false;
+          }
+
+          const gl =
+            htmlCanvas.getContext("webgl") || htmlCanvas.getContext("webgl2");
+          if (!gl) return false;
+          const glCtx = gl as WebGLRenderingContext | WebGL2RenderingContext;
+          const width = glCtx.drawingBufferWidth;
+          const height = glCtx.drawingBufferHeight;
+          if (width === 0 || height === 0) return false;
+          const stepX = Math.max(1, Math.floor(width / 10));
+          const stepY = Math.max(1, Math.floor(height / 10));
+          const pixel = new Uint8Array(4);
+          try {
+            for (let x = 0; x < width; x += stepX) {
+              for (let y = 0; y < height; y += stepY) {
+                glCtx.readPixels(
+                  x,
+                  y,
+                  1,
+                  1,
+                  glCtx.RGBA,
+                  glCtx.UNSIGNED_BYTE,
+                  pixel,
+                );
+                if (pixel[3] > 0) {
+                  return true;
+                }
+              }
+            }
+          } catch {
+            return false;
           }
           return false;
         }),
