@@ -18,10 +18,10 @@ test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
 
 let serverProcess: ChildProcessWithoutNullStreams | undefined;
 
-const main = async (frame: FrameLocator) => {
-  await revealAndStartGame(frame);
+const starting_settlement = async (iframe: FrameLocator) => {
+  await revealAndStartGame(iframe);
 
-  const canvasHandle = await getCanvasHandle(frame);
+  const canvasHandle = await getCanvasHandle(iframe);
 
   const vertex = await clickMap(canvasHandle);
   await assertSettlementPlaced(canvasHandle, vertex);
@@ -32,66 +32,47 @@ const main = async (frame: FrameLocator) => {
   await assertNotClickable(edge);
 };
 
-test("load /catann and place a settlement", async ({ page }, testInfo) => {
-  const consoleEntries: {
-    type: string;
-    text: string;
-    location: { url: string; lineNumber: number; columnNumber: number };
-  }[] = [];
-  const pageErrors: { message: string; stack?: string }[] = [];
-  let iframeUrl: string | null = null;
-
-  page.on("console", (msg) => {
-    consoleEntries.push({
-      type: msg.type(),
-      text: msg.text(),
-      location: msg.location(),
-    });
-  });
-  page.on("pageerror", (error) => {
-    pageErrors.push({ message: error.message, stack: error.stack });
-  });
-
+test("starting_settlement", async ({ page }, testInfo) => {
   try {
-    const { frame, resolvedIframeUrl } = await gotoCatann(page);
-    iframeUrl = resolvedIframeUrl;
-    await main(frame);
+    const realMessages = open("./starting_settlement.json");
+    const filteredRealMessages = realMessages.filter((msg) =>
+      isNotHeartbeat(msg),
+    );
+    const iframe = await gotoCatann(page);
+    const testMessages = [];
+    page.on("console", (msg) => testMessages.push(msg.text()));
+    await starting_settlement(iframe);
+    const filteredAndMappedTestMessages = testMessages
+      .map((msg) => tryParseJSON(msg))
+      .filter((msg) => msg && isNotHeartbeat(msg));
+    expect(filteredAndMappedTestMessages).toEqual(filteredRealMessages);
   } finally {
     await page.screenshot({
       path: testInfo.outputPath("screenshot.png"),
       fullPage: true,
     });
-    printIframeDiagnostics(iframeUrl, consoleEntries, pageErrors);
   }
 });
 
-const gotoCatann = async (
-  page: Page,
-): Promise<{ frame: FrameLocator; resolvedIframeUrl: string | null }> => {
+const gotoCatann = async (page: Page): Promise<FrameLocator> => {
   await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
   const iframe = page.locator('iframe[title="iframe"]');
   await expect(iframe).toBeVisible({ timeout: 1000 });
   const iframeHandle = await iframe.elementHandle();
   const iframeSrc = await iframeHandle?.getAttribute("src");
-  const resolvedIframeUrl = iframeSrc
-    ? new URL(iframeSrc, page.url()).toString()
-    : null;
-  return {
-    frame: page.frameLocator('iframe[title="iframe"]'),
-    resolvedIframeUrl,
-  };
+  return iframe;
 };
 
-const revealAndStartGame = async (frame: FrameLocator) => {
-  const startButton = frame.locator("#room_center_start_button");
+const revealAndStartGame = async (iframe: FrameLocator) => {
+  const startButton = iframe.locator("#room_center_start_button");
   await expect(startButton).toBeVisible({ timeout: 10000 });
   await startButton.click({ force: true, timeout: 1000 });
 };
 
 const getCanvasHandle = async (
-  frame: FrameLocator,
+  iframe: FrameLocator,
 ): Promise<ElementHandle<HTMLCanvasElement>> => {
-  const gameCanvas = frame.locator("canvas#game-canvas");
+  const gameCanvas = iframe.locator("canvas#game-canvas");
   await expect(gameCanvas).toBeVisible({ timeout: 1000 });
   const canvasHandle =
     (await gameCanvas.elementHandle()) as ElementHandle<HTMLCanvasElement>;
@@ -167,81 +148,6 @@ const waitForCanvasPaint = async (
       },
     )
     .toBe(true);
-};
-
-// codex: take a screenshot of the canvas to see how to implement this
-// there will be circles at the vertices and edges of the map
-// the point to return will be the center of a circle
-const clickMap = async (canvasHandle: ElementHandle<HTMLCanvasElement>) => {
-  throw new Error("Not implemented: clickMap");
-};
-
-const assertSettlementPlaced = async (
-  canvasHandle: ElementHandle<HTMLCanvasElement>,
-  vertex: unknown,
-) => {
-  throw new Error("Not implemented: assertSettlementPlaced");
-};
-
-const assertRoadPlaced = async (
-  canvasHandle: ElementHandle<HTMLCanvasElement>,
-  edge: unknown,
-) => {
-  throw new Error("Not implemented: assertRoadPlaced");
-};
-
-const assertNotClickable = async (element: unknown) => {
-  throw new Error("Not implemented: assertNotClickable");
-};
-
-const printIframeDiagnostics = (
-  iframeUrl: string | null,
-  consoleEntries: {
-    type: string;
-    text: string;
-    location: { url: string; lineNumber: number; columnNumber: number };
-  }[],
-  pageErrors: { message: string; stack?: string }[],
-) => {
-  const normalize = (url: string) => {
-    try {
-      return new URL(url, APP_URL).toString();
-    } catch {
-      return url;
-    }
-  };
-  const matchesIframeUrl = (url: string) => {
-    if (!iframeUrl) return true;
-    return normalize(url) === iframeUrl;
-  };
-  const iframeConsole = consoleEntries.filter((entry) =>
-    matchesIframeUrl(entry.location.url),
-  );
-  const iframeErrors = pageErrors;
-
-  if (iframeConsole.length === 0 && iframeErrors.length === 0) {
-    console.log("Iframe diagnostics: no console entries or errors captured.");
-    return;
-  }
-
-  console.log("Iframe diagnostics:");
-  if (iframeConsole.length) {
-    console.log("Console:");
-    for (const entry of iframeConsole) {
-      const { url, lineNumber, columnNumber } = entry.location;
-      const location = url ? `${url}:${lineNumber}:${columnNumber}` : "unknown";
-      console.log(`[${entry.type}] ${entry.text} (${location})`);
-    }
-  }
-  if (iframeErrors.length) {
-    console.log("Errors:");
-    for (const error of iframeErrors) {
-      console.log(error.message);
-      if (error.stack) {
-        console.log(error.stack);
-      }
-    }
-  }
 };
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

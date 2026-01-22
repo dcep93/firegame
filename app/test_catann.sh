@@ -21,4 +21,4 @@ fi
 
 cd "$(dirname "${BASH_SOURCE[0]}")/firegame"
 
-npx playwright test src/routes/catann/playwright_test.spec.ts
+npx playwright test src/routes/catann/test/playwright_test.spec.ts
