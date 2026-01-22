@@ -22,6 +22,14 @@ const main = async (frame: FrameLocator) => {
   await revealAndStartGame(frame);
 
   const canvasHandle = await getCanvasHandle(frame);
+
+  const vertex = await clickMap(canvasHandle);
+  await assertSettlementPlaced(canvasHandle, vertex);
+  await assertNotClickable(vertex);
+
+  const edge = await clickMap(canvasHandle);
+  await assertRoadPlaced(canvasHandle, edge);
+  await assertNotClickable(edge);
 };
 
 test("load /catann and place a settlement", async ({ page }, testInfo) => {
@@ -159,6 +167,31 @@ const waitForCanvasPaint = async (
       },
     )
     .toBe(true);
+};
+
+// codex: take a screenshot of the canvas to see how to implement this
+// there will be circles at the vertices and edges of the map
+// the point to return will be the center of a circle
+const clickMap = async (canvasHandle: ElementHandle<HTMLCanvasElement>) => {
+  throw new Error("Not implemented: clickMap");
+};
+
+const assertSettlementPlaced = async (
+  canvasHandle: ElementHandle<HTMLCanvasElement>,
+  vertex: unknown,
+) => {
+  throw new Error("Not implemented: assertSettlementPlaced");
+};
+
+const assertRoadPlaced = async (
+  canvasHandle: ElementHandle<HTMLCanvasElement>,
+  edge: unknown,
+) => {
+  throw new Error("Not implemented: assertRoadPlaced");
+};
+
+const assertNotClickable = async (element: unknown) => {
+  throw new Error("Not implemented: assertNotClickable");
 };
 
 const printIframeDiagnostics = (
