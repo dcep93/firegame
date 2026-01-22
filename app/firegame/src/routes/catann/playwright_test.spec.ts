@@ -21,7 +21,6 @@ const main = async (frame: FrameLocator) => {
   await revealAndStartGame(frame);
 
   const canvasHandle = await getCanvasHandle(frame);
-  await waitForCanvasPaint(canvasHandle);
 };
 
 test("load /catann and place a settlement", async ({ page }, testInfo) => {
@@ -62,7 +61,7 @@ const gotoCatann = async (
 ): Promise<{ frame: FrameLocator; resolvedIframeUrl: string | null }> => {
   await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
   const iframe = page.locator('iframe[title="iframe"]');
-  await expect(iframe).toBeVisible({ timeout: 10_000 });
+  await expect(iframe).toBeVisible({ timeout: 1000 });
   const iframeHandle = await iframe.elementHandle();
   const iframeSrc = await iframeHandle?.getAttribute("src");
   const resolvedIframeUrl = iframeSrc
@@ -76,20 +75,22 @@ const gotoCatann = async (
 
 const revealAndStartGame = async (frame: FrameLocator) => {
   const startButton = frame.locator("#room_center_start_button");
-  await expect(startButton).toBeVisible({ timeout: 3000 });
+  await expect(startButton).toBeVisible({ timeout: 5000 });
   await startButton.click({ force: true, timeout: 1000 });
 };
 
 const getCanvasHandle = async (
   frame: FrameLocator,
 ): Promise<ElementHandle<HTMLCanvasElement>> => {
-  const gameCanvas = frame.locator("canvas");
-  await expect(gameCanvas).toBeVisible({ timeout: 10000 });
-  const canvasHandle = await gameCanvas.elementHandle();
+  const gameCanvas = frame.locator("canvas#game-canvas");
+  await expect(gameCanvas).toBeVisible({ timeout: 1000 });
+  const canvasHandle =
+    (await gameCanvas.elementHandle()) as ElementHandle<HTMLCanvasElement>;
   if (!canvasHandle) {
     throw new Error("Unable to locate game canvas.");
   }
-  return canvasHandle as ElementHandle<HTMLCanvasElement>;
+  await waitForCanvasPaint(canvasHandle);
+  return canvasHandle;
 };
 
 const waitForCanvasPaint = async (
@@ -117,7 +118,7 @@ const waitForCanvasPaint = async (
           return false;
         }),
       {
-        timeout: 100,
+        timeout: 1000,
       },
     )
     .toBe(true);
