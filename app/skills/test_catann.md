@@ -2,6 +2,8 @@
 
 Run the Catann Playwright test, capture the final screenshot, and use
 persistent caches in Codex to speed up repeated runs. Packages should already be installed, bail out instead of installing anything.
+Always show the screenshot in the response, even when the test fails, if
+`screenshot.png` exists.
 
 ## 1) Run tests
 
@@ -66,4 +68,14 @@ After screenshot:
 
 If the prompt includes a `--fix` flag, fix the failing test and rerun it until
 it passes, then continue with the screenshot steps.
-If `--fix` is not provided, still continue with the screenshot steps.
+
+## 7) Attach the screenshot (always, if it exists)
+
+If `screenshot.png` exists, attach it in the response even on failure using the
+image tool, e.g.:
+
+```json
+{
+  "path": "/workspace/firegame/app/firegame/test-results/<test-results-subfolder>/screenshot.png"
+}
+```
