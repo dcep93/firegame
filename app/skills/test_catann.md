@@ -6,7 +6,7 @@ Packages should already be installed, so bail out instead of installing
 anything. Always show the screenshot in the response—even when the test
 fails—if `screenshot.png` exists.
 
-## 1) Run tests
+## 1) Run tests, storing the output
 
 ```bash
 cd /workspace/firegame/app
@@ -66,7 +66,7 @@ asyncio.run(main())
 
 After screenshot:
 
-# 6) Stop the server (Ctrl+C) and copy server logs into final response.
+# 6) Stop the server (Ctrl+C) and test_catann.sh logs into final response.
 
 ## Fix mode
 
