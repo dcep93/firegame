@@ -2,10 +2,7 @@
 set -xe
 
 date
-echo $CODEX_HOME
-SKILLS_DIR="${CODEX_HOME}/skills"
-mkdir -p "${CODEX_HOME}"
-ln -sfn "$(pwd)/.codex/skills" "${SKILLS_DIR}"
+ln -sfn "$(pwd)/.codex/skills" "/opt/codex/skills"
 # git rev-parse HEAD
 # cd app/firegame
 # cat package.json
