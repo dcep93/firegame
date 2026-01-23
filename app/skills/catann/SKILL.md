@@ -1,4 +1,9 @@
-# Skill: test_catann
+---
+name: catann
+description: Run the Firegame catann test workflow (start dev server, run test script, and collect screenshots/logs).
+---
+
+# Skill: catann
 
 Packages should already be installed. If anything tries to install
 dependencies, stop and ask the user first. Never run package installs
