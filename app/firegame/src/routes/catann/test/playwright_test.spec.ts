@@ -26,22 +26,29 @@ const starting_settlement = async (iframe: FrameLocator) => {
   // await assertNotClickable(edge);
 };
 
+const openRecordingJson = (
+  path: string,
+): { trigger: string; data: number[] }[] => {
+  const fs = require("fs");
+  const data = fs.readFileSync(path, "utf8");
+  return JSON.parse(data);
+};
+
 test("starting_settlement", async ({ page }, testInfo) => {
   try {
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
-    // const realMessages = open("./starting_settlement.json");
-    // const filteredRealMessages = realMessages.filter((msg) =>
-    //   isNotHeartbeat(msg),
-    // );
-    // const iframe = await gotoCatann(page);
-    // const testMessages = [];
-    // page.on("console", (msg) => testMessages.push(msg.text()));
-    // await starting_settlement(iframe);
-    // const filteredAndMappedTestMessages = testMessages
-    //   .map((msg) => tryParseJSON(msg))
-    //   .filter((msg) => msg && isNotHeartbeat(msg));
-    // expect(filteredAndMappedTestMessages).toEqual(filteredRealMessages);
+    const realMessages = openRecordingJson("./starting_settlement.json");
+    const filteredRealMessages = realMessages.filter((msg) =>
+      isNotHeartbeat(msg),
+    );
+    const testMessages: string[] = [];
+    page.on("console", (msg) => testMessages.push(msg.text()));
+    await starting_settlement(iframe);
+    const filteredAndMappedTestMessages = testMessages
+      .map((msg) => tryParseMessage(msg))
+      .filter((msg) => msg && isNotHeartbeat(msg));
+    expect(filteredAndMappedTestMessages).toEqual(filteredRealMessages);
   } finally {
     await page.screenshot({
       path: testInfo.outputPath("screenshot.png"),
@@ -91,22 +98,22 @@ const waitForCanvasPaint = async (
           if (htmlCanvas.width === 0 || htmlCanvas.height === 0) {
             return false;
           }
-          const ctx = htmlCanvas.getContext("2d");
-          if (ctx) {
-            const width = htmlCanvas.width;
-            const height = htmlCanvas.height;
-            const stepX = Math.max(1, Math.floor(width / 10));
-            const stepY = Math.max(1, Math.floor(height / 10));
-            for (let x = 0; x < width; x += stepX) {
-              for (let y = 0; y < height; y += stepY) {
-                const data = ctx.getImageData(x, y, 1, 1).data;
-                if (data[3] > 0) {
-                  return true;
-                }
-              }
-            }
-            return false;
-          }
+          // const ctx = htmlCanvas.getContext("2d");
+          // if (ctx) {
+          //   const width = htmlCanvas.width;
+          //   const height = htmlCanvas.height;
+          //   const stepX = Math.max(1, Math.floor(width / 10));
+          //   const stepY = Math.max(1, Math.floor(height / 10));
+          //   for (let x = 0; x < width; x += stepX) {
+          //     for (let y = 0; y < height; y += stepY) {
+          //       const data = ctx.getImageData(x, y, 1, 1).data;
+          //       if (data[3] > 0) {
+          //         return true;
+          //       }
+          //     }
+          //   }
+          //   return false;
+          // }
 
           const gl =
             htmlCanvas.getContext("webgl") || htmlCanvas.getContext("webgl2");
