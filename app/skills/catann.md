@@ -10,19 +10,24 @@ fails.
 
 ## Summary flow
 
-1. Record a timestamp.
-2. Start the dev server (keep it running).
-3. Run tests and capture output.
-4. Collect `screenshot.png` (if present).
-5. Host the image locally and attach it.
-6. Report results + full logs.
-7. Record a timestamp.
+1. Start the dev server (keep it running).
+2. Run tests and capture output.
+3. Collect `screenshot.png` (if present).
+4. Host the image locally and attach it.
+5. Report results + full logs.
 
-## 1) Record a timestamp
+## Timestamp format (NYC time)
 
-Record the current date/time before starting work.
+At the start of each numbered step, record a timestamp in America/New_York
+using:
 
-## 2) Start the dev server (keep running for hot reloads)
+```bash
+TZ=America/New_York date "+%Y-%m-%d %H:%M:%S %Z"
+```
+
+Include the raw command output in your notes/output for that step.
+
+## 1) Start the dev server (keep running for hot reloads)
 
 ```bash
 cd /workspace/firegame/app/firegame
@@ -31,7 +36,7 @@ yarn start
 
 Keep this command running.
 
-## 3) Run tests and capture output
+## 2) Run tests and capture output
 
 In another shell:
 
@@ -48,7 +53,7 @@ screenshot (if available).
 If the prompt explicitly requests, fix the failing test and rerun it until
 it passes, then continue with the screenshot steps.
 
-## 4) Locate output image (if present)
+## 3) Locate output image (if present)
 
 ```bash
 cd /workspace/firegame/app/firegame/test-results
@@ -59,13 +64,13 @@ ls
 # expect: screenshot.png
 ```
 
-## 5) Host image locally (for browser pickup)
+## 4) Host image locally (for browser pickup)
 
 ```bash
 python -m http.server -b 0.0.0.0 8000
 ```
 
-## 6) Screenshot capture (browser tool / Playwright)
+## 5) Screenshot capture (browser tool / Playwright)
 
 If a browser tool is available, open `http://localhost:8000/screenshot.png`
 and include it in the response. If no browser tool is available, still
@@ -74,10 +79,6 @@ Ensure the screenshot capture waits for network idle (e.g., use a browser
 tool's equivalent of Playwright's `wait_until='networkidle'`) before
 attaching the image.
 
-## 7) Include `test_catann.sh` logs in final response
+## 6) Include `test_catann.sh` logs in final response
 
 Always paste the full log output, even on success.
-
-## 8) Record a timestamp
-
-Record the current date/time after completion.
