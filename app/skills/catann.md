@@ -67,12 +67,12 @@ ls
 ## 4) Host image locally (for browser pickup)
 
 ```bash
-python -m http.server -b 0.0.0.0 8000
+python -m http.server -b 0.0.0.0 8001
 ```
 
 ## 5) Screenshot capture (browser tool / Playwright)
 
-If a browser tool is available, open `http://localhost:8000/screenshot.png`
+If a browser tool is available, open `http://localhost:8001/screenshot.png`
 and include it in the response. If no browser tool is available, still
 mention whether `screenshot.png` was found and hosted.
 Ensure the screenshot capture waits for network idle (e.g., use a browser
