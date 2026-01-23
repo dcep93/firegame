@@ -65,12 +65,12 @@ class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
           store.update(
             `no one wins because of a tie between ${tiedPlayers
               .map((i) => store.gameW.game.players[i].userName)
-              .join(",")}`
+              .join(",")}`,
           );
         }
         if (jester === utils.myIndex()) {
           const p = store.gameW.game.players.find(
-            (p) => (p.played || []).indexOf(Card.jester) !== -1
+            (p) => (p.played || []).indexOf(Card.jester) !== -1,
           )!;
           p.score++;
           store.update(`wins, [${p.userName}] scores a jester`);
@@ -111,14 +111,14 @@ class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
           store.gameW.game.sycophant === undefined ||
           o.index === store.gameW.game.sycophant ||
           store.gameW.game.played === Card.cardinal ||
-          store.gameW.game.played === Card.baroness
+          store.gameW.game.played === Card.baroness,
       )
       .filter(
         (o) =>
           store.gameW.game.played === Card.prince ||
           store.gameW.game.played === Card.sycophant ||
           store.gameW.game.played === Card.cardinal ||
-          o.player.userId !== utils.getCurrent().userId
+          o.player.userId !== utils.getCurrent().userId,
       )
       .map((o) => o.index);
   }
@@ -155,7 +155,7 @@ class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
         break;
       case Card.prince:
         const msg = `made [${player.userName}] discard ${utils.cardString(
-          player.hand![0]
+          player.hand![0],
         )}`;
         utils.discard(player, false);
         this.finish(msg);
@@ -209,6 +209,7 @@ class Action extends React.Component<{}, { c?: ComponentsE; index?: number }> {
       const c = ComponentsM[this.state.c];
       const cc = { c };
       return (
+        // @ts-ignore
         <cc.c
           index={this.state.index!}
           player={store.gameW.game.players[this.state.index!]}
