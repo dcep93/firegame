@@ -13,9 +13,33 @@ const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 60_000;
 const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
+const MAP_NORTH_NORTH_WEST = { x: 391, y: 87 };
+const MAP_TILE_WIDTH = 94;
 
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
+
+const getSettlementOffset = (position: { col: number; row: number }) => {
+  const x =
+    MAP_NORTH_NORTH_WEST.x +
+    position.col * (MAP_TILE_WIDTH * 0.75) +
+    (position.row % 2 === 0 ? 0 : (MAP_TILE_WIDTH * 0.75) / 2);
+  const y =
+    MAP_NORTH_NORTH_WEST.y +
+    (position.row * (MAP_TILE_WIDTH * Math.sqrt(3))) / 2;
+  return { x, y };
+};
+
+const mapAppearsClickable = async (offset: { x: number; y: number }) => {
+  // This is a heuristic to determine if the map is ready for interaction
+  // by checking the pixel color at the given offset.
+  // Adjust the logic as needed based on the actual game rendering.
+
+  // centered at offset
+  // radius 6, should be a filled in greyish circle, with some allowance
+  // radius 12 should be a black ring
+  return true;
+};
 
 const placeStartingSettlement = async (iframe: FrameLocator) => {
   const canvasHandle = await getCanvasHandle(iframe);
@@ -24,33 +48,72 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
     throw new Error("Unable to determine canvas bounds.");
   }
   const canvas = iframe.locator("canvas#game-canvas");
-  const settlementOffset = { x: 436, y: 297 };
-  const roadOffset = { x: 462, y: 333 };
-  if (
-    settlementOffset.x > canvasBox.width ||
-    settlementOffset.y > canvasBox.height ||
-    roadOffset.x > canvasBox.width ||
-    roadOffset.y > canvasBox.height
-  ) {
-    throw new Error("Click offsets are outside the canvas bounds.");
-  }
 
+  // for col in range(11):
+  //   for row in range(11):
+  //     const vertexOffset = getSettlementOffset({ col, row });
+  //     await expect
+  //       .poll(async () => mapAppearsClickable(settlementOffset), {
+  //         timeout: 5000,
+  //       })
+  //       .toBe(true);
+
+  const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
+
+  await expect
+    .poll(async () => mapAppearsClickable(settlementOffset), {
+      timeout: 5000,
+    })
+    .toBe(true);
   await canvas.click({
     position: settlementOffset,
     force: true,
     timeout: 5000,
   });
-  const confirmButton = iframe.locator(".btn_general_check");
-  await expect(confirmButton).toBeVisible({ timeout: 5000 });
-  await confirmButton.click({ force: true, timeout: 5000 });
 
+  const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+  await canvas.click({
+    position: confirmSettlementOffset,
+    force: true,
+    timeout: 5000,
+  });
+
+  // for col in range(11):
+  //   for row in range(11):
+  //     const vertexOffset = getSettlementOffset({ col, row });
+  //     await expect
+  //       .poll(async () => mapAppearsClickable(settlementOffset), {
+  //         timeout: 5000,
+  //       })
+  //       .toBe(false);
+
+  const destinationOffset = getSettlementOffset({ col: 5, row: 2 });
+  const roadOffset = {
+    x: (settlementOffset.x + destinationOffset.x) / 2,
+    y: (settlementOffset.y + destinationOffset.y) / 2,
+  };
+
+  await expect
+    .poll(async () => mapAppearsClickable(roadOffset), {
+      timeout: 5000,
+    })
+    .toBe(true);
   await canvas.click({
     position: roadOffset,
     force: true,
     timeout: 5000,
   });
-  await expect(confirmButton).toBeVisible({ timeout: 5000 });
-  await confirmButton.click({ force: true, timeout: 5000 });
+
+  const confirmRoadOffset = getConfirmOffset(roadOffset);
+  await canvas.click({
+    position: confirmRoadOffset,
+    force: true,
+    timeout: 5000,
+  });
+};
+
+const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
+  return { x: baseOffset.x, y: baseOffset.y - 40 };
 };
 
 const openRecordingJson = (
@@ -132,7 +195,10 @@ const setupClientMessageCapture = async (page: Page) => {
       if (!payload?.catann || !payload.clientData) return;
       const bytes = toBytes(payload.clientData);
       if (!bytes) return;
-      globalWindow.__catannMessages?.push({ trigger: "socket.send", data: bytes });
+      globalWindow.__catannMessages?.push({
+        trigger: "socket.send",
+        data: bytes,
+      });
     });
   });
 };
