@@ -62,6 +62,9 @@ python -m http.server -b 0.0.0.0 8001
 If a browser tool is available, open `http://localhost:8001/screenshot.png`
 and include it in the response. If no browser tool is available, still
 mention whether `screenshot.png` was found and hosted.
+Ensure the screenshot capture waits for network idle (e.g., use a browser
+tool's equivalent of Playwright's `wait_until='networkidle'`) before
+attaching the image.
 
 ## 6) Include `test_catann.sh` logs in final response
 
