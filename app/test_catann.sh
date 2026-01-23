@@ -73,14 +73,11 @@ wait_for_server() {
 if [ "$HAS_CODEX_FLAG" -eq 0 ]; then
     if ! is_server_alive; then
         echo "Starting yarn start (logs: $LOG_FILE)..."
-        init_start_time
         nohup yarn start >"$LOG_FILE" 2>&1 &
         wait_for_server 60
-    else
-        print_elapsed_since_init
     fi
 else
-    echo "Assuming server is running in codex environment (uptime: $(print_elapsed_since_init))"
+    print_elapsed_since_init
 fi
 
 npx playwright test src/routes/catann/test/playwright_test.spec.ts
