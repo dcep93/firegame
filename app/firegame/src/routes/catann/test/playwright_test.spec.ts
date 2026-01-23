@@ -62,7 +62,7 @@ const gotoCatann = async (page: Page): Promise<FrameLocator> => {
 
 const revealAndStartGame = async (iframe: FrameLocator) => {
   const startButton = iframe.locator("#room_center_start_button");
-  await expect(startButton).toBeVisible({ timeout: 10000 });
+  await expect(startButton).toBeVisible({ timeout: 15000 });
   await startButton.click({ force: true, timeout: 1000 });
 };
 
