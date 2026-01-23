@@ -51,9 +51,9 @@ test("starting_settlement", async ({ page }, testInfo) => {
 });
 
 const gotoCatann = async (page: Page): Promise<FrameLocator> => {
-  page.on("console", (msg) => {
-    console.log(`${msg.type()}: ${msg.text()}`);
-  });
+  // page.on("console", (msg) => {
+  //   console.log(`${msg.type()}: ${msg.text()}`);
+  // });
   await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
   const iframe = page.locator('iframe[title="iframe"]');
   await expect(iframe).toBeVisible({ timeout: 1000 });
