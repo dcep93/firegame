@@ -29,6 +29,7 @@ abstract class SharedSidebar extends React.Component {
               </div>
             ))}
           </div>
+          {/* @ts-ignore */}
           <SharedLog />
         </div>
       </div>
