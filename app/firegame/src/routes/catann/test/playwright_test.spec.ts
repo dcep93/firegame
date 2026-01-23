@@ -5,7 +5,9 @@ import {
   type FrameLocator,
   type Page,
 } from "@playwright/test";
+import * as fs from "fs";
 import * as http from "http";
+import * as path from "path";
 
 const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
@@ -16,39 +18,67 @@ test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
 
 const placeStartingSettlement = async (iframe: FrameLocator) => {
-  // await revealAndStartGame(iframe);
-  // const canvasHandle = await getCanvasHandle(iframe);
-  // const vertex = await clickMap(canvasHandle);
-  // await assertSettlementPlaced(canvasHandle, vertex);
-  // await assertNotClickable(vertex);
-  // const edge = await clickMap(canvasHandle);
-  // await assertRoadPlaced(canvasHandle, edge);
-  // await assertNotClickable(edge);
+  const canvasHandle = await getCanvasHandle(iframe);
+  const canvasBox = await canvasHandle.boundingBox();
+  if (!canvasBox) {
+    throw new Error("Unable to determine canvas bounds.");
+  }
+  const canvas = iframe.locator("canvas#game-canvas");
+  const settlementOffset = { x: 436, y: 297 };
+  const roadOffset = { x: 462, y: 333 };
+  if (
+    settlementOffset.x > canvasBox.width ||
+    settlementOffset.y > canvasBox.height ||
+    roadOffset.x > canvasBox.width ||
+    roadOffset.y > canvasBox.height
+  ) {
+    throw new Error("Click offsets are outside the canvas bounds.");
+  }
+
+  await canvas.click({
+    position: settlementOffset,
+    force: true,
+    timeout: 5000,
+  });
+  const confirmButton = iframe.locator(".btn_general_check");
+  await expect(confirmButton).toBeVisible({ timeout: 5000 });
+  await confirmButton.click({ force: true, timeout: 5000 });
+
+  await canvas.click({
+    position: roadOffset,
+    force: true,
+    timeout: 5000,
+  });
+  await expect(confirmButton).toBeVisible({ timeout: 5000 });
+  await confirmButton.click({ force: true, timeout: 5000 });
 };
 
 const openRecordingJson = (
-  path: string,
+  recordingPath: string,
 ): { trigger: string; data: number[] }[] => {
-  const fs = require("fs");
-  const data = fs.readFileSync(path, "utf8");
+  const fullPath = path.resolve(__dirname, recordingPath);
+  const data = fs.readFileSync(fullPath, "utf8");
   return JSON.parse(data);
 };
 
 test("starting_settlement", async ({ page }, testInfo) => {
   try {
+    await setupClientMessageCapture(page);
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
     const realMessages = openRecordingJson("./starting_settlement.json");
     const filteredRealMessages = realMessages.filter((msg) =>
       isNotHeartbeat(msg),
     );
-    const testMessages: string[] = [];
-    page.on("console", (msg) => testMessages.push(msg.text()));
     await placeStartingSettlement(iframe);
-    const filteredAndMappedTestMessages = testMessages
-      .map((msg) => tryParseMessage(msg))
-      .filter((msg) => msg && isNotHeartbeat(msg));
-    expect(filteredAndMappedTestMessages).toEqual(filteredRealMessages);
+    const getFilteredTestMessages = async () =>
+      (await getCapturedMessages(page)).filter((msg) => isNotHeartbeat(msg));
+    await expect
+      .poll(async () => (await getFilteredTestMessages()).length, {
+        timeout: 5000,
+      })
+      .toBe(filteredRealMessages.length);
+    expect(await getFilteredTestMessages()).toEqual(filteredRealMessages);
   } finally {
     await page.screenshot({
       path: testInfo.outputPath("screenshot.png"),
@@ -66,6 +96,56 @@ const gotoCatann = async (page: Page): Promise<FrameLocator> => {
   await expect(iframe).toBeVisible({ timeout: 1000 });
   return page.frameLocator('iframe[title="iframe"]');
 };
+
+const setupClientMessageCapture = async (page: Page) => {
+  await page.evaluate(() => {
+    const globalWindow = window as typeof window & {
+      __catannMessages?: { trigger: string; data: number[] }[];
+    };
+    globalWindow.__catannMessages = [];
+
+    const toBytes = (clientData: unknown): number[] | null => {
+      if (!clientData) return null;
+      if (clientData instanceof ArrayBuffer) {
+        return Array.from(new Uint8Array(clientData));
+      }
+      if (ArrayBuffer.isView(clientData)) {
+        const view = clientData as ArrayBufferView;
+        return Array.from(
+          new Uint8Array(view.buffer, view.byteOffset, view.byteLength),
+        );
+      }
+      if (typeof clientData === "object") {
+        const record = clientData as Record<string, number>;
+        const keys = Object.keys(record)
+          .map((key) => Number(key))
+          .filter((key) => Number.isFinite(key))
+          .sort((a, b) => a - b);
+        if (!keys.length) return null;
+        return keys.map((key) => record[String(key)] ?? 0);
+      }
+      return null;
+    };
+
+    window.addEventListener("message", (event) => {
+      const payload = event.data as { catann?: boolean; clientData?: unknown };
+      if (!payload?.catann || !payload.clientData) return;
+      const bytes = toBytes(payload.clientData);
+      if (!bytes) return;
+      globalWindow.__catannMessages?.push({ trigger: "socket.send", data: bytes });
+    });
+  });
+};
+
+const getCapturedMessages = async (page: Page) =>
+  page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          __catannMessages?: { trigger: string; data: number[] }[];
+        }
+      ).__catannMessages ?? [],
+  );
 
 const revealAndStartGame = async (iframe: FrameLocator) => {
   const startButton = iframe.locator("#room_center_start_button");
@@ -186,3 +266,9 @@ test.beforeAll(async ({}, testInfo) => {
 
   await waitForServer(APP_URL, SERVER_START_TIMEOUT_MS);
 });
+
+const isNotHeartbeat = (msg: { trigger: string; data: number[] } | null) => {
+  if (!msg) return false;
+  if (!Array.isArray(msg.data)) return false;
+  return !(msg.data[0] === 4 && msg.data[1] === 8);
+};

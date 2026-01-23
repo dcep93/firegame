@@ -333,7 +333,7 @@ export const newFirstGameState = () => {
       type: 1,
       sequence: 1,
       payload: {
-        serverId: "mockServerId",
+        serverId: "08CC38",
         databaseGameId: room.data.roomId,
         gameSettingId: room.data.roomId,
         shouldResetGameClient: false,

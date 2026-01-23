@@ -5,10 +5,6 @@ description: Run the Firegame catann test workflow (start dev server, run test s
 
 # Skill: catann
 
-Packages should already be installed. If anything tries to install
-dependencies, stop and ask the user first. Never run package installs
-(e.g., `yarn install`, `npm install`, `pnpm install`).
-
 Always include the full `test_catann.sh` output in the final response. If
 `screenshot.png` exists, always show it in the response even when the test
 fails.

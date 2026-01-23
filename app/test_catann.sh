@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -xeuo pipefail
 
 
 # the codex environment is defined by the CODEX_HOME env var
