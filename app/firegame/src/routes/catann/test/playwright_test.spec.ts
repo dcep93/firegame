@@ -28,6 +28,7 @@ const starting_settlement = async (iframe: FrameLocator) => {
 
 test("starting_settlement", async ({ page }, testInfo) => {
   try {
+    await gotoCatann(page);
     // const realMessages = open("./starting_settlement.json");
     // const filteredRealMessages = realMessages.filter((msg) =>
     //   isNotHeartbeat(msg),
