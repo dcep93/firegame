@@ -15,7 +15,7 @@ const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
 
-const starting_settlement = async (iframe: FrameLocator) => {
+const placeStartingSettlement = async (iframe: FrameLocator) => {
   // await revealAndStartGame(iframe);
   // const canvasHandle = await getCanvasHandle(iframe);
   // const vertex = await clickMap(canvasHandle);
@@ -44,7 +44,7 @@ test("starting_settlement", async ({ page }, testInfo) => {
     );
     const testMessages: string[] = [];
     page.on("console", (msg) => testMessages.push(msg.text()));
-    await starting_settlement(iframe);
+    await placeStartingSettlement(iframe);
     const filteredAndMappedTestMessages = testMessages
       .map((msg) => tryParseMessage(msg))
       .filter((msg) => msg && isNotHeartbeat(msg));
