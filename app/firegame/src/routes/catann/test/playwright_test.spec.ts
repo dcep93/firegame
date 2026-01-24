@@ -48,6 +48,11 @@ test(
     //       })
     //       .toBe(true);
 
+    page.on("console", (msg) => {
+      // throw new Error(`${msg.type()}: ${msg.text()}`);
+      console.log(`${msg.type()}: ${msg.text()}`);
+    });
+
     const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
 
     await expect
@@ -231,6 +236,7 @@ const getCanvasHandle = async (
 };
 
 const getSettlementOffset = (position: { col: number; row: number }) => {
+  return { x: 233, y: 295 };
   const x =
     MAP_NORTH_NORTH_WEST.x +
     position.col * (MAP_TILE_WIDTH * 0.75) +

@@ -78,9 +78,6 @@ export default function handleMessage(
     return;
   }
   const parsed = parseClientData(clientData);
-  const p = JSON.stringify(parsed);
-  if (p !== '{"channel":"","_header":[4,8],"id":"136","data":{}}')
-    console.log({ p });
   if (parsed._header[0] === SocketRouteType.SocketRouter) {
     if (parsed._header[1] === ServerActionType.Echo) {
       return sendResponse({
@@ -324,7 +321,8 @@ const resolveEdgeIndex = (payload: unknown) => {
 
 const sendEdgeHighlights = (gameData: any, playerColor: number) => {
   const edgeStates = gameData.data.payload.gameState.mapState.tileEdgeStates;
-  const cornerStates = gameData.data.payload.gameState.mapState.tileCornerStates;
+  const cornerStates =
+    gameData.data.payload.gameState.mapState.tileCornerStates;
   const ownedCornerKeys = new Set(
     Object.values(cornerStates)
       .filter(
