@@ -31,6 +31,51 @@ test(
   maybeScreenshot(true, async ({ page }: { page: Page }) => {
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
+
+    const canvasHandle = await getCanvasHandle(iframe);
+    const canvasBox = await canvasHandle.boundingBox();
+    if (!canvasBox) {
+      throw new Error("Unable to determine canvas bounds.");
+    }
+    const canvas = iframe.locator("canvas#game-canvas");
+
+    // for col in range(11):
+    //   for row in range(11):
+    //     const vertexOffset = getSettlementOffset({ col, row });
+    //     await expect
+    //       .poll(async () => mapAppearsClickable(settlementOffset), {
+    //         timeout: 5000,
+    //       })
+    //       .toBe(true);
+
+    const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
+
+    await expect
+      .poll(async () => mapAppearsClickable(settlementOffset), {
+        timeout: 5000,
+      })
+      .toBe(true);
+    await canvas.click({
+      position: settlementOffset,
+      force: true,
+      timeout: 5000,
+    });
+
+    const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+    await canvas.click({
+      position: confirmSettlementOffset,
+      force: true,
+      timeout: 5000,
+    });
+
+    // for col in range(11):
+    //   for row in range(11):
+    //     const vertexOffset = getSettlementOffset({ col, row });
+    //     await expect
+    //       .poll(async () => mapAppearsClickable(settlementOffset), {
+    //         timeout: 5000,
+    //       })
+    //       .toBe(false);
   }),
 );
 
@@ -56,21 +101,7 @@ test.skip(
 //
 
 const placeStartingSettlement = async (iframe: FrameLocator) => {
-  const canvasHandle = await getCanvasHandle(iframe);
-  const canvasBox = await canvasHandle.boundingBox();
-  if (!canvasBox) {
-    throw new Error("Unable to determine canvas bounds.");
-  }
   const canvas = iframe.locator("canvas#game-canvas");
-
-  // for col in range(11):
-  //   for row in range(11):
-  //     const vertexOffset = getSettlementOffset({ col, row });
-  //     await expect
-  //       .poll(async () => mapAppearsClickable(settlementOffset), {
-  //         timeout: 5000,
-  //       })
-  //       .toBe(true);
 
   const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
 
@@ -91,15 +122,6 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
     force: true,
     timeout: 5000,
   });
-
-  // for col in range(11):
-  //   for row in range(11):
-  //     const vertexOffset = getSettlementOffset({ col, row });
-  //     await expect
-  //       .poll(async () => mapAppearsClickable(settlementOffset), {
-  //         timeout: 5000,
-  //       })
-  //       .toBe(false);
 
   const destinationOffset = getSettlementOffset({ col: 5, row: 2 });
   const roadOffset = {
