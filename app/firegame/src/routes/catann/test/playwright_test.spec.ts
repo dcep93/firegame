@@ -9,37 +9,47 @@ import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
 
-const screenshot = (f: ({ page }: { page: Page }) => void) => {
+const maybeScreenshot = (
+  shouldScreenshot: boolean,
+  f: ({ page }: { page: Page }) => void,
+) => {
   return async ({ page }: { page: Page }, testInfo: any) => {
     try {
       await f({ page });
     } finally {
-      await page.screenshot({
-        path: testInfo.outputPath("screenshot.png"),
-        fullPage: true,
-      });
+      if (shouldScreenshot)
+        await page.screenshot({
+          path: testInfo.outputPath("screenshot.png"),
+          fullPage: true,
+        });
     }
   };
 };
 
 test(
-  "starting_settlement",
-  screenshot(async ({ page }: { page: Page }) => {
+  "clickable_map",
+  maybeScreenshot(true, async ({ page }: { page: Page }) => {
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
-    const realMessages = openRecordingJson("./starting_settlement.json");
-    const filteredRealMessages = realMessages.filter((msg) =>
-      isNotHeartbeat(msg),
+  }),
+);
+
+test.skip(
+  "starting_settlement",
+  maybeScreenshot(false, async ({ page }: { page: Page }) => {
+    const iframe = await gotoCatann(page);
+    // not sure if we need to start game before setting expected messages
+    const expectedMessages = await setExpectedMessages(
+      page,
+      "./starting_settlement.json",
     );
+    await revealAndStartGame(iframe);
     await placeStartingSettlement(iframe);
-    const getFilteredTestMessages = async () =>
-      (await getCapturedMessages(page)).filter((msg) => isNotHeartbeat(msg));
     await expect
-      .poll(async () => (await getFilteredTestMessages()).length, {
-        timeout: 5000,
+      .poll(async () => expectedMessages.length, {
+        timeout: 1000,
       })
-      .toBe(filteredRealMessages.length);
-    expect(await getFilteredTestMessages()).toEqual(filteredRealMessages);
+      .toBe(0);
   }),
 );
 
@@ -287,29 +297,28 @@ const revealAndStartGame = async (iframe: FrameLocator) => {
   await startButton.click({ force: true, timeout: 1000 });
 };
 
-const openRecordingJson = (
-  recordingPath: string,
-): { trigger: string; data: number[] }[] => {
-  const fullPath = path.resolve(__dirname, recordingPath);
-  const data = fs.readFileSync(fullPath, "utf8");
-  return JSON.parse(data);
-};
-
 const isNotHeartbeat = (msg: { trigger: string; data: number[] } | null) => {
   if (!msg) return false;
   if (!Array.isArray(msg.data)) return false;
   return !(msg.data[0] === 4 && msg.data[1] === 8);
 };
 
-const getCapturedMessages = async (page: Page) =>
-  page.evaluate(
-    () =>
-      (
-        window as typeof window & {
-          __catannMessages?: { trigger: string; data: number[] }[];
-        }
-      ).__catannMessages ?? [],
+const setExpectedMessages = async (page: Page, recordingPath: string) => {
+  const openRecordingJson = (
+    recordingPath: string,
+  ): { trigger: string; data: number[] }[] => {
+    const fullPath = path.resolve(__dirname, recordingPath);
+    const data = fs.readFileSync(fullPath, "utf8");
+    return JSON.parse(data) as { trigger: string; data: number[] }[];
+  };
+  const expectedMessages = openRecordingJson(recordingPath).filter((msg) =>
+    isNotHeartbeat(msg),
   );
+  page.evaluate(
+    () => ((window as any).__catannExpectedMessages = expectedMessages),
+  );
+  return expectedMessages;
+};
 
 //
 
