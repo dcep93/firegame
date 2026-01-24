@@ -9,37 +9,41 @@ import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
 
-const APP_PORT = 3000;
-const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
-const SERVER_START_TIMEOUT_MS = 60_000;
-const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
-const MAP_NORTH_NORTH_WEST = { x: 391, y: 87 };
-const MAP_TILE_WIDTH = 94;
-
-test.use({ ignoreHTTPSErrors: true });
-test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
-
-const getSettlementOffset = (position: { col: number; row: number }) => {
-  const x =
-    MAP_NORTH_NORTH_WEST.x +
-    position.col * (MAP_TILE_WIDTH * 0.75) +
-    (position.row % 2 === 0 ? 0 : (MAP_TILE_WIDTH * 0.75) / 2);
-  const y =
-    MAP_NORTH_NORTH_WEST.y +
-    (position.row * (MAP_TILE_WIDTH * Math.sqrt(3))) / 2;
-  return { x, y };
+const screenshot = (f: ({ page }: { page: Page }) => void) => {
+  return async ({ page }: { page: Page }, testInfo: any) => {
+    try {
+      await f({ page });
+    } finally {
+      await page.screenshot({
+        path: testInfo.outputPath("screenshot.png"),
+        fullPage: true,
+      });
+    }
+  };
 };
 
-const mapAppearsClickable = async (offset: { x: number; y: number }) => {
-  // This is a heuristic to determine if the map is ready for interaction
-  // by checking the pixel color at the given offset.
-  // Adjust the logic as needed based on the actual game rendering.
+test(
+  "starting_settlement",
+  screenshot(async ({ page }: { page: Page }) => {
+    const iframe = await gotoCatann(page);
+    await revealAndStartGame(iframe);
+    const realMessages = openRecordingJson("./starting_settlement.json");
+    const filteredRealMessages = realMessages.filter((msg) =>
+      isNotHeartbeat(msg),
+    );
+    await placeStartingSettlement(iframe);
+    const getFilteredTestMessages = async () =>
+      (await getCapturedMessages(page)).filter((msg) => isNotHeartbeat(msg));
+    await expect
+      .poll(async () => (await getFilteredTestMessages()).length, {
+        timeout: 5000,
+      })
+      .toBe(filteredRealMessages.length);
+    expect(await getFilteredTestMessages()).toEqual(filteredRealMessages);
+  }),
+);
 
-  // centered at offset
-  // radius 6, should be a filled in greyish circle, with some allowance
-  // radius 12 should be a black ring
-  return true;
-};
+//
 
 const placeStartingSettlement = async (iframe: FrameLocator) => {
   const canvasHandle = await getCanvasHandle(iframe);
@@ -112,55 +116,121 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
   });
 };
 
+//
+
+const getCanvasHandle = async (
+  iframe: FrameLocator,
+): Promise<ElementHandle<HTMLCanvasElement>> => {
+  const waitForCanvasPaint = async (
+    canvasHandle: ElementHandle<HTMLCanvasElement>,
+  ) => {
+    await expect
+      .poll(
+        () =>
+          canvasHandle.evaluate((canvas) => {
+            const htmlCanvas = canvas as HTMLCanvasElement;
+            if (htmlCanvas.width === 0 || htmlCanvas.height === 0) {
+              return false;
+            }
+            // const ctx = htmlCanvas.getContext("2d");
+            // if (ctx) {
+            //   const width = htmlCanvas.width;
+            //   const height = htmlCanvas.height;
+            //   const stepX = Math.max(1, Math.floor(width / 10));
+            //   const stepY = Math.max(1, Math.floor(height / 10));
+            //   for (let x = 0; x < width; x += stepX) {
+            //     for (let y = 0; y < height; y += stepY) {
+            //       const data = ctx.getImageData(x, y, 1, 1).data;
+            //       if (data[3] > 0) {
+            //         return true;
+            //       }
+            //     }
+            //   }
+            //   return false;
+            // }
+
+            const gl =
+              htmlCanvas.getContext("webgl") || htmlCanvas.getContext("webgl2");
+            if (!gl) return false;
+            const glCtx = gl as WebGLRenderingContext | WebGL2RenderingContext;
+            const width = glCtx.drawingBufferWidth;
+            const height = glCtx.drawingBufferHeight;
+            if (width === 0 || height === 0) return false;
+            const stepX = Math.max(1, Math.floor(width / 10));
+            const stepY = Math.max(1, Math.floor(height / 10));
+            const pixel = new Uint8Array(4);
+            try {
+              for (let x = 0; x < width; x += stepX) {
+                for (let y = 0; y < height; y += stepY) {
+                  glCtx.readPixels(
+                    x,
+                    y,
+                    1,
+                    1,
+                    glCtx.RGBA,
+                    glCtx.UNSIGNED_BYTE,
+                    pixel,
+                  );
+                  if (pixel[3] > 0) {
+                    return true;
+                  }
+                }
+              }
+            } catch {
+              return false;
+            }
+            return false;
+          }),
+        {
+          timeout: 1000,
+        },
+      )
+      .toBe(true);
+  };
+  const gameCanvas = iframe.locator("canvas#game-canvas");
+  await expect(gameCanvas).toBeVisible({ timeout: 1000 });
+  const canvasHandle =
+    (await gameCanvas.elementHandle()) as ElementHandle<HTMLCanvasElement>;
+  if (!canvasHandle) {
+    throw new Error("Unable to locate game canvas.");
+  }
+  await waitForCanvasPaint(canvasHandle);
+  return canvasHandle;
+};
+
+const getSettlementOffset = (position: { col: number; row: number }) => {
+  const x =
+    MAP_NORTH_NORTH_WEST.x +
+    position.col * (MAP_TILE_WIDTH * 0.75) +
+    (position.row % 2 === 0 ? 0 : (MAP_TILE_WIDTH * 0.75) / 2);
+  const y =
+    MAP_NORTH_NORTH_WEST.y +
+    (position.row * (MAP_TILE_WIDTH * Math.sqrt(3))) / 2;
+  return { x, y };
+};
+
 const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
   return { x: baseOffset.x, y: baseOffset.y - 40 };
 };
 
-const openRecordingJson = (
-  recordingPath: string,
-): { trigger: string; data: number[] }[] => {
-  const fullPath = path.resolve(__dirname, recordingPath);
-  const data = fs.readFileSync(fullPath, "utf8");
-  return JSON.parse(data);
+const mapAppearsClickable = async (offset: { x: number; y: number }) => {
+  // This is a heuristic to determine if the map is ready for interaction
+  // by checking the pixel color at the given offset.
+  // Adjust the logic as needed based on the actual game rendering.
+
+  // centered at offset
+  // radius 6, should be a filled in greyish circle, with some allowance
+  // radius 12 should be a black ring
+  return true;
 };
 
-test("starting_settlement", async ({ page }, testInfo) => {
-  try {
-    await setupClientMessageCapture(page);
-    const iframe = await gotoCatann(page);
-    await revealAndStartGame(iframe);
-    const realMessages = openRecordingJson("./starting_settlement.json");
-    const filteredRealMessages = realMessages.filter((msg) =>
-      isNotHeartbeat(msg),
-    );
-    await placeStartingSettlement(iframe);
-    const getFilteredTestMessages = async () =>
-      (await getCapturedMessages(page)).filter((msg) => isNotHeartbeat(msg));
-    await expect
-      .poll(async () => (await getFilteredTestMessages()).length, {
-        timeout: 5000,
-      })
-      .toBe(filteredRealMessages.length);
-    expect(await getFilteredTestMessages()).toEqual(filteredRealMessages);
-  } finally {
-    await page.screenshot({
-      path: testInfo.outputPath("screenshot.png"),
-      fullPage: true,
-    });
-  }
-});
+//
 
 const gotoCatann = async (page: Page): Promise<FrameLocator> => {
   // page.on("console", (msg) => {
   //   console.log(`${msg.type()}: ${msg.text()}`);
   // });
-  await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
-  const iframe = page.locator('iframe[title="iframe"]');
-  await expect(iframe).toBeVisible({ timeout: 1000 });
-  return page.frameLocator('iframe[title="iframe"]');
-};
 
-const setupClientMessageCapture = async (page: Page) => {
   await page.evaluate(() => {
     const globalWindow = window as typeof window & {
       __catannMessages?: { trigger: string; data: number[] }[];
@@ -191,7 +261,10 @@ const setupClientMessageCapture = async (page: Page) => {
     };
 
     window.addEventListener("message", (event) => {
-      const payload = event.data as { catann?: boolean; clientData?: unknown };
+      const payload = event.data as {
+        catann?: boolean;
+        clientData?: unknown;
+      };
       if (!payload?.catann || !payload.clientData) return;
       const bytes = toBytes(payload.clientData);
       if (!bytes) return;
@@ -201,6 +274,31 @@ const setupClientMessageCapture = async (page: Page) => {
       });
     });
   });
+
+  await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
+  const iframe = page.locator('iframe[title="iframe"]');
+  await expect(iframe).toBeVisible({ timeout: 1000 });
+  return page.frameLocator('iframe[title="iframe"]');
+};
+
+const revealAndStartGame = async (iframe: FrameLocator) => {
+  const startButton = iframe.locator("#room_center_start_button");
+  await expect(startButton).toBeVisible({ timeout: 15000 });
+  await startButton.click({ force: true, timeout: 1000 });
+};
+
+const openRecordingJson = (
+  recordingPath: string,
+): { trigger: string; data: number[] }[] => {
+  const fullPath = path.resolve(__dirname, recordingPath);
+  const data = fs.readFileSync(fullPath, "utf8");
+  return JSON.parse(data);
+};
+
+const isNotHeartbeat = (msg: { trigger: string; data: number[] } | null) => {
+  if (!msg) return false;
+  if (!Array.isArray(msg.data)) return false;
+  return !(msg.data[0] === 4 && msg.data[1] === 8);
 };
 
 const getCapturedMessages = async (page: Page) =>
@@ -213,128 +311,46 @@ const getCapturedMessages = async (page: Page) =>
       ).__catannMessages ?? [],
   );
 
-const revealAndStartGame = async (iframe: FrameLocator) => {
-  const startButton = iframe.locator("#room_center_start_button");
-  await expect(startButton).toBeVisible({ timeout: 15000 });
-  await startButton.click({ force: true, timeout: 1000 });
-};
+//
 
-const getCanvasHandle = async (
-  iframe: FrameLocator,
-): Promise<ElementHandle<HTMLCanvasElement>> => {
-  const gameCanvas = iframe.locator("canvas#game-canvas");
-  await expect(gameCanvas).toBeVisible({ timeout: 1000 });
-  const canvasHandle =
-    (await gameCanvas.elementHandle()) as ElementHandle<HTMLCanvasElement>;
-  if (!canvasHandle) {
-    throw new Error("Unable to locate game canvas.");
-  }
-  await waitForCanvasPaint(canvasHandle);
-  return canvasHandle;
-};
+const APP_PORT = 3000;
+const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
+const SERVER_START_TIMEOUT_MS = 60_000;
+const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
+const MAP_NORTH_NORTH_WEST = { x: 391, y: 87 };
+const MAP_TILE_WIDTH = 94;
 
-const waitForCanvasPaint = async (
-  canvasHandle: ElementHandle<HTMLCanvasElement>,
-) => {
-  await expect
-    .poll(
-      () =>
-        canvasHandle.evaluate((canvas) => {
-          const htmlCanvas = canvas as HTMLCanvasElement;
-          if (htmlCanvas.width === 0 || htmlCanvas.height === 0) {
-            return false;
-          }
-          // const ctx = htmlCanvas.getContext("2d");
-          // if (ctx) {
-          //   const width = htmlCanvas.width;
-          //   const height = htmlCanvas.height;
-          //   const stepX = Math.max(1, Math.floor(width / 10));
-          //   const stepY = Math.max(1, Math.floor(height / 10));
-          //   for (let x = 0; x < width; x += stepX) {
-          //     for (let y = 0; y < height; y += stepY) {
-          //       const data = ctx.getImageData(x, y, 1, 1).data;
-          //       if (data[3] > 0) {
-          //         return true;
-          //       }
-          //     }
-          //   }
-          //   return false;
-          // }
-
-          const gl =
-            htmlCanvas.getContext("webgl") || htmlCanvas.getContext("webgl2");
-          if (!gl) return false;
-          const glCtx = gl as WebGLRenderingContext | WebGL2RenderingContext;
-          const width = glCtx.drawingBufferWidth;
-          const height = glCtx.drawingBufferHeight;
-          if (width === 0 || height === 0) return false;
-          const stepX = Math.max(1, Math.floor(width / 10));
-          const stepY = Math.max(1, Math.floor(height / 10));
-          const pixel = new Uint8Array(4);
-          try {
-            for (let x = 0; x < width; x += stepX) {
-              for (let y = 0; y < height; y += stepY) {
-                glCtx.readPixels(
-                  x,
-                  y,
-                  1,
-                  1,
-                  glCtx.RGBA,
-                  glCtx.UNSIGNED_BYTE,
-                  pixel,
-                );
-                if (pixel[3] > 0) {
-                  return true;
-                }
-              }
-            }
-          } catch {
-            return false;
-          }
-          return false;
-        }),
-      {
-        timeout: 1000,
-      },
-    )
-    .toBe(true);
-};
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const waitForServer = async (url: string, timeoutMs: number) => {
-  const deadline = Date.now() + timeoutMs;
-
-  while (Date.now() < deadline) {
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const req = http.get(url, (res) => {
-          res.resume();
-          if (res.statusCode && res.statusCode < 500) {
-            resolve();
-          } else {
-            reject(new Error(`Unexpected status code: ${res.statusCode}`));
-          }
-        });
-        req.on("error", reject);
-      });
-      return;
-    } catch (error) {
-      await delay(500);
-    }
-  }
-
-  throw new Error(`Timed out waiting for ${url}`);
-};
+test.use({ ignoreHTTPSErrors: true });
+test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
 
 test.beforeAll(async ({}, testInfo) => {
+  const waitForServer = async (url: string, timeoutMs: number) => {
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+    const deadline = Date.now() + timeoutMs;
+
+    while (Date.now() < deadline) {
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const req = http.get(url, (res) => {
+            res.resume();
+            if (res.statusCode && res.statusCode < 500) {
+              resolve();
+            } else {
+              reject(new Error(`Unexpected status code: ${res.statusCode}`));
+            }
+          });
+          req.on("error", reject);
+        });
+        return;
+      } catch (error) {
+        await delay(500);
+      }
+    }
+
+    throw new Error(`Timed out waiting for ${url}`);
+  };
   testInfo.setTimeout(PLAYWRIGHT_TIMEOUT_MS);
 
   await waitForServer(APP_URL, SERVER_START_TIMEOUT_MS);
 });
-
-const isNotHeartbeat = (msg: { trigger: string; data: number[] } | null) => {
-  if (!msg) return false;
-  if (!Array.isArray(msg.data)) return false;
-  return !(msg.data[0] === 4 && msg.data[1] === 8);
-};
