@@ -227,53 +227,53 @@ const mapAppearsClickable = async (offset: { x: number; y: number }) => {
 //
 
 const gotoCatann = async (page: Page): Promise<FrameLocator> => {
-  // page.on("console", (msg) => {
-  //   console.log(`${msg.type()}: ${msg.text()}`);
-  // });
-
-  await page.evaluate(() => {
-    const globalWindow = window as typeof window & {
-      __catannMessages?: { trigger: string; data: number[] }[];
-    };
-    globalWindow.__catannMessages = [];
-
-    const toBytes = (clientData: unknown): number[] | null => {
-      if (!clientData) return null;
-      if (clientData instanceof ArrayBuffer) {
-        return Array.from(new Uint8Array(clientData));
-      }
-      if (ArrayBuffer.isView(clientData)) {
-        const view = clientData as ArrayBufferView;
-        return Array.from(
-          new Uint8Array(view.buffer, view.byteOffset, view.byteLength),
-        );
-      }
-      if (typeof clientData === "object") {
-        const record = clientData as Record<string, number>;
-        const keys = Object.keys(record)
-          .map((key) => Number(key))
-          .filter((key) => Number.isFinite(key))
-          .sort((a, b) => a - b);
-        if (!keys.length) return null;
-        return keys.map((key) => record[String(key)] ?? 0);
-      }
-      return null;
-    };
-
-    window.addEventListener("message", (event) => {
-      const payload = event.data as {
-        catann?: boolean;
-        clientData?: unknown;
+  const setupClientMessageCapture = async (page: Page) => {
+    await page.evaluate(() => {
+      const globalWindow = window as typeof window & {
+        __catannMessages?: { trigger: string; data: number[] }[];
       };
-      if (!payload?.catann || !payload.clientData) return;
-      const bytes = toBytes(payload.clientData);
-      if (!bytes) return;
-      globalWindow.__catannMessages?.push({
-        trigger: "socket.send",
-        data: bytes,
+      globalWindow.__catannMessages = [];
+
+      const toBytes = (clientData: unknown): number[] | null => {
+        if (!clientData) return null;
+        if (clientData instanceof ArrayBuffer) {
+          return Array.from(new Uint8Array(clientData));
+        }
+        if (ArrayBuffer.isView(clientData)) {
+          const view = clientData as ArrayBufferView;
+          return Array.from(
+            new Uint8Array(view.buffer, view.byteOffset, view.byteLength),
+          );
+        }
+        if (typeof clientData === "object") {
+          const record = clientData as Record<string, number>;
+          const keys = Object.keys(record)
+            .map((key) => Number(key))
+            .filter((key) => Number.isFinite(key))
+            .sort((a, b) => a - b);
+          if (!keys.length) return null;
+          return keys.map((key) => record[String(key)] ?? 0);
+        }
+        return null;
+      };
+
+      window.addEventListener("message", (event) => {
+        const payload = event.data as {
+          catann?: boolean;
+          clientData?: unknown;
+        };
+        if (!payload?.catann || !payload.clientData) return;
+        const bytes = toBytes(payload.clientData);
+        if (!bytes) return;
+        globalWindow.__catannMessages?.push({
+          trigger: "socket.send",
+          data: bytes,
+        });
       });
     });
-  });
+  };
+
+  await setupClientMessageCapture(page);
 
   await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
   const iframe = page.locator('iframe[title="iframe"]');
