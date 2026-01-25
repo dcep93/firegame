@@ -275,7 +275,7 @@ const mapAppearsClickable = async (
   canvas: Locator,
   offset: { x: number; y: number },
 ) => {
-  await canvas.hover({ position: offset });
+  await canvas.page().mouse.move(offset.x, offset.y);
   const hasPointerCursor = await canvas.evaluate((element, hoverOffset) => {
     const htmlElement = element as HTMLElement;
     const rect = htmlElement.getBoundingClientRect();
