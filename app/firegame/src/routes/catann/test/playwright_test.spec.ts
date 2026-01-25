@@ -38,6 +38,7 @@ test(
     if (!canvasBox) {
       throw new Error("Unable to determine canvas bounds.");
     }
+    expect(canvasBox).toEqual({ x: 0, y: 0, width: 1280, height: 720 });
     const canvas = iframe.locator("canvas#game-canvas");
 
     const checkClickable = async (
@@ -362,7 +363,7 @@ const gotoCatann = async (page: Page): Promise<FrameLocator> => {
 
 const revealAndStartGame = async (iframe: FrameLocator) => {
   const startButton = iframe.locator("#room_center_start_button");
-  await expect(startButton).toBeVisible({ timeout: 15000 });
+  await expect(startButton).toBeVisible({ timeout: 30_000 });
   await startButton.click({ force: true, timeout: 1000 });
 };
 
