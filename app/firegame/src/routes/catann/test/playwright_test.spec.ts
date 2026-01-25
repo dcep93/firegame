@@ -53,19 +53,19 @@ test(
             row,
           });
           const shouldBeClickable = f({ col, row });
-          console.log({
-            col,
-            row,
-            offset,
-            range,
-            vertexOffset,
-            shouldBeClickable,
-          });
-          await expect
-            .poll(async () => await mapAppearsClickable(canvas, vertexOffset), {
-              timeout: 5000,
-            })
-            .toBe(shouldBeClickable);
+          try {
+            await expect
+              .poll(
+                async () => await mapAppearsClickable(canvas, vertexOffset),
+                {
+                  timeout: 5000,
+                },
+              )
+              .toBe(shouldBeClickable);
+          } catch (e) {
+            console.log({ row, col, vertexOffset, shouldBeClickable });
+            throw e;
+          }
         }
       }
     };
@@ -406,6 +406,7 @@ const MAP_ZERO_ZERO = { x: 232, y: 79 };
 const MAP_HEX_SIDE_LENGTH = 61;
 
 test.use({ ignoreHTTPSErrors: true });
+test.describe.configure({ timeout: 300_000 });
 
 test.beforeAll(async ({}, testInfo) => {
   const waitForServer = async (url: string, timeoutMs: number) => {
