@@ -44,31 +44,30 @@ test(
     const checkClickable = async (
       f: (offset: { col: number; row: number }) => boolean,
     ) => {
-      await expect
-        .poll(
-          async () => {
-            for (let col = 0; col < 12; col++) {
-              const offset = Math.round(0.5 * Math.abs(col - 5.5));
-              for (let range = 0; range < 6 - offset; range++) {
-                const row = offset + range;
-                const vertexOffset = getSettlementOffset({
-                  col,
-                  row,
-                });
-                const shouldBeClickable = f({ col, row });
-                if (
-                  (await mapAppearsClickable(canvas, vertexOffset)) !==
-                  shouldBeClickable
-                ) {
-                  return false;
-                }
-              }
-            }
-            return true;
-          },
-          { timeout: 5000 },
-        )
-        .toBe(true);
+      for (let row = 0; row < 12; row++) {
+        const offset = Math.round(0.5 * Math.abs(row - 5.5));
+        for (let range = 0; range < 6 - offset; range++) {
+          const col = offset + 2 * range;
+          const vertexOffset = getSettlementOffset({
+            col,
+            row,
+          });
+          const shouldBeClickable = f({ col, row });
+          console.log({
+            col,
+            row,
+            offset,
+            range,
+            vertexOffset,
+            shouldBeClickable,
+          });
+          await expect
+            .poll(async () => await mapAppearsClickable(canvas, vertexOffset), {
+              timeout: 5000,
+            })
+            .toBe(shouldBeClickable);
+        }
+      }
     };
 
     await checkClickable((_) => true);
@@ -296,12 +295,20 @@ const mapAppearsClickable = async (
   canvas: Locator,
   offset: { x: number; y: number },
 ) => {
-  // This is a heuristic to determine if the map is ready for interaction
-  // by checking the pixel color at the given offset.
-  // Adjust the logic as needed based on the actual game rendering.
-
-  // should return true iff hovering at offset shows a change in cursor or pixel data
-  return true;
+  await canvas.hover({ position: offset });
+  const hasPointerCursor = await canvas.evaluate((element, hoverOffset) => {
+    const htmlElement = element as HTMLElement;
+    const rect = htmlElement.getBoundingClientRect();
+    const target = document.elementFromPoint(
+      rect.left + hoverOffset.x,
+      rect.top + hoverOffset.y,
+    ) as HTMLElement | null;
+    const cursor = target
+      ? window.getComputedStyle(target).cursor
+      : window.getComputedStyle(htmlElement).cursor;
+    return cursor === "pointer";
+  }, offset);
+  return hasPointerCursor;
 };
 
 //
@@ -394,13 +401,11 @@ const setExpectedMessages = async (page: Page, recordingPath: string) => {
 
 const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
-const SERVER_START_TIMEOUT_MS = 60_000;
-const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
+const SERVER_START_TIMEOUT_MS = 10_000;
 const MAP_ZERO_ZERO = { x: 232, y: 79 };
 const MAP_HEX_SIDE_LENGTH = 61;
 
 test.use({ ignoreHTTPSErrors: true });
-test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
 
 test.beforeAll(async ({}, testInfo) => {
   const waitForServer = async (url: string, timeoutMs: number) => {
@@ -429,7 +434,6 @@ test.beforeAll(async ({}, testInfo) => {
 
     throw new Error(`Timed out waiting for ${url}`);
   };
-  testInfo.setTimeout(PLAYWRIGHT_TIMEOUT_MS);
 
   await waitForServer(APP_URL, SERVER_START_TIMEOUT_MS);
 });
