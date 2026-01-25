@@ -2,25 +2,8 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
-import {
-  gameStarter,
-  newFirstGameState,
-  newInitialCornerHighlights,
-  newRoom,
-  newRoomMe,
-  spoofHostRoom,
-} from "./gameLogic";
-import { sendToMainSocket } from "./handleMessage";
-
-export function handleClientUpdate(clientData: any) {
-  Object.assign(
-    firebaseData.ROOM.data.sessions.find(
-      (s: any) => s.userId === store.me.userId,
-    ),
-    clientData,
-  );
-  setFirebaseData(firebaseData, { handleClientUpdate: clientData });
-}
+import { newRoom, newRoomMe, spoofHostRoom } from "./gameLogic";
+import { initializeGame, sendToMainSocket } from "./handleMessage";
 
 export var firebaseData: any = {};
 var seenData = firebaseData;
@@ -45,27 +28,7 @@ function receiveFirebaseDataCatann(catann: any) {
   if (firebaseData.GAME) {
     if (!seenData.GAME) {
       seenData = firebaseData;
-      const firstGameState = newFirstGameState();
-      const gameStateUpdate = firebaseData.GAME;
-      const gameStartUpdate = gameStarter();
-      const cornerHighlights = newInitialCornerHighlights(gameStateUpdate);
-
-      sendToMainSocket?.(firstGameState);
-      sendToMainSocket?.(gameStateUpdate);
-      sendToMainSocket?.(gameStartUpdate);
-      sendToMainSocket?.(cornerHighlights);
-
-      const maxSequence = Math.max(
-        gameStateUpdate.data.sequence ?? 0,
-        gameStartUpdate.data.sequence ?? 0,
-        cornerHighlights.data.sequence ?? 0,
-      );
-      if (
-        typeof gameStateUpdate.data.sequence === "number" &&
-        gameStateUpdate.data.sequence < maxSequence
-      ) {
-        gameStateUpdate.data.sequence = maxSequence;
-      }
+      initializeGame();
       return;
     }
     sendToMainSocket?.(firebaseData.GAME);

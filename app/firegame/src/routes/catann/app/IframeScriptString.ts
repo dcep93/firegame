@@ -1,5 +1,5 @@
 import store, { MeType } from "../../../shared/store";
-import { handleClientUpdate } from "./FirebaseWrapper";
+import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
 import { newUserState } from "./gameLogic";
 import handleMessage, { FUTURE } from "./handleMessage";
 import { packServerData } from "./parseMessagepack";
@@ -17,6 +17,16 @@ window.addEventListener("message", (event) => {
     ),
   );
 });
+
+function handleClientUpdate(clientData: any) {
+  Object.assign(
+    firebaseData.ROOM.data.sessions.find(
+      (s: any) => s.userId === store.me.userId,
+    ),
+    clientData,
+  );
+  setFirebaseData(firebaseData, { handleClientUpdate: clientData });
+}
 
 type XhrMeta = {
   method?: string;

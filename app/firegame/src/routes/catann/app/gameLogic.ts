@@ -164,7 +164,7 @@ export const newGame = () => {
     id: State.GameStateUpdate.toString(),
     data: {
       type: 4,
-      sequence: 2,
+      sequence: 1,
       payload: {
         playerColor: 1,
         playOrder: [1],
@@ -331,7 +331,7 @@ export const newFirstGameState = () => {
     id: State.GameStateUpdate.toString(),
     data: {
       type: 1,
-      sequence: 1,
+      sequence: 2,
       payload: {
         serverId: "08CC38",
         databaseGameId: room.data.roomId,
@@ -1176,6 +1176,7 @@ const newMapState = () => {
 
 export const gameStarter = () => {
   console.log("gameStarter");
+  console.log(1182);
   return {
     id: "130",
     data: {

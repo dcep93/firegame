@@ -9,7 +9,13 @@ import {
   State,
 } from "./catann_files_enums";
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
-import { newGame, spoofHostRoom } from "./gameLogic";
+import {
+  gameStarter,
+  newFirstGameState,
+  newGame,
+  newInitialCornerHighlights,
+  spoofHostRoom,
+} from "./gameLogic";
 import { parseClientData } from "./parseMessagepack";
 
 export const FUTURE = (() => {
@@ -174,6 +180,20 @@ export default function handleMessage(
   const e = `not implemented: ${JSON.stringify(parsed)}`;
   // console.error(e);
   throw new Error(e);
+}
+
+export function initializeGame() {
+  console.log("initializing game");
+
+  const firstGameState = newFirstGameState();
+  const gameStateUpdate = firebaseData.GAME;
+  const gameStartUpdate = gameStarter();
+  const cornerHighlights = newInitialCornerHighlights(gameStateUpdate);
+
+  sendToMainSocket?.(firstGameState);
+  sendToMainSocket?.(gameStateUpdate);
+  sendToMainSocket?.(gameStartUpdate);
+  sendToMainSocket?.(cornerHighlights);
 }
 
 const sequenced = (game: any) => ({
