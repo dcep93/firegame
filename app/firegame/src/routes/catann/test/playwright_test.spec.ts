@@ -30,15 +30,13 @@ const maybeScreenshot = (
 test(
   "clickable_map",
   maybeScreenshot(true, async ({ page }: { page: Page }) => {
+    const settlementCoords = { col: 0, row: 5 };
+    const destinationCoords = { col: 0, row: 6 };
+
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
 
-    const canvasHandle = await getCanvasHandle(iframe);
-    const canvasBox = await canvasHandle.boundingBox();
-    if (!canvasBox) {
-      throw new Error("Unable to determine canvas bounds.");
-    }
-    expect(canvasBox).toEqual({ x: 0, y: 0, width: 1280, height: 720 });
+    await checkCanvasHandle(iframe);
     const canvas = iframe.locator("canvas#game-canvas");
 
     const checkClickable = async (
@@ -72,7 +70,7 @@ test(
 
     await checkClickable((_) => true);
 
-    const settlementOffset = getSettlementOffset({ col: 0, row: 5 });
+    const settlementOffset = getSettlementOffset(settlementCoords);
 
     await expect
       .poll(async () => mapAppearsClickable(canvas, settlementOffset), {
@@ -92,7 +90,7 @@ test(
 
     await checkClickable((_) => false);
 
-    const destinationOffset = getSettlementOffset({ col: 0, row: 6 });
+    const destinationOffset = getSettlementOffset(destinationCoords);
     const roadOffset = {
       x: (settlementOffset.x + destinationOffset.x) / 2,
       y: (settlementOffset.y + destinationOffset.y) / 2,
@@ -192,9 +190,7 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
 
 //
 
-const getCanvasHandle = async (
-  iframe: FrameLocator,
-): Promise<ElementHandle<HTMLCanvasElement>> => {
+const checkCanvasHandle = async (iframe: FrameLocator) => {
   const waitForCanvasPaint = async (
     canvasHandle: ElementHandle<HTMLCanvasElement>,
   ) => {
@@ -206,22 +202,6 @@ const getCanvasHandle = async (
             if (htmlCanvas.width === 0 || htmlCanvas.height === 0) {
               return false;
             }
-            // const ctx = htmlCanvas.getContext("2d");
-            // if (ctx) {
-            //   const width = htmlCanvas.width;
-            //   const height = htmlCanvas.height;
-            //   const stepX = Math.max(1, Math.floor(width / 10));
-            //   const stepY = Math.max(1, Math.floor(height / 10));
-            //   for (let x = 0; x < width; x += stepX) {
-            //     for (let y = 0; y < height; y += stepY) {
-            //       const data = ctx.getImageData(x, y, 1, 1).data;
-            //       if (data[3] > 0) {
-            //         return true;
-            //       }
-            //     }
-            //   }
-            //   return false;
-            // }
 
             const gl =
               htmlCanvas.getContext("webgl") || htmlCanvas.getContext("webgl2");
@@ -269,7 +249,8 @@ const getCanvasHandle = async (
     throw new Error("Unable to locate game canvas.");
   }
   await waitForCanvasPaint(canvasHandle);
-  return canvasHandle;
+  const canvasBox = await canvasHandle.boundingBox();
+  expect(canvasBox).toEqual({ x: 0, y: 0, width: 1280, height: 720 });
 };
 
 const getSettlementOffset = (position: { col: number; row: number }) => {
