@@ -1,5 +1,6 @@
 import {
   expect,
+  Locator,
   test,
   type ElementHandle,
   type FrameLocator,
@@ -55,7 +56,7 @@ test(
                 });
                 const shouldBeClickable = f({ col, row });
                 if (
-                  (await mapAppearsClickable(vertexOffset)) !==
+                  (await mapAppearsClickable(canvas, vertexOffset)) !==
                   shouldBeClickable
                 ) {
                   return false;
@@ -74,7 +75,7 @@ test(
     const settlementOffset = getSettlementOffset({ col: 0, row: 5 });
 
     await expect
-      .poll(async () => mapAppearsClickable(settlementOffset), {
+      .poll(async () => mapAppearsClickable(canvas, settlementOffset), {
         timeout: 5000,
       })
       .toBe(true);
@@ -100,7 +101,7 @@ test(
     };
 
     await expect
-      .poll(async () => mapAppearsClickable(roadOffset), {
+      .poll(async () => mapAppearsClickable(canvas, roadOffset), {
         timeout: 5000,
       })
       .toBe(true);
@@ -148,7 +149,7 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
   const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
 
   await expect
-    .poll(async () => mapAppearsClickable(settlementOffset), {
+    .poll(async () => mapAppearsClickable(canvas, settlementOffset), {
       timeout: 5000,
     })
     .toBe(true);
@@ -172,7 +173,7 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
   };
 
   await expect
-    .poll(async () => mapAppearsClickable(roadOffset), {
+    .poll(async () => mapAppearsClickable(canvas, roadOffset), {
       timeout: 5000,
     })
     .toBe(true);
@@ -290,7 +291,10 @@ const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
   return { x: baseOffset.x, y: baseOffset.y - 40 };
 };
 
-const mapAppearsClickable = async (offset: { x: number; y: number }) => {
+const mapAppearsClickable = async (
+  canvas: Locator,
+  offset: { x: number; y: number },
+) => {
   // This is a heuristic to determine if the map is ready for interaction
   // by checking the pixel color at the given offset.
   // Adjust the logic as needed based on the actual game rendering.
