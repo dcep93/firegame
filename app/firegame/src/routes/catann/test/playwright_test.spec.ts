@@ -39,21 +39,39 @@ test(
     }
     const canvas = iframe.locator("canvas#game-canvas");
 
-    // for col in range(11):
-    //   for row in range(11):
-    //     const vertexOffset = getSettlementOffset({ col, row });
-    //     await expect
-    //       .poll(async () => mapAppearsClickable(settlementOffset), {
-    //         timeout: 5000,
-    //       })
-    //       .toBe(true);
+    const checkClickable = async (
+      f: (offset: { col: number; row: number }) => boolean,
+    ) => {
+      await expect
+        .poll(
+          async () => {
+            for (let col = 0; col < 12; col++) {
+              const offset = Math.round(0.5 * Math.abs(col - 5.5));
+              for (let range = 0; range < 6 - offset; range++) {
+                const row = offset + range;
+                const vertexOffset = getSettlementOffset({
+                  col,
+                  row,
+                });
+                const shouldBeClickable = f({ col, row });
+                if (
+                  (await mapAppearsClickable(vertexOffset)) !==
+                  shouldBeClickable
+                ) {
+                  return false;
+                }
+              }
+            }
+            return true;
+          },
+          { timeout: 5000 },
+        )
+        .toBe(true);
+    };
 
-    page.on("console", (msg) => {
-      // throw new Error(`${msg.type()}: ${msg.text()}`);
-      console.log(`${msg.type()}: ${msg.text()}`);
-    });
+    await checkClickable((_) => true);
 
-    const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
+    const settlementOffset = getSettlementOffset({ col: 0, row: 5 });
 
     await expect
       .poll(async () => mapAppearsClickable(settlementOffset), {
@@ -73,14 +91,7 @@ test(
       timeout: 5000,
     });
 
-    // for col in range(11):
-    //   for row in range(11):
-    //     const vertexOffset = getSettlementOffset({ col, row });
-    //     await expect
-    //       .poll(async () => mapAppearsClickable(settlementOffset), {
-    //         timeout: 5000,
-    //       })
-    //       .toBe(false);
+    await checkClickable((_) => false);
   }),
 );
 
@@ -93,6 +104,11 @@ test.skip(
       page,
       "./starting_settlement.json",
     );
+
+    // page.on("console", (msg) => {
+    //   // throw new Error(`${msg.type()}: ${msg.text()}`);
+    //   console.log(`${msg.type()}: ${msg.text()}`);
+    // });
     await revealAndStartGame(iframe);
     await placeStartingSettlement(iframe);
     await expect
@@ -236,15 +252,17 @@ const getCanvasHandle = async (
 };
 
 const getSettlementOffset = (position: { col: number; row: number }) => {
-  return { x: 233, y: 295 };
-  const x =
-    MAP_NORTH_NORTH_WEST.x +
-    position.col * (MAP_TILE_WIDTH * 0.75) +
-    (position.row % 2 === 0 ? 0 : (MAP_TILE_WIDTH * 0.75) / 2);
-  const y =
-    MAP_NORTH_NORTH_WEST.y +
-    (position.row * (MAP_TILE_WIDTH * Math.sqrt(3))) / 2;
-  return { x, y };
+  return {
+    x: Math.round(
+      MAP_ZERO_ZERO.x +
+        (position.col * (MAP_HEX_SIDE_LENGTH * Math.sqrt(3))) / 2,
+    ),
+    y: Math.round(
+      MAP_ZERO_ZERO.y +
+        (position.row % 2) * 0.5 * MAP_HEX_SIDE_LENGTH +
+        Math.floor(position.row / 2) * 1.5 * MAP_HEX_SIDE_LENGTH,
+    ),
+  };
 };
 
 const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
@@ -354,8 +372,8 @@ const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 60_000;
 const PLAYWRIGHT_TIMEOUT_MS = SERVER_START_TIMEOUT_MS + 30_000;
-const MAP_NORTH_NORTH_WEST = { x: 391, y: 87 };
-const MAP_TILE_WIDTH = 94;
+const MAP_ZERO_ZERO = { x: 232, y: 79 };
+const MAP_HEX_SIDE_LENGTH = 61;
 
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: PLAYWRIGHT_TIMEOUT_MS });
