@@ -59,6 +59,8 @@ const CORNER_DIRECTION = {
   South: 1,
 } as const;
 
+var latestSequence = 0;
+
 export default function handleMessage(
   clientData: any,
   sendResponse: typeof sendToMainSocket,
@@ -70,7 +72,12 @@ export default function handleMessage(
       )
     ) {
       console.debug("handleMessage.init", { clientData, sendToMainSocket });
-      sendToMainSocket = sendResponse;
+      sendToMainSocket = (data) => {
+        if (data.data) {
+          data.data.sequence = ++latestSequence;
+        }
+        sendResponse(data);
+      };
       sendResponse({ type: "Connected", userSessionId: store.me.userId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
@@ -104,7 +111,7 @@ export default function handleMessage(
       parsed.payload === parsed.channel
     ) {
       if (firebaseData.GAME) {
-        return sendResponse(sequenced(firebaseData.GAME));
+        return sendResponse(firebaseData.GAME);
       }
     }
     if (parsed._header[1] === ServerActionType.GameAction) {
@@ -186,23 +193,14 @@ export function initializeGame() {
   console.log("initializing game");
 
   const firstGameState = newFirstGameState();
-  const gameStateUpdate = firebaseData.GAME;
   const gameStartUpdate = gameStarter();
-  const cornerHighlights = newInitialCornerHighlights(gameStateUpdate);
+  const cornerHighlights = newInitialCornerHighlights(firebaseData.GAME);
 
   sendToMainSocket?.(firstGameState);
-  sendToMainSocket?.(gameStateUpdate);
+  sendToMainSocket?.(firebaseData.GAME);
   sendToMainSocket?.(gameStartUpdate);
   sendToMainSocket?.(cornerHighlights);
 }
-
-const sequenced = (game: any) => ({
-  ...game,
-  data: {
-    ...game.data,
-    sequence: (game.data.sequence += 1),
-  },
-});
 
 const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
   if (!firebaseData.GAME) return false;
@@ -256,15 +254,14 @@ const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
     gameState.currentState.actionState =
       ACTION_STATE.InitialPlacementRoadPlacement;
 
-    const updatedGame = sequenced(gameData);
     setFirebaseData(
-      { ...firebaseData, GAME: updatedGame },
+      { ...firebaseData, GAME: gameData },
       {
         action: parsed.action,
         cornerIndex,
       },
     );
-    sendEdgeHighlights(updatedGame, playerColor);
+    sendEdgeHighlights(gameData, playerColor);
     return true;
   }
 
@@ -296,15 +293,14 @@ const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
     gameState.currentState.actionState =
       ACTION_STATE.InitialPlacementPlaceSettlement;
 
-    const updatedGame = sequenced(gameData);
     setFirebaseData(
-      { ...firebaseData, GAME: updatedGame },
+      { ...firebaseData, GAME: gameData },
       {
         action: parsed.action,
         edgeIndex,
       },
     );
-    sendCornerHighlights(updatedGame);
+    sendCornerHighlights(gameData);
     return true;
   }
 
@@ -370,21 +366,13 @@ const sendEdgeHighlights = (gameData: any, playerColor: number) => {
       );
     });
 
-  const highlightSequence = (gameData.data.sequence ?? 0) + 1;
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
       type: 31,
-      sequence: highlightSequence,
       payload: edgeIndices,
     },
   });
-  if (typeof gameData.data.sequence === "number") {
-    gameData.data.sequence = highlightSequence;
-  }
-  if (typeof firebaseData?.GAME?.data?.sequence === "number") {
-    firebaseData.GAME.data.sequence = highlightSequence;
-  }
 };
 
 const sendCornerHighlights = (gameData: any) => {
@@ -394,21 +382,13 @@ const sendCornerHighlights = (gameData: any) => {
     .map((key) => Number.parseInt(key, 10))
     .filter((value) => Number.isFinite(value));
 
-  const highlightSequence = (gameData.data.sequence ?? 0) + 1;
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
       type: 30,
-      sequence: highlightSequence,
       payload: cornerIndices,
     },
   });
-  if (typeof gameData.data.sequence === "number") {
-    gameData.data.sequence = highlightSequence;
-  }
-  if (typeof firebaseData?.GAME?.data?.sequence === "number") {
-    firebaseData.GAME.data.sequence = highlightSequence;
-  }
 };
 
 const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {

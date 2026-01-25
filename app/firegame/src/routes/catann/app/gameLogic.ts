@@ -164,7 +164,6 @@ export const newGame = () => {
     id: State.GameStateUpdate.toString(),
     data: {
       type: 4,
-      sequence: 1,
       payload: {
         playerColor: 1,
         playOrder: [1],
@@ -331,7 +330,6 @@ export const newFirstGameState = () => {
     id: State.GameStateUpdate.toString(),
     data: {
       type: 1,
-      sequence: 2,
       payload: {
         serverId: "08CC38",
         databaseGameId: room.data.roomId,
@@ -356,7 +354,6 @@ export const newInitialCornerHighlights = (gameData: {
     id: State.GameStateUpdate.toString(),
     data: {
       type: 30,
-      sequence: 4,
       payload: cornerIndices,
     },
   };
@@ -1200,7 +1197,6 @@ export const gameStarter = () => {
         },
         timeLeftInState: 167.958,
       },
-      sequence: 3,
     },
   };
 };
