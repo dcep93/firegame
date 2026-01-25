@@ -92,6 +92,27 @@ test(
     });
 
     await checkClickable((_) => false);
+
+    const destinationOffset = getSettlementOffset({ col: 0, row: 6 });
+    const roadOffset = {
+      x: (settlementOffset.x + destinationOffset.x) / 2,
+      y: (settlementOffset.y + destinationOffset.y) / 2,
+    };
+
+    await expect
+      .poll(async () => mapAppearsClickable(roadOffset), {
+        timeout: 5000,
+      })
+      .toBe(true);
+    await canvas.click({
+      position: roadOffset,
+      force: true,
+      timeout: 5000,
+    });
+
+    await checkClickable(
+      (offset) => offset.col !== 0 && (offset.col !== 1 || offset.row !== 4),
+    );
   }),
 );
 
