@@ -274,9 +274,7 @@ const mapAppearsClickable = async (offset: { x: number; y: number }) => {
   // by checking the pixel color at the given offset.
   // Adjust the logic as needed based on the actual game rendering.
 
-  // centered at offset
-  // radius 6, should be a filled in greyish circle, with some allowance
-  // radius 12 should be a black ring
+  // should return true iff hovering at offset shows a change in cursor or pixel data
   return true;
 };
 
