@@ -82,14 +82,12 @@ test(
     await canvas.click({
       position: settlementOffset,
       force: true,
-      timeout: 5000,
     });
 
     const confirmSettlementOffset = getConfirmOffset(settlementOffset);
     await canvas.click({
       position: confirmSettlementOffset,
       force: true,
-      timeout: 5000,
     });
 
     await checkClickable((_) => false);
@@ -108,7 +106,12 @@ test(
     await canvas.click({
       position: roadOffset,
       force: true,
-      timeout: 5000,
+    });
+
+    const confirmRoadOffset = getConfirmOffset(roadOffset);
+    await canvas.click({
+      position: confirmRoadOffset,
+      force: true,
     });
 
     await checkClickable(
@@ -156,14 +159,12 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
   await canvas.click({
     position: settlementOffset,
     force: true,
-    timeout: 5000,
   });
 
   const confirmSettlementOffset = getConfirmOffset(settlementOffset);
   await canvas.click({
     position: confirmSettlementOffset,
     force: true,
-    timeout: 5000,
   });
 
   const destinationOffset = getSettlementOffset({ col: 5, row: 2 });
@@ -180,14 +181,12 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
   await canvas.click({
     position: roadOffset,
     force: true,
-    timeout: 5000,
   });
 
   const confirmRoadOffset = getConfirmOffset(roadOffset);
   await canvas.click({
     position: confirmRoadOffset,
     force: true,
-    timeout: 5000,
   });
 };
 
@@ -288,7 +287,7 @@ const getSettlementOffset = (position: { col: number; row: number }) => {
 };
 
 const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
-  return { x: baseOffset.x, y: baseOffset.y - 40 };
+  return { x: baseOffset.x, y: baseOffset.y - MAP_CONFIRM_OFFSET };
 };
 
 const mapAppearsClickable = async (
@@ -371,7 +370,7 @@ const gotoCatann = async (page: Page): Promise<FrameLocator> => {
 const revealAndStartGame = async (iframe: FrameLocator) => {
   const startButton = iframe.locator("#room_center_start_button");
   await expect(startButton).toBeVisible({ timeout: 30_000 });
-  await startButton.click({ force: true, timeout: 1000 });
+  await startButton.click({ force: true });
 };
 
 const isNotHeartbeat = (msg: { trigger: string; data: number[] } | null) => {
@@ -404,6 +403,7 @@ const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 10_000;
 const MAP_ZERO_ZERO = { x: 232, y: 79 };
 const MAP_HEX_SIDE_LENGTH = 61;
+const MAP_CONFIRM_OFFSET = 53;
 
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: 300_000 });
