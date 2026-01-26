@@ -31,7 +31,7 @@ test(
   "clickable_map",
   maybeScreenshot(true, async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
-    const destinationCoords = { col: 0, row: 6 };
+    const destinationCoords = { col: 1, row: 4 };
 
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
@@ -104,9 +104,9 @@ test(
       force: true,
     });
 
-    // await checkClickable(
-    //   (offset) => offset.col !== 0 && (offset.col !== 1 || offset.row !== 4),
-    // );
+    // the road appears clickable, because it has a mouse over
+    // "Road Length: 1"
+    await checkClickable((offset) => offset.col !== 0);
   }),
 );
 
