@@ -190,8 +190,6 @@ export default function handleMessage(
 }
 
 export function initializeGame() {
-  console.log("initializing game");
-
   const firstGameState = newFirstGameState();
   const gameStartUpdate = gameStarter();
   const cornerHighlights = newInitialCornerHighlights(firebaseData.GAME);

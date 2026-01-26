@@ -51,19 +51,11 @@ test(
             row,
           });
           const shouldBeClickable = f({ col, row });
-          try {
-            await expect
-              .poll(
-                async () => await mapAppearsClickable(canvas, vertexOffset),
-                {
-                  timeout: 5000,
-                },
-              )
-              .toBe(shouldBeClickable);
-          } catch (e) {
-            console.log({ row, col, vertexOffset, shouldBeClickable });
-            throw e;
-          }
+          await expect
+            .poll(async () => await mapAppearsClickable(canvas, vertexOffset), {
+              timeout: 5000,
+            })
+            .toBe(shouldBeClickable);
         }
       }
     };
