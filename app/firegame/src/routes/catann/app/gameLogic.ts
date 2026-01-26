@@ -337,24 +337,6 @@ export const newFirstGameState = () => {
   };
 };
 
-export const newInitialCornerHighlights = (gameData: {
-  data: { payload: { gameState: { mapState: { tileCornerStates: {} } } } };
-}) => {
-  const cornerIndices = Object.keys(
-    gameData.data.payload.gameState.mapState.tileCornerStates,
-  )
-    .map((key) => Number.parseInt(key, 10))
-    .filter((value) => Number.isFinite(value));
-
-  return {
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: 30,
-      payload: cornerIndices,
-    },
-  };
-};
-
 const newMapState = () => {
   return {
     tileHexStates: {

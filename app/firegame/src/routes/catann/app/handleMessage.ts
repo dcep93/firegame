@@ -13,7 +13,6 @@ import {
   gameStarter,
   newFirstGameState,
   newGame,
-  newInitialCornerHighlights,
   spoofHostRoom,
 } from "./gameLogic";
 import { parseClientData } from "./parseMessagepack";
@@ -192,12 +191,11 @@ export default function handleMessage(
 export function initializeGame() {
   const firstGameState = newFirstGameState();
   const gameStartUpdate = gameStarter();
-  const cornerHighlights = newInitialCornerHighlights(firebaseData.GAME);
 
   sendToMainSocket?.(firstGameState);
   sendToMainSocket?.(firebaseData.GAME);
   sendToMainSocket?.(gameStartUpdate);
-  sendToMainSocket?.(cornerHighlights);
+  sendCornerHighlights(firebaseData.GAME);
 }
 
 const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
