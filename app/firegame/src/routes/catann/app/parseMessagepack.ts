@@ -187,7 +187,7 @@ export function parseClientData(clientData: Record<string, number>) {
   const payload = decodeValue();
 
   if (payload.id !== State.SocketMonitorUpdate.toString()) {
-    console.log({ clientData, json: JSON.stringify(clientData) });
+    console.log({ clientData: JSON.stringify(clientData) });
   }
 
   if (payload && typeof payload === "object" && !Array.isArray(payload)) {
@@ -199,7 +199,7 @@ export function parseClientData(clientData: Record<string, number>) {
 
 export function packServerData(serverData: any) {
   if (serverData.id !== State.SocketMonitorUpdate.toString()) {
-    console.log({ serverData, json: JSON.stringify(serverData) });
+    console.log({ serverData: JSON.stringify(serverData) });
   }
   if (
     serverData &&
