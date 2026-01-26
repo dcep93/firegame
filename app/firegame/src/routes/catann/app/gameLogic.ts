@@ -106,7 +106,7 @@ export const newRoom = () => {
   return {
     id: State.RoomEvent.toString(),
     data: {
-      roomId: `roomIdx${store.me.roomId.toString()}`,
+      roomId: `roomIdx${store.me.roomId}`,
       type: "StateUpdated",
       updateSequence: Date.now(),
       private: true,

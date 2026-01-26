@@ -80,7 +80,7 @@ export default function handleMessage(
       sendResponse({ type: "Connected", userSessionId: store.me.userId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
-        id: `${State.LobbyStateUpdate}`,
+        id: State.LobbyStateUpdate.toString(),
         data: {
           type: LobbyState.SessionState,
           payload: { id: store.me.userId },
@@ -225,6 +225,7 @@ const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
     parsed.action === GAME_ACTION.ConfirmBuildSettlement ||
     parsed.action === GAME_ACTION.ConfirmBuildSettlementSkippingSelection
   ) {
+    // TODO move logic
     const cornerIndex = resolveCornerIndex(parsed.payload);
     if (cornerIndex === null) {
       return true;
@@ -265,6 +266,7 @@ const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
     parsed.action === GAME_ACTION.ConfirmBuildRoad ||
     parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection
   ) {
+    // TODO move logic
     const edgeIndex = resolveEdgeIndex(parsed.payload);
     if (edgeIndex === null) {
       return true;
@@ -302,6 +304,8 @@ const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
 
   return true;
 };
+
+// TODO move everything below
 
 const resolveCornerIndex = (payload: unknown) => {
   if (typeof payload === "number" && Number.isFinite(payload)) {
@@ -372,6 +376,18 @@ const sendEdgeHighlights = (gameData: any, playerColor: number) => {
 };
 
 const sendCornerHighlights = (gameData: any) => {
+  const isClose = (a: any, b: any) => {
+    if (a.z === b.z) {
+      return a.x === b.x && a.y === b.y;
+    }
+    const north = a.z === CORNER_DIRECTION.North ? a : b;
+    const south = a.z === CORNER_DIRECTION.South ? a : b;
+    return (
+      (south.x === north.x && south.y === north.y - 1) ||
+      (south.x === north.x + 1 && south.y === north.y - 2) ||
+      (south.x === north.x + 1 && south.y === north.y - 1)
+    );
+  };
   const ownedCorners: any[] = Object.values(
     gameData.data.payload.gameState.mapState.tileCornerStates,
   ).filter(
@@ -388,12 +404,7 @@ const sendCornerHighlights = (gameData: any) => {
     .filter(({ key }) => Number.isFinite(key))
     .filter(
       ({ value }) =>
-        !ownedCorners.some(
-          (ownedCorner) =>
-            ownedCorner.x === value.x &&
-            ownedCorner.y === value.y &&
-            ownedCorner.z === value.z,
-        ),
+        !ownedCorners.some((ownedCorner) => isClose(ownedCorner, value)),
     )
     .map(({ key }) => key);
 
