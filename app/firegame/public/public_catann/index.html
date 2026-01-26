@@ -201,7 +201,7 @@
     ></script>
     <script
       defer="defer"
-      src="https://cdn.colonist.io/dist/js/ui-game.7cbf53940f4f50959d28.js"
+      src="/catann_files/ui-game.7cbf53940f4f50959d28.js?v=1"
     ></script>
     <script
       defer="defer"
@@ -780,47 +780,6 @@
           </div>
         </div>
       </div>
-      <script>
-        function turnstileLoaded() {
-          (turnstile.render("#turnstile-widget", {
-            sitekey: cloudflareTurnstileSiteKey,
-            execution: "execute",
-            appearance: "interaction-only",
-            "before-interactive-callback": function () {
-              (window?.ReactNativeWebView?.postMessage(
-                JSON.stringify({
-                  event: "should_show_splash_screen",
-                  data: !1,
-                }),
-              ),
-                (document.getElementById("turnstile-overlay").style.display =
-                  "block"));
-            },
-            "after-interactive-callback": function () {
-              document.getElementById("turnstile-overlay").style.display =
-                "none";
-            },
-            "response-field": !1,
-          }),
-            (turnstile.loaded = !0));
-        }
-        (() => {
-          const e = document.createElement("div");
-          ((e.id = "turnstile-overlay"),
-            (e.style.position = "fixed"),
-            (e.style.top = "0"),
-            (e.style.left = "0"),
-            (e.style.right = "0"),
-            (e.style.bottom = "0"),
-            (e.style.backgroundColor = "rgba(0, 0, 0, 0.7)"),
-            (e.style.border = "1px solid grey"),
-            (e.style.zIndex = "900000"),
-            (e.style.display = "none"),
-            (e.innerHTML =
-              '<p style="color: white; text-align: center; margin-top: 50vh;">One more step before you proceed...</p><div style="display: flex; flex-wrap: nowrap; align-items: center; justify-content: center;" id="turnstile-widget"></div>'),
-            document.body.appendChild(e));
-        })();
-      </script>
       <div
         class="scene_landing_page_container hidden"
         id="scene_landing_page_container"
@@ -867,52 +826,6 @@
             data-use_fedcm_for_prompt="true"
             data-auto_select="false"
           ></div>
-          <script
-            src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileLoaded"
-            async
-          ></script>
-          <script>
-            function turnstileLoaded() {
-              (turnstile.render("#turnstile-widget", {
-                sitekey: cloudflareTurnstileSiteKey,
-                execution: "execute",
-                appearance: "interaction-only",
-                "before-interactive-callback": function () {
-                  (window?.ReactNativeWebView?.postMessage(
-                    JSON.stringify({
-                      event: "should_show_splash_screen",
-                      data: !1,
-                    }),
-                  ),
-                    (document.getElementById(
-                      "turnstile-overlay",
-                    ).style.display = "block"));
-                },
-                "after-interactive-callback": function () {
-                  document.getElementById("turnstile-overlay").style.display =
-                    "none";
-                },
-                "response-field": !1,
-              }),
-                (turnstile.loaded = !0));
-            }
-            (() => {
-              const e = document.createElement("div");
-              ((e.id = "turnstile-overlay"),
-                (e.style.position = "fixed"),
-                (e.style.top = "0"),
-                (e.style.left = "0"),
-                (e.style.right = "0"),
-                (e.style.bottom = "0"),
-                (e.style.backgroundColor = "rgba(0, 0, 0, 0.7)"),
-                (e.style.border = "1px solid grey"),
-                (e.style.zIndex = "900000"),
-                (e.style.display = "none"),
-                (e.innerHTML =
-                  '<p style="color: white; text-align: center; margin-top: 50vh;">One more step before you proceed...</p><div style="display: flex; flex-wrap: nowrap; align-items: center; justify-content: center;" id="turnstile-widget"></div>'),
-                document.body.appendChild(e));
-            })();
-          </script>
         </header>
         <div class="landing_page">
           <div class="landing_page_map">

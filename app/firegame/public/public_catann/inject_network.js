@@ -851,7 +851,7 @@
       ownedItems: [],
       totalCompletedGameCount: 0,
       ckTotalGameCount: 0,
-      ckNextRerollAt: "2026-01-26T04:47:13.672Z",
+      ckNextRerollAt: "2027-01-26T04:47:13.672Z",
       username: "Cyna#2570",
       language: null,
       usernameChangeAttemptsLeft: 1,
