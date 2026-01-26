@@ -1,5 +1,5 @@
 ---
-name: catann
+name: s_catann
 description: Run the Firegame catann test workflow (start dev server, run test script, and collect screenshots/logs).
 ---
 
