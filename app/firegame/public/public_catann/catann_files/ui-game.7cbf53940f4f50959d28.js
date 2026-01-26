@@ -32667,7 +32667,6 @@
           this.hoverMechanicActions.push(e);
         }
         onHoverStateChange(e) {
-          console.log(32670);
           if (
             (null != this.beginnerHintView &&
               (this.destroyBeginnerHintView(),
@@ -32829,7 +32828,6 @@
           this.hoverMechanicActions.push(e);
         }
         onHoverStateChange(e) {
-          console.log(32835);
           if (
             (null != this.beginnerHintView &&
               (this.destroyBeginnerHintView(),
@@ -32976,13 +32974,11 @@
             this.tileCornerHoverController.onHoverHighlightCancellation());
         }
         onHoverStateChange() {
-          console.log(32979)(
-            this.tileEdgeHoverController.onHoverStateChange(
-              this.isHoverStateActive,
-            ),
-            this.tileCornerHoverController.onHoverStateChange(
-              this.isHoverStateActive,
-            ),
+          this.tileEdgeHoverController.onHoverStateChange(
+            this.isHoverStateActive,
+          );
+          this.tileCornerHoverController.onHoverStateChange(
+            this.isHoverStateActive,
           );
         }
         updateHoverState() {
