@@ -374,11 +374,30 @@ const sendEdgeHighlights = (gameData: any, playerColor: number) => {
 };
 
 const sendCornerHighlights = (gameData: any) => {
-  const cornerIndices = Object.keys(
+  const ownedCorners: any[] = Object.values(
+    gameData.data.payload.gameState.mapState.tileCornerStates,
+  ).filter(
+    (cornerState: any) =>
+      cornerState.buildingType === CORNER_BUILDING_TYPE.Settlement,
+  );
+  const cornerIndices = Object.entries(
     gameData.data.payload.gameState.mapState.tileCornerStates,
   )
-    .map((key) => Number.parseInt(key, 10))
-    .filter((value) => Number.isFinite(value));
+    .map(([key, value]) => ({
+      key: Number.parseInt(key, 10),
+      value: value as any,
+    }))
+    .filter(({ key }) => Number.isFinite(key))
+    .filter(
+      ({ value }) =>
+        !ownedCorners.some(
+          (ownedCorner) =>
+            ownedCorner.x === value.x &&
+            ownedCorner.y === value.y &&
+            ownedCorner.z === value.z,
+        ),
+    )
+    .map(({ key }) => key);
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
