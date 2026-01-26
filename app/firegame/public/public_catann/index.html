@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script src="/inject_network.js"></script>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
@@ -779,10 +780,6 @@
           </div>
         </div>
       </div>
-      <script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileLoaded"
-        async
-      ></script>
       <script>
         function turnstileLoaded() {
           (turnstile.render("#turnstile-widget", {
