@@ -28,7 +28,7 @@ const choreo = (
   fileName: string,
   f: (
     iframe: FrameLocator,
-    expectedMessages: { trigger: string; data: number[] }[],
+    expectedMessages: { trigger: string; data: any }[],
   ) => Promise<void>,
 ) => {
   return async ({ page }: { page: Page }) => {
@@ -128,7 +128,7 @@ test.skip(
 
 const startingSettlementChoreo = async (
   iframe: FrameLocator,
-  expectedMessages: { trigger: string; data: number[] }[],
+  expectedMessages: { trigger: string; data: any }[],
 ) => {
   await verifyTestMessages(iframe, expectedMessages);
 
@@ -320,17 +320,17 @@ const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
 const getExpectedMessages = async (recordingPath: string) => {
   const openRecordingJson = (
     recordingPath: string,
-  ): { trigger: string; data: number[] }[] => {
+  ): { trigger: string; data: any }[] => {
     const fullPath = path.resolve(__dirname, recordingPath);
     const data = fs.readFileSync(fullPath, "utf8");
-    return JSON.parse(data) as { trigger: string; data: number[] }[];
+    return JSON.parse(data) as { trigger: string; data: any }[];
   };
   return openRecordingJson(recordingPath).filter((msg) => isNotHeartbeat(msg));
 };
 
 const spliceTestMessages = async (
   iframe: FrameLocator,
-): Promise<{ trigger: string; data: number[] }[]> => {
+): Promise<{ trigger: string; data: any }[]> => {
   return (
     await iframe
       .locator("body")
@@ -340,7 +340,7 @@ const spliceTestMessages = async (
 
 const verifyTestMessages = async (
   iframe: FrameLocator,
-  expectedMessages: { trigger: string; data: number[] }[],
+  expectedMessages: { trigger: string; data: any }[],
 ) => {
   const testMessages = await spliceTestMessages(iframe);
   console.log(
@@ -352,6 +352,11 @@ const verifyTestMessages = async (
     const expectedMsg = expectedMessages.shift()!;
     expect(expectedMsg).toBeDefined();
     expect(msg.trigger).toEqual(expectedMsg.trigger);
+    if (msg.trigger === "clientData") {
+      expectedMsg.data.sequence = msg.data.sequence;
+    } else {
+      expectedMsg.data.data.sequence = msg.data.data.sequence;
+    }
     expect(msg).toEqual(expectedMsg);
     console.log(msg);
   });

@@ -130,7 +130,8 @@ const sendEdgeHighlights = (gameData: any) => {
               serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
             ),
           );
-        });
+        })
+        .sort((a, b) => b - a);
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
