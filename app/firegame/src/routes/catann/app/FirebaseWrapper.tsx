@@ -2,13 +2,49 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
+import { GameStateUpdateType, State } from "./catann_files_enums";
 import { newRoom, newRoomMe, spoofHostRoom } from "./gameLogic";
 import { initializeGame, sendToMainSocket } from "./handleMessage";
 
 export var firebaseData: any = {};
-var seenData = firebaseData;
+let hasSentInitialGame = false;
+let lastGameStateSnapshot: string | null = null;
 
 const SHOULD_MOCK = true;
+
+const getGameStateSnapshot = (gameData: any) => {
+  try {
+    return JSON.stringify(gameData?.data?.payload?.gameState ?? null);
+  } catch {
+    return null;
+  }
+};
+
+const buildGameStateUpdated = (gameData: any) => {
+  const gameState = gameData?.data?.payload?.gameState;
+  if (!gameState) return null;
+  const timeLeftInState =
+    gameData?.data?.payload?.timeLeftInState ??
+    gameState?.currentState?.allocatedTime ??
+    0;
+  return {
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.GameStateUpdated,
+      payload: {
+        diff: gameState,
+        timeLeftInState,
+      },
+    },
+  };
+};
+
+const markInitialGameSent = (gameData?: any) => {
+  hasSentInitialGame = true;
+  if (gameData) {
+    lastGameStateSnapshot = getGameStateSnapshot(gameData);
+  }
+};
 
 function receiveFirebaseDataCatann(catann: any) {
   if (!catann) {
@@ -21,17 +57,22 @@ function receiveFirebaseDataCatann(catann: any) {
     return;
   }
   const unserialized = unSerializeFirebase(catann, []);
-  // seenData = unSerializeFirebase(catann, []);
   if (JSON.stringify(firebaseData) === JSON.stringify(unserialized)) return;
   firebaseData = unserialized;
   console.log("rendered", firebaseData);
   if (firebaseData.GAME) {
-    if (!seenData.GAME) {
-      seenData = firebaseData;
+    const snapshot = getGameStateSnapshot(firebaseData.GAME);
+    if (!hasSentInitialGame) {
+      markInitialGameSent(firebaseData.GAME);
       initializeGame();
       return;
     }
-    sendToMainSocket?.(firebaseData.GAME);
+    if (snapshot === lastGameStateSnapshot) return;
+    const update = buildGameStateUpdated(firebaseData.GAME);
+    if (update) {
+      sendToMainSocket?.(update);
+    }
+    lastGameStateSnapshot = snapshot;
     return;
   }
   if (
@@ -47,7 +88,7 @@ function receiveFirebaseDataCatann(catann: any) {
 }
 
 export default function FirebaseWrapper() {
-  console.log("connecting firebase wrapper", seenData);
+  console.log("connecting firebase wrapper", { hasSentInitialGame });
   useEffect(() => {
     if (SHOULD_MOCK) {
       receiveFirebaseDataCatann(undefined);
