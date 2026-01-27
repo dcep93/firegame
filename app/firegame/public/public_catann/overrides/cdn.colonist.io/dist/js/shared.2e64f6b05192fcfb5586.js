@@ -17347,6 +17347,7 @@
       if (837 != s.j) var V = s(64853);
       var q = s(70970);
       window.__socketCatannMessages = [];
+      console.log("initialized __socketCatannMessages");
       class Q {
         isSocketOpen() {
           var e;
@@ -17433,7 +17434,7 @@
           const t = V.D4(e.data);
           window.__socketCatannMessages.push({
             trigger: "serverData",
-            data: t.data,
+            data: t,
           });
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
