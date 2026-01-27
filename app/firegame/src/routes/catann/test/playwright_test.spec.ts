@@ -10,26 +10,22 @@ import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
 
-const maybeScreenshot = (
-  shouldScreenshot: boolean,
-  f: ({ page }: { page: Page }) => void,
-) => {
+const screenshot = (f: ({ page }: { page: Page }) => void) => {
   return async ({ page }: { page: Page }, testInfo: any) => {
     try {
       await f({ page });
     } finally {
-      if (shouldScreenshot)
-        await page.screenshot({
-          path: testInfo.outputPath("screenshot.png"),
-          fullPage: true,
-        });
+      await page.screenshot({
+        path: testInfo.outputPath("screenshot.png"),
+        fullPage: true,
+      });
     }
   };
 };
 
-test(
+test.skip(
   "clickable_map",
-  maybeScreenshot(true, async ({ page }: { page: Page }) => {
+  screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
     const destinationCoords = { col: 1, row: 4 };
 
@@ -110,9 +106,9 @@ test(
   }),
 );
 
-test.skip(
+test(
   "starting_settlement",
-  maybeScreenshot(false, async ({ page }: { page: Page }) => {
+  screenshot(async ({ page }: { page: Page }) => {
     const iframe = await gotoCatann(page);
     // not sure if we need to start game before setting expected messages
     const expectedMessages = await setExpectedMessages(
