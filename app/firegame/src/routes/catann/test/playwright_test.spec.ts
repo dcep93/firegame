@@ -34,7 +34,8 @@ const choreo = (
   return async ({ page }: { page: Page }) => {
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
-    const expectedMessages = await getExpectedMessages(page, fileName);
+    const expectedMessages = await getExpectedMessages(fileName);
+    await spliceTestMessages(iframe);
     await f(iframe, expectedMessages);
     expect(expectedMessages.length === 0).toBe(true);
   };
@@ -351,7 +352,7 @@ const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   return true;
 };
 
-const getExpectedMessages = async (page: Page, recordingPath: string) => {
+const getExpectedMessages = async (recordingPath: string) => {
   const openRecordingJson = (
     recordingPath: string,
   ): { trigger: string; data: number[] }[] => {
@@ -362,19 +363,26 @@ const getExpectedMessages = async (page: Page, recordingPath: string) => {
   return openRecordingJson(recordingPath).filter((msg) => isNotHeartbeat(msg));
 };
 
-const verifyTestMessages = async (
+const spliceTestMessages = async (
   iframe: FrameLocator,
-  expectedMessages: { trigger: string; data: number[] }[],
-) => {
-  const testMessages = (
+): Promise<{ trigger: string; data: number[] }[]> => {
+  return (
     await iframe
       .locator("body")
       .evaluate(() => window.__socketCatannMessages.splice(0))
   ).filter((msg) => isNotHeartbeat(msg));
+};
+
+const verifyTestMessages = async (
+  iframe: FrameLocator,
+  expectedMessages: { trigger: string; data: number[] }[],
+) => {
+  const testMessages = await spliceTestMessages(iframe);
   testMessages.forEach((msg) => {
     const expectedMsg = expectedMessages.shift();
     expect(expectedMsg).toBeDefined();
     expect(msg).toEqual(expectedMsg);
+    console.log("verifyTestMessages", msg);
   });
 };
 
