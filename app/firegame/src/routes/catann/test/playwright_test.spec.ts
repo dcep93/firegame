@@ -35,6 +35,7 @@ const choreo = (
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
     const expectedMessages = await getExpectedMessages(fileName);
+    console.log(fileName, expectedMessages.length);
     await spliceTestMessages(iframe);
     await f(iframe, expectedMessages);
     expect(expectedMessages.length === 0).toBe(true);
@@ -378,11 +379,15 @@ const verifyTestMessages = async (
   expectedMessages: { trigger: string; data: number[] }[],
 ) => {
   const testMessages = await spliceTestMessages(iframe);
+  console.log(
+    "verifyTestMessages",
+    testMessages.length,
+    expectedMessages.length,
+  );
   testMessages.forEach((msg) => {
     const expectedMsg = expectedMessages.shift();
     expect(expectedMsg).toBeDefined();
     expect(msg).toEqual(expectedMsg);
-    console.log("verifyTestMessages", msg);
   });
 };
 
