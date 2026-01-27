@@ -23,6 +23,29 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
   };
 };
 
+const choreo = (
+  fileName: string,
+  f: (iframe: FrameLocator) => Promise<void>,
+) => {
+  return async ({ page }: { page: Page }) => {
+    const iframe = await gotoCatann(page);
+    await revealAndStartGame(iframe);
+    // not sure if we need to start game before setting expected messages
+    await setExpectedMessages(page, fileName);
+
+    // page.on("console", (msg) => {
+    //   // throw new Error(`${msg.type()}: ${msg.text()}`);
+    //   console.log(`${msg.type()}: ${msg.text()}`);
+    // });
+    await f(iframe);
+    // await expect
+    //   .poll(async () => expectedMessages?.length, {
+    //     timeout: 1000,
+    //   })
+    //   .toBe(0);
+  };
+};
+
 test.skip(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
@@ -106,27 +129,6 @@ test.skip(
   }),
 );
 
-test(
-  "starting_settlement",
-  screenshot(async ({ page }: { page: Page }) => {
-    const iframe = await gotoCatann(page);
-    await revealAndStartGame(iframe);
-    // not sure if we need to start game before setting expected messages
-    await setExpectedMessages(page, "./starting_settlement.json");
-
-    // page.on("console", (msg) => {
-    //   // throw new Error(`${msg.type()}: ${msg.text()}`);
-    //   console.log(`${msg.type()}: ${msg.text()}`);
-    // });
-    await placeStartingSettlement(iframe);
-    // await expect
-    //   .poll(async () => expectedMessages?.length, {
-    //     timeout: 1000,
-    //   })
-    //   .toBe(0);
-  }),
-);
-
 //
 
 const placeStartingSettlement = async (iframe: FrameLocator) => {
@@ -172,6 +174,13 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
     force: true,
   });
 };
+
+//
+
+test(
+  "starting_settlement",
+  screenshot(choreo("./starting_settlement.json", placeStartingSettlement)),
+);
 
 //
 
