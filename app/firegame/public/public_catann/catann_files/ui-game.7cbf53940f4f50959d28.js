@@ -11513,7 +11513,6 @@
               }));
         }
         hoverSize() {
-          console.log("hoverSize", { ...this.viewContainer });
           if (this.viewContainer.destroyed) return;
           const e =
               this.viewContainer.x + (0.05 * this.viewContainer.width) / 2,
