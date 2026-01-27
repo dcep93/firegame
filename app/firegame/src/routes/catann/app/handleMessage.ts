@@ -87,14 +87,17 @@ export default function handleMessage(
     return;
   }
   const clientData = parseClientData(rawClientData);
+  const __socketCatannMessage = {
+    ...clientData,
+  };
+  if (clientData ?? null === null) {
+    delete __socketCatannMessage.payload;
+  }
+  delete __socketCatannMessage.channel;
+  delete __socketCatannMessage._header;
   window.__socketCatannMessages.push({
     trigger: "clientData",
-    data: {
-      ...clientData,
-      payload: clientData.payload ?? undefined,
-      channel: undefined,
-      _header: undefined,
-    },
+    data: __socketCatannMessage,
   });
   if (clientData._header[0] === SocketRouteType.SocketRouter) {
     if (clientData._header[1] === ServerActionType.Echo) {
