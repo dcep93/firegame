@@ -32,8 +32,7 @@ const choreo = (
   ) => Promise<void>,
 ) => {
   return async ({ page }: { page: Page }) => {
-    const iframe = await gotoCatann(page);
-    await revealAndStartGame(iframe);
+    const iframe = await revealAndStartGame(page);
     const expectedMessages = await getExpectedMessages(fileName);
     console.log(fileName, expectedMessages.length);
     await spliceTestMessages(iframe);
@@ -48,8 +47,7 @@ test.skip(
     const settlementCoords = { col: 0, row: 5 };
     const destinationCoords = { col: 1, row: 4 };
 
-    const iframe = await gotoCatann(page);
-    await revealAndStartGame(iframe);
+    const iframe = await revealAndStartGame(page);
 
     await checkCanvasHandle(iframe);
     const canvas = iframe.locator("canvas#game-canvas");
@@ -289,60 +287,18 @@ const mapAppearsClickable = async (
 
 //
 
-const gotoCatann = async (page: Page): Promise<FrameLocator> => {
-  const setupClientMessageCapture = async (page: Page) => {
-    await page.evaluate(() => {
-      const toBytes = (clientData: unknown): number[] | null => {
-        if (!clientData) return null;
-        if (clientData instanceof ArrayBuffer) {
-          return Array.from(new Uint8Array(clientData));
-        }
-        if (ArrayBuffer.isView(clientData)) {
-          const view = clientData as ArrayBufferView;
-          return Array.from(
-            new Uint8Array(view.buffer, view.byteOffset, view.byteLength),
-          );
-        }
-        if (typeof clientData === "object") {
-          const record = clientData as Record<string, number>;
-          const keys = Object.keys(record)
-            .map((key) => Number(key))
-            .filter((key) => Number.isFinite(key))
-            .sort((a, b) => a - b);
-          if (!keys.length) return null;
-          return keys.map((key) => record[String(key)] ?? 0);
-        }
-        return null;
-      };
-
-      window.addEventListener("message", (event) => {
-        const payload = event.data as {
-          catann?: boolean;
-          clientData?: unknown;
-        };
-        if (!payload?.catann || !payload.clientData) return;
-        const bytes = toBytes(payload.clientData);
-        if (!bytes) return;
-        window.__socketCatannMessages?.push({
-          trigger: "socket.send",
-          data: bytes,
-        });
-      });
-    });
+const revealAndStartGame = async (page: Page): Promise<FrameLocator> => {
+  const gotoCatann = async (page: Page): Promise<FrameLocator> => {
+    await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
+    const iframe = page.locator('iframe[title="iframe"]');
+    await expect(iframe).toBeVisible({ timeout: 1000 });
+    return page.frameLocator('iframe[title="iframe"]');
   };
-
-  await setupClientMessageCapture(page);
-
-  await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
-  const iframe = page.locator('iframe[title="iframe"]');
-  await expect(iframe).toBeVisible({ timeout: 1000 });
-  return page.frameLocator('iframe[title="iframe"]');
-};
-
-const revealAndStartGame = async (iframe: FrameLocator) => {
+  const iframe = await gotoCatann(page);
   const startButton = iframe.locator("#room_center_start_button");
   await expect(startButton).toBeVisible({ timeout: 30_000 });
   await startButton.click({ force: true });
+  return iframe;
 };
 
 const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
