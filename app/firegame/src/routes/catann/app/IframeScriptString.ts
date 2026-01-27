@@ -53,6 +53,7 @@ function main({
   overrideXHR();
   overrideWebsocket();
   overrideServiceWorker();
+  installCanvasPointerOverDedupe();
   loadIndex();
 
   function overrideXHR() {
@@ -333,6 +334,90 @@ function main({
           window.addEventListener("message", window.__socketBridgeHandler);
         }
       });
+  }
+
+  function installCanvasPointerOverDedupe() {
+    // Dedupe a browser/iframe quirk where the canvas can receive duplicate
+    // pointerover events with relatedTarget === null for the same pointerId.
+    // We wrap canvas listeners so duplicates are ignored before app handlers run,
+    // while preserving legitimate pointerover/out/leave for other pointers.
+    const proto = HTMLCanvasElement.prototype as HTMLCanvasElement & {
+      __codexPointerOverPatched?: boolean;
+    };
+    if (proto.__codexPointerOverPatched) return;
+    proto.__codexPointerOverPatched = true;
+
+    const originalAdd = proto.addEventListener;
+    const originalRemove = proto.removeEventListener;
+    const isPointerType = (type: string) =>
+      type === "pointerover" ||
+      type === "pointerout" ||
+      type === "pointerleave";
+
+    const wrapListener = (listener: Function) =>
+      (listener as any).__codexPointerWrap ??
+      ((listener as any).__codexPointerWrap = function (
+        this: HTMLCanvasElement,
+        event: Event,
+      ) {
+        if (event instanceof PointerEvent && isPointerType(event.type)) {
+          const guard =
+            (this as any)._codexOverOutGuard ||
+            ((this as any)._codexOverOutGuard = {
+              lastType: null,
+              lastPointerId: null,
+            });
+          if (
+            event.type === "pointerover" &&
+            event.target === this &&
+            event.relatedTarget === null &&
+            guard.lastType === "pointerover" &&
+            guard.lastPointerId === event.pointerId
+          ) {
+            return;
+          }
+          guard.lastType = event.type;
+          guard.lastPointerId = event.pointerId;
+        }
+        return listener.call(this, event);
+      });
+
+    proto.addEventListener = function (
+      this: HTMLCanvasElement,
+      type: string,
+      listener: EventListenerOrEventListenerObject | null,
+      options?: boolean | AddEventListenerOptions,
+    ) {
+      if (typeof listener === "function" && isPointerType(type)) {
+        return originalAdd.call(
+          this,
+          type,
+          wrapListener(listener) as EventListener,
+          options,
+        );
+      }
+      return originalAdd.call(this, type, listener as any, options as any);
+    };
+
+    proto.removeEventListener = function (
+      this: HTMLCanvasElement,
+      type: string,
+      listener: EventListenerOrEventListenerObject | null,
+      options?: boolean | EventListenerOptions,
+    ) {
+      if (typeof listener === "function" && isPointerType(type)) {
+        const wrapped = (listener as any).__codexPointerWrap as
+          | EventListener
+          | undefined;
+        return originalRemove.call(
+          this,
+          type,
+          (wrapped || listener) as any,
+          options as any,
+        );
+      }
+      return originalRemove.call(this, type, listener as any, options as any);
+    };
   }
 }
 
