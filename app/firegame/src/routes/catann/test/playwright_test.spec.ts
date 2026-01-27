@@ -25,24 +25,17 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
 
 const choreo = (
   fileName: string,
-  f: (iframe: FrameLocator) => Promise<void>,
+  f: (
+    iframe: FrameLocator,
+    expectedMessages: { trigger: string; data: number[] }[],
+  ) => Promise<void>,
 ) => {
   return async ({ page }: { page: Page }) => {
     const iframe = await gotoCatann(page);
     await revealAndStartGame(iframe);
-    // not sure if we need to start game before setting expected messages
-    await setExpectedMessages(page, fileName);
-
-    // page.on("console", (msg) => {
-    //   // throw new Error(`${msg.type()}: ${msg.text()}`);
-    //   console.log(`${msg.type()}: ${msg.text()}`);
-    // });
-    await f(iframe);
-    // await expect
-    //   .poll(async () => expectedMessages?.length, {
-    //     timeout: 1000,
-    //   })
-    //   .toBe(0);
+    const expectedMessages = await getExpectedMessages(page, fileName);
+    await f(iframe, expectedMessages);
+    expect(expectedMessages.length === 0).toBe(true);
   };
 };
 
@@ -131,7 +124,11 @@ test.skip(
 
 //
 
-const placeStartingSettlement = async (iframe: FrameLocator) => {
+const startingSettlementChoreo = async (
+  iframe: FrameLocator,
+  expectedMessages: { trigger: string; data: number[] }[],
+) => {
+  await verifyTestMessages(iframe, expectedMessages);
   const canvas = iframe.locator("canvas#game-canvas");
 
   const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
@@ -151,6 +148,8 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
     position: confirmSettlementOffset,
     force: true,
   });
+
+  await verifyTestMessages(iframe, expectedMessages);
 
   const destinationOffset = getSettlementOffset({ col: 5, row: 2 });
   const roadOffset = {
@@ -173,13 +172,15 @@ const placeStartingSettlement = async (iframe: FrameLocator) => {
     position: confirmRoadOffset,
     force: true,
   });
+
+  await verifyTestMessages(iframe, expectedMessages);
 };
 
 //
 
 test(
   "starting_settlement",
-  screenshot(choreo("./starting_settlement.json", placeStartingSettlement)),
+  screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
 
 //
@@ -349,7 +350,7 @@ const isNotHeartbeat = (msg: { trigger: string; data: number[] } | null) => {
   return !(msg.data[0] === 4 && msg.data[1] === 8);
 };
 
-const setExpectedMessages = async (page: Page, recordingPath: string) => {
+const getExpectedMessages = async (page: Page, recordingPath: string) => {
   const openRecordingJson = (
     recordingPath: string,
   ): { trigger: string; data: number[] }[] => {
@@ -357,13 +358,23 @@ const setExpectedMessages = async (page: Page, recordingPath: string) => {
     const data = fs.readFileSync(fullPath, "utf8");
     return JSON.parse(data) as { trigger: string; data: number[] }[];
   };
-  const expectedMessages = openRecordingJson(recordingPath).filter((msg) =>
-    isNotHeartbeat(msg),
-  );
-  page.evaluate(
-    () => ((window as any).__catannExpectedMessages = expectedMessages),
-  );
-  return expectedMessages;
+  return openRecordingJson(recordingPath).filter((msg) => isNotHeartbeat(msg));
+};
+
+const verifyTestMessages = async (
+  iframe: FrameLocator,
+  expectedMessages: { trigger: string; data: number[] }[],
+) => {
+  const testMessages = (
+    await iframe
+      .locator("body")
+      .evaluate(() => window.__socketCatannMessages.splice(0))
+  ).filter((msg) => isNotHeartbeat(msg));
+  testMessages.forEach((msg) => {
+    const expectedMsg = expectedMessages.shift();
+    expect(expectedMsg).toBeDefined();
+    expect(msg).toEqual(expectedMsg);
+  });
 };
 
 //
