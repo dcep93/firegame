@@ -9,6 +9,7 @@ import {
 import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
+import { State } from "../app/catann_files_enums";
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
   return async ({ page }: { page: Page }, testInfo: any) => {
@@ -176,8 +177,6 @@ const startingSettlementChoreo = async (
   await verifyTestMessages(iframe, expectedMessages);
 };
 
-//
-
 test(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
@@ -344,10 +343,12 @@ const revealAndStartGame = async (iframe: FrameLocator) => {
   await startButton.click({ force: true });
 };
 
-const isNotHeartbeat = (msg: { trigger: string; data: number[] } | null) => {
+const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
-  if (!Array.isArray(msg.data)) return false;
-  return !(msg.data[0] === 4 && msg.data[1] === 8);
+  if (msg.trigger === "clientData" && msg.data.id === State.SocketMonitorUpdate)
+    return false;
+  if (msg.trigger === "serverData" && msg.data.type === undefined) return false;
+  return true;
 };
 
 const getExpectedMessages = async (page: Page, recordingPath: string) => {
