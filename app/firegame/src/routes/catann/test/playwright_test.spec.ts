@@ -36,7 +36,7 @@ const choreo = (
     const expectedMessages = await getExpectedMessages(fileName);
     console.log(fileName, expectedMessages.length);
     const spliced = await spliceTestMessages(iframe);
-    console.log(spliced);
+    console.log({ spliced });
     await f(iframe, expectedMessages);
     expect(expectedMessages).toEqual([]);
   };
@@ -311,12 +311,7 @@ const revealAndStartGame = async (page: Page): Promise<FrameLocator> => {
 
 const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
-  if (
-    msg.trigger === "clientData" &&
-    msg.data.id === State.SocketMonitorUpdate.toString()
-  )
-    return false;
-  if (msg.trigger === "serverData" && msg.data.type === undefined) return false;
+  if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
   return true;
 };
 

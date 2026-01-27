@@ -35,7 +35,7 @@ window.addEventListener("message", (event) => {
     const serverData = packServerData(rawServerData);
     window.__socketCatannMessages.push({
       trigger: "serverData",
-      data: serverData,
+      data: rawServerData,
     });
     event.source!.postMessage({ id, serverData }, { targetOrigin: "*" });
   });
