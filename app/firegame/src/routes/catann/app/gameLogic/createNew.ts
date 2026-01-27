@@ -1,6 +1,7 @@
+import { sendCornerHighlights } from ".";
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
-import { FUTURE } from "../handleMessage";
+import { FUTURE, sendToMainSocket } from "../handleMessage";
 import { State } from "./CatannFilesEnums";
 
 export const newUserState = () => {
@@ -315,23 +316,6 @@ export const newGame = () => {
           friendlyRobber: false,
         },
         timeLeftInState: 180,
-      },
-    },
-  };
-};
-
-export const newFirstGameState = () => {
-  const room = firebaseData.ROOM;
-  return {
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: 1,
-      payload: {
-        serverId: "08CC38",
-        databaseGameId: room.data.roomId,
-        gameSettingId: room.data.roomId,
-        shouldResetGameClient: false,
-        isReconnectingSession: false,
       },
     },
   };
@@ -1148,32 +1132,57 @@ const newMapState = () => {
   };
 };
 
-export const gameStarter = () => {
-  return {
-    id: "130",
-    data: {
-      type: 91,
-      payload: {
-        diff: {
-          playerStates: {
-            "1": {
-              isConnected: true,
-            },
-          },
-          gameLogState: {
-            "3": {
-              text: {
-                type: 0,
-                playerColor: 1,
-              },
-              from: 1,
-            },
-          },
+export const startGame = () => {
+  const newFirstGameState = () => {
+    const room = firebaseData.ROOM;
+    return {
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: 1,
+        payload: {
+          serverId: "08CC38",
+          databaseGameId: room.data.roomId,
+          gameSettingId: room.data.roomId,
+          shouldResetGameClient: false,
+          isReconnectingSession: false,
         },
-        timeLeftInState: 167.958,
       },
-    },
+    };
   };
+  const gameStarter = () => {
+    return {
+      id: "130",
+      data: {
+        type: 91,
+        payload: {
+          diff: {
+            playerStates: {
+              "1": {
+                isConnected: true,
+              },
+            },
+            gameLogState: {
+              "3": {
+                text: {
+                  type: 0,
+                  playerColor: 1,
+                },
+                from: 1,
+              },
+            },
+          },
+          timeLeftInState: 167.958,
+        },
+      },
+    };
+  };
+
+  const firstGameState = newFirstGameState();
+  sendToMainSocket?.(firstGameState);
+  sendToMainSocket?.(firebaseData.GAME);
+  const gameStartUpdate = gameStarter();
+  sendToMainSocket?.(gameStartUpdate);
+  sendCornerHighlights(firebaseData.GAME);
 };
 
 export const spoofHostRoom = () => {

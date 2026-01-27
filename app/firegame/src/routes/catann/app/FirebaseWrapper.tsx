@@ -2,14 +2,12 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
-import { sendCornerHighlights } from "./gameLogic";
 import { GameStateUpdateType, State } from "./gameLogic/CatannFilesEnums";
 import {
-  gameStarter,
-  newFirstGameState,
   newRoom,
   newRoomMe,
   spoofHostRoom,
+  startGame,
 } from "./gameLogic/createNew";
 import { sendToMainSocket } from "./handleMessage";
 
@@ -71,7 +69,7 @@ function receiveFirebaseDataCatann(catann: any) {
     const snapshot = getGameStateSnapshot(firebaseData.GAME);
     if (!hasSentInitialGame) {
       markInitialGameSent(firebaseData.GAME);
-      initializeGame();
+      startGame();
       return;
     }
     if (snapshot === lastGameStateSnapshot) return;
@@ -172,14 +170,4 @@ function unSerializeFirebase(serialized: any, path: any[]): any {
     );
   }
   return serialized;
-}
-
-function initializeGame() {
-  const firstGameState = newFirstGameState();
-  const gameStartUpdate = gameStarter();
-
-  sendToMainSocket?.(firstGameState);
-  sendToMainSocket?.(firebaseData.GAME);
-  sendToMainSocket?.(gameStartUpdate);
-  sendCornerHighlights(firebaseData.GAME);
 }
