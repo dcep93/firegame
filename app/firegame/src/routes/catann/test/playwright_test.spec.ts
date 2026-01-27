@@ -326,7 +326,7 @@ const spliceTestMessages = async (
   return (
     await iframe
       .locator("body")
-      .evaluate(() => window.__socketCatannMessages.splice(0))
+      .evaluate(() => window.parent.__socketCatannMessages.splice(0))
   ).filter((msg) => isNotHeartbeat(msg));
 };
 
