@@ -2,13 +2,6 @@
 
 import { State } from "./catann_files_enums";
 
-declare global {
-  interface Window {
-    __socketCatannMessages: { trigger: string; data: any }[];
-  }
-}
-window.__socketCatannMessages = [];
-
 // parsed: { channel: "lobby", _header: [2, 7], action: 1, payload: {} }
 export function parseClientData(clientData: Record<string, number>) {
   const byteKeys = Object.keys(clientData)

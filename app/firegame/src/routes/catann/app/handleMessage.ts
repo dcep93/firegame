@@ -20,6 +20,13 @@ import {
 } from "./gameLogic";
 import { parseClientData } from "./parseMessagepack";
 
+declare global {
+  interface Window {
+    __socketCatannMessages: { trigger: string; data: any }[];
+  }
+}
+window.__socketCatannMessages = [];
+
 export const FUTURE = (() => {
   const future = new Date();
   future.setFullYear(future.getFullYear() + 1);

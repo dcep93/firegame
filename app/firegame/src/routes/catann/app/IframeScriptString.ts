@@ -242,10 +242,6 @@ function main({
       this: { id: number },
       clientData: unknown,
     ) {
-      window.__socketCatannMessages.push({
-        trigger: "send",
-        data: clientData,
-      });
       window.parent!.postMessage(
         { catann: true, id: this.id, clientData },
         "*",
