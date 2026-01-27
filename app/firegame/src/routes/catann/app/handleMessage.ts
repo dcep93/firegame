@@ -40,16 +40,19 @@ const GAME_ACTION = {
 var latestSequence = 0;
 
 export default function handleMessage(
-  clientData: any,
+  rawClientData: any,
   sendResponse: typeof sendToMainSocket,
 ) {
-  if (clientData.InterceptedWebSocket) {
+  if (rawClientData.InterceptedWebSocket) {
     if (
-      clientData.InterceptedWebSocket?.[0].startsWith(
+      rawClientData.InterceptedWebSocket?.[0].startsWith(
         "wss://socket.svr.colonist.io/",
       )
     ) {
-      console.debug("handleMessage.init", { clientData, sendToMainSocket });
+      console.debug("handleMessage.init", {
+        rawClientData,
+        sendToMainSocket,
+      });
       sendToMainSocket = (data) => {
         if (data.data) {
           data.data.sequence = ++latestSequence;
@@ -68,39 +71,43 @@ export default function handleMessage(
     }
     return;
   }
-  const parsed = parseClientData(clientData);
-  if (parsed._header[0] === SocketRouteType.SocketRouter) {
-    if (parsed._header[1] === ServerActionType.Echo) {
+  const clientData = parseClientData(rawClientData);
+  window.__socketCatannMessages.push({
+    trigger: "clientData",
+    data: clientData,
+  });
+  if (clientData._header[0] === SocketRouteType.SocketRouter) {
+    if (clientData._header[1] === ServerActionType.Echo) {
       return sendResponse({
         id: State.SocketMonitorUpdate.toString(),
         data: {
           timestamp:
-            typeof parsed.data?.timestamp === "number"
-              ? parsed.data.timestamp
+            typeof clientData.data?.timestamp === "number"
+              ? clientData.data.timestamp
               : Date.now(),
         },
       });
     }
     return;
   }
-  if (parsed._header[0] === SocketRouteType.RouteToServerDirect) {
+  if (clientData._header[0] === SocketRouteType.RouteToServerDirect) {
     if (
-      parsed._header[1] === ServerActionType.GameAction &&
-      parsed.payload === parsed.channel
+      clientData._header[1] === ServerActionType.GameAction &&
+      clientData.payload === clientData.channel
     ) {
       if (firebaseData.GAME) {
         return sendResponse(firebaseData.GAME);
       }
     }
-    if (parsed._header[1] === ServerActionType.GameAction) {
-      if (applyGameAction(parsed)) {
+    if (clientData._header[1] === ServerActionType.GameAction) {
+      if (applyGameAction(clientData)) {
         return;
       }
     }
     return;
   }
-  if (parsed._header[0] === SocketRouteType.RouteToServerType) {
-    if (parsed._header[1] === ServerActionType.GeneralAction) {
+  if (clientData._header[0] === SocketRouteType.RouteToServerType) {
+    if (clientData._header[1] === ServerActionType.GeneralAction) {
       if (
         [
           GeneralAction.ChangeOnlineStatus,
@@ -109,60 +116,65 @@ export default function handleMessage(
           GeneralAction.RegisterToNotificationService,
           GeneralAction.GetAllRoomInvitesReceived,
           GeneralAction.GetNotifications,
-        ].includes(parsed.action)
+        ].includes(clientData.action)
       ) {
         return;
       }
     }
-    if (parsed._header[1] === ServerActionType.LobbyAction) {
+    if (clientData._header[1] === ServerActionType.LobbyAction) {
       if (
         [
           LobbyAction.SetAdBlockStatus,
           LobbyAction.WatchRoomList,
           LobbyAction.SaveClientReferrer,
-        ].includes(parsed.action)
+        ].includes(clientData.action)
       ) {
         return;
       }
-      if (parsed.action === LobbyAction.AccessGameLink) {
+      if (clientData.action === LobbyAction.AccessGameLink) {
         return sendResponse(spoofHostRoom());
       }
     }
-    if (parsed._header[1] === ServerActionType.ShuffleAction) {
-      if ([ShuffleQueueAction.GetShuffleQueueData].includes(parsed.action)) {
+    if (clientData._header[1] === ServerActionType.ShuffleAction) {
+      if (
+        [ShuffleQueueAction.GetShuffleQueueData].includes(clientData.action)
+      ) {
         return;
       }
     }
-    console.log("handleMessage", parsed);
-    if (parsed._header[1] === ServerActionType.RoomCommand) {
-      if (parsed.type === "startGame") {
-        setFirebaseData({ ...firebaseData, GAME: newGame() }, { parsed });
+    console.log("handleMessage", clientData);
+    if (clientData._header[1] === ServerActionType.RoomCommand) {
+      if (clientData.type === "startGame") {
+        setFirebaseData(
+          { ...firebaseData, GAME: newGame() },
+          { parsed: clientData },
+        );
         return;
       }
-      if (parsed.type.startsWith("set")) {
-        const capitalKey = parsed.type.replace(/^set/, "");
+      if (clientData.type.startsWith("set")) {
+        const capitalKey = clientData.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        firebaseData.ROOM.data[key] = parsed[key];
-        setFirebaseData(firebaseData, { parsed });
+        firebaseData.ROOM.data[key] = clientData[key];
+        setFirebaseData(firebaseData, { parsed: clientData });
         return sendResponse(spoofHostRoom());
       }
-      if (parsed.type === "selectColor") {
+      if (clientData.type === "selectColor") {
         firebaseData.ROOM.data.sessions.find(
           (s: { roomSessionId: string }) =>
-            s.roomSessionId === parsed.roomSessionId,
-        ).selectedColor = parsed.color;
-        setFirebaseData(firebaseData, { parsed });
+            s.roomSessionId === clientData.roomSessionId,
+        ).selectedColor = clientData.color;
+        setFirebaseData(firebaseData, { parsed: clientData });
         return sendResponse(spoofHostRoom());
       }
-      if (parsed.type === "leave") {
-        setFirebaseData(null, { parsed });
+      if (clientData.type === "leave") {
+        setFirebaseData(null, { parsed: clientData });
         window.location.reload();
         return;
       }
     }
   }
   // codex: dont remove this, its for debugging
-  const e = `not implemented: ${JSON.stringify(parsed)}`;
+  const e = `not implemented: ${JSON.stringify(clientData)}`;
   // console.error(e);
   throw new Error(e);
 }

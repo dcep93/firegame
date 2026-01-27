@@ -2,6 +2,13 @@
 
 import { State } from "./catann_files_enums";
 
+declare global {
+  interface Window {
+    __socketCatannMessages: { trigger: string; data: any }[];
+  }
+}
+window.__socketCatannMessages = [];
+
 // parsed: { channel: "lobby", _header: [2, 7], action: 1, payload: {} }
 export function parseClientData(clientData: Record<string, number>) {
   const byteKeys = Object.keys(clientData)
@@ -187,7 +194,7 @@ export function parseClientData(clientData: Record<string, number>) {
   const payload = decodeValue();
 
   if (payload.id !== State.SocketMonitorUpdate.toString()) {
-    console.log({ clientData: JSON.stringify(payload) });
+    console.debug({ clientData: JSON.stringify(payload) });
   }
 
   if (payload && typeof payload === "object" && !Array.isArray(payload)) {
@@ -199,7 +206,7 @@ export function parseClientData(clientData: Record<string, number>) {
 
 export function packServerData(serverData: any) {
   if (serverData.id !== State.SocketMonitorUpdate.toString()) {
-    console.log({ serverData: JSON.stringify(serverData) });
+    console.debug({ serverData: JSON.stringify(serverData) });
   }
   if (
     serverData &&

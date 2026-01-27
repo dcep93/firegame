@@ -10,12 +10,14 @@ window.addEventListener("message", (event) => {
   const { id, clientData, catann } = event.data || {};
   if (!catann) return;
   if (!id) return handleClientUpdate(clientData);
-  handleMessage(clientData, (serverData) =>
-    event.source!.postMessage(
-      { id, serverData: packServerData(serverData) },
-      { targetOrigin: "*" },
-    ),
-  );
+  handleMessage(clientData, (rawServerData) => {
+    const serverData = packServerData(rawServerData);
+    window.__socketCatannMessages.push({
+      trigger: "serverData",
+      data: serverData,
+    });
+    event.source!.postMessage({ id, serverData }, { targetOrigin: "*" });
+  });
 });
 
 function handleClientUpdate(clientData: any) {
@@ -240,6 +242,10 @@ function main({
       this: { id: number },
       clientData: unknown,
     ) {
+      window.__socketCatannMessages.push({
+        trigger: "send",
+        data: clientData,
+      });
       window.parent!.postMessage(
         { catann: true, id: this.id, clientData },
         "*",
