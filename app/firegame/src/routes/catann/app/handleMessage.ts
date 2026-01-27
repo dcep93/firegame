@@ -105,7 +105,12 @@ export default function handleMessage(
   const clientData = parseClientData(rawClientData);
   window.__socketCatannMessages.push({
     trigger: "clientData",
-    data: { ...clientData, channel: undefined, _header: undefined },
+    data: {
+      ...clientData,
+      payload: clientData.payload ?? undefined,
+      channel: undefined,
+      _header: undefined,
+    },
   });
   if (clientData._header[0] === SocketRouteType.SocketRouter) {
     if (clientData._header[1] === ServerActionType.Echo) {

@@ -352,11 +352,10 @@ const verifyTestMessages = async (
     expectedMessages.length,
   );
   testMessages.forEach((msg) => {
-    console.log(msg);
-    return;
     const expectedMsg = expectedMessages.shift();
     expect(expectedMsg).toBeDefined();
     expect(msg).toEqual(expectedMsg);
+    console.log(msg);
   });
 };
 
