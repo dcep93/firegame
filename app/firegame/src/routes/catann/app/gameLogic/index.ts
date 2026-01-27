@@ -38,7 +38,7 @@ export const sendCornerHighlights = (gameData: any) => {
     PlayerActionState.PlaceCityWithDiscount,
     PlayerActionState.PlaceCity,
     PlayerActionState.PlaceCity,
-  ].includes(gameData.data.payload.currentState.actionState)
+  ].includes(gameData.data.payload.gameState.currentState.actionState)
     ? []
     : Object.entries(gameData.data.payload.gameState.mapState.tileCornerStates)
         .map(([key, value]) => ({
