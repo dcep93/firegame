@@ -182,7 +182,7 @@ const startingSettlementChoreo = async (
     await verifyTestMessages(iframe, expectedMessages);
   };
   await f({ col: 0, row: 5 }, { col: 0, row: 6 });
-  await f({ col: 11, row: 5 }, { col: 11, row: 6 });
+  await f({ col: 10, row: 5 }, { col: 10, row: 6 });
 };
 
 test(
