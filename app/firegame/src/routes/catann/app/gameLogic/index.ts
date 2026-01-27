@@ -108,21 +108,29 @@ const sendEdgeHighlights = (gameData: any) => {
         serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
       ),
   );
-  const edgeIndices = Object.keys(edgeStates)
-    .map((key) => Number.parseInt(key, 10))
-    .filter((value) => Number.isFinite(value))
-    .filter((index) => {
-      const edgeState = edgeStates[String(index)];
-      if (!edgeState) {
-        return false;
-      }
-      const endpoints = edgeEndpoints(edgeState);
-      return endpoints.some((endpoint) =>
-        ownedCornerKeys.has(
-          serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
-        ),
-      );
-    });
+  const edgeIndices = ![
+    PlayerActionState.InitialPlacementRoadPlacement,
+    PlayerActionState.PlaceRoad,
+    PlayerActionState.PlaceRoadForFree,
+    PlayerActionState.Place2MoreRoadBuilding,
+    PlayerActionState.Place1MoreRoadBuilding,
+  ].includes(gameData.data.payload.gameState.currentState.actionState)
+    ? []
+    : Object.keys(edgeStates)
+        .map((key) => Number.parseInt(key, 10))
+        .filter((value) => Number.isFinite(value))
+        .filter((index) => {
+          const edgeState = edgeStates[String(index)];
+          if (!edgeState) {
+            return false;
+          }
+          const endpoints = edgeEndpoints(edgeState);
+          return endpoints.some((endpoint) =>
+            ownedCornerKeys.has(
+              serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+            ),
+          );
+        });
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -153,6 +161,7 @@ export const placeSettlement = (cornerIndex: number) => {
   gameState.currentState.actionState =
     PlayerActionState.InitialPlacementRoadPlacement;
 
+  sendCornerHighlights(gameData);
   sendEdgeHighlights(gameData);
 
   setFirebaseData(
@@ -185,6 +194,7 @@ export const placeRoad = (edgeIndex: number) => {
     PlayerActionState.InitialPlacementPlaceSettlement;
 
   sendCornerHighlights(gameData);
+  sendEdgeHighlights(gameData);
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
