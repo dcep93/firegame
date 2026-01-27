@@ -164,6 +164,44 @@ export const placeSettlement = (cornerIndex: number) => {
 
   sendCornerHighlights(gameData);
   sendEdgeHighlights(gameData);
+  const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
+    const cornerState =
+      gameData.data.payload.gameState.mapState.tileCornerStates[
+        String(cornerIndex)
+      ];
+    const adjacentTiles = cornerState.adjacentTiles as number[];
+    const resourcesToGive: {
+      owner: number;
+      tileIndex: number;
+      distributionType: number;
+      card: number;
+    }[] = [];
+    console.log({ adjacentTiles });
+    adjacentTiles.forEach((tileIndex) => {
+      const tileState =
+        gameData.data.payload.gameState.mapState.tileStates[String(tileIndex)];
+      if (
+        tileState?.resourceType &&
+        tileState.resourceType !== "Desert" &&
+        tileState.productionNumber !== 0
+      ) {
+        resourcesToGive.push({
+          owner: playerColor,
+          tileIndex,
+          distributionType: 0,
+          card: tileState.resourceType,
+        });
+      }
+    });
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.GivePlayerResourcesFromTile,
+        payload: resourcesToGive,
+      },
+    });
+  };
+  sendResourcesFromTile(gameData, cornerIndex);
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
