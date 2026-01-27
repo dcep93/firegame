@@ -90,7 +90,7 @@ export default function handleMessage(
   const __socketCatannMessage = {
     ...clientData,
   };
-  if (clientData ?? null === null) {
+  if ((clientData.payload ?? null) === null) {
     delete __socketCatannMessage.payload;
   }
   delete __socketCatannMessage.channel;

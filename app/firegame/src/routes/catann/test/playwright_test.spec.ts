@@ -352,7 +352,7 @@ const verifyTestMessages = async (
     const expectedMsg = expectedMessages.shift()!;
     expect(expectedMsg).toBeDefined();
     expect(msg.trigger).toEqual(expectedMsg.trigger);
-    expect(msg.data).toEqual(expectedMsg.data);
+    expect(msg).toEqual(expectedMsg);
     console.log(msg);
   });
 };
