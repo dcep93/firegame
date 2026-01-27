@@ -9,15 +9,8 @@ import {
   State,
 } from "./catann_files_enums";
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
-import {
-  gameStarter,
-  newFirstGameState,
-  newGame,
-  placeRoad,
-  placeSettlement,
-  sendCornerHighlights,
-  spoofHostRoom,
-} from "./gameLogic";
+import { applyGameAction } from "./gameLogic";
+import { newGame, spoofHostRoom } from "./gameLogic/createNew";
 import { packServerData, parseClientData } from "./parseMessagepack";
 
 declare global {
@@ -58,15 +51,6 @@ export const FUTURE = (() => {
 })();
 
 export var sendToMainSocket: (serverData: any) => void;
-
-const GAME_ACTION = {
-  WantToBuildRoad: 10,
-  ConfirmBuildRoad: 11,
-  ConfirmBuildRoadSkippingSelection: 12,
-  WantToBuildSettlement: 14,
-  ConfirmBuildSettlement: 15,
-  ConfirmBuildSettlementSkippingSelection: 16,
-} as const;
 
 var latestSequence = 0;
 
@@ -214,57 +198,3 @@ export default function handleMessage(
   // console.error(e);
   throw new Error(e);
 }
-
-export function initializeGame() {
-  const firstGameState = newFirstGameState();
-  const gameStartUpdate = gameStarter();
-
-  sendToMainSocket?.(firstGameState);
-  sendToMainSocket?.(firebaseData.GAME);
-  sendToMainSocket?.(gameStartUpdate);
-  sendCornerHighlights(firebaseData.GAME);
-}
-
-const applyGameAction = (parsed: { action?: number; payload?: unknown }) => {
-  if (!firebaseData.GAME) return false;
-  if (
-    parsed.action !== GAME_ACTION.ConfirmBuildRoad &&
-    parsed.action !== GAME_ACTION.ConfirmBuildRoadSkippingSelection &&
-    parsed.action !== GAME_ACTION.WantToBuildRoad &&
-    parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
-    parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
-    parsed.action !== GAME_ACTION.WantToBuildSettlement
-  ) {
-    return false;
-  }
-
-  if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
-    return true;
-  }
-  if (parsed.action === GAME_ACTION.WantToBuildRoad) {
-    return true;
-  }
-
-  if (
-    parsed.action === GAME_ACTION.ConfirmBuildSettlement ||
-    parsed.action === GAME_ACTION.ConfirmBuildSettlementSkippingSelection
-  ) {
-    const cornerIndex = parsed.payload as number;
-
-    placeSettlement(cornerIndex);
-
-    return true;
-  }
-
-  if (
-    parsed.action === GAME_ACTION.ConfirmBuildRoad ||
-    parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection
-  ) {
-    const edgeIndex = parsed.payload as number;
-
-    placeRoad(edgeIndex);
-    return true;
-  }
-
-  return true;
-};

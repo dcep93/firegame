@@ -8,6 +8,15 @@ export enum SocketRouteType {
   SocketRouter = 4,
 }
 
+export enum GAME_ACTION {
+  WantToBuildRoad = 10,
+  ConfirmBuildRoad = 11,
+  ConfirmBuildRoadSkippingSelection = 12,
+  WantToBuildSettlement = 14,
+  ConfirmBuildSettlement = 15,
+  ConfirmBuildSettlementSkippingSelection = 16,
+}
+
 export enum State {
   GameStateUpdate = 130,
   MatchmakingStateUpdate = 131,

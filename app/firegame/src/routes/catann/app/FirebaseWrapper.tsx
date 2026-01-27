@@ -3,8 +3,15 @@ import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
 import { GameStateUpdateType, State } from "./catann_files_enums";
-import { newRoom, newRoomMe, spoofHostRoom } from "./gameLogic";
-import { initializeGame, sendToMainSocket } from "./handleMessage";
+import { sendCornerHighlights } from "./gameLogic";
+import {
+  gameStarter,
+  newFirstGameState,
+  newRoom,
+  newRoomMe,
+  spoofHostRoom,
+} from "./gameLogic/createNew";
+import { sendToMainSocket } from "./handleMessage";
 
 export var firebaseData: any = {};
 let hasSentInitialGame = false;
@@ -165,4 +172,14 @@ function unSerializeFirebase(serialized: any, path: any[]): any {
     );
   }
   return serialized;
+}
+
+function initializeGame() {
+  const firstGameState = newFirstGameState();
+  const gameStartUpdate = gameStarter();
+
+  sendToMainSocket?.(firstGameState);
+  sendToMainSocket?.(firebaseData.GAME);
+  sendToMainSocket?.(gameStartUpdate);
+  sendCornerHighlights(firebaseData.GAME);
 }

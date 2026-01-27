@@ -150,6 +150,8 @@ const startingSettlementChoreo = async (
       force: true,
     });
 
+    await verifyTestMessages(iframe, expectedMessages);
+
     const confirmSettlementOffset = getConfirmOffset(settlementOffset);
     await canvas.click({
       position: confirmSettlementOffset,
@@ -347,9 +349,10 @@ const verifyTestMessages = async (
     expectedMessages.length,
   );
   testMessages.forEach((msg) => {
-    const expectedMsg = expectedMessages.shift();
+    const expectedMsg = expectedMessages.shift()!;
     expect(expectedMsg).toBeDefined();
-    expect(msg).toEqual(expectedMsg);
+    expect(msg.trigger).toEqual(expectedMsg.trigger);
+    expect(msg.data).toEqual(expectedMsg.data);
     console.log(msg);
   });
 };

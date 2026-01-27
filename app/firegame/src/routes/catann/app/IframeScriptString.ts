@@ -1,5 +1,5 @@
 import store, { MeType } from "../../../shared/store";
-import { newUserState } from "./gameLogic";
+import { newUserState } from "./gameLogic/createNew";
 import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
