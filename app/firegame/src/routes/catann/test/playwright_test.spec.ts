@@ -9,7 +9,7 @@ import {
 import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
-import { State } from "../app/catann_files_enums";
+import { State } from "../app/gameLogic/CatannFilesEnums";
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
   return async ({ page }: { page: Page }, testInfo: any) => {

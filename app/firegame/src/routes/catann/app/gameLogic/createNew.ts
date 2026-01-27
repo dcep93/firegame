@@ -1,7 +1,7 @@
 import store from "../../../../shared/store";
-import { State } from "../catann_files_enums";
 import { firebaseData } from "../FirebaseWrapper";
 import { FUTURE } from "../handleMessage";
+import { State } from "./CatannFilesEnums";
 
 export const newUserState = () => {
   return {

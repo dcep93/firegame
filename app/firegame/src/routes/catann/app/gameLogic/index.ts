@@ -1,38 +1,23 @@
-import { GAME_ACTION, State } from "../catann_files_enums";
 import { firebaseData, setFirebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
-
-const ACTION_STATE = {
-  InitialPlacementPlaceSettlement: 1,
-  InitialPlacementRoadPlacement: 3,
-} as const;
-
-const EDGE_BUILDING_TYPE = {
-  Road: 1,
-} as const;
-
-const CORNER_BUILDING_TYPE = {
-  Settlement: 1,
-} as const;
-
-const EDGE_DIRECTION = {
-  NorthWest: 0,
-  West: 1,
-  SouthWest: 2,
-} as const;
-
-const CORNER_DIRECTION = {
-  North: 0,
-  South: 1,
-} as const;
+import {
+  CornerDirection,
+  CornerPieceType,
+  EdgeDirection,
+  EdgePieceType,
+  GAME_ACTION,
+  GameStateUpdateType,
+  PlayerActionState,
+  State,
+} from "./CatannFilesEnums";
 
 export const sendCornerHighlights = (gameData: any) => {
   const isClose = (a: any, b: any) => {
     if (a.z === b.z) {
       return a.x === b.x && a.y === b.y;
     }
-    const north = a.z === CORNER_DIRECTION.North ? a : b;
-    const south = a.z === CORNER_DIRECTION.South ? a : b;
+    const north = a.z === CornerDirection.North ? a : b;
+    const south = a.z === CornerDirection.South ? a : b;
     return (
       (south.x === north.x && south.y === north.y - 1) ||
       (south.x === north.x + 1 && south.y === north.y - 2) ||
@@ -43,7 +28,7 @@ export const sendCornerHighlights = (gameData: any) => {
     gameData.data.payload.gameState.mapState.tileCornerStates,
   ).filter(
     (cornerState: any) =>
-      cornerState.buildingType === CORNER_BUILDING_TYPE.Settlement,
+      cornerState.buildingType === CornerPieceType.Settlement,
   );
   const cornerIndices = Object.entries(
     gameData.data.payload.gameState.mapState.tileCornerStates,
@@ -62,7 +47,7 @@ export const sendCornerHighlights = (gameData: any) => {
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
-      type: 30,
+      type: GameStateUpdateType.HighlightCorners,
       payload: cornerIndices,
     },
   });
@@ -77,7 +62,7 @@ export const placeSettlement = (cornerIndex: number) => {
   gameState.mapState.tileCornerStates[String(cornerIndex)] = {
     ...cornerState,
     owner: playerColor,
-    buildingType: CORNER_BUILDING_TYPE.Settlement,
+    buildingType: CornerPieceType.Settlement,
   };
 
   const settlementState = gameState.mechanicSettlementState?.[playerColor];
@@ -86,42 +71,34 @@ export const placeSettlement = (cornerIndex: number) => {
   }
 
   gameState.currentState.actionState =
-    ACTION_STATE.InitialPlacementRoadPlacement;
-
-  setFirebaseData(
-    { ...firebaseData, GAME: gameData },
-    {
-      action: "placeSettlement",
-      cornerIndex,
-    },
-  );
+    PlayerActionState.InitialPlacementRoadPlacement;
   const sendEdgeHighlights = () => {
     const serializeCornerKey = (x: number, y: number, z: number) =>
       `${x}:${y}:${z}`;
 
     const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
       switch (edgeState.z) {
-        case EDGE_DIRECTION.NorthWest:
+        case EdgeDirection.NorthWest:
           return [
-            { x: edgeState.x, y: edgeState.y - 1, z: CORNER_DIRECTION.South },
-            { x: edgeState.x, y: edgeState.y, z: CORNER_DIRECTION.North },
+            { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
+            { x: edgeState.x, y: edgeState.y, z: CornerDirection.North },
           ];
-        case EDGE_DIRECTION.West:
+        case EdgeDirection.West:
           return [
             {
               x: edgeState.x - 1,
               y: edgeState.y + 1,
-              z: CORNER_DIRECTION.North,
+              z: CornerDirection.North,
             },
-            { x: edgeState.x, y: edgeState.y - 1, z: CORNER_DIRECTION.South },
+            { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
           ];
-        case EDGE_DIRECTION.SouthWest:
+        case EdgeDirection.SouthWest:
           return [
-            { x: edgeState.x, y: edgeState.y, z: CORNER_DIRECTION.South },
+            { x: edgeState.x, y: edgeState.y, z: CornerDirection.South },
             {
               x: edgeState.x - 1,
               y: edgeState.y + 1,
-              z: CORNER_DIRECTION.North,
+              z: CornerDirection.North,
             },
           ];
         default:
@@ -136,7 +113,7 @@ export const placeSettlement = (cornerIndex: number) => {
       Object.values(cornerStates)
         .filter(
           (cornerState: any) =>
-            cornerState?.buildingType === CORNER_BUILDING_TYPE.Settlement,
+            cornerState?.buildingType === CornerPieceType.Settlement,
         )
         .map((cornerState: any) =>
           serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
@@ -161,13 +138,21 @@ export const placeSettlement = (cornerIndex: number) => {
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
-        type: 31,
+        type: GameStateUpdateType.HighlightRoadEdges,
         payload: edgeIndices,
       },
     });
   };
 
   sendEdgeHighlights();
+
+  setFirebaseData(
+    { ...firebaseData, GAME: gameData },
+    {
+      action: "placeSettlement",
+      cornerIndex,
+    },
+  );
 };
 
 export const placeRoad = (edgeIndex: number) => {
@@ -179,7 +164,7 @@ export const placeRoad = (edgeIndex: number) => {
   gameState.mapState.tileEdgeStates[String(edgeIndex)] = {
     ...edgeState,
     owner: playerColor,
-    type: EDGE_BUILDING_TYPE.Road,
+    type: EdgePieceType.Road,
   };
 
   const roadState = gameState.mechanicRoadState?.[playerColor];
@@ -188,7 +173,7 @@ export const placeRoad = (edgeIndex: number) => {
   }
 
   gameState.currentState.actionState =
-    ACTION_STATE.InitialPlacementPlaceSettlement;
+    PlayerActionState.InitialPlacementPlaceSettlement;
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },

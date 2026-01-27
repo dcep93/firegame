@@ -1,4 +1,6 @@
 import store from "../../../shared/store";
+import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
+import { applyGameAction } from "./gameLogic";
 import {
   GeneralAction,
   LobbyAction,
@@ -7,9 +9,7 @@ import {
   ShuffleQueueAction,
   SocketRouteType,
   State,
-} from "./catann_files_enums";
-import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
-import { applyGameAction } from "./gameLogic";
+} from "./gameLogic/CatannFilesEnums";
 import { newGame, spoofHostRoom } from "./gameLogic/createNew";
 import { packServerData, parseClientData } from "./parseMessagepack";
 

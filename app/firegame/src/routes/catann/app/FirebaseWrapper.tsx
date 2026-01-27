@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
-import { GameStateUpdateType, State } from "./catann_files_enums";
 import { sendCornerHighlights } from "./gameLogic";
+import { GameStateUpdateType, State } from "./gameLogic/CatannFilesEnums";
 import {
   gameStarter,
   newFirstGameState,
