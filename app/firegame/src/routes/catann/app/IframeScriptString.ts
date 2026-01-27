@@ -40,6 +40,8 @@ function main({
       if (!url || !url.startsWith("/")) {
         return Promise.resolve(undefined);
       }
+      if (url.startsWith("/api/user/assign-ab-test"))
+        return Promise.resolve(JSON.stringify(true));
       if (url.startsWith("/api/analytic-events"))
         return Promise.resolve(JSON.stringify(true));
       if (url.startsWith("/api/validate-username/"))
