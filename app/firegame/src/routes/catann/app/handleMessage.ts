@@ -18,7 +18,7 @@ import {
   sendCornerHighlights,
   spoofHostRoom,
 } from "./gameLogic";
-import { parseClientData } from "./parseMessagepack";
+import { packServerData, parseClientData } from "./parseMessagepack";
 
 declare global {
   interface Window {
@@ -26,6 +26,30 @@ declare global {
   }
 }
 window.__socketCatannMessages = [];
+
+window.addEventListener("message", (event) => {
+  const { id, clientData, catann } = event.data || {};
+  if (!catann) return;
+  if (!id) return handleClientUpdate(clientData);
+  handleMessage(clientData, (rawServerData) => {
+    const serverData = packServerData(rawServerData);
+    window.__socketCatannMessages.push({
+      trigger: "serverData",
+      data: serverData,
+    });
+    event.source!.postMessage({ id, serverData }, { targetOrigin: "*" });
+  });
+});
+
+function handleClientUpdate(clientData: any) {
+  Object.assign(
+    firebaseData.ROOM.data.sessions.find(
+      (s: any) => s.userId === store.me.userId,
+    ),
+    clientData,
+  );
+  setFirebaseData(firebaseData, { handleClientUpdate: clientData });
+}
 
 export const FUTURE = (() => {
   const future = new Date();
@@ -81,7 +105,7 @@ export default function handleMessage(
   const clientData = parseClientData(rawClientData);
   window.__socketCatannMessages.push({
     trigger: "clientData",
-    data: clientData,
+    data: { ...clientData, channel: undefined, _header: undefined },
   });
   if (clientData._header[0] === SocketRouteType.SocketRouter) {
     if (clientData._header[1] === ServerActionType.Echo) {

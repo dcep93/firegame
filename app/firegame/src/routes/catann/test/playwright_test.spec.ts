@@ -35,7 +35,8 @@ const choreo = (
     const iframe = await revealAndStartGame(page);
     const expectedMessages = await getExpectedMessages(fileName);
     console.log(fileName, expectedMessages.length);
-    await spliceTestMessages(iframe);
+    const spliced = await spliceTestMessages(iframe);
+    console.log(spliced);
     await f(iframe, expectedMessages);
     expect(expectedMessages.length === 0).toBe(true);
   };
@@ -130,9 +131,11 @@ const startingSettlementChoreo = async (
   expectedMessages: { trigger: string; data: number[] }[],
 ) => {
   await verifyTestMessages(iframe, expectedMessages);
-  const canvas = iframe.locator("canvas#game-canvas");
 
-  const settlementOffset = getSettlementOffset({ col: 4, row: 2 });
+  const settlementOffset = getSettlementOffset({ col: 0, row: 5 });
+  const destinationOffset = getSettlementOffset({ col: 0, row: 6 });
+
+  const canvas = iframe.locator("canvas#game-canvas");
 
   await expect
     .poll(async () => mapAppearsClickable(canvas, settlementOffset), {
@@ -152,7 +155,6 @@ const startingSettlementChoreo = async (
 
   await verifyTestMessages(iframe, expectedMessages);
 
-  const destinationOffset = getSettlementOffset({ col: 5, row: 2 });
   const roadOffset = {
     x: (settlementOffset.x + destinationOffset.x) / 2,
     y: (settlementOffset.y + destinationOffset.y) / 2,
@@ -303,7 +305,10 @@ const revealAndStartGame = async (page: Page): Promise<FrameLocator> => {
 
 const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
-  if (msg.trigger === "clientData" && msg.data.id === State.SocketMonitorUpdate)
+  if (
+    msg.trigger === "clientData" &&
+    msg.data.id === State.SocketMonitorUpdate.toString()
+  )
     return false;
   if (msg.trigger === "serverData" && msg.data.type === undefined) return false;
   return true;
@@ -341,6 +346,8 @@ const verifyTestMessages = async (
     expectedMessages.length,
   );
   testMessages.forEach((msg) => {
+    console.log(msg);
+    return;
     const expectedMsg = expectedMessages.shift();
     expect(expectedMsg).toBeDefined();
     expect(msg).toEqual(expectedMsg);

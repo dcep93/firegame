@@ -1,34 +1,8 @@
 import store, { MeType } from "../../../shared/store";
-import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
 import { newUserState } from "./gameLogic";
-import handleMessage, { FUTURE } from "./handleMessage";
-import { packServerData } from "./parseMessagepack";
+import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
-
-window.addEventListener("message", (event) => {
-  const { id, clientData, catann } = event.data || {};
-  if (!catann) return;
-  if (!id) return handleClientUpdate(clientData);
-  handleMessage(clientData, (rawServerData) => {
-    const serverData = packServerData(rawServerData);
-    window.__socketCatannMessages.push({
-      trigger: "serverData",
-      data: serverData,
-    });
-    event.source!.postMessage({ id, serverData }, { targetOrigin: "*" });
-  });
-});
-
-function handleClientUpdate(clientData: any) {
-  Object.assign(
-    firebaseData.ROOM.data.sessions.find(
-      (s: any) => s.userId === store.me.userId,
-    ),
-    clientData,
-  );
-  setFirebaseData(firebaseData, { handleClientUpdate: clientData });
-}
 
 type XhrMeta = {
   method?: string;
