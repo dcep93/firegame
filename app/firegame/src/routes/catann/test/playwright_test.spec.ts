@@ -336,6 +336,9 @@ const createRoom = async (
   configOverrides?: DeepPartial<CatannConfig>,
 ): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
+    page.on("console", (msg) => {
+      console.log(msg.text());
+    });
     if (configOverrides) {
       await page.addInitScript((config) => {
         window.__catannTestConfig = config;
