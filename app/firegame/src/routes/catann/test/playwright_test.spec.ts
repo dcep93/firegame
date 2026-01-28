@@ -67,7 +67,7 @@ const choreo = (
   };
 };
 
-test(
+test.skip(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -214,7 +214,7 @@ const startingSettlementChoreo = async (
   await f({ col: 10, row: 5 }, { col: 10, row: 6 });
 };
 
-test.skip(
+test(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
