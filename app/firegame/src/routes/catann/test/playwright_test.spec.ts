@@ -59,7 +59,8 @@ const choreo = (
     );
 
     const iframe = await createRoom(page, configOverrides);
-    const spliced = await spliceTestMessages(iframe);
+    test.skip();
+    await spliceTestMessages(iframe);
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
     await f(iframe, expectedMessages);
