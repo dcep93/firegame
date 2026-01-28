@@ -128,7 +128,10 @@ const applyPortOwnership = (
   );
 };
 
-export const sendCornerHighlights = (gameData: any) => {
+export const sendCornerHighlights30 = (
+  gameData: any,
+  force: number[] | null = null,
+) => {
   const isClose = (a: any, b: any) => {
     if (a.z === b.z) {
       return a.x === b.x && a.y === b.y;
@@ -173,12 +176,12 @@ export const sendCornerHighlights = (gameData: any) => {
     id: State.GameStateUpdate.toString(),
     data: {
       type: GameStateUpdateType.HighlightCorners,
-      payload: cornerIndices,
+      payload: force ?? cornerIndices,
     },
   });
 };
 
-const sendEdgeHighlights = (gameData: any) => {
+const sendEdgeHighlights31 = (gameData: any) => {
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
 
@@ -229,6 +232,45 @@ const sendEdgeHighlights = (gameData: any) => {
   });
 };
 
+const sendTileHighlights33 = (gameData: any) => {
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.HighlightTiles,
+      payload: [],
+    },
+  });
+};
+
+const sendShipHighlights32 = (gamePath: any) => {
+  const shipStates = gamePath.data.payload.gameState.mapState.shipStates ?? {};
+  const shipIndices = Object.keys(shipStates)
+    .map((key) => Number.parseInt(key, 10))
+    .filter((value) => Number.isFinite(value))
+    .filter((index) => {
+      const shipState = shipStates[String(index)];
+      return shipState && !shipState.owner;
+    });
+
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.HighlightShipEdges,
+      payload: shipIndices,
+    },
+  });
+};
+
+const sendPlayTurnSound59 = (gameData: any) => {
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.PlayTurnSound,
+      payload: [],
+    },
+  });
+};
+
 export const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
@@ -269,8 +311,8 @@ export const placeSettlement = (cornerIndex: number) => {
 
   applyPortOwnership(gameState, cornerState, playerColor);
 
-  sendCornerHighlights(gameData);
-  sendEdgeHighlights(gameData);
+  sendCornerHighlights30(gameData);
+  sendEdgeHighlights31(gameData);
   const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
     const gameState = gameData.data.payload.gameState;
     const cornerState =
@@ -395,8 +437,15 @@ export const placeRoad = (edgeIndex: number) => {
     },
   });
 
-  sendCornerHighlights(gameData);
-  sendEdgeHighlights(gameData);
+  sendEdgeHighlights31(gameData);
+  sendShipHighlights32(gameData);
+  sendEdgeHighlights31(gameData);
+  sendCornerHighlights30(gameData, []);
+  sendTileHighlights33(gameData);
+  sendEdgeHighlights31(gameData);
+  sendShipHighlights32(gameData);
+  sendPlayTurnSound59(gameData);
+  sendCornerHighlights30(gameData);
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },

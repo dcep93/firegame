@@ -185,7 +185,6 @@
       "sequence": 5
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {
@@ -439,6 +438,7 @@
       }
     }
   },
+  { "trigger": "debug", "data": {} },
   {
     "trigger": "serverData",
     "data": {

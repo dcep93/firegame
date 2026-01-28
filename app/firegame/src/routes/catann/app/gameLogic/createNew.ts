@@ -1,4 +1,4 @@
-import { sendCornerHighlights } from ".";
+import { sendCornerHighlights30 } from ".";
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
 import { FUTURE, sendToMainSocket } from "../handleMessage";
@@ -19,6 +19,7 @@ export const newUserState = () => {
       hasJoinedColonistDiscordServer: false,
       karma: 20,
       karmaCompletedGameCount: 20,
+      totalCompletedGameCount: 1,
       membershipPaymentMethod: "Stripe",
       membershipPending: false,
       membership: 5,
@@ -1182,7 +1183,7 @@ export const startGame = () => {
   sendToMainSocket?.(firebaseData.GAME);
   const gameStartUpdate = gameStarter();
   sendToMainSocket?.(gameStartUpdate);
-  sendCornerHighlights(firebaseData.GAME);
+  sendCornerHighlights30(firebaseData.GAME);
 };
 
 export const spoofHostRoom = () => {
