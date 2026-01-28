@@ -6,7 +6,11 @@ import { GameStateUpdateType, State } from "./CatannFilesEnums";
 
 declare global {
   interface Window {
-    __testOverrides: { newFirstGameState: any };
+    __testOverrides: {
+      databaseGame: any;
+      session: any;
+      startTime: number;
+    };
   }
 }
 
@@ -113,7 +117,7 @@ export const newGame = () => {
         playOrder: [1],
         gameState: {
           diceState: {
-            diceThrown: true,
+            diceThrown: false,
             dice1: 1,
             dice2: 1,
           },
@@ -129,12 +133,12 @@ export const newGame = () => {
           },
           mapState,
           currentState: {
-            completedTurns: 2,
-            turnState: 2,
-            actionState: 0,
+            completedTurns: 0,
+            turnState: 0,
+            actionState: 1,
             currentTurnPlayerColor: 1,
-            startTime: 1769579659463,
-            allocatedTime: 120,
+            startTime: window.__testOverrides?.startTime ?? Date.now(),
+            allocatedTime: 180,
           },
           tradeState: {
             activeOffers: {},
@@ -222,7 +226,7 @@ export const newGame = () => {
             isActive: true,
           },
         },
-        playerUserStates: sessions.map((s, i) => ({
+        playerUserStates: sessions.map((s) => ({
           userId: s.userId,
           username: s.username,
           databaseIcon: s.icon,
@@ -238,11 +242,9 @@ export const newGame = () => {
           isRanked: false,
           isDiscord: false,
         },
-        isReplay: false,
-        isAfterLiveGame: false,
         gameSettings: {
           id:
-            window.__testOverrides?.newFirstGameState.gameSettingId ??
+            window.__testOverrides?.databaseGame.gameSettingId ??
             room.data.roomId,
           channelId: null,
           gameType: 3,
@@ -1094,7 +1096,7 @@ export const startGame = () => {
           gameSettingId: room.data.roomId,
           shouldResetGameClient: true,
           isReconnectingSession: false,
-          ...window.__testOverrides?.newFirstGameState,
+          ...window.__testOverrides?.databaseGame,
         },
       },
     };

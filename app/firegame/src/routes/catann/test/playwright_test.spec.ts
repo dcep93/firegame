@@ -52,21 +52,21 @@ const choreo = (
     );
 
     const iframe = await createRoom(page);
-    const newFirstGameStateMsg = expectedMessages.find(
-      (msg) =>
-        msg.trigger === "serverData" && msg.data.data.payload.databaseGameId,
-    );
     await page.evaluate(
       (__testOverrides) => {
         window.__testOverrides = __testOverrides;
       },
       {
-        newFirstGameState: {
-          gameSettingId: newFirstGameStateMsg!.data.data.payload.gameSettingId,
-          databaseGameId:
-            newFirstGameStateMsg!.data.data.payload.databaseGameId,
-          serverId: newFirstGameStateMsg!.data.data.payload.serverId,
-        },
+        databaseGame: expectedMessages.find(
+          (msg) =>
+            msg.trigger === "serverData" &&
+            msg.data.data.payload.databaseGameId,
+        )!.data.data.payload,
+        startTime: expectedMessages.find(
+          (msg) => msg.data.data?.payload.gameState,
+        )!.data.data.payload.gameState.currentState.startTime,
+        session: expectedSpliced.find((msg) => msg.data.data?.sessions)!.data
+          .data.sessions[0],
       },
     );
     await spliceTestMessages(iframe);
