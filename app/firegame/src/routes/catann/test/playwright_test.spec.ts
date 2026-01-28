@@ -200,7 +200,6 @@ const startingSettlementChoreo = async (
     });
 
     await verifyTestMessages(iframe, expectedMessages);
-    if (settlementCoords.col === 8) test.skip();
 
     const roadOffset = {
       x: (settlementOffset.x + destinationOffset.x) / 2,

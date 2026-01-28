@@ -455,9 +455,9 @@ export const placeSettlement = (cornerIndex: number) => {
             { x: cornerState.x + 1, y: cornerState.y - 1 },
           ]
         : [
+            { x: cornerState.x, y: cornerState.y },
+            { x: cornerState.x, y: cornerState.y + 1 },
             { x: cornerState.x - 1, y: cornerState.y + 1 },
-            { x: cornerState.x, y: cornerState.y - 1 },
-            { x: cornerState.x + 1, y: cornerState.y },
           ];
     const adjacentTiles = adjacentCoords
       .map((coord) => tileIndexByCoord.get(`${coord.x},${coord.y}`))
