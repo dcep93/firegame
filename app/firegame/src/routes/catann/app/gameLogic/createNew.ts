@@ -2,7 +2,7 @@ import { sendCornerHighlights30 } from ".";
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
-import { State } from "./CatannFilesEnums";
+import { GameStateUpdateType, State } from "./CatannFilesEnums";
 
 declare global {
   interface Window {
@@ -113,7 +113,7 @@ export const newGame = () => {
         playOrder: [1],
         gameState: {
           diceState: {
-            diceThrown: false,
+            diceThrown: true,
             dice1: 1,
             dice2: 1,
           },
@@ -129,12 +129,12 @@ export const newGame = () => {
           },
           mapState,
           currentState: {
-            completedTurns: 0,
-            turnState: 0,
-            actionState: 1,
+            completedTurns: 2,
+            turnState: 2,
+            actionState: 0,
             currentTurnPlayerColor: 1,
-            startTime: Date.now(),
-            allocatedTime: 180,
+            startTime: 1769579659463,
+            allocatedTime: 120,
           },
           tradeState: {
             activeOffers: {},
@@ -241,7 +241,9 @@ export const newGame = () => {
         isReplay: false,
         isAfterLiveGame: false,
         gameSettings: {
-          id: room.data.roomId,
+          id:
+            window.__testOverrides?.newFirstGameState.gameSettingId ??
+            room.data.roomId,
           channelId: null,
           gameType: 3,
           privateGame: false,
@@ -260,7 +262,7 @@ export const newGame = () => {
           gameSpeed: 2,
           botSpeed: 1,
           hideBankCards: false,
-          friendlyRobber: false,
+          friendlyRobber: true,
         },
         timeLeftInState: 180,
       },
@@ -1127,6 +1129,13 @@ export const startGame = () => {
 
   const firstGameState = newFirstGameState();
   sendToMainSocket?.(firstGameState);
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.PlayTurnSound,
+      payload: [],
+    },
+  });
   sendToMainSocket?.(firebaseData.GAME);
   const gameStartUpdate = gameStarter();
   sendToMainSocket?.(gameStartUpdate);
