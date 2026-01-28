@@ -463,34 +463,6 @@ export const placeRoad = (edgeIndex: number) => {
       edgeIndex,
     },
   );
-
-  if (completedTurns >= 1) {
-    gameState.diceState = {
-      diceThrown: true,
-      dice1: 5,
-      dice2: 4,
-    };
-    updateCurrentState(gameData, {
-      turnState: 2,
-      allocatedTime: 120,
-    });
-    addGameLogEntry(gameState, {
-      text: {
-        type: 10,
-        playerColor,
-        firstDice: 5,
-        secondDice: 4,
-      },
-      from: playerColor,
-    });
-    addPlayerResourceCards(gameState, playerColor, [5], 1);
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "rollDice",
-      },
-    );
-  }
 };
 
 export const applyGameAction = (parsed: {
