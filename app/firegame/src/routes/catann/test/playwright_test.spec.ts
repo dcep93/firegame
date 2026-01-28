@@ -36,11 +36,25 @@ const choreo = (
   ) => Promise<void>,
 ) => {
   return async ({ page }: { page: Page }) => {
-    const iframe = await revealAndStartGame(page);
     const expectedMessages = await getExpectedMessages(fileName);
-    console.log(fileName, expectedMessages.length);
+    const startIndex = expectedMessages.findIndex(
+      (msg) => msg.data.type === "startGame",
+    );
+    const expectedSpliced = expectedMessages.splice(
+      0,
+      startIndex === -1 ? expectedMessages.length : startIndex,
+    );
+    console.log(
+      "choreo",
+      fileName,
+      expectedSpliced.length,
+      expectedMessages.length,
+    );
+
+    const iframe = await createRoom(page);
     const spliced = await spliceTestMessages(iframe);
-    console.log({ spliced });
+    const startButton = getStartButton(iframe);
+    await startButton.click({ force: true });
     await f(iframe, expectedMessages);
     expect(expectedMessages).toEqual([]);
   };
@@ -52,7 +66,9 @@ test.skip(
     const settlementCoords = { col: 0, row: 5 };
     const destinationCoords = { col: 1, row: 4 };
 
-    const iframe = await revealAndStartGame(page);
+    const iframe = await createRoom(page);
+    const startButton = getStartButton(iframe);
+    await startButton.click({ force: true });
 
     await checkCanvasHandle(iframe);
     const canvas = iframe.locator("canvas#game-canvas");
@@ -301,7 +317,7 @@ const mapAppearsClickable = async (
 
 //
 
-const revealAndStartGame = async (page: Page): Promise<FrameLocator> => {
+const createRoom = async (page: Page): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
     await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
     const iframe = page.locator('iframe[title="iframe"]');
@@ -309,10 +325,13 @@ const revealAndStartGame = async (page: Page): Promise<FrameLocator> => {
     return page.frameLocator('iframe[title="iframe"]');
   };
   const iframe = await gotoCatann(page);
-  const startButton = iframe.locator("#room_center_start_button");
+  const startButton = getStartButton(iframe);
   await expect(startButton).toBeVisible({ timeout: 30_000 });
-  await startButton.click({ force: true });
   return iframe;
+};
+
+const getStartButton = (iframe: FrameLocator) => {
+  return iframe.locator("#room_center_start_button");
 };
 
 const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
@@ -365,7 +384,8 @@ const verifyTestMessages = async (
       throw e;
     }
     if (msg.trigger === "clientData") {
-      msg.data.sequence = expectedMsg.data.sequence;
+      if (expectedMsg.data.sequence)
+        msg.data.sequence = expectedMsg.data.sequence;
     } else {
       msg.data.data.sequence = expectedMsg.data.data.sequence;
       delete expectedMsg.data.data.payload.diff?.currentState.startTime;
