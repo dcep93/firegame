@@ -22,7 +22,12 @@
     },
     648: (e, t, s) => {
       "use strict";
-      s.d(t, { QM: () => r, Sq: () => n, ey: () => i, uC: () => o });
+      s.d(t, {
+        QM: () => r,
+        Sq: () => n,
+        ey: () => i,
+        uC: () => o,
+      });
       var i = (function (e) {
           return (
             (e.ContentFrameReady = "content-frame-ready"),
@@ -68,7 +73,9 @@
     },
     655: (e, t, s) => {
       "use strict";
-      s.d(t, { m: () => m });
+      s.d(t, {
+        m: () => m,
+      });
       var i = s(12658),
         n = s(68492),
         r = s(72589),
@@ -96,7 +103,11 @@
         static async getRequestHandler(e, t, s, n = !0, r) {
           let o = e;
           (t && (o += "/" + t), a.r.isUserOnDiscord && (o = "/.proxy" + o));
-          const c = { ...this.defaultConfig, headers: r, params: s },
+          const c = {
+              ...this.defaultConfig,
+              headers: r,
+              params: s,
+            },
             l = new p(await i.A.get(o, c));
           return (
             this.storeAuthToken(l),
@@ -121,13 +132,20 @@
         ) {
           if (!m.csrfToken && !a.r.isUserOnDiscordMobile) {
             const e = new l.Ak(
-              { key: "strings:popups.errors.general.title" },
-              { key: "strings:popups.errors.clientNotReady" },
+              {
+                key: "strings:popups.errors.general.title",
+              },
+              {
+                key: "strings:popups.errors.clientNotReady",
+              },
               d.R.ServiceUnavailable,
             );
             return void o.r.showDefaultErrorPopup(e);
           }
-          const r = { "Content-Type": n, "x-csrf-token": m.csrfToken };
+          const r = {
+            "Content-Type": n,
+            "x-csrf-token": m.csrfToken,
+          };
           a.r.isUserOnDiscord && (e = "/.proxy" + e);
           const c = new p(
             await i.A.post(e, s, {
@@ -159,7 +177,9 @@
           null != s && o.r.handleError(s);
         }
         static get defaultConfig() {
-          return { validateStatus: (e) => !0 };
+          return {
+            validateStatus: (e) => !0,
+          };
         }
       }
       ((m.csrfToken = ""),
@@ -230,7 +250,9 @@
     },
     1261: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => o });
+      s.d(t, {
+        i: () => o,
+      });
       var i = s(67908),
         n = s(9029),
         r = s(18587);
@@ -298,7 +320,9 @@
     },
     1750: (e, t, s) => {
       "use strict";
-      s.d(t, { m: () => i });
+      s.d(t, {
+        m: () => i,
+      });
       var i,
         n = s(52609);
       !(function (e) {
@@ -312,7 +336,9 @@
     },
     1767: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => R });
+      s.d(t, {
+        Y: () => R,
+      });
       var i = s(19733),
         n = s(17399),
         r = s(4508),
@@ -361,7 +387,9 @@
           if (null == this.viewData.responseButtons) return;
           const e = (0, a.Le)(this.content, "notification_response_buttons"),
             t = (0, a.Le)(e, "notification_response_button btn_general");
-          ((0, a.RH)(t, { key: "strings:colonistCommon.buttons.accept" }),
+          ((0, a.RH)(t, {
+            key: "strings:colonistCommon.buttons.accept",
+          }),
             (0, a.G0)(t, () => {
               var e;
               (this.callbackOnClick(),
@@ -373,7 +401,9 @@
             e,
             "notification_response_button notification_ignore_button btn_general",
           );
-          ((0, a.RH)(s, { key: "strings:colonistCommon.buttons.ignore" }),
+          ((0, a.RH)(s, {
+            key: "strings:colonistCommon.buttons.ignore",
+          }),
             (0, a.G0)(s, () => {
               var e;
               (this.callbackOnClick(),
@@ -484,7 +514,9 @@
                   openNewTab: !0,
                   text: {
                     key: "strings:popups.notification.giftMembershipReceived.checkButton",
-                    options: { context: d.r.isUserOnDiscord ? "discord" : "" },
+                    options: {
+                      context: d.r.isUserOnDiscord ? "discord" : "",
+                    },
                   },
                 },
               };
@@ -505,7 +537,9 @@
                   openNewTab: !0,
                   text: {
                     key: "strings:popups.notification.giftMembershipReceived.checkButton",
-                    options: { context: d.r.isUserOnDiscord ? "discord" : "" },
+                    options: {
+                      context: d.r.isUserOnDiscord ? "discord" : "",
+                    },
                   },
                 },
               };
@@ -563,7 +597,9 @@
               return {
                 text: {
                   key: "strings:popups.notification.youAreNowFriendsWith",
-                  options: { username: null == t ? void 0 : t.username },
+                  options: {
+                    username: null == t ? void 0 : t.username,
+                  },
                 },
                 image:
                   null !== (n = null == t ? void 0 : t.icon) && void 0 !== n
@@ -603,7 +639,9 @@
                       username: null == t ? void 0 : t.username,
                     },
                   },
-                  { membershipType: f },
+                  {
+                    membershipType: f,
+                  },
                 ),
                 image:
                   null !== (l = null == t ? void 0 : t.icon) && void 0 !== l
@@ -619,9 +657,15 @@
                 text: (0, p.dN)(
                   {
                     key: y,
-                    options: { duration: e.duration, hash: e.hash, context: b },
+                    options: {
+                      duration: e.duration,
+                      hash: e.hash,
+                      context: b,
+                    },
                   },
-                  { membershipType: v },
+                  {
+                    membershipType: v,
+                  },
                 ),
                 image:
                   null !== (u = null == t ? void 0 : t.icon) && void 0 !== u
@@ -644,7 +688,9 @@
                       context: 1 == e.referralCount ? "one" : "other",
                     },
                   },
-                  { itemName: S.name },
+                  {
+                    itemName: S.name,
+                  },
                 ),
                 image: S.image,
                 secondaryLink: {
@@ -674,26 +720,6 @@
                   },
                 },
               };
-            case r.j.FreeAvatarUnlocked:
-              const k = m.F.getItemDetail(e.itemCategory, e.itemType);
-              if (null == k) throw new Error("Avatar does not exist");
-              return {
-                text: (0, p.dN)(
-                  {
-                    key: "strings:popups.notification.freeAvatarUnlocked.body",
-                    options: { itemName: k.name },
-                  },
-                  { itemName: k.name },
-                ),
-                image: k.image,
-                secondaryLink: {
-                  url: "/store#avatars",
-                  openNewTab: !0,
-                  text: {
-                    key: "strings:popups.notification.freeAvatarUnlocked.checkButton",
-                  },
-                },
-              };
             case r.j.YouAreBanned:
               return {
                 text: {
@@ -708,7 +734,9 @@
               return {
                 text: {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: e.message },
+                  options: {
+                    value: e.message,
+                  },
                 },
                 image: o.am.GameModeBase,
               };
@@ -716,7 +744,9 @@
               return {
                 text: {
                   key: "strings:popups.notification.yourFriendMustLogInToCountReferral.body",
-                  options: { username: e.username },
+                  options: {
+                    username: e.username,
+                  },
                 },
                 image: o.am.Guest,
               };
@@ -744,7 +774,10 @@
               return {
                 text: {
                   key: "strings:roomPage.userInvitedToRoom",
-                  options: { username: e.senderUsername, roomId: e.roomId },
+                  options: {
+                    username: e.senderUsername,
+                    roomId: e.roomId,
+                  },
                 },
                 image: e.senderIcon,
                 responseButtons: {
@@ -758,7 +791,9 @@
               return {
                 text: {
                   key: "strings:popups.notification.userSentYouFriendRequest",
-                  options: { username: e.username },
+                  options: {
+                    username: e.username,
+                  },
                 },
                 image: o.am.Friends,
                 responseButtons: {
@@ -910,7 +945,10 @@
           this.cachedFriendRequests.push(e);
           const s = {
               dateReceived: t,
-              typeData: { type: r.j.FriendRequestReceived, username: e },
+              typeData: {
+                type: r.j.FriendRequestReceived,
+                username: e,
+              },
             },
             i = this.addCTANotification(s);
           this.userNameNotificationMap.set(e, i);
@@ -1032,8 +1070,12 @@
         static displayAccountDeletionPopup() {
           new URLSearchParams(window.location.search).has("account-deleted") &&
             (i.r.createSimplePopup(
-              { key: "strings:popups.accountDeletionConfirmation.title" },
-              { key: "strings:popups.accountDeletionConfirmation.body" },
+              {
+                key: "strings:popups.accountDeletionConfirmation.title",
+              },
+              {
+                key: "strings:popups.accountDeletionConfirmation.body",
+              },
             ),
             (0, n.CK)());
         }
@@ -1049,7 +1091,9 @@
     },
     1863: (e, t, s) => {
       "use strict";
-      s.d(t, { z: () => i });
+      s.d(t, {
+        z: () => i,
+      });
       var i,
         n = s(30506),
         r = s(18587),
@@ -1171,7 +1215,9 @@
     },
     2552: (e, t, s) => {
       "use strict";
-      s.d(t, { e: () => c });
+      s.d(t, {
+        e: () => c,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(76092),
@@ -1201,8 +1247,12 @@
         }
         createSwitchImageText() {
           const e = this.showingTitleImage
-              ? { key: "strings:game.endGame.shareImagePopup.viewResults" }
-              : { key: "strings:game.endGame.shareImagePopup.viewTitle" },
+              ? {
+                  key: "strings:game.endGame.shareImagePopup.viewResults",
+                }
+              : {
+                  key: "strings:game.endGame.shareImagePopup.viewTitle",
+                },
             t = (0, n.Wr)(this.body, e, "switch-image-text");
           (0, n.G0)(t, () => this.displayOtherImage());
         }
@@ -1221,7 +1271,9 @@
           if (null != e)
             try {
               await navigator.clipboard.write([
-                new ClipboardItem({ [e.type]: e }),
+                new ClipboardItem({
+                  [e.type]: e,
+                }),
               ]);
             } catch (e) {
               (console.error(
@@ -1273,8 +1325,12 @@
         }
         constructor(e, t, s = !1) {
           (super(
-            { key: "strings:game.endGame.shareImagePopup.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:game.endGame.shareImagePopup.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -1336,7 +1392,9 @@
     },
     3797: (e, t, s) => {
       "use strict";
-      s.d(t, { P: () => r });
+      s.d(t, {
+        P: () => r,
+      });
       var i = s(13618),
         n = s(18587);
       function r(e, t) {
@@ -1360,7 +1418,10 @@
     },
     4508: (e, t, s) => {
       "use strict";
-      s.d(t, { j: () => n, t: () => i });
+      s.d(t, {
+        j: () => n,
+        t: () => i,
+      });
       const i = 100;
       var n = (function (e) {
         return (
@@ -1396,10 +1457,12 @@
     },
     4651: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => o });
+      s.d(t, {
+        S: () => o,
+      });
       var i = s(69714),
         n = s(75589),
-        r = s(42389);
+        r = s(66681);
       class o {
         static init() {
           r.sZ.controller.registerSessionEstablishedObserver(() => {
@@ -1454,7 +1517,9 @@
     },
     5127: (e, t, s) => {
       "use strict";
-      s.d(t, { P: () => u });
+      s.d(t, {
+        P: () => u,
+      });
       var i = s(76092),
         n = s(95176),
         r = s(9029),
@@ -1469,7 +1534,9 @@
           ((0, r.G0)(t, () => {
             (c.WC.play(c.hc.Click),
               navigator.clipboard.writeText(i),
-              (0, r.RH)(t, { key: "strings:roomPage.copiedLink" }),
+              (0, r.RH)(t, {
+                key: "strings:roomPage.copiedLink",
+              }),
               setTimeout(() => {
                 (0, r.RH)(t, {
                   key: "strings:roomPage.options.inviteFriends.copy",
@@ -1479,7 +1546,9 @@
           }),
             (0, r.RH)(e, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: i },
+              options: {
+                value: i,
+              },
             }),
             e.addEventListener("copy", () =>
               u.sendCopyLinkAnalytic(s.analyticsPopupSuccess),
@@ -1497,12 +1566,20 @@
         }
         constructor(e, t) {
           (super(
-            { key: "strings:storePage.sections.referral.popup.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:storePage.sections.referral.popup.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
-            { showXButton: !1, showCheckButton: !1, showXonHeader: !0 },
+            {
+              showXButton: !1,
+              showCheckButton: !1,
+              showXonHeader: !0,
+            },
           ),
             this.body.classList.add("popup-body-refer-friends"));
           const s = (0, r.Le)(this.body, "invite_friends_container"),
@@ -1511,7 +1588,10 @@
           (0, r.zO)(n, e.image);
           i.appendChild(n);
           const o = e.referralCount - t,
-            a = { ...e.name.options, context: "one" },
+            a = {
+              ...e.name.options,
+              context: "one",
+            },
             c = {
               key: "strings:storePage.sections.referral.popup.body",
               options: {
@@ -1533,9 +1613,15 @@
         }
       }
     },
+    5675: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/mobile_endgame_before.12d7950f34dd8a460a6a.png";
+    },
     6074: (e, t, s) => {
       "use strict";
-      s.d(t, { a: () => c });
+      s.d(t, {
+        a: () => c,
+      });
       var i = s(95176),
         n = s(76092),
         r = s(19966),
@@ -1551,8 +1637,12 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:popups.keepPlayingOnWeb.title" },
-            { key: "strings:popups.keepPlayingOnWeb.body" },
+            {
+              key: "strings:popups.keepPlayingOnWeb.title",
+            },
+            {
+              key: "strings:popups.keepPlayingOnWeb.body",
+            },
             () => {},
             () => {},
             !0,
@@ -1583,6 +1673,11 @@
       e.exports =
         s.p + "assets/icon_square_active_science.a1038f8f6b3f84b2381e.svg";
     },
+    6734: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/rename-lobby-to-room-after.029d5f6ff9c015ac19ef.png";
+    },
     6818: (e, t, s) => {
       "use strict";
       e.exports =
@@ -1594,7 +1689,9 @@
     },
     7099: (e, t, s) => {
       "use strict";
-      s.d(t, { T: () => k });
+      s.d(t, {
+        T: () => k,
+      });
       var i = s(67908),
         n = s(87290),
         r = s(22194),
@@ -1636,7 +1733,7 @@
       }
       var g = s(18514),
         f = s(34915),
-        y = s(42389),
+        y = s(66681),
         b = s(13618),
         v = s(23355),
         S = s(5603);
@@ -1789,17 +1886,23 @@
           const s = "-" == e.winRate ? e.winRate : `${e.winRate}%`;
           (this.createStatDiv(
             t,
-            { key: "strings:leaderboardPage.tableHeaders.rating" },
+            {
+              key: "strings:leaderboardPage.tableHeaders.rating",
+            },
             e.skillRating,
           ),
             this.createStatDiv(
               t,
-              { key: "strings:leaderboardPage.tableHeaders.games" },
+              {
+                key: "strings:leaderboardPage.tableHeaders.games",
+              },
               e.gamesPlayed,
             ),
             this.createStatDiv(
               t,
-              { key: "strings:leaderboardPage.tableHeaders.winPercentage" },
+              {
+                key: "strings:leaderboardPage.tableHeaders.winPercentage",
+              },
               s,
             ));
         }
@@ -1815,7 +1918,9 @@
             t,
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: i },
+              options: {
+                value: i,
+              },
             },
             s,
           );
@@ -1896,6 +2001,10 @@
       "use strict";
       e.exports = s.p + "assets/icon_x.5efbc794816c7abe462b.svg";
     },
+    8678: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/new_badge_before.b8648246bb2a0a1f9c06.png";
+    },
     8842: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/map_vietnam_preview.a97a9b801e05e7318479.png";
@@ -1916,7 +2025,7 @@
         Le: () => v,
         M3: () => C,
         MD: () => p,
-        RH: () => F,
+        RH: () => N,
         Sw: () => u,
         Tl: () => c,
         Tw: () => O,
@@ -1931,7 +2040,7 @@
         i9: () => l,
         m7: () => b,
         n8: () => w,
-        oB: () => N,
+        oB: () => F,
         ou: () => m,
         t2: () => x,
         tZ: () => L,
@@ -1983,11 +2092,11 @@
       }
       function y(e, t = "", s) {
         const i = document.createElement("TD");
-        return (void 0 !== s && F(i, s), d(i, e, t, ""), i);
+        return (void 0 !== s && N(i, s), d(i, e, t, ""), i);
       }
       function b(e, t = "", s) {
         const i = document.createElement("TH");
-        return (void 0 !== s && F(i, s), d(i, e, t, ""), i);
+        return (void 0 !== s && N(i, s), d(i, e, t, ""), i);
       }
       function v(e, t, s = "") {
         const i = document.createElement("DIV");
@@ -1995,7 +2104,7 @@
       }
       function S(e, t, s) {
         const i = document.createElement("SPAN");
-        return (F(i, s), d(i, e, t, ""), i);
+        return (N(i, s), d(i, e, t, ""), i);
       }
       function k(e, t, s = "") {
         const i = document.createElement("FORM");
@@ -2027,16 +2136,16 @@
       }
       function w(e, t, s, i = "", n = "H3") {
         const r = document.createElement(n);
-        return (F(r, t), d(r, e, s, i), r);
+        return (N(r, t), d(r, e, s, i), r);
       }
       function R(e, t, s, i = "") {
         const n = document.createElement("P");
-        return (F(n, t), d(n, e, s, i), n);
+        return (N(n, t), d(n, e, s, i), n);
       }
       function T(e, t, s, i, n = "", r = !1) {
         const o = document.createElement("A");
         return (
-          F(o, s),
+          N(o, s),
           (o.href = t),
           r && (o.target = "_blank"),
           d(o, e, i, n),
@@ -2077,7 +2186,7 @@
       }
       function E(e, t, s) {
         const i = document.createElement("BUTTON");
-        return (F(i, s), d(i, e, t, ""), i);
+        return (N(i, s), d(i, e, t, ""), i);
       }
       function G(e, t, s, i, n = "") {
         const r = document.createElement("IFRAME");
@@ -2092,17 +2201,19 @@
       }
       function x(e, t, s, i = "") {
         const n = document.createElement("LI");
-        return (F(n, t), d(n, e, s, i), n);
+        return (N(n, t), d(n, e, s, i), n);
       }
       function U(e, t, s = "") {
         const i = document.createElement("UL");
         return (d(i, e, t, s), i);
       }
       function O(e, t) {
-        const s = { key: `strings:imgAlts.${n.h4.getEnumKey(t, i.am)}` };
+        const s = {
+          key: `strings:imgAlts.${n.h4.getEnumKey(t, i.am)}`,
+        };
         e.alt = c(s.key, s.options);
       }
-      function F(e, t) {
+      function N(e, t) {
         var s;
         const i =
           "strings:colonistCommon.utils.#buffer" === t.key
@@ -2112,7 +2223,7 @@
             : c(t.key, t.options);
         e.innerHTML = i;
       }
-      function N(e, t) {
+      function F(e, t) {
         var s;
         const i =
           "strings:colonistCommon.utils.#buffer" === t.key
@@ -2153,7 +2264,10 @@
     },
     9127: (e, t, s) => {
       "use strict";
-      s.d(t, { P7: () => n, WA: () => i });
+      s.d(t, {
+        P7: () => n,
+        WA: () => i,
+      });
       var i = (function (e) {
           return (
             (e[(e.Offline = 0)] = "Offline"),
@@ -2190,9 +2304,11 @@
     },
     9602: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => i });
+      s.d(t, {
+        Q: () => i,
+      });
       var i,
-        n = s(42389),
+        n = s(66681),
         r = s(18587);
       !(function (e) {
         var t, s;
@@ -2215,7 +2331,9 @@
     },
     9620: (e, t, s) => {
       "use strict";
-      s.d(t, { A: () => b });
+      s.d(t, {
+        A: () => b,
+      });
       var i = s(98487),
         n = s(78311),
         r = s(95078),
@@ -2293,12 +2411,16 @@
           ((0, a.Cr)(c, void 0, l),
             (0, a.Cr)(c, void 0, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: d },
+              options: {
+                value: d,
+              },
             }),
             i && b.addOpponentsColumn(e, c),
             (0, a.Cr)(c, "right", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: (0, o.b3)(e.duration / 1e3) },
+              options: {
+                value: (0, o.b3)(e.duration / 1e3),
+              },
             }),
             this.addReplayColumn(e, s, c),
             (c.onclick = (t) => {
@@ -2335,7 +2457,9 @@
             h = (0, a.cE)(
               r,
               "",
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "",
             );
           ((0, a.zO)(h, n.am.ReplayIcon),
@@ -2374,7 +2498,9 @@
           const s = e.isHuman ? e.username : "Bot",
             i = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s },
+              options: {
+                value: s,
+              },
             };
           if (!(e.username === c.t) && e.isHuman) {
             const e = (0, a.cE)(t, "", i, "");
@@ -2437,14 +2563,20 @@
             r = n.insertRow();
           ((0, a.Cr)(r, void 0, {
             key: "strings:game.settings.gameInfoTab.id.value",
-            options: { id: e.setting.id },
+            options: {
+              id: e.setting.id,
+            },
           }),
             (0, a.Cr)(
               r,
               void 0,
               (0, p.dN)(
-                { key: "strings:game.settings.gameInfoTab.map.value" },
-                { mapName: h.X.getMapName(e.setting.mapSetting) },
+                {
+                  key: "strings:game.settings.gameInfoTab.map.value",
+                },
+                {
+                  mapName: h.X.getMapName(e.setting.mapSetting),
+                },
               ),
             ));
           const o = n.insertRow();
@@ -2452,16 +2584,24 @@
             o,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.gameMode.value" },
-              { modeName: s.name },
+              {
+                key: "strings:game.settings.gameInfoTab.gameMode.value",
+              },
+              {
+                modeName: s.name,
+              },
             ),
           ),
             (0, a.Cr)(
               o,
               void 0,
               (0, p.dN)(
-                { key: "strings:game.settings.gameInfoTab.extension.value" },
-                { extensionName: (0, m.Dw)(e.setting.extensionSetting) },
+                {
+                  key: "strings:game.settings.gameInfoTab.extension.value",
+                },
+                {
+                  extensionName: (0, m.Dw)(e.setting.extensionSetting),
+                },
               ),
             ));
           const c = n.insertRow();
@@ -2469,13 +2609,19 @@
             c,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.scenario.value" },
-              { scenarioName: (0, m.g1)(e.setting.scenarioSetting) },
+              {
+                key: "strings:game.settings.gameInfoTab.scenario.value",
+              },
+              {
+                scenarioName: (0, m.g1)(e.setting.scenarioSetting),
+              },
             ),
           ),
             (0, a.Cr)(c, void 0, {
               key: "strings:game.settings.gameInfoTab.vpToWin.value",
-              options: { value: e.setting.victoryPointsToWin },
+              options: {
+                value: e.setting.victoryPointsToWin,
+              },
             }));
           const l = n.insertRow(),
             d = {
@@ -2487,8 +2633,12 @@
             l,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.turnTimer.value" },
-              { turnTimer: m.mt.getSpeedSettingText(e.setting.gameSpeed) },
+              {
+                key: "strings:game.settings.gameInfoTab.turnTimer.value",
+              },
+              {
+                turnTimer: m.mt.getSpeedSettingText(e.setting.gameSpeed),
+              },
             ),
           ),
             (0, a.Cr)(
@@ -2498,7 +2648,9 @@
                 {
                   key: "strings:game.settings.gameInfoTab.friendlyRobber.value",
                 },
-                { friendlyRobberState: d },
+                {
+                  friendlyRobberState: d,
+                },
               ),
             ));
           const g = n.insertRow(),
@@ -2511,16 +2663,24 @@
             g,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.karma.value" },
-              { karmaState: f },
+              {
+                key: "strings:game.settings.gameInfoTab.karma.value",
+              },
+              {
+                karmaState: f,
+              },
             ),
           ),
             (0, a.Cr)(
               g,
               void 0,
               (0, p.dN)(
-                { key: "strings:game.settings.gameInfoTab.dice.value" },
-                { diceSetting: (0, m.Zd)(e.setting.diceSetting) },
+                {
+                  key: "strings:game.settings.gameInfoTab.dice.value",
+                },
+                {
+                  diceSetting: (0, m.Zd)(e.setting.diceSetting),
+                },
               ),
             ));
           const y = n.insertRow(),
@@ -2533,18 +2693,26 @@
             y,
             void 0,
             (0, p.dN)(
-              { key: "strings:game.settings.gameInfoTab.bankCards.value" },
-              { bankCardsVisibility: b },
+              {
+                key: "strings:game.settings.gameInfoTab.bankCards.value",
+              },
+              {
+                bankCardsVisibility: b,
+              },
             ),
           ),
             (0, a.Cr)(y, void 0, {
               key: "strings:profilePage.history.table.turns.value",
-              options: { turnCount: e.turnCount },
+              options: {
+                turnCount: e.turnCount,
+              },
             }));
           const v = n.insertRow();
           (0, a.Cr)(v, void 0, {
             key: "strings:game.settings.gameInfoTab.cardDiscardLimit.value",
-            options: { value: e.setting.cardDiscardLimit },
+            options: {
+              value: e.setting.cardDiscardLimit,
+            },
           });
         }
         constructor(e = !1) {
@@ -2559,7 +2727,9 @@
     },
     9707: (e, t, s) => {
       "use strict";
-      s.d(t, { u: () => n });
+      s.d(t, {
+        u: () => n,
+      });
       var i = s(76714);
       class n {
         constructor(e) {
@@ -2602,7 +2772,9 @@
     },
     10369: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => c });
+      s.d(t, {
+        r: () => c,
+      });
       var i = s(69508),
         n = s(19720),
         r = s(95176),
@@ -2632,7 +2804,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.description,
             n = new r.y(
               s,
@@ -2649,7 +2823,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.getDisplayMessage(),
             n = new r.y(
               s,
@@ -2666,7 +2842,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.description,
             n = o.N.isUserOnMobileAppOrWeb()
               ? "/mobile/store#membership"
@@ -2691,7 +2869,9 @@
           const s =
               null !== (t = e.title) && void 0 !== t
                 ? t
-                : { key: "strings:popups.errors.general.title" },
+                : {
+                    key: "strings:popups.errors.general.title",
+                  },
             i = e.description,
             n = new r.y(
               s,
@@ -2723,6 +2903,11 @@
       "use strict";
       e.exports = s.p + "assets/sfx_disconnect.5221e15ddb955d8ebb49.mp3";
     },
+    10479: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/city_improvement_mobile_before.883ab2c226be8b2443ea.png";
+    },
     10524: (e, t, s) => {
       "use strict";
       e.exports =
@@ -2734,7 +2919,9 @@
     },
     10644: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => r });
+      s.d(t, {
+        Q: () => r,
+      });
       var i = s(19966),
         n = s(9029);
       class r {
@@ -2783,18 +2970,24 @@
       function r(e, t, s) {
         return e + (t - e) * s;
       }
-      s.d(t, { Cc: () => r, Yf: () => n, qE: () => i });
+      s.d(t, {
+        Cc: () => r,
+        Yf: () => n,
+        qE: () => i,
+      });
     },
     11148: (e, t, s) => {
       "use strict";
-      s.d(t, { C: () => h });
+      s.d(t, {
+        C: () => h,
+      });
       var i = s(67908),
         n = s(63778),
         r = s(69714),
         o = s(19966),
         a = s(54801),
         c = s(35274),
-        l = s(93123),
+        l = s(15504),
         d = s(41931);
       const u = i.o8.UIGameEventEnums;
       class h {
@@ -3255,7 +3448,9 @@
     },
     11480: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => b });
+      s.d(t, {
+        y: () => b,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(95176),
@@ -3277,7 +3472,9 @@
             this.body,
             {
               key: "strings:popups.freePlayDiceRoll.success",
-              options: { roll: e },
+              options: {
+                roll: e,
+              },
             },
             "",
             "",
@@ -3296,7 +3493,9 @@
             this.body,
             {
               key: "strings:popups.freePlayDiceRoll.failure",
-              options: { roll: e },
+              options: {
+                roll: e,
+              },
             },
             "",
             "",
@@ -3344,10 +3543,14 @@
         }
         constructor() {
           (super(
-            { key: "strings:popups.freePlayDiceRoll.title" },
+            {
+              key: "strings:popups.freePlayDiceRoll.title",
+            },
             {
               key: "strings:popups.freePlayDiceRoll.body",
-              options: { eligibleRolls: b.getEligibleRollsText() },
+              options: {
+                eligibleRolls: b.getEligibleRollsText(),
+              },
             },
             () => {},
             () => {},
@@ -3386,7 +3589,9 @@
     },
     11743: (e, t, s) => {
       "use strict";
-      s.d(t, { v: () => u });
+      s.d(t, {
+        v: () => u,
+      });
       var i = s(78311),
         n = s(95176),
         r = s(18587),
@@ -3412,7 +3617,9 @@
             ).getDefaultPrice();
             (0, c.i5)(t, "", {
               key: "strings:storePage.sections.membership.billing.paidMonthly",
-              options: { amount: e },
+              options: {
+                amount: e,
+              },
             });
           }
         }
@@ -3425,7 +3632,9 @@
           (0, d.j0)(
             e,
             {
-              listTitle: { key: "strings:popups.becomeAMember.tooltip.title" },
+              listTitle: {
+                key: "strings:popups.becomeAMember.tooltip.title",
+              },
               list: "strings:popups.becomeAMember.tooltip.body",
             },
             "bottom-end",
@@ -3443,8 +3652,12 @@
         }
         constructor(e, t, s = () => {}, i = !1) {
           (super(
-            { key: "strings:roomPage.becomeAMember" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:roomPage.becomeAMember",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {
               (e(), null != t && u.sendAnalyticEvent(t));
             },
@@ -3510,8 +3723,14 @@
     },
     13047: (e, t, s) => {
       "use strict";
-      s.d(t, { $: () => i });
-      const i = 288;
+      s.d(t, {
+        $: () => i,
+      });
+      const i = 289;
+    },
+    13048: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/shuffle_card_after.40a7de690b9cb9e8c24f.png";
     },
     13250: (e, t, s) => {
       "use strict";
@@ -3528,7 +3747,10 @@
     },
     13359: (e, t, s) => {
       "use strict";
-      s.d(t, { T: () => r, q: () => o });
+      s.d(t, {
+        T: () => r,
+        q: () => o,
+      });
       var i = s(74710),
         n = s(18587),
         r = (function (e) {
@@ -3547,6 +3769,7 @@
             (e.DiscordAbout = "discordabout"),
             (e.DiscordCareers = "discordcareers"),
             (e.DiscordChampionship25 = "discordchampionship25"),
+            (e.DiscordChampionship26 = "discordchampionship26"),
             (e.DiscordCommunity = "discordcommunity"),
             (e.DiscordFAQ = "discordfaq"),
             (e.DiscordPrivacyPolicy = "discordprivacypolicy"),
@@ -3554,6 +3777,7 @@
             (e.DiscordProfile = "discordprofile"),
             (e.DiscordGifting = "discordgifting"),
             (e.DiscordValues = "discordvalues"),
+            (e.DiscordValuesExamples = "discordvaluesexamples"),
             (e.DiscordTerms = "discordterms"),
             (e.DiscordPressKit = "discordpresskit"),
             (e.DiscordRefundPolicy = "discordrefundpolicy"),
@@ -3595,9 +3819,15 @@
         static extractHashAndValue(e) {
           const t = e.indexOf("#");
           if (-1 == t || t == e.length - 1)
-            return { hash: void 0, value: void 0 };
+            return {
+              hash: void 0,
+              value: void 0,
+            };
           const s = e.slice(t + 1).split("=");
-          return { hash: s[0], value: s.length > 1 ? s[1] : void 0 };
+          return {
+            hash: s[0],
+            value: s.length > 1 ? s[1] : void 0,
+          };
         }
         static getLanguagePrefix() {
           const e = new Map([
@@ -3646,7 +3876,7 @@
         mE: () => b,
       });
       var i = s(30506);
-      if (!/^(251|517|837)$/.test(s.j)) var n = s(89315);
+      if (!/^(251|517|837)$/.test(s.j)) var n = s(51061);
       var r = s(18587),
         o = s(18514),
         a = s(42466);
@@ -3716,7 +3946,9 @@
           : S("https://apps.apple.com/us/app/colonist-io/id6444831129", !0);
       }
       function g(e) {
-        return (0, n.A)(e, i.R$.secondsAsMilliseconds(2), { trailing: !1 });
+        return (0, n.A)(e, i.R$.secondsAsMilliseconds(2), {
+          trailing: !1,
+        });
       }
       let f = !1;
       function y(e) {
@@ -3784,6 +4016,12 @@
       e.exports =
         s.p + "assets/icon_square_active_politics.1069d867d5d5997126d1.svg";
     },
+    14433: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/message_appears_without_username_avatar_before.47b64cfeac26eb479424.png";
+    },
     14466: (e, t, s) => {
       "use strict";
       e.exports =
@@ -3812,15 +4050,17 @@
     },
     15549: (e, t, s) => {
       "use strict";
-      s.d(t, { P: () => h });
+      s.d(t, {
+        P: () => h,
+      });
       var i = s(30506),
         n = s(5603),
         r = s(78311),
-        o = s(42389),
+        o = s(66681),
         a = s(74710),
         c = s(84235),
         l = s(83633);
-      if (!/^(251|517|837)$/.test(s.j)) var d = s(26413);
+      if (!/^(251|517|837)$/.test(s.j)) var d = s(48139);
       var u = s(63778);
       class h {
         static run(e, t) {
@@ -3908,8 +4148,12 @@
           );
           if (null == e) return;
           const t = (0, a.dN)(
-            { key: "strings:roomPage.notifications.changedMap" },
-            { map: e.name },
+            {
+              key: "strings:roomPage.notifications.changedMap",
+            },
+            {
+              map: e.name,
+            },
           );
           this.showNotification(t);
         }
@@ -3925,8 +4169,12 @@
           );
           if (null == e) return;
           const t = (0, a.dN)(
-            { key: "strings:roomPage.notifications.changedGameMode" },
-            { gameMode: e.name },
+            {
+              key: "strings:roomPage.notifications.changedGameMode",
+            },
+            {
+              gameMode: e.name,
+            },
           );
           this.showNotification(t);
         }
@@ -4027,7 +4275,9 @@
             this.newRoomState.hostSession.roomSessionId &&
             this.showNotification({
               key: "strings:roomPage.notifications.newHostIs",
-              options: { username: this.newRoomState.hostSession.username },
+              options: {
+                username: this.newRoomState.hostSession.username,
+              },
             });
         }
         notifyPlayerDisconnected() {
@@ -4037,7 +4287,9 @@
               (this.oldRoomState.hostSession.roomSessionId == t.roomSessionId
                 ? this.showNotification({
                     key: "strings:roomPage.notifications.hostDisconnected",
-                    options: { username: t.username },
+                    options: {
+                      username: t.username,
+                    },
                   })
                 : null != t.userId &&
                     this.newRoomState.kickedUserIds.includes(t.userId)
@@ -4050,7 +4302,9 @@
                     })
                   : this.showNotification({
                       key: "strings:roomPage.notifications.userDisconnected",
-                      options: { username: t.username },
+                      options: {
+                        username: t.username,
+                      },
                     }));
         }
         notifyPlayerConnected() {
@@ -4061,7 +4315,9 @@
               (t.isBot ||
                 this.showNotification({
                   key: "strings:roomPage.notifications.userConnected",
-                  options: { username: t.username },
+                  options: {
+                    username: t.username,
+                  },
                 }));
         }
         notifyPlayerColorChanged() {
@@ -4132,7 +4388,9 @@
     },
     17057: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => i });
+      s.d(t, {
+        g: () => i,
+      });
       class i {}
     },
     17071: (e, t, s) => {
@@ -4141,18 +4399,22 @@
     },
     17112: (e, t, s) => {
       "use strict";
-      s.d(t, { K: () => i });
+      s.d(t, {
+        K: () => i,
+      });
       class i {}
     },
     17130: (e, t, s) => {
       "use strict";
-      s.d(t, { x: () => d });
+      s.d(t, {
+        x: () => d,
+      });
       var i = s(655),
         n = s(32398),
         r = s(81888),
         o = s(87220),
         a = s(9029),
-        c = s(42389),
+        c = s(66681),
         l = s(18587);
       class d {
         static async shareOrCopyLink(e, t) {
@@ -4192,8 +4454,12 @@
                     ? location.href
                     : await e();
                 return null == s
-                  ? new Blob([""], { type: t })
-                  : new Blob([s], { type: t });
+                  ? new Blob([""], {
+                      type: t,
+                    })
+                  : new Blob([s], {
+                      type: t,
+                    });
               })(),
             });
           try {
@@ -4204,7 +4470,9 @@
               n = (0, a.cE)(
                 document.body,
                 i,
-                { key: "strings:colonistCommon.utils.emptyString" },
+                {
+                  key: "strings:colonistCommon.utils.emptyString",
+                },
                 "",
               );
             ((n.target = "_blank"), n.click());
@@ -4243,7 +4511,12 @@
     },
     17326: (e, t, s) => {
       "use strict";
-      s.d(t, { Lo: () => r, RD: () => i, j3: () => o, zz: () => n });
+      s.d(t, {
+        Lo: () => r,
+        RD: () => i,
+        j3: () => o,
+        zz: () => n,
+      });
       var i = (function (e) {
           return (
             (e.Popup = "popup"),
@@ -4343,7 +4616,9 @@
     },
     17972: (e, t, s) => {
       "use strict";
-      s.d(t, { f: () => r });
+      s.d(t, {
+        f: () => r,
+      });
       var i = s(78311),
         n = s(92524);
       class r {
@@ -4367,7 +4642,9 @@
               type: i.IM.Holiday2023AllAccessPass,
               title: {
                 key: "strings:storePage.sections.holiday_sale.title",
-                options: { context: "full" },
+                options: {
+                  context: "full",
+                },
               },
               price: 699,
               discordSKUId: e.passAllAccessHoliday2023,
@@ -4379,7 +4656,9 @@
               i.IM.GiftPlusMonthly,
               new r({
                 type: i.IM.GiftPlusMonthly,
-                title: { key: "strings:storePage.membership.title.plus" },
+                title: {
+                  key: "strings:storePage.membership.title.plus",
+                },
                 price: 899,
                 discordSKUId: e.giftMembershipPlus,
                 lobbyImage: i.am.StoreMembershipPlus,
@@ -4390,7 +4669,9 @@
               i.IM.GiftPremiumMonthly,
               new r({
                 type: i.IM.GiftPremiumMonthly,
-                title: { key: "strings:storePage.membership.title.premium" },
+                title: {
+                  key: "strings:storePage.membership.title.premium",
+                },
                 price: 1899,
                 discordSKUId: e.giftMembershipPremium,
                 lobbyImage: i.am.StoreMembershipPremium,
@@ -4401,7 +4682,9 @@
               i.IM.GiftEliteMonthly,
               new r({
                 type: i.IM.GiftEliteMonthly,
-                title: { key: "strings:storePage.membership.title.elite" },
+                title: {
+                  key: "strings:storePage.membership.title.elite",
+                },
                 price: 2499,
                 discordSKUId: e.giftMembershipElite,
                 lobbyImage: i.am.StoreMembershipElite,
@@ -4412,7 +4695,9 @@
               i.IM.GiftPlusYearly,
               new r({
                 type: i.IM.GiftPlusYearly,
-                title: { key: "strings:storePage.membership.title.plus" },
+                title: {
+                  key: "strings:storePage.membership.title.plus",
+                },
                 price: 8388,
                 discordSKUId: e.giftMembershipPlusYearly,
                 lobbyImage: i.am.StoreMembershipPlus,
@@ -4423,7 +4708,9 @@
               i.IM.GiftPremiumYearly,
               new r({
                 type: i.IM.GiftPremiumYearly,
-                title: { key: "strings:storePage.membership.title.premium" },
+                title: {
+                  key: "strings:storePage.membership.title.premium",
+                },
                 price: 17988,
                 discordSKUId: e.giftMembershipPremiumYearly,
                 lobbyImage: i.am.StoreMembershipPremium,
@@ -4434,7 +4721,9 @@
               i.IM.GiftEliteYearly,
               new r({
                 type: i.IM.GiftEliteYearly,
-                title: { key: "strings:storePage.membership.title.elite" },
+                title: {
+                  key: "strings:storePage.membership.title.elite",
+                },
                 price: 23988,
                 discordSKUId: e.giftMembershipEliteYearly,
                 lobbyImage: i.am.StoreMembershipElite,
@@ -4463,7 +4752,12 @@
     },
     18514: (e, t, s) => {
       "use strict";
-      s.d(t, { aA: () => m, a7: () => u, vX: () => h, nJ: () => p });
+      s.d(t, {
+        aA: () => m,
+        a7: () => u,
+        vX: () => h,
+        nJ: () => p,
+      });
       var i = s(88082),
         n = s(83057),
         r = s(74710),
@@ -4473,38 +4767,38 @@
         l = s(41931);
       const d = {
         strings: {
-          af: s.p + "locales/af_strings.f218c63bdee55e95eb4f.json",
-          ar: s.p + "locales/ar_strings.7a22a762ffcb25ed069b.json",
-          ca: s.p + "locales/ca_strings.1d2819684e9fcb1131c3.json",
-          cs: s.p + "locales/cs_strings.77b60f411daccae89144.json",
-          da: s.p + "locales/da_strings.ca2ffcfd2fe50c4d5c77.json",
-          de: s.p + "locales/de_strings.bf16d698babc32e55462.json",
-          el: s.p + "locales/el_strings.6fe4cedaaaf5832b697c.json",
+          af: s.p + "locales/af_strings.06874a58f8bdc797b655.json",
+          ar: s.p + "locales/ar_strings.fc304a83089acce27172.json",
+          ca: s.p + "locales/ca_strings.5eb07a0e2e384c3b4ea5.json",
+          cs: s.p + "locales/cs_strings.d0d5ce19ba378a86c009.json",
+          da: s.p + "locales/da_strings.b3713ccb19688b1317b0.json",
+          de: s.p + "locales/de_strings.1adee56d4c8e380c6d16.json",
+          el: s.p + "locales/el_strings.0d24190d28820e696c67.json",
           en: s(70925),
-          es: s.p + "locales/es_strings.e675206006a452bd09fe.json",
-          fi: s.p + "locales/fi_strings.432b7f6e731c1b6d452b.json",
-          fr: s.p + "locales/fr_strings.a429b3252b081e00c9ff.json",
-          he: s.p + "locales/he_strings.8de30d3dbf07a09538bf.json",
-          hi: s.p + "locales/hi_strings.1fcde853f579e68c03f3.json",
-          hu: s.p + "locales/hu_strings.e2271e573914721d025f.json",
-          it: s.p + "locales/it_strings.0a02731027dff5f131ff.json",
-          ja: s.p + "locales/ja_strings.162e3de59c8b6c38a6c1.json",
-          ko: s.p + "locales/ko_strings.22fe814654f11628f9d8.json",
-          nl: s.p + "locales/nl_strings.f2e3cf0beedc857c72cb.json",
-          no: s.p + "locales/no_strings.42ce90267ba95b865ffc.json",
-          pl: s.p + "locales/pl_strings.264411bd1d000c8a9653.json",
-          "pt-BR": s.p + "locales/pt-BR_strings.3b7d3106409bf922fd16.json",
-          "pt-PT": s.p + "locales/pt-PT_strings.cebaa68026a33f48b4fe.json",
-          ro: s.p + "locales/ro_strings.8734b3e08d19fb17dace.json",
-          ru: s.p + "locales/ru_strings.bf6ae108f3764bec3693.json",
-          sr: s.p + "locales/sr_strings.1ec7010a433fd090ecac.json",
-          sv: s.p + "locales/sv_strings.7b625024219cb1624e13.json",
-          th: s.p + "locales/th_strings.12adde34e41d4b756ff8.json",
-          tr: s.p + "locales/tr_strings.7835bf4a3cc44242795c.json",
-          uk: s.p + "locales/uk_strings.8dbb3924a719f95f8407.json",
-          vi: s.p + "locales/vi_strings.72e727da6e6e0e040fa7.json",
-          "zh-CN": s.p + "locales/zh-CN_strings.93645417549a2066d4e8.json",
-          "zh-TW": s.p + "locales/zh-TW_strings.76e5e6ad33ee99735644.json",
+          es: s.p + "locales/es_strings.4d92e98fbc12a01e8e67.json",
+          fi: s.p + "locales/fi_strings.b40d85318e932ee6aac8.json",
+          fr: s.p + "locales/fr_strings.2f3d079291723a8f7270.json",
+          he: s.p + "locales/he_strings.feaa5fab200f37146ad6.json",
+          hi: s.p + "locales/hi_strings.69485e82097b7581019e.json",
+          hu: s.p + "locales/hu_strings.6448ac5c985d9ee58ad9.json",
+          it: s.p + "locales/it_strings.723a72d7e8abf3c56437.json",
+          ja: s.p + "locales/ja_strings.3d9995efcd1d9c4eb328.json",
+          ko: s.p + "locales/ko_strings.d2ccd57e39cd00bcc581.json",
+          nl: s.p + "locales/nl_strings.f429f04ee62fe4690b53.json",
+          no: s.p + "locales/no_strings.2c4097d548b0f1f86e66.json",
+          pl: s.p + "locales/pl_strings.ceb3894c4641eaf8f0a2.json",
+          "pt-BR": s.p + "locales/pt-BR_strings.742407442c47dcccc6cb.json",
+          "pt-PT": s.p + "locales/pt-PT_strings.37972ef71d53bb56fead.json",
+          ro: s.p + "locales/ro_strings.b8816705807024a68de1.json",
+          ru: s.p + "locales/ru_strings.19f8776122c65b57e6c5.json",
+          sr: s.p + "locales/sr_strings.23e8d23deccf33009a83.json",
+          sv: s.p + "locales/sv_strings.369c3c64cac95132922a.json",
+          th: s.p + "locales/th_strings.f60350f09eb539c1db69.json",
+          tr: s.p + "locales/tr_strings.2a95a2e027992a04c8dc.json",
+          uk: s.p + "locales/uk_strings.90b9af2ebc2c276119ef.json",
+          vi: s.p + "locales/vi_strings.6bd7415b5c869baf75b0.json",
+          "zh-CN": s.p + "locales/zh-CN_strings.5db62bd49cf2caf30e3f.json",
+          "zh-TW": s.p + "locales/zh-TW_strings.a4523597fdbaef4b8de7.json",
         },
       };
       !(function (e) {
@@ -4515,9 +4809,13 @@
               lng: a.r.language,
               fallbackLng: r.F2.defaultLanguage,
               ns: r.WO.Strings,
-              backend: { loadPath: (e, t) => d[t][e] },
+              backend: {
+                loadPath: (e, t) => d[t][e],
+              },
               defaultNS: r.WO.Strings,
-              interpolation: { skipOnVariables: !1 },
+              interpolation: {
+                skipOnVariables: !1,
+              },
             }),
             c._.registerChangeListener((e) => {
               if (null == e) return;
@@ -4539,7 +4837,9 @@
         getLanguageName(e, t) {
           const s = null != t ? t : this.defaultLocale;
           try {
-            return new Intl.DisplayNames(s, { type: "language" }).of(e);
+            return new Intl.DisplayNames(s, {
+              type: "language",
+            }).of(e);
           } catch (t) {
             return r.F2.languageEnglishNames[e];
           }
@@ -4547,7 +4847,9 @@
         getCountryName(e, t) {
           const s = null != t ? t : this.defaultLocale;
           try {
-            return new Intl.DisplayNames(s, { type: "region" }).of(e);
+            return new Intl.DisplayNames(s, {
+              type: "region",
+            }).of(e);
           } catch (e) {
             return;
           }
@@ -4587,7 +4889,9 @@
     },
     18587: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => r });
+      s.d(t, {
+        r: () => r,
+      });
       var i = s(41931),
         n = s(96990);
       class r {}
@@ -4643,7 +4947,9 @@
     },
     19644: (e, t, s) => {
       "use strict";
-      s.d(t, { R: () => r });
+      s.d(t, {
+        R: () => r,
+      });
       var i = s(11743),
         n = s(78311);
       class r extends i.v {
@@ -4685,7 +4991,9 @@
     },
     19720: (e, t, s) => {
       "use strict";
-      s.d(t, { L: () => p });
+      s.d(t, {
+        L: () => p,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(78311),
@@ -4706,7 +5014,9 @@
           ((0, n.zO)(e, r.am.GoogleIcon),
             (0, n.i5)(e, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "google" },
+              options: {
+                context: "google",
+              },
             }));
           const t = (0, n.Le)(
             this.loginButtonsDiv,
@@ -4716,7 +5026,9 @@
           ((0, n.zO)(t, r.am.DiscordIcon),
             (0, n.i5)(t, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "discord" },
+              options: {
+                context: "discord",
+              },
             }));
           const s = (0, n.Le)(
             this.loginButtonsDiv,
@@ -4726,7 +5038,9 @@
           ((0, n.zO)(s, r.am.AppleIcon),
             (0, n.i5)(s, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "apple" },
+              options: {
+                context: "apple",
+              },
             }),
             (0, n.G0)(
               e,
@@ -4757,8 +5071,12 @@
         }
         constructor(e = !1, t) {
           (super(
-            { key: "strings:homePage.header.login" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:homePage.header.login",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -4787,7 +5105,9 @@
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t },
+                options: {
+                  value: t,
+                },
               },
               "",
               "",
@@ -4802,7 +5122,9 @@
     },
     19733: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => r });
+      s.d(t, {
+        r: () => r,
+      });
       var i = s(95176),
         n = s(17399);
       class r {
@@ -4813,7 +5135,9 @@
             () => {},
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           );
         }
         static createForceRefreshPopup(e, t) {
@@ -4823,7 +5147,9 @@
             () => window.location.reload(),
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           );
         }
         static createLargePopup(e, t) {
@@ -4833,7 +5159,9 @@
             () => {},
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           ),
             this.popup.makeLarge());
         }
@@ -4859,7 +5187,9 @@
     },
     19966: (e, t, s) => {
       "use strict";
-      s.d(t, { CA: () => y });
+      s.d(t, {
+        CA: () => y,
+      });
       var i = s(30506),
         n = s(78311),
         r = s(18587),
@@ -4878,7 +5208,10 @@
           if (null == this.logRocket) return;
           if (null == c._.userState) return;
           const s = c._.userState.getPlayerKarmaStatusText();
-          s.options = { ...s.options, lng: "en" };
+          s.options = {
+            ...s.options,
+            lng: "en",
+          };
           const i = a.a7.t(s.key, s.options);
           this.logRocket.identify(e.id, {
             name: c._.userState.username,
@@ -4906,7 +5239,11 @@
       }
       var d = s(72282);
       const u = [
-        { browserName: "Chrome", browserVersion: "15.0.87", osName: "Linux" },
+        {
+          browserName: "Chrome",
+          browserVersion: "15.0.87",
+          osName: "Linux",
+        },
       ];
       function h() {
         const e = {
@@ -4945,7 +5282,9 @@
               ),
               this.highlightController.identify(
                 null === (t = c._.userState) || void 0 === t ? void 0 : t.id,
-                { context: e.context },
+                {
+                  context: e.context,
+                },
               )));
         }
         stopRecording() {
@@ -4992,7 +5331,7 @@
         }
       }
       var y,
-        b = s(42389),
+        b = s(66681),
         v = s(96990);
       !(function (e) {
         var t, s, i;
@@ -5160,7 +5499,10 @@
             (h() ||
               (function (e, t, s) {
                 if (r.r.isUserOnDiscord) return;
-                gtag("event", e, { event_label: t, value: s });
+                gtag("event", e, {
+                  event_label: t,
+                  value: s,
+                });
               })(e, t, s));
         }
         ((e.onEvent = function (e, t) {
@@ -5228,7 +5570,10 @@
                   : i.eloType,
               ...e.dimensions,
             };
-            await g({ ...e, dimensions: o });
+            await g({
+              ...e,
+              dimensions: o,
+            });
           }),
           (e.sendAnalyticEventOnce = async function (e) {
             if (null == e.floatValue && o.has(e.type)) return;
@@ -5255,13 +5600,21 @@
                 h() ||
                 null === (t = window.dataLayer) ||
                 void 0 === t ||
-                t.push({ event: e }));
+                t.push({
+                  event: e,
+                }));
           }));
       })(y || (y = {}));
     },
     20024: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/map_istanbul_preview.2d22c3d3653e783501f1.png";
+    },
+    20065: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/dang-increase-end-game-size-after.698135138fd62b4d7356.png";
     },
     20230: (e, t, s) => {
       "use strict";
@@ -5277,7 +5630,10 @@
     },
     20751: (e, t, s) => {
       "use strict";
-      s.d(t, { L: () => c, U: () => l });
+      s.d(t, {
+        L: () => c,
+        U: () => l,
+      });
       var i = s(53015),
         n = s(64038),
         r = s(30911),
@@ -5310,7 +5666,9 @@
           ],
           name: {
             key: "strings:storePage.sections.avatar.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.Avatars,
           analyticsPopupTriggered:
@@ -5337,7 +5695,9 @@
           ],
           name: {
             key: "strings:storePage.sections.map.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.Maps,
           analyticsPopupTriggered:
@@ -5351,7 +5711,9 @@
           possibleRewards: [new n.Ph(), new n.ef(), new n.Hl()],
           name: {
             key: "strings:storePage.sections.color.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.AllColors,
           analyticsPopupTriggered:
@@ -5374,7 +5736,9 @@
           ],
           name: {
             key: "strings:storePage.sections.expansion.title",
-            options: { context: "other" },
+            options: {
+              context: "other",
+            },
           },
           image: o.am.Expansions,
           analyticsPopupTriggered:
@@ -5386,7 +5750,9 @@
           referralCount: 50,
           storeItemCategory: i.n9.Membership,
           possibleRewards: [new c()],
-          name: { key: "strings:storePage.sections.membership.title" },
+          name: {
+            key: "strings:storePage.sections.membership.title",
+          },
           image: o.am.Memberships,
           analyticsPopupTriggered:
             a.dN.ReferralProgramStorePopupTriggeredLevel5,
@@ -5408,21 +5774,35 @@
               key: "strings:game.gameState.gameLogs.couldNotsendChatMessage",
             };
           case "disabled":
-            return { key: "strings:game.gameState.gameLogs.chatIsDisabled" };
+            return {
+              key: "strings:game.gameState.gameLogs.chatIsDisabled",
+            };
           case "badLanguage":
-            return { key: "strings:game.gameState.gameLogs.useProperLanguage" };
+            return {
+              key: "strings:game.gameState.gameLogs.useProperLanguage",
+            };
           case "tooLong":
-            return { key: "strings:game.gameState.gameLogs.messageTooLong" };
+            return {
+              key: "strings:game.gameState.gameLogs.messageTooLong",
+            };
           case "spam":
-            return { key: "strings:game.gameState.gameLogs.pleaseDoNotSpam" };
+            return {
+              key: "strings:game.gameState.gameLogs.pleaseDoNotSpam",
+            };
           case "wrongCommand":
-            return { key: "strings:commands.errors.wrongCommand" };
+            return {
+              key: "strings:commands.errors.wrongCommand",
+            };
           case "commandCrashed":
-            return { key: "strings:commands.errors.commandCrashed" };
+            return {
+              key: "strings:commands.errors.commandCrashed",
+            };
           case "muted":
             return {
               key: "strings:game.gameState.gameLogs.youHaveBeenMuted",
-              options: { date: t },
+              options: {
+                date: t,
+              },
             };
           case "notSignedIn":
             return {
@@ -5444,16 +5824,29 @@
               },
               {
                 key: "strings:commands.messages.chatTutorial",
-                options: { exampleString: '"/disablechat"' },
+                options: {
+                  exampleString: '"/disablechat"',
+                },
               },
             ];
           case "chatEnabled":
-            return [{ key: "strings:commands.messages.chatEnabled" }];
+            return [
+              {
+                key: "strings:commands.messages.chatEnabled",
+              },
+            ];
           case "chatDisabled":
-            return [{ key: "strings:commands.messages.chatDisabled" }];
+            return [
+              {
+                key: "strings:commands.messages.chatDisabled",
+              },
+            ];
         }
       }
-      s.d(t, { $: () => n, b: () => i });
+      s.d(t, {
+        $: () => n,
+        b: () => i,
+      });
     },
     21099: (e, t, s) => {
       "use strict";
@@ -5461,7 +5854,9 @@
     },
     21466: (e, t, s) => {
       "use strict";
-      s.d(t, { n: () => i });
+      s.d(t, {
+        n: () => i,
+      });
       class i {
         static extractRoomIdFromCustomLink(e, t) {
           if (null == e) return;
@@ -5543,7 +5938,11 @@
     },
     22067: (e, t, s) => {
       "use strict";
-      s.d(t, { M1: () => n, Q: () => o, l: () => r });
+      s.d(t, {
+        M1: () => n,
+        Q: () => o,
+        l: () => r,
+      });
       var i = s(98487);
       const n = {
           [i.ro.Base15s]: {
@@ -5623,7 +6022,12 @@
     },
     22194: (e, t, s) => {
       "use strict";
-      s.d(t, { os: () => i, Yt: () => n, Gb: () => u, Ob: () => r });
+      s.d(t, {
+        os: () => i,
+        Yt: () => n,
+        Gb: () => u,
+        Ob: () => r,
+      });
       var i = (function (e) {
           return (
             (e[(e.Grandmaster = 0)] = "Grandmaster"),
@@ -5673,7 +6077,9 @@
             },
             description: {
               key: "strings:game.endGame.rankedUpdate.lockedDescription",
-              options: { count: e },
+              options: {
+                count: e,
+              },
             },
           };
         }
@@ -5697,7 +6103,10 @@
             (this.type = r.RankedLocked),
             (this.numberOfGamesPlayed = e),
             (this.requiredNumberOfGames = t),
-            (this.defaultEndGameData = { amount: "-", highest: !1 }));
+            (this.defaultEndGameData = {
+              amount: "-",
+              highest: !1,
+            }));
         }
       }
       class c {
@@ -5721,9 +6130,13 @@
           return {
             title: {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `${this.currentMMR}` },
+              options: {
+                value: `${this.currentMMR}`,
+              },
             },
-            description: { key: "strings:colonistCommon.utils.emptyString" },
+            description: {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
           };
         }
         getEndGameScreenMMRChangeText() {
@@ -5743,7 +6156,9 @@
         getFindGamePopupStatusText() {
           return {
             key: "strings:colonistCommon.rankedState.rating",
-            options: { rating: this.currentMMR },
+            options: {
+              rating: this.currentMMR,
+            },
           };
         }
         static deserialize(e) {
@@ -5791,7 +6206,9 @@
             },
             description: {
               key: "strings:game.endGame.rankedUpdate.placementDescription",
-              options: { count: e },
+              options: {
+                count: e,
+              },
             },
           };
         }
@@ -5818,7 +6235,10 @@
             (this.type = r.Placement),
             (this.numberOfPlacementGamesFinished = e),
             (this.numberOfPlacementGamesRequired = t),
-            (this.defaultEndGameData = { amount: "-", highest: !1 }));
+            (this.defaultEndGameData = {
+              amount: "-",
+              highest: !1,
+            }));
         }
       }
       class u {
@@ -5845,6 +6265,11 @@
         s.p +
         "assets/sfx_settlement_phase_ended_guitar.21440c801c97c0a7e291.mp3";
     },
+    22578: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/city_improvement_mobile_after.a608b5eb0d9160c9850f.png";
+    },
     22604: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/bg_button_purple.a839f31fbbe5a79141a0.svg";
@@ -5863,7 +6288,9 @@
     },
     23288: (e, t, s) => {
       "use strict";
-      s.d(t, { U: () => i });
+      s.d(t, {
+        U: () => i,
+      });
       class i {
         constructor(e) {
           this.roomState = e;
@@ -5877,7 +6304,11 @@
     },
     23355: (e, t, s) => {
       "use strict";
-      s.d(t, { K_: () => C, xp: () => P, F9: () => k });
+      s.d(t, {
+        K_: () => C,
+        xp: () => P,
+        F9: () => k,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(78311),
@@ -5891,7 +6322,7 @@
         p = s(76389),
         m = s(18587),
         g = s(84445),
-        f = s(42389);
+        f = s(66681);
       class y {
         init(e) {
           (this.setOnClickHandlers(),
@@ -5964,7 +6395,9 @@
           );
           (0, n.RH)(t, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e },
+            options: {
+              value: e,
+            },
           });
         }
         static setUserIcon(e) {
@@ -5993,7 +6426,9 @@
         }
         static setItems(e) {
           const t = document.getElementById("profile_popup_profile_items_div");
-          (0, n.RH)(t, { key: "strings:colonistCommon.utils.emptyString" });
+          (0, n.RH)(t, {
+            key: "strings:colonistCommon.utils.emptyString",
+          });
           const s = m.r.isUserOnMobileAppOrWeb && f.P_.isSceneGame();
           for (const i of e) {
             const e = m.r.isUserOnDiscord
@@ -6005,7 +6440,9 @@
                 : (0, n.cE)(
                     t,
                     `${e}#${r}`,
-                    { key: "strings:colonistCommon.utils.emptyString" },
+                    {
+                      key: "strings:colonistCommon.utils.emptyString",
+                    },
                     "",
                     "",
                     !0,
@@ -6110,7 +6547,9 @@
               i,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t },
+                options: {
+                  value: t,
+                },
               },
               "sticky_player_info_username",
               "profile_popup_sticky_player_info_username",
@@ -6137,7 +6576,9 @@
           );
           (0, n.n8)(
             t,
-            { key: "strings:profilePage.overview.title" },
+            {
+              key: "strings:profilePage.overview.title",
+            },
             "",
             "",
             "H2",
@@ -6150,7 +6591,9 @@
           ),
             (0, n.n8)(
               i,
-              { key: "strings:profilePage.overview.table.totalGames.title" },
+              {
+                key: "strings:profilePage.overview.table.totalGames.title",
+              },
               "",
               "",
               "H3",
@@ -6159,7 +6602,9 @@
               i,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_total_games_stat",
@@ -6172,7 +6617,9 @@
           ),
             (0, n.n8)(
               r,
-              { key: "strings:profilePage.overview.table.winPercentage.title" },
+              {
+                key: "strings:profilePage.overview.table.winPercentage.title",
+              },
               "",
               "",
               "H3",
@@ -6181,7 +6628,9 @@
               r,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_win_ratio_stat",
@@ -6194,7 +6643,9 @@
           ),
             (0, n.n8)(
               o,
-              { key: "strings:profilePage.overview.table.karma.title" },
+              {
+                key: "strings:profilePage.overview.table.karma.title",
+              },
               "",
               "",
               "H3",
@@ -6203,7 +6654,9 @@
               o,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?/?" },
+                options: {
+                  value: "?/?",
+                },
               },
               "",
               "profile_popup_karma_stat",
@@ -6216,7 +6669,9 @@
           ),
             (0, n.n8)(
               a,
-              { key: "strings:profilePage.overview.table.pointsPerGame.title" },
+              {
+                key: "strings:profilePage.overview.table.pointsPerGame.title",
+              },
               "",
               "",
               "H3",
@@ -6225,7 +6680,9 @@
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_pg_stat",
@@ -6238,7 +6695,9 @@
           ),
             (0, n.n8)(
               c,
-              { key: "strings:profilePage.overview.table.points.title" },
+              {
+                key: "strings:profilePage.overview.table.points.title",
+              },
               "",
               "",
               "H3",
@@ -6247,7 +6706,9 @@
               c,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "?" },
+                options: {
+                  value: "?",
+                },
               },
               "",
               "profile_popup_points_stat",
@@ -6268,7 +6729,9 @@
             s = (0, n.Le)(t, "profile_ranked_section_header");
           ((0, n.n8)(
             s,
-            { key: "strings:profilePage.navigationTabs.ranked" },
+            {
+              key: "strings:profilePage.navigationTabs.ranked",
+            },
             "",
             "",
             "H2",
@@ -6285,7 +6748,9 @@
             "profile_popup_ranked_mode_player_info_card_base",
             r.am.GameModeBase,
             "settlers of catan base game icon",
-            { key: "strings:leaderboardPage.gameModes.baseGame" },
+            {
+              key: "strings:leaderboardPage.gameModes.baseGame",
+            },
             "base",
           ),
             P.createRankedCard(
@@ -6293,7 +6758,9 @@
               "profile_popup_ranked_mode_player_info_card_1v1",
               r.am.GameMode1v1,
               "colonist 1v1 game mode icon",
-              { key: "strings:leaderboardPage.gameModes.1v1" },
+              {
+                key: "strings:leaderboardPage.gameModes.1v1",
+              },
               "1v1",
             ),
             this.createRankedCard(
@@ -6301,7 +6768,9 @@
               "profile_popup_ranked_mode_player_info_card_citiesandknights",
               r.am.GameModeCnK,
               "settlers of catan cities and knights icon",
-              { key: "strings:leaderboardPage.gameModes.citiesAndKnights" },
+              {
+                key: "strings:leaderboardPage.gameModes.citiesAndKnights",
+              },
               "citiesandknights",
             ));
         }
@@ -6331,7 +6800,9 @@
           );
           (0, n.n8)(
             t,
-            { key: "strings:profilePage.history.title" },
+            {
+              key: "strings:profilePage.history.title",
+            },
             "",
             "",
             "H2",
@@ -6375,7 +6846,9 @@
           );
           (0, n.n8)(
             t,
-            { key: "strings:profilePage.navigationTabs.items" },
+            {
+              key: "strings:profilePage.navigationTabs.items",
+            },
             "",
             "",
             "H2",
@@ -6392,7 +6865,9 @@
           (super(
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `${e}'s Profile` },
+              options: {
+                value: `${e}'s Profile`,
+              },
             },
             void 0,
             () => {},
@@ -6453,7 +6928,13 @@
         }
         return {
           key: e.key,
-          options: { ...e.options, ...s, interpolation: { escapeValue: !i } },
+          options: {
+            ...e.options,
+            ...s,
+            interpolation: {
+              escapeValue: !i,
+            },
+          },
         };
       }
       function n(e) {
@@ -6469,7 +6950,9 @@
         for (const e of t) if (null != e.options) return !0;
         return !1;
       }
-      s.d(t, { d: () => i });
+      s.d(t, {
+        d: () => i,
+      });
     },
     23918: (e, t, s) => {
       "use strict";
@@ -6481,7 +6964,9 @@
     },
     24127: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => c });
+      s.d(t, {
+        r: () => c,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(50482),
@@ -6506,15 +6991,18 @@
             (a.style.opacity = "50%"));
         }
         addBestValueHint() {
-          this.membershipProduct.bestValue &&
-            (this.productDiv.classList.add(
-              "store_page_membership_best_value_border",
-            ),
-            (0, i.Wr)(
-              this.headerDiv,
-              { key: "strings:storePage.bestValue" },
-              "store_page_membership_best_value_banner",
-            ));
+          if (!this.membershipProduct.bestValue) return;
+          this.productDiv.classList.add(
+            "store_page_membership_best_value_border",
+          );
+          const e = (0, i.Le)(this.headerDiv, "badge-white badge-lg");
+          (0, i.Wr)(
+            e,
+            {
+              key: "strings:storePage.bestValue",
+            },
+            "",
+          );
         }
         getValidMembershipPerks(e) {
           const t = structuredClone(e.perks);
@@ -6580,17 +7068,29 @@
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           );
         }
         static createInfoPopupForMapsAndExpansions() {
           o.r.create(
-            { key: "strings:storePage.FAQ.title" },
-            { key: "strings:storePage.FAQ.body" },
+            {
+              key: "strings:storePage.FAQ.title",
+            },
+            {
+              key: "strings:storePage.FAQ.body",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           );
         }
         constructor(e, t) {
@@ -6627,7 +7127,7 @@
       "use strict";
       s.d(t, {
         gu: () => E,
-        CD: () => F,
+        CD: () => N,
         _b: () => L,
         eo: () => M,
         h$: () => T,
@@ -6640,7 +7140,7 @@
         Ss: () => D,
         go: () => W,
         BB: () => V,
-        zj: () => N,
+        zj: () => F,
       });
       var i,
         n = s(67908),
@@ -6657,8 +7157,12 @@
         class t extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
-              { key: "strings:popups.errors.matchmakingError.disabled" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
+              {
+                key: "strings:popups.errors.matchmakingError.disabled",
+              },
               u.R.ServiceUnavailable,
             );
           }
@@ -6667,7 +7171,9 @@
         class s extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.finishWatchingAd",
               },
@@ -6679,7 +7185,9 @@
         class i extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.alreadySearchingForMatch",
               },
@@ -6691,10 +7199,14 @@
         class n extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.internalServerError",
-                options: { email: p.gq.SUPPORT_EMAIL },
+                options: {
+                  email: p.gq.SUPPORT_EMAIL,
+                },
               },
               u.R.InternalServerError,
             );
@@ -6704,8 +7216,12 @@
         class r extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
-              { key: "strings:popups.errors.matchmakingError.invalidRequest" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
+              {
+                key: "strings:popups.errors.matchmakingError.invalidRequest",
+              },
               u.R.BadRequest,
             );
           }
@@ -6714,7 +7230,9 @@
         class o extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.connectedToMultipleGames",
               },
@@ -6726,7 +7244,9 @@
         class a extends h.Ak {
           constructor(e, t) {
             super(
-              { key: "strings:popups.errors.matchmakingInfo.title" },
+              {
+                key: "strings:popups.errors.matchmakingInfo.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingInfo.playMoreToUnlockRanked",
                 options: {
@@ -6743,7 +7263,9 @@
         class c extends h.Ak {
           constructor(e, t) {
             super(
-              { key: "strings:popups.errors.matchmakingInfo.title" },
+              {
+                key: "strings:popups.errors.matchmakingInfo.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingInfo.playMoreToUnlockShuffle",
                 options: {
@@ -6760,10 +7282,14 @@
         class l extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:colonistCommon.serverStatus.serverUpdating",
-                options: { discordLink: p.gq.DISCORD_CHANNEL },
+                options: {
+                  discordLink: p.gq.DISCORD_CHANNEL,
+                },
               },
               u.R.ServiceUnavailable,
             );
@@ -6773,7 +7299,9 @@
         class d extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.alreadyPlayingRankedGame",
               },
@@ -6785,7 +7313,9 @@
         class m extends h.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.matchmakingError.title" },
+              {
+                key: "strings:popups.errors.matchmakingError.title",
+              },
               {
                 key: "strings:popups.errors.matchmakingError.invalidRankedMode",
               },
@@ -6825,7 +7355,7 @@
       })(i || (i = {}));
       var m = s(74710),
         g = s(95176),
-        f = s(42389),
+        f = s(66681),
         y = s(73022),
         b = s(56961),
         v = s(22194),
@@ -6877,29 +7407,54 @@
       function I(e) {
         switch (e) {
           case r._M.BeginnerMode:
-            return { playerCount: 1, botCount: 0 };
+            return {
+              playerCount: 1,
+              botCount: 0,
+            };
           case r._M.ColonistRush:
           case r._M.Easy:
           case r._M.Medium:
           case r._M.Hard:
-            return { playerCount: 1, botCount: 3 };
+            return {
+              playerCount: 1,
+              botCount: 3,
+            };
           case r.Nw.UnrankedClassic1v1:
           case r.Nw.RankedClassic1v1:
-            return { playerCount: 2, botCount: 0 };
+            return {
+              playerCount: 2,
+              botCount: 0,
+            };
           case r.Nw.UnrankedClassic4P:
           case r.Nw.RankedClassic4P:
           case r.Nw.RankedCitiesAndKnights4P:
-            return { playerCount: 4, botCount: 0 };
+            return {
+              playerCount: 4,
+              botCount: 0,
+            };
           case r.Nw.UnrankedShuffle: {
             const e = A.y.shuffleQueueData;
-            if (null == e) return { playerCount: 0, botCount: 0 };
+            if (null == e)
+              return {
+                playerCount: 0,
+                botCount: 0,
+              };
             const t = e.playerCount;
             return 1 == e.isBotGame
-              ? { playerCount: 1, botCount: t - 1 }
-              : { playerCount: t, botCount: 0 };
+              ? {
+                  playerCount: 1,
+                  botCount: t - 1,
+                }
+              : {
+                  playerCount: t,
+                  botCount: 0,
+                };
           }
           default:
-            return { playerCount: 0, botCount: 0 };
+            return {
+              playerCount: 0,
+              botCount: 0,
+            };
         }
       }
       function M(e) {
@@ -7020,16 +7575,25 @@
                 badge: {
                   text: {
                     key: "strings:colonistCommon.utils.#buffer",
-                    options: { value: `${t}/${e}` },
+                    options: {
+                      value: `${t}/${e}`,
+                    },
                   },
                   icon: p.am.IconSwords,
                 },
               };
             const s = A.y.shuffleQueueData,
               i = A.y.shufflePlayerData;
-            if (null == s) return { description: void 0, badge: void 0 };
+            if (null == s)
+              return {
+                description: void 0,
+                badge: void 0,
+              };
             if (o._.userState.items.hasMembership() || null == i)
-              return { description: B(s), badge: void 0 };
+              return {
+                description: B(s),
+                badge: void 0,
+              };
             const r = i.totalGameCount,
               a = i.freeGamesTotalCount;
             if (r < a) {
@@ -7039,7 +7603,9 @@
                 badge: {
                   text: {
                     key: "strings:homePage.matchmakingSelect.freeGamesLeft",
-                    options: { count: e },
+                    options: {
+                      count: e,
+                    },
                   },
                   icon: p.am.StoreGiftMembership,
                 },
@@ -7066,14 +7632,20 @@
               },
             };
           })();
-        if (!x(e)) return { description: void 0, badge: void 0 };
+        if (!x(e))
+          return {
+            description: void 0,
+            badge: void 0,
+          };
         if (
           !(null === (s = o._.userState) || void 0 === s
             ? void 0
             : s.isLoggedIn)
         )
           return {
-            description: { key: "strings:homePage.ranked.logInToPlayRanked" },
+            description: {
+              key: "strings:homePage.ranked.logInToPlayRanked",
+            },
             badge: void 0,
           };
         if (G(e)) {
@@ -7211,14 +7783,19 @@
               badge: {
                 text: {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: Math.round(s) },
+                  options: {
+                    value: Math.round(s),
+                  },
                 },
                 icon: n,
               },
             };
           }
         }
-        return { description: void 0, badge: void 0 };
+        return {
+          description: void 0,
+          badge: void 0,
+        };
       }
       function B(e) {
         const t = (0, P.gz)(e.mapId),
@@ -7229,18 +7806,29 @@
             ? (0, m.dN)(
                 {
                   key: "strings:homePage.shuffleQueue.mapAndMode",
-                  options: { context: 1 == i ? "withBots" : "" },
+                  options: {
+                    context: 1 == i ? "withBots" : "",
+                  },
                 },
-                { map: t, mode: s },
+                {
+                  map: t,
+                  mode: s,
+                },
               )
             : (0, m.dN)(
                 {
                   key: "strings:homePage.shuffleQueue.mapOnly",
-                  options: { context: 1 == i ? "withBots" : "" },
+                  options: {
+                    context: 1 == i ? "withBots" : "",
+                  },
                 },
-                { map: t },
+                {
+                  map: t,
+                },
               )
-          : { key: "strings:homePage.shuffleQueue.mapAndModeUnknown" };
+          : {
+              key: "strings:homePage.shuffleQueue.mapAndModeUnknown",
+            };
       }
       function D(e) {
         const t = e.title,
@@ -7251,7 +7839,9 @@
           () => {},
           () => {},
           !0,
-          { showXButton: !1 },
+          {
+            showXButton: !1,
+          },
         ).show();
       }
       function E() {
@@ -7306,14 +7896,14 @@
         [r.Nw.RankedCitiesAndKnights4P]: "RankedCitiesAndKnights4P",
         [r.Nw.UnrankedShuffle]: "UnrankedShuffle",
       };
-      function F(e) {
+      function N(e) {
         if ("string" == typeof e) {
           return `PlayVsBots_${e.charAt(0).toUpperCase() + e.slice(1).toLowerCase()}`;
         }
         var t;
         return null !== (t = O[e]) && void 0 !== t ? t : "Unknown";
       }
-      function N(e, t) {
+      function F(e, t) {
         if (!C.r.isUserOnMobileAppOrWeb) return;
         const s = (Date.now() - e) / 1e3;
         S.CA.sendAnalyticEvent({
@@ -7370,13 +7960,21 @@
         _.Q.startShuffleBotGame();
       }
     },
+    24160: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/dang-fix-pixelated-fullscreen-popup-image-before.b2baff274f27ba38d8cf.png";
+    },
     24368: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/road_gold.c48ddeff8c81a713c940.svg";
     },
     24415: (e, t, s) => {
       "use strict";
-      s.d(t, { D: () => x });
+      s.d(t, {
+        D: () => x,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(50482),
@@ -7420,14 +8018,20 @@
                     }
                   : {
                       key: "strings:colonistCommon.utils.#buffer",
-                      options: { value: "" },
+                      options: {
+                        value: "",
+                      },
                     },
               n = (0, o.dN)(
-                { key: "strings:homePage.lobbyPage.playerHoverText" },
+                {
+                  key: "strings:homePage.lobbyPage.playerHoverText",
+                },
                 {
                   username: {
                     key: "strings:colonistCommon.utils.#buffer",
-                    options: { value: t.username },
+                    options: {
+                      value: t.username,
+                    },
                   },
                   karmaText: s,
                 },
@@ -7475,7 +8079,9 @@
         }
         addNoTrollsIcon() {
           const e = (0, i.zO)(this.noTrollsIcon, n.am.IconNoTroll);
-          (0, a.vy)(e, { key: "strings:roomPage.options.noTrollsGame.title" });
+          (0, a.vy)(e, {
+            key: "strings:roomPage.options.noTrollsGame.title",
+          });
         }
         static changedNoTrollsData(e, t) {
           return null == t || t.minimumKarma != e;
@@ -7511,7 +8117,9 @@
             a =
               null != o
                 ? o
-                : { key: "strings:colonistCommon.utils.emptyString" },
+                : {
+                    key: "strings:colonistCommon.utils.emptyString",
+                  },
             c =
               null ===
                 (s = d.X.getMapDataForMap(
@@ -7522,7 +8130,9 @@
             l =
               null != c
                 ? c
-                : { key: "strings:colonistCommon.utils.emptyString" };
+                : {
+                    key: "strings:colonistCommon.utils.emptyString",
+                  };
           if (null == c || null == o)
             return (
               (0, p.vV)("update", ["Error no such mode " + e.gameModeSetting]),
@@ -7603,7 +8213,7 @@
         }
       }
       var S = s(84324),
-        k = s(42389),
+        k = s(66681),
         C = s(5603);
       class P {
         showActiveTableBody() {
@@ -7796,6 +8406,8 @@
         }
         static getModePriority(e) {
           switch (e) {
+            case m.p9.ColonistRush4P:
+              return 5;
             case m.p9.CitiesAndKnightsSeafarers4P:
             case m.p9.CitiesAndKnightsSeafarers56P:
               return 4;
@@ -7873,9 +8485,16 @@
           const e = await w.m.getRequestHandler(R.l.apiGetRoomList(), void 0);
           if (null == e) return;
           const { rooms: t } = e.json;
-          this.update({ full: !1, rooms: t });
+          this.update({
+            full: !1,
+            rooms: t,
+          });
           for (const [e, s] of this.rooms) {
-            t.some((t) => t.id === e) || (s.room = { ...s.room, visible: !1 });
+            t.some((t) => t.id === e) ||
+              (s.room = {
+                ...s.room,
+                visible: !1,
+              });
           }
         }
         clearRooms() {
@@ -7930,7 +8549,11 @@
         }
       }
       function L(e) {
-        return { ...e, gameMapSetting: e.map, gameModeSetting: e.mode };
+        return {
+          ...e,
+          gameMapSetting: e.map,
+          gameModeSetting: e.mode,
+        };
       }
       class B {
         show() {
@@ -8054,8 +8677,12 @@
         }
         openJoinRoomPopup() {
           const e = new G.e(
-            { key: "strings:homePage.lobbyPage.popups.enterRoomID.title" },
-            { key: "strings:homePage.lobbyPage.popups.enterRoomID.body" },
+            {
+              key: "strings:homePage.lobbyPage.popups.enterRoomID.title",
+            },
+            {
+              key: "strings:homePage.lobbyPage.popups.enterRoomID.body",
+            },
             async (e) =>
               await this.handleJoinRoom(e.trim().toLocaleLowerCase()),
             () => {},
@@ -8117,7 +8744,9 @@
     },
     25150: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => C });
+      s.d(t, {
+        Y: () => C,
+      });
       var i = s(53015),
         n = s(51988),
         r = s(9029),
@@ -8169,7 +8798,9 @@
             (s.style.marginRight = "5px"),
             (0, r.i5)(e, "", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t },
+              options: {
+                value: t,
+              },
             }));
         }
         setState(e) {
@@ -8218,7 +8849,9 @@
                 "block"),
               (0, r.RH)(this.usernameChangeAttemptsLeftContainer, {
                 key: "strings:homePage.header.changeUsername.usernameChangeAttemptsLeftNote",
-                options: { count: this.state.usernameChangeAttemptsLeft },
+                options: {
+                  count: this.state.usernameChangeAttemptsLeft,
+                },
               }))
             : (this.usernameChangeAttemptsLeftContainer.style.display = "none");
         }
@@ -8250,7 +8883,10 @@
                 })
               : this.showNotEnoughCoinsToChangeUsernamePopup(() => {
                   const e = document.getElementById("coins");
-                  null == e || e.scrollIntoView({ behavior: "smooth" });
+                  null == e ||
+                    e.scrollIntoView({
+                      behavior: "smooth",
+                    });
                 });
         }
         static showOutOfAttemptsAsGuestPopup() {
@@ -8259,10 +8895,14 @@
         showConfirmUsernameChangeWithAttemptsLeftPopup(e) {
           const t = {
             key: "strings:homePage.header.changeUsername.confirm.body",
-            options: { count: this.state.usernameChangeAttemptsLeft - 1 },
+            options: {
+              count: this.state.usernameChangeAttemptsLeft - 1,
+            },
           };
           u.r.create(
-            { key: "strings:homePage.header.changeUsername.confirm.title" },
+            {
+              key: "strings:homePage.header.changeUsername.confirm.title",
+            },
             t,
             () => {
               (this.setVisible(!1), this.updateUsername(e, !1));
@@ -8298,12 +8938,16 @@
             key: "strings:homePage.header.changeUsername.confirm.body",
             options: {
               context: "coins",
-              interpolation: { escapeValue: !1 },
+              interpolation: {
+                escapeValue: !1,
+              },
               price: t.outerHTML,
             },
           };
           u.r.create(
-            { key: "strings:homePage.header.changeUsername.confirm.title" },
+            {
+              key: "strings:homePage.header.changeUsername.confirm.title",
+            },
             s,
             () => {
               (this.setVisible(!1), this.updateUsername(e, !0));
@@ -8362,7 +9006,9 @@
           }
         }
         updateCustomValidityAndErrorMessage() {
-          let e = { key: "strings:colonistCommon.utils.emptyString" };
+          let e = {
+            key: "strings:colonistCommon.utils.emptyString",
+          };
           switch (this.usernameValidationState) {
             case 5:
               return (
@@ -8422,7 +9068,9 @@
                     "suggestion-text",
                     {
                       key: "strings:colonistCommon.utils.#buffer",
-                      options: { value: t },
+                      options: {
+                        value: t,
+                      },
                     },
                   );
                 (0, r.G0)(s, () => {
@@ -8439,13 +9087,17 @@
               ? e
               : {
                   key: "strings:homePage.header.changeUsername.title",
-                  options: { context: i },
+                  options: {
+                    context: i,
+                  },
                 },
             null != t
               ? t
               : {
                   key: "strings:homePage.header.changeUsername.body",
-                  options: { context: i },
+                  options: {
+                    context: i,
+                  },
                 },
             (e) => {
               this.submit(e);
@@ -8464,7 +9116,9 @@
           ((this.usernameValidationMessage = (0, r.i5)(
             n,
             "popup-footnote warning-text",
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
           )),
             (this.suggestedUsernamesContainer = (0, r.Le)(
               n,
@@ -8472,7 +9126,9 @@
             )),
             (this.usernameChangeAttemptsLeftContainer = (0, r.Wr)(
               this.form,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "popup-footnote",
             )),
             this.setFocusStyles(this.input),
@@ -8489,9 +9145,12 @@
     },
     25720: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => k, Y: () => C });
+      s.d(t, {
+        H: () => k,
+        Y: () => C,
+      });
       var i = s(9029),
-        n = s(42389),
+        n = s(66681),
         r = s(98487),
         o = s(78311);
       class a {
@@ -8534,7 +9193,9 @@
               )),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:game.playerOptionsPopup.report" },
+                  {
+                    key: "strings:game.playerOptionsPopup.report",
+                  },
                   "player-options-dropdown-button-text-red",
                 )));
               break;
@@ -8547,12 +9208,16 @@
               this.buttonText = t
                 ? (0, i.Wr)(
                     this.buttonContainer,
-                    { key: "strings:game.playerOptionsPopup.unmute" },
+                    {
+                      key: "strings:game.playerOptionsPopup.unmute",
+                    },
                     "player-options-dropdown-button-text",
                   )
                 : (0, i.Wr)(
                     this.buttonContainer,
-                    { key: "strings:game.playerOptionsPopup.mute" },
+                    {
+                      key: "strings:game.playerOptionsPopup.mute",
+                    },
                     "player-options-dropdown-button-text",
                   );
               break;
@@ -8563,7 +9228,9 @@
               )),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:game.playerOptionsPopup.viewProfile" },
+                  {
+                    key: "strings:game.playerOptionsPopup.viewProfile",
+                  },
                   "player-options-dropdown-button-text",
                 )));
               break;
@@ -8574,7 +9241,9 @@
               )),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:game.playerOptionsPopup.addFriend" },
+                  {
+                    key: "strings:game.playerOptionsPopup.addFriend",
+                  },
                   "player-options-dropdown-button-text",
                 )));
               break;
@@ -8588,8 +9257,12 @@
                 n.IH.gameController.myColor,
                 a,
               )
-                ? { key: "strings:game.playerOptionsPopup.unblockTrades" }
-                : { key: "strings:game.playerOptionsPopup.blockTrades" };
+                ? {
+                    key: "strings:game.playerOptionsPopup.unblockTrades",
+                  }
+                : {
+                    key: "strings:game.playerOptionsPopup.blockTrades",
+                  };
               this.buttonText = (0, i.Wr)(
                 this.buttonContainer,
                 l,
@@ -8604,7 +9277,9 @@
                 (0, i.zO)(this.buttonContainer, o.am.StoreGiftMembershipDark),
                 (this.buttonText = (0, i.Wr)(
                   this.buttonContainer,
-                  { key: "strings:storePage.sendGift" },
+                  {
+                    key: "strings:storePage.sendGift",
+                  },
                   "player-options-dropdown-button-text",
                 )));
           }
@@ -8809,10 +9484,14 @@
         }
         createAddFriendPopup() {
           new d.y(
-            { key: "strings:popups.addFriend.title" },
+            {
+              key: "strings:popups.addFriend.title",
+            },
             {
               key: "strings:popups.addFriend.body",
-              options: { username: this.player.username },
+              options: {
+                username: this.player.username,
+              },
             },
             () => {
               l.v.addFriendAction(this.player.username);
@@ -8929,6 +9608,12 @@
         }
       }
     },
+    25873: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/stan-fix-safari-low-resolution-dice-before.373d36a7e65e82b68135.jpg";
+    },
     25918: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/lobby_ad_signin.09776fae150baa9ee0bf.svg";
@@ -8949,11 +9634,16 @@
         })(window.location.href);
         history.replaceState(null, "", e);
       }
-      s.d(t, { UY: () => n, mh: () => i });
+      s.d(t, {
+        UY: () => n,
+        mh: () => i,
+      });
     },
     26406: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => l });
+      s.d(t, {
+        S: () => l,
+      });
       var i = s(98487),
         n = s(95176),
         r = s(9029),
@@ -8996,25 +9686,33 @@
             },
           },
         ],
-        c = { key: "strings:popups.reportPopup.reportedPopupText" };
+        c = {
+          key: "strings:popups.reportPopup.reportedPopupText",
+        };
       class l {
         static createReportPopup(e, t, s = c) {
           const i = {
             key: "strings:popups.reportPopup.body",
-            options: { playerUsername: e },
+            options: {
+              playerUsername: e,
+            },
           };
           let l;
           const d = new n.y(
             {
               key: "strings:popups.reportPopup.title",
-              options: { playerUsername: e },
+              options: {
+                playerUsername: e,
+              },
             },
             i,
             () => {
               if ("" == l) return;
               t(e, l);
               const i = new n.y(
-                { key: "strings:popups.reportPopup.reported" },
+                {
+                  key: "strings:popups.reportPopup.reported",
+                },
                 s,
                 () => {},
                 () => {},
@@ -9168,9 +9866,12 @@
     },
     27630: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => l, V: () => c });
+      s.d(t, {
+        Y: () => l,
+        V: () => c,
+      });
       var i = s(95176),
-        n = s(42389),
+        n = s(66681),
         r = s(23288);
       class o extends r.U {
         shouldShowWarning() {
@@ -9232,6 +9933,11 @@
       "use strict";
       e.exports = s.p + "assets/icon_bots_easy.df8d1f468aedb2967e05.svg";
     },
+    27935: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/rename_lobby_to_room_after.20dd4667e1572e9cc43f.png";
+    },
     27961: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/ribbon_small.f1f6f5885b2535205fe3.svg";
@@ -9259,7 +9965,10 @@
     },
     29249: (e, t, s) => {
       "use strict";
-      s.d(t, { n: () => i, q: () => n });
+      s.d(t, {
+        n: () => i,
+        q: () => n,
+      });
       var i = (function (e) {
         return (
           (e[(e.Information = 0)] = "Information"),
@@ -9283,7 +9992,9 @@
     },
     29962: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => i });
+      s.d(t, {
+        O: () => i,
+      });
       class i {}
       ((i.PLUS = 7499), (i.PREMIUM = 14999), (i.ELITE = 19999));
     },
@@ -9523,7 +10234,11 @@
               Math.floor(i / a.minutesAsSeconds(1)) % e.SECONDS_IN_MINUTE;
             return (
               (i -= a.minutesAsSeconds(o)),
-              { days: n, hours: r, minutes: o }
+              {
+                days: n,
+                hours: r,
+                minutes: o,
+              }
             );
           }
           function n(e, t = new Date()) {
@@ -9668,10 +10383,19 @@
               const s = i(e, t),
                 { days: n, hours: r, minutes: o } = s;
               return n > 0
-                ? { dateType: "day", duration: n }
+                ? {
+                    dateType: "day",
+                    duration: n,
+                  }
                 : r > 0
-                  ? { dateType: "hour", duration: r }
-                  : { dateType: "minute", duration: o };
+                  ? {
+                      dateType: "hour",
+                      duration: r,
+                    }
+                  : {
+                      dateType: "minute",
+                      duration: o,
+                    };
             }),
             (e.getOneWeekInThePast = function () {
               return n(-e.DAYS_IN_WEEK);
@@ -9750,17 +10474,23 @@
               if (i < 1)
                 return {
                   key: "strings:colonistCommon.dates.day",
-                  options: { count: 1 },
+                  options: {
+                    count: 1,
+                  },
                 };
               if (i < e.DAYS_IN_MONTH)
                 return {
                   key: "strings:colonistCommon.dates.day",
-                  options: { count: Math.round(i) },
+                  options: {
+                    count: Math.round(i),
+                  },
                 };
               const n = i / e.DAYS_IN_MONTH;
               return {
                 key: "strings:colonistCommon.dates.month",
-                options: { count: Math.round(n) },
+                options: {
+                  count: Math.round(n),
+                },
               };
             }),
             (e.formatCountdownString = function (t) {
@@ -9782,29 +10512,39 @@
               if (n >= 1)
                 return {
                   key: "strings:colonistCommon.timeLeft.days",
-                  options: { count: Math.floor(n) },
+                  options: {
+                    count: Math.floor(n),
+                  },
                 };
               const r = i / e.SECONDS_IN_HOUR;
               if (r >= 1)
                 return {
                   key: "strings:colonistCommon.timeLeft.hours",
-                  options: { count: Math.floor(r) },
+                  options: {
+                    count: Math.floor(r),
+                  },
                 };
               const o = i / e.SECONDS_IN_MINUTE;
               if (o >= 1)
                 return {
                   key: "strings:colonistCommon.timeLeft.minutes",
-                  options: { count: Math.floor(o) },
+                  options: {
+                    count: Math.floor(o),
+                  },
                 };
               const a = i % e.SECONDS_IN_MINUTE;
               return a >= 1
                 ? {
                     key: "strings:colonistCommon.timeLeft.seconds",
-                    options: { count: Math.floor(a) },
+                    options: {
+                      count: Math.floor(a),
+                    },
                   }
                 : {
                     key: "strings:colonistCommon.timeLeft.seconds",
-                    options: { count: 0 },
+                    options: {
+                      count: 0,
+                    },
                   };
             }),
             (e.getTimeAgoTextFromDate = function (t) {
@@ -9813,41 +10553,55 @@
               if (i < e.SECONDS_IN_MINUTE)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.second",
-                  options: { count: i },
+                  options: {
+                    count: i,
+                  },
                 };
               const n = Math.floor(i / e.SECONDS_IN_MINUTE);
               if (n < e.MINUTES_IN_HOUR)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.minute",
-                  options: { count: n },
+                  options: {
+                    count: n,
+                  },
                 };
               const r = Math.floor(n / e.MINUTES_IN_HOUR);
               if (r < e.HOURS_IN_DAY)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.hour",
-                  options: { count: r },
+                  options: {
+                    count: r,
+                  },
                 };
               const o = Math.floor(r / e.HOURS_IN_DAY);
               if (o < e.DAYS_IN_WEEK)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.day",
-                  options: { count: o },
+                  options: {
+                    count: o,
+                  },
                 };
               const a = Math.floor(o / e.DAYS_IN_WEEK);
               if (a < e.WEEKS_IN_MONTH)
                 return {
                   key: "strings:popups.notification.timeAbbreviations.week",
-                  options: { count: a },
+                  options: {
+                    count: a,
+                  },
                 };
               const c = Math.floor(o / e.DAYS_IN_MONTH);
               return c < e.MONTHS_IN_YEAR
                 ? {
                     key: "strings:popups.notification.timeAbbreviations.month",
-                    options: { count: c },
+                    options: {
+                      count: c,
+                    },
                   }
                 : {
                     key: "strings:popups.notification.timeAbbreviations.year",
-                    options: { count: Math.floor(o / e.DAYS_IN_YEAR) },
+                    options: {
+                      count: Math.floor(o / e.DAYS_IN_YEAR),
+                    },
                   };
             }));
         })(o || (o = {})),
@@ -10089,7 +10843,10 @@
     },
     30911: (e, t, s) => {
       "use strict";
-      s.d(t, { Z: () => r, k: () => o });
+      s.d(t, {
+        Z: () => r,
+        k: () => o,
+      });
       var i = s(53015),
         n = s(63778);
       const r = 2;
@@ -10147,7 +10904,11 @@
     },
     31166: (e, t, s) => {
       "use strict";
-      s.d(t, { AB: () => a, WC: () => r, hc: () => o });
+      s.d(t, {
+        AB: () => a,
+        WC: () => r,
+        hc: () => o,
+      });
       var i = s(41931),
         n = s(5603);
       const r = /^(251|517|837)$/.test(s.j) ? null : n.A,
@@ -10168,13 +10929,22 @@
           }));
       })(a || (a = {}));
     },
+    31338: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/room_guests_after.37328881e7a598cff48c.png";
+    },
     31364: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/settlement_green.1b78c696cd137be02fae.svg";
     },
     31567: (e, t, s) => {
       "use strict";
-      s.d(t, { LE: () => c, N6: () => u, gz: () => l, kl: () => d });
+      s.d(t, {
+        LE: () => c,
+        N6: () => u,
+        gz: () => l,
+        kl: () => d,
+      });
       var i = s(98487),
         n = s(83633),
         r = s(84235),
@@ -10194,14 +10964,18 @@
               };
             case i.p9.Seafarers4P:
             case i.p9.Seafarers56P:
-              return { key: "strings:homePage.shuffleQueue.modes.seafarers" };
+              return {
+                key: "strings:homePage.shuffleQueue.modes.seafarers",
+              };
             case i.p9.CitiesAndKnightsSeafarers4P:
             case i.p9.CitiesAndKnightsSeafarers56P:
               return {
                 key: "strings:homePage.shuffleQueue.modes.cnkSeafarers",
               };
             case i.p9.ColonistRush4P:
-              return { key: "strings:homePage.shuffleQueue.modes.rush" };
+              return {
+                key: "strings:homePage.shuffleQueue.modes.rush",
+              };
             default:
               return;
           }
@@ -10212,77 +10986,135 @@
             case i.Qy.Classic4P:
             case i.Qy.Classic56P:
             case i.Qy.Classic78P:
-              return { key: "strings:homePage.shuffleQueue.maps.standard" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.standard",
+              };
             case i.Qy.Classic4PRandom:
-              return { key: "strings:homePage.shuffleQueue.maps.random" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.random",
+              };
             case i.Qy.Earth:
             case i.Qy.EarthSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.earth" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.earth",
+              };
             case i.Qy.USA:
-              return { key: "strings:homePage.shuffleQueue.maps.usa" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.usa",
+              };
             case i.Qy.UK:
             case i.Qy.UKSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.uk" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.uk",
+              };
             case i.Qy.Diamond:
-              return { key: "strings:homePage.shuffleQueue.maps.diamond" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.diamond",
+              };
             case i.Qy.Gear:
-              return { key: "strings:homePage.shuffleQueue.maps.gear" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.gear",
+              };
             case i.Qy.Lakes:
-              return { key: "strings:homePage.shuffleQueue.maps.lakes" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.lakes",
+              };
             case i.Qy.Pond:
-              return { key: "strings:homePage.shuffleQueue.maps.pond" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.pond",
+              };
             case i.Qy.Twirl:
-              return { key: "strings:homePage.shuffleQueue.maps.twirl" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.twirl",
+              };
             case i.Qy.ShuffleBoard:
-              return { key: "strings:homePage.shuffleQueue.maps.shuffleBoard" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.shuffleBoard",
+              };
             case i.Qy.BlackForest:
-              return { key: "strings:homePage.shuffleQueue.maps.blackForest" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.blackForest",
+              };
             case i.Qy.Volcano:
-              return { key: "strings:homePage.shuffleQueue.maps.volcano" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.volcano",
+              };
             case i.Qy.GoldRush:
-              return { key: "strings:homePage.shuffleQueue.maps.goldRush" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.goldRush",
+              };
             case i.Qy.KingOfTheHill:
               return {
                 key: "strings:homePage.shuffleQueue.maps.kingOfTheHill",
               };
             case i.Qy.Circle:
-              return { key: "strings:homePage.shuffleQueue.maps.circle" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.circle",
+              };
             case i.Qy.Kite:
-              return { key: "strings:homePage.shuffleQueue.maps.kite" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.kite",
+              };
             case i.Qy.Romania:
-              return { key: "strings:homePage.shuffleQueue.maps.romania" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.romania",
+              };
             case i.Qy.MiniBase:
-              return { key: "strings:homePage.shuffleQueue.maps.miniBase" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.miniBase",
+              };
             case i.Qy.Monopoly:
-              return { key: "strings:homePage.shuffleQueue.maps.monopoly" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.monopoly",
+              };
             case i.Qy.MountainOfRiches:
               return {
                 key: "strings:homePage.shuffleQueue.maps.mountainOfRiches",
               };
             case i.Qy.Doggo:
-              return { key: "strings:homePage.shuffleQueue.maps.doggo" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.doggo",
+              };
             case i.Qy.Duel:
-              return { key: "strings:homePage.shuffleQueue.maps.duel" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.duel",
+              };
             case i.Qy.TradeIslands:
             case i.Qy.TradeIslandsSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.tradeIslands" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.tradeIslands",
+              };
             case i.Qy.Vietnam:
-              return { key: "strings:homePage.shuffleQueue.maps.vietnam" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.vietnam",
+              };
             case i.Qy.TurningTidesSeafarers:
             case i.Qy.TurningTidesClassic:
-              return { key: "strings:homePage.shuffleQueue.maps.turningTides" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.turningTides",
+              };
             case i.Qy.TwoIsles:
-              return { key: "strings:homePage.shuffleQueue.maps.twoIsles" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.twoIsles",
+              };
             case i.Qy.JellyFish:
-              return { key: "strings:homePage.shuffleQueue.maps.jellyfish" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.jellyfish",
+              };
             case i.Qy.Istanbul:
             case i.Qy.IstanbulSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.istanbul" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.istanbul",
+              };
             case i.Qy.Europe:
             case i.Qy.EuropeSeafarers:
-              return { key: "strings:homePage.shuffleQueue.maps.europe" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.europe",
+              };
             case i.Qy.Stripes:
-              return { key: "strings:homePage.shuffleQueue.maps.stripes" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.stripes",
+              };
             case i.Qy.MonopolyIslands:
             case i.Qy.MonopolyIslandsSeafarers:
               return {
@@ -10297,11 +11129,15 @@
             case i.Qy.SS2FourIslands3P:
             case i.Qy.SS2FourIslands4P:
             case i.Qy.SS2SixIslands56P:
-              return { key: "strings:homePage.shuffleQueue.maps.fourIslands" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.fourIslands",
+              };
             case i.Qy.SS3FogIslands3P:
             case i.Qy.SS3FogIslands4P:
             case i.Qy.SS3FogIslands56P:
-              return { key: "strings:homePage.shuffleQueue.maps.fogIslands" };
+              return {
+                key: "strings:homePage.shuffleQueue.maps.fogIslands",
+              };
             case i.Qy.SS4ThroughTheDesert3P:
             case i.Qy.SS4ThroughTheDesert4P:
             case i.Qy.SS4ThroughTheDesert56P:
@@ -10505,7 +11341,9 @@
     },
     31735: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => o });
+      s.d(t, {
+        M: () => o,
+      });
       var i = s(9029),
         n = s(27532);
       const r = s.p + "assets/icon_arrow_white.1cfd43894bd6514a469d.svg";
@@ -10532,14 +11370,18 @@
         }
         async convertImage() {
           const e = (await s.e(526).then(s.t.bind(s, 53827, 23))).default,
-            t = await e(this.container, { useCORS: !0 });
+            t = await e(this.container, {
+              useCORS: !0,
+            });
           return new Promise((e, s) => {
             t.toBlob((t) => {
               t
                 ? ((this.imageFile = new File(
                     [t],
                     "colonist-game-results.png",
-                    { type: t.type },
+                    {
+                      type: t.type,
+                    },
                   )),
                   e(this.imageFile))
                 : e(void 0);
@@ -10550,7 +11392,9 @@
           (0, i.WL)(
             this.container,
             n,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "share-image-logo",
           );
         }
@@ -10559,14 +11403,18 @@
           ((0, i.WL)(
             e,
             r,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "share-image-url-arrow",
           ),
             (0, i.Wr)(
               e,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "colonist.io" },
+                options: {
+                  value: "colonist.io",
+                },
               },
               "share-image-url",
             ));
@@ -10594,11 +11442,15 @@
       function i(e) {
         return Math.floor(e);
       }
-      s.d(t, { Q: () => i });
+      s.d(t, {
+        Q: () => i,
+      });
     },
     32332: (e, t, s) => {
       "use strict";
-      s.d(t, { A: () => S });
+      s.d(t, {
+        A: () => S,
+      });
       var i = s(87290),
         n = s(50482),
         r = s(34915),
@@ -10618,19 +11470,29 @@
           for (const e of t) {
             const t = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             };
             (0, o.t2)(n, t, "");
           }
         }
         constructor() {
           (super(
-            { key: "strings:homePage.ranked.infoPopup.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:homePage.ranked.infoPopup.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           ),
             (this.body.style.flexDirection = "column"),
             (0, o.RH)(this.body, {
@@ -10675,18 +11537,24 @@
               "strings:homePage.ranked.infoPopup.gameSettings.description",
             );
           (this.createListWithHeaderAndItems(
-            { key: "strings:homePage.ranked.infoPopup.howItWorks.title" },
+            {
+              key: "strings:homePage.ranked.infoPopup.howItWorks.title",
+            },
             t,
           ),
             this.createListWithHeaderAndItems(
-              { key: "strings:homePage.ranked.infoPopup.gameSettings.title" },
+              {
+                key: "strings:homePage.ranked.infoPopup.gameSettings.title",
+              },
               s,
             ));
           ((0, o.Wr)(
             this.faqSection,
             {
               key: "strings:homePage.ranked.infoPopup.forMoreDetailsCheckOutFAQ",
-              options: { faqUrl: "/faq#ranked" },
+              options: {
+                faqUrl: "/faq#ranked",
+              },
             },
             "popup_ranked_game_description_faq",
           ),
@@ -10709,7 +11577,9 @@
           const t = `${"number" == typeof e.rank && !g.r.isUserOnMobileAppOrWeb ? "#" : ""}${e.rank}`;
           (0, o.RH)(this.tdRank, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: t },
+            options: {
+              value: t,
+            },
           });
           const s = e.membershipType;
           if (void 0 !== s) {
@@ -10743,14 +11613,18 @@
             n = S.getCountryOrContinentName(e),
             r = {
               key: "strings:leaderboardPage.changeRegion.currentRegion",
-              options: { currentRegion: c.a7.t(n.key, n.options) },
+              options: {
+                currentRegion: c.a7.t(n.key, n.options),
+              },
             };
           e.myData &&
             ((i.style.cursor = "pointer"),
             (0, o.G0)(i, () => y.h.showChangeRegionPopup(), !1, !0));
           const a = e.myData
             ? s
-              ? { key: "strings:leaderboardPage.changeRegion.chooseRegion" }
+              ? {
+                  key: "strings:leaderboardPage.changeRegion.chooseRegion",
+                }
               : r
             : n;
           ((0, m.vy)(i, a, "right"),
@@ -10760,7 +11634,9 @@
           return (0, o.WL)(
             (0, o.Sw)(),
             b,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "flag",
           );
         }
@@ -10787,13 +11663,17 @@
           return e.countryCode
             ? {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: c.vX.getCountryName(e.countryCode) },
+                options: {
+                  value: c.vX.getCountryName(e.countryCode),
+                },
               }
             : e.continentCode
               ? {
                   key: `strings:leaderboardPage.tabs.continents.${e.continentCode}`,
                 }
-              : { key: "strings:leaderboardPage.earth" };
+              : {
+                  key: "strings:leaderboardPage.earth",
+                };
         }
         static getDivisionImage(e) {
           const t = r.j.getRankedDivisionImage(e),
@@ -10863,7 +11743,9 @@
     },
     32398: (e, t, s) => {
       "use strict";
-      s.d(t, { l: () => n });
+      s.d(t, {
+        l: () => n,
+      });
       var i = s(18587);
       class n {
         static socketServerWSS() {
@@ -10990,9 +11872,6 @@
         static apiAssignABTest() {
           return "/api/user/assign-ab-test";
         }
-        static apiRedeemFreeAvatar() {
-          return "/api/user/redeem-free-avatar";
-        }
         static apiGetRoomList() {
           return "/api/room-list.json";
         }
@@ -11094,7 +11973,9 @@
     },
     33292: (e, t, s) => {
       "use strict";
-      s.d(t, { a: () => u });
+      s.d(t, {
+        a: () => u,
+      });
       var i = s(92524),
         n = s(64265),
         r = s(50482),
@@ -11148,11 +12029,15 @@
           (e.billedAnnually
             ? (0, l.RH)(this.itemPrice, {
                 key: "strings:storePage.sections.membership.billing.yearlyPayment",
-                options: { amount: e.getAnnualPrice() },
+                options: {
+                  amount: e.getAnnualPrice(),
+                },
               })
             : (0, l.RH)(this.itemPrice, {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: "$" + this.product.getDefaultPrice() },
+                options: {
+                  value: "$" + this.product.getDefaultPrice(),
+                },
               }),
             (0, l.RH)(this.itemName, this.product.getProductName()),
             this.generateMembershipRenewalCheckoutText(),
@@ -11161,7 +12046,9 @@
         generateCoinCheckoutText() {
           ((0, l.RH)(this.itemPrice, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: this.product.getDefaultPrice() },
+            options: {
+              value: this.product.getDefaultPrice(),
+            },
           }),
             (0, l.RH)(this.itemName, this.product.getProductName()),
             (this.itemImage.src = (0, c.tu)(this.product.lobbyImage)));
@@ -11170,7 +12057,9 @@
           const e = document.getElementById("membership-renewal-info"),
             t = {
               key: "strings:storePage.checkout.membershipRenewalInfo",
-              options: { date: this.calculateMembershipRenewalDate() },
+              options: {
+                date: this.calculateMembershipRenewalDate(),
+              },
             };
           (0, l.RH)(e, t);
         }
@@ -11244,7 +12133,10 @@
     },
     33418: (e, t, s) => {
       "use strict";
-      s.d(t, { H5: () => o, gl: () => r });
+      s.d(t, {
+        H5: () => o,
+        gl: () => r,
+      });
       var i = s(63778);
       class n {
         getProductionForCornerPieceAndTile(e, t) {
@@ -11361,7 +12253,9 @@
     },
     33724: (e, t, s) => {
       "use strict";
-      s.d(t, { j: () => o });
+      s.d(t, {
+        j: () => o,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(90676);
@@ -11402,7 +12296,9 @@
           )),
             (0, n.i5)(this.sliderTrackContainer, "room-settings-slider-label", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.min },
+              options: {
+                value: this.min,
+              },
             }));
           const e = (0, n.Le)(
             this.sliderTrackContainer,
@@ -11420,18 +12316,24 @@
             (this.sliderTrack = (0, n.Le)(e, "room-settings-slider-track")),
             (this.sliderThumb = (0, n.i5)(e, "room-settings-slider-thumb", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.defaultValue },
+              options: {
+                value: this.defaultValue,
+              },
             })),
             (0, n.i5)(this.sliderTrackContainer, "room-settings-slider-label", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.max },
+              options: {
+                value: this.max,
+              },
             }),
             (this.textDisplay = (0, n.i5)(
               this.sliderContainer,
               "room-settings-slider-text-display",
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: this.defaultValue },
+                options: {
+                  value: this.defaultValue,
+                },
               },
             )),
             (this.slider.oninput = () => this.handleOnInput()),
@@ -11459,7 +12361,9 @@
           ((this.sliderThumb.style.left = `${r}px`),
             (0, n.oB)(this.sliderThumb, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             }));
           const o = e != this.defaultValue;
           (this.sliderContainer.classList.toggle("modified", o),
@@ -11478,7 +12382,9 @@
             ),
             (0, n.oB)(this.textDisplay, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             }));
         }
         updateSliderConfig(e, t) {
@@ -11537,7 +12443,11 @@
     },
     33832: (e, t, s) => {
       "use strict";
-      s.d(t, { fT: () => i, UA: () => r, iV: () => n });
+      s.d(t, {
+        fT: () => i,
+        UA: () => r,
+        iV: () => n,
+      });
       var i = (function (e) {
         return (
           (e.AppForeground = "app_foreground"),
@@ -11576,7 +12486,10 @@
     },
     34104: (e, t, s) => {
       "use strict";
-      s.d(t, { r: () => B, h: () => D });
+      s.d(t, {
+        r: () => D,
+        h: () => E,
+      });
       var i = s(78311),
         n = s(9029);
       class r {
@@ -11625,7 +12538,8 @@
         I = s(46456),
         M = s(11480),
         L = s(73022),
-        B = (function (e) {
+        B = s(18587),
+        D = (function (e) {
           return (
             (e[(e.Bots = 0)] = "Bots"),
             (e[(e.Casual = 1)] = "Casual"),
@@ -11633,7 +12547,7 @@
             e
           );
         })({});
-      class D {
+      class E {
         onHomepageShow() {
           ((this.componentShownTimestamp = Date.now()),
             this.startCountdownTimer());
@@ -11651,7 +12565,7 @@
         async initCardsAndBadges() {
           (await A._.waitUntilFresh,
             this.createBotCards(),
-            D.addNewBadgeIfNeeded(this.casualTab),
+            E.addNewBadgeIfNeeded(this.casualTab),
             this.createCasualCards(),
             await this.createRankedCards(),
             this.setCardsView(),
@@ -11692,9 +12606,16 @@
                 ? void 0
                 : s.totalGameCount;
           if (i && 0 != r) return;
-          if (null != e.querySelector(".mm-new-badge")) return;
-          const o = (0, n.Le)(e, "mm-new-badge");
-          (0, n.oB)(o, { key: "strings:homePage.matchmakingSelect.newBadge" });
+          if (null != e.querySelector(".badge-red")) return;
+          const o = B.r.isUserOnMobileAppOrWeb,
+            a = (0, n.Le)(e, o ? "badge-red badge-sm" : "badge-red badge-md");
+          (0, n.Wr)(
+            a,
+            {
+              key: "strings:homePage.matchmakingSelect.newBadge",
+            },
+            "",
+          );
         }
         createBotCards() {
           var e;
@@ -11810,8 +12731,12 @@
                 card: {
                   icon: f,
                   category: 1,
-                  title: { key: "strings:homePage.unranked.shuffle" },
-                  ...(null != s.description && { subtitle: s.description }),
+                  title: {
+                    key: "strings:homePage.unranked.shuffle",
+                  },
+                  ...(null != s.description && {
+                    subtitle: s.description,
+                  }),
                   time: (0, k.h$)(S.Nw.UnrankedShuffle),
                   playerCount: i.playerCount,
                   botCount: i.botCount,
@@ -11821,7 +12746,9 @@
                       : e.endDate,
                   matchType: S.Nw.UnrankedShuffle,
                 },
-                ...(s.badge && { badge: s.badge }),
+                ...(s.badge && {
+                  badge: s.badge,
+                }),
               },
             ];
           for (const { card: e, badge: t } of o) this.generateCard(e, t);
@@ -11846,7 +12773,7 @@
             if (null == t) return;
             (t.classList.add("mm-mode-card-icon"), e.replaceWith(t));
           }
-          D.addNewBadgeIfNeeded(l.element);
+          E.addNewBadgeIfNeeded(l.element);
         }
         async createRankedCards() {
           var e;
@@ -11873,13 +12800,17 @@
                   title: {
                     key: "strings:homePage.matchmakingSelect.cards.1v1",
                   },
-                  ...(i.description && { subtitle: i.description }),
+                  ...(i.description && {
+                    subtitle: i.description,
+                  }),
                   time: (0, k.h$)(S.Nw.RankedClassic1v1),
                   playerCount: r.playerCount,
                   botCount: r.botCount,
                   matchType: S.Nw.RankedClassic1v1,
                 },
-                ...(i.badge && { badge: i.badge }),
+                ...(i.badge && {
+                  badge: i.badge,
+                }),
               },
               {
                 card: {
@@ -11888,13 +12819,17 @@
                   title: {
                     key: "strings:homePage.matchmakingSelect.cards.4Player",
                   },
-                  ...(s.description && { subtitle: s.description }),
+                  ...(s.description && {
+                    subtitle: s.description,
+                  }),
                   time: (0, k.h$)(S.Nw.RankedClassic4P),
                   playerCount: o.playerCount,
                   botCount: o.botCount,
                   matchType: S.Nw.RankedClassic4P,
                 },
-                ...(s.badge && { badge: s.badge }),
+                ...(s.badge && {
+                  badge: s.badge,
+                }),
               },
               {
                 card: {
@@ -11903,13 +12838,17 @@
                   title: {
                     key: "strings:homePage.matchmakingSelect.cards.citiesAndKnights",
                   },
-                  ...(n.description && { subtitle: n.description }),
+                  ...(n.description && {
+                    subtitle: n.description,
+                  }),
                   time: (0, k.h$)(S.Nw.RankedCitiesAndKnights4P),
                   playerCount: a.playerCount,
                   botCount: a.botCount,
                   matchType: S.Nw.RankedCitiesAndKnights4P,
                 },
-                ...(n.badge && { badge: n.badge }),
+                ...(n.badge && {
+                  badge: n.badge,
+                }),
               },
             ];
           this.cnKProgressText =
@@ -11927,24 +12866,26 @@
             e.subtitle && (0, n.Wr)(a, e.subtitle, "mm-mode-card-subtitle"));
           const c = (0, n.Le)(o, "mm-mode-card-details");
           if (
-            (null != e.time && D.createOrUpdateTime(s, c, e.time),
-            D.createOrUpdatePlayerCount(s, c, e.playerCount),
-            D.createOrUpdateBotCount(s, c, e.botCount),
-            D.setCardEligibility(s, e),
+            (null != e.time && E.createOrUpdateTime(s, c, e.time),
+            E.createOrUpdatePlayerCount(s, c, e.playerCount),
+            E.createOrUpdateBotCount(s, c, e.botCount),
+            E.setCardEligibility(s, e),
             (0, n.G0)(s, () => {
               this.selectCard(d, !0);
             }),
             null != e.nextRotationISO)
           ) {
             const t = w.Re.formatTimeLeft(new Date(e.nextRotationISO));
-            D.createOrUpdateCountdown(s, c, t);
+            E.createOrUpdateCountdown(s, c, t);
           }
           let l;
           null != t && (l = new r(s, t));
           const d = {
             element: s,
             data: e,
-            ...(null != l && { badge: l }),
+            ...(null != l && {
+              badge: l,
+            }),
             infoIcon: (0, n.zO)(
               s,
               i.am.InfoIcon,
@@ -12073,7 +13014,7 @@
                 ((this.cnKProgressText =
                   null === (c = o.badge) || void 0 === c ? void 0 : c.text),
                 this.startCountdownTimer()));
-            D.setCardEligibility(e.element, e.data);
+            E.setCardEligibility(e.element, e.data);
           });
         }
         startCountdownTimer() {
@@ -12132,7 +13073,9 @@
           i &&
             (0, n.oB)(i, {
               key: this.cnKProgressText.key,
-              options: { time: s },
+              options: {
+                time: s,
+              },
             });
         }
         shouldUpdateCnKCardCountdownTimer() {
@@ -12156,11 +13099,11 @@
           const t = new Date(e.data.nextRotationISO).getTime(),
             s = e.element.querySelector(".mm-mode-card-details");
           if (t < Date.now())
-            return void D.createOrUpdateCountdown(e.element, s, {
+            return void E.createOrUpdateCountdown(e.element, s, {
               key: "strings:homePage.matchmakingSelect.newQueueSoon",
             });
           const i = w.Re.formatTimeLeft(new Date(t));
-          D.createOrUpdateCountdown(e.element, s, i);
+          E.createOrUpdateCountdown(e.element, s, i);
         }
         shouldUpdateShuffleCardCountdownTimer() {
           const e = this.cards.find(
@@ -12198,16 +13141,16 @@
           const c = t.element.querySelector(".mm-mode-card-details");
           ((t.data.time = (0, k.h$)(S.Nw.UnrankedShuffle)),
             null != t.data.time &&
-              D.createOrUpdateTime(t.element, c, t.data.time));
+              E.createOrUpdateTime(t.element, c, t.data.time));
           const l = (0, k.q7)(S.Nw.UnrankedShuffle);
           if (
             ((t.data.playerCount = l.playerCount),
-            D.createOrUpdatePlayerCount(t.element, c, l.playerCount),
+            E.createOrUpdatePlayerCount(t.element, c, l.playerCount),
             (t.data.botCount = l.botCount),
-            D.createOrUpdateBotCount(t.element, c, l.botCount),
+            E.createOrUpdateBotCount(t.element, c, l.botCount),
             i.description &&
               ((t.data.subtitle = i.description),
-              D.createOrUpdateSubtitle(t.element, i.description)),
+              E.createOrUpdateSubtitle(t.element, i.description)),
             i.badge &&
               (null == t.badge
                 ? (t.badge = new r(t.element, i.badge))
@@ -12216,28 +13159,34 @@
           ) {
             t.data.nextRotationISO = s.endDate;
             const e = w.Re.formatTimeLeft(new Date(s.endDate));
-            (D.createOrUpdateCountdown(t.element, c, e),
+            (E.createOrUpdateCountdown(t.element, c, e),
               this.startCountdownTimer());
           }
-          D.addNewBadgeIfNeeded(t.element);
+          E.addNewBadgeIfNeeded(t.element);
         }
         static createOrUpdateTime(e, t, s) {
           const i = e.querySelector(".mm-mode-card-time p");
           if (i)
             return void (0, n.oB)(i, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s.toString() },
+              options: {
+                value: s.toString(),
+              },
             });
           const r = (0, n.Le)(t, "mm-mode-card-detail mm-mode-card-time");
           ((0, n.WL)(r, u, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: s.toString() },
+            options: {
+              value: s.toString(),
+            },
           }),
             (0, n.Wr)(
               r,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: s.toString() },
+                options: {
+                  value: s.toString(),
+                },
               },
               "",
             ));
@@ -12247,7 +13196,9 @@
           if (i)
             return void (0, n.oB)(i, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s.toString() },
+              options: {
+                value: s.toString(),
+              },
             });
           const r = (0, n.Le)(
             t,
@@ -12255,13 +13206,17 @@
           );
           ((0, n.WL)(r, h, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: s.toString() },
+            options: {
+              value: s.toString(),
+            },
           }),
             (0, n.Wr)(
               r,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: s.toString() },
+                options: {
+                  value: s.toString(),
+                },
               },
               "",
             ));
@@ -12274,7 +13229,9 @@
             return (
               (0, n.oB)(r, {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: s.toString() },
+                options: {
+                  value: s.toString(),
+                },
               }),
               void (
                 null === (o = r.parentElement) ||
@@ -12285,13 +13242,17 @@
           const a = (0, n.Le)(t, "mm-mode-card-detail mm-mode-card-bot-count");
           ((0, n.WL)(a, p, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: s.toString() },
+            options: {
+              value: s.toString(),
+            },
           }),
             (0, n.Wr)(
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: s.toString() },
+                options: {
+                  value: s.toString(),
+                },
               },
               "",
             ),
@@ -12337,22 +13298,24 @@
               this.resetRankedCards();
             }),
             I.y.registerChangeListener(() => {
-              (D.addNewBadgeIfNeeded(this.casualTab), this.updateShuffleCard());
+              (E.addNewBadgeIfNeeded(this.casualTab), this.updateShuffleCard());
             }));
         }
       }
     },
     34221: (e, t, s) => {
       "use strict";
-      s.d(t, { h: () => h });
+      s.d(t, {
+        h: () => h,
+      });
       var i = s(18514),
         n = s(32398),
         r = s(655),
         o = s(95176),
         a = s(9029),
         c = s(44517),
-        l = s(42389);
-      if (!/^(251|517|837)$/.test(s.j)) var d = s(87958);
+        l = s(66681);
+      if (!/^(251|517|837)$/.test(s.j)) var d = s(500);
       var u = s(52955);
       class h {
         static showChangeRegionPopup() {
@@ -12388,7 +13351,9 @@
           );
           ((this.continentsSelectElement = p.createSelector(
             e,
-            { key: "strings:colonistCommon.continent" },
+            {
+              key: "strings:colonistCommon.continent",
+            },
             (e) => {
               (null != e && "" != e.trim()
                 ? this.popup.enableCheckButton()
@@ -12398,12 +13363,16 @@
           )),
             (this.countriesSelectElement = p.createSelector(
               e,
-              { key: "strings:colonistCommon.country" },
+              {
+                key: "strings:colonistCommon.country",
+              },
               (e) => this.setState(e),
             )),
             (this.statesSelectElement = p.createSelector(
               e,
-              { key: "strings:colonistCommon.region" },
+              {
+                key: "strings:colonistCommon.region",
+              },
               () => {},
             )),
             this.setContinents(),
@@ -12433,8 +13402,12 @@
           if (null == h) return;
           if (!h.isSuccess) return;
           const p = new o.y(
-            { key: "strings:popups.changeRegion.title" },
-            { key: "strings:popups.changeRegion.success" },
+            {
+              key: "strings:popups.changeRegion.title",
+            },
+            {
+              key: "strings:popups.changeRegion.success",
+            },
             () => {},
             () => {},
             !0,
@@ -12457,13 +13430,21 @@
             t = [];
           for (const s of e) {
             const e = i.a7.t(`strings:leaderboardPage.tabs.continents.${s}`);
-            t.push({ name: e, code: s });
+            t.push({
+              name: e,
+              code: s,
+            });
           }
           t.sort((e, t) => e.name.localeCompare(t.name));
           for (const e of t)
             (0, a.fg)(this.continentsSelectElement, e.code, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name, interpolation: { escapeValue: !1 } },
+              options: {
+                value: e.name,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
         }
         setCountries(e) {
@@ -12489,13 +13470,22 @@
             s = [];
           for (const e of t) {
             const t = i.vX.getCountryName(e);
-            null != t && s.push({ name: t, code: e });
+            null != t &&
+              s.push({
+                name: t,
+                code: e,
+              });
           }
           s.sort((e, t) => e.name.localeCompare(t.name));
           for (const e of s)
             (0, a.fg)(this.countriesSelectElement, e.code, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name, interpolation: { escapeValue: !1 } },
+              options: {
+                value: e.name,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
         }
         setState(e) {
@@ -12510,28 +13500,45 @@
             return;
           const t = this.regions.filter((t) => t.countryCode == e),
             s = [];
-          for (const e of t) s.push({ name: e.regionName, code: e.regionCode });
+          for (const e of t)
+            s.push({
+              name: e.regionName,
+              code: e.regionCode,
+            });
           s.sort((e, t) => e.name.localeCompare(t.name));
           for (const e of s)
             (0, a.fg)(this.statesSelectElement, e.code, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name, interpolation: { escapeValue: !1 } },
+              options: {
+                value: e.name,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
         }
         static setDefaultOption(e) {
-          (0, a.fg)(e, "", { key: "strings:popups.changeRegion.doNotDisplay" });
+          (0, a.fg)(e, "", {
+            key: "strings:popups.changeRegion.doNotDisplay",
+          });
         }
         static setEmptyOption(e) {
           (0, a.fg)(e, "", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: "" },
+            options: {
+              value: "",
+            },
           });
         }
         constructor() {
           ((this.regions = []),
             (this.popup = new o.y(
-              { key: "strings:popups.changeRegion.title" },
-              { key: "strings:popups.changeRegion.body" },
+              {
+                key: "strings:popups.changeRegion.title",
+              },
+              {
+                key: "strings:popups.changeRegion.body",
+              },
               () => this.handleChangeRegion(),
               () => {},
               !0,
@@ -12557,7 +13564,9 @@
     },
     34493: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => m });
+      s.d(t, {
+        O: () => m,
+      });
       var i = s(76092),
         n = s(53015),
         r = s(78311),
@@ -12628,8 +13637,12 @@
               }
             });
           (super(
-            { key: "strings:homePage.becomeAMember" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:homePage.becomeAMember",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {
               const e = {
                 type: i.k0.ABTestClickAnalytics,
@@ -12647,10 +13660,14 @@
             key: "strings:colonistCommon.utils.emptyString",
           });
           const b = (0, a.dN)(
-            { key: "strings:popups.membershipIncentive.body" },
+            {
+              key: "strings:popups.membershipIncentive.body",
+            },
             {
               value: y
-                ? { key: "strings:popups.membershipIncentive.optionMaps" }
+                ? {
+                    key: "strings:popups.membershipIncentive.optionMaps",
+                  }
                 : {
                     key: "strings:popups.membershipIncentive.optionExpansions",
                   },
@@ -12677,7 +13694,10 @@
     },
     34554: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => r, q: () => o });
+      s.d(t, {
+        N: () => r,
+        q: () => o,
+      });
       var i = s(29249),
         n = s(78311),
         r = (function (e) {
@@ -12705,7 +13725,9 @@
     34617: (e, t, s) => {
       "use strict";
       var i;
-      (s.d(t, { v: () => d }),
+      (s.d(t, {
+        v: () => d,
+      }),
         (function (e) {
           e.isIStripeCheckoutRequestStatus = function (e) {
             return "boolean" == typeof e.status && "string" == typeof e.message;
@@ -12741,14 +13763,16 @@
           e.FriendRequestReceivedData = class {};
         })(i || (i = {})));
       var n = s(78311),
-        r = s(42389),
+        r = s(66681),
         o = s(655),
         a = s(32398),
         c = s(95176),
         l = s(81888);
       class d {
         static async addFriendAction(e, t) {
-          const s = { username: e },
+          const s = {
+              username: e,
+            },
             i = await o.m.postRequestHandler(
               a.l.apiUserProfileAddFriend(),
               void 0,
@@ -12761,14 +13785,20 @@
             u = c
               ? {
                   key: "strings:popups.notification.youAreNowFriendsWith",
-                  options: { username: e },
+                  options: {
+                    username: e,
+                  },
                 }
-              : { key: "strings:profilePage.friends.friendRequestSent" };
+              : {
+                  key: "strings:profilePage.friends.friendRequestSent",
+                };
           (r.OV.showNotification(n.am.Friends, u), t && t(c));
           for (const e of d.callbackActionOnFriendRequestSent) e();
         }
         static async removeFriendAction(e, t) {
-          const s = { username: e };
+          const s = {
+            username: e,
+          };
           null !=
             (await o.m.postRequestHandler(
               a.l.apiUserProfileRemoveFriend(),
@@ -12779,17 +13809,23 @@
             (l._.refresh(),
             r.OV.showNotification(n.am.Friends, {
               key: "strings:popups.friendRequests.removed",
-              options: { username: e },
+              options: {
+                username: e,
+              },
             }),
             "function" == typeof t && t());
         }
         static showRemoveFriendPopup(e, t) {
           const s = {
             key: "strings:profilePage.friends.removeFriend.body",
-            options: { username: e },
+            options: {
+              username: e,
+            },
           };
           new c.y(
-            { key: "strings:profilePage.friends.removeFriend.title" },
+            {
+              key: "strings:profilePage.friends.removeFriend.title",
+            },
             s,
             t,
             () => {},
@@ -12822,7 +13858,9 @@
           return null == t ? [] : t.json;
         }
         static async friendRequestResponded(e, t) {
-          const s = { username: e },
+          const s = {
+              username: e,
+            },
             i = t
               ? a.l.apiUserProfileAcceptFriend()
               : a.l.apiUserProfileRemoveFriend();
@@ -12850,7 +13888,9 @@
     },
     34777: (e, t, s) => {
       "use strict";
-      s.d(t, { $: () => h });
+      s.d(t, {
+        $: () => h,
+      });
       var i = s(9029),
         n = s(30506),
         r = s(655),
@@ -12858,30 +13898,94 @@
         a = s(18587),
         c = s(78311);
       const l = [
-          { gameId: "191197897", playerColor: 2 },
-          { gameId: "191197330", playerColor: 1 },
-          { gameId: "191196681", playerColor: 4 },
-          { gameId: "191198102", playerColor: 2 },
-          { gameId: "191199121", playerColor: 2 },
-          { gameId: "191196320", playerColor: 5 },
-          { gameId: "191196489", playerColor: 5 },
-          { gameId: "191196952", playerColor: 1 },
-          { gameId: "191197221", playerColor: 11 },
-          { gameId: "191197079", playerColor: 1 },
-          { gameId: "191196444", playerColor: 4 },
-          { gameId: "191197644", playerColor: 1 },
-          { gameId: "191197558", playerColor: 5 },
-          { gameId: "191196948", playerColor: 12 },
-          { gameId: "191196835", playerColor: 6 },
-          { gameId: "191196714", playerColor: 1 },
+          {
+            slug: "gQYTA2vXZQV9fT2n",
+          },
         ],
         d = [
-          { gameId: "191208779", playerColor: 11 },
-          { gameId: "191208784", playerColor: 5 },
-          { gameId: "191208346", playerColor: 3 },
-          { gameId: "191208573", playerColor: 5 },
+          {
+            gameId: "191208779",
+            playerColor: 11,
+          },
+          {
+            gameId: "191208784",
+            playerColor: 5,
+          },
+          {
+            gameId: "191208346",
+            playerColor: 3,
+          },
+          {
+            gameId: "191208573",
+            playerColor: 5,
+          },
         ],
-        u = [{ slug: "gQYTA2vXZQV9fT2n" }];
+        u = [
+          {
+            gameId: "191197897",
+            playerColor: 2,
+          },
+          {
+            gameId: "191197330",
+            playerColor: 1,
+          },
+          {
+            gameId: "191196681",
+            playerColor: 4,
+          },
+          {
+            gameId: "191198102",
+            playerColor: 2,
+          },
+          {
+            gameId: "191199121",
+            playerColor: 2,
+          },
+          {
+            gameId: "191196320",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196489",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196952",
+            playerColor: 1,
+          },
+          {
+            gameId: "191197221",
+            playerColor: 11,
+          },
+          {
+            gameId: "191197079",
+            playerColor: 1,
+          },
+          {
+            gameId: "191196444",
+            playerColor: 4,
+          },
+          {
+            gameId: "191197644",
+            playerColor: 1,
+          },
+          {
+            gameId: "191197558",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196948",
+            playerColor: 12,
+          },
+          {
+            gameId: "191196835",
+            playerColor: 6,
+          },
+          {
+            gameId: "191196714",
+            playerColor: 1,
+          },
+        ];
       class h {
         static async loadContent() {
           try {
@@ -12898,11 +14002,9 @@
           }
         }
         static renderResults() {
-          const e = document.getElementById(
-              "championship25-quarterfinals-grid",
-            ),
+          const e = document.getElementById("championship25-final-grid"),
             t = document.getElementById("championship25-semifinals-grid"),
-            s = document.getElementById("championship25-final-grid");
+            s = document.getElementById("championship25-quarterfinals-grid");
           (e && h.renderResultCards(e, l),
             t && h.renderResultCards(t, d),
             s && h.renderResultCards(s, u));
@@ -12913,13 +14015,17 @@
               r = (0, i.Le)(n, "result-info");
             (0, i.i5)(r, "result-title", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `Table ${s + 1}` },
+              options: {
+                value: `Table ${s + 1}`,
+              },
             });
             const o = h.getReplayUrl(t),
               a = (0, i.cE)(
                 n,
                 o,
-                { key: "strings:colonistCommon.utils.emptyString" },
+                {
+                  key: "strings:colonistCommon.utils.emptyString",
+                },
                 "replay-btn",
                 void 0,
                 !0,
@@ -12951,9 +14057,13 @@
             o = document.getElementById("championship25-partners-grid");
           ((0, i.oB)(t, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: `Partners (${e.length})` },
+            options: {
+              value: `Partners (${e.length})`,
+            },
           }),
-            (0, i.RH)(o, { key: "strings:colonistCommon.utils.emptyString" }));
+            (0, i.RH)(o, {
+              key: "strings:colonistCommon.utils.emptyString",
+            }));
           const c = n.lv.shuffle(e);
           for (const e of c) {
             const t = (0, i.Le)(o, "partner-item");
@@ -12968,7 +14078,9 @@
             const n = (0, i.Le)(t, "partner-name");
             ((0, i.oB)(n, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.name },
+              options: {
+                value: e.name,
+              },
             }),
               s.push(t));
           }
@@ -12998,7 +14110,12 @@
     },
     34865: (e, t, s) => {
       "use strict";
-      if ((s.d(t, { n: () => n }), !/^(251|517|837)$/.test(s.j)))
+      if (
+        (s.d(t, {
+          n: () => n,
+        }),
+        !/^(251|517|837)$/.test(s.j))
+      )
         var i = s(23288);
       class n extends (/^(251|517|837)$/.test(s.j) ? null : i.U) {
         shouldShowWarning() {
@@ -13025,7 +14142,9 @@
     },
     34915: (e, t, s) => {
       "use strict";
-      s.d(t, { j: () => Gr });
+      s.d(t, {
+        j: () => Gr,
+      });
       var i = s(63778),
         n = s(22194),
         r = s(78311),
@@ -13062,8 +14181,8 @@
         x = s.p + "assets/icon_bank.bd1762728cfd5af24def.svg",
         U = s.p + "assets/icon_fullscreen_expand.8142bdc24178fb978f67.svg",
         O = s.p + "assets/icon_fullscreen_contract.7af56c892561691f8505.svg",
-        F = s.p + "assets/gif_fullscreen.42e77ed3e1017df3faa6.gif";
-      var N = s(48716),
+        N = s.p + "assets/gif_fullscreen.42e77ed3e1017df3faa6.gif";
+      var F = s(48716),
         H = s(56105);
       const W = s.p + "assets/icon_eye.fb4c25c86efbc2143a66.svg";
       var K = s(53059);
@@ -13118,8 +14237,8 @@
       const xe = s.p + "assets/map_kite_preview.850df983556c9fdd5419.png";
       var Ue = s(8842);
       const Oe = s.p + "assets/map_two_isles_preview.07510cff17d3d198f15c.png";
-      var Fe = s(72248),
-        Ne = s(15166),
+      var Ne = s(72248),
+        Fe = s(15166),
         He = s(89100),
         We = s(41398);
       const Ke = s.p + "assets/map_5_6_player_preview.9231bc7c8856796b3d1e.png",
@@ -13184,8 +14303,8 @@
       var xt = s(64543);
       const Ut = s.p + "assets/store_color_purple.545676b73eb19d8e9973.png",
         Ot = s.p + "assets/store_color_mysticblue.b42437b2d706ef06cfd3.png",
-        Ft = s.p + "assets/store_color_white.9db2ebf033eec04dccaf.png",
-        Nt = s.p + "assets/store_color_bronze.680ba9c14db0940c6151.png",
+        Nt = s.p + "assets/store_color_white.9db2ebf033eec04dccaf.png",
+        Ft = s.p + "assets/store_color_bronze.680ba9c14db0940c6151.png",
         Ht = s.p + "assets/store_color_silver.a4871f3986637e69ceaa.png",
         Wt = s.p + "assets/store_color_gold.55a2507f0b91edfbe899.png",
         Kt = s.p + "assets/store_color_pink.8e06e7c33fafc81c4fed.png",
@@ -13238,8 +14357,8 @@
         xs = s(16968),
         Us = s(601),
         Os = s(73050),
-        Fs = s(38853),
-        Ns = s(96144),
+        Ns = s(38853),
+        Fs = s(96144),
         Hs = s(11903),
         Ws = s(33744),
         Ks = s(65019),
@@ -13301,8 +14420,8 @@
         xi = s.p + "assets/subdivisions_iii.a55e015debf15544d914.svg",
         Ui = s.p + "assets/subdivisions_iv.e3f34d15c97b25f5d6ad.svg",
         Oi = s.p + "assets/subdivisions_v.7a381b6f8fc8bd4d0d77.svg",
-        Fi = s.p + "assets/menu_portrait_mode.b5c9aca45119e2e2afcb.png",
-        Ni = s.p + "assets/menu_landscape_mode.9b89db216dd60a4602ef.png";
+        Ni = s.p + "assets/menu_portrait_mode.b5c9aca45119e2e2afcb.png",
+        Fi = s.p + "assets/menu_landscape_mode.9b89db216dd60a4602ef.png";
       var Hi = s(37145),
         Wi = s(96668),
         Ki = s(61495),
@@ -13354,8 +14473,8 @@
         xn = s(99273),
         Un = s(88758),
         On = s(2109),
-        Fn = s(62640),
-        Nn = s(75602),
+        Nn = s(62640),
+        Fn = s(75602),
         Hn = s(61193),
         Wn = s(73023),
         Kn = s(47538),
@@ -13594,9 +14713,9 @@
             case r.am.FullScreenContract:
               return O;
             case r.am.FullScreenGif:
-              return F;
-            case r.am.LeftArrow:
               return N;
+            case r.am.LeftArrow:
+              return F;
             case r.am.Audio:
               return H;
             case r.am.Eye:
@@ -13704,9 +14823,9 @@
             case r.am.MapTwoIslesPreview:
               return Oe;
             case r.am.MapJellyFishPreview:
-              return Fe;
-            case r.am.MapGoldRushPreview:
               return Ne;
+            case r.am.MapGoldRushPreview:
+              return Fe;
             case r.am.MapStripesPreview:
               return He;
             case r.am.MapMonopolyIslandsPreview:
@@ -13813,9 +14932,9 @@
             case r.am.StoreColorMysticBlue:
               return Ot;
             case r.am.StoreColorWhite:
-              return Ft;
-            case r.am.StoreColorBronze:
               return Nt;
+            case r.am.StoreColorBronze:
+              return Ft;
             case r.am.StoreColorSilver:
               return Ht;
             case r.am.StoreColorGold:
@@ -13919,9 +15038,9 @@
             case r.am.SettlementWhite:
               return Os;
             case r.am.SettlementPurple:
-              return Fs;
-            case r.am.SettlementMysticBlue:
               return Ns;
+            case r.am.SettlementMysticBlue:
+              return Fs;
             case r.am.SettlementPink:
               return Hs;
             case r.am.CityRed:
@@ -14029,9 +15148,9 @@
             case r.am.RankSubdivisionV:
               return Oi;
             case r.am.LandscapeIcon:
-              return Ni;
-            case r.am.PortraitIcon:
               return Fi;
+            case r.am.PortraitIcon:
+              return Ni;
             case r.am.RewindToStart:
               return Hi;
             case r.am.Rewind:
@@ -14121,8 +15240,8 @@
           [i.DS.Silver]: xs,
           [i.DS.Gold]: Us,
           [i.DS.White]: Os,
-          [i.DS.Purple]: Fs,
-          [i.DS.MysticBlue]: Ns,
+          [i.DS.Purple]: Ns,
+          [i.DS.MysticBlue]: Fs,
           [i.DS.Pink]: Hs,
         }),
         (Gr.citiesByColor = {
@@ -14168,11 +15287,11 @@
           [i.DS.White]: xn,
           [i.DS.Purple]: Un,
           [i.DS.MysticBlue]: On,
-          [i.DS.Pink]: Fn,
+          [i.DS.Pink]: Nn,
         }),
         (Gr.knightsInactiveByColor = {
           [i.DS.None]: "",
-          [i.DS.Red]: Nn,
+          [i.DS.Red]: Fn,
           [i.DS.Blue]: Hn,
           [i.DS.Orange]: Wn,
           [i.DS.Green]: Kn,
@@ -14233,7 +15352,9 @@
     },
     34997: (e, t, s) => {
       "use strict";
-      s.d(t, { D: () => r });
+      s.d(t, {
+        D: () => r,
+      });
       var i = s(11743),
         n = s(78311);
       class r extends i.v {
@@ -14241,7 +15362,9 @@
           return [
             {
               image: n.am.NoAds,
-              title: { key: "strings:popups.becomeAMember.perks.noAds.title" },
+              title: {
+                key: "strings:popups.becomeAMember.perks.noAds.title",
+              },
               description: {
                 key: "strings:popups.becomeAMember.perks.noAds.description",
               },
@@ -14257,7 +15380,9 @@
             },
             {
               image: n.am.Colors,
-              title: { key: "strings:popups.becomeAMember.perks.colors.title" },
+              title: {
+                key: "strings:popups.becomeAMember.perks.colors.title",
+              },
               description: {
                 key: "strings:popups.becomeAMember.perks.colors.description",
               },
@@ -14275,7 +15400,9 @@
     },
     35078: (e, t, s) => {
       "use strict";
-      s.d(t, { J: () => i });
+      s.d(t, {
+        J: () => i,
+      });
       var i = (function (e) {
         return (
           (e[(e.Leaderboard = 0)] = "Leaderboard"),
@@ -14294,7 +15421,9 @@
     },
     35363: (e, t, s) => {
       "use strict";
-      s.d(t, { C: () => c });
+      s.d(t, {
+        C: () => c,
+      });
       var i = s(87506),
         n = s(18587),
         r = s(76092),
@@ -14357,7 +15486,10 @@
             c.sendAdsPerformanceData(r.k0.VideoAdsNeverLoaded));
         }
         static sendAdsPerformanceData(e) {
-          const t = { type: e, category: r.eX.AdsPerformance };
+          const t = {
+            type: e,
+            category: r.eX.AdsPerformance,
+          };
           o.CA.sendAnalyticEvent(t);
         }
         static buildLoadingAdBackground(e) {
@@ -14397,9 +15529,16 @@
       "use strict";
       e.exports = s.p + "assets/player_highlight.0eed1c82cf5638070136.png";
     },
+    35563: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/trade_counter_offer_after.7f57787e4124022d53e1.png";
+    },
     35606: (e, t, s) => {
       "use strict";
-      s.d(t, { n: () => r });
+      s.d(t, {
+        n: () => r,
+      });
       var i = s(11776),
         n = s(83633);
       class r {
@@ -14436,7 +15575,9 @@
     },
     35700: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => i });
+      s.d(t, {
+        i: () => i,
+      });
       var i,
         n = s(63778);
       !(function (e) {
@@ -14770,7 +15911,9 @@
     },
     35742: (e, t, s) => {
       "use strict";
-      s.d(t, { u: () => n });
+      s.d(t, {
+        u: () => n,
+      });
       var i = s(72589);
       class n {
         handleUrlHash() {
@@ -14881,9 +16024,16 @@
       "use strict";
       e.exports = s.p + "assets/card_lumber.cf22f8083cf89c2a29e7.svg";
     },
+    37207: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/shifting_content_before.29709accd4ea1b0c499a.png";
+    },
     37385: (e, t, s) => {
       "use strict";
-      s.d(t, { j: () => h });
+      s.d(t, {
+        j: () => h,
+      });
       var i = s(9029),
         n = s(20751),
         r = s(78311),
@@ -14938,7 +16088,9 @@
           const t = await a.m.postRequestWhenReady(
             c.l.apiAssignABTest(),
             void 0,
-            { abTestCategory: "REFERRAL_PROGRAM" },
+            {
+              abTestCategory: "REFERRAL_PROGRAM",
+            },
           );
           return null == t || null === (e = t.json) || void 0 === e
             ? void 0
@@ -14965,18 +16117,21 @@
             : 0;
         }
         createBaseView() {
-          const e = (0, i.Le)(this.referralItemsDiv, "store_page_item");
+          const e = (0, i.Le)(this.referralItemsDiv, "store_page_item"),
+            t = (0, i.Le)(e, "store_page_item_body");
           return {
             contentDiv: e,
             headerDiv: (0, i.Le)(e, "store_page_item_header"),
-            bodyDiv: (0, i.Le)(e, "store_page_item_body"),
+            bodyDiv: t,
           };
         }
         static createButton(e, t, s) {
           const n = (0, i.cE)(
             e,
             "#",
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "store_button",
           );
           h.isRewardAlreadyUnlocked(s, t.referralCount)
@@ -14992,14 +16147,18 @@
         static createDescription(e, t) {
           const s = (0, i.Wr)(
             e,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "",
           );
           return (
             (s.style.display = "none"),
             (0, i.RH)(s, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: h.loadReferralItemDescription(t) },
+              options: {
+                value: h.loadReferralItemDescription(t),
+              },
             }),
             s
           );
@@ -15032,7 +16191,10 @@
             e,
             {
               key: "strings:storePage.sections.referral.action.toBeUnlocked",
-              options: { referralCount: t, context: 1 == t ? "one" : "other" },
+              options: {
+                referralCount: t,
+                context: 1 == t ? "one" : "other",
+              },
             },
             "",
             "",
@@ -15041,7 +16203,9 @@
         static markAsUnlocked(e, t) {
           ((0, i.Wr)(
             e,
-            { key: "strings:storePage.sections.referral.action.unlocked" },
+            {
+              key: "strings:storePage.sections.referral.action.unlocked",
+            },
             "",
             "",
           ),
@@ -15105,6 +16269,12 @@
         }
       }
     },
+    37414: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/dang-update-payment-successful-popup-after.cc463def9a7a22d0af45.png";
+    },
     37642: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/dice_event_trade.99431534a1e93bf1516a.svg";
@@ -15135,7 +16305,9 @@
     },
     38854: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => o });
+      s.d(t, {
+        M: () => o,
+      });
       var i = s(9029),
         n = s(78311);
       class r {
@@ -15156,8 +16328,8 @@
             this.bannerText && this.createBanner(this.bannerText));
         }
         createBanner(e) {
-          const t = (0, i.Le)(this.container, "item-scroll-cell-banner");
-          (0, i.Wr)(t, e, "item-cell-banner-text");
+          const t = (0, i.Le)(this.container, "badge-green badge-sm");
+          (0, i.Wr)(t, e, "");
         }
         setView(e) {
           this.container.classList.toggle("guest-view", e);
@@ -15249,7 +16421,10 @@
           const t = this.scrollWrapper.scrollLeft,
             s = this.getMaxScrollPosition(),
             i = Math.max(0, Math.min(s, t + e));
-          this.scrollWrapper.scrollTo({ left: i, behavior: "smooth" });
+          this.scrollWrapper.scrollTo({
+            left: i,
+            behavior: "smooth",
+          });
         }
         getMaxScrollPosition() {
           return Math.max(
@@ -15274,13 +16449,16 @@
             (this.rightArrow.style.display = n ? "block" : "none"));
         }
         generateItems(e) {
-          const t = e.find((e) => void 0 !== e.bannerText);
-          if (t) {
-            const s = e.indexOf(t),
-              i = e[s];
-            (e.splice(s, 1), e.splice(1, 0, i));
+          const t = [...e];
+          t.sort((e, t) =>
+            e.available === t.available ? 0 : e.available ? -1 : 1,
+          );
+          const s = t.find((e) => void 0 !== e.bannerText);
+          if (s) {
+            const e = t.indexOf(s);
+            (t.splice(e, 1), t.splice(1, 0, s));
           }
-          (e.forEach((e) => {
+          (t.forEach((e) => {
             const t = new r(this.scrollContainer, e);
             this.items.push(t);
           }),
@@ -15330,7 +16508,9 @@
     },
     38910: (e, t, s) => {
       "use strict";
-      s.d(t, { X: () => a });
+      s.d(t, {
+        X: () => a,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(76092),
@@ -15350,7 +16530,9 @@
               this.tabOrderNumberContainer,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: `${e}` },
+                options: {
+                  value: `${e}`,
+                },
               },
               "",
             )),
@@ -15458,7 +16640,13 @@
             "store-gift-overlay-main-cta-button",
           );
           return (
-            (0, n.Wr)(e, { key: "strings:storePage.checkout.checkout" }, ""),
+            (0, n.Wr)(
+              e,
+              {
+                key: "strings:storePage.checkout.checkout",
+              },
+              "",
+            ),
             (0, n.G0)(e, () => {
               e.classList.contains("disabled") || this.checkoutAction();
             }),
@@ -15499,7 +16687,10 @@
     },
     39139: (e, t, s) => {
       "use strict";
-      s.d(t, { W: () => S, E: () => k });
+      s.d(t, {
+        W: () => S,
+        E: () => k,
+      });
       var i = s(76092),
         n = s(655),
         r = s(32398),
@@ -15515,7 +16706,12 @@
         }
         createStars() {
           const e = (0, a.Le)(this.body, "popup-feedback-form-stars-container"),
-            t = Array.from({ length: S }, () => d.createStar(e));
+            t = Array.from(
+              {
+                length: S,
+              },
+              () => d.createStar(e),
+            );
           (this.addStarsClickListeners(t),
             d.animateStarsOnHover(t),
             (e.onmouseout = () => d.resetStars(t)));
@@ -15546,7 +16742,9 @@
           const i = (0, a.WL)(
             e,
             l,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "popup-feedback-form-star-image",
           );
           return (
@@ -15557,12 +16755,20 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:popups.feedbackForm.title" },
-            { key: "strings:popups.feedbackForm.body" },
+            {
+              key: "strings:popups.feedbackForm.title",
+            },
+            {
+              key: "strings:popups.feedbackForm.body",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           ),
             (this.feedbackFormController = e));
         }
@@ -15613,7 +16819,12 @@
             "popup-feedback-form-textarea-character-count",
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: "0/300", interpolation: { escapeValue: !1 } },
+              options: {
+                value: "0/300",
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             },
           );
           (e.addEventListener("input", (e) => {
@@ -15660,7 +16871,12 @@
               this.header,
               "popup-feedback-form-stars-container",
             ),
-            t = Array.from({ length: S }, () => d.createStar(e, !0, !0));
+            t = Array.from(
+              {
+                length: S,
+              },
+              () => d.createStar(e, !0, !0),
+            );
           (this.setStarsColorBasedOnRating(t), this.addStarsClickListeners(t));
         }
         setStarsColorBasedOnRating(e) {
@@ -15684,8 +16900,12 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:popups.feedbackForm.improve" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:popups.feedbackForm.improve",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -15717,7 +16937,7 @@
       }
       var f = s(19733),
         y = s(85801),
-        b = s(42389),
+        b = s(66681),
         v = s(67908);
       const S = 5;
       class k {
@@ -15754,15 +16974,21 @@
                   e.call(this);
               };
               return void f.r.create(
-                { key: "strings:popups.errors.general.title" },
+                {
+                  key: "strings:popups.errors.general.title",
+                },
                 {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: e.message },
+                  options: {
+                    value: e.message,
+                  },
                 },
                 t,
                 t,
                 !1,
-                { showXButton: !1 },
+                {
+                  showXButton: !1,
+                },
               );
             }
             (await n.m.postRequestHandler(
@@ -15820,9 +17046,11 @@
     },
     39509: (e, t, s) => {
       "use strict";
-      s.d(t, { o: () => a });
+      s.d(t, {
+        o: () => a,
+      });
       var i = s(19733),
-        n = s(42389),
+        n = s(66681),
         r = s(78311),
         o = s(29249);
       function a(e) {
@@ -15831,10 +17059,14 @@
             key: t
               ? "strings:roomPage.notifications.failedToSelectPlayerCount"
               : "strings:roomPage.notifications.invalidGameModeSelected",
-            options: { playerCount: e },
+            options: {
+              playerCount: e,
+            },
           };
           i.r.createSimplePopup(
-            { key: "strings:popups.informationView.title" },
+            {
+              key: "strings:popups.informationView.title",
+            },
             s,
           );
         }),
@@ -15847,7 +17079,9 @@
             n.OV.show(
               {
                 key: "strings:colonistCommon.serverStatus.serverUpdating",
-                options: { discordLink: r.gq.DISCORD_CHANNEL },
+                options: {
+                  discordLink: r.gq.DISCORD_CHANNEL,
+                },
               },
               o.n.Information,
             );
@@ -15855,7 +17089,10 @@
           e.onFailedToStartGamePlayersNotReady((e) => {
             n.OV.showNotification(r.am.Lightning, {
               key: "strings:roomPage.notifications.usersNotReadyToPlay",
-              options: { usernames: e, count: e.length },
+              options: {
+                usernames: e,
+                count: e.length,
+              },
             });
           }),
           e.onFailedToSelectUsedColor(() => {
@@ -15880,6 +17117,11 @@
       e.exports =
         s.p + "assets/card_progress_trade_back.0198349da9287ab13eb1.svg";
     },
+    40136: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/counter_offer_8p_before.db9ef8e58b0605caad02.png";
+    },
     40625: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/lobby_ad_mobile_app.296095858302e95b9196.png";
@@ -15887,6 +17129,11 @@
     40972: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/road_orange.07bb26b8c1e63dd438c7.svg";
+    },
+    41001: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/ios_dice_resolution_before.4ab5da07f57500fb0d2e.png";
     },
     41051: (e, t, s) => {
       "use strict";
@@ -15956,11 +17203,20 @@
           const e = this.description.key,
             t = {
               key: "strings:popups.errors.authError.standardErrorMessage",
-              options: { email: n.gq.SUPPORT_EMAIL },
+              options: {
+                email: n.gq.SUPPORT_EMAIL,
+              },
             };
           return (0, i.dN)(
-            { key: "strings:popups.errors.authError.displayMessage" },
-            { errorMessage: { key: e }, standardErrorMessage: t },
+            {
+              key: "strings:popups.errors.authError.displayMessage",
+            },
+            {
+              errorMessage: {
+                key: e,
+              },
+              standardErrorMessage: t,
+            },
           );
         }
         static deserialize(e) {
@@ -16006,7 +17262,9 @@
     },
     41418: (e, t, s) => {
       "use strict";
-      s.d(t, { q: () => a });
+      s.d(t, {
+        q: () => a,
+      });
       var i = s(19966),
         n = s(76092),
         r = s(98487),
@@ -16016,7 +17274,10 @@
           this.send(r.$d.CreateTrade, e);
         }
         executeTrade(e, t) {
-          const s = { tradeId: e, playerToExecuteTradeWith: t };
+          const s = {
+            tradeId: e,
+            playerToExecuteTradeWith: t,
+          };
           this.send(r.$d.ExecuteTrade, s);
         }
         updateTradeResponse(e) {
@@ -16159,7 +17420,11 @@
         }
         sendConfirmBuildAnalytic() {}
         async sendGameAnalyticOnce(e, t) {
-          const s = { type: e, category: n.eX.Game, floatValue: t };
+          const s = {
+            type: e,
+            category: n.eX.Game,
+            floatValue: t,
+          };
           await i.CA.sendAnalyticEventOnce(s);
         }
         confirmCityUpgrade(e) {
@@ -16202,7 +17467,10 @@
           this.send(r.$d.ClickedRematch, !0);
         }
         clickedVote(e, t) {
-          this.send(r.$d.Vote, { id: e, accepted: t });
+          this.send(r.$d.Vote, {
+            id: e,
+            accepted: t,
+          });
         }
         requestActionSwap(e) {
           this.send(r.$d.RequestActionSwap, e);
@@ -16229,7 +17497,10 @@
           this.send(r.$d.GameChatSubmit, e);
         }
         reportPlayer(e, t) {
-          const s = { reportReason: e, reportedPlayerColor: t };
+          const s = {
+            reportReason: e,
+            reportedPlayerColor: t,
+          };
           this.send(r.$d.ReportPlayer, s);
         }
         requestGameState() {
@@ -16260,13 +17531,20 @@
       "use strict";
       e.exports = s.p + "assets/ab_fullscreen.c89463c3dc00ebdc790b.png";
     },
+    41816: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/ios_dice_resolution_after.4a2fa98b279c90afc49c.png";
+    },
     41901: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/icon_merchant_black.23d3085d7c9f2bc643d1.svg";
     },
     41931: (e, t, s) => {
       "use strict";
-      s.d(t, { p: () => l });
+      s.d(t, {
+        p: () => l,
+      });
       var i = s(71068),
         n = s(78311),
         r = s(52955);
@@ -16320,8 +17598,8 @@
           x = "mLastScene",
           U = "shouldshowfeedbackform",
           O = "lastfeedbackformdate",
-          F = "discordlinkingsuccesspopup",
-          N = "discordonlineusernamepopupshown",
+          N = "discordlinkingsuccesspopup",
+          F = "discordonlineusernamepopupshown",
           H = "discordchangeregionincentivepopupshown",
           W = "discordkeepplayingonwebpopupshown",
           K = "beginnerModeLevel",
@@ -16608,19 +17886,19 @@
           }),
           (e.getBeginnerModeLevel = j),
           (e.setDiscordAccountLinked = function () {
-            c.set(F, !0);
-          }),
-          (e.getDiscordAccountLinked = function () {
-            return "true" == c.get(F);
-          }),
-          (e.removeDiscordAccountLinked = function () {
-            c.delete(F);
-          }),
-          (e.setDiscordOnlineUsernamePopupShown = function () {
             c.set(N, !0);
           }),
-          (e.getDiscordOnlineUsernamePopupShown = function () {
+          (e.getDiscordAccountLinked = function () {
             return "true" == c.get(N);
+          }),
+          (e.removeDiscordAccountLinked = function () {
+            c.delete(N);
+          }),
+          (e.setDiscordOnlineUsernamePopupShown = function () {
+            c.set(F, !0);
+          }),
+          (e.getDiscordOnlineUsernamePopupShown = function () {
+            return "true" == c.get(F);
           }),
           (e.setDiscordChangeRegionIncentivePopupShown = function () {
             c.set(H, !0);
@@ -16661,7 +17939,10 @@
                   (await navigator.serviceWorker.ready,
                     null === (t = navigator.serviceWorker.controller) ||
                       void 0 === t ||
-                      t.postMessage({ type: "languageChange", language: e }));
+                      t.postMessage({
+                        type: "languageChange",
+                        language: e,
+                      }));
                 }
               })(e));
           }),
@@ -16691,7 +17972,10 @@
           (e.setLastSelectedMatchmakingMode = function (e) {
             c.set(
               $,
-              JSON.stringify({ category: e.category, matchType: e.matchType }),
+              JSON.stringify({
+                category: e.category,
+                matchType: e.matchType,
+              }),
             );
           }),
           (e.getLastSelectedMatchmakingMode = function () {
@@ -16707,7 +17991,9 @@
     },
     42003: (e, t, s) => {
       "use strict";
-      s.d(t, { h: () => r });
+      s.d(t, {
+        h: () => r,
+      });
       var i = s(9029),
         n = s(23355);
       class r {
@@ -16752,7 +18038,10 @@
     },
     42380: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => i, s: () => n });
+      s.d(t, {
+        M: () => i,
+        s: () => n,
+      });
       const i = /^(251|517|837|85)$/.test(s.j)
         ? null
         : ["valentines", "easter", "halloween", "thanksgiving", "christmas"];
@@ -16784,2748 +18073,71 @@
       n.holidayDates = [
         {
           name: "valentines",
-          dates: { start: { month: 1, day: 24 }, end: { month: 2, day: 18 } },
+          dates: {
+            start: {
+              month: 1,
+              day: 24,
+            },
+            end: {
+              month: 2,
+              day: 18,
+            },
+          },
         },
         {
           name: "easter",
-          dates: { start: { month: 3, day: 20 }, end: { month: 4, day: 30 } },
+          dates: {
+            start: {
+              month: 3,
+              day: 20,
+            },
+            end: {
+              month: 4,
+              day: 30,
+            },
+          },
         },
         {
           name: "halloween",
-          dates: { start: { month: 10, day: 10 }, end: { month: 11, day: 5 } },
+          dates: {
+            start: {
+              month: 10,
+              day: 10,
+            },
+            end: {
+              month: 11,
+              day: 5,
+            },
+          },
         },
         {
           name: "thanksgiving",
-          dates: { start: { month: 11, day: 6 }, end: { month: 11, day: 30 } },
+          dates: {
+            start: {
+              month: 11,
+              day: 6,
+            },
+            end: {
+              month: 11,
+              day: 30,
+            },
+          },
         },
         {
           name: "christmas",
-          dates: { start: { month: 12, day: 1 }, end: { month: 1, day: 12 } },
+          dates: {
+            start: {
+              month: 12,
+              day: 1,
+            },
+            end: {
+              month: 1,
+              day: 12,
+            },
+          },
           extendsToNewYear: !0,
         },
       ];
-    },
-    42389: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        gC: () => ut,
-        _$: () => lt,
-        OV: () => at,
-        sZ: () => ot,
-        i0: () => ct,
-        IH: () => rt,
-        P_: () => dt,
-        vY: () => nt,
-      });
-      var i = s(18587),
-        n = s(19966),
-        r = s(81888),
-        o = s(18514);
-      if (837 != s.j) var a = s(36558);
-      if (837 != s.j) var c = s(47649);
-      if (837 != s.j) var l = s(12868);
-      var d = s(78046);
-      class u {
-        static isReferrerInformationEmpty(e) {
-          return null == e.referrer && null == e.referralCode;
-        }
-      }
-      ((u.marketingReferralCodeURLVariable = "referralCode"),
-        (u.maxReferralCodeLength = 20),
-        (u.maxReferrerLength = 150));
-      var h = s(69714),
-        p = s(26658);
-      class m {
-        static init() {
-          (this.initVariables(),
-            window.addEventListener("storage", (e) => {
-              if ("string" == typeof e.key && null != e.newValue)
-                switch (e.key) {
-                  case "requestSavedReferrer":
-                    this.sendSessionReferrer();
-                    break;
-                  case "sendSessionReferrer":
-                    this.updateSessionReferrer(e.newValue);
-                    break;
-                  case "requestSessionReferralCode":
-                    this.sendSessionReferralCode();
-                    break;
-                  case "sendSessionReferralCode":
-                    this.updateSessionReferralCode(e.newValue);
-                }
-            }),
-            this.requestSavedReferrerFromOtherOpenTabs(),
-            this.requestSavedReferralCodeFromOtherOpenTabs(),
-            ot.controller.registerSessionEstablishedObserver(() => {
-              const e = this.referrer,
-                t = this.referralCode,
-                s = {
-                  referrer: "" == e ? void 0 : e,
-                  referralCode: null != t ? t : void 0,
-                };
-              u.isReferrerInformationEmpty(s) ||
-                h.Q.sendLobby(p.Dj.SaveClientReferrer, s);
-            }));
-        }
-        static initVariables() {
-          (this.referrer, this.referralCode);
-        }
-        static requestSavedReferrerFromOtherOpenTabs() {
-          (window.localStorage.setItem("requestSavedReferrer", ""),
-            window.localStorage.removeItem("requestSavedReferrer"));
-        }
-        static sendSessionReferrer() {
-          const e = this.getSessionReferrer();
-          null != e &&
-            (window.localStorage.setItem("sendSessionReferrer", e),
-            window.localStorage.removeItem("sendSessionReferrer"));
-        }
-        static updateSessionReferrer(e) {
-          null != e && (this.referrer = e);
-        }
-        static requestSavedReferralCodeFromOtherOpenTabs() {
-          (window.localStorage.setItem("requestSessionReferralCode", ""),
-            window.localStorage.removeItem("requestSessionReferralCode"));
-        }
-        static sendSessionReferralCode() {
-          const e = this.getSessionReferralCode();
-          null != e &&
-            (window.localStorage.setItem("sendSessionReferralCode", e),
-            window.localStorage.removeItem("sendSessionReferralCode"));
-        }
-        static updateSessionReferralCode(e) {
-          null != e && (this.referralCode = e);
-        }
-        static get referrer() {
-          const e = this.getSessionReferrer();
-          if (null != e) return e;
-          const t = document.referrer;
-          return ((this.referrer = t), t);
-        }
-        static set referrer(e) {
-          sessionStorage.setItem(this.REFERRER_KEY, e);
-        }
-        static getSessionReferrer() {
-          return sessionStorage.getItem(this.REFERRER_KEY);
-        }
-        static get referralCode() {
-          const e = this.getSessionReferralCode();
-          if (null != e) return e;
-          const t = this.getReferralCodeFromURL();
-          return null == t ? null : ((this.referralCode = t), t);
-        }
-        static set referralCode(e) {
-          null != e && sessionStorage.setItem(this.REFERRAL_CODE_KEY, e);
-        }
-        static getSessionReferralCode() {
-          return sessionStorage.getItem(this.REFERRAL_CODE_KEY);
-        }
-        static getReferralCodeFromURL() {
-          return new URLSearchParams(window.location.search).get(
-            u.marketingReferralCodeURLVariable,
-          );
-        }
-      }
-      ((m.REFERRER_KEY = "referrer"), (m.REFERRAL_CODE_KEY = "referralCode"));
-      var g = s(41931),
-        f = s(95176),
-        y = s(52609),
-        b = s(78311),
-        v = s(17399);
-      class S extends f.y {
-        bringToFront() {
-          this.container.style.zIndex = "10";
-        }
-        constructor() {
-          (super(
-            {
-              key: "strings:homePage.popups.hardwareAccelerationRequired.title",
-            },
-            {
-              key: "strings:homePage.popups.hardwareAccelerationRequired.body",
-            },
-            () => {},
-            () => {},
-            !1,
-          ),
-            this.removeCheckButton(),
-            this.removeXButton(),
-            this.removeFooter(),
-            this.show(),
-            this.bringToFront());
-        }
-      }
-      class k {
-        static debugOptions() {
-          i.r.isProduction ||
-            ((0, v.W)("debugOptions", [`Is mobile ${y.ts.utils.isMobile.any}`]),
-            (0, v.W)("debugOptions", [`Is phone ${y.ts.utils.isMobile.phone}`]),
-            (0, v.W)("debugOptions", [
-              `Webgl supported ${y.ts.utils.isWebGLSupported()}`,
-            ]),
-            (0, v.W)("debugOptions", [
-              `Document referrer ${document.referrer}. Location ${document.location.href}`,
-            ]));
-        }
-        static showTestServerPopup() {
-          i.r.isProduction ||
-            at.showNotification(b.am.Admin, {
-              key: "strings:homePage.header.testServerMessage",
-            });
-        }
-        static webGLCheck() {
-          y.ts.utils.isWebGLSupported()
-            ? n.CA.sendGoogleAnalyticsEvent(
-                n.CA.Category.General,
-                n.CA.Label.GeneralWebGLEnabled,
-              )
-            : (n.CA.sendGoogleAnalyticsEvent(
-                n.CA.Category.General,
-                n.CA.Label.GeneralWebGLDisabled,
-              ),
-              i.r.isUserOnDiscord
-                ? this.showHardwareAccelerationPopup()
-                : i.r.isUserOnMobileAppOrWeb
-                  ? this.showWebGLPopupOnMobileApp()
-                  : this.showWebGLPopup());
-        }
-        static monitorIfUserInteractedWithSite(e) {
-          e ||
-            (null == this.interactedWithSiteEventListener &&
-              ((this.interactedWithSiteEventListener = () =>
-                this.sendUserInteractedWithSite()),
-              document.addEventListener(
-                "mousemove",
-                this.interactedWithSiteEventListener,
-              ),
-              document.addEventListener(
-                "mousedown",
-                this.interactedWithSiteEventListener,
-              )));
-        }
-        static sendUserInteractedWithSite() {
-          null != this.interactedWithSiteEventListener &&
-            (document.removeEventListener(
-              "mousemove",
-              this.interactedWithSiteEventListener,
-            ),
-            document.removeEventListener(
-              "mousedown",
-              this.interactedWithSiteEventListener,
-            ),
-            h.Q.interactedWithSite());
-        }
-        static showWebGLPopup() {
-          const e = new f.y(
-            { key: "strings:homePage.popups.webGLInactive.title" },
-            { key: "strings:homePage.popups.webGLInactive.body" },
-            () => {
-              window.location.replace(
-                "https://blog.colonist.io/how-to-enable-webgl/",
-              );
-            },
-            () => {},
-            !1,
-            { showXButton: !1 },
-          );
-          (e.changeCheckButtonText({
-            key: "strings:homePage.popups.webGLInactive.showMeHow",
-          }),
-            e.show());
-        }
-        static showHardwareAccelerationPopup() {
-          new S();
-        }
-        static showWebGLPopupOnMobileApp() {
-          const e = new f.y(
-            { key: "strings:homePage.popups.webGLInactiveOnMobileApp.title" },
-            { key: "strings:homePage.popups.webGLInactiveOnMobileApp.body" },
-            () => {},
-            () => {},
-            !1,
-            { showXButton: !1, showCheckButton: !1 },
-          );
-          (e.addBodyContent({
-            key: "strings:homePage.popups.webGLInactiveOnMobileApp.nov12IOS187issue",
-          }),
-            e.show());
-        }
-      }
-      var C = s(61919),
-        P = s(34915),
-        _ = s(50482),
-        A = s(64265),
-        w = s(49937),
-        R = s(17972),
-        T = s(32398),
-        I = s(655),
-        M = s(30506),
-        L = s(4508),
-        B = s(13618);
-      class D {
-        static async displayAllPendingNotifications() {
-          if (i.r.isUserOnDiscord) return;
-          if (i.r.isUserOnMobileAppOrWeb) return;
-          if (null == r._.userState) return;
-          if (
-            0 ==
-            document
-              .getElementById("header_profile_notification_container")
-              .classList.contains("hidden")
-          )
-            return;
-          const e = await I.m.getRequestHandler(
-            T.l.apiGetNotifications(),
-            void 0,
-          );
-          if (null == e) return;
-          const t = e.json;
-          for (const e of t)
-            this.isCornerPopup(e)
-              ? this.displayCornerPopup(e)
-              : this.displayViewPopup(e);
-        }
-        static isCornerPopup(e) {
-          return e.typeData.type === L.j.UserReportedWarning;
-        }
-        static displayCornerPopup(e) {
-          const t = this.getCornerPopupData(e);
-          at.showNotification(
-            t.image,
-            t.text,
-            t.duration,
-            void 0,
-            this.markNotificationAsReadAction(e.id),
-          );
-        }
-        static displayViewPopup(e) {
-          const t = this.getViewPopupData(e);
-          if (null == t) return;
-          var s;
-          const i = null !== (s = t.checkAction) && void 0 !== s ? s : () => {},
-            n = new f.y(t.title, t.body, i, () => {}, !0, t.popupOptions);
-          (n.removeXButton(),
-            (n.removeAction = this.markNotificationAsReadAction(e.id)),
-            n.show());
-        }
-        static getViewPopupData(e) {
-          switch (e.typeData.type) {
-            case L.j.UserReportedBanned:
-              return {
-                title: {
-                  key: "strings:popups.notification.reportedUserBanned.title",
-                },
-                body: {
-                  key: "strings:popups.notification.reportedUserBanned.body",
-                },
-              };
-            case L.j.UserReportedThankYou:
-              return {
-                title: {
-                  key: "strings:popups.notification.reportedUserThankYou.title",
-                },
-                body: {
-                  key: "strings:popups.notification.reportedUserThankYou.body",
-                },
-              };
-            case L.j.HolidaySale2023Expired:
-              return {
-                title: {
-                  key: "strings:popups.notification.holidaySale2023Expired.title",
-                },
-                body: {
-                  key: "strings:popups.notification.holidaySale2023Expired.body",
-                },
-              };
-            case L.j.TranslationHelp:
-              return {
-                title: {
-                  key: "strings:popups.notification.translationHelp.title",
-                },
-                body: {
-                  key: "strings:popups.notification.translationHelp.body",
-                  options: {
-                    language: e.typeData.language,
-                    username: e.typeData.username,
-                    link: e.typeData.link,
-                  },
-                },
-              };
-            case L.j.GiftMembershipReceivedFromAdmin:
-              return {
-                title: {
-                  key: "strings:popups.notification.giftMembershipReceived.title",
-                },
-                body: {
-                  key: "strings:popups.notification.giftMembershipReceived.body",
-                },
-                popupOptions: {
-                  checkButtonCustomContent: {
-                    key: "strings:popups.notification.giftMembershipReceived.checkButton",
-                  },
-                },
-                checkAction: () => (0, B.Yf)("/store#gifted_memberships", !0),
-              };
-            default:
-              return;
-          }
-        }
-        static getCornerPopupData(e) {
-          if (e.typeData.type === L.j.UserReportedWarning)
-            return {
-              image: b.am.DangerIcon,
-              text: { key: "strings:popups.notification.reportedUserWarning" },
-              duration: M.Re.SECONDS_IN_MINUTE * M.Re.MILLISECONDS,
-            };
-          throw new Error(
-            "Unsupported notification type for displayCornerPopup",
-          );
-        }
-        static markNotificationAsReadAction(e, t) {
-          return async () => {
-            (await I.m.postRequestHandler(
-              T.l.apiMarkNotificationAsRead(e),
-              void 0,
-              void 0,
-            ),
-              null == t || t());
-          };
-        }
-      }
-      var E = s(44517);
-      if (837 != s.j) var G = s(84240);
-      var x = s(9029);
-      class U {
-        static init() {
-          var e, t, s, n;
-          (null === (e = r._.userState) || void 0 === e ? void 0 : e.isLoggedIn)
-            ? (null === (s = document.getElementById("g_id_onload")) ||
-                void 0 === s ||
-                s.setAttribute("data-auto_prompt", "false"),
-              this.cancelPopup(),
-              this.delayedCancelPopup())
-            : null === (n = document.getElementById("g_id_onload")) ||
-              void 0 === n ||
-              n.setAttribute("data-auto_prompt", "true");
-          this.initialized ||
-            i.r.isUserOnMobile ||
-            i.r.isUserOnDiscord ||
-            (null === (t = r._.userState) || void 0 === t
-              ? void 0
-              : t.isLoggedIn) ||
-            ((0, x.xW)(document.body, "https://accounts.google.com/gsi/client"),
-            (this.initialized = !0));
-        }
-        static cancelPopup() {
-          var e, t, s;
-          null === (s = window.google) ||
-            void 0 === s ||
-            null === (t = s.accounts) ||
-            void 0 === t ||
-            null === (e = t.id) ||
-            void 0 === e ||
-            e.cancel();
-        }
-        static delayedCancelPopup() {
-          if (this.initialized)
-            for (let e = 0; e < 2e3; e += 500)
-              setTimeout(() => {
-                this.cancelPopup();
-              }, e);
-        }
-      }
-      U.initialized = !1;
-      class O {
-        static init() {
-          var e, t, s, n, o, a, c;
-          this.initialized ||
-            i.r.isUserOnDiscord ||
-            (null !==
-              (t =
-                null === (e = r._.userState) || void 0 === e
-                  ? void 0
-                  : e.totalCompletedGameCount) && void 0 !== t
-              ? t
-              : 0) > 0 ||
-            ("https:" == window.location.protocol &&
-              ((s = window),
-              (n = document),
-              (s.hj =
-                null !== (c = s.hj) && void 0 !== c
-                  ? c
-                  : function () {
-                      var e;
-                      (s.hj.q =
-                        null !== (e = s.hj.q) && void 0 !== e ? e : []).push(
-                        arguments,
-                      );
-                    }),
-              (s._hjSettings = { hjid: i.r.hotjarTrackingCode, hjsv: 6 }),
-              (o = n.getElementsByTagName("head")[0]),
-              ((a = n.createElement("script")).async = 1),
-              (a.src =
-                "https://static.hotjar.com/c/hotjar-" +
-                s._hjSettings.hjid +
-                ".js?sv=" +
-                s._hjSettings.hjsv),
-              o.appendChild(a),
-              (this.initialized = !0)));
-        }
-      }
-      O.initialized = !1;
-      var F = s(1863);
-      class N {
-        static init() {
-          var e, t;
-          if (this.initialized) return;
-          if ("" == i.r.vliPublicKey) return;
-          if ("" == i.r.vliAdvKey) return;
-          if (null == window.vitag) return;
-          if ("localhost" === window.location.hostname) return;
-          if (i.r.isUserOnDiscord) return;
-          if (i.r.isUserOnMobile && i.r.shouldHideAdsOnMobile) return;
-          if (r._.isStale()) return;
-          if (
-            null === (e = r._.userState) || void 0 === e
-              ? void 0
-              : e.items.hideAds()
-          )
-            return;
-          ((window.hashString =
-            null === (t = r._.userState) || void 0 === t ? void 0 : t.vliHash),
-            (0, x.xW)(document.body, i.r.vliPublicKey),
-            (0, x.xW)(document.body, i.r.vliAdvKey),
-            (0, x.xW)(
-              document.body,
-              "//cdn.jsdelivr.net/gh/vli-platform/adb-analytics@77bebb/v1.0.min.js",
-            ),
-            document
-              .querySelectorAll(".remove_ads_button_in_game")
-              .forEach((e) => e.classList.remove("hidden")));
-          (F.z.shouldShowLobbyAds() &&
-            (document
-              .querySelectorAll(".vli_page_vertical_ad")
-              .forEach((e) => e.classList.remove("hidden")),
-            document
-              .querySelectorAll(".main_page_ad_300x100")
-              .forEach((e) => e.classList.remove("hidden")),
-            document
-              .querySelectorAll(".main_page_ad_300x250")
-              .forEach((e) => e.classList.remove("hidden")),
-            document
-              .querySelectorAll(".mm-mode-selector-ad")
-              .forEach((e) => e.classList.remove("hidden"))),
-            document
-              .querySelectorAll(".adsbyvli")
-              .forEach((e) => e.classList.remove("hidden")),
-            (this.initialized = !0));
-        }
-      }
-      N.initialized = !1;
-      class H {
-        static init() {
-          var e;
-          this.initialized ||
-            ("localhost" !== window.location.hostname &&
-              (i.r.isUserOnDiscord ||
-                (i.r.isUserOnMobile && i.r.shouldHideAdsOnMobile) ||
-                i.r.showVliAdAtBottomInGame ||
-                r._.isStale() ||
-                (null === (e = r._.userState) || void 0 === e
-                  ? void 0
-                  : e.items.hideAds()) ||
-                ((0, x.xW)(
-                  document.body,
-                  "//api.adinplay.com/libs/aiptag/pub/KTN/colonist.io/tag.min.js",
-                ),
-                (this.initialized = !0))));
-        }
-      }
-      H.initialized = !1;
-      var W = s(78524),
-        K = s(4651);
-      if (837 != s.j) var V = s(64853);
-      var q = s(70970);
-      window.__socketCatannMessages = [];
-      console.log("initialized __socketCatannMessages");
-      class Q {
-        isSocketOpen() {
-          var e;
-          return (
-            (null === (e = this.webSocket) || void 0 === e
-              ? void 0
-              : e.readyState) === WebSocket.OPEN
-          );
-        }
-        async connect() {
-          const e = (0, M.ph)(),
-            t = 9 * M.Re.MILLISECONDS;
-          return (
-            setTimeout(() => {
-              e.pending && (this.close(b.SB), e.resolve("retry"));
-            }, t),
-            (this.webSocket = new WebSocket(await this.getWebSocketUrl())),
-            (this.webSocket.binaryType = "arraybuffer"),
-            (this.webSocket.onmessage = (t) =>
-              this.handleInitialWebSocketMessage(t, e)),
-            (this.webSocket.onclose = (t) => {
-              switch (t.code) {
-                case b.p5:
-                case b.FL:
-                  e.resolve("permanentlyFailed");
-                  break;
-                case b.gu:
-                  ((this.sendTurnstileToken = !0), e.resolve("retry"));
-                  break;
-                default:
-                  e.resolve("retry");
-              }
-              this.handleWebSocketClose(t.code);
-            }),
-            (this.webSocket.onerror = (t) => {
-              (this.handleWebSocketError(t), e.resolve("retry"));
-            }),
-            e
-          );
-        }
-        async getWebSocketUrl() {
-          const e = new URLSearchParams();
-          if (
-            (e.append("version", b.ZC),
-            null != this.firstUserSessionId &&
-              e.append("firstUserSessionId", this.firstUserSessionId),
-            i.r.isUserOnDiscordMobile)
-          ) {
-            const t = g.p.getAuthToken();
-            null != t && e.append("authToken", t);
-          }
-          return (
-            this.sendTurnstileToken &&
-              e.append("turnstileToken", await q.F.getToken()),
-            `${this.serverUrl}?${e}`
-          );
-        }
-        handleInitialWebSocketMessage(e, t) {
-          if (null != this.webSocket) {
-            try {
-              const s = JSON.parse(e.data);
-              switch (s.type) {
-                case "Connected":
-                  return void (
-                    null == this.firstUserSessionId &&
-                    (this.firstUserSessionId = s.userSessionId)
-                  );
-                case "SessionEstablished":
-                  return (
-                    (this.webSocket.onmessage = (e) =>
-                      this.handleWebSocketMessage(e)),
-                    this.onSessionEstablished(),
-                    t.resolve("connected"),
-                    void (this.sendTurnstileToken = !1)
-                  );
-              }
-            } catch (t) {
-              console.error("Parse websocket initial message error", e, t);
-            }
-            this.handleWebSocketMessage(e);
-          }
-        }
-        handleWebSocketMessage(e) {
-          const t = V.D4(e.data);
-          window.__socketCatannMessages.push({
-            trigger: "serverData",
-            data: t,
-          });
-          (i.r.socketDebugActive &&
-            (0, v.W)("SocketMessage", [
-              "======",
-              `Message type: ${t.id}, data:`,
-              t.data,
-            ]),
-            this.onStateUpdate(Number(t.id), t.data));
-        }
-        handleWebSocketError(e) {
-          var t;
-          (i.r.socketDebugActive &&
-            (0, v.vV)("connect", ["Closing socket, encountered error: ", e]),
-            null === (t = this.webSocket) || void 0 === t || t.close());
-        }
-        handleWebSocketClose(e) {
-          (n.CA.sendGoogleAnalyticsEvent(
-            n.CA.Category.General,
-            n.CA.Label.GeneralBrokenInternetConnection,
-          ),
-            e != b.p5 ? this.onClose() : (0, B.Yf)((0, B.mE)()));
-        }
-        close(e) {
-          var t;
-          null === (t = this.webSocket) || void 0 === t || t.close(e);
-        }
-        send(e) {
-          var t;
-          this.isSocketOpen() &&
-            (null === (t = this.webSocket) || void 0 === t || t.send(e));
-        }
-        constructor(e, t, s, i) {
-          ((this.sendTurnstileToken = !1),
-            (this.serverUrl = e),
-            (this.onSessionEstablished = t),
-            (this.onStateUpdate = s),
-            (this.onClose = i));
-        }
-      }
-      var $ = (function (e) {
-        return (
-          (e[(e.RouteToServerType = 2)] = "RouteToServerType"),
-          (e[(e.RouteToServerDirect = 3)] = "RouteToServerDirect"),
-          (e[(e.SocketRouter = 4)] = "SocketRouter"),
-          e
-        );
-      })({});
-      new TextDecoder();
-      const z = new TextEncoder();
-      function j(e, t, s, i) {
-        const n = z.encode(s),
-          r = new Uint8Array(3 + n.byteLength + i.byteLength),
-          o = new DataView(r.buffer);
-        return (
-          o.setUint8(0, e),
-          o.setUint8(1, t),
-          o.setUint8(2, n.byteLength),
-          r.set(n, 3),
-          r.set(i, 3 + n.byteLength),
-          r
-        );
-      }
-      if (837 != s.j) var Y = s(62777);
-      var X = s(67908);
-      if (837 != s.j) var Z = s(18628);
-      class J {
-        sendToServer(e, t, s, i = !1) {
-          if (t) this.send($.RouteToServerDirect, e, t, s, i);
-          else
-            try {
-              const t = new Error("Direct to server message has no recipient");
-              throw ((t.subType = e), (t.data = s), t);
-            } catch (e) {
-              (console.error(e), Z.Cp(e));
-            }
-        }
-        sendToServerType(e, t, s, i = !1) {
-          this.send($.RouteToServerType, e, t, s, i);
-        }
-        sendNoop() {
-          this.send($.SocketRouter, b.lo.Noop, "", {}, !1);
-        }
-        sendCloseSocket(e) {
-          const t = new Uint8Array([e - 4e3]),
-            s = j($.SocketRouter, b.lo.CloseSocket, "", t);
-          this.socket.send(s);
-        }
-        sendPing(e) {
-          const t = {
-            id: `${X.zd.State.SocketMonitorUpdate}`,
-            data: { timestamp: e },
-          };
-          this.send($.SocketRouter, b.lo.Echo, "", t, !1);
-        }
-        onSessionEstablished() {
-          this.sessionWasEstablished = !0;
-          for (const e of this.bufferedOutgoingSecondaryMessages)
-            this.socket.send(e);
-          ((this.bufferedOutgoingSecondaryMessages.length = 0),
-            this.bufferedOutgoingPrimaryMessage &&
-              (this.socket.send(this.bufferedOutgoingPrimaryMessage),
-              (this.bufferedOutgoingPrimaryMessage = void 0)));
-        }
-        send(e, t, s, i, n) {
-          window.__socketCatannMessages.push({
-            trigger: "clientData",
-            data: i,
-          });
-          const r = j(e, t, s, Y.l(i));
-          this.sessionWasEstablished
-            ? this.socket.send(r)
-            : n
-              ? (this.bufferedOutgoingPrimaryMessage = r)
-              : this.bufferedOutgoingSecondaryMessages.push(r);
-        }
-        constructor(e, t) {
-          ((this.sessionWasEstablished = !1),
-            (this.bufferedOutgoingSecondaryMessages = []),
-            (this.socket = e),
-            t(() => this.onSessionEstablished()));
-        }
-      }
-      var ee = s(29249);
-      class te {
-        static show() {
-          if (null != this.connectionLostBackground) return;
-          const e = (0, x.Le)(document.body, "game-reconnecting-overlay");
-          ((0, x.Le)(e, "loading-spinner"),
-            (0, x.i5)(e, "game-reconnecting-text", {
-              key: "strings:game.gameState.gameLogs.gameDisconnected.reconnecting",
-            }),
-            (this.connectionLostBackground = e));
-        }
-        static remove() {
-          (null != this.connectionLostBackground &&
-            this.connectionLostBackground.remove(),
-            (this.connectionLostBackground = void 0));
-        }
-      }
-      var se = s(85801);
-      class ie {
-        startReconnecting() {
-          if (!this.isEnabled) return;
-          if (this.isReconnecting) return;
-          if (
-            ((this.isReconnecting = !0),
-            null == at || at.removeDisconnectBanners(),
-            !this.hideConnect && !this.canReconnectFunction())
-          )
-            return (this.displayReconnectBanner(), void this.disable());
-          const e = 30 * M.Re.MILLISECONDS;
-          (clearTimeout(this.maxDisconnectTimeout),
-            (this.maxDisconnectTimeout = setTimeout(() => {
-              this.displayReconnectBanner();
-            }, e)),
-            (this.timeDisconnected = Date.now()),
-            this.hideConnect || te.show(),
-            (this.hideConnect = !1),
-            this.reconnect());
-        }
-        async reconnect() {
-          const e = 3 * M.Re.MILLISECONDS;
-          let t = 1;
-          for (; t <= ie.MAX_RECONNECT_ATTEMPTS; ) {
-            switch (await this.reconnectFunction()) {
-              case "connected":
-                return void this.connectionReestablished();
-              case "retry":
-                (await (0, M.cb)(e), (t += 1));
-                break;
-              case "permanentlyFailed":
-                return (
-                  this.removeUI(),
-                  this.displayReconnectBanner(),
-                  void (this.isReconnecting = !1)
-                );
-            }
-          }
-        }
-        connectionReestablished() {
-          ((this.isReconnecting = !1),
-            clearTimeout(this.maxDisconnectTimeout),
-            se.N.instance.clearAllKeyBinds(),
-            this.removeWarnings());
-        }
-        displayReconnectBanner() {
-          const e = {
-            key: "strings:homePage.loadingError.prompt",
-            options: {
-              context:
-                i.r.isUserOnDiscord || i.r.isUserOnMobileAppOrWeb
-                  ? "activity"
-                  : "browser",
-            },
-          };
-          if (
-            (i.r.socketDebugActive && (0, v.vV)("connect", [e]),
-            lt.serverUpdated)
-          ) {
-            const e = {
-              key: "strings:popups.errors.newVersion.newVersionReleasedWarningLostConnection",
-            };
-            null == at || at.show(e, ee.n.SocketError, e, void 0, void 0, !1);
-          } else
-            null == at ||
-              at.show(
-                e,
-                ee.n.SocketError,
-                { key: "strings:colonistCommon.buttons.reload" },
-                () => location.reload(),
-                void 0,
-                !1,
-              );
-          clearTimeout(this.maxDisconnectTimeout);
-        }
-        removeWarnings() {
-          var e;
-          const t =
-              null !== (e = this.timeDisconnected) && void 0 !== e
-                ? e
-                : Date.now(),
-            s = 1 * M.Re.MILLISECONDS,
-            i = Date.now() - t;
-          (setTimeout(() => {
-            this.removeUI();
-          }, s - i),
-            (this.timeDisconnected = void 0));
-        }
-        removeUI() {
-          (te.remove(), null == at || at.removeSocketErrorBanners());
-        }
-        disable() {
-          this.isEnabled = !1;
-        }
-        constructor(e, t, s = !1) {
-          ((this.isReconnecting = !1),
-            (this.hideConnect = !1),
-            (this.isEnabled = !0),
-            (this.reconnectFunction = e),
-            (this.canReconnectFunction = t),
-            (this.hideConnect = s));
-        }
-      }
-      ie.MAX_RECONNECT_ATTEMPTS = 15;
-      var ne = s(96990);
-      class re {
-        enableConnect() {
-          this.enabled ||
-            ((this.enabled = !0),
-            r._.registerChangeListener(() => {
-              this.checkUserChanged();
-            }),
-            this.registerSessionEstablishedObserver(() => {
-              this.checkUserChanged();
-            }));
-        }
-        registerSessionEstablishedObserver(e) {
-          return (
-            this.sessionEstablishedObservers.add(e),
-            () => {
-              this.sessionEstablishedObservers.delete(e);
-            }
-          );
-        }
-        handleStateUpdate(e, t) {
-          var s;
-          null === (s = this.stateHandlers.get(e)) || void 0 === s || s(t);
-        }
-        setStateHandler(e, t) {
-          this.stateHandlers.set(e, t);
-        }
-        registerSocketCloseObserver(e) {
-          this.socketCloseObservers.push(e);
-        }
-        setSession(e) {
-          var t, s;
-          ((this.session = e),
-            (null === (t = r._.userState) || void 0 === t
-              ? void 0
-              : t.isLoggedIn) &&
-              n.CA.sendGoogleAnalyticsEvent(
-                n.CA.Category.Funnel,
-                n.CA.Label.FunnelLoggedIn,
-              ),
-            null === (s = n.CA.logRocket) ||
-              void 0 === s ||
-              s.set(this.session),
-            null == nt || nt.showPatchnotes());
-        }
-        triggerSessionEstablishedObservers() {
-          for (const e of this.sessionEstablishedObservers) e();
-        }
-        isSocketOpen() {
-          return this.socket.isSocketOpen();
-        }
-        close(e) {
-          (null != e && this.sender.sendCloseSocket(e), this.socket.close(e));
-        }
-        handleSocketClose() {
-          this.currentUserId = void 0;
-          for (const e of this.socketCloseObservers) e();
-        }
-        checkUserChanged() {
-          var e;
-          this.isSocketOpen() || !r._.hasUser()
-            ? (null === (e = r._.userState) || void 0 === e ? void 0 : e.id) !=
-                this.currentUserId && this.close(b.kv)
-            : this.reconnectionController.startReconnecting();
-        }
-        constructor(e) {
-          ((this.enabled = !1),
-            (this.sessionEstablishedObservers = new Set()),
-            (this.stateHandlers = new Map()),
-            (this.socketCloseObservers = []),
-            (this.reconnectionController = new ie(
-              () => {
-                var e;
-                return (
-                  (this.currentUserId =
-                    null === (e = r._.userState) || void 0 === e
-                      ? void 0
-                      : e.id),
-                  this.socket.connect()
-                );
-              },
-              () => {
-                if (!r._.hasUser()) return !1;
-                return (
-                  !!ne.N.isUserOnMobileAppOrWeb() ||
-                  "visible" == document.visibilityState
-                );
-              },
-              !0,
-            )),
-            this.registerSocketCloseObserver(() =>
-              this.reconnectionController.startReconnecting(),
-            ),
-            (this.socket = new Q(
-              e,
-              () => this.triggerSessionEstablishedObservers(),
-              (e, t) => this.handleStateUpdate(e, t),
-              () => this.handleSocketClose(),
-            )),
-            (this.sender = new J(this.socket, (e) =>
-              this.registerSessionEstablishedObserver(e),
-            )));
-        }
-      }
-      if (837 != s.j) var oe = s(67707);
-      var ae = s(19733);
-      class ce {
-        static processSocketData(e) {
-          ("number" == typeof e &&
-            ((this.expectedSocketAmount = Number(e)),
-            (this.receivedSocketAmount = 0),
-            (this.startingTime = Date.now()),
-            (0, v.W)("processSocketData", [
-              "-------------------------------------",
-            ]),
-            (0, v.W)("processSocketData", [
-              `Expecting ${this.expectedSocketAmount}`,
-            ])),
-            "string" == typeof e &&
-              "test" == e &&
-              (this.receivedSocketAmount += 1),
-            "string" == typeof e &&
-              "done" == e &&
-              ((0, v.W)("processSocketData", [
-                `Expected ${this.expectedSocketAmount}`,
-              ]),
-              (0, v.W)("processSocketData", [
-                `Received ${this.receivedSocketAmount}`,
-              ]),
-              (0, v.W)("processSocketData", [
-                `Took ${Date.now() - this.startingTime}ms`,
-              ]),
-              (this.expectedSocketAmount = 0),
-              (this.receivedSocketAmount = 0),
-              (this.startingTime = 0)));
-        }
-      }
-      ((ce.expectedSocketAmount = 0),
-        (ce.receivedSocketAmount = 0),
-        (ce.startingTime = 0));
-      class le extends f.y {
-        constructor() {
-          (super(
-            { key: "strings:popups.patchNote.announcement" },
-            { key: "strings:popups.errors.serverUpdate" },
-            () => {},
-            () => {},
-            !1,
-          ),
-            this.removeCheckButton(),
-            this.removeXButton(),
-            (this.preventClicksOutsideOfPopupFromClosingPopup = !0));
-        }
-      }
-      class de {
-        static send(e, t) {
-          const s = { action: e, payload: t };
-          ot.controller.sender.sendToServerType(b.lo.ShuffleAction, "lobby", s);
-        }
-        static requestShuffleQueueData() {
-          this.send(p.Ih.GetShuffleQueueData, void 0);
-        }
-      }
-      class ue {
-        constructor(e, t) {
-          ((this.lobbyStateHandlers = new Map()),
-            (this.channelStateHandlers = new Map()),
-            (this.generalStateHandlers = new Map()),
-            (this.socketActionController = t),
-            e.setStateHandler(X.zd.State.LobbyStateUpdate, (e) => {
-              var t;
-              null === (t = this.lobbyStateHandlers.get(e.type)) ||
-                void 0 === t ||
-                t(e.payload);
-            }),
-            e.setStateHandler(X.zd.State.ChannelStateUpdate, (e) => {
-              var t;
-              null === (t = this.channelStateHandlers.get(e.type)) ||
-                void 0 === t ||
-                t(e.payload);
-            }),
-            e.setStateHandler(X.zd.State.GeneralStateUpdate, (e) => {
-              var t;
-              null === (t = this.generalStateHandlers.get(e.type)) ||
-                void 0 === t ||
-                t(e.payload);
-            }),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.SessionState, (t) => {
-              var s;
-              const i = oe.E.deserialize(t);
-              (k.monitorIfUserInteractedWithSite(
-                null === (s = r._.userState) || void 0 === s
-                  ? void 0
-                  : s.interactedWithSite,
-              ),
-                e.setSession(i),
-                this.socketActionController.onStateSessionState(),
-                de.requestShuffleQueueData());
-            }),
-            this.lobbyStateHandlers.set(
-              X.zd.LobbyState.LobbyDisconnectData,
-              (e) => {
-                at.showGames(e);
-              },
-            ),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.AutoRejoinGame, (e) => {
-              this.socketActionController.onStateAutoRejoinGame(e);
-            }),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.SendPopup, (e) => {
-              "strings:popups.errors.newVersion.refreshClient" == e.body.key
-                ? ae.r.createForceRefreshPopup(e.title, e.body)
-                : ae.r.createSimplePopup(e.title, e.body);
-            }),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.SendBroadcast, (e) => {
-              at.show(e.text, ee.n.Information);
-            }),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.SocketTest, (e) => {
-              ce.processSocketData(e);
-            }),
-            this.lobbyStateHandlers.set(
-              X.zd.LobbyState.ShowCornerPopup,
-              (e) => {
-                at.showNotification(e.icon, e.text);
-              },
-            ),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.ServerUpdating, () => {
-              new le().show();
-            }),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.ReloadClient, (e) => {
-              setTimeout(() => window.location.reload(), e.delay);
-            }),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.ServerUpdated, (e) => {
-              if (null == ot.gameListener.databaseGameId) return;
-              if ((0, M.Qn)(b.$m) == (0, M.Qn)(e.newServerVersion)) return;
-              (at.show(
-                {
-                  key: "strings:popups.errors.newVersion.newVersionReleasedWarning",
-                },
-                ee.n.Information,
-              ),
-                (lt.serverUpdated = !0));
-            }),
-            this.lobbyStateHandlers.set(X.zd.LobbyState.RoomListUpdate, (e) => {
-              this.socketActionController.onRoomListUpdate(e);
-            }),
-            this.lobbyStateHandlers.set(
-              X.zd.LobbyState.UserStateUpdate,
-              (e) => {
-                r._.update(e);
-              },
-            ),
-            this.channelStateHandlers.set(
-              X.zd.ChannelState.ChannelRoomUpdate,
-              (e) => {
-                this.socketActionController.onChannelRoomUpdate(e);
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.UpdateOnlineStatus,
-              (e) => {
-                this.socketActionController.onFriendUpdateOnlineStatus(e);
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.ReceivedRoomInvites,
-              (e) => {
-                this.socketActionController.onFriendReceivedRoomInvites(e);
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.ReceivedFriendRequest,
-              (e) => {
-                this.socketActionController.onFriendReceivedFriendRequest(e);
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.RemoveRoomInvite,
-              (e) => {
-                this.socketActionController.onFriendRemoveRoomInvite(e);
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.RoomInviteResponse,
-              (e) => {
-                this.socketActionController.onFriendRoomInviteResponse(e);
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.RoomInviteSentSuccessfully,
-              (e) => {
-                this.socketActionController.onFriendRoomInviteSentSuccessfully(
-                  e,
-                );
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.Notifications,
-              (e) => {
-                this.socketActionController.onNotificationsReceived(e);
-              },
-            ),
-            this.generalStateHandlers.set(
-              X.zd.GeneralState.MarkedAsRead,
-              (e) => {
-                this.socketActionController.onMarkedAsRead(e);
-              },
-            ));
-        }
-      }
-      var he = s(54801),
-        pe = s(35606),
-        me = s(84324),
-        ge = s(5603);
-      class fe {
-        removeOldPopupIfExists() {
-          const e = document.querySelector(".popup-notification");
-          null != e && e.remove();
-        }
-        setCancel() {
-          window.addEventListener("click", (e) => {
-            e.target == this.container && this.removePopup();
-          });
-        }
-        positionContainerInTopRightCorner() {
-          const e = rt.canvasController,
-            t = rt.canvasController.responsiveController.getScaleForRotation(),
-            s = e.responsiveController.getCanvasX(),
-            n = t * (e.appW - 2 * e.chatWidth) + s,
-            r = e.responsiveController.getCanvasY();
-          ((this.contentContainer.style.position = "absolute"),
-            (this.contentContainer.style.transform = "none"),
-            (this.contentContainer.style.width = i.r.isUserOnMobileAppOrWeb
-              ? "70vw"
-              : e.chatWidth * t + "px"),
-            (this.contentContainer.style.left = i.r.isUserOnMobileAppOrWeb
-              ? "15vw"
-              : n + "px"),
-            (this.contentContainer.style.top = i.r.isUserOnMobileAppOrWeb
-              ? "40vh"
-              : r + "px"),
-            (this.contentContainer.style.marginRight = e.margin + "px"),
-            (this.contentContainer.style.marginTop = e.margin + "px"));
-        }
-        removePopup() {
-          ((this.container.style.display = "none"),
-            null != this.container.parentElement &&
-              this.container.parentElement.removeChild(this.container));
-        }
-        show() {
-          this.container.style.display = "block";
-        }
-        isRemoved() {
-          return "none" == this.container.style.display;
-        }
-        constructor(e, t) {
-          (this.removeOldPopupIfExists(),
-            (this.container = (0, x.Le)(document.body, "popup-notification")),
-            (this.contentContainer = (0, x.Le)(
-              this.container,
-              "popup-content-temporary",
-            )),
-            (this.header = (0, x.Le)(this.contentContainer, "popup-header")),
-            (this.body = (0, x.Le)(this.contentContainer, "popup-body")),
-            (this.footer = (0, x.Le)(this.contentContainer, "popup-footer")),
-            this.setCancel(),
-            (this.checkButton = (0, x.Le)(
-              this.footer,
-              "btn_general btn_general_check",
-            )),
-            (0, x.G0)(this.checkButton, () => {
-              (ge.A.play(ge.h.Click), this.removePopup());
-            }),
-            this.positionContainerInTopRightCorner(),
-            (0, x.n8)(this.header, e, "", "", "H4"),
-            (0, x.Wr)(this.body, t, ""),
-            this.show());
-          const s = 6 * me.i.MILLISECONDS;
-          setTimeout(() => {
-            this.removePopup();
-          }, s);
-        }
-      }
-      var ye = s(35274),
-        be = s(76092);
-      if (837 != s.j) var ve = s(82720);
-      if (837 != s.j) var Se = s(90333);
-      class ke {
-        restoreGameClientWithoutClosingSocket() {
-          var e;
-          (null === (e = this.uiGameManager) ||
-            void 0 === e ||
-            e.eventController.sendEvent(
-              void 0,
-              X.o8.UIGameEventEnums.ClientReconnectionTriggered,
-            ),
-            this.reset(),
-            this.gameClientRestorationController.startReconnecting());
-        }
-        reset() {
-          var e;
-          null === (e = this.gameStateReceiver) || void 0 === e || e.reset();
-        }
-        static playGameStartedSound(e) {
-          const t =
-            e === b.p9.ColonistRush4P
-              ? ge.h.GameStartedGuitar
-              : ge.h.GameStarted;
-          setTimeout(() => ge.A.play(t), 500);
-        }
-        static playSettlementPhaseEndedSound(e) {
-          const t =
-            e === b.p9.ColonistRush4P
-              ? ge.h.SettlementPhaseEndedGuitar
-              : ge.h.SettlementPhaseEnded;
-          setTimeout(() => ge.A.play(t), 500);
-        }
-        constructor(e, t) {
-          ((this.gameStateHandlers = new Map()),
-            (this.playedStartGameSound = !1),
-            (this.gameState = new pe.n()),
-            (this.socketActionController = t),
-            (this.uiGameManager = rt));
-          ((this.gameClientRestorationController = new ie(
-            () => {
-              var e;
-              const t = (0, M.ph)();
-              return (
-                (this.currentReconnectAttempt = t),
-                setTimeout(() => {
-                  t.pending && t.resolve("retry");
-                }, 10 * M.Re.MILLISECONDS),
-                null === (e = this.socketActionController.uiGameManager) ||
-                  void 0 === e ||
-                  e.socketGameSend.requestGameState(),
-                t
-              );
-            },
-            () => !0,
-          )),
-            (this.gameStateReceiver = new M.N_(
-              (t) => {
-                try {
-                  var s;
-                  null === (s = this.gameStateHandlers.get(t.type)) ||
-                    void 0 === s ||
-                    s(t.payload);
-                } catch (t) {
-                  (console.log(t), e.close(b.ZS), Z.Cp(t));
-                }
-              },
-              (e, t, s, i, r) => {
-                (n.CA.sendAnalyticEvent({
-                  category: be.eX.Socket,
-                  type: be.k0.SocketSequenceError,
-                  dimensions: {
-                    databaseGameId: this.databaseGameId,
-                    lastSequence: e,
-                    time: t,
-                    reason: s,
-                    pendingData: i.map((e) => ({
-                      t: e.added,
-                      s: e.data.sequence,
-                      gu: e.data.type,
-                    })),
-                    lastReleasedData: r.map((e) => ({
-                      t: e.added,
-                      s: e.data.sequence,
-                      gu: e.data.type,
-                    })),
-                    monitorStats: (0, ve.A)(
-                      (0, Se.A)(ot.monitor.stats, ["buckets"]),
-                      (e) => 0 == e,
-                    ),
-                  },
-                }),
-                  this.restoreGameClientWithoutClosingSocket());
-              },
-            )),
-            e.setStateHandler(X.zd.State.GameStateUpdate, (e) => {
-              this.gameStateReceiver.addData(e);
-            }),
-            e.registerSessionEstablishedObserver(() => {
-              (this.reset(),
-                null != this.gameSettingId &&
-                  (h.Q.reconnectGame(
-                    this.gameSettingId,
-                    n.CA.Label.AutoRejoinGame,
-                  ),
-                  this.gameClientRestorationController.startReconnecting()));
-            }),
-            this.gameStateHandlers.set(he.Eo.FirstGameState, (e) => {
-              if (null != this.socketActionController.uiGameManager) {
-                var t;
-                if (
-                  (ot.monitor.activate(),
-                  (this.gameState.serverId = e.serverId),
-                  (this.databaseGameId = e.databaseGameId),
-                  (this.gameSettingId = e.gameSettingId),
-                  e.shouldResetGameClient)
-                )
-                  (null === (t = this.currentReconnectAttempt) ||
-                    void 0 === t ||
-                    t.resolve("connected"),
-                    this.socketActionController.uiGameManager.resetGameUIToRebuildOnReconnect());
-                (null == at || at.removeDisconnectBanners(),
-                  this.socketActionController.onConnectionEstablished(e),
-                  e.isReconnectingSession && (this.playedStartGameSound = !0));
-              }
-            }),
-            this.gameStateHandlers.set(he.Eo.SpectatorData, (e) => {
-              (0, ye.YE)(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.BeginnerHintActivated, (e) => {
-              var t;
-              (this.socketActionController.onBeginnerHintActivated(e),
-                null === (t = this.uiGameManager) ||
-                  void 0 === t ||
-                  t.gameStore
-                    .getState()
-                    .gameBeginnerHint.setBeginnerHintData(e));
-            }),
-            this.gameStateHandlers.set(he.Eo.BeginnerModeActionUpdate, (e) => {
-              var t;
-              (this.socketActionController.onBeginnerModeActionUpdate(e),
-                null === (t = this.uiGameManager) ||
-                  void 0 === t ||
-                  t.gameStore
-                    .getState()
-                    .gameBeginnerHint.setBeginnerActionState(e));
-            }),
-            this.gameStateHandlers.set(he.Eo.BeginnerModeLevelEnd, (e) => {
-              this.socketActionController.onBeginnerModeLevelEnd();
-            }),
-            this.gameStateHandlers.set(he.Eo.Vote, (e) => {
-              var t;
-              const s = e.done ? void 0 : e;
-              null === (t = this.uiGameManager) ||
-                void 0 === t ||
-                t.gameStore.getState().gameVote.setVoteState(s);
-            }),
-            this.gameStateHandlers.set(he.Eo.SelectPlayer, (e) => {
-              this.socketActionController.onSelectPlayer(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.ExchangeCards, (e) => {
-              this.socketActionController.onExchangeCards(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.HighlightCorners, (e) => {
-              this.socketActionController.onHighlightCorners(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.HighlightRoadEdges, (e) => {
-              this.socketActionController.onHighlightRoadEdges(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.HighlightShipEdges, (e) => {
-              this.socketActionController.onHighlightShipEdges(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.HighlightTiles, (e) => {
-              this.socketActionController.onHighlightTiles(e);
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.HighlightDiceNumbersForInventor,
-              (e) => {
-                this.socketActionController.onHighlightDiceNumbersForInventor(
-                  e,
-                );
-              },
-            ),
-            this.gameStateHandlers.set(he.Eo.AmountOfCardsToDiscard, (e) => {
-              (this.socketActionController.onAmountOfCardsToDiscard(e),
-                ge.A.play(ge.h.DiscardNotification));
-            }),
-            this.gameStateHandlers.set(he.Eo.DiscardBroadcast, () => {
-              ge.A.play(ge.h.DiscardBroadcast);
-            }),
-            this.gameStateHandlers.set(he.Eo.SelectCardsToGiveToPlayer, (e) => {
-              (this.socketActionController.onSelectCardsToGiveToPlayer(e),
-                ge.A.play(ge.h.YourTurn));
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.CardsToSelectForDevelopmentCard,
-              (e) => {
-                this.socketActionController.onCardsToSelectForDevelopmentCard(
-                  e,
-                );
-              },
-            ),
-            this.gameStateHandlers.set(he.Eo.SelectPlayerAndCard, (e) => {
-              this.socketActionController.onSelectPlayerAndCard(e);
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.CardsToSelectForPendingTransaction,
-              (e) => {
-                this.socketActionController.onCardsToSelectForPendingTransaction(
-                  e,
-                );
-              },
-            ),
-            this.gameStateHandlers.set(he.Eo.ConfirmUseDevelopmentCard, (e) => {
-              this.socketActionController.onConfirmUseDevelopmentCard(e);
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.SelectPlayerUsingDevelopmentCard,
-              (e) => {
-                this.socketActionController.onSelectPlayerUsingDevelopmentCard(
-                  e,
-                );
-              },
-            ),
-            this.gameStateHandlers.set(
-              he.Eo.StealDevelopmentCardFromPlayer,
-              (e) => {
-                this.socketActionController.onStealDevelopmentCardFromPlayer(e);
-              },
-            ),
-            this.gameStateHandlers.set(
-              he.Eo.StealResourceCardFromPlayer,
-              (e) => {
-                this.socketActionController.onStealResourceCardFromPlayer(e);
-              },
-            ),
-            this.gameStateHandlers.set(he.Eo.ClosePopupUI, () => {
-              this.socketActionController.onClosePopupUI();
-            }),
-            this.gameStateHandlers.set(he.Eo.SelectDice, (e) => {
-              this.socketActionController.onSelectDice(e);
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.CityImprovementStateUpdated,
-              () => {
-                this.socketActionController.onCityImprovementStateUpdated();
-              },
-            ),
-            this.gameStateHandlers.set(
-              he.Eo.ForceShowCityImprovementButtons,
-              () => {
-                this.socketActionController.onForceShowCityImprovementButtons();
-              },
-            ),
-            this.gameStateHandlers.set(he.Eo.PlayTurnSound, () => {
-              ge.A.play(ge.h.YourTurn);
-            }),
-            this.gameStateHandlers.set(he.Eo.InfoMessage, (e) => {
-              new fe({ key: "strings:popups.informationView.title" }, e);
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.ResetTradeStateAtEndOfTurn,
-              (e) => {
-                this.socketActionController.onResetTradeStateAtEndOfTurn();
-              },
-            ),
-            this.gameStateHandlers.set(he.Eo.BoldTextInTradeWindow, (e) => {
-              this.socketActionController.onBoldTextInTradeWindow(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.BuildGame, (e) => {
-              this.socketActionController.onBuildGame(e);
-              const t = "Mode-" + b.p9[e.gameSettings.modeSetting],
-                s = "Map-" + b.Qy[e.gameSettings.mapSetting];
-              (n.CA.sendGoogleAnalyticsEventOnce(n.CA.Category.Game, t),
-                n.CA.sendGoogleAnalyticsEventOnce(n.CA.Category.Game, s),
-                this.playedStartGameSound ||
-                  (ke.playGameStartedSound(e.gameSettings.modeSetting),
-                  n.CA.sendGoogleAnalyticsEvent(
-                    n.CA.Category.Funnel,
-                    n.CA.Label.FunnelStartedGame,
-                  ),
-                  (this.playedStartGameSound = !0)));
-            }),
-            this.gameStateHandlers.set(he.Eo.GameStateUpdated, (e) => {
-              this.socketActionController.gameStateUpdated(e, !0);
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.GivePlayerResourcesFromTile,
-              (e) => {
-                (0 !== e.length &&
-                  n.CA.sendGoogleAnalyticsEventOnce(
-                    n.CA.Category.Funnel,
-                    n.CA.Label.FunnelGameGetResources,
-                  ),
-                  this.socketActionController.onGivePlayerResourcesFromTile(e));
-              },
-            ),
-            this.gameStateHandlers.set(he.Eo.RematchLink, (e) => {
-              ((window.location.hash = e), window.location.reload());
-            }),
-            this.gameStateHandlers.set(he.Eo.EndGameText, (e) => {
-              this.socketActionController.onEndGameText(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.TogglePauseGame, (e) => {
-              this.socketActionController.onTogglePauseGame(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.CanResignGame, (e) => {
-              ((this.gameState.canResign = e), (0, ye.c2)(e));
-            }),
-            this.gameStateHandlers.set(he.Eo.GameEndState, (s) => {
-              (this.uiGameManager.socketGameSend.endBeginnerModeLevel(),
-                t.onGameEndState(s),
-                e.reconnectionController.disable(),
-                this.gameClientRestorationController.disable(),
-                n.CA.sendGoogleTagManagerEvent(
-                  n.CA.GoogleTagManagerEvent.GameFinished,
-                ));
-            }),
-            this.gameStateHandlers.set(he.Eo.ExitInitialPlacement, () => {
-              (ke.playSettlementPhaseEndedSound(
-                this.uiGameManager.gameController.gameSettings.modeSetting,
-              ),
-                setTimeout(() => {
-                  this.uiGameManager.eventController.sendEvent(
-                    void 0,
-                    X.o8.UIGameEventEnums.EndOfInitialPlacement,
-                  );
-                }, 500));
-            }),
-            this.gameStateHandlers.set(he.Eo.TradeFinalized, () => {
-              ge.A.play(ge.h.OfferAccepted);
-            }),
-            this.gameStateHandlers.set(he.Eo.TradeRejectedByAll, () => {
-              ge.A.play(ge.h.OfferRejected);
-            }),
-            this.gameStateHandlers.set(he.Eo.KnightPlaced, () => {
-              ge.A.play(ge.h.KnightPlace);
-            }),
-            this.gameStateHandlers.set(he.Eo.KarmaState, (e) => {
-              ((this.uiGameManager.gameController.gameSettings.karmaActive = e),
-                this.uiGameManager.gameStore
-                  .getState()
-                  .gameSettings.setIsKarmaActive(e));
-            }),
-            this.gameStateHandlers.set(he.Eo.KnightActivated, () => {
-              ge.A.play(ge.h.KnightEquip);
-            }),
-            this.gameStateHandlers.set(he.Eo.KnightUpgraded, () => {
-              ge.A.play(ge.h.KnightUpgrade);
-            }),
-            this.gameStateHandlers.set(he.Eo.PlayerReconnected, () => {
-              ge.A.play(ge.h.Reconnect);
-            }),
-            this.gameStateHandlers.set(he.Eo.PlayerDisconnected, () => {
-              ge.A.play(ge.h.Disconnect);
-            }),
-            this.gameStateHandlers.set(he.Eo.SpectatorChatMessage, (e) => {
-              (0, ye.VJ)(e);
-            }),
-            this.gameStateHandlers.set(he.Eo.ResetBeginnerModeLevel, () => {
-              g.p.resetBeginnerModeLevel();
-            }),
-            this.gameStateHandlers.set(he.Eo.SendBroadcast, (e) => {
-              at.show(e.text, ee.n.Information);
-            }),
-            this.gameStateHandlers.set(he.Eo.Ping, () => {
-              var e;
-              null === (e = this.socketActionController.uiGameManager) ||
-                void 0 === e ||
-                e.socketGameSend.pong();
-            }),
-            this.gameStateHandlers.set(
-              he.Eo.TriggerClientGameStateReset,
-              () => {
-                this.restoreGameClientWithoutClosingSocket();
-              },
-            ));
-        }
-      }
-      var Ce = s(87506);
-      const Pe = X.zd.MatchmakingState;
-      class _e {
-        constructor(e, t) {
-          ((this.matchmakingStateHandlers = new Map()),
-            (this.socketActionController = t),
-            e.setStateHandler(X.zd.State.MatchmakingStateUpdate, (e) => {
-              var t;
-              null === (t = this.matchmakingStateHandlers.get(e.type)) ||
-                void 0 === t ||
-                t(e.payload);
-            }),
-            this.matchmakingStateHandlers.set(Pe.MatchmakingUpdate, (e) => {
-              this.socketActionController.onMatchmakingUpdate(e);
-            }),
-            this.matchmakingStateHandlers.set(Pe.MatchmakingError, (e) => {
-              this.socketActionController.onMatchmakingError(e);
-            }),
-            this.matchmakingStateHandlers.set(
-              Pe.MatchmakingDisableAdblock,
-              (e) => {
-                this.socketActionController.onMatchmakingDisableAdblock();
-              },
-            ),
-            this.matchmakingStateHandlers.set(Pe.MatchmakingReconnect, (e) => {
-              Ce.O.sendFindGame();
-            }));
-        }
-      }
-      var Ae = s(46456);
-      const we = X.zd.ShuffleState;
-      class Re {
-        constructor(e) {
-          ((this.shuffleStateHandlers = new Map()),
-            e.setStateHandler(X.zd.State.ShuffleStateUpdate, (e) => {
-              var t;
-              null === (t = this.shuffleStateHandlers.get(e.type)) ||
-                void 0 === t ||
-                t(e.payload);
-            }),
-            this.shuffleStateHandlers.set(we.ShuffleQueueData, (e) => {
-              Ae.y.updateQueueData(e);
-            }),
-            this.shuffleStateHandlers.set(we.ShufflePlayerData, (e) => {
-              Ae.y.updatePlayerData(e);
-            }));
-        }
-      }
-      if (837 != s.j) var Te = s(36492);
-      const Ie = X.zd.State;
-      class Me {
-        activate() {
-          this.active || ((this.active = !0), this.startMonitoringLatency());
-        }
-        startMonitoringLatency() {
-          this.active &&
-            (null != this.timer && (this.stats.reconnects += 1),
-            this.stopMonitoringLatency(),
-            (this.timer = setInterval(() => this.sendPing(), 1e3)));
-        }
-        sendPing() {
-          const e = Date.now();
-          (this.pingTimestamps.add(e), this.controller.sender.sendPing(e));
-        }
-        stopMonitoringLatency() {
-          (clearInterval(this.timer), this.pingTimestamps.clear());
-        }
-        handlePong(e) {
-          var t, s;
-          const i = Date.now(),
-            n = e.timestamp;
-          if (!this.pingTimestamps.has(n)) return;
-          const r = Math.round((i - n) / 2);
-          this.lastLatency = r;
-          const o = Le(r);
-          var a;
-          ((null !== (a = (t = this.stats.buckets)[(s = o)]) && void 0 !== a) ||
-            (t[s] = 0),
-            (this.stats.buckets[o] += 1),
-            r <= 500
-              ? (this.stats.low += 1)
-              : r <= 1500
-                ? (this.stats.medium += 1)
-                : r <= 5e3
-                  ? (this.stats.high += 1)
-                  : (this.stats.dropped += 1),
-            this.pingTimestamps.delete(n));
-        }
-        getFinalStats() {
-          const e = (0, Te.A)(this.stats);
-          for (const n of this.pingTimestamps) {
-            var t, s;
-            const r = Le(Date.now() - n);
-            var i;
-            ((null !== (i = (t = e.buckets)[(s = r)]) && void 0 !== i) ||
-              (t[s] = 0),
-              (e.buckets[r] += 1));
-          }
-          return e;
-        }
-        constructor(e) {
-          ((this.pingTimestamps = new Set()),
-            (this.lastLatency = 0),
-            (this.active = !1),
-            (this.controller = e),
-            (this.stats = {
-              reconnects: 0,
-              low: 0,
-              medium: 0,
-              high: 0,
-              dropped: 0,
-              buckets: {},
-            }),
-            this.controller.registerSessionEstablishedObserver(() =>
-              this.startMonitoringLatency(),
-            ),
-            this.controller.registerSocketCloseObserver(() =>
-              this.stopMonitoringLatency(),
-            ),
-            this.controller.setStateHandler(Ie.SocketMonitorUpdate, (e) =>
-              this.handlePong(e),
-            ));
-        }
-      }
-      function Le(e) {
-        return 100 * Math.round(e / 100);
-      }
-      var Be = s(98487);
-      class De {
-        static deserialize(e) {
-          const t = new De();
-          return (
-            (t.updateSequence = e.updateSequence),
-            (t.gameSetting = e.gameSetting),
-            (t.isTournament = e.isTournament),
-            (t.hostSession = e.hostSession),
-            (t.isTestFreeExpansionsAndMaps = e.isTestFreeExpansionsAndMaps),
-            (t.creationPhase = e.creationPhase),
-            (t.guests = e.guests),
-            (t.victoryPointsRecommendedLimit = e.victoryPointsRecommendedLimit),
-            (t.victoryPointsMaxAllowed = e.victoryPointsMaxAllowed),
-            (t.kickedUserIds = [...e.kickedUserIds]),
-            t
-          );
-        }
-        getSessionCount() {
-          return this.guests.length + 1;
-        }
-        getSessions() {
-          return [...this.guests, this.hostSession];
-        }
-        getGuestSessions() {
-          return [...this.guests];
-        }
-        getUsernames() {
-          return this.getSessions().map((e) => e.username);
-        }
-        getUserIds() {
-          return this.getSessions()
-            .map((e) => e.userId)
-            .filter((e) => null != e);
-        }
-        isInRoom(e) {
-          for (const t of this.getSessions())
-            if (t.userSessionId == e.userSessionId) return !0;
-          return !1;
-        }
-        isMultiplayer() {
-          for (const e of this.getGuestSessions()) if (!e.isBot) return !0;
-          return !1;
-        }
-        isHost(e) {
-          return e == this.hostSession.userSessionId;
-        }
-        isHostSubscribed() {
-          return this.hostSession.isMember;
-        }
-        isGuest(e) {
-          return e != this.hostSession.userSessionId;
-        }
-        isPrivateGame() {
-          return this.gameSetting.privateGame;
-        }
-        isNoTrollsGame() {
-          return (
-            this.gameSetting.minimumKarma == Be.Zt.NO_TROLLS_KARMA_THRESHOLD
-          );
-        }
-        constructor() {
-          ((this.creationPhase = p.yF.EditSettings),
-            (this.victoryPointsRecommendedLimit = Be.Zt.DEFAULT_VP_TO_WIN));
-        }
-      }
-      var Ee = s(63778);
-      const Ge = X.mt.RoomInfoMessage;
-      class xe {
-        onRoomStateUpdated(e) {
-          this.protocol.onEvent("StateUpdated", (t) => {
-            const s = t.sessions.map((e) => ({
-              roomSessionId: e.roomSessionId,
-              userSessionId: e.userSessionId,
-              userId: e.userId,
-              isBot: e.isBot,
-              isReadyToPlay: e.isReadyToPlay,
-              selectedColor: Oe[e.selectedColor],
-              username: e.username,
-              isMember: e.isMember,
-              icon: e.icon,
-              profilePictureUrl: e.profilePictureUrl,
-              karmaCompletedGames: e.karmaCompletedGames,
-              karmaTotalGames: e.karmaTotalGames,
-              availableColors: e.availableColors.map((e) => Oe[e]),
-              botDifficulty:
-                null == e.botDifficulty ? void 0 : je[e.botDifficulty],
-            }));
-            e(
-              De.deserialize({
-                updateSequence: t.updateSequence,
-                gameSetting: {
-                  id: t.roomId,
-                  privateGame: t.private,
-                  playOrderSelectionActive: t.playOrderSelectionActive,
-                  minimumKarma: t.minimumKarma,
-                  modeSetting: Ne[t.gameMode],
-                  mapSetting: We[t.map],
-                  diceSetting: Ve[t.diceType],
-                  victoryPointsToWin: t.victoryPointsToWin,
-                  cardDiscardLimit: t.cardDiscardLimit,
-                  maxPlayers: t.maxPlayers,
-                  gameSpeed: Qe[t.gameSpeed],
-                  botSpeed: $e[t.botSpeed],
-                  hideBankCards: t.hiddenBankCards,
-                  friendlyRobber: t.friendlyRobber,
-                },
-                isTournament: t.isTournament,
-                isTestFreeExpansionsAndMaps: t.isTestFreeExpansionsAndMaps,
-                victoryPointsRecommendedLimit: t.victoryPointsRecommendedLimit,
-                victoryPointsMaxAllowed: t.victoryPointsMaxAllowed,
-                kickedUserIds: t.kickedUserIds,
-                creationPhase: Xe[t.creationPhase],
-                hostSession: s[0],
-                guests: s.slice(1),
-              }),
-            );
-          });
-        }
-        onInfoMessageUpdated(e) {
-          this.protocol.onEvent("InfoMessageUpdated", ({ messageType: t }) => {
-            e(Ye[t]);
-          });
-        }
-        onSeedOrderSelected(e) {
-          this.protocol.onEvent("SeedOrderSelected", ({ seedOrder: t }) => {
-            e({ seedOrder: t.map((e) => [e[0], Oe[e[1]]]) });
-          });
-        }
-        onPlayOrderSelected(e) {
-          this.protocol.onEvent(
-            "PlayOrderSelected",
-            ({ mapState: t, currentSelector: s, playOrder: i }) => {
-              e({
-                mapState: t,
-                currentSelector: Oe[s],
-                playOrder: i.map((e) => [Oe[e[0]], e[1]]),
-              });
-            },
-          );
-        }
-        onGotKicked(e) {
-          this.protocol.onEvent("GotKicked", ({ roomId: t, canRejoin: s }) => {
-            e(t, s);
-          });
-        }
-        onFailedToStartGameMembershipRequired(e, t = !1) {
-          (t &&
-            this.protocol.removeListener("FailedToStartGameMembershipRequired"),
-            this.protocol.onEvent("FailedToStartGameMembershipRequired", e));
-        }
-        onReceivedChatMessage(e) {
-          this.protocol.onEvent(
-            "ReceivedChatMessage",
-            ({ message: t, senderSessionId: s }) => {
-              e(t, s);
-            },
-          );
-        }
-        onInvalidPlayerCountEncountered(e) {
-          this.protocol.onEvent(
-            "InvalidPlayerCountEncountered",
-            ({ playerCount: t, missingExtension: s }) => {
-              e(t, s);
-            },
-          );
-        }
-        onFailedToReducePlayerCount(e) {
-          this.protocol.onEvent("FailedToReducePlayerCount", () => {
-            e();
-          });
-        }
-        onFailedToStartGameBecauseServerIsUpdating(e) {
-          this.protocol.onEvent(
-            "FailedToStartGameBecauseServerIsUpdating",
-            () => {
-              e();
-            },
-          );
-        }
-        onFailedToStartGamePlayersNotReady(e) {
-          this.protocol.onEvent(
-            "FailedToStartGamePlayersNotReady",
-            ({ players: t }) => {
-              e(t);
-            },
-          );
-        }
-        onFailedToSelectUsedColor(e) {
-          this.protocol.onEvent("FailedToSelectUsedColor", () => {
-            e();
-          });
-        }
-        onFailedToExecuteCommandGameStarting(e) {
-          this.protocol.onEvent("FailedToExecuteCommandGameStarting", () => {
-            e();
-          });
-        }
-        onFailedToSetGameSpeed(e) {
-          this.protocol.onEvent("FailedToSetGameSpeed", () => {
-            e();
-          });
-        }
-        onKickedInactiveHost(e) {
-          this.protocol.onEvent("KickedInactiveHost", () => {
-            e();
-          });
-        }
-        onFailedToSendChatMessage(e) {
-          this.protocol.onEvent(
-            "FailedToSendChatMessage",
-            ({ reason: t, mutedUntil: s }) => {
-              e(t, s);
-            },
-          );
-        }
-        onReceivedChatResponse(e) {
-          this.protocol.onEvent("ReceivedChatResponse", ({ response: t }) => {
-            e(t);
-          });
-        }
-        setReadyToStart(e) {
-          this.protocol.send("setReadyToStart", { ready: e });
-        }
-        selectColor(e, t) {
-          this.protocol.send("selectColor", { roomSessionId: e, color: Ue[t] });
-        }
-        startGame() {
-          this.protocol.send("startGame", { clientVersion: b.$m });
-        }
-        startSeedOrderSelection() {
-          this.protocol.send("startSeedOrderSelection", {});
-        }
-        kickPlayer(e) {
-          this.protocol.send("kickPlayer", { roomSessionId: e });
-        }
-        addBot() {
-          this.protocol.send("addBot", {});
-        }
-        setBotDifficulty(e, t) {
-          this.protocol.send("setBotDifficulty", {
-            roomSessionId: e,
-            botDifficulty: ze[t],
-          });
-        }
-        setPrivateGame(e) {
-          this.protocol.send("setPrivateGame", { privateGame: e });
-        }
-        toggleNoTrolls() {
-          this.protocol.send("toggleNoTrolls", {});
-        }
-        togglePlayOrderSelection() {
-          this.protocol.send("togglePlayOrderSelection", {});
-        }
-        setGameMode(e) {
-          this.protocol.send("setGameMode", { gameMode: Fe[e] });
-        }
-        setMap(e) {
-          this.protocol.send("setMap", { map: He[e] });
-        }
-        setDiceType(e) {
-          this.protocol.send("setDiceType", { diceType: Ke[e] });
-        }
-        setVictoryPointsToWin(e) {
-          this.protocol.send("setVictoryPointsToWin", { victoryPoints: e });
-        }
-        setGameSpeed(e) {
-          this.protocol.send("setGameSpeed", { gameSpeed: qe[e] });
-        }
-        setCardDiscardLimit(e) {
-          this.protocol.send("setCardDiscardLimit", { limit: e });
-        }
-        setFriendlyRobber(e) {
-          this.protocol.send("setFriendlyRobber", { friendlyRobber: e });
-        }
-        setHideBankCards(e) {
-          this.protocol.send("setHiddenBankCards", { hiddenBankCards: e });
-        }
-        setMaxPlayers(e) {
-          this.protocol.send("setMaxPlayers", { maxPlayers: e });
-        }
-        setSeedOrder(e, t) {
-          this.protocol.send("setSeedOrder", { color: Ue[e], order: t });
-        }
-        setPlayOrder(e) {
-          this.protocol.send("setPlayOrder", { order: e });
-        }
-        startPlayOrderSelection() {
-          this.protocol.send("startPlayOrderSelection", {});
-        }
-        leave() {
-          this.protocol.send("leave", {});
-        }
-        submitChatText(e) {
-          this.protocol.send("submitChatText", { text: e });
-        }
-        constructor(e) {
-          this.protocol = e;
-        }
-      }
-      const Ue = {
-          [Ee.DS.Blue]: "blue",
-          [Ee.DS.Bronze]: "bronze",
-          [Ee.DS.Gold]: "gold",
-          [Ee.DS.Green]: "green",
-          [Ee.DS.MysticBlue]: "mysticBlue",
-          [Ee.DS.Orange]: "orange",
-          [Ee.DS.Pink]: "pink",
-          [Ee.DS.Purple]: "purple",
-          [Ee.DS.Red]: "red",
-          [Ee.DS.Silver]: "silver",
-          [Ee.DS.White]: "white",
-          [Ee.DS.Black]: "black",
-        },
-        Oe = {
-          blue: Ee.DS.Blue,
-          bronze: Ee.DS.Bronze,
-          gold: Ee.DS.Gold,
-          green: Ee.DS.Green,
-          mysticBlue: Ee.DS.MysticBlue,
-          orange: Ee.DS.Orange,
-          pink: Ee.DS.Pink,
-          purple: Ee.DS.Purple,
-          red: Ee.DS.Red,
-          silver: Ee.DS.Silver,
-          white: Ee.DS.White,
-          black: Ee.DS.Black,
-        },
-        Fe = {
-          [b.p9.Classic4P]: "classic4P",
-          [b.p9.TutorialClassic4P]: "tutorialClassic4P",
-          [b.p9.Classic56P]: "classic56P",
-          [b.p9.Classic78P]: "classic78P",
-          [b.p9.Seafarers4P]: "seafarers4P",
-          [b.p9.Seafarers56P]: "seafarers56P",
-          [b.p9.CitiesAndKnights4P]: "citiesAndKnights4P",
-          [b.p9.CitiesAndKnights56P]: "citiesAndKnights56P",
-          [b.p9.CitiesAndKnightsSeafarers4P]: "citiesAndKnightsSeafarers4P",
-          [b.p9.CitiesAndKnightsSeafarers56P]: "citiesAndKnightsSeafarers56P",
-          [b.p9.ServerStressTestClassic4P]: "serverStressTestClassic4P",
-          [b.p9.BeginnerModeClassic4P]: "beginnerModeClassic4P",
-          [b.p9.ColonistRush4P]: "colonistRush",
-        },
-        Ne = {
-          classic4P: b.p9.Classic4P,
-          tutorialClassic4P: b.p9.TutorialClassic4P,
-          classic56P: b.p9.Classic56P,
-          classic78P: b.p9.Classic78P,
-          seafarers4P: b.p9.Seafarers4P,
-          seafarers56P: b.p9.Seafarers56P,
-          citiesAndKnights4P: b.p9.CitiesAndKnights4P,
-          citiesAndKnights56P: b.p9.CitiesAndKnights56P,
-          citiesAndKnightsSeafarers4P: b.p9.CitiesAndKnightsSeafarers4P,
-          citiesAndKnightsSeafarers56P: b.p9.CitiesAndKnightsSeafarers56P,
-          serverStressTestClassic4P: b.p9.ServerStressTestClassic4P,
-          beginnerModeClassic4P: b.p9.BeginnerModeClassic4P,
-          colonistRush: b.p9.ColonistRush4P,
-        },
-        He = {
-          [b.Qy.Classic4P]: "classic4P",
-          [b.Qy.TutorialClassic4P]: "tutorialClassic4P",
-          [b.Qy.Classic4PRandom]: "classic4PRandom",
-          [b.Qy.Classic56P]: "classic56P",
-          [b.Qy.Classic78P]: "classic78P",
-          [b.Qy.SS1HeadingForNewShores3P]: "sS1HeadingForNewShores3P",
-          [b.Qy.SS1HeadingForNewShores4P]: "sS1HeadingForNewShores4P",
-          [b.Qy.SS1HeadingForNewShores56P]: "sS1HeadingForNewShores56P",
-          [b.Qy.TutorialSS1HeadingForNewShores4P]:
-            "tutorialSS1HeadingForNewShores4P",
-          [b.Qy.SS2FourIslands3P]: "sS2FourIslands3P",
-          [b.Qy.SS2FourIslands4P]: "sS2FourIslands4P",
-          [b.Qy.SS2SixIslands56P]: "sS2SixIslands56P",
-          [b.Qy.TutorialSS2FourIslands4P]: "tutorialSS2FourIslands4P",
-          [b.Qy.SS3FogIslands3P]: "sS3FogIslands3P",
-          [b.Qy.SS3FogIslands4P]: "sS3FogIslands4P",
-          [b.Qy.SS3FogIslands56P]: "sS3FogIslands56P",
-          [b.Qy.TutorialSS3FogIsland4P]: "tutorialSS3FogIsland4P",
-          [b.Qy.SS4ThroughTheDesert3P]: "sS4ThroughTheDesert3P",
-          [b.Qy.SS4ThroughTheDesert4P]: "sS4ThroughTheDesert4P",
-          [b.Qy.SS4ThroughTheDesert56P]: "sS4ThroughTheDesert56P",
-          [b.Qy.TutorialSS4ThroughTheDesert4P]: "tutorialSS4ThroughTheDesert4P",
-          [b.Qy.KingOfTheHill]: "kingOfTheHill",
-          [b.Qy.Earth]: "earth",
-          [b.Qy.EarthSeafarers]: "earthSeafarers",
-          [b.Qy.USA]: "uSA",
-          [b.Qy.UK]: "uK",
-          [b.Qy.UKSeafarers]: "uKSeafarers",
-          [b.Qy.Diamond]: "diamond",
-          [b.Qy.Gear]: "gear",
-          [b.Qy.Lakes]: "lakes",
-          [b.Qy.Pond]: "pond",
-          [b.Qy.Twirl]: "twirl",
-          [b.Qy.ShuffleBoard]: "shuffleBoard",
-          [b.Qy.BlackForest]: "blackForest",
-          [b.Qy.Volcano]: "volcano",
-          [b.Qy.Circle]: "circle",
-          [b.Qy.Kite]: "kite",
-          [b.Qy.Romania]: "romania",
-          [b.Qy.MiniBase]: "miniBase",
-          [b.Qy.Monopoly]: "monopoly",
-          [b.Qy.MountainOfRiches]: "mountainOfRiches",
-          [b.Qy.Doggo]: "doggo",
-          [b.Qy.Duel]: "duel",
-          [b.Qy.TradeIslands]: "tradeIslands",
-          [b.Qy.TradeIslandsSeafarers]: "tradeIslandsSeafarers",
-          [b.Qy.Vietnam]: "vietnam",
-          [b.Qy.TurningTidesSeafarers]: "turningTidesSeafarers",
-          [b.Qy.TurningTidesClassic]: "turningTidesClassic",
-          [b.Qy.TwoIsles]: "twoIsles",
-          [b.Qy.JellyFish]: "jellyFish",
-          [b.Qy.GoldRush]: "goldRush",
-          [b.Qy.Istanbul]: "istanbul",
-          [b.Qy.IstanbulSeafarers]: "istanbulSeafarers",
-          [b.Qy.Europe]: "europe",
-          [b.Qy.EuropeSeafarers]: "europeSeafarers",
-          [b.Qy.Stripes]: "stripes",
-          [b.Qy.MonopolyIslands]: "monopolyIslands",
-          [b.Qy.MonopolyIslandsSeafarers]: "monopolyIslandsSeafarers",
-          [b.Qy.CampaignLevel1]: "campaignLevel1",
-          [b.Qy.CampaignLevel2]: "campaignLevel2",
-          [b.Qy.CampaignRoadRace]: "campaignRoadRace",
-          [b.Qy.CampaignRoadRace2]: "campaignRoadRace2",
-        },
-        We = {
-          classic4P: b.Qy.Classic4P,
-          tutorialClassic4P: b.Qy.TutorialClassic4P,
-          classic4PRandom: b.Qy.Classic4PRandom,
-          classic56P: b.Qy.Classic56P,
-          classic78P: b.Qy.Classic78P,
-          sS1HeadingForNewShores3P: b.Qy.SS1HeadingForNewShores3P,
-          sS1HeadingForNewShores4P: b.Qy.SS1HeadingForNewShores4P,
-          sS1HeadingForNewShores56P: b.Qy.SS1HeadingForNewShores56P,
-          tutorialSS1HeadingForNewShores4P:
-            b.Qy.TutorialSS1HeadingForNewShores4P,
-          sS2FourIslands3P: b.Qy.SS2FourIslands3P,
-          sS2FourIslands4P: b.Qy.SS2FourIslands4P,
-          sS2SixIslands56P: b.Qy.SS2SixIslands56P,
-          tutorialSS2FourIslands4P: b.Qy.TutorialSS2FourIslands4P,
-          sS3FogIslands3P: b.Qy.SS3FogIslands3P,
-          sS3FogIslands4P: b.Qy.SS3FogIslands4P,
-          sS3FogIslands56P: b.Qy.SS3FogIslands56P,
-          tutorialSS3FogIsland4P: b.Qy.TutorialSS3FogIsland4P,
-          sS4ThroughTheDesert3P: b.Qy.SS4ThroughTheDesert3P,
-          sS4ThroughTheDesert4P: b.Qy.SS4ThroughTheDesert4P,
-          sS4ThroughTheDesert56P: b.Qy.SS4ThroughTheDesert56P,
-          tutorialSS4ThroughTheDesert4P: b.Qy.TutorialSS4ThroughTheDesert4P,
-          kingOfTheHill: b.Qy.KingOfTheHill,
-          earth: b.Qy.Earth,
-          earthSeafarers: b.Qy.EarthSeafarers,
-          uSA: b.Qy.USA,
-          uK: b.Qy.UK,
-          uKSeafarers: b.Qy.UKSeafarers,
-          diamond: b.Qy.Diamond,
-          gear: b.Qy.Gear,
-          lakes: b.Qy.Lakes,
-          pond: b.Qy.Pond,
-          twirl: b.Qy.Twirl,
-          shuffleBoard: b.Qy.ShuffleBoard,
-          blackForest: b.Qy.BlackForest,
-          volcano: b.Qy.Volcano,
-          circle: b.Qy.Circle,
-          kite: b.Qy.Kite,
-          romania: b.Qy.Romania,
-          miniBase: b.Qy.MiniBase,
-          monopoly: b.Qy.Monopoly,
-          mountainOfRiches: b.Qy.MountainOfRiches,
-          doggo: b.Qy.Doggo,
-          duel: b.Qy.Duel,
-          tradeIslands: b.Qy.TradeIslands,
-          tradeIslandsSeafarers: b.Qy.TradeIslandsSeafarers,
-          vietnam: b.Qy.Vietnam,
-          turningTidesSeafarers: b.Qy.TurningTidesSeafarers,
-          turningTidesClassic: b.Qy.TurningTidesClassic,
-          twoIsles: b.Qy.TwoIsles,
-          jellyFish: b.Qy.JellyFish,
-          goldRush: b.Qy.GoldRush,
-          istanbul: b.Qy.Istanbul,
-          istanbulSeafarers: b.Qy.IstanbulSeafarers,
-          europe: b.Qy.Europe,
-          europeSeafarers: b.Qy.EuropeSeafarers,
-          stripes: b.Qy.Stripes,
-          monopolyIslands: b.Qy.MonopolyIslands,
-          monopolyIslandsSeafarers: b.Qy.MonopolyIslandsSeafarers,
-          campaignLevel1: b.Qy.CampaignLevel1,
-          campaignLevel2: b.Qy.CampaignLevel2,
-          campaignRoadRace: b.Qy.CampaignRoadRace,
-          campaignRoadRace2: b.Qy.CampaignRoadRace2,
-        },
-        Ke = {
-          [b.ZP.Random]: "random",
-          [b.ZP.Balanced]: "balanced",
-          [b.ZP.StressTestSequence]: "stressTestSequence",
-          [b.ZP.PredefinedDiceSequenceDeleted]: "predefinedDiceSequenceDeleted",
-        },
-        Ve = {
-          random: b.ZP.Random,
-          balanced: b.ZP.Balanced,
-          stressTestSequence: b.ZP.StressTestSequence,
-          predefinedDiceSequenceDeleted: b.ZP.PredefinedDiceSequenceDeleted,
-        },
-        qe = {
-          [Be.ro.Base15s]: "base15s",
-          [Be.ro.Base30s]: "base30s",
-          [Be.ro.Base60s]: "base60s",
-          [Be.ro.Base120s]: "base120s",
-          [Be.ro.Base240s]: "base240s",
-          [Be.ro.Base12000s]: "base12000s",
-          [Be.ro.Rush5s]: "rush5s",
-          [Be.ro.Rush8s]: "rush8s",
-          [Be.ro.Rush10s]: "rush10s",
-          [Be.ro.Rush15s]: "rush15s",
-          [Be.ro.Rush20s]: "rush20s",
-        },
-        Qe = {
-          base15s: Be.ro.Base15s,
-          base30s: Be.ro.Base30s,
-          base60s: Be.ro.Base60s,
-          base120s: Be.ro.Base120s,
-          base240s: Be.ro.Base240s,
-          base12000s: Be.ro.Base12000s,
-          rush5s: Be.ro.Rush5s,
-          rush8s: Be.ro.Rush8s,
-          rush10s: Be.ro.Rush10s,
-          rush15s: Be.ro.Rush15s,
-          rush20s: Be.ro.Rush20s,
-        },
-        $e =
-          (Be.K4.Fast,
-          Be.K4.Normal,
-          Be.K4.Slow,
-          { fast: Be.K4.Fast, normal: Be.K4.Normal, slow: Be.K4.Slow }),
-        ze = { [Be.R1.BotEasy]: "easy", [Be.R1.BotMedium]: "medium" },
-        je = { easy: Be.R1.BotEasy, medium: Be.R1.BotMedium },
-        Ye = {
-          none: Ge.None,
-          clickReady: Ge.ClickReady,
-          premiumItemSelected: Ge.PremiumItemSelected,
-        },
-        Xe = {
-          settings: p.yF.EditSettings,
-          playOrder: p.yF.PlayOrderSelection,
-          seedOrder: p.yF.SeedOrderSelection,
-        };
-      if (837 != s.j) var Ze = s(94226);
-      class Je {
-        connect() {
-          this.controller.enableConnect();
-        }
-        constructor(e) {
-          ((this.actionController = e),
-            (this.controller = new re(T.l.socketServerWSS())),
-            (this.gameListener = new ke(
-              this.controller,
-              this.actionController,
-            )),
-            (this.lobbyListener = new ue(
-              this.controller,
-              this.actionController,
-            )),
-            (this.matchmakingListener = new _e(
-              this.controller,
-              this.actionController,
-            )),
-            (this.shuffleListener = new Re(this.controller)),
-            (this.monitor = new Me(this.controller)),
-            this.controller.setStateHandler(X.zd.State.RoomEvent, (e) => {
-              this.roomProtocolClient.emitEvent(e.type, e);
-            }));
-          ((this.roomProtocolClient = new Ze.c((e) => {
-            const t = (function (e) {
-              switch (e.type) {
-                case "setReadyToStart":
-                  return [n.CA.Label.ClickedRoomReadyToStart, () => {}];
-                case "selectColor":
-                case "startPlayOrderSelection":
-                case "submitChatText":
-                case "setBotDifficulty":
-                case "setSeedOrder":
-                case "setPlayOrder":
-                  return;
-                case "startGame":
-                  return [n.CA.Label.ClickedRoomStartGame, () => {}];
-                case "kickPlayer":
-                  return [n.CA.Label.ClickedRoomKickPlayer, () => {}];
-                case "addBot":
-                  return [n.CA.Label.ClickedRoomAddBot, () => {}];
-                case "setPrivateGame":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangePrivateGame,
-                    () => Number(e.privateGame),
-                  ];
-                case "toggleNoTrolls":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangeNoTrollsSetting,
-                    () => {},
-                  ];
-                case "setGameMode":
-                  return [
-                    n.CA.Label.ClickedRoomSettingUpdateGameModeSetting,
-                    () => e.gameMode,
-                  ];
-                case "setMap":
-                  return [
-                    n.CA.Label.ClickedRoomSettingUpdateMapSetting,
-                    () => e.map,
-                  ];
-                case "setDiceType":
-                  return [
-                    n.CA.Label.ClickedRoomSettingUpdateDiceSetting,
-                    () => e.diceType,
-                  ];
-                case "setVictoryPointsToWin":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangeVictoryPointsToWin,
-                    () => e.victoryPoints,
-                  ];
-                case "setCardDiscardLimit":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangeCardDiscardLimit,
-                    () => e.limit,
-                  ];
-                case "setFriendlyRobber":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangeFriendlyRobber,
-                    () => Number(e.friendlyRobber),
-                  ];
-                case "setMaxPlayers":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangeMaxPlayers,
-                    () => e.maxPlayers,
-                  ];
-                case "setHiddenBankCards":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangeHideBankCards,
-                    () => Number(e.hiddenBankCards),
-                  ];
-                case "setGameSpeed":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangeGameSpeed,
-                    () => e.gameSpeed,
-                  ];
-                case "leave":
-                  return [n.CA.Label.ClickedRoomExit, () => {}];
-                case "startSeedOrderSelection":
-                  return [
-                    n.CA.Label.ClickedRoomCustomPlayOrderSelection,
-                    () => {},
-                  ];
-                case "togglePlayOrderSelection":
-                  return [
-                    n.CA.Label.ClickedRoomSettingChangePlayOrderSelection,
-                    () => {},
-                  ];
-              }
-            })(e);
-            (null != t &&
-              n.CA.sendGoogleAnalyticsEvent(n.CA.Category.Room, t[0], t[1]()),
-              this.controller.sender.sendToServerType(
-                b.lo.RoomCommand,
-                "lobby",
-                e,
-              ));
-          })),
-            (this.roomClient = new xe(this.roomProtocolClient)));
-        }
-      }
-      class et {
-        start() {
-          (this.createElements(),
-            (this.updateTimer = setInterval(() => this.update(), 100)),
-            ot.monitor.activate());
-        }
-        stop() {
-          (clearInterval(this.updateTimer), this.container.remove());
-        }
-        createElements() {
-          ((this.container = (0, x.Le)(document.body, "")),
-            (this.container.style.position = "absolute"),
-            (this.container.style.backgroundColor = "gray"),
-            (this.container.style.display = "flex"),
-            (this.container.style.opacity = "0.9"),
-            (this.container.style.top = "5px"),
-            (this.container.style.left = "5px"),
-            (this.container.style.zIndex = "99999999"),
-            (0, x.G0)(this.container, () => {
-              console.log("Socket stats", ot.monitor.getFinalStats());
-            }),
-            (this.mediumLatency = (0, x.Le)(this.container, "hidden")),
-            (this.mediumLatency.title = "Medium latency pings"),
-            (this.mediumLatency.style.marginRight = "5px"),
-            (this.mediumLatency.style.color = "orange"),
-            (this.highLatency = (0, x.Le)(this.container, "hidden")),
-            (this.highLatency.title = "High latency pings"),
-            (this.highLatency.style.marginRight = "5px"),
-            (this.highLatency.style.color = "red"),
-            (this.droppedLatency = (0, x.Le)(this.container, "hidden")),
-            (this.droppedLatency.title = "Dropped pings"),
-            (this.droppedLatency.style.marginRight = "5px"),
-            (this.droppedLatency.style.color = "red"),
-            (this.reconnects = (0, x.Le)(this.container, "hidden")),
-            (this.reconnects.title = "Reconnects"),
-            (this.reconnects.style.marginRight = "5px"),
-            (this.reconnects.style.color = "red"),
-            (this.latency = (0, x.Le)(this.container, "")),
-            (this.latency.title = "Last latency reading"),
-            (this.latency.style.minWidth = "65px"),
-            (this.latency.style.textAlign = "right"));
-        }
-        update() {
-          const e = ot.monitor.stats;
-          ((this.mediumLatency.textContent = `${e.medium}`),
-            this.mediumLatency.classList.toggle("hidden", 0 == e.medium),
-            (this.highLatency.textContent = `${e.high}`),
-            this.highLatency.classList.toggle("hidden", 0 == e.high),
-            (this.droppedLatency.textContent = `${e.dropped}`),
-            this.droppedLatency.classList.toggle("hidden", 0 == e.dropped),
-            (this.reconnects.textContent = `${e.reconnects}`),
-            this.reconnects.classList.toggle("hidden", 0 == e.reconnects));
-          const t = 10 * Math.ceil(ot.monitor.lastLatency / 10);
-          this.latency.textContent = `${t}ms`;
-        }
-      }
-      window.startSocketMonitor = () => {
-        const e = new et();
-        return (e.start(), e);
-      };
-      var tt = s(13359),
-        st = s(90676);
-      class it {
-        static handleAccountRedirection() {
-          var e, t;
-          if (!this.shouldPerformAnyRedirection()) return;
-          if (
-            !(null === (e = r._.userState) || void 0 === e
-              ? void 0
-              : e.isLoggedIn)
-          )
-            return void this.handleRedirectNewAccountsToMobileWeb();
-          const s =
-            null === (t = r._.userState) || void 0 === t
-              ? void 0
-              : t.colonistVersion;
-          null != s && s >= b.kK && this.handleRedirectNewAccountsToMobileWeb();
-        }
-        static isUserOnLandingPage() {
-          var e, t, s;
-          if (!tt.q.isUrlPathRoot()) return !1;
-          if (window.location.pathname.includes("/mobile")) return !1;
-          if (
-            null === (e = r._.userState) || void 0 === e ? void 0 : e.isLoggedIn
-          )
-            return !1;
-          return !(
-            (null !==
-              (s =
-                null === (t = r._.userState) || void 0 === t
-                  ? void 0
-                  : t.totalCompletedGameCount) && void 0 !== s
-              ? s
-              : 0) > 0
-          );
-        }
-        static shouldPerformAnyRedirection() {
-          if (!ne.N.isUserOnMobileWebBrowser()) return !1;
-          if (ne.N.isUserOnTabletDevice()) return !1;
-          if (this.isUserOnLandingPage()) {
-            return null != tt.q.getRoomIdFromUrl();
-          }
-          return !window.location.pathname.includes("/catan-rules");
-        }
-        static isOnMobilePath() {
-          return window.location.pathname.includes("/mobile");
-        }
-        static handleRedirectNewAccountsToMobileWeb() {
-          if (this.isOnMobilePath()) return;
-          const e =
-            tt.q.getLanguagePrefix() +
-            "/mobile" +
-            tt.q.getRelativeUrlWithoutLanguagePrefix();
-          window.location.href = this.removeTrailingSlash(e);
-        }
-        static removeTrailingSlash(e) {
-          return e.replace(/\/([?#])/, "$1");
-        }
-      }
-      let nt, rt, ot, at, ct, lt, dt;
-      class ut {
-        async initializeSoundAndVersionController() {
-          (P.j.setVersionNumber(i.r.versionNumber),
-            ut.initializeAudio(),
-            await n.CA.initLogRocket(),
-            n.CA.initializeSessionRecorder(),
-            (nt = new C.f(
-              g.p.getVersionNo,
-              i.r.versionNumber,
-              g.p.setVersionNo,
-            )));
-        }
-        webGLCheck() {
-          k.webGLCheck();
-        }
-        initializeGameManager(e) {
-          rt = e;
-        }
-        initializeUIManagerEvents(e) {
-          dt = e;
-        }
-        static initializeSocket(e, t) {
-          ((ot = new Je(e)),
-            ot.controller.registerSessionEstablishedObserver(() => {
-              (null == t ? void 0 : t()) &&
-                rt.socketGameSend.notifyBackendClientAutoReconnected();
-            }),
-            ot.controller.registerSessionEstablishedObserver(() => {
-              null == at || at.removeSocketErrorBanners();
-            }));
-        }
-        initializeNotification(e) {
-          at = e;
-        }
-        completeInitialization() {
-          (D.displayAllPendingNotifications(),
-            d.W.loadImages(),
-            rt.initializeSocket(ot.gameListener.gameState),
-            k.debugOptions(),
-            K.S.init(),
-            m.init());
-        }
-        static async initializeEntry() {
-          await o.aA.init();
-          if (!(await r._.init())) {
-            new f.y(
-              { key: "strings:popups.errors.initializationError.title" },
-              {
-                key: "strings:popups.errors.initializationError.initializationFailed",
-              },
-              () => window.location.reload(),
-              () => {},
-              !1,
-              { showXButton: !1, showXonHeader: !1 },
-            ).show();
-            const e = 2147483647;
-            await (0, M.cb)(e);
-          }
-          (it.handleAccountRedirection(),
-            r._.registerChangeListener(() => {
-              (U.init(),
-                O.init(),
-                N.init(),
-                H.init(),
-                this.eagerlyObtainTurnstilePreClearance());
-            }),
-            _.Zt.initProducts(i.r.discordSKUIds),
-            W.Z.initProducts(i.r.discordSKUIds),
-            A.AB.initProducts(i.r.discordSKUIds),
-            R.f.initProducts(i.r.discordSKUIds),
-            w.N.fetchShouldShowFeedbackForm(),
-            (ct = E.a.createTabCommunication()),
-            ct.onEvent(E.s.ReloadWebsite, () => window.location.reload()),
-            (0, st.Dc)());
-        }
-        initializeSentry() {
-          const e = "localhost" === window.location.hostname,
-            t = i.r.isUserOnMobileAppOrWeb
-              ? i.r.mobileAppSentryDSN
-              : i.r.frontendSentryDSN;
-          if (e || !t)
-            return void (window.onunhandledrejection = (e) => {
-              e.reason instanceof b.lc && e.preventDefault();
-            });
-          a.Ts({
-            dsn: t,
-            release: `Colonist:v${i.r.versionNumber}`,
-            integrations: [c.dp(), l.w({ maskAllText: !1, blockAllMedia: !1 })],
-            tracesSampleRate: i.r.frontendSentryTraceSampleRate,
-            replaysSessionSampleRate: 5e-4,
-            replaysOnErrorSampleRate: 5e-4,
-            allowUrls: [window.location.hostname],
-            environment: i.r.frontendSentryEnvironment,
-            ignoreErrors: [/^AbortError$/],
-            beforeSend: (e, t) => {
-              var s, i, n, o, a, c;
-              return "Failed to start the audio device" ===
-                (e.message ||
-                  (null === (n = e.exception) ||
-                  void 0 === n ||
-                  null === (i = n.values) ||
-                  void 0 === i ||
-                  null === (s = i[0]) ||
-                  void 0 === s
-                    ? void 0
-                    : s.value))
-                ? null
-                : ((null !== (l = (c = e).user) && void 0 !== l) ||
-                    (c.user = {}),
-                  (null === (o = r._.userState) || void 0 === o
-                    ? void 0
-                    : o.id) && (e.user.id = r._.userState.id),
-                  (null === (a = r._.userState) || void 0 === a
-                    ? void 0
-                    : a.username) && (e.user.username = r._.userState.username),
-                  e);
-              var l;
-            },
-            beforeSendTransaction: function (e) {
-              if (null == e.spans) return null;
-              return (
-                (e.spans = e.spans.filter((e) => {
-                  if (null == e.timestamp) return !0;
-                  switch (e.origin) {
-                    case "auto.ui.browser.metrics":
-                      return e.timestamp - e.start_timestamp > 0.05;
-                    case "auto.resource.browser.metrics":
-                      return e.timestamp - e.start_timestamp > 0.25;
-                  }
-                  return !0;
-                })),
-                e
-              );
-            },
-          });
-        }
-        static sendPageVisitAnalyticEvent() {
-          const e = tt.q.getPathnameWithoutLanguagePrefix(),
-            t = {
-              type: be.k0.PageVisit,
-              category: be.eX.PageVisit,
-              stringValue: e,
-            };
-          n.CA.sendAnalyticEvent(t);
-        }
-        static eagerlyObtainTurnstilePreClearance() {
-          if (i.r.isUserOnDiscord) return;
-          null == r._.userState &&
-            !r._.isStale() &&
-            q.F.obtainPreClearanceCookie();
-        }
-        static initializeAudio() {
-          const e = g.p.getMasterVolume();
-          ge.A.init(e);
-        }
-        constructor() {
-          (this.initializeSentry(),
-            (lt = new G.S()),
-            (async function () {
-              if ("serviceWorker" in navigator)
-                try {
-                  const e = `${i.r.isUserOnDiscord ? "/.proxy/" : "/"}service-worker${i.r.isUserOnMobile ? "?mobile" : ""}`;
-                  await navigator.serviceWorker.register(e);
-                } catch (e) {
-                  (0, v.vV)("registerServiceWorker", [
-                    `Service Worker registration failed with error: '${e}'`,
-                  ]);
-                }
-            })(),
-            ut.sendPageVisitAnalyticEvent());
-        }
-      }
     },
     42457: (e, t, s) => {
       "use strict";
@@ -19533,7 +18145,9 @@
     },
     42466: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => i });
+      s.d(t, {
+        y: () => i,
+      });
       class i {
         static trackPopup(e) {
           i.activePopups.push(e);
@@ -19572,12 +18186,17 @@
     },
     42845: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => i });
+      s.d(t, {
+        N: () => i,
+      });
       class i {
         addData(e) {
           if (!this.orderBroken) {
             if (
-              (this.data.push({ added: Date.now(), data: e }),
+              (this.data.push({
+                added: Date.now(),
+                data: e,
+              }),
               this.data.length > 10)
             )
               return (
@@ -19664,7 +18283,14 @@
     },
     44517: (e, t, s) => {
       "use strict";
-      if ((s.d(t, { a: () => o, s: () => r }), 837 != s.j)) var i = s(53879);
+      if (
+        (s.d(t, {
+          a: () => o,
+          s: () => r,
+        }),
+        837 != s.j)
+      )
+        var i = s(53879);
       class n {
         sendEvent(e) {
           const t = this.STORAGE_KEY_PREFIX + r[e];
@@ -19731,7 +18357,9 @@
     },
     45857: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => r });
+      s.d(t, {
+        H: () => r,
+      });
       var i = s(95176),
         n = s(9029);
       class r extends i.y {
@@ -19763,8 +18391,12 @@
         }
         constructor(e, t) {
           (super(
-            { key: "strings:popups.assetsLoading" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:popups.assetsLoading",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             t,
             !0,
@@ -19795,7 +18427,9 @@
     },
     45973: (e, t, s) => {
       "use strict";
-      s.d(t, { B: () => i });
+      s.d(t, {
+        B: () => i,
+      });
       class i {}
       ((i.globalLeaderboardUrl = ""),
         (i.maximumLeaderboardAPIRankingRangeLimit = 100),
@@ -19808,7 +18442,9 @@
     },
     46456: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => r });
+      s.d(t, {
+        y: () => r,
+      });
       var i = s(30506),
         n = s(81888);
       class r {
@@ -19873,14 +18509,26 @@
       e.exports =
         s.p + "assets/icon_merchant_mysticblue.a88c6fc56f06796a9255.svg";
     },
+    46873: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/group_owned_maps_after.8136442942b61a4909b2.png";
+    },
     46903: (e, t, s) => {
       "use strict";
-      s.d(t, { p: () => i });
+      s.d(t, {
+        p: () => i,
+      });
       class i {}
     },
     46995: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/cities_and_knights.1a8bd0f8cb38a13c406a.svg";
+    },
+    47168: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/rename_lobby_to_room_before.5051b0c8132c82b0309e.png";
     },
     47463: (e, t, s) => {
       "use strict";
@@ -19897,7 +18545,9 @@
     },
     47871: (e, t, s) => {
       "use strict";
-      s.d(t, { P: () => d });
+      s.d(t, {
+        P: () => d,
+      });
       var i = s(81888),
         n = s(76092),
         r = s(18587),
@@ -19938,6 +18588,16 @@
     47927: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/icon_tradehouse.9616a035b64303216a30.svg";
+    },
+    48027: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/rename-lobby-to-room-before.e324171bfc514af54807.png";
+    },
+    48071: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/counter_offer_8p_after.b90a15f620b829e9a899.png";
     },
     48230: (e, t, s) => {
       "use strict";
@@ -19982,7 +18642,9 @@
     },
     48755: (e, t, s) => {
       "use strict";
-      s.d(t, { L: () => o });
+      s.d(t, {
+        L: () => o,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(95176);
@@ -20040,8 +18702,12 @@
               visible: !this.isTournamentRoom,
             },
             {
-              header: { key: "strings:roomPage.orderSelection.title" },
-              text: { key: "strings:roomPage.orderSelection.description" },
+              header: {
+                key: "strings:roomPage.orderSelection.title",
+              },
+              text: {
+                key: "strings:roomPage.orderSelection.description",
+              },
               image: n.am.ProfileRanked,
               visible: this.isTournamentRoom,
             },
@@ -20062,12 +18728,20 @@
         }
         constructor(e = !1) {
           (super(
-            { key: "strings:roomPage.rules.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:roomPage.rules.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showXButton: !1, showCheckButton: !1 },
+            {
+              showXonHeader: !0,
+              showXButton: !1,
+              showCheckButton: !1,
+            },
           ),
             (this.isTournamentRoom = e));
           const t = this.getRulesInformationBodyElements();
@@ -20096,7 +18770,9 @@
     },
     49937: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => l });
+      s.d(t, {
+        N: () => l,
+      });
       class i {}
       ((i.PROBABILITY_OF_SHOWING_FEEDBACK_FORM = 0.1),
         (i.DAYS_BETWEEN_FEEDBACK_FORMS = 90));
@@ -20245,8 +18921,18 @@
           const e = this.billedAnnually
               ? "strings:storePage.membership.frequency.annual"
               : "strings:colonistCommon.utils.emptyString",
-            t = { title: this.membershipTitle, frequency: { key: e } };
-          return (0, i.dN)({ key: "strings:storePage.membership.body" }, t);
+            t = {
+              title: this.membershipTitle,
+              frequency: {
+                key: e,
+              },
+            };
+          return (0, i.dN)(
+            {
+              key: "strings:storePage.membership.body",
+            },
+            t,
+          );
         }
         getDefaultPrice() {
           return "" + this.price / 100;
@@ -20448,7 +19134,9 @@
     },
     50506: (e, t, s) => {
       "use strict";
-      s.d(t, { k: () => f });
+      s.d(t, {
+        k: () => f,
+      });
       var i = s(30506),
         n = s(9127),
         r = s(9029),
@@ -20474,13 +19162,17 @@
           const d = (0, r.Le)(l, "room_friend_username_and_status"),
             u = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t },
+              options: {
+                value: t,
+              },
             };
           (0, r.i5)(d, "room_friend_username", u);
           const h = this.getTextAndClassNameForOnlineStatus(s),
             p = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: h.textStatus },
+              options: {
+                value: h.textStatus,
+              },
             };
           ((this.statusText = (0, r.i5)(d, "room_friend_status_text", p)),
             this.statusText.classList.add(h.className),
@@ -20800,7 +19492,9 @@
     },
     51988: (e, t, s) => {
       "use strict";
-      s.d(t, { F: () => r });
+      s.d(t, {
+        F: () => r,
+      });
       var i = s(20751),
         n = s(64038);
       class r {
@@ -20887,13 +19581,15 @@
     },
     52312: (e, t, s) => {
       "use strict";
-      s.d(t, { t: () => A });
+      s.d(t, {
+        t: () => A,
+      });
       var i = s(76092),
         n = s(50482),
         r = s(92524),
         o = s(81888),
         a = s(18514),
-        c = s(42389),
+        c = s(66681),
         l = s(32398),
         d = s(655),
         u = s(44517),
@@ -20907,7 +19603,9 @@
         constructor() {
           var e;
           (super(
-            { key: "strings:popups.errors.discordRedirectToWeb.title" },
+            {
+              key: "strings:popups.errors.discordRedirectToWeb.title",
+            },
             {
               key: "strings:popups.errors.discordRedirectToWeb.body",
               options: {
@@ -20957,12 +19655,18 @@
             );
           (0, S.zO)(c, i.image);
           const l = (0, _.dN)(
-            { key: "strings:storePage.membership.body" },
+            {
+              key: "strings:storePage.membership.body",
+            },
             {
               title: i.title,
               frequency: a.billedAnnually
-                ? { key: "strings:storePage.membership.frequency.annual" }
-                : { key: "strings:storePage.membership.frequency.monthly" },
+                ? {
+                    key: "strings:storePage.membership.frequency.annual",
+                  }
+                : {
+                    key: "strings:storePage.membership.frequency.monthly",
+                  },
             },
           );
           (0, S.n8)(c, l, "", "", "H3");
@@ -21010,7 +19714,9 @@
             t = (0, S.cE)(
               this.membershipStatusContainer,
               "",
-              { key: "strings:profilePage.settings.membership.becomeMember" },
+              {
+                key: "strings:profilePage.settings.membership.becomeMember",
+              },
               "button_cta_main",
             );
           ((0, S.G0)(t, () => A.becomeMemberClickAction(), !0),
@@ -21022,7 +19728,10 @@
         }
         static becomeMemberClickAction() {
           C.WC.play(C.hc.Click);
-          const e = { type: i.k0.ClickedStore, category: i.eX.Store };
+          const e = {
+            type: i.k0.ClickedStore,
+            category: i.eX.Store,
+          };
           (k.CA.sendAnalyticEvent(e),
             (0, v.Yf)("/store#membership", void 0, !0));
         }
@@ -21042,7 +19751,9 @@
           for (const e of this.currentUserLoginState) {
             const t = {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e.email },
+              options: {
+                value: e.email,
+              },
             };
             switch (e.providerId) {
               case i.sG.Google:
@@ -21088,8 +19799,12 @@
         }
         static async handleDisconnect(e) {
           h.r.create(
-            { key: "strings:profilePage.removeAccount.title" },
-            { key: "strings:profilePage.removeAccount.body" },
+            {
+              key: "strings:profilePage.removeAccount.title",
+            },
+            {
+              key: "strings:profilePage.removeAccount.body",
+            },
             async () => {
               null != (await d.m.getRequestHandler(e, void 0)) &&
                 location.reload();
@@ -21100,10 +19815,16 @@
         static async checkIfUsernameMatchesInput(e, t) {
           if (e.toLowerCase() != t.toLocaleLowerCase())
             return void h.r.createSimplePopup(
-              { key: "strings:popups.errors.general.title" },
-              { key: "strings:profilePage.deleteAccount.usernamesDontMatch" },
+              {
+                key: "strings:popups.errors.general.title",
+              },
+              {
+                key: "strings:profilePage.deleteAccount.usernamesDontMatch",
+              },
             );
-          const s = { username: t };
+          const s = {
+            username: t,
+          };
           null !=
             (await d.m.postRequestHandler(
               l.l.apiDeleteProfile(),
@@ -21119,10 +19840,14 @@
           if (null == o._.userState) return;
           const e = o._.userState.username,
             t = new p.e(
-              { key: "strings:profilePage.deleteAccount.title" },
+              {
+                key: "strings:profilePage.deleteAccount.title",
+              },
               {
                 key: "strings:profilePage.deleteAccount.body",
-                options: { username: e },
+                options: {
+                  username: e,
+                },
               },
               (t) => A.checkIfUsernameMatchesInput(e, t),
               () => {},
@@ -21144,8 +19869,12 @@
         }
         static handleLogout() {
           new y.y(
-            { key: "strings:homePage.header.logoutPopup.title" },
-            { key: "strings:homePage.header.logoutPopup.body" },
+            {
+              key: "strings:homePage.header.logoutPopup.title",
+            },
+            {
+              key: "strings:homePage.header.logoutPopup.body",
+            },
             async () => {
               null !=
                 (await d.m.postRequestHandler(l.l.logout(), void 0, void 0)) &&
@@ -21209,6 +19938,11 @@
     52580: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/icon_scarf.bba1dd576f3d54244b3a.svg";
+    },
+    52745: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/android_status_bar_after.8a51c2bac7ac668fc56d.png";
     },
     52895: (e, t, s) => {
       "use strict";
@@ -21436,7 +20170,9 @@
     },
     53503: (e, t, s) => {
       "use strict";
-      s.d(t, { T: () => r });
+      s.d(t, {
+        T: () => r,
+      });
       var i = s(50482),
         n = s(81888);
       class r {
@@ -21509,7 +20245,9 @@
     },
     53879: (e, t, s) => {
       "use strict";
-      s.d(t, { U: () => i });
+      s.d(t, {
+        U: () => i,
+      });
       class i {
         static isAvailable() {
           return "function" == typeof BroadcastChannel;
@@ -21554,13 +20292,19 @@
     },
     55159: (e, t, s) => {
       "use strict";
-      s.d(t, { E: () => n });
+      s.d(t, {
+        E: () => n,
+      });
       var i = s(95176);
       class n extends i.y {
         constructor(e) {
           (super(
-            { key: "strings:roomPage.leaveRoom.title" },
-            { key: "strings:roomPage.leaveRoom.body" },
+            {
+              key: "strings:roomPage.leaveRoom.title",
+            },
+            {
+              key: "strings:roomPage.leaveRoom.body",
+            },
             e,
             () => {},
             !1,
@@ -21584,14 +20328,16 @@
     },
     55853: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => u });
+      s.d(t, {
+        Y: () => u,
+      });
       var i = s(78311),
         n = s(9127),
         r = s(69714),
         o = s(75589),
         a = s(30506),
         c = s(4508),
-        l = s(42389),
+        l = s(66681),
         d = s(5603);
       class u {
         init() {
@@ -21639,7 +20385,9 @@
           if (e.response) return;
           const t = {
             key: "strings:roomPage.declinedInvite",
-            options: { username: e.responderUsername },
+            options: {
+              username: e.responderUsername,
+            },
           };
           this.showNotification(i.am.Lightning, t);
         }
@@ -21670,7 +20418,10 @@
           );
         }
         addFriendRequestNotificationToPanel(e) {
-          const t = { type: c.j.FriendRequestReceived, username: e.username };
+          const t = {
+            type: c.j.FriendRequestReceived,
+            username: e.username,
+          };
           this.addCTANotificationToPanel(
             t,
             e.dateCreated,
@@ -21701,7 +20452,10 @@
         showFriendRequestPopupNotification(e) {
           const t = {
             key: "strings:popups.notification.userSentYouFriendRequest",
-            options: { context: "noLink", username: e.username },
+            options: {
+              context: "noLink",
+              username: e.username,
+            },
           };
           this.showNotification(i.am.Friends, t);
         }
@@ -21727,7 +20481,9 @@
             s &&
             this.showNotification(e.icon, {
               key: "strings:roomPage.friendOnline",
-              options: { username: e.username },
+              options: {
+                username: e.username,
+              },
             }),
             this.lastNotificationTimeForUser.set(e.userId, Date.now()));
           e.onlineStatus == n.WA.Offline
@@ -21779,7 +20535,9 @@
     },
     56561: (e, t, s) => {
       "use strict";
-      s.d(t, { X: () => n });
+      s.d(t, {
+        X: () => n,
+      });
       var i = s(95176);
       class n extends i.y {
         constructor(e) {
@@ -21787,7 +20545,9 @@
           super(
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: "Debug Device Info" },
+              options: {
+                value: "Debug Device Info",
+              },
             },
             {
               key: "strings:colonistCommon.utils.#buffer",
@@ -21801,14 +20561,20 @@
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0, showCheckButton: !1, showXButton: !1 },
+            {
+              showXonHeader: !0,
+              showCheckButton: !1,
+              showXButton: !1,
+            },
           );
         }
       }
     },
     56820: (e, t, s) => {
       "use strict";
-      s.d(t, { M: () => r });
+      s.d(t, {
+        M: () => r,
+      });
       var i = s(5603),
         n = s(9029);
       class r {
@@ -21834,7 +20600,10 @@
           const t = r.getDiscountString();
           ((0, n.oB)(this.annualTab, {
             key: "strings:storePage.membership.frequency.annual",
-            options: { context: "store", discount: `${t}` },
+            options: {
+              context: "store",
+              discount: `${t}`,
+            },
           }),
             (0, n.G0)(this.monthlyTab, () => {
               (i.A.play(i.h.Click), (e.membershipToggleYearlyActive = !1));
@@ -21939,7 +20708,9 @@
     },
     59200: (e, t, s) => {
       "use strict";
-      s.d(t, { f: () => i });
+      s.d(t, {
+        f: () => i,
+      });
       var i,
         n = s(18514);
       !(function (e) {
@@ -21959,7 +20730,9 @@
     },
     59610: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => o });
+      s.d(t, {
+        g: () => o,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(75900);
@@ -21975,7 +20748,9 @@
               s,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: e },
+                options: {
+                  value: e,
+                },
               },
               "edit-profile-username",
               void 0,
@@ -21983,7 +20758,9 @@
             ));
         }
         constructor(e) {
-          (super(e, { key: "strings:homePage.popups.changeColor.title" }),
+          (super(e, {
+            key: "strings:homePage.popups.changeColor.title",
+          }),
             this.toggleContainer.classList.add("hidden"),
             this.colorSelectorContainer.classList.add("small-popup"),
             this.setTab(r.p.Color));
@@ -22001,7 +20778,9 @@
     },
     59712: (e, t, s) => {
       "use strict";
-      s.d(t, { x: () => o });
+      s.d(t, {
+        x: () => o,
+      });
       var i = s(17326),
         n = s(61896);
       let r;
@@ -22022,7 +20801,9 @@
     60038: (e, t, s) => {
       "use strict";
       var i;
-      (s.d(t, { N: () => i }),
+      (s.d(t, {
+        N: () => i,
+      }),
         (function (e) {
           ((e.isFirstDivisionBoundaryHigherThan = function (t, s) {
             return e.isFirstDivisionHigherThan(
@@ -22051,20 +20832,29 @@
     },
     60144: (e, t, s) => {
       "use strict";
-      s.d(t, { a: () => r });
+      s.d(t, {
+        a: () => r,
+      });
       var i = s(655),
         n = s(32398);
       class r {
         static async updateUsername(e, t = !1) {
-          const s = { username: e, shouldPurchaseIfNoAttemptsLeft: t };
+          const s = {
+            username: e,
+            shouldPurchaseIfNoAttemptsLeft: t,
+          };
           return this.updateProfile("username", s);
         }
         static async updatePreferredColor(e) {
-          const t = { preferredColor: e };
+          const t = {
+            preferredColor: e,
+          };
           await this.updateProfile("preferred-color", t);
         }
         static async updateIcon(e) {
-          const t = { icon: e };
+          const t = {
+            icon: e,
+          };
           await this.updateProfile("icon", t);
         }
         static async updateProfile(e, t) {
@@ -22091,7 +20881,9 @@
     },
     60341: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => h });
+      s.d(t, {
+        c: () => h,
+      });
       var i = s(17326),
         n = s(18514),
         r = s(41931),
@@ -22188,7 +20980,9 @@
     },
     60883: (e, t, s) => {
       "use strict";
-      s.d(t, { D: () => l });
+      s.d(t, {
+        D: () => l,
+      });
       var i = s(60144),
         n = s(25150),
         r = s(95176),
@@ -22207,10 +21001,14 @@
         showConfirmUsernameChangeWithAttemptsLeftPopup(e) {
           const t = {
             key: "strings:homePage.header.changeUsername.confirm.body",
-            options: { count: this.state.usernameChangeAttemptsLeft - 1 },
+            options: {
+              count: this.state.usernameChangeAttemptsLeft - 1,
+            },
           };
           o.r.create(
-            { key: "strings:homePage.header.changeUsername.confirm.title" },
+            {
+              key: "strings:homePage.header.changeUsername.confirm.title",
+            },
             t,
             () => {
               this.updateUsername(e, !1);
@@ -22222,15 +21020,21 @@
           this.removePopup();
           const t = {
               key: "strings:homePage.header.changeUsername.successDiscord",
-              options: { username: e },
+              options: {
+                username: e,
+              },
             },
             s = new r.y(
-              { key: "strings:storePage.success.success" },
+              {
+                key: "strings:storePage.success.success",
+              },
               t,
               () => {},
               () => {},
               !0,
-              { showXButton: !1 },
+              {
+                showXButton: !1,
+              },
             );
           ((s.removeAction = this.continuationAction), s.show());
         }
@@ -22267,7 +21071,9 @@
     },
     61498: (e, t, s) => {
       "use strict";
-      s.d(t, { v: () => h });
+      s.d(t, {
+        v: () => h,
+      });
       var i = s(78311),
         n = s(98487),
         r = s(9029),
@@ -22385,7 +21191,9 @@
               n.Nw.UnrankedClassic1v1,
               {
                 icon: i.am.GameMode1v1,
-                title: { key: "strings:homePage.matchmakingSelect.cards.1v1" },
+                title: {
+                  key: "strings:homePage.matchmakingSelect.cards.1v1",
+                },
                 time: (0, a.h$)(n.Nw.UnrankedClassic1v1),
                 playerCount: c.playerCount,
                 botCount: c.botCount,
@@ -22419,7 +21227,9 @@
               n.Nw.UnrankedShuffle,
               {
                 icon: i.am.GameModeShuffle,
-                title: { key: "strings:homePage.unranked.shuffle" },
+                title: {
+                  key: "strings:homePage.unranked.shuffle",
+                },
                 time: (0, a.h$)(n.Nw.UnrankedShuffle),
                 playerCount: d.playerCount,
                 botCount: d.botCount,
@@ -22435,7 +21245,9 @@
               n.Nw.RankedClassic1v1,
               {
                 icon: i.am.GameModeRanked1v1,
-                title: { key: "strings:homePage.matchmakingSelect.cards.1v1" },
+                title: {
+                  key: "strings:homePage.matchmakingSelect.cards.1v1",
+                },
                 time: (0, a.h$)(n.Nw.RankedClassic1v1),
                 playerCount: u.playerCount,
                 botCount: u.botCount,
@@ -22529,16 +21341,22 @@
           (null != t.time &&
             (0, r.oB)(this.timeElement, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t.time.toString() },
+              options: {
+                value: t.time.toString(),
+              },
             }),
             (0, r.oB)(this.playerCountElement, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t.playerCount.toString() },
+              options: {
+                value: t.playerCount.toString(),
+              },
             }),
             this.botCountContainer.classList.toggle("hidden", 0 == t.botCount),
             (0, r.oB)(this.botCountElement, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: t.botCount.toString() },
+              options: {
+                value: t.botCount.toString(),
+              },
             }));
           const i = e == n.Nw.UnrankedShuffle && null == s;
           (this.infoElement.classList.toggle("hidden", i),
@@ -22553,7 +21371,9 @@
               this.aboutElement.parentElement,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t },
+                options: {
+                  value: t,
+                },
               },
               "",
               "mm-details-shuffle-map-mode",
@@ -22568,7 +21388,9 @@
               this.rulesListElement,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: u[0] },
+                options: {
+                  value: u[0],
+                },
               },
               "",
               "",
@@ -22580,7 +21402,9 @@
                 e,
                 {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: t },
+                  options: {
+                    value: t,
+                  },
                 },
                 "",
                 "",
@@ -22595,7 +21419,9 @@
               this.faqListElement,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: e.question },
+                options: {
+                  value: e.question,
+                },
               },
               "",
             ),
@@ -22603,7 +21429,9 @@
                 this.faqListElement,
                 {
                   key: "strings:colonistCommon.utils.#buffer",
-                  options: { value: e.answer },
+                  options: {
+                    value: e.answer,
+                  },
                 },
                 "",
               ));
@@ -22655,7 +21483,10 @@
     },
     61570: (e, t, s) => {
       "use strict";
-      s.d(t, { t: () => y, b: () => b });
+      s.d(t, {
+        t: () => y,
+        b: () => b,
+      });
       var i = s(78311),
         n = s(53015),
         r = s(30911),
@@ -22932,11 +21763,15 @@
           s
         );
       }
-      s.d(t, { p: () => i });
+      s.d(t, {
+        p: () => i,
+      });
     },
     61896: (e, t, s) => {
       "use strict";
-      s.d(t, { k: () => d });
+      s.d(t, {
+        k: () => d,
+      });
       var i = s(78311),
         n = s(17326),
         r = s(9029),
@@ -23006,7 +21841,9 @@
     },
     61919: (e, t, s) => {
       "use strict";
-      s.d(t, { f: () => p });
+      s.d(t, {
+        f: () => p,
+      });
       var i = s(19966),
         n = s(31464),
         r = s(95176),
@@ -23019,9 +21856,13 @@
           (super(
             {
               key: "strings:popups.patchNote.newUpdate",
-              options: { version: e[0].version },
+              options: {
+                version: e[0].version,
+              },
             },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -23032,7 +21873,9 @@
               key: "strings:colonistCommon.utils.emptyString",
             }),
             new a.h(
-              { key: "strings:popups.patchNote.announcement" },
+              {
+                key: "strings:popups.patchNote.announcement",
+              },
               t,
               this.body,
               "popup-patchnote-div",
@@ -23053,7 +21896,9 @@
             `${l.vX.getLanguagePathPrefix()}/patch-notes`,
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: "View All" },
+              options: {
+                value: "View All",
+              },
             },
             "",
           );
@@ -23130,63 +21975,69 @@
     },
     62374: (e, t, s) => {
       "use strict";
-      s.d(t, { m: () => c });
+      s.d(t, {
+        m: () => a,
+      });
       var i = s(655),
         n = s(19733),
-        r = s(19966),
-        o = s(32398),
-        a = s(81888);
-      class c {
+        r = s(32398),
+        o = s(81888);
+      class a {
         static async purchaseItem(e, t, s) {
-          const c = `${e.category}/${e.type}`,
-            l = await i.m.postRequestHandler(
-              `${o.l.apiPayPurchaseItem()}/${c}`,
+          const a = `${e.category}/${e.type}`,
+            c = await i.m.postRequestHandler(
+              `${r.l.apiPayPurchaseItem()}/${a}`,
               void 0,
               void 0,
             );
-          if (null == l) throw new Error("Failed to purchase item");
-          if (!l.isSuccess) return;
-          const d = l.json;
-          await a._.refresh();
-          const u = d.status
-            ? { key: "strings:storePage.success.success" }
-            : { key: "strings:popups.errors.general.title" };
-          return (
-            d.status &&
-              r.CA.sendGoogleAnalyticsEvent(
-                r.CA.Category.Store,
-                r.CA.Label.StoreSuccessfullyPurchasedItem,
-              ),
-            t && s
-              ? d.status
-                ? t(d.message)
-                : s(d.message)
-              : n.r.createSimplePopup(u, d.message)
-          );
+          if (null == c) throw new Error("Failed to purchase item");
+          if (!c.isSuccess) return;
+          const l = c.json;
+          await o._.refresh();
+          const d = l.status
+            ? {
+                key: "strings:storePage.success.success",
+              }
+            : {
+                key: "strings:popups.errors.general.title",
+              };
+          return l.status
+            ? t
+              ? t(l.message)
+              : void 0
+            : s
+              ? s(l.message)
+              : n.r.createSimplePopup(d, l.message);
         }
         static async activateGiftedMembership(e) {
           if (
             null ==
             (await i.m.postRequestHandler(
-              o.l.apiActivateGiftMembership(),
+              r.l.apiActivateGiftMembership(),
               void 0,
-              { itemId: e },
+              {
+                itemId: e,
+              },
             ))
           )
             return;
-          await a._.refresh();
+          await o._.refresh();
           return n.r.createSimplePopup(
-            { key: "strings:storePage.success.success" },
-            { key: "strings:storePage.sections.membership.activated" },
+            {
+              key: "strings:storePage.success.success",
+            },
+            {
+              key: "strings:storePage.sections.membership.activated",
+            },
           );
         }
         static async cancelGiftedMembership() {
           null !=
             (await i.m.postRequestHandler(
-              o.l.apiCancelGiftMembership(),
+              r.l.apiCancelGiftMembership(),
               void 0,
               void 0,
-            )) && (await a._.refresh());
+            )) && (await o._.refresh());
         }
       }
     },
@@ -23206,6 +22057,10 @@
     62713: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/road_mysticblue.1bd2cb96a192adecf018.svg";
+    },
+    62814: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/mobile_endgame_after.e5c5eb39a54cb532a5a8.png";
     },
     62945: (e, t, s) => {
       "use strict";
@@ -23229,9 +22084,17 @@
       "use strict";
       e.exports = s.p + "assets/game_spritesheet_5.8515c72fb3a2676a1b27.json";
     },
+    63593: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/shuffle_card_before.2a725212aa25a871f32a.png";
+    },
     63722: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/ribbon_short.b4f83327f0b50cae62bb.svg";
+    },
+    63751: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/room_guests_before.06ce7ee269464ac74f00.png";
     },
     64038: (e, t, s) => {
       "use strict";
@@ -23272,12 +22135,12 @@
         lQ: () => _,
         Ke: () => A,
         rf: () => w,
-        XP: () => F,
+        XP: () => N,
         yI: () => Q,
         G: () => O,
         NH: () => G,
         SV: () => E,
-        YU: () => N,
+        YU: () => F,
         yT: () => H,
         Zc: () => ie,
         jU: () => Y,
@@ -23451,7 +22314,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Gold),
-            (this.name = { key: "strings:colonistCommon.playerColors.Gold" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Gold",
+            }),
             (this.price = 3e5),
             (this.image = n.am.StoreColorGold),
             (this.activeInStore = !1));
@@ -23462,7 +22327,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Silver),
-            (this.name = { key: "strings:colonistCommon.playerColors.Silver" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Silver",
+            }),
             (this.price = 3e5),
             (this.image = n.am.StoreColorSilver),
             (this.activeInStore = !1));
@@ -23473,7 +22340,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Bronze),
-            (this.name = { key: "strings:colonistCommon.playerColors.Bronze" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Bronze",
+            }),
             (this.price = 3e5),
             (this.image = n.am.StoreColorBronze),
             (this.activeInStore = !1));
@@ -23484,7 +22353,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Black),
-            (this.name = { key: "strings:colonistCommon.playerColors.Black" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Black",
+            }),
             (this.price = 0),
             (this.image = n.am.StoreColorBlack),
             (this.activeInStore = !0));
@@ -23495,7 +22366,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Purple),
-            (this.name = { key: "strings:colonistCommon.playerColors.Purple" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Purple",
+            }),
             (this.price = 2500),
             (this.image = n.am.StoreColorPurple),
             (this.activeInStore = !0));
@@ -23519,7 +22392,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.White),
-            (this.name = { key: "strings:colonistCommon.playerColors.White" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.White",
+            }),
             (this.price = 1e3),
             (this.image = n.am.StoreColorWhite),
             (this.activeInStore = !0));
@@ -23530,7 +22405,9 @@
           (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Pink),
-            (this.name = { key: "strings:colonistCommon.playerColors.Pink" }),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Pink",
+            }),
             (this.price = 3e5),
             (this.imagePath = n.am.StoreColorPink),
             (this.activeInStore = !1));
@@ -23541,7 +22418,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.RobberCupid),
-            (this.name = { key: "strings:storePage.icons.cupidRobber" }),
+            (this.name = {
+              key: "strings:storePage.icons.cupidRobber",
+            }),
             (this.price = 250),
             (this.image = n.am.IconRobberCupid),
             (this.activeInStore = !0));
@@ -23552,7 +22431,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.RobberLunar),
-            (this.name = { key: "strings:storePage.icons.lunarRobber" }),
+            (this.name = {
+              key: "strings:storePage.icons.lunarRobber",
+            }),
             (this.price = 250),
             (this.image = n.am.IconRobberLunar),
             (this.activeInStore = !0));
@@ -23563,7 +22444,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.RobberSanta),
-            (this.name = { key: "strings:storePage.icons.santaRobber" }),
+            (this.name = {
+              key: "strings:storePage.icons.santaRobber",
+            }),
             (this.price = 250),
             (this.image = n.am.IconRobberSanta),
             (this.activeInStore = !1));
@@ -23574,7 +22457,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.PirateShip),
-            (this.name = { key: "strings:storePage.icons.pirateShip" }),
+            (this.name = {
+              key: "strings:storePage.icons.pirateShip",
+            }),
             (this.price = 250),
             (this.image = n.am.IconPirateShip),
             (this.activeInStore = !0));
@@ -23585,7 +22470,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.ChristmasHat),
-            (this.name = { key: "strings:storePage.icons.christmasHat" }),
+            (this.name = {
+              key: "strings:storePage.icons.christmasHat",
+            }),
             (this.price = 250),
             (this.image = n.am.IconChristmasHat),
             (this.activeInStore = !0));
@@ -23596,7 +22483,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Elephant),
-            (this.name = { key: "strings:storePage.icons.elephant" }),
+            (this.name = {
+              key: "strings:storePage.icons.elephant",
+            }),
             (this.price = 250),
             (this.image = n.am.IconElephant),
             (this.activeInStore = !1));
@@ -23607,7 +22496,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Avocado),
-            (this.name = { key: "strings:storePage.icons.avocado" }),
+            (this.name = {
+              key: "strings:storePage.icons.avocado",
+            }),
             (this.price = 250),
             (this.image = n.am.IconAvocado),
             (this.activeInStore = !0));
@@ -23618,7 +22509,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Cactus),
-            (this.name = { key: "strings:storePage.icons.cactus" }),
+            (this.name = {
+              key: "strings:storePage.icons.cactus",
+            }),
             (this.price = 250),
             (this.image = n.am.IconCactus),
             (this.activeInStore = !0));
@@ -23629,13 +22522,17 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Gifter),
-            (this.name = { key: "strings:storePage.icons.gifter" }),
+            (this.name = {
+              key: "strings:storePage.icons.gifter",
+            }),
             (this.text = {
               key: "strings:storePage.sections.avatar.unlockByGifting",
             }),
             (this.image = n.am.IconGifter),
             (this.activeInStore = !0),
-            (this.bannerText = { key: "strings:storePage.newItem" }),
+            (this.bannerText = {
+              key: "strings:storePage.newItem",
+            }),
             (this.hideOnDiscordMobile = !0));
         }
       }
@@ -23644,7 +22541,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Crown),
-            (this.name = { key: "strings:storePage.icons.crown" }),
+            (this.name = {
+              key: "strings:storePage.icons.crown",
+            }),
             (this.price = 250),
             (this.image = n.am.IconCrown),
             (this.activeInStore = !0));
@@ -23655,7 +22554,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Swords),
-            (this.name = { key: "strings:storePage.icons.swords" }),
+            (this.name = {
+              key: "strings:storePage.icons.swords",
+            }),
             (this.price = 250),
             (this.image = n.am.IconSwords),
             (this.activeInStore = !0));
@@ -23666,7 +22567,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Sombrero),
-            (this.name = { key: "strings:storePage.icons.sombrero" }),
+            (this.name = {
+              key: "strings:storePage.icons.sombrero",
+            }),
             (this.price = 100),
             (this.image = n.am.IconSombrero),
             (this.activeInStore = !0));
@@ -23677,7 +22580,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Farmer),
-            (this.name = { key: "strings:storePage.icons.farmer" }),
+            (this.name = {
+              key: "strings:storePage.icons.farmer",
+            }),
             (this.price = 100),
             (this.image = n.am.IconFarmer),
             (this.activeInStore = !0));
@@ -23688,7 +22593,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Helmet),
-            (this.name = { key: "strings:storePage.icons.helmet" }),
+            (this.name = {
+              key: "strings:storePage.icons.helmet",
+            }),
             (this.price = 100),
             (this.image = n.am.IconHelmet),
             (this.activeInStore = !0));
@@ -23699,20 +22606,11 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Snorkel),
-            (this.name = { key: "strings:storePage.icons.snorkel" }),
+            (this.name = {
+              key: "strings:storePage.icons.snorkel",
+            }),
             (this.price = 100),
             (this.image = n.am.IconSnorkel),
-            (this.activeInStore = !0));
-        }
-      }
-      class F extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Scarf),
-            (this.name = { key: "strings:storePage.icons.scarf" }),
-            (this.price = 100),
-            (this.image = n.am.IconScarf),
             (this.activeInStore = !0));
         }
       }
@@ -23720,8 +22618,23 @@
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
+            (this.type = i.l1.Scarf),
+            (this.name = {
+              key: "strings:storePage.icons.scarf",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconScarf),
+            (this.activeInStore = !0));
+        }
+      }
+      class F extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
             (this.type = i.l1.Tie),
-            (this.name = { key: "strings:storePage.icons.tie" }),
+            (this.name = {
+              key: "strings:storePage.icons.tie",
+            }),
             (this.price = 100),
             (this.image = n.am.IconTie),
             (this.activeInStore = !0));
@@ -23732,7 +22645,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Worker),
-            (this.name = { key: "strings:storePage.icons.worker" }),
+            (this.name = {
+              key: "strings:storePage.icons.worker",
+            }),
             (this.price = 100),
             (this.image = n.am.IconWorker),
             (this.activeInStore = !0));
@@ -23743,7 +22658,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Mummy),
-            (this.name = { key: "strings:storePage.icons.mummy" }),
+            (this.name = {
+              key: "strings:storePage.icons.mummy",
+            }),
             (this.price = 400),
             (this.image = n.am.IconMummy),
             (this.activeInStore = !1));
@@ -23754,7 +22671,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.Player),
-            (this.name = { key: "strings:storePage.icons.colonist" }),
+            (this.name = {
+              key: "strings:storePage.icons.colonist",
+            }),
             (this.price = 0),
             (this.image = n.am.User),
             (this.activeInStore = !0));
@@ -23765,7 +22684,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.FounderHat),
-            (this.name = { key: "strings:storePage.icons.founderHat" }),
+            (this.name = {
+              key: "strings:storePage.icons.founderHat",
+            }),
             (this.price = 1e5),
             (this.image = n.am.IconFounderHat),
             (this.activeInStore = !1));
@@ -23776,7 +22697,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.ColonistHat),
-            (this.name = { key: "strings:storePage.icons.colonisthat" }),
+            (this.name = {
+              key: "strings:storePage.icons.colonisthat",
+            }),
             (this.price = 5e4),
             (this.image = n.am.IconColonistHat),
             (this.activeInStore = !1));
@@ -23787,7 +22710,9 @@
           (super(...e),
             (this.category = i.n9.Icon),
             (this.type = i.l1.SettlerHat),
-            (this.name = { key: "strings:storePage.icons.settlerHat" }),
+            (this.name = {
+              key: "strings:storePage.icons.settlerHat",
+            }),
             (this.price = 25e3),
             (this.image = n.am.IconSettlerHat),
             (this.activeInStore = !1));
@@ -23996,7 +22921,9 @@
           (super(...e),
             (this.category = i.n9.PresalePack),
             (this.type = i.h8.SettlerPack),
-            (this.name = { key: "strings:storePage.packs.settler.title" }),
+            (this.name = {
+              key: "strings:storePage.packs.settler.title",
+            }),
             (this.description = "strings:storePage.packs.settler.description"),
             (this.price = 999999999),
             (this.image = n.am.SettlerPack));
@@ -24007,7 +22934,9 @@
           (super(...e),
             (this.category = i.n9.PresalePack),
             (this.type = i.h8.ColonistPack),
-            (this.name = { key: "strings:storePage.packs.colonist.title" }),
+            (this.name = {
+              key: "strings:storePage.packs.colonist.title",
+            }),
             (this.description = "strings:storePage.packs.colonist.description"),
             (this.price = 999999999),
             (this.image = n.am.ColonistPack));
@@ -24018,7 +22947,9 @@
           (super(...e),
             (this.category = i.n9.PresalePack),
             (this.type = i.h8.FounderPack),
-            (this.name = { key: "strings:storePage.packs.founder.title" }),
+            (this.name = {
+              key: "strings:storePage.packs.founder.title",
+            }),
             (this.description = "strings:storePage.packs.founder.description"),
             (this.price = 999999999),
             (this.image = n.am.FounderPack));
@@ -24041,7 +22972,10 @@
     },
     64265: (e, t, s) => {
       "use strict";
-      s.d(t, { AB: () => o, lg: () => r });
+      s.d(t, {
+        AB: () => o,
+        lg: () => r,
+      });
       var i = s(78311),
         n = s(92524),
         r = (function (e) {
@@ -24059,7 +22993,9 @@
         getProductName() {
           return {
             key: "strings:storePage.coins.title",
-            options: { count: this.getTotalCoinAmount() },
+            options: {
+              count: this.getTotalCoinAmount(),
+            },
           };
         }
         getDefaultPrice() {
@@ -24133,7 +23069,9 @@
                 discordSKUId: e.coin4,
                 mobileIAPSKUId: "coin_id_4",
                 lobbyImage: i.am.CoinStack4,
-                bannerText: { key: "strings:storePage.bestSeller" },
+                bannerText: {
+                  key: "strings:storePage.bestSeller",
+                },
                 isActive: () => !0,
               }),
             ),
@@ -24161,7 +23099,9 @@
                 discordSKUId: e.coin6,
                 mobileIAPSKUId: "coin_id_6",
                 lobbyImage: i.am.CoinStack6,
-                bannerText: { key: "strings:storePage.bestValue" },
+                bannerText: {
+                  key: "strings:storePage.bestValue",
+                },
                 isActive: () => !0,
               }),
             ));
@@ -24179,6 +23119,12 @@
       "use strict";
       e.exports = s.p + "assets/icon_trophy.bc5c68a7464f0462721d.svg";
     },
+    64428: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/stan-fix-safari-low-resolution-dice-after.c7bd287fec51c35eeec7.jpg";
+    },
     64458: (e, t, s) => {
       "use strict";
       e.exports =
@@ -24189,7 +23135,9 @@
       async function i(e = 0) {
         await new Promise((t) => setTimeout(t, e));
       }
-      s.d(t, { c: () => i });
+      s.d(t, {
+        c: () => i,
+      });
     },
     64543: (e, t, s) => {
       "use strict";
@@ -24201,7 +23149,9 @@
     },
     65015: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => r });
+      s.d(t, {
+        g: () => r,
+      });
       var i = s(9029),
         n = s(32332);
       class r extends n.A {
@@ -24239,10 +23189,13 @@
     },
     65429: (e, t, s) => {
       "use strict";
-      s.d(t, { Y: () => h, j: () => u });
+      s.d(t, {
+        Y: () => h,
+        j: () => u,
+      });
       var i = s(78311),
         n = s(38854),
-        r = s(42389),
+        r = s(66681),
         o = s(48755),
         a = s(29249),
         c = s(18587),
@@ -24300,7 +23253,9 @@
           var e, t, s, n, o, a;
           return [
             {
-              name: { key: "strings:roomPage.options.privateGame.title" },
+              name: {
+                key: "strings:roomPage.options.privateGame.title",
+              },
               image: i.am.PrivateGame,
               available: !0,
               selected:
@@ -24316,7 +23271,9 @@
               visible: !this.isTournamentRoom(),
             },
             {
-              name: { key: "strings:roomPage.options.hideBankCards.title" },
+              name: {
+                key: "strings:roomPage.options.hideBankCards.title",
+              },
               image: i.am.HideBankCards,
               available: !0,
               selected: this.roomState.gameSetting.hideBankCards,
@@ -24325,7 +23282,9 @@
               visible: !0,
             },
             {
-              name: { key: "strings:roomPage.options.friendlyRobber.title" },
+              name: {
+                key: "strings:roomPage.options.friendlyRobber.title",
+              },
               image: i.am.Robber,
               available: !0,
               selected: this.roomState.gameSetting.friendlyRobber,
@@ -24334,7 +23293,9 @@
               visible: !0,
             },
             {
-              name: { key: "strings:roomPage.options.dice.titleMobile" },
+              name: {
+                key: "strings:roomPage.options.dice.titleMobile",
+              },
               image: i.am.Dice6,
               available: !0,
               selected: this.roomState.gameSetting.diceSetting == i.ZP.Balanced,
@@ -24343,7 +23304,9 @@
               visible: !0,
             },
             {
-              name: { key: "strings:roomPage.options.noTrollsGame.title" },
+              name: {
+                key: "strings:roomPage.options.noTrollsGame.title",
+              },
               image: i.am.IconNoTroll,
               available:
                 null !==
@@ -24367,7 +23330,9 @@
               visible: !this.isTournamentRoom(),
             },
             {
-              name: { key: "strings:roomPage.orderSelection.title" },
+              name: {
+                key: "strings:roomPage.orderSelection.title",
+              },
               image: i.am.ProfileRanked,
               available: !0,
               selected: this.roomState.gameSetting.playOrderSelectionActive,
@@ -24450,7 +23415,9 @@
             ? {
                 key: "strings:roomPage.notifications.noTrollsGameDisabledWhenPrivate",
               }
-            : { key: "strings:roomPage.options.noTrollsGame.becomeAMember" };
+            : {
+                key: "strings:roomPage.options.noTrollsGame.becomeAMember",
+              };
           c.r.isUserOnMobileAppOrWeb
             ? r.OV.show(s, a.n.Information, void 0, void 0, void 0, void 0, 3e3)
             : r.OV.showNotification(i.am.Lightning, s);
@@ -24481,6 +23448,11 @@
       "use strict";
       e.exports = s.p + "assets/sfx_dice_roll_1.72357fea36268b4d2746.mp3";
     },
+    66460: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/trade_counter_offer_before.7c117c013010b939c12c.png";
+    },
     66516: (e, t, s) => {
       "use strict";
       e.exports =
@@ -24490,18 +23462,2937 @@
       "use strict";
       e.exports = s.p + "assets/stat_rolling_income.79f84a36f7e7e512db98.svg";
     },
+    66681: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        gC: () => ft,
+        _$: () => mt,
+        OV: () => ht,
+        sZ: () => ut,
+        i0: () => pt,
+        IH: () => dt,
+        P_: () => gt,
+        vY: () => lt,
+      });
+      var i = s(18587),
+        n = s(19966),
+        r = s(81888),
+        o = s(18514);
+      if (837 != s.j) var a = s(36558);
+      if (837 != s.j) var c = s(47649);
+      if (837 != s.j) var l = s(12868);
+      var d = s(78046);
+      class u {
+        static isReferrerInformationEmpty(e) {
+          return null == e.referrer && null == e.referralCode;
+        }
+      }
+      ((u.marketingReferralCodeURLVariable = "referralCode"),
+        (u.maxReferralCodeLength = 20),
+        (u.maxReferrerLength = 150));
+      var h = s(69714),
+        p = s(26658);
+      class m {
+        static init() {
+          (this.initVariables(),
+            window.addEventListener("storage", (e) => {
+              if ("string" == typeof e.key && null != e.newValue)
+                switch (e.key) {
+                  case "requestSavedReferrer":
+                    this.sendSessionReferrer();
+                    break;
+                  case "sendSessionReferrer":
+                    this.updateSessionReferrer(e.newValue);
+                    break;
+                  case "requestSessionReferralCode":
+                    this.sendSessionReferralCode();
+                    break;
+                  case "sendSessionReferralCode":
+                    this.updateSessionReferralCode(e.newValue);
+                }
+            }),
+            this.requestSavedReferrerFromOtherOpenTabs(),
+            this.requestSavedReferralCodeFromOtherOpenTabs(),
+            ut.controller.registerSessionEstablishedObserver(() => {
+              const e = this.referrer,
+                t = this.referralCode,
+                s = {
+                  referrer: "" == e ? void 0 : e,
+                  referralCode: null != t ? t : void 0,
+                };
+              u.isReferrerInformationEmpty(s) ||
+                h.Q.sendLobby(p.Dj.SaveClientReferrer, s);
+            }));
+        }
+        static initVariables() {
+          (this.referrer, this.referralCode);
+        }
+        static requestSavedReferrerFromOtherOpenTabs() {
+          (window.localStorage.setItem("requestSavedReferrer", ""),
+            window.localStorage.removeItem("requestSavedReferrer"));
+        }
+        static sendSessionReferrer() {
+          const e = this.getSessionReferrer();
+          null != e &&
+            (window.localStorage.setItem("sendSessionReferrer", e),
+            window.localStorage.removeItem("sendSessionReferrer"));
+        }
+        static updateSessionReferrer(e) {
+          null != e && (this.referrer = e);
+        }
+        static requestSavedReferralCodeFromOtherOpenTabs() {
+          (window.localStorage.setItem("requestSessionReferralCode", ""),
+            window.localStorage.removeItem("requestSessionReferralCode"));
+        }
+        static sendSessionReferralCode() {
+          const e = this.getSessionReferralCode();
+          null != e &&
+            (window.localStorage.setItem("sendSessionReferralCode", e),
+            window.localStorage.removeItem("sendSessionReferralCode"));
+        }
+        static updateSessionReferralCode(e) {
+          null != e && (this.referralCode = e);
+        }
+        static get referrer() {
+          const e = this.getSessionReferrer();
+          if (null != e) return e;
+          const t = document.referrer;
+          return ((this.referrer = t), t);
+        }
+        static set referrer(e) {
+          sessionStorage.setItem(this.REFERRER_KEY, e);
+        }
+        static getSessionReferrer() {
+          return sessionStorage.getItem(this.REFERRER_KEY);
+        }
+        static get referralCode() {
+          const e = this.getSessionReferralCode();
+          if (null != e) return e;
+          const t = this.getReferralCodeFromURL();
+          return null == t ? null : ((this.referralCode = t), t);
+        }
+        static set referralCode(e) {
+          null != e && sessionStorage.setItem(this.REFERRAL_CODE_KEY, e);
+        }
+        static getSessionReferralCode() {
+          return sessionStorage.getItem(this.REFERRAL_CODE_KEY);
+        }
+        static getReferralCodeFromURL() {
+          return new URLSearchParams(window.location.search).get(
+            u.marketingReferralCodeURLVariable,
+          );
+        }
+      }
+      ((m.REFERRER_KEY = "referrer"), (m.REFERRAL_CODE_KEY = "referralCode"));
+      var g = s(41931),
+        f = s(95176),
+        y = s(52609),
+        b = s(78311),
+        v = s(17399);
+      class S extends f.y {
+        bringToFront() {
+          this.container.style.zIndex = "10";
+        }
+        constructor() {
+          (super(
+            {
+              key: "strings:homePage.popups.hardwareAccelerationRequired.title",
+            },
+            {
+              key: "strings:homePage.popups.hardwareAccelerationRequired.body",
+            },
+            () => {},
+            () => {},
+            !1,
+          ),
+            this.removeCheckButton(),
+            this.removeXButton(),
+            this.removeFooter(),
+            this.show(),
+            this.bringToFront());
+        }
+      }
+      class k {
+        static debugOptions() {
+          i.r.isProduction ||
+            ((0, v.W)("debugOptions", [`Is mobile ${y.ts.utils.isMobile.any}`]),
+            (0, v.W)("debugOptions", [`Is phone ${y.ts.utils.isMobile.phone}`]),
+            (0, v.W)("debugOptions", [
+              `Webgl supported ${y.ts.utils.isWebGLSupported()}`,
+            ]),
+            (0, v.W)("debugOptions", [
+              `Document referrer ${document.referrer}. Location ${document.location.href}`,
+            ]));
+        }
+        static showTestServerPopup() {
+          i.r.isProduction ||
+            ht.showNotification(b.am.Admin, {
+              key: "strings:homePage.header.testServerMessage",
+            });
+        }
+        static webGLCheck() {
+          y.ts.utils.isWebGLSupported()
+            ? n.CA.sendGoogleAnalyticsEvent(
+                n.CA.Category.General,
+                n.CA.Label.GeneralWebGLEnabled,
+              )
+            : (n.CA.sendGoogleAnalyticsEvent(
+                n.CA.Category.General,
+                n.CA.Label.GeneralWebGLDisabled,
+              ),
+              i.r.isUserOnDiscord
+                ? this.showHardwareAccelerationPopup()
+                : i.r.isUserOnMobileAppOrWeb
+                  ? this.showWebGLPopupOnMobileApp()
+                  : this.showWebGLPopup());
+        }
+        static monitorIfUserInteractedWithSite(e) {
+          e ||
+            (null == this.interactedWithSiteEventListener &&
+              ((this.interactedWithSiteEventListener = () =>
+                this.sendUserInteractedWithSite()),
+              document.addEventListener(
+                "mousemove",
+                this.interactedWithSiteEventListener,
+              ),
+              document.addEventListener(
+                "mousedown",
+                this.interactedWithSiteEventListener,
+              )));
+        }
+        static sendUserInteractedWithSite() {
+          null != this.interactedWithSiteEventListener &&
+            (document.removeEventListener(
+              "mousemove",
+              this.interactedWithSiteEventListener,
+            ),
+            document.removeEventListener(
+              "mousedown",
+              this.interactedWithSiteEventListener,
+            ),
+            h.Q.interactedWithSite());
+        }
+        static showWebGLPopup() {
+          const e = new f.y(
+            {
+              key: "strings:homePage.popups.webGLInactive.title",
+            },
+            {
+              key: "strings:homePage.popups.webGLInactive.body",
+            },
+            () => {
+              window.location.replace(
+                "https://blog.colonist.io/how-to-enable-webgl/",
+              );
+            },
+            () => {},
+            !1,
+            {
+              showXButton: !1,
+            },
+          );
+          (e.changeCheckButtonText({
+            key: "strings:homePage.popups.webGLInactive.showMeHow",
+          }),
+            e.show());
+        }
+        static showHardwareAccelerationPopup() {
+          new S();
+        }
+        static showWebGLPopupOnMobileApp() {
+          const e = new f.y(
+            {
+              key: "strings:homePage.popups.webGLInactiveOnMobileApp.title",
+            },
+            {
+              key: "strings:homePage.popups.webGLInactiveOnMobileApp.body",
+            },
+            () => {},
+            () => {},
+            !1,
+            {
+              showXButton: !1,
+              showCheckButton: !1,
+            },
+          );
+          (e.addBodyContent({
+            key: "strings:homePage.popups.webGLInactiveOnMobileApp.nov12IOS187issue",
+          }),
+            e.show());
+        }
+      }
+      var C = s(61919),
+        P = s(34915),
+        _ = s(50482),
+        A = s(64265),
+        w = s(49937),
+        R = s(17972),
+        T = s(32398),
+        I = s(655),
+        M = s(30506),
+        L = s(4508),
+        B = s(13618);
+      class D {
+        static async displayAllPendingNotifications() {
+          if (i.r.isUserOnDiscord) return;
+          if (i.r.isUserOnMobileAppOrWeb) return;
+          if (null == r._.userState) return;
+          if (
+            0 ==
+            document
+              .getElementById("header_profile_notification_container")
+              .classList.contains("hidden")
+          )
+            return;
+          const e = await I.m.getRequestHandler(
+            T.l.apiGetNotifications(),
+            void 0,
+          );
+          if (null == e) return;
+          const t = e.json;
+          for (const e of t)
+            this.isCornerPopup(e)
+              ? this.displayCornerPopup(e)
+              : this.displayViewPopup(e);
+        }
+        static isCornerPopup(e) {
+          return e.typeData.type === L.j.UserReportedWarning;
+        }
+        static displayCornerPopup(e) {
+          const t = this.getCornerPopupData(e);
+          ht.showNotification(
+            t.image,
+            t.text,
+            t.duration,
+            void 0,
+            this.markNotificationAsReadAction(e.id),
+          );
+        }
+        static displayViewPopup(e) {
+          const t = this.getViewPopupData(e);
+          if (null == t) return;
+          var s;
+          const i = null !== (s = t.checkAction) && void 0 !== s ? s : () => {},
+            n = new f.y(t.title, t.body, i, () => {}, !0, t.popupOptions);
+          (n.removeXButton(),
+            (n.removeAction = this.markNotificationAsReadAction(e.id)),
+            n.show());
+        }
+        static getViewPopupData(e) {
+          switch (e.typeData.type) {
+            case L.j.UserReportedBanned:
+              return {
+                title: {
+                  key: "strings:popups.notification.reportedUserBanned.title",
+                },
+                body: {
+                  key: "strings:popups.notification.reportedUserBanned.body",
+                },
+              };
+            case L.j.UserReportedThankYou:
+              return {
+                title: {
+                  key: "strings:popups.notification.reportedUserThankYou.title",
+                },
+                body: {
+                  key: "strings:popups.notification.reportedUserThankYou.body",
+                },
+              };
+            case L.j.HolidaySale2023Expired:
+              return {
+                title: {
+                  key: "strings:popups.notification.holidaySale2023Expired.title",
+                },
+                body: {
+                  key: "strings:popups.notification.holidaySale2023Expired.body",
+                },
+              };
+            case L.j.TranslationHelp:
+              return {
+                title: {
+                  key: "strings:popups.notification.translationHelp.title",
+                },
+                body: {
+                  key: "strings:popups.notification.translationHelp.body",
+                  options: {
+                    language: e.typeData.language,
+                    username: e.typeData.username,
+                    link: e.typeData.link,
+                  },
+                },
+              };
+            case L.j.GiftMembershipReceivedFromAdmin:
+              return {
+                title: {
+                  key: "strings:popups.notification.giftMembershipReceived.title",
+                },
+                body: {
+                  key: "strings:popups.notification.giftMembershipReceived.body",
+                },
+                popupOptions: {
+                  checkButtonCustomContent: {
+                    key: "strings:popups.notification.giftMembershipReceived.checkButton",
+                  },
+                },
+                checkAction: () => (0, B.Yf)("/store#gifted_memberships", !0),
+              };
+            default:
+              return;
+          }
+        }
+        static getCornerPopupData(e) {
+          if (e.typeData.type === L.j.UserReportedWarning)
+            return {
+              image: b.am.DangerIcon,
+              text: {
+                key: "strings:popups.notification.reportedUserWarning",
+              },
+              duration: M.Re.SECONDS_IN_MINUTE * M.Re.MILLISECONDS,
+            };
+          throw new Error(
+            "Unsupported notification type for displayCornerPopup",
+          );
+        }
+        static markNotificationAsReadAction(e, t) {
+          return async () => {
+            (await I.m.postRequestHandler(
+              T.l.apiMarkNotificationAsRead(e),
+              void 0,
+              void 0,
+            ),
+              null == t || t());
+          };
+        }
+      }
+      var E = s(44517);
+      if (837 != s.j) var G = s(84240);
+      var x = s(9029);
+      class U {
+        static init() {
+          var e, t, s, n;
+          (null === (e = r._.userState) || void 0 === e ? void 0 : e.isLoggedIn)
+            ? (null === (s = document.getElementById("g_id_onload")) ||
+                void 0 === s ||
+                s.setAttribute("data-auto_prompt", "false"),
+              this.cancelPopup(),
+              this.delayedCancelPopup())
+            : null === (n = document.getElementById("g_id_onload")) ||
+              void 0 === n ||
+              n.setAttribute("data-auto_prompt", "true");
+          this.initialized ||
+            i.r.isUserOnMobile ||
+            i.r.isUserOnDiscord ||
+            (null === (t = r._.userState) || void 0 === t
+              ? void 0
+              : t.isLoggedIn) ||
+            ((0, x.xW)(document.body, "https://accounts.google.com/gsi/client"),
+            (this.initialized = !0));
+        }
+        static cancelPopup() {
+          var e, t, s;
+          null === (s = window.google) ||
+            void 0 === s ||
+            null === (t = s.accounts) ||
+            void 0 === t ||
+            null === (e = t.id) ||
+            void 0 === e ||
+            e.cancel();
+        }
+        static delayedCancelPopup() {
+          if (this.initialized)
+            for (let e = 0; e < 2e3; e += 500)
+              setTimeout(() => {
+                this.cancelPopup();
+              }, e);
+        }
+      }
+      U.initialized = !1;
+      class O {
+        static init() {
+          var e, t, s, n, o, a, c;
+          this.initialized ||
+            i.r.isUserOnDiscord ||
+            (null !==
+              (t =
+                null === (e = r._.userState) || void 0 === e
+                  ? void 0
+                  : e.totalCompletedGameCount) && void 0 !== t
+              ? t
+              : 0) > 0 ||
+            ("https:" == window.location.protocol &&
+              ((s = window),
+              (n = document),
+              (s.hj =
+                null !== (c = s.hj) && void 0 !== c
+                  ? c
+                  : function () {
+                      var e;
+                      (s.hj.q =
+                        null !== (e = s.hj.q) && void 0 !== e ? e : []).push(
+                        arguments,
+                      );
+                    }),
+              (s._hjSettings = {
+                hjid: i.r.hotjarTrackingCode,
+                hjsv: 6,
+              }),
+              (o = n.getElementsByTagName("head")[0]),
+              ((a = n.createElement("script")).async = 1),
+              (a.src =
+                "https://static.hotjar.com/c/hotjar-" +
+                s._hjSettings.hjid +
+                ".js?sv=" +
+                s._hjSettings.hjsv),
+              o.appendChild(a),
+              (this.initialized = !0)));
+        }
+      }
+      O.initialized = !1;
+      var N = s(1863);
+      class F {
+        static init() {
+          var e, t;
+          if (this.initialized) return;
+          if ("" == i.r.vliPublicKey) return;
+          if ("" == i.r.vliAdvKey) return;
+          if (null == window.vitag) return;
+          if ("localhost" === window.location.hostname) return;
+          if (i.r.isUserOnDiscord) return;
+          if (i.r.isUserOnMobile && i.r.shouldHideAdsOnMobile) return;
+          if (r._.isStale()) return;
+          if (
+            null === (e = r._.userState) || void 0 === e
+              ? void 0
+              : e.items.hideAds()
+          )
+            return;
+          ((window.hashString =
+            null === (t = r._.userState) || void 0 === t ? void 0 : t.vliHash),
+            (0, x.xW)(document.body, i.r.vliPublicKey),
+            (0, x.xW)(document.body, i.r.vliAdvKey),
+            (0, x.xW)(
+              document.body,
+              "//cdn.jsdelivr.net/gh/vli-platform/adb-analytics@77bebb/v1.0.min.js",
+            ),
+            document
+              .querySelectorAll(".remove_ads_button_in_game")
+              .forEach((e) => e.classList.remove("hidden")));
+          (N.z.shouldShowLobbyAds() &&
+            (document
+              .querySelectorAll(".vli_page_vertical_ad")
+              .forEach((e) => e.classList.remove("hidden")),
+            document
+              .querySelectorAll(".main_page_ad_300x100")
+              .forEach((e) => e.classList.remove("hidden")),
+            document
+              .querySelectorAll(".main_page_ad_300x250")
+              .forEach((e) => e.classList.remove("hidden")),
+            document
+              .querySelectorAll(".mm-mode-selector-ad")
+              .forEach((e) => e.classList.remove("hidden"))),
+            document
+              .querySelectorAll(".adsbyvli")
+              .forEach((e) => e.classList.remove("hidden")),
+            (this.initialized = !0));
+        }
+      }
+      F.initialized = !1;
+      class H {
+        static init() {
+          var e;
+          this.initialized ||
+            ("localhost" !== window.location.hostname &&
+              (i.r.isUserOnDiscord ||
+                (i.r.isUserOnMobile && i.r.shouldHideAdsOnMobile) ||
+                i.r.showVliAdAtBottomInGame ||
+                r._.isStale() ||
+                (null === (e = r._.userState) || void 0 === e
+                  ? void 0
+                  : e.items.hideAds()) ||
+                ((0, x.xW)(
+                  document.body,
+                  "//api.adinplay.com/libs/aiptag/pub/KTN/colonist.io/tag.min.js",
+                ),
+                (this.initialized = !0))));
+        }
+      }
+      H.initialized = !1;
+      var W = s(78524),
+        K = s(4651);
+      if (837 != s.j) var V = s(64853);
+      var q = s(70970);
+      window.__socketCatannMessages = [];
+      console.log("initialized socketCatannMessages");
+      class Q {
+        isSocketOpen() {
+          var e;
+          return (
+            (null === (e = this.webSocket) || void 0 === e
+              ? void 0
+              : e.readyState) === WebSocket.OPEN
+          );
+        }
+        async connect() {
+          const e = (0, M.ph)(),
+            t = 9 * M.Re.MILLISECONDS;
+          return (
+            setTimeout(() => {
+              e.pending && (this.close(b.SB), e.resolve("retry"));
+            }, t),
+            (this.webSocket = new WebSocket(await this.getWebSocketUrl())),
+            (this.webSocket.binaryType = "arraybuffer"),
+            (this.webSocket.onmessage = (t) =>
+              this.handleInitialWebSocketMessage(t, e)),
+            (this.webSocket.onclose = (t) => {
+              switch (t.code) {
+                case b.p5:
+                case b.FL:
+                  e.resolve("permanentlyFailed");
+                  break;
+                case b.gu:
+                  ((this.sendTurnstileToken = !0), e.resolve("retry"));
+                  break;
+                default:
+                  e.resolve("retry");
+              }
+              this.handleWebSocketClose(t.code);
+            }),
+            (this.webSocket.onerror = (t) => {
+              (this.handleWebSocketError(t), e.resolve("retry"));
+            }),
+            e
+          );
+        }
+        async getWebSocketUrl() {
+          const e = new URLSearchParams();
+          if (
+            (e.append("version", b.ZC),
+            null != this.firstUserSessionId &&
+              e.append("firstUserSessionId", this.firstUserSessionId),
+            i.r.isUserOnDiscordMobile)
+          ) {
+            const t = g.p.getAuthToken();
+            null != t && e.append("authToken", t);
+          }
+          return (
+            this.sendTurnstileToken &&
+              e.append("turnstileToken", await q.F.getToken()),
+            `${this.serverUrl}?${e}`
+          );
+        }
+        handleInitialWebSocketMessage(e, t) {
+          if (null != this.webSocket) {
+            try {
+              const s = JSON.parse(e.data);
+              switch (s.type) {
+                case "Connected":
+                  return void (
+                    null == this.firstUserSessionId &&
+                    (this.firstUserSessionId = s.userSessionId)
+                  );
+                case "SessionEstablished":
+                  return (
+                    (this.webSocket.onmessage = (e) =>
+                      this.handleWebSocketMessage(e)),
+                    this.onSessionEstablished(),
+                    t.resolve("connected"),
+                    void (this.sendTurnstileToken = !1)
+                  );
+              }
+            } catch (t) {
+              console.error("Parse websocket initial message error", e, t);
+            }
+            this.handleWebSocketMessage(e);
+          }
+        }
+        handleWebSocketMessage(e) {
+          const t = V.D4(e.data);
+          window.__socketCatannMessages.push({
+            trigger: "serverData",
+            data: t,
+          });
+          (i.r.socketDebugActive &&
+            (0, v.W)("SocketMessage", [
+              "======",
+              `Message type: ${t.id}, data:`,
+              t.data,
+            ]),
+            this.onStateUpdate(Number(t.id), t.data));
+        }
+        handleWebSocketError(e) {
+          var t;
+          (i.r.socketDebugActive &&
+            (0, v.vV)("connect", ["Closing socket, encountered error: ", e]),
+            null === (t = this.webSocket) || void 0 === t || t.close());
+        }
+        handleWebSocketClose(e) {
+          (n.CA.sendGoogleAnalyticsEvent(
+            n.CA.Category.General,
+            n.CA.Label.GeneralBrokenInternetConnection,
+          ),
+            e != b.p5 ? this.onClose() : (0, B.Yf)((0, B.mE)()));
+        }
+        close(e) {
+          var t;
+          null === (t = this.webSocket) || void 0 === t || t.close(e);
+        }
+        send(e) {
+          var t;
+          this.isSocketOpen() &&
+            (null === (t = this.webSocket) || void 0 === t || t.send(e));
+        }
+        constructor(e, t, s, i) {
+          ((this.sendTurnstileToken = !1),
+            (this.serverUrl = e),
+            (this.onSessionEstablished = t),
+            (this.onStateUpdate = s),
+            (this.onClose = i));
+        }
+      }
+      var $ = (function (e) {
+        return (
+          (e[(e.RouteToServerType = 2)] = "RouteToServerType"),
+          (e[(e.RouteToServerDirect = 3)] = "RouteToServerDirect"),
+          (e[(e.SocketRouter = 4)] = "SocketRouter"),
+          e
+        );
+      })({});
+      new TextDecoder();
+      const z = new TextEncoder();
+      function j(e, t, s, i) {
+        const n = z.encode(s),
+          r = new Uint8Array(3 + n.byteLength + i.byteLength),
+          o = new DataView(r.buffer);
+        return (
+          o.setUint8(0, e),
+          o.setUint8(1, t),
+          o.setUint8(2, n.byteLength),
+          r.set(n, 3),
+          r.set(i, 3 + n.byteLength),
+          r
+        );
+      }
+      if (837 != s.j) var Y = s(62777);
+      var X = s(67908);
+      if (837 != s.j) var Z = s(18628);
+      class J {
+        sendToServer(e, t, s, i = !1) {
+          if (t) this.send($.RouteToServerDirect, e, t, s, i);
+          else
+            try {
+              const t = new Error("Direct to server message has no recipient");
+              throw ((t.subType = e), (t.data = s), t);
+            } catch (e) {
+              (console.error(e), Z.Cp(e));
+            }
+        }
+        sendToServerType(e, t, s, i = !1) {
+          this.send($.RouteToServerType, e, t, s, i);
+        }
+        sendNoop() {
+          this.send($.SocketRouter, b.lo.Noop, "", {}, !1);
+        }
+        sendCloseSocket(e) {
+          const t = new Uint8Array([e - 4e3]),
+            s = j($.SocketRouter, b.lo.CloseSocket, "", t);
+          this.socket.send(s);
+        }
+        sendPing(e) {
+          const t = {
+            id: `${X.zd.State.SocketMonitorUpdate}`,
+            data: {
+              timestamp: e,
+            },
+          };
+          this.send($.SocketRouter, b.lo.Echo, "", t, !1);
+        }
+        onSessionEstablished() {
+          this.sessionWasEstablished = !0;
+          for (const e of this.bufferedOutgoingSecondaryMessages)
+            this.socket.send(e);
+          ((this.bufferedOutgoingSecondaryMessages.length = 0),
+            this.bufferedOutgoingPrimaryMessage &&
+              (this.socket.send(this.bufferedOutgoingPrimaryMessage),
+              (this.bufferedOutgoingPrimaryMessage = void 0)));
+        }
+        send(e, t, s, i, n) {
+          window.__socketCatannMessages.push({
+            trigger: "clientData",
+            data: i,
+          });
+          const r = j(e, t, s, Y.l(i));
+          this.sessionWasEstablished
+            ? this.socket.send(r)
+            : n
+              ? (this.bufferedOutgoingPrimaryMessage = r)
+              : this.bufferedOutgoingSecondaryMessages.push(r);
+        }
+        constructor(e, t) {
+          ((this.sessionWasEstablished = !1),
+            (this.bufferedOutgoingSecondaryMessages = []),
+            (this.socket = e),
+            t(() => this.onSessionEstablished()));
+        }
+      }
+      var ee = s(29249);
+      class te {
+        static show() {
+          if (null != this.connectionLostBackground) return;
+          const e = (0, x.Le)(document.body, "game-reconnecting-overlay");
+          ((0, x.Le)(e, "loading-spinner"),
+            (0, x.i5)(e, "game-reconnecting-text", {
+              key: "strings:game.gameState.gameLogs.gameDisconnected.reconnecting",
+            }),
+            (this.connectionLostBackground = e));
+        }
+        static remove() {
+          (null != this.connectionLostBackground &&
+            this.connectionLostBackground.remove(),
+            (this.connectionLostBackground = void 0));
+        }
+      }
+      var se = s(85801);
+      class ie {
+        startReconnecting() {
+          if (!this.isEnabled) return;
+          if (this.isReconnecting) return;
+          if (
+            ((this.isReconnecting = !0),
+            null == ht || ht.removeDisconnectBanners(),
+            !this.hideConnect && !this.canReconnectFunction())
+          )
+            return (this.displayReconnectBanner(), void this.disable());
+          const e = 30 * M.Re.MILLISECONDS;
+          (clearTimeout(this.maxDisconnectTimeout),
+            (this.maxDisconnectTimeout = setTimeout(() => {
+              this.displayReconnectBanner();
+            }, e)),
+            (this.timeDisconnected = Date.now()),
+            this.hideConnect || te.show(),
+            (this.hideConnect = !1),
+            this.reconnect());
+        }
+        async reconnect() {
+          const e = 3 * M.Re.MILLISECONDS;
+          let t = 1;
+          for (; t <= ie.MAX_RECONNECT_ATTEMPTS; ) {
+            switch (await this.reconnectFunction()) {
+              case "connected":
+                return void this.connectionReestablished();
+              case "retry":
+                (await (0, M.cb)(e), (t += 1));
+                break;
+              case "permanentlyFailed":
+                return (
+                  this.removeUI(),
+                  this.displayReconnectBanner(),
+                  void (this.isReconnecting = !1)
+                );
+            }
+          }
+        }
+        connectionReestablished() {
+          ((this.isReconnecting = !1),
+            clearTimeout(this.maxDisconnectTimeout),
+            se.N.instance.clearAllKeyBinds(),
+            this.removeWarnings());
+        }
+        displayReconnectBanner() {
+          const e = {
+            key: "strings:homePage.loadingError.prompt",
+            options: {
+              context:
+                i.r.isUserOnDiscord || i.r.isUserOnMobileAppOrWeb
+                  ? "activity"
+                  : "browser",
+            },
+          };
+          if (
+            (i.r.socketDebugActive && (0, v.vV)("connect", [e]),
+            mt.serverUpdated)
+          ) {
+            const e = {
+              key: "strings:popups.errors.newVersion.newVersionReleasedWarningLostConnection",
+            };
+            null == ht || ht.show(e, ee.n.SocketError, e, void 0, void 0, !1);
+          } else
+            null == ht ||
+              ht.show(
+                e,
+                ee.n.SocketError,
+                {
+                  key: "strings:colonistCommon.buttons.reload",
+                },
+                () => location.reload(),
+                void 0,
+                !1,
+              );
+          clearTimeout(this.maxDisconnectTimeout);
+        }
+        removeWarnings() {
+          var e;
+          const t =
+              null !== (e = this.timeDisconnected) && void 0 !== e
+                ? e
+                : Date.now(),
+            s = 1 * M.Re.MILLISECONDS,
+            i = Date.now() - t;
+          (setTimeout(() => {
+            this.removeUI();
+          }, s - i),
+            (this.timeDisconnected = void 0));
+        }
+        removeUI() {
+          (te.remove(), null == ht || ht.removeSocketErrorBanners());
+        }
+        disable() {
+          this.isEnabled = !1;
+        }
+        constructor(e, t, s = !1) {
+          ((this.isReconnecting = !1),
+            (this.hideConnect = !1),
+            (this.isEnabled = !0),
+            (this.reconnectFunction = e),
+            (this.canReconnectFunction = t),
+            (this.hideConnect = s));
+        }
+      }
+      ie.MAX_RECONNECT_ATTEMPTS = 15;
+      var ne = s(96990);
+      class re {
+        enableConnect() {
+          this.enabled ||
+            ((this.enabled = !0),
+            r._.registerChangeListener(() => {
+              this.checkUserChanged();
+            }),
+            this.registerSessionEstablishedObserver(() => {
+              this.checkUserChanged();
+            }));
+        }
+        registerSessionEstablishedObserver(e) {
+          return (
+            this.sessionEstablishedObservers.add(e),
+            () => {
+              this.sessionEstablishedObservers.delete(e);
+            }
+          );
+        }
+        handleStateUpdate(e, t) {
+          var s;
+          null === (s = this.stateHandlers.get(e)) || void 0 === s || s(t);
+        }
+        setStateHandler(e, t) {
+          this.stateHandlers.set(e, t);
+        }
+        registerSocketCloseObserver(e) {
+          this.socketCloseObservers.push(e);
+        }
+        setSession(e) {
+          var t, s;
+          ((this.session = e),
+            (null === (t = r._.userState) || void 0 === t
+              ? void 0
+              : t.isLoggedIn) &&
+              n.CA.sendGoogleAnalyticsEvent(
+                n.CA.Category.Funnel,
+                n.CA.Label.FunnelLoggedIn,
+              ),
+            null === (s = n.CA.logRocket) ||
+              void 0 === s ||
+              s.set(this.session),
+            null == lt || lt.showPatchnotes());
+        }
+        triggerSessionEstablishedObservers() {
+          for (const e of this.sessionEstablishedObservers) e();
+        }
+        isSocketOpen() {
+          return this.socket.isSocketOpen();
+        }
+        close(e) {
+          (null != e && this.sender.sendCloseSocket(e), this.socket.close(e));
+        }
+        handleSocketClose() {
+          this.currentUserId = void 0;
+          for (const e of this.socketCloseObservers) e();
+        }
+        checkUserChanged() {
+          var e;
+          this.isSocketOpen() || !r._.hasUser()
+            ? (null === (e = r._.userState) || void 0 === e ? void 0 : e.id) !=
+                this.currentUserId && this.close(b.kv)
+            : this.reconnectionController.startReconnecting();
+        }
+        constructor(e) {
+          ((this.enabled = !1),
+            (this.sessionEstablishedObservers = new Set()),
+            (this.stateHandlers = new Map()),
+            (this.socketCloseObservers = []),
+            (this.reconnectionController = new ie(
+              () => {
+                var e;
+                return (
+                  (this.currentUserId =
+                    null === (e = r._.userState) || void 0 === e
+                      ? void 0
+                      : e.id),
+                  this.socket.connect()
+                );
+              },
+              () => {
+                if (!r._.hasUser()) return !1;
+                return (
+                  !!ne.N.isUserOnMobileAppOrWeb() ||
+                  "visible" == document.visibilityState
+                );
+              },
+              !0,
+            )),
+            this.registerSocketCloseObserver(() =>
+              this.reconnectionController.startReconnecting(),
+            ),
+            (this.socket = new Q(
+              e,
+              () => this.triggerSessionEstablishedObservers(),
+              (e, t) => this.handleStateUpdate(e, t),
+              () => this.handleSocketClose(),
+            )),
+            (this.sender = new J(this.socket, (e) =>
+              this.registerSessionEstablishedObserver(e),
+            )));
+        }
+      }
+      if (837 != s.j) var oe = s(67707);
+      var ae = s(19733);
+      class ce {
+        static processSocketData(e) {
+          ("number" == typeof e &&
+            ((this.expectedSocketAmount = Number(e)),
+            (this.receivedSocketAmount = 0),
+            (this.startingTime = Date.now()),
+            (0, v.W)("processSocketData", [
+              "-------------------------------------",
+            ]),
+            (0, v.W)("processSocketData", [
+              `Expecting ${this.expectedSocketAmount}`,
+            ])),
+            "string" == typeof e &&
+              "test" == e &&
+              (this.receivedSocketAmount += 1),
+            "string" == typeof e &&
+              "done" == e &&
+              ((0, v.W)("processSocketData", [
+                `Expected ${this.expectedSocketAmount}`,
+              ]),
+              (0, v.W)("processSocketData", [
+                `Received ${this.receivedSocketAmount}`,
+              ]),
+              (0, v.W)("processSocketData", [
+                `Took ${Date.now() - this.startingTime}ms`,
+              ]),
+              (this.expectedSocketAmount = 0),
+              (this.receivedSocketAmount = 0),
+              (this.startingTime = 0)));
+        }
+      }
+      ((ce.expectedSocketAmount = 0),
+        (ce.receivedSocketAmount = 0),
+        (ce.startingTime = 0));
+      class le extends f.y {
+        constructor() {
+          (super(
+            {
+              key: "strings:popups.patchNote.announcement",
+            },
+            {
+              key: "strings:popups.errors.serverUpdate",
+            },
+            () => {},
+            () => {},
+            !1,
+          ),
+            this.removeCheckButton(),
+            this.removeXButton(),
+            (this.preventClicksOutsideOfPopupFromClosingPopup = !0));
+        }
+      }
+      class de {
+        static send(e, t) {
+          const s = {
+            action: e,
+            payload: t,
+          };
+          ut.controller.sender.sendToServerType(b.lo.ShuffleAction, "lobby", s);
+        }
+        static requestShuffleQueueData() {
+          this.send(p.Ih.GetShuffleQueueData, void 0);
+        }
+      }
+      var ue = s(74710),
+        he = s(30911),
+        pe = s(53015),
+        me = s(60144),
+        ge = s(5603);
+      class fe extends f.y {
+        createContent() {
+          const e = (0, x.Le)(this.body, "popup-purchase-successful-content");
+          (0, x.zO)(e, this.item.image, "popup-purchase-item-image");
+          const t = {
+            key: "strings:storePage.success.youGotItem",
+            options: {
+              itemName: o.a7.t(this.item.name.key, this.item.name.options),
+              category: this.getItemCategoryText(),
+            },
+          };
+          ((0, x.Wr)(e, t, "popup-purchase-title"),
+            (0, x.Wr)(
+              e,
+              {
+                key: "strings:storePage.success.findInProfile",
+              },
+              "popup-purchase-subtitle",
+            ));
+        }
+        initXButton() {
+          (this.xButton.classList.remove("btn_general_x"),
+            this.xButton.classList.add("btn_general_check"));
+        }
+        initCheckButton() {
+          (this.changeCheckButtonText({
+            key: "strings:storePage.success.useItNow",
+          }),
+            (0, x.G0)(this.checkButton, () => {
+              (ge.A.play(ge.h.Click), this.useItemAction(), this.removePopup());
+            }));
+        }
+        getItemCategoryText() {
+          switch (this.item.category) {
+            case pe.n9.Color:
+              return o.a7.t("strings:storePage.sections.color.title", {
+                context: "one",
+              });
+            case pe.n9.Icon:
+              return o.a7.t("strings:storePage.sections.avatar.title", {
+                context: "one",
+              });
+            default:
+              return "";
+          }
+        }
+        async useItemAction() {
+          switch (this.item.category) {
+            case pe.n9.Color:
+              const e = he.k.getPlayerColorOfStorePlayerColor(this.item.type);
+              if (null == e) return;
+              await me.a.updatePreferredColor(e);
+              const t = (0, ue.dN)(
+                {
+                  key: "strings:homePage.header.defaultColorSelector.colorChanged",
+                },
+                {
+                  color: this.item.name,
+                },
+              );
+              ht.showNotification(this.item.image, t);
+              break;
+            case pe.n9.Icon:
+              await me.a.updateIcon(this.item.type);
+              const s = (0, ue.dN)(
+                {
+                  key: "strings:homePage.header.avatarSelector.avatarChanged",
+                },
+                {
+                  icon: this.item.name,
+                },
+              );
+              ht.showNotification(this.item.image, s);
+          }
+        }
+        constructor(e) {
+          (super(
+            {
+              key: "strings:storePage.success.purchaseSuccess",
+            },
+            void 0,
+            () => {},
+            () => {},
+            !0,
+          ),
+            (this.item = e),
+            this.createContent(),
+            this.initXButton(),
+            this.initCheckButton(),
+            this.show());
+        }
+      }
+      class ye {
+        constructor(e, t) {
+          ((this.lobbyStateHandlers = new Map()),
+            (this.channelStateHandlers = new Map()),
+            (this.generalStateHandlers = new Map()),
+            (this.socketActionController = t),
+            e.setStateHandler(X.zd.State.LobbyStateUpdate, (e) => {
+              var t;
+              null === (t = this.lobbyStateHandlers.get(e.type)) ||
+                void 0 === t ||
+                t(e.payload);
+            }),
+            e.setStateHandler(X.zd.State.ChannelStateUpdate, (e) => {
+              var t;
+              null === (t = this.channelStateHandlers.get(e.type)) ||
+                void 0 === t ||
+                t(e.payload);
+            }),
+            e.setStateHandler(X.zd.State.GeneralStateUpdate, (e) => {
+              var t;
+              null === (t = this.generalStateHandlers.get(e.type)) ||
+                void 0 === t ||
+                t(e.payload);
+            }),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.SessionState, (t) => {
+              var s;
+              const i = oe.E.deserialize(t);
+              (k.monitorIfUserInteractedWithSite(
+                null === (s = r._.userState) || void 0 === s
+                  ? void 0
+                  : s.interactedWithSite,
+              ),
+                e.setSession(i),
+                this.socketActionController.onStateSessionState(),
+                de.requestShuffleQueueData());
+            }),
+            this.lobbyStateHandlers.set(
+              X.zd.LobbyState.LobbyDisconnectData,
+              (e) => {
+                ht.showGames(e);
+              },
+            ),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.AutoRejoinGame, (e) => {
+              this.socketActionController.onStateAutoRejoinGame(e);
+            }),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.SendPopup, (e) => {
+              "strings:popups.errors.newVersion.refreshClient" == e.body.key
+                ? ae.r.createForceRefreshPopup(e.title, e.body)
+                : ae.r.createSimplePopup(e.title, e.body);
+            }),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.SendBroadcast, (e) => {
+              ht.show(e.text, ee.n.Information);
+            }),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.SocketTest, (e) => {
+              ce.processSocketData(e);
+            }),
+            this.lobbyStateHandlers.set(
+              X.zd.LobbyState.ShowCornerPopup,
+              (e) => {
+                ht.showNotification(e.icon, e.text);
+              },
+            ),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.ServerUpdating, () => {
+              new le().show();
+            }),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.ReloadClient, (e) => {
+              setTimeout(() => window.location.reload(), e.delay);
+            }),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.ServerUpdated, (e) => {
+              if (null == ut.gameListener.databaseGameId) return;
+              if ((0, M.Qn)(b.$m) == (0, M.Qn)(e.newServerVersion)) return;
+              (ht.show(
+                {
+                  key: "strings:popups.errors.newVersion.newVersionReleasedWarning",
+                },
+                ee.n.Information,
+              ),
+                (mt.serverUpdated = !0));
+            }),
+            this.lobbyStateHandlers.set(X.zd.LobbyState.RoomListUpdate, (e) => {
+              this.socketActionController.onRoomListUpdate(e);
+            }),
+            this.lobbyStateHandlers.set(
+              X.zd.LobbyState.UserStateUpdate,
+              (e) => {
+                r._.update(e);
+              },
+            ),
+            this.lobbyStateHandlers.set(
+              X.zd.LobbyState.ItemPurchaseSuccessPopup,
+              (e) => {
+                new fe(e);
+              },
+            ),
+            this.channelStateHandlers.set(
+              X.zd.ChannelState.ChannelRoomUpdate,
+              (e) => {
+                this.socketActionController.onChannelRoomUpdate(e);
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.UpdateOnlineStatus,
+              (e) => {
+                this.socketActionController.onFriendUpdateOnlineStatus(e);
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.ReceivedRoomInvites,
+              (e) => {
+                this.socketActionController.onFriendReceivedRoomInvites(e);
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.ReceivedFriendRequest,
+              (e) => {
+                this.socketActionController.onFriendReceivedFriendRequest(e);
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.RemoveRoomInvite,
+              (e) => {
+                this.socketActionController.onFriendRemoveRoomInvite(e);
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.RoomInviteResponse,
+              (e) => {
+                this.socketActionController.onFriendRoomInviteResponse(e);
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.RoomInviteSentSuccessfully,
+              (e) => {
+                this.socketActionController.onFriendRoomInviteSentSuccessfully(
+                  e,
+                );
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.Notifications,
+              (e) => {
+                this.socketActionController.onNotificationsReceived(e);
+              },
+            ),
+            this.generalStateHandlers.set(
+              X.zd.GeneralState.MarkedAsRead,
+              (e) => {
+                this.socketActionController.onMarkedAsRead(e);
+              },
+            ));
+        }
+      }
+      var be = s(54801),
+        ve = s(35606),
+        Se = s(84324);
+      class ke {
+        removeOldPopupIfExists() {
+          const e = document.querySelector(".popup-notification");
+          null != e && e.remove();
+        }
+        setCancel() {
+          window.addEventListener("click", (e) => {
+            e.target == this.container && this.removePopup();
+          });
+        }
+        positionContainerInTopRightCorner() {
+          const e = dt.canvasController,
+            t = dt.canvasController.responsiveController.getScaleForRotation(),
+            s = e.responsiveController.getCanvasX(),
+            n = t * (e.appW - 2 * e.chatWidth) + s,
+            r = e.responsiveController.getCanvasY();
+          ((this.contentContainer.style.position = "absolute"),
+            (this.contentContainer.style.transform = "none"),
+            (this.contentContainer.style.width = i.r.isUserOnMobileAppOrWeb
+              ? "70vw"
+              : e.chatWidth * t + "px"),
+            (this.contentContainer.style.left = i.r.isUserOnMobileAppOrWeb
+              ? "15vw"
+              : n + "px"),
+            (this.contentContainer.style.top = i.r.isUserOnMobileAppOrWeb
+              ? "40vh"
+              : r + "px"),
+            (this.contentContainer.style.marginRight = e.margin + "px"),
+            (this.contentContainer.style.marginTop = e.margin + "px"));
+        }
+        removePopup() {
+          ((this.container.style.display = "none"),
+            null != this.container.parentElement &&
+              this.container.parentElement.removeChild(this.container));
+        }
+        show() {
+          this.container.style.display = "block";
+        }
+        isRemoved() {
+          return "none" == this.container.style.display;
+        }
+        constructor(e, t) {
+          (this.removeOldPopupIfExists(),
+            (this.container = (0, x.Le)(document.body, "popup-notification")),
+            (this.contentContainer = (0, x.Le)(
+              this.container,
+              "popup-content-temporary",
+            )),
+            (this.header = (0, x.Le)(this.contentContainer, "popup-header")),
+            (this.body = (0, x.Le)(this.contentContainer, "popup-body")),
+            (this.footer = (0, x.Le)(this.contentContainer, "popup-footer")),
+            this.setCancel(),
+            (this.checkButton = (0, x.Le)(
+              this.footer,
+              "btn_general btn_general_check",
+            )),
+            (0, x.G0)(this.checkButton, () => {
+              (ge.A.play(ge.h.Click), this.removePopup());
+            }),
+            this.positionContainerInTopRightCorner(),
+            (0, x.n8)(this.header, e, "", "", "H4"),
+            (0, x.Wr)(this.body, t, ""),
+            this.show());
+          const s = 6 * Se.i.MILLISECONDS;
+          setTimeout(() => {
+            this.removePopup();
+          }, s);
+        }
+      }
+      var Ce = s(35274),
+        Pe = s(76092);
+      if (837 != s.j) var _e = s(51178);
+      if (837 != s.j) var Ae = s(2443);
+      class we {
+        restoreGameClientWithoutClosingSocket() {
+          var e;
+          (null === (e = this.uiGameManager) ||
+            void 0 === e ||
+            e.eventController.sendEvent(
+              void 0,
+              X.o8.UIGameEventEnums.ClientReconnectionTriggered,
+            ),
+            this.reset(),
+            this.gameClientRestorationController.startReconnecting());
+        }
+        reset() {
+          var e;
+          null === (e = this.gameStateReceiver) || void 0 === e || e.reset();
+        }
+        static playGameStartedSound(e) {
+          const t =
+            e === b.p9.ColonistRush4P
+              ? ge.h.GameStartedGuitar
+              : ge.h.GameStarted;
+          setTimeout(() => ge.A.play(t), 500);
+        }
+        static playSettlementPhaseEndedSound(e) {
+          const t =
+            e === b.p9.ColonistRush4P
+              ? ge.h.SettlementPhaseEndedGuitar
+              : ge.h.SettlementPhaseEnded;
+          setTimeout(() => ge.A.play(t), 500);
+        }
+        constructor(e, t) {
+          ((this.gameStateHandlers = new Map()),
+            (this.playedStartGameSound = !1),
+            (this.gameState = new ve.n()),
+            (this.socketActionController = t),
+            (this.uiGameManager = dt));
+          ((this.gameClientRestorationController = new ie(
+            () => {
+              var e;
+              const t = (0, M.ph)();
+              return (
+                (this.currentReconnectAttempt = t),
+                setTimeout(() => {
+                  t.pending && t.resolve("retry");
+                }, 10 * M.Re.MILLISECONDS),
+                null === (e = this.socketActionController.uiGameManager) ||
+                  void 0 === e ||
+                  e.socketGameSend.requestGameState(),
+                t
+              );
+            },
+            () => !0,
+          )),
+            (this.gameStateReceiver = new M.N_(
+              (t) => {
+                try {
+                  var s;
+                  null === (s = this.gameStateHandlers.get(t.type)) ||
+                    void 0 === s ||
+                    s(t.payload);
+                } catch (t) {
+                  (console.log(t), e.close(b.ZS), Z.Cp(t));
+                }
+              },
+              (e, t, s, i, r) => {
+                (n.CA.sendAnalyticEvent({
+                  category: Pe.eX.Socket,
+                  type: Pe.k0.SocketSequenceError,
+                  dimensions: {
+                    databaseGameId: this.databaseGameId,
+                    lastSequence: e,
+                    time: t,
+                    reason: s,
+                    pendingData: i.map((e) => ({
+                      t: e.added,
+                      s: e.data.sequence,
+                      gu: e.data.type,
+                    })),
+                    lastReleasedData: r.map((e) => ({
+                      t: e.added,
+                      s: e.data.sequence,
+                      gu: e.data.type,
+                    })),
+                    monitorStats: (0, _e.A)(
+                      (0, Ae.A)(ut.monitor.stats, ["buckets"]),
+                      (e) => 0 == e,
+                    ),
+                  },
+                }),
+                  this.restoreGameClientWithoutClosingSocket());
+              },
+            )),
+            e.setStateHandler(X.zd.State.GameStateUpdate, (e) => {
+              this.gameStateReceiver.addData(e);
+            }),
+            e.registerSessionEstablishedObserver(() => {
+              (this.reset(),
+                null != this.gameSettingId &&
+                  (h.Q.reconnectGame(
+                    this.gameSettingId,
+                    n.CA.Label.AutoRejoinGame,
+                  ),
+                  this.gameClientRestorationController.startReconnecting()));
+            }),
+            this.gameStateHandlers.set(be.Eo.FirstGameState, (e) => {
+              if (null != this.socketActionController.uiGameManager) {
+                var t;
+                if (
+                  (ut.monitor.activate(),
+                  (this.gameState.serverId = e.serverId),
+                  (this.databaseGameId = e.databaseGameId),
+                  (this.gameSettingId = e.gameSettingId),
+                  e.shouldResetGameClient)
+                )
+                  (null === (t = this.currentReconnectAttempt) ||
+                    void 0 === t ||
+                    t.resolve("connected"),
+                    this.socketActionController.uiGameManager.resetGameUIToRebuildOnReconnect());
+                (null == ht || ht.removeDisconnectBanners(),
+                  this.socketActionController.onConnectionEstablished(e),
+                  e.isReconnectingSession && (this.playedStartGameSound = !0));
+              }
+            }),
+            this.gameStateHandlers.set(be.Eo.SpectatorData, (e) => {
+              (0, Ce.YE)(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.BeginnerHintActivated, (e) => {
+              var t;
+              (this.socketActionController.onBeginnerHintActivated(e),
+                null === (t = this.uiGameManager) ||
+                  void 0 === t ||
+                  t.gameStore
+                    .getState()
+                    .gameBeginnerHint.setBeginnerHintData(e));
+            }),
+            this.gameStateHandlers.set(be.Eo.BeginnerModeActionUpdate, (e) => {
+              var t;
+              (this.socketActionController.onBeginnerModeActionUpdate(e),
+                null === (t = this.uiGameManager) ||
+                  void 0 === t ||
+                  t.gameStore
+                    .getState()
+                    .gameBeginnerHint.setBeginnerActionState(e));
+            }),
+            this.gameStateHandlers.set(be.Eo.BeginnerModeLevelEnd, (e) => {
+              this.socketActionController.onBeginnerModeLevelEnd();
+            }),
+            this.gameStateHandlers.set(be.Eo.Vote, (e) => {
+              var t;
+              const s = e.done ? void 0 : e;
+              null === (t = this.uiGameManager) ||
+                void 0 === t ||
+                t.gameStore.getState().gameVote.setVoteState(s);
+            }),
+            this.gameStateHandlers.set(be.Eo.SelectPlayer, (e) => {
+              this.socketActionController.onSelectPlayer(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.ExchangeCards, (e) => {
+              this.socketActionController.onExchangeCards(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.HighlightCorners, (e) => {
+              this.socketActionController.onHighlightCorners(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.HighlightRoadEdges, (e) => {
+              this.socketActionController.onHighlightRoadEdges(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.HighlightShipEdges, (e) => {
+              this.socketActionController.onHighlightShipEdges(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.HighlightTiles, (e) => {
+              this.socketActionController.onHighlightTiles(e);
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.HighlightDiceNumbersForInventor,
+              (e) => {
+                this.socketActionController.onHighlightDiceNumbersForInventor(
+                  e,
+                );
+              },
+            ),
+            this.gameStateHandlers.set(be.Eo.AmountOfCardsToDiscard, (e) => {
+              (this.socketActionController.onAmountOfCardsToDiscard(e),
+                ge.A.play(ge.h.DiscardNotification));
+            }),
+            this.gameStateHandlers.set(be.Eo.DiscardBroadcast, () => {
+              ge.A.play(ge.h.DiscardBroadcast);
+            }),
+            this.gameStateHandlers.set(be.Eo.SelectCardsToGiveToPlayer, (e) => {
+              (this.socketActionController.onSelectCardsToGiveToPlayer(e),
+                ge.A.play(ge.h.YourTurn));
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.CardsToSelectForDevelopmentCard,
+              (e) => {
+                this.socketActionController.onCardsToSelectForDevelopmentCard(
+                  e,
+                );
+              },
+            ),
+            this.gameStateHandlers.set(be.Eo.SelectPlayerAndCard, (e) => {
+              this.socketActionController.onSelectPlayerAndCard(e);
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.CardsToSelectForPendingTransaction,
+              (e) => {
+                this.socketActionController.onCardsToSelectForPendingTransaction(
+                  e,
+                );
+              },
+            ),
+            this.gameStateHandlers.set(be.Eo.ConfirmUseDevelopmentCard, (e) => {
+              this.socketActionController.onConfirmUseDevelopmentCard(e);
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.SelectPlayerUsingDevelopmentCard,
+              (e) => {
+                this.socketActionController.onSelectPlayerUsingDevelopmentCard(
+                  e,
+                );
+              },
+            ),
+            this.gameStateHandlers.set(
+              be.Eo.StealDevelopmentCardFromPlayer,
+              (e) => {
+                this.socketActionController.onStealDevelopmentCardFromPlayer(e);
+              },
+            ),
+            this.gameStateHandlers.set(
+              be.Eo.StealResourceCardFromPlayer,
+              (e) => {
+                this.socketActionController.onStealResourceCardFromPlayer(e);
+              },
+            ),
+            this.gameStateHandlers.set(be.Eo.ClosePopupUI, () => {
+              this.socketActionController.onClosePopupUI();
+            }),
+            this.gameStateHandlers.set(be.Eo.SelectDice, (e) => {
+              this.socketActionController.onSelectDice(e);
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.CityImprovementStateUpdated,
+              () => {
+                this.socketActionController.onCityImprovementStateUpdated();
+              },
+            ),
+            this.gameStateHandlers.set(
+              be.Eo.ForceShowCityImprovementButtons,
+              () => {
+                this.socketActionController.onForceShowCityImprovementButtons();
+              },
+            ),
+            this.gameStateHandlers.set(be.Eo.PlayTurnSound, () => {
+              ge.A.play(ge.h.YourTurn);
+            }),
+            this.gameStateHandlers.set(be.Eo.InfoMessage, (e) => {
+              new ke(
+                {
+                  key: "strings:popups.informationView.title",
+                },
+                e,
+              );
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.ResetTradeStateAtEndOfTurn,
+              (e) => {
+                this.socketActionController.onResetTradeStateAtEndOfTurn();
+              },
+            ),
+            this.gameStateHandlers.set(be.Eo.BoldTextInTradeWindow, (e) => {
+              this.socketActionController.onBoldTextInTradeWindow(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.BuildGame, (e) => {
+              this.socketActionController.onBuildGame(e);
+              const t = "Mode-" + b.p9[e.gameSettings.modeSetting],
+                s = "Map-" + b.Qy[e.gameSettings.mapSetting];
+              (n.CA.sendGoogleAnalyticsEventOnce(n.CA.Category.Game, t),
+                n.CA.sendGoogleAnalyticsEventOnce(n.CA.Category.Game, s),
+                this.playedStartGameSound ||
+                  (we.playGameStartedSound(e.gameSettings.modeSetting),
+                  n.CA.sendGoogleAnalyticsEvent(
+                    n.CA.Category.Funnel,
+                    n.CA.Label.FunnelStartedGame,
+                  ),
+                  (this.playedStartGameSound = !0)));
+            }),
+            this.gameStateHandlers.set(be.Eo.GameStateUpdated, (e) => {
+              this.socketActionController.gameStateUpdated(e, !0);
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.GivePlayerResourcesFromTile,
+              (e) => {
+                (0 !== e.length &&
+                  n.CA.sendGoogleAnalyticsEventOnce(
+                    n.CA.Category.Funnel,
+                    n.CA.Label.FunnelGameGetResources,
+                  ),
+                  this.socketActionController.onGivePlayerResourcesFromTile(e));
+              },
+            ),
+            this.gameStateHandlers.set(be.Eo.RematchLink, (e) => {
+              ((window.location.hash = e), window.location.reload());
+            }),
+            this.gameStateHandlers.set(be.Eo.EndGameText, (e) => {
+              this.socketActionController.onEndGameText(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.TogglePauseGame, (e) => {
+              this.socketActionController.onTogglePauseGame(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.CanResignGame, (e) => {
+              ((this.gameState.canResign = e), (0, Ce.c2)(e));
+            }),
+            this.gameStateHandlers.set(be.Eo.GameEndState, (s) => {
+              (this.uiGameManager.socketGameSend.endBeginnerModeLevel(),
+                t.onGameEndState(s),
+                e.reconnectionController.disable(),
+                this.gameClientRestorationController.disable(),
+                n.CA.sendGoogleTagManagerEvent(
+                  n.CA.GoogleTagManagerEvent.GameFinished,
+                ));
+            }),
+            this.gameStateHandlers.set(be.Eo.ExitInitialPlacement, () => {
+              (we.playSettlementPhaseEndedSound(
+                this.uiGameManager.gameController.gameSettings.modeSetting,
+              ),
+                setTimeout(() => {
+                  this.uiGameManager.eventController.sendEvent(
+                    void 0,
+                    X.o8.UIGameEventEnums.EndOfInitialPlacement,
+                  );
+                }, 500));
+            }),
+            this.gameStateHandlers.set(be.Eo.TradeFinalized, () => {
+              ge.A.play(ge.h.OfferAccepted);
+            }),
+            this.gameStateHandlers.set(be.Eo.TradeRejectedByAll, () => {
+              ge.A.play(ge.h.OfferRejected);
+            }),
+            this.gameStateHandlers.set(be.Eo.KnightPlaced, () => {
+              ge.A.play(ge.h.KnightPlace);
+            }),
+            this.gameStateHandlers.set(be.Eo.KarmaState, (e) => {
+              ((this.uiGameManager.gameController.gameSettings.karmaActive = e),
+                this.uiGameManager.gameStore
+                  .getState()
+                  .gameSettings.setIsKarmaActive(e));
+            }),
+            this.gameStateHandlers.set(be.Eo.KnightActivated, () => {
+              ge.A.play(ge.h.KnightEquip);
+            }),
+            this.gameStateHandlers.set(be.Eo.KnightUpgraded, () => {
+              ge.A.play(ge.h.KnightUpgrade);
+            }),
+            this.gameStateHandlers.set(be.Eo.PlayerReconnected, () => {
+              ge.A.play(ge.h.Reconnect);
+            }),
+            this.gameStateHandlers.set(be.Eo.PlayerDisconnected, () => {
+              ge.A.play(ge.h.Disconnect);
+            }),
+            this.gameStateHandlers.set(be.Eo.SpectatorChatMessage, (e) => {
+              (0, Ce.VJ)(e);
+            }),
+            this.gameStateHandlers.set(be.Eo.ResetBeginnerModeLevel, () => {
+              g.p.resetBeginnerModeLevel();
+            }),
+            this.gameStateHandlers.set(be.Eo.SendBroadcast, (e) => {
+              ht.show(e.text, ee.n.Information);
+            }),
+            this.gameStateHandlers.set(be.Eo.Ping, () => {
+              var e;
+              null === (e = this.socketActionController.uiGameManager) ||
+                void 0 === e ||
+                e.socketGameSend.pong();
+            }),
+            this.gameStateHandlers.set(
+              be.Eo.TriggerClientGameStateReset,
+              () => {
+                this.restoreGameClientWithoutClosingSocket();
+              },
+            ));
+        }
+      }
+      var Re = s(87506);
+      const Te = X.zd.MatchmakingState;
+      class Ie {
+        constructor(e, t) {
+          ((this.matchmakingStateHandlers = new Map()),
+            (this.socketActionController = t),
+            e.setStateHandler(X.zd.State.MatchmakingStateUpdate, (e) => {
+              var t;
+              null === (t = this.matchmakingStateHandlers.get(e.type)) ||
+                void 0 === t ||
+                t(e.payload);
+            }),
+            this.matchmakingStateHandlers.set(Te.MatchmakingUpdate, (e) => {
+              this.socketActionController.onMatchmakingUpdate(e);
+            }),
+            this.matchmakingStateHandlers.set(Te.MatchmakingError, (e) => {
+              this.socketActionController.onMatchmakingError(e);
+            }),
+            this.matchmakingStateHandlers.set(
+              Te.MatchmakingDisableAdblock,
+              (e) => {
+                this.socketActionController.onMatchmakingDisableAdblock();
+              },
+            ),
+            this.matchmakingStateHandlers.set(Te.MatchmakingReconnect, (e) => {
+              Re.O.sendFindGame();
+            }));
+        }
+      }
+      var Me = s(46456);
+      const Le = X.zd.ShuffleState;
+      class Be {
+        constructor(e) {
+          ((this.shuffleStateHandlers = new Map()),
+            e.setStateHandler(X.zd.State.ShuffleStateUpdate, (e) => {
+              var t;
+              null === (t = this.shuffleStateHandlers.get(e.type)) ||
+                void 0 === t ||
+                t(e.payload);
+            }),
+            this.shuffleStateHandlers.set(Le.ShuffleQueueData, (e) => {
+              Me.y.updateQueueData(e);
+            }),
+            this.shuffleStateHandlers.set(Le.ShufflePlayerData, (e) => {
+              Me.y.updatePlayerData(e);
+            }));
+        }
+      }
+      if (837 != s.j) var De = s(43126);
+      const Ee = X.zd.State;
+      class Ge {
+        activate() {
+          this.active || ((this.active = !0), this.startMonitoringLatency());
+        }
+        startMonitoringLatency() {
+          this.active &&
+            (null != this.timer && (this.stats.reconnects += 1),
+            this.stopMonitoringLatency(),
+            (this.timer = setInterval(() => this.sendPing(), 1e3)));
+        }
+        sendPing() {
+          const e = Date.now();
+          (this.pingTimestamps.add(e), this.controller.sender.sendPing(e));
+        }
+        stopMonitoringLatency() {
+          (clearInterval(this.timer), this.pingTimestamps.clear());
+        }
+        handlePong(e) {
+          var t, s;
+          const i = Date.now(),
+            n = e.timestamp;
+          if (!this.pingTimestamps.has(n)) return;
+          const r = Math.round((i - n) / 2);
+          this.lastLatency = r;
+          const o = xe(r);
+          var a;
+          ((null !== (a = (t = this.stats.buckets)[(s = o)]) && void 0 !== a) ||
+            (t[s] = 0),
+            (this.stats.buckets[o] += 1),
+            r <= 500
+              ? (this.stats.low += 1)
+              : r <= 1500
+                ? (this.stats.medium += 1)
+                : r <= 5e3
+                  ? (this.stats.high += 1)
+                  : (this.stats.dropped += 1),
+            this.pingTimestamps.delete(n));
+        }
+        getFinalStats() {
+          const e = (0, De.A)(this.stats);
+          for (const n of this.pingTimestamps) {
+            var t, s;
+            const r = xe(Date.now() - n);
+            var i;
+            ((null !== (i = (t = e.buckets)[(s = r)]) && void 0 !== i) ||
+              (t[s] = 0),
+              (e.buckets[r] += 1));
+          }
+          return e;
+        }
+        constructor(e) {
+          ((this.pingTimestamps = new Set()),
+            (this.lastLatency = 0),
+            (this.active = !1),
+            (this.controller = e),
+            (this.stats = {
+              reconnects: 0,
+              low: 0,
+              medium: 0,
+              high: 0,
+              dropped: 0,
+              buckets: {},
+            }),
+            this.controller.registerSessionEstablishedObserver(() =>
+              this.startMonitoringLatency(),
+            ),
+            this.controller.registerSocketCloseObserver(() =>
+              this.stopMonitoringLatency(),
+            ),
+            this.controller.setStateHandler(Ee.SocketMonitorUpdate, (e) =>
+              this.handlePong(e),
+            ));
+        }
+      }
+      function xe(e) {
+        return 100 * Math.round(e / 100);
+      }
+      var Ue = s(98487);
+      class Oe {
+        static deserialize(e) {
+          const t = new Oe();
+          return (
+            (t.updateSequence = e.updateSequence),
+            (t.gameSetting = e.gameSetting),
+            (t.isTournament = e.isTournament),
+            (t.hostSession = e.hostSession),
+            (t.isTestFreeExpansionsAndMaps = e.isTestFreeExpansionsAndMaps),
+            (t.creationPhase = e.creationPhase),
+            (t.guests = e.guests),
+            (t.victoryPointsRecommendedLimit = e.victoryPointsRecommendedLimit),
+            (t.victoryPointsMaxAllowed = e.victoryPointsMaxAllowed),
+            (t.kickedUserIds = [...e.kickedUserIds]),
+            t
+          );
+        }
+        getSessionCount() {
+          return this.guests.length + 1;
+        }
+        getSessions() {
+          return [...this.guests, this.hostSession];
+        }
+        getGuestSessions() {
+          return [...this.guests];
+        }
+        getUsernames() {
+          return this.getSessions().map((e) => e.username);
+        }
+        getUserIds() {
+          return this.getSessions()
+            .map((e) => e.userId)
+            .filter((e) => null != e);
+        }
+        isInRoom(e) {
+          for (const t of this.getSessions())
+            if (t.userSessionId == e.userSessionId) return !0;
+          return !1;
+        }
+        isMultiplayer() {
+          for (const e of this.getGuestSessions()) if (!e.isBot) return !0;
+          return !1;
+        }
+        isHost(e) {
+          return e == this.hostSession.userSessionId;
+        }
+        isHostSubscribed() {
+          return this.hostSession.isMember;
+        }
+        isGuest(e) {
+          return e != this.hostSession.userSessionId;
+        }
+        isPrivateGame() {
+          return this.gameSetting.privateGame;
+        }
+        isNoTrollsGame() {
+          return (
+            this.gameSetting.minimumKarma == Ue.Zt.NO_TROLLS_KARMA_THRESHOLD
+          );
+        }
+        constructor() {
+          ((this.creationPhase = p.yF.EditSettings),
+            (this.victoryPointsRecommendedLimit = Ue.Zt.DEFAULT_VP_TO_WIN));
+        }
+      }
+      var Ne = s(63778);
+      const Fe = X.mt.RoomInfoMessage;
+      class He {
+        onRoomStateUpdated(e) {
+          this.protocol.onEvent("StateUpdated", (t) => {
+            const s = t.sessions.map((e) => ({
+              roomSessionId: e.roomSessionId,
+              userSessionId: e.userSessionId,
+              userId: e.userId,
+              isBot: e.isBot,
+              isReadyToPlay: e.isReadyToPlay,
+              selectedColor: Ke[e.selectedColor],
+              username: e.username,
+              isMember: e.isMember,
+              icon: e.icon,
+              profilePictureUrl: e.profilePictureUrl,
+              karmaCompletedGames: e.karmaCompletedGames,
+              karmaTotalGames: e.karmaTotalGames,
+              availableColors: e.availableColors.map((e) => Ke[e]),
+              botDifficulty:
+                null == e.botDifficulty ? void 0 : et[e.botDifficulty],
+            }));
+            e(
+              Oe.deserialize({
+                updateSequence: t.updateSequence,
+                gameSetting: {
+                  id: t.roomId,
+                  privateGame: t.private,
+                  playOrderSelectionActive: t.playOrderSelectionActive,
+                  minimumKarma: t.minimumKarma,
+                  modeSetting: qe[t.gameMode],
+                  mapSetting: $e[t.map],
+                  diceSetting: je[t.diceType],
+                  victoryPointsToWin: t.victoryPointsToWin,
+                  cardDiscardLimit: t.cardDiscardLimit,
+                  maxPlayers: t.maxPlayers,
+                  gameSpeed: Xe[t.gameSpeed],
+                  botSpeed: Ze[t.botSpeed],
+                  hideBankCards: t.hiddenBankCards,
+                  friendlyRobber: t.friendlyRobber,
+                },
+                isTournament: t.isTournament,
+                isTestFreeExpansionsAndMaps: t.isTestFreeExpansionsAndMaps,
+                victoryPointsRecommendedLimit: t.victoryPointsRecommendedLimit,
+                victoryPointsMaxAllowed: t.victoryPointsMaxAllowed,
+                kickedUserIds: t.kickedUserIds,
+                creationPhase: st[t.creationPhase],
+                hostSession: s[0],
+                guests: s.slice(1),
+              }),
+            );
+          });
+        }
+        onInfoMessageUpdated(e) {
+          this.protocol.onEvent("InfoMessageUpdated", ({ messageType: t }) => {
+            e(tt[t]);
+          });
+        }
+        onSeedOrderSelected(e) {
+          this.protocol.onEvent("SeedOrderSelected", ({ seedOrder: t }) => {
+            e({
+              seedOrder: t.map((e) => [e[0], Ke[e[1]]]),
+            });
+          });
+        }
+        onPlayOrderSelected(e) {
+          this.protocol.onEvent(
+            "PlayOrderSelected",
+            ({ mapState: t, currentSelector: s, playOrder: i }) => {
+              e({
+                mapState: t,
+                currentSelector: Ke[s],
+                playOrder: i.map((e) => [Ke[e[0]], e[1]]),
+              });
+            },
+          );
+        }
+        onGotKicked(e) {
+          this.protocol.onEvent("GotKicked", ({ roomId: t, canRejoin: s }) => {
+            e(t, s);
+          });
+        }
+        onFailedToStartGameMembershipRequired(e, t = !1) {
+          (t &&
+            this.protocol.removeListener("FailedToStartGameMembershipRequired"),
+            this.protocol.onEvent("FailedToStartGameMembershipRequired", e));
+        }
+        onReceivedChatMessage(e) {
+          this.protocol.onEvent(
+            "ReceivedChatMessage",
+            ({ message: t, senderUsername: s, senderIcon: i }) => {
+              e(t, s, i);
+            },
+          );
+        }
+        onInvalidPlayerCountEncountered(e) {
+          this.protocol.onEvent(
+            "InvalidPlayerCountEncountered",
+            ({ playerCount: t, missingExtension: s }) => {
+              e(t, s);
+            },
+          );
+        }
+        onFailedToReducePlayerCount(e) {
+          this.protocol.onEvent("FailedToReducePlayerCount", () => {
+            e();
+          });
+        }
+        onFailedToStartGameBecauseServerIsUpdating(e) {
+          this.protocol.onEvent(
+            "FailedToStartGameBecauseServerIsUpdating",
+            () => {
+              e();
+            },
+          );
+        }
+        onFailedToStartGamePlayersNotReady(e) {
+          this.protocol.onEvent(
+            "FailedToStartGamePlayersNotReady",
+            ({ players: t }) => {
+              e(t);
+            },
+          );
+        }
+        onFailedToSelectUsedColor(e) {
+          this.protocol.onEvent("FailedToSelectUsedColor", () => {
+            e();
+          });
+        }
+        onFailedToExecuteCommandGameStarting(e) {
+          this.protocol.onEvent("FailedToExecuteCommandGameStarting", () => {
+            e();
+          });
+        }
+        onFailedToSetGameSpeed(e) {
+          this.protocol.onEvent("FailedToSetGameSpeed", () => {
+            e();
+          });
+        }
+        onKickedInactiveHost(e) {
+          this.protocol.onEvent("KickedInactiveHost", () => {
+            e();
+          });
+        }
+        onFailedToSendChatMessage(e) {
+          this.protocol.onEvent(
+            "FailedToSendChatMessage",
+            ({ reason: t, mutedUntil: s }) => {
+              e(t, s);
+            },
+          );
+        }
+        onReceivedChatResponse(e) {
+          this.protocol.onEvent("ReceivedChatResponse", ({ response: t }) => {
+            e(t);
+          });
+        }
+        setReadyToStart(e) {
+          this.protocol.send("setReadyToStart", {
+            ready: e,
+          });
+        }
+        selectColor(e, t) {
+          this.protocol.send("selectColor", {
+            roomSessionId: e,
+            color: We[t],
+          });
+        }
+        startGame() {
+          this.protocol.send("startGame", {
+            clientVersion: b.$m,
+          });
+        }
+        startSeedOrderSelection() {
+          this.protocol.send("startSeedOrderSelection", {});
+        }
+        kickPlayer(e) {
+          this.protocol.send("kickPlayer", {
+            roomSessionId: e,
+          });
+        }
+        addBot() {
+          this.protocol.send("addBot", {});
+        }
+        setBotDifficulty(e, t) {
+          this.protocol.send("setBotDifficulty", {
+            roomSessionId: e,
+            botDifficulty: Je[t],
+          });
+        }
+        setPrivateGame(e) {
+          this.protocol.send("setPrivateGame", {
+            privateGame: e,
+          });
+        }
+        toggleNoTrolls() {
+          this.protocol.send("toggleNoTrolls", {});
+        }
+        togglePlayOrderSelection() {
+          this.protocol.send("togglePlayOrderSelection", {});
+        }
+        setGameMode(e) {
+          this.protocol.send("setGameMode", {
+            gameMode: Ve[e],
+          });
+        }
+        setMap(e) {
+          this.protocol.send("setMap", {
+            map: Qe[e],
+          });
+        }
+        setDiceType(e) {
+          this.protocol.send("setDiceType", {
+            diceType: ze[e],
+          });
+        }
+        setVictoryPointsToWin(e) {
+          this.protocol.send("setVictoryPointsToWin", {
+            victoryPoints: e,
+          });
+        }
+        setGameSpeed(e) {
+          this.protocol.send("setGameSpeed", {
+            gameSpeed: Ye[e],
+          });
+        }
+        setCardDiscardLimit(e) {
+          this.protocol.send("setCardDiscardLimit", {
+            limit: e,
+          });
+        }
+        setFriendlyRobber(e) {
+          this.protocol.send("setFriendlyRobber", {
+            friendlyRobber: e,
+          });
+        }
+        setHideBankCards(e) {
+          this.protocol.send("setHiddenBankCards", {
+            hiddenBankCards: e,
+          });
+        }
+        setMaxPlayers(e) {
+          this.protocol.send("setMaxPlayers", {
+            maxPlayers: e,
+          });
+        }
+        setSeedOrder(e, t) {
+          this.protocol.send("setSeedOrder", {
+            color: We[e],
+            order: t,
+          });
+        }
+        setPlayOrder(e) {
+          this.protocol.send("setPlayOrder", {
+            order: e,
+          });
+        }
+        startPlayOrderSelection() {
+          this.protocol.send("startPlayOrderSelection", {});
+        }
+        leave() {
+          this.protocol.send("leave", {});
+        }
+        submitChatText(e) {
+          this.protocol.send("submitChatText", {
+            text: e,
+          });
+        }
+        constructor(e) {
+          this.protocol = e;
+        }
+      }
+      const We = {
+          [Ne.DS.Blue]: "blue",
+          [Ne.DS.Bronze]: "bronze",
+          [Ne.DS.Gold]: "gold",
+          [Ne.DS.Green]: "green",
+          [Ne.DS.MysticBlue]: "mysticBlue",
+          [Ne.DS.Orange]: "orange",
+          [Ne.DS.Pink]: "pink",
+          [Ne.DS.Purple]: "purple",
+          [Ne.DS.Red]: "red",
+          [Ne.DS.Silver]: "silver",
+          [Ne.DS.White]: "white",
+          [Ne.DS.Black]: "black",
+        },
+        Ke = {
+          blue: Ne.DS.Blue,
+          bronze: Ne.DS.Bronze,
+          gold: Ne.DS.Gold,
+          green: Ne.DS.Green,
+          mysticBlue: Ne.DS.MysticBlue,
+          orange: Ne.DS.Orange,
+          pink: Ne.DS.Pink,
+          purple: Ne.DS.Purple,
+          red: Ne.DS.Red,
+          silver: Ne.DS.Silver,
+          white: Ne.DS.White,
+          black: Ne.DS.Black,
+        },
+        Ve = {
+          [b.p9.Classic4P]: "classic4P",
+          [b.p9.TutorialClassic4P]: "tutorialClassic4P",
+          [b.p9.Classic56P]: "classic56P",
+          [b.p9.Classic78P]: "classic78P",
+          [b.p9.Seafarers4P]: "seafarers4P",
+          [b.p9.Seafarers56P]: "seafarers56P",
+          [b.p9.CitiesAndKnights4P]: "citiesAndKnights4P",
+          [b.p9.CitiesAndKnights56P]: "citiesAndKnights56P",
+          [b.p9.CitiesAndKnightsSeafarers4P]: "citiesAndKnightsSeafarers4P",
+          [b.p9.CitiesAndKnightsSeafarers56P]: "citiesAndKnightsSeafarers56P",
+          [b.p9.ServerStressTestClassic4P]: "serverStressTestClassic4P",
+          [b.p9.BeginnerModeClassic4P]: "beginnerModeClassic4P",
+          [b.p9.ColonistRush4P]: "colonistRush",
+        },
+        qe = {
+          classic4P: b.p9.Classic4P,
+          tutorialClassic4P: b.p9.TutorialClassic4P,
+          classic56P: b.p9.Classic56P,
+          classic78P: b.p9.Classic78P,
+          seafarers4P: b.p9.Seafarers4P,
+          seafarers56P: b.p9.Seafarers56P,
+          citiesAndKnights4P: b.p9.CitiesAndKnights4P,
+          citiesAndKnights56P: b.p9.CitiesAndKnights56P,
+          citiesAndKnightsSeafarers4P: b.p9.CitiesAndKnightsSeafarers4P,
+          citiesAndKnightsSeafarers56P: b.p9.CitiesAndKnightsSeafarers56P,
+          serverStressTestClassic4P: b.p9.ServerStressTestClassic4P,
+          beginnerModeClassic4P: b.p9.BeginnerModeClassic4P,
+          colonistRush: b.p9.ColonistRush4P,
+        },
+        Qe = {
+          [b.Qy.Classic4P]: "classic4P",
+          [b.Qy.TutorialClassic4P]: "tutorialClassic4P",
+          [b.Qy.Classic4PRandom]: "classic4PRandom",
+          [b.Qy.Classic56P]: "classic56P",
+          [b.Qy.Classic78P]: "classic78P",
+          [b.Qy.SS1HeadingForNewShores3P]: "sS1HeadingForNewShores3P",
+          [b.Qy.SS1HeadingForNewShores4P]: "sS1HeadingForNewShores4P",
+          [b.Qy.SS1HeadingForNewShores56P]: "sS1HeadingForNewShores56P",
+          [b.Qy.TutorialSS1HeadingForNewShores4P]:
+            "tutorialSS1HeadingForNewShores4P",
+          [b.Qy.SS2FourIslands3P]: "sS2FourIslands3P",
+          [b.Qy.SS2FourIslands4P]: "sS2FourIslands4P",
+          [b.Qy.SS2SixIslands56P]: "sS2SixIslands56P",
+          [b.Qy.TutorialSS2FourIslands4P]: "tutorialSS2FourIslands4P",
+          [b.Qy.SS3FogIslands3P]: "sS3FogIslands3P",
+          [b.Qy.SS3FogIslands4P]: "sS3FogIslands4P",
+          [b.Qy.SS3FogIslands56P]: "sS3FogIslands56P",
+          [b.Qy.TutorialSS3FogIsland4P]: "tutorialSS3FogIsland4P",
+          [b.Qy.SS4ThroughTheDesert3P]: "sS4ThroughTheDesert3P",
+          [b.Qy.SS4ThroughTheDesert4P]: "sS4ThroughTheDesert4P",
+          [b.Qy.SS4ThroughTheDesert56P]: "sS4ThroughTheDesert56P",
+          [b.Qy.TutorialSS4ThroughTheDesert4P]: "tutorialSS4ThroughTheDesert4P",
+          [b.Qy.KingOfTheHill]: "kingOfTheHill",
+          [b.Qy.Earth]: "earth",
+          [b.Qy.EarthSeafarers]: "earthSeafarers",
+          [b.Qy.USA]: "uSA",
+          [b.Qy.UK]: "uK",
+          [b.Qy.UKSeafarers]: "uKSeafarers",
+          [b.Qy.Diamond]: "diamond",
+          [b.Qy.Gear]: "gear",
+          [b.Qy.Lakes]: "lakes",
+          [b.Qy.Pond]: "pond",
+          [b.Qy.Twirl]: "twirl",
+          [b.Qy.ShuffleBoard]: "shuffleBoard",
+          [b.Qy.BlackForest]: "blackForest",
+          [b.Qy.Volcano]: "volcano",
+          [b.Qy.Circle]: "circle",
+          [b.Qy.Kite]: "kite",
+          [b.Qy.Romania]: "romania",
+          [b.Qy.MiniBase]: "miniBase",
+          [b.Qy.Monopoly]: "monopoly",
+          [b.Qy.MountainOfRiches]: "mountainOfRiches",
+          [b.Qy.Doggo]: "doggo",
+          [b.Qy.Duel]: "duel",
+          [b.Qy.TradeIslands]: "tradeIslands",
+          [b.Qy.TradeIslandsSeafarers]: "tradeIslandsSeafarers",
+          [b.Qy.Vietnam]: "vietnam",
+          [b.Qy.TurningTidesSeafarers]: "turningTidesSeafarers",
+          [b.Qy.TurningTidesClassic]: "turningTidesClassic",
+          [b.Qy.TwoIsles]: "twoIsles",
+          [b.Qy.JellyFish]: "jellyFish",
+          [b.Qy.GoldRush]: "goldRush",
+          [b.Qy.Istanbul]: "istanbul",
+          [b.Qy.IstanbulSeafarers]: "istanbulSeafarers",
+          [b.Qy.Europe]: "europe",
+          [b.Qy.EuropeSeafarers]: "europeSeafarers",
+          [b.Qy.Stripes]: "stripes",
+          [b.Qy.MonopolyIslands]: "monopolyIslands",
+          [b.Qy.MonopolyIslandsSeafarers]: "monopolyIslandsSeafarers",
+          [b.Qy.CampaignLevel1]: "campaignLevel1",
+          [b.Qy.CampaignLevel2]: "campaignLevel2",
+          [b.Qy.CampaignRoadRace]: "campaignRoadRace",
+          [b.Qy.CampaignRoadRace2]: "campaignRoadRace2",
+        },
+        $e = {
+          classic4P: b.Qy.Classic4P,
+          tutorialClassic4P: b.Qy.TutorialClassic4P,
+          classic4PRandom: b.Qy.Classic4PRandom,
+          classic56P: b.Qy.Classic56P,
+          classic78P: b.Qy.Classic78P,
+          sS1HeadingForNewShores3P: b.Qy.SS1HeadingForNewShores3P,
+          sS1HeadingForNewShores4P: b.Qy.SS1HeadingForNewShores4P,
+          sS1HeadingForNewShores56P: b.Qy.SS1HeadingForNewShores56P,
+          tutorialSS1HeadingForNewShores4P:
+            b.Qy.TutorialSS1HeadingForNewShores4P,
+          sS2FourIslands3P: b.Qy.SS2FourIslands3P,
+          sS2FourIslands4P: b.Qy.SS2FourIslands4P,
+          sS2SixIslands56P: b.Qy.SS2SixIslands56P,
+          tutorialSS2FourIslands4P: b.Qy.TutorialSS2FourIslands4P,
+          sS3FogIslands3P: b.Qy.SS3FogIslands3P,
+          sS3FogIslands4P: b.Qy.SS3FogIslands4P,
+          sS3FogIslands56P: b.Qy.SS3FogIslands56P,
+          tutorialSS3FogIsland4P: b.Qy.TutorialSS3FogIsland4P,
+          sS4ThroughTheDesert3P: b.Qy.SS4ThroughTheDesert3P,
+          sS4ThroughTheDesert4P: b.Qy.SS4ThroughTheDesert4P,
+          sS4ThroughTheDesert56P: b.Qy.SS4ThroughTheDesert56P,
+          tutorialSS4ThroughTheDesert4P: b.Qy.TutorialSS4ThroughTheDesert4P,
+          kingOfTheHill: b.Qy.KingOfTheHill,
+          earth: b.Qy.Earth,
+          earthSeafarers: b.Qy.EarthSeafarers,
+          uSA: b.Qy.USA,
+          uK: b.Qy.UK,
+          uKSeafarers: b.Qy.UKSeafarers,
+          diamond: b.Qy.Diamond,
+          gear: b.Qy.Gear,
+          lakes: b.Qy.Lakes,
+          pond: b.Qy.Pond,
+          twirl: b.Qy.Twirl,
+          shuffleBoard: b.Qy.ShuffleBoard,
+          blackForest: b.Qy.BlackForest,
+          volcano: b.Qy.Volcano,
+          circle: b.Qy.Circle,
+          kite: b.Qy.Kite,
+          romania: b.Qy.Romania,
+          miniBase: b.Qy.MiniBase,
+          monopoly: b.Qy.Monopoly,
+          mountainOfRiches: b.Qy.MountainOfRiches,
+          doggo: b.Qy.Doggo,
+          duel: b.Qy.Duel,
+          tradeIslands: b.Qy.TradeIslands,
+          tradeIslandsSeafarers: b.Qy.TradeIslandsSeafarers,
+          vietnam: b.Qy.Vietnam,
+          turningTidesSeafarers: b.Qy.TurningTidesSeafarers,
+          turningTidesClassic: b.Qy.TurningTidesClassic,
+          twoIsles: b.Qy.TwoIsles,
+          jellyFish: b.Qy.JellyFish,
+          goldRush: b.Qy.GoldRush,
+          istanbul: b.Qy.Istanbul,
+          istanbulSeafarers: b.Qy.IstanbulSeafarers,
+          europe: b.Qy.Europe,
+          europeSeafarers: b.Qy.EuropeSeafarers,
+          stripes: b.Qy.Stripes,
+          monopolyIslands: b.Qy.MonopolyIslands,
+          monopolyIslandsSeafarers: b.Qy.MonopolyIslandsSeafarers,
+          campaignLevel1: b.Qy.CampaignLevel1,
+          campaignLevel2: b.Qy.CampaignLevel2,
+          campaignRoadRace: b.Qy.CampaignRoadRace,
+          campaignRoadRace2: b.Qy.CampaignRoadRace2,
+        },
+        ze = {
+          [b.ZP.Random]: "random",
+          [b.ZP.Balanced]: "balanced",
+          [b.ZP.StressTestSequence]: "stressTestSequence",
+          [b.ZP.PredefinedDiceSequenceDeleted]: "predefinedDiceSequenceDeleted",
+        },
+        je = {
+          random: b.ZP.Random,
+          balanced: b.ZP.Balanced,
+          stressTestSequence: b.ZP.StressTestSequence,
+          predefinedDiceSequenceDeleted: b.ZP.PredefinedDiceSequenceDeleted,
+        },
+        Ye = {
+          [Ue.ro.Base15s]: "base15s",
+          [Ue.ro.Base30s]: "base30s",
+          [Ue.ro.Base60s]: "base60s",
+          [Ue.ro.Base120s]: "base120s",
+          [Ue.ro.Base240s]: "base240s",
+          [Ue.ro.Base12000s]: "base12000s",
+          [Ue.ro.Rush5s]: "rush5s",
+          [Ue.ro.Rush8s]: "rush8s",
+          [Ue.ro.Rush10s]: "rush10s",
+          [Ue.ro.Rush15s]: "rush15s",
+          [Ue.ro.Rush20s]: "rush20s",
+        },
+        Xe = {
+          base15s: Ue.ro.Base15s,
+          base30s: Ue.ro.Base30s,
+          base60s: Ue.ro.Base60s,
+          base120s: Ue.ro.Base120s,
+          base240s: Ue.ro.Base240s,
+          base12000s: Ue.ro.Base12000s,
+          rush5s: Ue.ro.Rush5s,
+          rush8s: Ue.ro.Rush8s,
+          rush10s: Ue.ro.Rush10s,
+          rush15s: Ue.ro.Rush15s,
+          rush20s: Ue.ro.Rush20s,
+        },
+        Ze =
+          (Ue.K4.Fast,
+          Ue.K4.Normal,
+          Ue.K4.Slow,
+          {
+            fast: Ue.K4.Fast,
+            normal: Ue.K4.Normal,
+            slow: Ue.K4.Slow,
+          }),
+        Je = {
+          [Ue.R1.BotEasy]: "easy",
+          [Ue.R1.BotMedium]: "medium",
+        },
+        et = {
+          easy: Ue.R1.BotEasy,
+          medium: Ue.R1.BotMedium,
+        },
+        tt = {
+          none: Fe.None,
+          clickReady: Fe.ClickReady,
+          premiumItemSelected: Fe.PremiumItemSelected,
+        },
+        st = {
+          settings: p.yF.EditSettings,
+          playOrder: p.yF.PlayOrderSelection,
+          seedOrder: p.yF.SeedOrderSelection,
+        };
+      if (837 != s.j) var it = s(94226);
+      class nt {
+        connect() {
+          this.controller.enableConnect();
+        }
+        constructor(e) {
+          ((this.actionController = e),
+            (this.controller = new re(T.l.socketServerWSS())),
+            (this.gameListener = new we(
+              this.controller,
+              this.actionController,
+            )),
+            (this.lobbyListener = new ye(
+              this.controller,
+              this.actionController,
+            )),
+            (this.matchmakingListener = new Ie(
+              this.controller,
+              this.actionController,
+            )),
+            (this.shuffleListener = new Be(this.controller)),
+            (this.monitor = new Ge(this.controller)),
+            this.controller.setStateHandler(X.zd.State.RoomEvent, (e) => {
+              this.roomProtocolClient.emitEvent(e.type, e);
+            }));
+          ((this.roomProtocolClient = new it.c((e) => {
+            const t = (function (e) {
+              switch (e.type) {
+                case "setReadyToStart":
+                  return [n.CA.Label.ClickedRoomReadyToStart, () => {}];
+                case "selectColor":
+                case "startPlayOrderSelection":
+                case "submitChatText":
+                case "setBotDifficulty":
+                case "setSeedOrder":
+                case "setPlayOrder":
+                  return;
+                case "startGame":
+                  return [n.CA.Label.ClickedRoomStartGame, () => {}];
+                case "kickPlayer":
+                  return [n.CA.Label.ClickedRoomKickPlayer, () => {}];
+                case "addBot":
+                  return [n.CA.Label.ClickedRoomAddBot, () => {}];
+                case "setPrivateGame":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangePrivateGame,
+                    () => Number(e.privateGame),
+                  ];
+                case "toggleNoTrolls":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangeNoTrollsSetting,
+                    () => {},
+                  ];
+                case "setGameMode":
+                  return [
+                    n.CA.Label.ClickedRoomSettingUpdateGameModeSetting,
+                    () => e.gameMode,
+                  ];
+                case "setMap":
+                  return [
+                    n.CA.Label.ClickedRoomSettingUpdateMapSetting,
+                    () => e.map,
+                  ];
+                case "setDiceType":
+                  return [
+                    n.CA.Label.ClickedRoomSettingUpdateDiceSetting,
+                    () => e.diceType,
+                  ];
+                case "setVictoryPointsToWin":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangeVictoryPointsToWin,
+                    () => e.victoryPoints,
+                  ];
+                case "setCardDiscardLimit":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangeCardDiscardLimit,
+                    () => e.limit,
+                  ];
+                case "setFriendlyRobber":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangeFriendlyRobber,
+                    () => Number(e.friendlyRobber),
+                  ];
+                case "setMaxPlayers":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangeMaxPlayers,
+                    () => e.maxPlayers,
+                  ];
+                case "setHiddenBankCards":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangeHideBankCards,
+                    () => Number(e.hiddenBankCards),
+                  ];
+                case "setGameSpeed":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangeGameSpeed,
+                    () => e.gameSpeed,
+                  ];
+                case "leave":
+                  return [n.CA.Label.ClickedRoomExit, () => {}];
+                case "startSeedOrderSelection":
+                  return [
+                    n.CA.Label.ClickedRoomCustomPlayOrderSelection,
+                    () => {},
+                  ];
+                case "togglePlayOrderSelection":
+                  return [
+                    n.CA.Label.ClickedRoomSettingChangePlayOrderSelection,
+                    () => {},
+                  ];
+              }
+            })(e);
+            (null != t &&
+              n.CA.sendGoogleAnalyticsEvent(n.CA.Category.Room, t[0], t[1]()),
+              this.controller.sender.sendToServerType(
+                b.lo.RoomCommand,
+                "lobby",
+                e,
+              ));
+          })),
+            (this.roomClient = new He(this.roomProtocolClient)));
+        }
+      }
+      class rt {
+        start() {
+          (this.createElements(),
+            (this.updateTimer = setInterval(() => this.update(), 100)),
+            ut.monitor.activate());
+        }
+        stop() {
+          (clearInterval(this.updateTimer), this.container.remove());
+        }
+        createElements() {
+          ((this.container = (0, x.Le)(document.body, "")),
+            (this.container.style.position = "absolute"),
+            (this.container.style.backgroundColor = "gray"),
+            (this.container.style.display = "flex"),
+            (this.container.style.opacity = "0.9"),
+            (this.container.style.top = "5px"),
+            (this.container.style.left = "5px"),
+            (this.container.style.zIndex = "99999999"),
+            (0, x.G0)(this.container, () => {
+              console.log("Socket stats", ut.monitor.getFinalStats());
+            }),
+            (this.mediumLatency = (0, x.Le)(this.container, "hidden")),
+            (this.mediumLatency.title = "Medium latency pings"),
+            (this.mediumLatency.style.marginRight = "5px"),
+            (this.mediumLatency.style.color = "orange"),
+            (this.highLatency = (0, x.Le)(this.container, "hidden")),
+            (this.highLatency.title = "High latency pings"),
+            (this.highLatency.style.marginRight = "5px"),
+            (this.highLatency.style.color = "red"),
+            (this.droppedLatency = (0, x.Le)(this.container, "hidden")),
+            (this.droppedLatency.title = "Dropped pings"),
+            (this.droppedLatency.style.marginRight = "5px"),
+            (this.droppedLatency.style.color = "red"),
+            (this.reconnects = (0, x.Le)(this.container, "hidden")),
+            (this.reconnects.title = "Reconnects"),
+            (this.reconnects.style.marginRight = "5px"),
+            (this.reconnects.style.color = "red"),
+            (this.latency = (0, x.Le)(this.container, "")),
+            (this.latency.title = "Last latency reading"),
+            (this.latency.style.minWidth = "65px"),
+            (this.latency.style.textAlign = "right"));
+        }
+        update() {
+          const e = ut.monitor.stats;
+          ((this.mediumLatency.textContent = `${e.medium}`),
+            this.mediumLatency.classList.toggle("hidden", 0 == e.medium),
+            (this.highLatency.textContent = `${e.high}`),
+            this.highLatency.classList.toggle("hidden", 0 == e.high),
+            (this.droppedLatency.textContent = `${e.dropped}`),
+            this.droppedLatency.classList.toggle("hidden", 0 == e.dropped),
+            (this.reconnects.textContent = `${e.reconnects}`),
+            this.reconnects.classList.toggle("hidden", 0 == e.reconnects));
+          const t = 10 * Math.ceil(ut.monitor.lastLatency / 10);
+          this.latency.textContent = `${t}ms`;
+        }
+      }
+      window.startSocketMonitor = () => {
+        const e = new rt();
+        return (e.start(), e);
+      };
+      var ot = s(13359),
+        at = s(90676);
+      class ct {
+        static handleAccountRedirection() {
+          var e, t;
+          if (!this.shouldPerformAnyRedirection()) return;
+          if (
+            !(null === (e = r._.userState) || void 0 === e
+              ? void 0
+              : e.isLoggedIn)
+          )
+            return void this.handleRedirectNewAccountsToMobileWeb();
+          const s =
+            null === (t = r._.userState) || void 0 === t
+              ? void 0
+              : t.colonistVersion;
+          null != s && s >= b.kK && this.handleRedirectNewAccountsToMobileWeb();
+        }
+        static isUserOnLandingPage() {
+          var e, t, s;
+          if (!ot.q.isUrlPathRoot()) return !1;
+          if (window.location.pathname.includes("/mobile")) return !1;
+          if (
+            null === (e = r._.userState) || void 0 === e ? void 0 : e.isLoggedIn
+          )
+            return !1;
+          return !(
+            (null !==
+              (s =
+                null === (t = r._.userState) || void 0 === t
+                  ? void 0
+                  : t.totalCompletedGameCount) && void 0 !== s
+              ? s
+              : 0) > 0
+          );
+        }
+        static shouldPerformAnyRedirection() {
+          if (!ne.N.isUserOnMobileWebBrowser()) return !1;
+          if (ne.N.isUserOnTabletDevice()) return !1;
+          if (this.isUserOnLandingPage()) {
+            return null != ot.q.getRoomIdFromUrl();
+          }
+          return !window.location.pathname.includes("/catan-rules");
+        }
+        static isOnMobilePath() {
+          return window.location.pathname.includes("/mobile");
+        }
+        static handleRedirectNewAccountsToMobileWeb() {
+          if (this.isOnMobilePath()) return;
+          const e =
+            ot.q.getLanguagePrefix() +
+            "/mobile" +
+            ot.q.getRelativeUrlWithoutLanguagePrefix();
+          window.location.href = this.removeTrailingSlash(e);
+        }
+        static removeTrailingSlash(e) {
+          return e.replace(/\/([?#])/, "$1");
+        }
+      }
+      let lt, dt, ut, ht, pt, mt, gt;
+      class ft {
+        async initializeSoundAndVersionController() {
+          (P.j.setVersionNumber(i.r.versionNumber),
+            ft.initializeAudio(),
+            await n.CA.initLogRocket(),
+            n.CA.initializeSessionRecorder(),
+            (lt = new C.f(
+              g.p.getVersionNo,
+              i.r.versionNumber,
+              g.p.setVersionNo,
+            )));
+        }
+        webGLCheck() {
+          k.webGLCheck();
+        }
+        initializeGameManager(e) {
+          dt = e;
+        }
+        initializeUIManagerEvents(e) {
+          gt = e;
+        }
+        static initializeSocket(e, t) {
+          ((ut = new nt(e)),
+            ut.controller.registerSessionEstablishedObserver(() => {
+              (null == t ? void 0 : t()) &&
+                dt.socketGameSend.notifyBackendClientAutoReconnected();
+            }),
+            ut.controller.registerSessionEstablishedObserver(() => {
+              null == ht || ht.removeSocketErrorBanners();
+            }));
+        }
+        initializeNotification(e) {
+          ht = e;
+        }
+        completeInitialization() {
+          (D.displayAllPendingNotifications(),
+            d.W.loadImages(),
+            dt.initializeSocket(ut.gameListener.gameState),
+            k.debugOptions(),
+            K.S.init(),
+            m.init());
+        }
+        static async initializeEntry() {
+          await o.aA.init();
+          if (!(await r._.init())) {
+            new f.y(
+              {
+                key: "strings:popups.errors.initializationError.title",
+              },
+              {
+                key: "strings:popups.errors.initializationError.initializationFailed",
+              },
+              () => window.location.reload(),
+              () => {},
+              !1,
+              {
+                showXButton: !1,
+                showXonHeader: !1,
+              },
+            ).show();
+            const e = 2147483647;
+            await (0, M.cb)(e);
+          }
+          (ct.handleAccountRedirection(),
+            r._.registerChangeListener(() => {
+              (U.init(),
+                O.init(),
+                F.init(),
+                H.init(),
+                this.eagerlyObtainTurnstilePreClearance());
+            }),
+            _.Zt.initProducts(i.r.discordSKUIds),
+            W.Z.initProducts(i.r.discordSKUIds),
+            A.AB.initProducts(i.r.discordSKUIds),
+            R.f.initProducts(i.r.discordSKUIds),
+            w.N.fetchShouldShowFeedbackForm(),
+            (pt = E.a.createTabCommunication()),
+            pt.onEvent(E.s.ReloadWebsite, () => window.location.reload()),
+            (0, at.Dc)());
+        }
+        initializeSentry() {
+          const e = "localhost" === window.location.hostname,
+            t = i.r.isUserOnMobileAppOrWeb
+              ? i.r.mobileAppSentryDSN
+              : i.r.frontendSentryDSN;
+          if (e || !t)
+            return void (window.onunhandledrejection = (e) => {
+              e.reason instanceof b.lc && e.preventDefault();
+            });
+          a.Ts({
+            dsn: t,
+            release: `Colonist:v${i.r.versionNumber}`,
+            integrations: [
+              c.dp(),
+              l.w({
+                maskAllText: !1,
+                blockAllMedia: !1,
+              }),
+            ],
+            tracesSampleRate: i.r.frontendSentryTraceSampleRate,
+            replaysSessionSampleRate: 5e-4,
+            replaysOnErrorSampleRate: 5e-4,
+            allowUrls: [window.location.hostname],
+            environment: i.r.frontendSentryEnvironment,
+            ignoreErrors: [/^AbortError$/],
+            beforeSend: (e, t) => {
+              var s, i, n, o, a, c;
+              return "Failed to start the audio device" ===
+                (e.message ||
+                  (null === (n = e.exception) ||
+                  void 0 === n ||
+                  null === (i = n.values) ||
+                  void 0 === i ||
+                  null === (s = i[0]) ||
+                  void 0 === s
+                    ? void 0
+                    : s.value))
+                ? null
+                : ((null !== (l = (c = e).user) && void 0 !== l) ||
+                    (c.user = {}),
+                  (null === (o = r._.userState) || void 0 === o
+                    ? void 0
+                    : o.id) && (e.user.id = r._.userState.id),
+                  (null === (a = r._.userState) || void 0 === a
+                    ? void 0
+                    : a.username) && (e.user.username = r._.userState.username),
+                  e);
+              var l;
+            },
+            beforeSendTransaction: function (e) {
+              if (null == e.spans) return null;
+              return (
+                (e.spans = e.spans.filter((e) => {
+                  if (null == e.timestamp) return !0;
+                  switch (e.origin) {
+                    case "auto.ui.browser.metrics":
+                      return e.timestamp - e.start_timestamp > 0.05;
+                    case "auto.resource.browser.metrics":
+                      return e.timestamp - e.start_timestamp > 0.25;
+                  }
+                  return !0;
+                })),
+                e
+              );
+            },
+          });
+        }
+        static sendPageVisitAnalyticEvent() {
+          const e = ot.q.getPathnameWithoutLanguagePrefix(),
+            t = {
+              type: Pe.k0.PageVisit,
+              category: Pe.eX.PageVisit,
+              stringValue: e,
+            };
+          n.CA.sendAnalyticEvent(t);
+        }
+        static eagerlyObtainTurnstilePreClearance() {
+          if (i.r.isUserOnDiscord) return;
+          null == r._.userState &&
+            !r._.isStale() &&
+            q.F.obtainPreClearanceCookie();
+        }
+        static initializeAudio() {
+          const e = g.p.getMasterVolume();
+          ge.A.init(e);
+        }
+        constructor() {
+          (this.initializeSentry(),
+            (mt = new G.S()),
+            (async function () {
+              if ("serviceWorker" in navigator)
+                try {
+                  const e = `${i.r.isUserOnDiscord ? "/.proxy/" : "/"}service-worker${i.r.isUserOnMobile ? "?mobile" : ""}`;
+                  await navigator.serviceWorker.register(e);
+                } catch (e) {
+                  (0, v.vV)("registerServiceWorker", [
+                    `Service Worker registration failed with error: '${e}'`,
+                  ]);
+                }
+            })(),
+            ft.sendPageVisitAnalyticEvent());
+        }
+      }
+    },
     66730: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/metropolis_science.a9d436136ce39a5ee1d4.svg";
     },
     66876: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => ss });
-      var i = s(42389),
+      s.d(t, {
+        S: () => ss,
+      });
+      var i = s(66681),
         n = s(35700),
         r = s(74710),
-        o = s(59137),
-        a = s(58935),
+        o = s(46235),
+        a = s(90361),
         c = s(18587),
         l = s(63778),
         d = s(4242),
@@ -24533,8 +26424,8 @@
         x = s(12908),
         U = s(90878),
         O = s(89173),
-        F = s(46771),
-        N = s(1714),
+        N = s(46771),
+        F = s(1714),
         H = s(48266),
         W = s(47609),
         K = s(51839),
@@ -24591,8 +26482,8 @@
       var Ue = s(64458);
       const Oe =
           s.p + "assets/knight_level2_active_blue.ca3204eb4c318025f966.svg",
-        Fe = s.p + "assets/knight_level3_active_blue.5e9d46ade18b568fbdfb.svg";
-      var Ne = s(61193);
+        Ne = s.p + "assets/knight_level3_active_blue.5e9d46ade18b568fbdfb.svg";
+      var Fe = s(61193);
       const He =
           s.p + "assets/knight_level2_inactive_blue.ff296956aa880c833971.svg",
         We =
@@ -24680,8 +26571,8 @@
       var Ut = s(56145);
       const Ot =
           s.p + "assets/knight_level2_active_white.cb4f2c63ad406b9bd089.svg",
-        Ft = s.p + "assets/knight_level3_active_white.38e5fde3a5d85e238aaa.svg";
-      var Nt = s(70248);
+        Nt = s.p + "assets/knight_level3_active_white.38e5fde3a5d85e238aaa.svg";
+      var Ft = s(70248);
       const Ht =
           s.p + "assets/knight_level2_inactive_white.d08e76a3871a9e6ff9e1.svg",
         Wt =
@@ -24846,7 +26737,9 @@
                 window.outerHeight +
                 "<br>outerWidth: " +
                 window.outerWidth,
-              interpolation: { escapeValue: !1 },
+              interpolation: {
+                escapeValue: !1,
+              },
             },
           };
         }
@@ -24893,8 +26786,8 @@
             ":icon_merchant_bronze:": os(x, "Merchant bronze"),
             ":icon_merchant_gold:": os(U, "Merchant gold"),
             ":icon_merchant_green:": os(O, "Merchant green"),
-            ":icon_merchant_mysticblue:": os(F, "Merchant mystic blue"),
-            ":icon_merchant_orange:": os(N, "Merchant orange"),
+            ":icon_merchant_mysticblue:": os(N, "Merchant mystic blue"),
+            ":icon_merchant_orange:": os(F, "Merchant orange"),
             ":icon_merchant_purple:": os(H, "Merchant purple"),
             ":icon_merchant_red:": os(W, "Merchant red"),
             ":icon_merchant_silver:": os(K, "Merchant silver"),
@@ -24955,8 +26848,8 @@
             ":knight_inactive_level3_black:": os(xe, "Knight"),
             ":knight_active_level1_blue:": os(Ue, "Knight"),
             ":knight_active_level2_blue:": os(Oe, "Knight"),
-            ":knight_active_level3_blue:": os(Fe, "Knight"),
-            ":knight_inactive_level1_blue:": os(Ne, "Knight"),
+            ":knight_active_level3_blue:": os(Ne, "Knight"),
+            ":knight_inactive_level1_blue:": os(Fe, "Knight"),
             ":knight_inactive_level2_blue:": os(He, "Knight"),
             ":knight_inactive_level3_blue:": os(We, "Knight"),
             ":knight_active_level1_bronze:": os(Ke, "Knight"),
@@ -25009,8 +26902,8 @@
             ":knight_inactive_level3_silver:": os(xt, "Knight"),
             ":knight_active_level1_white:": os(Ut, "Knight"),
             ":knight_active_level2_white:": os(Ot, "Knight"),
-            ":knight_active_level3_white:": os(Ft, "Knight"),
-            ":knight_inactive_level1_white:": os(Nt, "Knight"),
+            ":knight_active_level3_white:": os(Nt, "Knight"),
+            ":knight_inactive_level1_white:": os(Ft, "Knight"),
             ":knight_inactive_level2_white:": os(Ht, "Knight"),
             ":knight_inactive_level3_white:": os(Wt, "Knight"),
             ":knight_active_level1_pink:": os(Kt, "Knight"),
@@ -25085,7 +26978,12 @@
     },
     67431: (e, t, s) => {
       "use strict";
-      s.d(t, { $c: () => r, Kk: () => o, R0: () => n, fG: () => a });
+      s.d(t, {
+        $c: () => r,
+        Kk: () => o,
+        R0: () => n,
+        fG: () => a,
+      });
       var i = s(52609);
       function n(e) {
         const t = e.parent;
@@ -25113,7 +27011,9 @@
     },
     67707: (e, t, s) => {
       "use strict";
-      s.d(t, { E: () => i });
+      s.d(t, {
+        E: () => i,
+      });
       class i {
         static deserialize(e) {
           const t = new i();
@@ -25135,7 +27035,9 @@
     },
     68492: (e, t, s) => {
       "use strict";
-      s.d(t, { F: () => r });
+      s.d(t, {
+        F: () => r,
+      });
       var i = s(69508),
         n = s(41207);
       class r {
@@ -25161,6 +27063,12 @@
       "use strict";
       e.exports = s.p + "assets/ship_move_pink.7733fd547d80b308951e.svg";
     },
+    68905: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/fix_pixelated_fullscreen_popup_after.c42c0fd802a83056706b.png";
+    },
     69045: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/ab_gifting_christmas.61e50b4ba608edc73a5e.png";
@@ -25171,7 +27079,10 @@
     },
     69508: (e, t, s) => {
       "use strict";
-      s.d(t, { R: () => n, w: () => i });
+      s.d(t, {
+        R: () => n,
+        w: () => i,
+      });
       var i = (function (e) {
           return (
             (e[(e.DefaultError = 0)] = "DefaultError"),
@@ -25199,11 +27110,13 @@
     },
     69714: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => f });
+      s.d(t, {
+        Q: () => f,
+      });
       var i = s(19966),
         n = s(78046),
         r = s(76092),
-        o = s(42389),
+        o = s(66681),
         a = s(26658),
         c = s(98487),
         l = s(78311),
@@ -25252,7 +27165,9 @@
         }
         static async startShuffleBotGame() {
           await this.waitUntilGameCanBeStarted();
-          const e = { clientVersion: l.$m };
+          const e = {
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.ClickedStartShuffleBotGame, e);
         }
         static async clickedStartColonistRushBotGame() {
@@ -25281,12 +27196,19 @@
         }
         static inviteFriendToRoom(e, t) {
           if (!p.v.canUseOnlineFriendService()) return;
-          const s = { receiverUserId: e, roomId: t };
+          const s = {
+            receiverUserId: e,
+            roomId: t,
+          };
           this.sendGeneral(h.P7.InviteFriendToRoom, s);
         }
         static respondToFriendRoomInvite(e, t, s) {
           if (!p.v.canUseOnlineFriendService()) return;
-          const i = { roomId: e, accept: t, senderUserId: s };
+          const i = {
+            roomId: e,
+            accept: t,
+            senderUserId: s,
+          };
           this.sendGeneral(h.P7.RespondToFriendRoomInvite, i);
         }
         static getAllFriendRoomInvitesReceived() {
@@ -25326,7 +27248,10 @@
               i.CA.Category.Lobby,
               i.CA.Label.ClickedCreateRoom,
             ));
-          const t = { roomType: e, clientVersion: l.$m };
+          const t = {
+            roomType: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.ClickedCreateRoom, t);
         }
         static async clickedJoinRoom(e) {
@@ -25341,7 +27266,10 @@
               i.CA.Category.Lobby,
               i.CA.Label.ClickedJoinRoom,
             ));
-          const t = { gameId: e, clientVersion: l.$m };
+          const t = {
+            gameId: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.ClickedJoinRoom, t);
         }
         static async clickedSpectateGame(e) {
@@ -25350,13 +27278,19 @@
               i.CA.Category.Lobby,
               i.CA.Label.ClickedSpectate,
             ));
-          const t = { gameId: e, clientVersion: l.$m };
+          const t = {
+            gameId: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.ClickedSpectateGame, t);
         }
         static reconnectGame(e, t) {
           n.W.continueAfterAssetsLoad(() => {
             i.CA.sendGoogleAnalyticsEvent(i.CA.Category.Lobby, t);
-            const s = { gameId: e, clientVersion: l.$m };
+            const s = {
+              gameId: e,
+              clientVersion: l.$m,
+            };
             this.sendLobby(a.Dj.ReconnectGame, s);
           });
         }
@@ -25376,7 +27310,10 @@
             if (e instanceof l.lc) return void this.updateURLToRoom("");
             throw e;
           }
-          const t = { gameId: e, clientVersion: l.$m };
+          const t = {
+            gameId: e,
+            clientVersion: l.$m,
+          };
           this.sendLobby(a.Dj.AccessGameLink, t);
         }
         static startBeginnerMode(e) {
@@ -25389,7 +27326,10 @@
           this.sendLobby(a.Dj.ClickedStartBeginnerMode, t);
         }
         static start1v1BeginnerBotGame() {
-          const e = { clientVersion: l.$m, bots: [c.R1.BotEasy] };
+          const e = {
+            clientVersion: l.$m,
+            bots: [c.R1.BotEasy],
+          };
           this.sendLobby(a.Dj.Clicked1v1BeginnerBotGame, e);
         }
         static updateURLToRoom(e) {
@@ -25413,12 +27353,18 @@
         }
         static clickedJoinChannelRoomOrGame(e, t) {
           n.W.continueAfterAssetsLoad(() => {
-            const s = { channelId: e, roomType: t };
+            const s = {
+              channelId: e,
+              roomType: t,
+            };
             this.sendChannel(a.s4.ChannelJoinRoomOrGame, s);
           });
         }
         static sendLobby(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           o.sZ.controller.sender.sendToServerType(
             l.lo.LobbyAction,
             "lobby",
@@ -25427,7 +27373,10 @@
           );
         }
         static sendChannel(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           o.sZ.controller.sender.sendToServerType(
             l.lo.ChannelAction,
             "lobby",
@@ -25436,7 +27385,10 @@
           );
         }
         static sendGeneral(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           o.sZ.controller.sender.sendToServerType(
             l.lo.GeneralAction,
             "lobby",
@@ -25445,7 +27397,12 @@
           );
         }
         static sendAnalyticEvent(e, t, s, n) {
-          const r = { type: e, category: t, stringValue: s, floatValue: n };
+          const r = {
+            type: e,
+            category: t,
+            stringValue: s,
+            floatValue: n,
+          };
           i.CA.sendAnalyticEvent(r);
         }
         static async waitUntilGameCanBeStarted() {
@@ -25460,7 +27417,9 @@
     },
     70137: (e, t, s) => {
       "use strict";
-      s.d(t, { t: () => u });
+      s.d(t, {
+        t: () => u,
+      });
       var i = s(9029),
         n = s(13618),
         r = s(18587),
@@ -25476,7 +27435,9 @@
           ((0, i.zO)(s, a.am.GoogleIcon),
             (0, i.i5)(s, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "google" },
+              options: {
+                context: "google",
+              },
             }));
           const r = (0, i.Le)(
             t,
@@ -25486,13 +27447,17 @@
           ((0, i.zO)(r, a.am.DiscordIcon),
             (0, i.i5)(r, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "discord" },
+              options: {
+                context: "discord",
+              },
             }));
           const o = (0, i.Le)(t, "popup-signup-btn popup-signup-apple-btn", "");
           ((0, i.zO)(o, a.am.AppleIcon),
             (0, i.i5)(o, "", {
               key: "strings:popups.login.loginWith",
-              options: { context: "apple" },
+              options: {
+                context: "apple",
+              },
             }));
           const u = (0, i.Le)(
               t,
@@ -25532,8 +27497,12 @@
         }
         constructor(e) {
           (super(
-            { key: "strings:game.endGame.signupPopup.title" },
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:game.endGame.signupPopup.title",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             () => {},
             () => {},
             !0,
@@ -25547,7 +27516,9 @@
             t,
             {
               key: "strings:game.endGame.signupPopup.description",
-              options: { playedGameCount: e },
+              options: {
+                playedGameCount: e,
+              },
             },
             "",
           ),
@@ -25562,17 +27533,25 @@
       e.exports =
         s.p + "assets/knight_level1_inactive_white.6260c1d303ee850b0d41.svg";
     },
+    70653: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/message-appears-without-username-avatar-after.c383a890d5dad602a32e.png";
+    },
     70746: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/sfx_your_turn.a14bdbd78995b7bec794.mp3";
     },
     70925: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "locales/en_strings.099557eff3f04de27759.json";
+      e.exports = s.p + "locales/en_strings.7b10289c983fc99a0f5e.json";
     },
     70970: (e, t, s) => {
       "use strict";
-      s.d(t, { F: () => n });
+      s.d(t, {
+        F: () => n,
+      });
       var i = s(30506);
       class n {
         static async generateClearanceCookie() {
@@ -25660,13 +27639,26 @@
         s.p +
         "assets/icon_beginner_hint_initial_placement.311abf53cacdcbc109a8.svg";
     },
+    71130: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/shifting_content_after.310355d0d7db08efd3c5.png";
+    },
+    71181: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/update_payment_successful_popup_before.98edeae0591574b23e95.png";
+    },
     71318: (e, t, s) => {
       "use strict";
-      s.d(t, { W: () => C });
+      s.d(t, {
+        W: () => C,
+      });
       var i = s(54801),
         n = s(67908),
         r = s(85801),
-        o = s(42389),
+        o = s(66681),
         a = s(72589),
         c = s(76092),
         l = s(87220),
@@ -25700,7 +27692,10 @@
                       o.developmentCardsUsed[
                         o.developmentCardsUsed.length - 1
                       ] == d.O3.Monopoly &&
-                      t.push({ actionIndex: n, type: "monopolyPlayed" });
+                      t.push({
+                        actionIndex: n,
+                        type: "monopolyPlayed",
+                      });
                   }
                 }
                 return t;
@@ -25728,8 +27723,16 @@
                       }
                   }
                 }
-                null != s && t.push({ actionIndex: s, type: "largestArmy" });
-                null != i && t.push({ actionIndex: i, type: "longestRoad" });
+                null != s &&
+                  t.push({
+                    actionIndex: s,
+                    type: "largestArmy",
+                  });
+                null != i &&
+                  t.push({
+                    actionIndex: i,
+                    type: "longestRoad",
+                  });
                 return t;
               })(e),
             )),
@@ -25744,7 +27747,9 @@
         b = s(74710);
       function v(e) {
         return (0, b.dN)(
-          { key: "strings:popups.errors.replay.errorAndMembershipPrompt" },
+          {
+            key: "strings:popups.errors.replay.errorAndMembershipPrompt",
+          },
           {
             errorMessage: e,
             membershipPrompt: {
@@ -25755,7 +27760,9 @@
       }
       function S(e) {
         return (0, b.dN)(
-          { key: "strings:popups.errors.replay.errorAndMembershipPrompt" },
+          {
+            key: "strings:popups.errors.replay.errorAndMembershipPrompt",
+          },
           {
             errorMessage: e,
             membershipPrompt: {
@@ -25768,8 +27775,12 @@
         class t extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.invalidPlayerColor" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.invalidPlayerColor",
+              },
               y.R.BadRequest,
             );
           }
@@ -25778,8 +27789,12 @@
         class s extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.invalidGameId" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.invalidGameId",
+              },
               y.R.BadRequest,
             );
           }
@@ -25788,8 +27803,12 @@
         class i extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.invalidUrlSlug" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.invalidUrlSlug",
+              },
               y.R.BadRequest,
             );
           }
@@ -25798,8 +27817,12 @@
         class n extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.gameNotFound" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.gameNotFound",
+              },
               y.R.BadRequest,
             );
           }
@@ -25808,8 +27831,12 @@
         class r extends f.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              { key: "strings:popups.errors.replay.userNotInGame" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              {
+                key: "strings:popups.errors.replay.userNotInGame",
+              },
               y.R.BadRequest,
             );
           }
@@ -25818,7 +27845,9 @@
         class o extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToCreateReplayLink",
               }),
@@ -25830,7 +27859,9 @@
         class a extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToWatchOwnReplay",
               }),
@@ -25842,7 +27873,9 @@
         class c extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToWatchAnotherPlayerReplay",
               }),
@@ -25854,7 +27887,9 @@
         class l extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.noMembershipTryingToChangeReplayPerspective",
               }),
@@ -25866,7 +27901,9 @@
         class d extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               v({
                 key: "strings:popups.errors.replay.invalidMembershipTryingToWatchAnotherPlayerReplay",
               }),
@@ -25878,10 +27915,14 @@
         class u extends f.je {
           constructor(e) {
             super(
-              { key: "strings:popups.errors.replay.title" },
+              {
+                key: "strings:popups.errors.replay.title",
+              },
               S({
                 key: "strings:popups.errors.replay.plusMembershipLimitReach",
-                options: { limit: e },
+                options: {
+                  limit: e,
+                },
               }),
               y.R.BadRequest,
             );
@@ -25891,8 +27932,12 @@
         class h extends f.je {
           constructor() {
             super(
-              { key: "strings:popups.errors.replay.title" },
-              S({ key: "strings:popups.errors.replay.invalidMembership" }),
+              {
+                key: "strings:popups.errors.replay.title",
+              },
+              S({
+                key: "strings:popups.errors.replay.invalidMembership",
+              }),
               y.R.BadRequest,
             );
           }
@@ -26135,7 +28180,10 @@
           const n = (0, i.mg)(s);
           (delete n.gameLogState,
             this.socketActionController.gameStateUpdated(
-              { diff: n, timeLeftInState: 0 },
+              {
+                diff: n,
+                timeLeftInState: 0,
+              },
               t,
             ));
         }
@@ -26149,7 +28197,10 @@
           const n = (0, i.mg)(s);
           (delete n.gameLogState,
             this.socketActionController.gameStateUpdated(
-              { diff: n, timeLeftInState: 0 },
+              {
+                diff: n,
+                timeLeftInState: 0,
+              },
               t,
             ));
         }
@@ -26288,6 +28339,18 @@
       e.exports =
         s.p + "assets/ship_silver_north_west.9c4a8b26d1721758a8b2.svg";
     },
+    72179: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/dang-update-payment-successful-popup-before.98edeae0591574b23e95.png";
+    },
+    72236: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/update_payment_successful_popup_after.568e142b78a0465d88a3.png";
+    },
     72248: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/map_jellyfish_preview.11e41b21ff189e73e808.png";
@@ -26308,7 +28371,9 @@
     72589: (e, t, s) => {
       "use strict";
       var i;
-      (s.d(t, { c: () => i }),
+      (s.d(t, {
+        c: () => i,
+      }),
         (function (e) {
           function t(e, t, s) {
             return Math.max(Math.min(e, s), t);
@@ -26354,7 +28419,9 @@
         class t extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.waitingForAdblockState",
               },
@@ -26366,8 +28433,12 @@
         class s extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.invalidSeason" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.invalidSeason",
+              },
               r.R.BadRequest,
             );
           }
@@ -26376,8 +28447,12 @@
         class i extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.betaSeason" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.betaSeason",
+              },
               r.R.ServiceUnavailable,
             );
           }
@@ -26386,7 +28461,9 @@
         class a extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.unableToEnterRankedCitiesAndKnights",
               },
@@ -26398,7 +28475,9 @@
         class c extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.noAccessToCitiesAndKnights",
               },
@@ -26410,8 +28489,12 @@
         class l extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.noActiveSeason" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.noActiveSeason",
+              },
               r.R.ServiceUnavailable,
             );
           }
@@ -26420,8 +28503,12 @@
         class d extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.noSeasonAnnounced" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.noSeasonAnnounced",
+              },
               r.R.ServiceUnavailable,
             );
           }
@@ -26430,7 +28517,9 @@
         class u extends o.Ak {
           constructor(e) {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
               {
                 key: "strings:popups.errors.rankedError.nextSeasonNotStarted",
                 options: {
@@ -26445,8 +28534,12 @@
         class h extends o.Ak {
           constructor() {
             super(
-              { key: "strings:popups.errors.rankedError.title" },
-              { key: "strings:popups.errors.rankedError.logInForRanked" },
+              {
+                key: "strings:popups.errors.rankedError.title",
+              },
+              {
+                key: "strings:popups.errors.rankedError.logInForRanked",
+              },
               r.R.BadRequest,
             );
           }
@@ -26531,7 +28624,9 @@
     },
     73264: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => v });
+      s.d(t, {
+        O: () => v,
+      });
       var i = s(9029),
         n = s(50482),
         r = s(19966),
@@ -26558,9 +28653,14 @@
           return this.membershipProduct.billedAnnually
             ? {
                 key: "strings:storePage.sections.membership.billing.annually",
-                options: { context: t, amount: s },
+                options: {
+                  context: t,
+                  amount: s,
+                },
               }
-            : { key: "strings:storePage.sections.membership.billing.monthly" };
+            : {
+                key: "strings:storePage.sections.membership.billing.monthly",
+              };
         }
         createDefaultAction() {
           (0, i.G0)(this.productDiv, () => {
@@ -26596,7 +28696,10 @@
             this.priceDiv,
             {
               key: "strings:storePage.sections.membership.billing.paidMonthly",
-              options: { context: "strikethrough", amount: `${e}` },
+              options: {
+                context: "strikethrough",
+                amount: `${e}`,
+              },
             },
             "strikethrough-price",
             "",
@@ -26769,7 +28872,9 @@
         static createManageSubscriptionOnDiscordPopup() {
           const e = v.getManageSubscriptionOnDiscordPopupBody();
           h.r.createSimplePopup(
-            { key: "strings:storePage.manageMembership.title" },
+            {
+              key: "strings:storePage.manageMembership.title",
+            },
             e,
           );
         }
@@ -26783,11 +28888,15 @@
           return n.Zt.isAnnualMembership(t.type)
             ? {
                 key: "strings:storePage.manageMembership.body",
-                options: { context: "waitForExpiration" },
+                options: {
+                  context: "waitForExpiration",
+                },
               }
             : {
                 key: "strings:storePage.manageMembership.body",
-                options: { context: "updateOnDiscord" },
+                options: {
+                  context: "updateOnDiscord",
+                },
               };
         }
         static async cancelGiftedMembership() {
@@ -26828,7 +28937,11 @@
             this.priceDiv,
             {
               key: "strings:storePage.sections.membership.billing.paidMonthly",
-              options: { context: "biggerPrice", amount: d, currency: h },
+              options: {
+                context: "biggerPrice",
+                amount: d,
+                currency: h,
+              },
             },
             "",
             "",
@@ -26836,7 +28949,9 @@
           (s.billedAnnually && this.showStrikeThroughPrice(),
             (this.disclaimerText = (0, i.Wr)(
               this.productDiv,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "store_page_membership_disclaimer",
               "",
             )));
@@ -26853,7 +28968,9 @@
             )),
             (this.subscribeButtonText = (0, i.Wr)(
               this.subscribeButton,
-              { key: "strings:storePage.sections.membership.action.subscribe" },
+              {
+                key: "strings:storePage.sections.membership.action.subscribe",
+              },
               "",
               "",
             )),
@@ -26926,15 +29043,19 @@
     },
     74589: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => c });
+      s.d(t, {
+        i: () => c,
+      });
       var i = s(98487),
-        n = s(42389),
+        n = s(66681),
         r = s(9029);
       class o {
         setMaxPlayerCount(e, t) {
           (0, r.RH)(this.maxPlayersInput, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: `${e}/${t}` },
+            options: {
+              value: `${e}/${t}`,
+            },
           });
         }
         constructor(e) {
@@ -27084,8 +29205,13 @@
         }
         static addReturnObjectOption(e) {
           return null == e
-            ? { returnObjects: !0 }
-            : { ...e, returnObjects: !0 };
+            ? {
+                returnObjects: !0,
+              }
+            : {
+                ...e,
+                returnObjects: !0,
+              };
         }
         constructor(e) {
           this.i18n = e;
@@ -27163,6 +29289,11 @@
           }));
       })(a || (a = {}));
     },
+    74862: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/bot_kick_confirmation_before.34d4d24e14a07a5395e8.png";
+    },
     75279: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/ship_red_north_west.feef384f11209b09f273.svg";
@@ -27171,9 +29302,21 @@
       "use strict";
       e.exports = s.p + "assets/knight_active_level1.ce84e04a4018983aa354.svg";
     },
+    75466: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/message-appears-without-username-avatar-before.47b64cfeac26eb479424.png";
+    },
+    75577: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/new_badge_after.fda55e5f7d7b9d1a535b.png";
+    },
     75589: (e, t, s) => {
       "use strict";
-      s.d(t, { G: () => r });
+      s.d(t, {
+        G: () => r,
+      });
       var i = s(81888),
         n = s(78311);
       class r {
@@ -27190,15 +29333,23 @@
           switch (e) {
             case n.Qb.EliteMonthly:
             case n.Qb.EliteYearly:
-              return { key: "strings:storePage.membership.title.elite" };
+              return {
+                key: "strings:storePage.membership.title.elite",
+              };
             case n.Qb.PlusMonthly:
             case n.Qb.PlusYearly:
-              return { key: "strings:storePage.membership.title.plus" };
+              return {
+                key: "strings:storePage.membership.title.plus",
+              };
             case n.Qb.PremiumMonthly:
             case n.Qb.PremiumYearly:
-              return { key: "strings:storePage.membership.title.premium" };
+              return {
+                key: "strings:storePage.membership.title.premium",
+              };
             case n.Qb.Holiday2023AllAccessPass:
-              return { key: "strings:colonistCommon.utils.bug" };
+              return {
+                key: "strings:colonistCommon.utils.bug",
+              };
           }
         }
       }
@@ -27220,7 +29371,10 @@
     },
     75900: (e, t, s) => {
       "use strict";
-      s.d(t, { p: () => P, h: () => _ });
+      s.d(t, {
+        p: () => P,
+        h: () => _,
+      });
       var i = s(95176),
         n = s(9029),
         r = s(53015),
@@ -27228,7 +29382,7 @@
         a = s(19966),
         c = s(60144),
         l = s(19733),
-        d = s(42389),
+        d = s(66681),
         u = s(18514),
         h = s(74710),
         p = s(81888),
@@ -27264,7 +29418,9 @@
                     {
                       key: "strings:homePage.header.avatarSelector.avatarChanged",
                     },
-                    { icon: i.name },
+                    {
+                      icon: i.name,
+                    },
                   );
                   (null === d.OV ||
                     void 0 === d.OV ||
@@ -27274,7 +29430,9 @@
               : (0, n.G0)(o, () => {
                   const e = {
                     key: "strings:homePage.header.storePurchaseIconPrompt",
-                    options: { iconName: u.a7.t(i.name.key, i.name.options) },
+                    options: {
+                      iconName: u.a7.t(i.name.key, i.name.options),
+                    },
                   };
                   l.r.create(
                     {
@@ -27298,7 +29456,9 @@
           (0, n.cE)(
             s,
             f.avatarStoreLink,
-            { key: "strings:homePage.header.avatarSelector.getMoreAvatars" },
+            {
+              key: "strings:homePage.header.avatarSelector.getMoreAvatars",
+            },
             "",
             "",
             !0,
@@ -27376,7 +29536,9 @@
               {
                 key: "strings:homePage.header.defaultColorSelector.colorChanged",
               },
-              { color: i },
+              {
+                color: i,
+              },
             ),
             r = v.j.getPlayerColorBuildings(e).settlement;
           d.OV.showNotification(r, n);
@@ -27416,7 +29578,9 @@
         }
         static displayColorNotOwnedPopup(e) {
           const t = (0, h.dN)(
-            { key: "strings:homePage.header.storePurchaseColorPrompt" },
+            {
+              key: "strings:homePage.header.storePurchaseColorPrompt",
+            },
             {
               color: {
                 key: `strings:colonistCommon.playerColors.${b.h4.getEnumKey(e, k.DS)}`,
@@ -27500,7 +29664,11 @@
             void 0,
             void 0,
             () =>
-              new _({ ...e, tab: this.tab, selectedColor: this.selectedColor }),
+              new _({
+                ...e,
+                tab: this.tab,
+                selectedColor: this.selectedColor,
+              }),
           ).show();
         }
         createUsernameEditor(e) {
@@ -27525,7 +29693,9 @@
               a,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: r },
+                options: {
+                  value: r,
+                },
               },
               "edit-profile-username",
               void 0,
@@ -27549,7 +29719,9 @@
               this.toggleButtonAvatar,
               {
                 key: "strings:storePage.sections.avatar.title",
-                options: { context: "one" },
+                options: {
+                  context: "one",
+                },
               },
               "",
             ),
@@ -27562,7 +29734,9 @@
               this.toggleButtonColor,
               {
                 key: "strings:storePage.sections.color.title",
-                options: { context: "one" },
+                options: {
+                  context: "one",
+                },
               },
               "",
             ),
@@ -27593,12 +29767,18 @@
         constructor(e, t) {
           var s;
           (super(
-            null != t ? t : { key: "strings:homePage.header.editProfile" },
+            null != t
+              ? t
+              : {
+                  key: "strings:homePage.header.editProfile",
+                },
             void 0,
             () => {},
             () => {},
             !0,
-            { showXonHeader: !0 },
+            {
+              showXonHeader: !0,
+            },
           ),
             (this.tab = 0),
             (this.editUsernameAction = () => this.createUsernameController(e)),
@@ -27625,7 +29805,6 @@
       s.d(t, {
         Jd: () => o,
         Td: () => m,
-        _$: () => v,
         d5: () => y,
         dN: () => f,
         e3: () => l,
@@ -28430,15 +30609,6 @@
             (e[(e.GuildForum = 15)] = "GuildForum"),
             e
           );
-        })({}),
-        v = (function (e) {
-          return (
-            (e[(e.ABTestRedeemFreeAvatarPopupTriggered = 0)] =
-              "ABTestRedeemFreeAvatarPopupTriggered"),
-            (e[(e.ABTestRedeemFreeAvatarButtonClicked = 1)] =
-              "ABTestRedeemFreeAvatarButtonClicked"),
-            e
-          );
         })({});
     },
     76273: (e, t, s) => {
@@ -28447,7 +30617,9 @@
     },
     76389: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => P });
+      s.d(t, {
+        N: () => P,
+      });
       var i = s(655),
         n = s(32398),
         r = s(19966),
@@ -28563,7 +30735,9 @@
             e > 0 &&
               (0, o.i5)(t, "", {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: ` (${e})` },
+                options: {
+                  value: ` (${e})`,
+                },
               }));
         }
         highlightTab(e) {
@@ -28576,15 +30750,21 @@
         static getHeaderText(e) {
           switch (e.id) {
             case "friendspage_friends_tab":
-              return { key: "strings:profilePage.friends.title" };
+              return {
+                key: "strings:profilePage.friends.title",
+              };
             case "friendspage_friendrequests_tab":
-              return { key: "strings:profilePage.friends.tabs.requests.title" };
+              return {
+                key: "strings:profilePage.friends.tabs.requests.title",
+              };
             case "friendspage_requestssent_tab":
               return {
                 key: "strings:profilePage.friends.tabs.requestsSent.title",
               };
             default:
-              return { key: "strings:colonistCommon.utils.emptyString" };
+              return {
+                key: "strings:colonistCommon.utils.emptyString",
+              };
           }
         }
         constructor(e) {
@@ -28700,7 +30880,12 @@
             this.userFriendsData.friendRequestsReceived.splice(s, 1),
             t)
           ) {
-            const t = { username: e, onlineStatus: { isOnline: !1 } };
+            const t = {
+              username: e,
+              onlineStatus: {
+                isOnline: !1,
+              },
+            };
             (this.createFriendTableRow(t),
               this.userFriendsData.friends.push(t));
           }
@@ -28711,7 +30896,9 @@
             ));
         }
         async cancelFriendRequestAction(e) {
-          const t = { username: e };
+          const t = {
+            username: e,
+          };
           if (
             null ==
             (await i.m.postRequestHandler(
@@ -28738,7 +30925,9 @@
           (0, o.G0)(s, () => k.xp.init(e.username));
           ((0, o.Cr)(s, "underline_on_hover ellipsis", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e.username },
+            options: {
+              value: e.username,
+            },
           }),
             (0, o.Cr)(s, void 0, C.getStatusText(t)),
             (0, o.Cr)(
@@ -28746,7 +30935,9 @@
               void 0,
               (function (e) {
                 if (null == e)
-                  return { key: "strings:colonistCommon.utils.emptyString" };
+                  return {
+                    key: "strings:colonistCommon.utils.emptyString",
+                  };
                 switch (e) {
                   case "Playing Cities & Knights 4P":
                     return {
@@ -28822,7 +31013,9 @@
           (0, o.G0)(t, () => k.xp.init(e));
           (0, o.Cr)(t, "underline_on_hover", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e },
+            options: {
+              value: e,
+            },
           });
           const s = (0, o.Cr)(t),
             i = (0, o.Le)(s, "friendspage_friends_action_buttons_container"),
@@ -28854,7 +31047,9 @@
           ((0, o.G0)(t, () => k.xp.init(e)),
             (0, o.Cr)(t, "underline_on_hover", {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: e },
+              options: {
+                value: e,
+              },
             }));
           const s = (0, o.Cr)(t),
             i = (0, o.Le)(s, "friendspage_friends_action_buttons_container"),
@@ -28872,9 +31067,13 @@
         }
         static getStatusText(e) {
           if (e.isOnline)
-            return { key: "strings:profilePage.friends.status.online" };
+            return {
+              key: "strings:profilePage.friends.status.online",
+            };
           if (!e.lastOnlineDate)
-            return { key: "strings:profilePage.friends.status.offline" };
+            return {
+              key: "strings:profilePage.friends.status.offline",
+            };
           const t = f.Re.getDaysHoursMinutesBetweenDates(
             new Date(),
             new Date(e.lastOnlineDate),
@@ -28933,7 +31132,10 @@
         static getLastOnlineText(e, t) {
           return {
             key: "strings:profilePage.friends.status.lastOnline",
-            options: { context: t, count: -e },
+            options: {
+              context: t,
+              count: -e,
+            },
           };
         }
         constructor(e) {
@@ -28966,7 +31168,9 @@
               ((0, o.cE)(
                 s,
                 "",
-                { key: "strings:profilePage.friends.loginToAddFriends" },
+                {
+                  key: "strings:profilePage.friends.loginToAddFriends",
+                },
                 "",
               ).onpointerdown = (e) => {
                 (e.preventDefault(), new u.L());
@@ -29055,14 +31259,18 @@
               t.push({
                 id: (0, k.F9)("profile_dropdown_gift_membership", this.isPopup),
                 class: "",
-                text: { key: "strings:storePage.sendGift" },
+                text: {
+                  key: "strings:storePage.sendGift",
+                },
                 action: () => this.sendGiftDropdownAction(),
                 icon: h.am.StoreGiftMembershipDark,
               }),
             t.push({
               id: (0, k.F9)("profile_dropdown_report", this.isPopup),
               class: "component-dropdown-red",
-              text: { key: "strings:game.endGame.report" },
+              text: {
+                key: "strings:game.endGame.report",
+              },
               action: () => {
                 this.reportProfileDropdownAction();
               },
@@ -29135,7 +31343,9 @@
           l.S.createReportPopup(
             this.username,
             (e, t) => {
-              const s = { reason: t };
+              const s = {
+                reason: t,
+              };
               i.m.postRequestHandler(
                 n.l.apiReportPlayer(e),
                 void 0,
@@ -29143,7 +31353,9 @@
                 "application/json",
               );
             },
-            { key: "strings:popups.reportPopup.success" },
+            {
+              key: "strings:popups.reportPopup.success",
+            },
           );
         }
         constructor(e, t, s, i = !1) {
@@ -29157,7 +31369,9 @@
               friend: {
                 id: (0, k.F9)("profile_dropdown_removeFriend", this.isPopup),
                 class: "component-dropdown-red",
-                text: { key: "strings:profilePage.friends.removeFriend.title" },
+                text: {
+                  key: "strings:profilePage.friends.removeFriend.title",
+                },
                 action: () => {
                   this.showRemoveFriendPopup();
                 },
@@ -29165,7 +31379,9 @@
               notFriend: {
                 id: (0, k.F9)("profile_dropdown_add_friend", this.isPopup),
                 class: "",
-                text: { key: "strings:game.playerOptionsPopup.addFriend" },
+                text: {
+                  key: "strings:game.playerOptionsPopup.addFriend",
+                },
                 action: () => {
                   this.addFriendDropdownAction();
                 },
@@ -29173,7 +31389,9 @@
               pending: {
                 id: (0, k.F9)("profile_dropdown_pending", this.isPopup),
                 class: "component-dropdown-disabled",
-                text: { key: "strings:profilePage.friends.friendRequestSent" },
+                text: {
+                  key: "strings:profilePage.friends.friendRequestSent",
+                },
               },
             }),
             this.init());
@@ -29182,7 +31400,9 @@
     },
     76714: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => n });
+      s.d(t, {
+        c: () => n,
+      });
       var i = s(30506);
       class n {
         getCurrentSeasonTiming(e) {
@@ -29231,9 +31451,11 @@
     },
     76749: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => m });
+      s.d(t, {
+        H: () => m,
+      });
       var i = s(9029),
-        n = s(42389),
+        n = s(66681),
         r = s(19733),
         o = s(19966),
         a = s(41931),
@@ -29275,10 +31497,17 @@
               key: "strings:colonistCommon.utils.#buffer",
               options: {
                 value: `<div class='room-map-preview-grid'><center><img src='${d}' alt='${e}' style='width: 70%'></center>`,
-                interpolation: { escapeValue: !1 },
+                interpolation: {
+                  escapeValue: !1,
+                },
               },
             };
-          r.r.createSimplePopup({ key: "strings:roomPage.turnTimers" }, t);
+          r.r.createSimplePopup(
+            {
+              key: "strings:roomPage.turnTimers",
+            },
+            t,
+          );
         }
         updateOptions(e) {
           const t = u.qq.getModeDataForMode(e.gameSetting.modeSetting);
@@ -29307,7 +31536,9 @@
               null != t
                 ? p.mt.getSpeedSettingText(t).key
                 : "strings:colonistCommon.utils.bug";
-          (0, i.RH)(this.view.speedInput, { key: s });
+          (0, i.RH)(this.view.speedInput, {
+            key: s,
+          });
         }
         update(e) {
           (this.view.updateOptions(e),
@@ -29381,6 +31612,18 @@
       "use strict";
       e.exports = s.p + "assets/sfx_knight_equip.b4884adc22ad2f5ac252.mp3";
     },
+    77247: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/dang-fix-pixelated-fullscreen-popup-image-after.ff8b0de1fadee79c2fde.png";
+    },
+    77422: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/dang-increase-end-game-size-before.813acdf85452c8f84501.png";
+    },
     77434: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/knight_move_silver.a940ecbc949dcbb9f18c.svg";
@@ -29393,7 +31636,9 @@
     },
     77885: (e, t, s) => {
       "use strict";
-      s.d(t, { d: () => u });
+      s.d(t, {
+        d: () => u,
+      });
       var i = s(31166),
         n = s(9029),
         r = s(18587),
@@ -29406,7 +31651,9 @@
         setCoins(e) {
           (0, n.RH)(this.userCoinsDiv, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: e },
+            options: {
+              value: e,
+            },
           });
         }
         initCoinClick() {
@@ -29452,7 +31699,9 @@
     },
     78018: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => h });
+      s.d(t, {
+        c: () => h,
+      });
       var i = s(73264),
         n = s(50482),
         r = s(9029),
@@ -29469,14 +31718,18 @@
           (super(e, t, m, void 0, h),
             (0, r.RH)(this.priceDiv, {
               key: p(m.billedAnnually),
-              options: { count: s.periods },
+              options: {
+                count: s.periods,
+              },
             }));
           const g = l.Re.addYears(l.Re.toDate(s.giftedAt), d.Z),
             f = l.Re.formatDateDistance(new Date(), g),
             y = u.a7.t(f.key, f.options);
           ((0, r.RH)(this.disclaimerText, {
             key: "strings:storePage.sections.membership.giftWithExpiry",
-            options: { expiry: y },
+            options: {
+              expiry: y,
+            },
           }),
             (0, r.RH)(this.subscribeButtonText, {
               key: "strings:storePage.sections.membership.action.activate",
@@ -30173,18 +32426,78 @@
     },
     78347: (e, t, s) => {
       "use strict";
-      s.d(t, { H: () => r });
+      s.d(t, {
+        H: () => r,
+      });
       var i = s(9029),
         n = s(95176);
       class r extends n.y {
+        createLoadingSpinner() {
+          ((this.loadingContainer = (0, i.Le)(
+            this.body,
+            "popup-patch-note-image-loading",
+            "",
+          )),
+            this.loadingContainer.setAttribute("role", "status"),
+            this.loadingContainer.setAttribute("aria-live", "polite"),
+            this.loadingContainer.setAttribute("aria-label", "Loading image"));
+          const e = (0, i.Le)(this.loadingContainer, "loading-spinner", "");
+          (e.setAttribute("role", "img"),
+            e.setAttribute("aria-label", "Loading spinner"));
+        }
         async loadImage(e) {
-          const t = (await s(44626)(`./${e}`)).default,
-            n = r.getAltText(e);
-          ((0, i.WL)(this.body, t, {
-            key: "strings:colonistCommon.utils.#buffer",
-            options: { value: n },
-          }),
-            this.show());
+          try {
+            let t;
+            if (e.startsWith("http")) t = e;
+            else {
+              const i = await s(88341)(`./patch_notes${e}`);
+              t = i.default;
+            }
+            const n = r.getAltText(e),
+              o = document.createElement("IMG");
+            o.alt = n;
+            let a = !1,
+              c = !1;
+            if (
+              (await new Promise((e) => {
+                const s = () => {
+                  c || ((c = !0), e());
+                };
+                ((o.onload = () => {
+                  ((a = !0), s());
+                }),
+                  (o.onerror = () => {
+                    s();
+                  }),
+                  (o.src = t),
+                  setTimeout(() => {
+                    !c && o.complete && o.naturalWidth > 0 && ((a = !0), s());
+                  }, 0));
+              }),
+              this.loadingContainer &&
+                (this.body.removeChild(this.loadingContainer),
+                (this.loadingContainer = null)),
+              !a)
+            ) {
+              const e = (0, i.i5)(this.body, "popup-patch-note-image-error", {
+                key: "strings:popups.patchNote.imageFailedToLoad",
+              });
+              return (
+                e.setAttribute("role", "alert"),
+                void e.setAttribute("aria-live", "assertive")
+              );
+            }
+            this.body.appendChild(o);
+          } catch (e) {
+            this.loadingContainer &&
+              (this.body.removeChild(this.loadingContainer),
+              (this.loadingContainer = null));
+            const t = (0, i.i5)(this.body, "popup-patch-note-image-error", {
+              key: "strings:popups.patchNote.imageFailedToLoad",
+            });
+            (t.setAttribute("role", "alert"),
+              t.setAttribute("aria-live", "assertive"));
+          }
         }
         static getAltText(e) {
           return e
@@ -30195,20 +32508,27 @@
         constructor(e, t) {
           (super(
             e,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            void 0,
             () => {},
             () => {},
             !0,
-            { showXButton: !1 },
+            {
+              showXButton: !1,
+            },
           ),
+            (this.loadingContainer = null),
             this.container.classList.add("popup-patch-note-image"),
+            this.createLoadingSpinner(),
+            this.show(),
             this.loadImage(t));
         }
       }
     },
     78491: (e, t, s) => {
       "use strict";
-      s.d(t, { V: () => r });
+      s.d(t, {
+        V: () => r,
+      });
       var i = s(9029),
         n = s(35742);
       class r extends n.u {
@@ -30225,7 +32545,9 @@
     },
     78524: (e, t, s) => {
       "use strict";
-      s.d(t, { Z: () => r });
+      s.d(t, {
+        Z: () => r,
+      });
       var i = s(78311),
         n = s(50482);
       class r extends n.Zt {
@@ -30237,7 +32559,9 @@
             type: i.Qb.PlusMonthly,
             price: 899,
             discordSKUId: e.giftMembershipPlus,
-            membershipTitle: { key: "strings:storePage.membership.title.plus" },
+            membershipTitle: {
+              key: "strings:storePage.membership.title.plus",
+            },
             membershipColor: "membership_type1",
             lobbyImage: i.am.StoreMembershipPlus,
             perks: [new n.vN(), new n.WM(), new n.Io()],
@@ -30297,7 +32621,9 @@
             price: 8388,
             discordSKUId: e.giftMembershipPlusYearly,
             mobileIAPSKUId: n.a8.PlusYearly,
-            membershipTitle: { key: "strings:storePage.membership.title.plus" },
+            membershipTitle: {
+              key: "strings:storePage.membership.title.plus",
+            },
             membershipColor: "membership_type1",
             lobbyImage: i.am.StoreMembershipPlus,
             perks: [new n.vN(), new n.WM(), new n.Io()],
@@ -30357,7 +32683,9 @@
     },
     78537: (e, t, s) => {
       "use strict";
-      s.d(t, { q: () => o });
+      s.d(t, {
+        q: () => o,
+      });
       var i = s(45973),
         n = s(65015),
         r = s(9029);
@@ -30428,10 +32756,12 @@
     },
     78876: (e, t, s) => {
       "use strict";
-      s.d(t, { l: () => o });
+      s.d(t, {
+        l: () => o,
+      });
       var i = s(83633),
         n = s(41931),
-        r = s(42389);
+        r = s(66681);
       class o {
         static initRoomSettingFromLocalStorage(e) {
           const t = o.getLocalStorageDiceSettings();
@@ -30475,7 +32805,9 @@
     },
     79163: (e, t, s) => {
       "use strict";
-      s.d(t, { I: () => x });
+      s.d(t, {
+        I: () => x,
+      });
       var i = s(78311),
         n = s(9029),
         r = s(38910),
@@ -30578,7 +32910,9 @@
           ((this.userIcon = (0, n.WL)(
             e,
             u,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "user-icon",
           )),
             (this.recipientUsernameInputField = (0, n.M3)(
@@ -30588,25 +32922,33 @@
             (this.searchIcon = (0, n.WL)(
               e,
               h,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "search-icon",
             )),
             (this.spinnerIcon = (0, n.WL)(
               e,
               p,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "spinner-icon",
             )),
             (this.crossIcon = (0, n.WL)(
               e,
               m,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "cross-icon",
             )),
             (this.checkMarkIcon = (0, n.WL)(
               e,
               g,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "checkmark-icon",
             )),
             this.spinnerIcon.classList.add("hidden"),
@@ -30680,7 +33022,10 @@
                 () => {},
                 () => {},
                 !0,
-                { showXButton: !1, showCheckButton: !0 },
+                {
+                  showXButton: !1,
+                  showCheckButton: !0,
+                },
               );
               (null === (e = t.contentContainer.parentElement) ||
                 void 0 === e ||
@@ -30797,14 +33142,18 @@
           }),
             (this.membershipPrice = (0, n.n8)(
               this.priceDiv,
-              { key: "strings:colonistCommon.utils.emptyString" },
+              {
+                key: "strings:colonistCommon.utils.emptyString",
+              },
               "",
               "",
               "H1",
             )),
             (0, n.RH)(this.membershipPrice, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: null != s ? s : `$${e}` },
+              options: {
+                value: null != s ? s : `$${e}`,
+              },
             }),
             this.disclaimerText.replaceChildren());
         }
@@ -30815,16 +33164,17 @@
           if (!this.membershipProduct.bestValue) return;
           const e =
             "SHOW_MOST_POPULAR" == v._.abTests.GIFTING_CHANGE_BEST_VALUE_HINT
-              ? { key: "strings:storePage.mostPopular" }
-              : { key: "strings:storePage.bestValue" };
-          (this.productDiv.classList.add(
+              ? {
+                  key: "strings:storePage.mostPopular",
+                }
+              : {
+                  key: "strings:storePage.bestValue",
+                };
+          this.productDiv.classList.add(
             "store_page_membership_best_value_border",
-          ),
-            (0, n.Wr)(
-              this.headerDiv,
-              e,
-              "store_page_membership_best_value_banner",
-            ));
+          );
+          const t = (0, n.Le)(this.headerDiv, "badge-white badge-lg");
+          (0, n.Wr)(t, e, "");
         }
         showStrikeThroughPrice() {
           const e = S.Zt.getMonthlyPriceOfAnnualMembership(
@@ -30836,7 +33186,9 @@
               this.priceDiv,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: `<s>$${t}</s>` },
+                options: {
+                  value: `<s>$${t}</s>`,
+                },
               },
               "strikethrough-price",
               "",
@@ -30927,7 +33279,9 @@
           ((this.toggleButtonMonthly = (0, n.Le)(e, "toggle-tab")),
             (0, n.Wr)(
               this.toggleButtonMonthly,
-              { key: "strings:storePage.membership.frequency.oneMonth" },
+              {
+                key: "strings:storePage.membership.frequency.oneMonth",
+              },
               "",
             ),
             (0, n.G0)(this.toggleButtonMonthly, () => this.setTabAnnual(!1)),
@@ -30937,7 +33291,10 @@
             this.toggleButtonAnnual,
             {
               key: "strings:storePage.membership.frequency.oneYear",
-              options: { context: "store", discount: t },
+              options: {
+                context: "store",
+                discount: t,
+              },
             },
             "",
           ),
@@ -31009,14 +33366,21 @@
         getSelectedTierInfoText(e) {
           const t = this.selectedGiftTier,
             s = T.isSelectedTierAnnual(t)
-              ? { key: "strings:storePage.membership.frequency.oneYear" }
-              : { key: "strings:storePage.membership.frequency.oneMonth" },
+              ? {
+                  key: "strings:storePage.membership.frequency.oneYear",
+                }
+              : {
+                  key: "strings:storePage.membership.frequency.oneMonth",
+                },
             i = A.G.getMembershipTitleFromType(e);
           return (0, _.dN)(
             {
               key: "strings:storePage.sections.giftOverlay.tierSelection.selectedTier",
             },
-            { frequency: s, tier: i },
+            {
+              frequency: s,
+              tier: i,
+            },
           );
         }
         static setDiscordGiftPrice(e) {
@@ -31101,7 +33465,9 @@
           );
           const s = (0, n.i5)(t, "input-counter", {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: "0/150" },
+            options: {
+              value: "0/150",
+            },
           });
           ((this.messageInput = (0, n.aW)(
             e,
@@ -31130,7 +33496,7 @@
         })({}),
         B = s(13618),
         D = s(69508),
-        E = s(42389),
+        E = s(66681),
         G = s(19720);
       class x {
         init() {
@@ -31159,7 +33525,9 @@
           ((0, n.G0)(t, () => this.goToHomepage()),
             (0, n.n8)(
               e,
-              { key: "strings:storePage.sections.giftOverlay.title" },
+              {
+                key: "strings:storePage.sections.giftOverlay.title",
+              },
               "",
               "",
               "H2",
@@ -31312,17 +33680,23 @@
                   message: i.message,
                 },
               },
-              { giftTier: n },
+              {
+                giftTier: n,
+              },
             );
           return (
             new d.y(
-              { key: "strings:imgAlts.StoreGiftMembership" },
+              {
+                key: "strings:imgAlts.StoreGiftMembership",
+              },
               r,
               async () => {
                 const e = await a.m.postRequestHandler(
                   c.l.apiRedeemGiftFromHash(),
                   void 0,
-                  { hash: t },
+                  {
+                    hash: t,
+                  },
                 );
                 (null == e ? void 0 : e.status) == D.R.Ok &&
                   (0, B.Yf)((0, B.mE)());
@@ -31381,7 +33755,9 @@
     },
     81808: (e, t, s) => {
       "use strict";
-      s.d(t, { k: () => c });
+      s.d(t, {
+        k: () => c,
+      });
       var i = s(50482),
         n = s(29962),
         r = s(9029),
@@ -31393,7 +33769,10 @@
             t = Math.round(100 * (1 - n.O.PREMIUM / e));
           (0, r.oB)(this.annualTab, {
             key: "strings:storePage.membership.frequency.annual",
-            options: { context: "store", discount: t },
+            options: {
+              context: "store",
+              discount: t,
+            },
           });
         }
         constructor(e) {
@@ -31409,7 +33788,9 @@
     },
     81888: (e, t, s) => {
       "use strict";
-      s.d(t, { _: () => c });
+      s.d(t, {
+        _: () => c,
+      });
       var i = s(61570),
         n = s(655),
         r = s(32398),
@@ -31529,7 +33910,9 @@
     },
     81931: (e, t, s) => {
       "use strict";
-      s.d(t, { b: () => a });
+      s.d(t, {
+        b: () => a,
+      });
       var i = s(9029),
         n = s(78311),
         r = s(90676),
@@ -31625,7 +34008,9 @@
     },
     81966: (e, t, s) => {
       "use strict";
-      s.d(t, { e: () => o });
+      s.d(t, {
+        e: () => o,
+      });
       var i = s(5603),
         n = s(95176),
         r = s(9029);
@@ -31671,7 +34056,9 @@
             "character-counter",
             {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: `${e}/${t}` },
+              options: {
+                value: `${e}/${t}`,
+              },
             },
           )),
             this.input.addEventListener("input", () => {
@@ -31684,7 +34071,9 @@
             s = this.input.maxLength;
           ((0, r.RH)(this.characterCounter, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: `${e}/${s}` },
+            options: {
+              value: `${e}/${s}`,
+            },
           }),
             e < t
               ? this.characterCounter.classList.add("invalid")
@@ -31714,7 +34103,9 @@
     },
     82535: (e, t, s) => {
       "use strict";
-      s.d(t, { B: () => c });
+      s.d(t, {
+        B: () => c,
+      });
       var i = s(92524),
         n = s(655),
         r = s(32398),
@@ -31735,18 +34126,27 @@
         static async gotCheckoutSession(e) {
           if (!e.status)
             return void o.r.createSimplePopup(
-              { key: "strings:storePage.errors.fail" },
+              {
+                key: "strings:storePage.errors.fail",
+              },
               e.message,
             );
           const t = {
             key: "strings:colonistCommon.utils.#buffer",
             options: {
               value: (
-                await stripe.redirectToCheckout({ sessionId: e.session.id })
+                await stripe.redirectToCheckout({
+                  sessionId: e.session.id,
+                })
               ).error.message,
             },
           };
-          o.r.createSimplePopup({ key: "strings:storePage.errors.fail" }, t);
+          o.r.createSimplePopup(
+            {
+              key: "strings:storePage.errors.fail",
+            },
+            t,
+          );
         }
         static async executeXsollaColonistCoinPurchaseSession(e, t) {
           const s = `${r.l.apiPayGetStoreXsollaSession()}/${e}/${t}`,
@@ -31788,6 +34188,11 @@
       "use strict";
       e.exports = s.p + "assets/stat_trade_loss.0dc8caac3da287d8cd0c.svg";
     },
+    83446: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/android_status_bar_before.566d98b4e4146f8e0ed5.png";
+    },
     83476: (e, t, s) => {
       "use strict";
       e.exports =
@@ -31795,7 +34200,10 @@
     },
     83633: (e, t, s) => {
       "use strict";
-      s.d(t, { M1: () => n.M1, qq: () => i.q });
+      s.d(t, {
+        M1: () => n.M1,
+        qq: () => i.q,
+      });
       (s(21514), s(30093));
       var i = s(48104),
         n = (s(69094), s(22067));
@@ -31807,7 +34215,9 @@
     },
     84192: (e, t, s) => {
       "use strict";
-      s.d(t, { z: () => g });
+      s.d(t, {
+        z: () => g,
+      });
       var i = s(5603),
         n = s(35700),
         r = s(59712),
@@ -31823,7 +34233,12 @@
           const t = this.italics ? " italics" : "",
             s = (0, o.i5)(e, t, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: this.text, interpolation: { escapeValue: !1 } },
+              options: {
+                value: this.text,
+                interpolation: {
+                  escapeValue: !1,
+                },
+              },
             });
           this.handleVPText(s);
         }
@@ -31852,7 +34267,7 @@
         }
       }
       var d = s(18587),
-        u = s(42389),
+        u = s(66681),
         h = s(25720),
         p = s(52609);
       class m {
@@ -31950,7 +34365,9 @@
     },
     84240: (e, t, s) => {
       "use strict";
-      s.d(t, { S: () => i });
+      s.d(t, {
+        S: () => i,
+      });
       class i {
         constructor() {
           this.serverUpdated = !1;
@@ -31963,7 +34380,9 @@
     },
     84324: (e, t, s) => {
       "use strict";
-      s.d(t, { i: () => i });
+      s.d(t, {
+        i: () => i,
+      });
       var i,
         n,
         r = s(30506);
@@ -32114,17 +34533,28 @@
         ) {
           if (s) return void s();
           const e = document.getElementById("coins");
-          return void (null == e || e.scrollIntoView({ behavior: "smooth" }));
+          return void (
+            null == e ||
+            e.scrollIntoView({
+              behavior: "smooth",
+            })
+          );
         }
         const n = (0, a.dN)(
           {
             key: "strings:storePage.purchaseItem?.body",
-            options: { price: i },
+            options: {
+              price: i,
+            },
           },
-          { itemName: e.name },
+          {
+            itemName: e.name,
+          },
         );
         new o.y(
-          { key: "strings:storePage.purchaseItem?.title" },
+          {
+            key: "strings:storePage.purchaseItem?.title",
+          },
           n,
           () => {
             t();
@@ -32135,10 +34565,14 @@
       }
       function m(e, t) {
         new o.y(
-          { key: "strings:storePage.purchaseItem?.title" },
+          {
+            key: "strings:storePage.purchaseItem?.title",
+          },
           {
             key: "strings:storePage.purchaseItem?.body",
-            options: { context: "founder" },
+            options: {
+              context: "founder",
+            },
           },
           () => {
             t();
@@ -32152,14 +34586,18 @@
         (null === (s = c._.userState) || void 0 === s ? void 0 : s.isLoggedIn)
           ? (null == t ? void 0 : t.includes("#"))
             ? new o.y(
-                { key: "strings:popups.errors.giftMembership.title" },
+                {
+                  key: "strings:popups.errors.giftMembership.title",
+                },
                 {
                   key: "strings:popups.errors.giftMembership.guestsCantReceiveGifts",
                 },
                 () => {},
                 () => {},
                 !1,
-                { showXButton: !1 },
+                {
+                  showXButton: !1,
+                },
               ).show()
             : e()
           : new r.L();
@@ -32173,7 +34611,9 @@
         )
           return {
             key: "strings:storePage.manageMembership.body",
-            options: { context: "updateOnWeb" },
+            options: {
+              context: "updateOnWeb",
+            },
           };
         const s =
           null === (t = c._.userState) || void 0 === t
@@ -32183,9 +34623,13 @@
         return d.Zt.isAnnualMembership(s.type)
           ? {
               key: "strings:storePage.manageMembership.body",
-              options: { context: "waitForExpiration" },
+              options: {
+                context: "waitForExpiration",
+              },
             }
-          : { key: "strings:storePage.manageMembership.body" };
+          : {
+              key: "strings:storePage.manageMembership.body",
+            };
       }
       function y(e) {
         switch (e) {
@@ -32212,13 +34656,17 @@
     },
     84805: (e, t, s) => {
       "use strict";
-      s.d(t, { K: () => l });
+      s.d(t, {
+        K: () => l,
+      });
       var i = s(78311),
         n = s(655),
         r = s(9029);
       class o {
         createSidebar() {
-          const e = { key: "strings:colonistCommon.utils.emptyString" };
+          const e = {
+            key: "strings:colonistCommon.utils.emptyString",
+          };
           for (const t of this.sidebarTabs) {
             const s = (0, r.cE)(
                 this.parentElement,
@@ -32244,28 +34692,36 @@
         createSidebar() {
           const e = [
             {
-              text: { key: "strings:profilePage.overview.title" },
+              text: {
+                key: "strings:profilePage.overview.title",
+              },
               class: "icon_profile_overview",
               href: "#overview",
               imageSrc: i.am.ProfileOverview,
               id: (0, a.F9)("tab-input-overview", this.isPopup),
             },
             {
-              text: { key: "strings:profilePage.navigationTabs.ranked" },
+              text: {
+                key: "strings:profilePage.navigationTabs.ranked",
+              },
               class: "icon_profile_ranked",
               href: "#ranked",
               imageSrc: i.am.ProfileRanked,
               id: (0, a.F9)("tab-input-ranked", this.isPopup),
             },
             {
-              text: { key: "strings:profilePage.navigationTabs.history" },
+              text: {
+                key: "strings:profilePage.navigationTabs.history",
+              },
               class: "icon_profile_history",
               href: "#history",
               imageSrc: i.am.ProfileHistory,
               id: (0, a.F9)("tab-input-game-history", this.isPopup),
             },
             {
-              text: { key: "strings:profilePage.navigationTabs.items" },
+              text: {
+                key: "strings:profilePage.navigationTabs.items",
+              },
               class: "icon_profile_items",
               href: "#items",
               imageSrc: i.am.ProfileItems,
@@ -32274,14 +34730,18 @@
           ];
           this.isPopup ||
             (e.push({
-              text: { key: "strings:profilePage.navigationTabs.friends" },
+              text: {
+                key: "strings:profilePage.navigationTabs.friends",
+              },
               class: "icon_profile_friends",
               href: "#friends",
               imageSrc: i.am.Friends,
               id: (0, a.F9)("tab-input-friends", this.isPopup),
             }),
             e.push({
-              text: { key: "strings:profilePage.navigationTabs.account" },
+              text: {
+                key: "strings:profilePage.navigationTabs.account",
+              },
               class: "icon_profile_settings",
               href: "#settings",
               imageSrc: i.am.ProfileSettings,
@@ -32410,7 +34870,9 @@
     },
     85452: (e, t, s) => {
       "use strict";
-      s.d(t, { Q: () => h });
+      s.d(t, {
+        Q: () => h,
+      });
       var i = s(18587),
         n = s(67908),
         r = s(18514),
@@ -32419,7 +34881,7 @@
         c = s(69714),
         l = s(26658),
         d = s(648),
-        u = s(16497);
+        u = s(3294);
       class h {
         static updateDiscordCTAContent(e, t) {
           if (!i.r.isUserOnDiscord)
@@ -32433,7 +34895,9 @@
           )
             return void (e.innerText = r.a7.t(
               "strings:homePage.ctas.play.title",
-              { context: "discord" },
+              {
+                context: "discord",
+              },
             ));
           if (t.type == n.mt.ChannelStatus.Game)
             return void (e.innerText = r.a7.t(
@@ -32459,13 +34923,21 @@
         }
       }
     },
+    85606: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/group_owned_maps_before.f5f824eba0eb1cdf5c82.png";
+    },
     85609: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/ship_move_black.345053f53a82ad08b6d2.svg";
     },
     85801: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => r, g: () => n });
+      s.d(t, {
+        N: () => r,
+        g: () => n,
+      });
       var i = s(41931),
         n = (function (e) {
           return (
@@ -32547,7 +35019,9 @@
     },
     86020: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => i });
+      s.d(t, {
+        N: () => i,
+      });
       class i {}
     },
     86204: (e, t, s) => {
@@ -32632,7 +35106,12 @@
     },
     87290: (e, t, s) => {
       "use strict";
-      s.d(t, { KY: () => d, Yt: () => c, du: () => l, os: () => o });
+      s.d(t, {
+        KY: () => d,
+        Yt: () => c,
+        du: () => l,
+        os: () => o,
+      });
       var i = s(74710),
         n = s(92856),
         r = s(22194);
@@ -32646,12 +35125,16 @@
       function l(e, t) {
         const s = t == c.None ? "" : c[t];
         return (0, i.dN)(
-          { key: "strings:leaderboardPage.rankedFullDivision" },
+          {
+            key: "strings:leaderboardPage.rankedFullDivision",
+          },
           {
             rankedDivision: a(e),
             rankedSubDivision: {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: s },
+              options: {
+                value: s,
+              },
             },
           },
         );
@@ -32673,14 +35156,19 @@
     },
     87506: (e, t, s) => {
       "use strict";
-      s.d(t, { O: () => a });
+      s.d(t, {
+        O: () => a,
+      });
       var i = s(78046),
-        n = s(42389),
+        n = s(66681),
         r = s(26658),
         o = s(78311);
       class a {
         static send(e, t) {
-          const s = { action: e, payload: t };
+          const s = {
+            action: e,
+            payload: t,
+          };
           n.sZ.controller.sender.sendToServerType(
             o.lo.MatchmakingAction,
             "lobby",
@@ -32743,7 +35231,9 @@
               (Math.abs(i.x - s.x) > 20 || Math.abs(i.y - s.y) > 20 || t());
           }));
       }
-      s.d(t, { _: () => i });
+      s.d(t, {
+        _: () => i,
+      });
     },
     87775: (e, t, s) => {
       "use strict";
@@ -32768,7 +35258,9 @@
     },
     88206: (e, t, s) => {
       "use strict";
-      s.d(t, { d: () => l });
+      s.d(t, {
+        d: () => l,
+      });
       var i = s(45973),
         n = s(65015),
         r = s(9029),
@@ -32778,7 +35270,9 @@
         update(e) {
           if ((super.update(e), null == e.unrankedOverrideMessage)) return;
           const t = o.r.isUserOnMobileAppOrWeb
-            ? { key: "strings:colonistCommon.utils.n/a" }
+            ? {
+                key: "strings:colonistCommon.utils.n/a",
+              }
             : e.unrankedOverrideMessage;
           ((0, r.RH)(this.customMessage, t),
             (0, r.G0)(this.customMessage, () => {}, !1, !0));
@@ -32953,7 +35447,9 @@
     },
     90051: (e, t, s) => {
       "use strict";
-      s.d(t, { K: () => n });
+      s.d(t, {
+        K: () => n,
+      });
       var i = s(5603);
       class n {
         addNotificationsToPanel(e) {
@@ -32981,6 +35477,12 @@
           this.notificationPanel = e;
         }
       }
+    },
+    90416: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/message_appears_without_username_avatar_after.c383a890d5dad602a32e.png";
     },
     90676: (e, t, s) => {
       "use strict";
@@ -33109,7 +35611,9 @@
                         u,
                         {
                           key: "strings:colonistCommon.utils.#buffer",
-                          options: { value: e.listTitle },
+                          options: {
+                            value: e.listTitle,
+                          },
                         },
                         "tooltip-list-title",
                         void 0,
@@ -33121,7 +35625,9 @@
                           t,
                           {
                             key: "strings:colonistCommon.utils.#buffer",
-                            options: { value: e },
+                            options: {
+                              value: e,
+                            },
                           },
                           "",
                         );
@@ -33180,9 +35686,15 @@
                             placement: h,
                             middleware: [
                               (0, i.cY)(t),
-                              (0, i.UU)({ padding: t }),
-                              (0, i.BN)({ padding: t }),
-                              (0, i.UE)({ element: l }),
+                              (0, i.UU)({
+                                padding: t,
+                              }),
+                              (0, i.BN)({
+                                padding: t,
+                              }),
+                              (0, i.UE)({
+                                element: l,
+                              }),
                               (0, i.jD)(),
                             ],
                           },
@@ -33254,7 +35766,9 @@
     },
     91173: (e, t, s) => {
       "use strict";
-      s.d(t, { V: () => g });
+      s.d(t, {
+        V: () => g,
+      });
       var i = s(74710),
         n = s(30506),
         r = s(655),
@@ -33282,7 +35796,9 @@
             const o = `${i} (${n.$x.capitalizeFirstLetter(r)})`;
             (0, c.fg)(e, t, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: o },
+              options: {
+                value: o,
+              },
             });
           }),
             (e.selectedIndex = this.supportedLanguages.indexOf(
@@ -33298,7 +35814,9 @@
             this.selectedLanguage == this.currentLanguage)
           )
             return;
-          const e = { language: this.selectedLanguage };
+          const e = {
+            language: this.selectedLanguage,
+          };
           (await r.m.postRequestHandler(
             o.l.apiSetUserLanguage(),
             void 0,
@@ -33312,8 +35830,12 @@
         }
         constructor() {
           (super(
-            { key: "strings:homePage.footer.changeLanguagePopupTitle" },
-            { key: "strings:homePage.footer.changeLanguagePopupBody" },
+            {
+              key: "strings:homePage.footer.changeLanguagePopupTitle",
+            },
+            {
+              key: "strings:homePage.footer.changeLanguagePopupBody",
+            },
             () => {},
             () => {},
             !0,
@@ -33339,7 +35861,9 @@
           }),
             (0, m.vy)(
               t,
-              { key: "strings:homePage.footer.changeLanguageButtonTooltip" },
+              {
+                key: "strings:homePage.footer.changeLanguageButtonTooltip",
+              },
               "top",
               void 0,
               "small",
@@ -33348,7 +35872,9 @@
           s &&
             (0, c.oB)(s, {
               key: "strings:colonistCommon.utils.#buffer",
-              options: { value: a.r.language },
+              options: {
+                value: a.r.language,
+              },
             });
         }
       }
@@ -33399,7 +35925,11 @@
     },
     92524: (e, t, s) => {
       "use strict";
-      s.d(t, { g5: () => i, hg: () => r, l6: () => n });
+      s.d(t, {
+        g5: () => i,
+        hg: () => r,
+        l6: () => n,
+      });
       (s(64265), s(50482), s(17972));
       var i = (function (e) {
           return (
@@ -33438,7 +35968,9 @@
     },
     92856: (e, t, s) => {
       "use strict";
-      s.d(t, { h: () => i });
+      s.d(t, {
+        h: () => i,
+      });
       var i,
         n = s(30506);
       !(function (e) {
@@ -33474,7 +36006,9 @@
     },
     94226: (e, t, s) => {
       "use strict";
-      s.d(t, { c: () => i });
+      s.d(t, {
+        c: () => i,
+      });
       class i {
         emitEvent(e, t) {
           var s;
@@ -33489,7 +36023,10 @@
           this.eventHandlers.delete(e);
         }
         send(e, t) {
-          this.sendFromClientToServer({ type: e, ...t });
+          this.sendFromClientToServer({
+            type: e,
+            ...t,
+          });
         }
         constructor(e) {
           ((this.eventHandlers = new Map()), (this.sendFromClientToServer = e));
@@ -33498,7 +36035,9 @@
     },
     95078: (e, t, s) => {
       "use strict";
-      s.d(t, { l: () => i });
+      s.d(t, {
+        l: () => i,
+      });
       var i,
         n = s(30506);
       !(function (e) {
@@ -33521,13 +36060,17 @@
     },
     95107: (e, t, s) => {
       "use strict";
-      s.d(t, { v: () => i });
+      s.d(t, {
+        v: () => i,
+      });
       class i {}
       ((i.DEFAULT_PARAMETER_VALUE = "1"), (i.suppressPopupsOnLoad = !1));
     },
     95176: (e, t, s) => {
       "use strict";
-      s.d(t, { y: () => d });
+      s.d(t, {
+        y: () => d,
+      });
       var i = s(9029),
         n = s(85801),
         r = s(42466),
@@ -33659,7 +36202,10 @@
               (this.container.classList.add("popup-focus-mobile"),
                 t &&
                   setTimeout(() => {
-                    e.scrollIntoView({ behavior: "smooth", block: "center" });
+                    e.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
                   }, 100));
             }),
             e.addEventListener("focusout", () => {
@@ -33714,7 +36260,9 @@
     },
     96104: (e, t, s) => {
       "use strict";
-      s.d(t, { o: () => u });
+      s.d(t, {
+        o: () => u,
+      });
       var i = s(655),
         n = s(32398),
         r = s(9029),
@@ -33752,13 +36300,17 @@
         }
         setItems(e) {
           const t = document.getElementById("profile_items_div");
-          (0, r.RH)(t, { key: "strings:colonistCommon.utils.emptyString" });
+          (0, r.RH)(t, {
+            key: "strings:colonistCommon.utils.emptyString",
+          });
           for (const s of e) {
             const e = (0, d.bl)(s.category),
               i = (0, r.cE)(
                 t,
                 `/store#${e}`,
-                { key: "strings:colonistCommon.utils.emptyString" },
+                {
+                  key: "strings:colonistCommon.utils.emptyString",
+                },
                 "",
               );
             ((0, r.zO)(i, s.image), (0, r.n8)(i, s.name, "", "", "H4"));
@@ -33854,7 +36406,9 @@
     },
     96328: (e, t, s) => {
       "use strict";
-      s.d(t, { o: () => d });
+      s.d(t, {
+        o: () => d,
+      });
       var i = s(9029),
         n = s(84445),
         r = s(19966),
@@ -33878,18 +36432,25 @@
         constructor(e, t, s, n) {
           this.product = t;
           const r = (0, i.Le)(e, "store_page_coin_product", ""),
-            a = (0, i.Le)(r, "store_page_coin_product_header"),
-            c = {
+            a = (0, i.Le)(r, "store_page_coin_product_body", ""),
+            l =
+              ((0, i.zO)(a, t.lobbyImage),
+              (0, i.Le)(r, "store_page_coin_product_header")),
+            d = {
               key: "strings:storePage.coins.title",
-              options: { count: t.baseCoinAmount + t.bonusCoinAmount },
+              options: {
+                count: t.baseCoinAmount + t.bonusCoinAmount,
+              },
             };
-          (0, i.n8)(a, c, "", "", "H2");
+          (0, i.n8)(l, d, "", "", "H2");
           if (0 != t.bonusCoinAmount) {
             const e = (0, i.Wr)(
-              a,
+              l,
               {
                 key: "strings:colonistCommon.utils.#buffer",
-                options: { value: t.baseCoinAmount + " " },
+                options: {
+                  value: t.baseCoinAmount + " ",
+                },
               },
               "",
             );
@@ -33897,27 +36458,31 @@
               e,
               {
                 key: "strings:storePage.coins.bonusAmount",
-                options: { count: t.bonusCoinAmount },
+                options: {
+                  count: t.bonusCoinAmount,
+                },
               },
               "store_page_coin_product_bonus",
             );
           }
-          const l = (0, i.Le)(r, "store_page_coin_product_body", "");
-          (0, i.zO)(l, t.lobbyImage);
           this.productUrl = o.l.checkoutProductUrl(t.type);
-          const d = {
+          const u = {
               key: "strings:colonistCommon.utils.#buffer",
               options: {
                 value: n ? `${n.currency}${n.price}` : t.getUSDPriceWithSign(),
               },
             },
-            u = (0, i.cE)(r, "#", d, "store_button btn_general");
+            h = (0, i.cE)(r, "#", u, "store_button btn_general");
           if (
-            ((0, i.G0)(u, () => this.handleBuyButtonClicked(s)),
+            ((0, i.G0)(h, () => this.handleBuyButtonClicked(s)),
             null != t.bannerText)
           ) {
-            const e = (0, i.Le)(r, "store-page-product-banner");
-            (0, i.Wr)(e, t.bannerText, "");
+            const e = c.r.isUserOnMobileAppOrWeb,
+              s = (0, i.Le)(
+                r,
+                e ? "badge-orange badge-md" : "badge-orange badge-lg",
+              );
+            (0, i.Wr)(s, t.bannerText, "");
           }
         }
       }
@@ -33934,9 +36499,17 @@
       "use strict";
       e.exports = s.p + "assets/ship_move_purple.2c5f046b6bc440b8b4a5.svg";
     },
+    96950: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/fix_pixelated_fullscreen_popup_before.5c46aeb5e1c176278bb3.png";
+    },
     96990: (e, t, s) => {
       "use strict";
-      s.d(t, { N: () => n });
+      s.d(t, {
+        N: () => n,
+      });
       var i = s(33832);
       class n {
         static isUserOnTabletApp() {
@@ -34034,7 +36607,9 @@
     },
     97392: (e, t, s) => {
       "use strict";
-      s.d(t, { Z: () => B });
+      s.d(t, {
+        Z: () => B,
+      });
       var i = s(98487),
         n = s(9029),
         r = s(78311),
@@ -34047,7 +36622,7 @@
         h = s(90676),
         p = s(32581),
         m = s(34915),
-        g = s(42389),
+        g = s(66681),
         f = s(5603);
       class y {
         renderUserInfo() {
@@ -34067,7 +36642,9 @@
             (this.userName = (0, n.i5)(
               this.usernameContainer,
               "room_player_username",
-              { key: "strings:profilePage.friends.tableHeaders.player" },
+              {
+                key: "strings:profilePage.friends.tableHeaders.player",
+              },
             )),
             this.renderUsernameInfoIcon(),
             (this.karmaContainer = (0, n.Le)(
@@ -34109,12 +36686,16 @@
         renderKarma() {
           ((this.karmaText = (0, n.Wr)(
             this.karmaContainer,
-            { key: "strings:colonistCommon.utils.emptyString" },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
             "room_player_karma_text",
           )),
             (0, h.vy)(
               this.karmaContainer,
-              { key: "strings:homePage.overview.karma" },
+              {
+                key: "strings:homePage.overview.karma",
+              },
               void 0,
               void 0,
               "small",
@@ -34125,7 +36706,9 @@
           c.h4.iterateEnum(i.R1, (e) => {
             (0, n.fg)(this.difficultySelectorContainer, e, {
               key: "strings:colonistCommon.botDifficulties.difficulty",
-              options: { context: e },
+              options: {
+                context: e,
+              },
             });
           });
         }
@@ -34263,7 +36846,9 @@
         setUsername(e) {
           (0, n.RH)(this.userName, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: ` ${e} ` },
+            options: {
+              value: ` ${e} `,
+            },
           });
         }
         updateStatus(e) {
@@ -34427,7 +37012,9 @@
         static resetTabTitleAndFavIcon() {
           ((0, n.oB)(this.pageTitle, {
             key: "strings:colonistCommon.utils.#buffer",
-            options: { value: this.defaultTitle },
+            options: {
+              value: this.defaultTitle,
+            },
           }),
             (this.favicon.href = this.defaultFavIcon));
         }
@@ -34590,10 +37177,14 @@
         static showHostActionsPopup(e) {
           const t = {
             key: "strings:roomPage.hostActions.body",
-            options: { username: e.username },
+            options: {
+              username: e.username,
+            },
           };
           b.r.create(
-            { key: "strings:roomPage.hostActions.title" },
+            {
+              key: "strings:roomPage.hostActions.title",
+            },
             t,
             () => {
               B.kickPlayer(e);
@@ -34616,10 +37207,14 @@
         static showKickPlayerPopup(e) {
           const t = {
             key: "strings:roomPage.hostActions.kickPlayer",
-            options: { username: e.username },
+            options: {
+              username: e.username,
+            },
           };
           b.r.create(
-            { key: "strings:roomPage.hostActions.kick" },
+            {
+              key: "strings:roomPage.hostActions.kick",
+            },
             t,
             () => {
               B.kickPlayer(e);
@@ -34666,7 +37261,9 @@
                   };
                   (P.CA.sendAnalyticEvent(s), I.v.addFriendAction(e));
                 },
-                tooltip: { key: "strings:game.playerOptionsPopup.addFriend" },
+                tooltip: {
+                  key: "strings:game.playerOptionsPopup.addFriend",
+                },
               }),
             a)
           ) {
@@ -34687,14 +37284,18 @@
               },
               tooltip: {
                 key: "strings:game.tooltips.giftMembership",
-                options: { username: t.username },
+                options: {
+                  username: t.username,
+                },
               },
             });
           }
           if (i)
             s.push({
               icon: r.am.Pencil,
-              tooltip: { key: "strings:homePage.header.editProfile" },
+              tooltip: {
+                key: "strings:homePage.header.editProfile",
+              },
             });
           else if (this.isItMe(e.hostSession)) {
             const e = t.isBot
@@ -34705,7 +37306,9 @@
               action: e,
               tooltip: {
                 key: "strings:game.tooltips.kickPlayer",
-                options: { username: t.username },
+                options: {
+                  username: t.username,
+                },
               },
             });
           }
@@ -34766,13 +37369,17 @@
     },
     97861: (e, t, s) => {
       "use strict";
-      s.d(t, { X: () => i });
+      s.d(t, {
+        X: () => i,
+      });
       class i {
         subscribe(e, t) {
           return (
             null == this.events[e] && (this.events[e] = []),
             this.events[e].push(t),
-            { unsubscribe: () => this.unsubscribe(e, t) }
+            {
+              unsubscribe: () => this.unsubscribe(e, t),
+            }
           );
         }
         subscribeOnce(e, t) {
@@ -34802,7 +37409,9 @@
     },
     98056: (e, t, s) => {
       "use strict";
-      s.d(t, { g: () => o });
+      s.d(t, {
+        g: () => o,
+      });
       var i = s(92524),
         n = s(9029),
         r = s(37385);
@@ -34889,4 +37498,4 @@
     },
   },
 ]);
-//# sourceMappingURL=shared.2e64f6b05192fcfb5586.js.map
+//# sourceMappingURL=shared.3ed0c9ee632825f084fb.js.map
