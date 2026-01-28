@@ -55,7 +55,8 @@ export const newUserState = () => {
   };
 };
 
-export const getRoomId = () => `roomIdx${store.me.roomId}`;
+export const getRoomId = () =>
+  window.location.hash.slice(1) || `roomIdx${store.me.roomId}`;
 
 export const newRoom = () => {
   return {

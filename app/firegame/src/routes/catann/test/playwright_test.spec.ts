@@ -51,10 +51,12 @@ const choreo = (
       expectedMessages.length,
     );
 
-    const iframe = await createRoom(page);
     const gameState = expectedMessages.find(
       (msg) => msg.data.data?.payload.gameState,
     )!.data.data.payload.gameState;
+    const roomId = expectedSpliced.find((msg) => msg.data.data?.roomId)!.data
+      .data.roomId;
+    const iframe = await createRoom(page, roomId);
     await page.evaluate(
       (__testOverrides) => {
         window.__testOverrides = __testOverrides;
@@ -343,12 +345,15 @@ const mapAppearsClickable = async (
 
 //
 
-const createRoom = async (page: Page): Promise<FrameLocator> => {
+const createRoom = async (
+  page: Page,
+  roomId: string = "",
+): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
     // page.on("console", (msg) => {
     //   console.log(msg.text());
     // });
-    await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
+    await page.goto(`${APP_URL}catann#${roomId}`, { waitUntil: "load" });
     const iframe = page.locator('iframe[title="iframe"]');
     await expect(iframe).toBeVisible({ timeout: 1000 });
     return page.frameLocator('iframe[title="iframe"]');
