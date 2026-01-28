@@ -7,7 +7,6 @@ import {
   EdgePieceType,
   GAME_ACTION,
   GameStateUpdateType,
-  GeneralAction,
   PlayerActionState,
   State,
   TileType,
@@ -568,14 +567,10 @@ export const applyGameAction = (parsed: {
   payload?: unknown;
 }) => {
   if (!firebaseData.GAME) return false;
-  if (parsed.action === 62 && parsed.payload === false) {
-    return true;
-  }
   if (
-    parsed.action === GeneralAction.ChangeOnlineStatus &&
-    parsed.payload === true
+    parsed.action === GameStateUpdateType.ExitInitialPlacement &&
+    parsed.payload === false
   ) {
-    sendInitialPlacementDiceRoll(firebaseData.GAME);
     return true;
   }
   if (
