@@ -73,6 +73,9 @@ const choreo = (
     );
     await spliceTestMessages(iframe);
     const startButton = getStartButton(iframe);
+    page.on("console", (msg) => {
+      console.log(msg.text());
+    });
     await startButton.click({ force: true });
     await f(iframe, expectedMessages);
     expect(expectedMessages).toEqual([]);
