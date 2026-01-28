@@ -311,7 +311,9 @@ const mapAppearsClickable = async (
   canvas: Locator,
   offset: { x: number; y: number },
 ) => {
-  await canvas.page().mouse.move(offset.x, offset.y);
+  await canvas
+    .page()
+    .mouse.move(offset.x + MAP_OFFSET.x, offset.y + MAP_OFFSET.y);
   const hasPointerCursor = await canvas.evaluate((element, hoverOffset) => {
     const htmlElement = element as HTMLElement;
     const rect = htmlElement.getBoundingClientRect();
@@ -585,7 +587,7 @@ const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 10_000;
 const MAP_OFFSET = { x: 165, y: 11.5 };
-const MAP_ZERO_ZERO = { x: 245, y: 89 };
+const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
 
