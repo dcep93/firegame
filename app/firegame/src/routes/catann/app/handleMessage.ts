@@ -2,6 +2,7 @@ import store from "../../../shared/store";
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
 import { applyGameAction } from "./gameLogic";
 import {
+  GameStateUpdateType,
   GeneralAction,
   LobbyAction,
   LobbyState,
@@ -168,6 +169,13 @@ export default function handleMessage(
     console.log("handleMessage", clientData);
     if (clientData._header[1] === ServerActionType.RoomCommand) {
       if (clientData.type === "startGame") {
+        sendToMainSocket?.({
+          id: State.GameStateUpdate.toString(),
+          data: {
+            type: GameStateUpdateType.CanResignGame,
+            payload: false,
+          },
+        });
         setFirebaseData(
           { ...firebaseData, GAME: newGame() },
           { parsed: clientData },
