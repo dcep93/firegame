@@ -9,6 +9,7 @@ import {
   GameStateUpdateType,
   PlayerActionState,
   State,
+  TileType,
 } from "./CatannFilesEnums";
 
 export const sendCornerHighlights = (gameData: any) => {
@@ -165,34 +166,54 @@ export const placeSettlement = (cornerIndex: number) => {
   sendCornerHighlights(gameData);
   sendEdgeHighlights(gameData);
   const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
+    const gameState = gameData.data.payload.gameState;
     const cornerState =
-      gameData.data.payload.gameState.mapState.tileCornerStates[
-        String(cornerIndex)
-      ];
-    const adjacentTiles = cornerState.adjacentTiles as number[];
+      gameState.mapState.tileCornerStates[String(cornerIndex)];
+    const tileHexStates = gameState.mapState.tileHexStates ?? {};
+    const tileIndexByCoord = new Map<string, number>();
+    Object.entries(tileHexStates).forEach(([index, tileState]: any) => {
+      tileIndexByCoord.set(`${tileState.x},${tileState.y}`, Number(index));
+    });
+    const adjacentCoords =
+      cornerState.z === CornerDirection.North
+        ? [
+            { x: cornerState.x, y: cornerState.y },
+            { x: cornerState.x - 1, y: cornerState.y },
+            { x: cornerState.x + 1, y: cornerState.y - 1 },
+          ]
+        : [
+            { x: cornerState.x - 1, y: cornerState.y + 1 },
+            { x: cornerState.x, y: cornerState.y - 1 },
+            { x: cornerState.x + 1, y: cornerState.y },
+          ];
+    const adjacentTiles = adjacentCoords
+      .map((coord) => tileIndexByCoord.get(`${coord.x},${coord.y}`))
+      .filter((tileIndex): tileIndex is number =>
+        Number.isFinite(tileIndex),
+      );
     const resourcesToGive: {
       owner: number;
       tileIndex: number;
       distributionType: number;
       card: number;
     }[] = [];
-    console.log({ adjacentTiles });
-    adjacentTiles.forEach((tileIndex) => {
-      const tileState =
-        gameData.data.payload.gameState.mapState.tileStates[String(tileIndex)];
-      if (
-        tileState?.resourceType &&
-        tileState.resourceType !== "Desert" &&
-        tileState.productionNumber !== 0
-      ) {
-        resourcesToGive.push({
-          owner: playerColor,
-          tileIndex,
-          distributionType: 0,
-          card: tileState.resourceType,
-        });
-      }
-    });
+    if (gameState.currentState.completedTurns > 0) {
+      adjacentTiles.forEach((tileIndex) => {
+        const tileState = tileHexStates[String(tileIndex)];
+        if (
+          tileState?.type !== undefined &&
+          tileState.type !== TileType.Desert &&
+          tileState.type !== TileType.Sea
+        ) {
+          resourcesToGive.push({
+            owner: playerColor,
+            tileIndex,
+            distributionType: 0,
+            card: tileState.type,
+          });
+        }
+      });
+    }
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
