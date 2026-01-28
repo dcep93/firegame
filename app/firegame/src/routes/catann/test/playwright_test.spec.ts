@@ -425,6 +425,10 @@ const verifyTestMessages = async (
         msg.data.sequence = expectedMsg.data.sequence;
     } else {
       msg.data.data.sequence = expectedMsg.data.data.sequence;
+      if (msg.data.data.payload.diff.currentState.startTime) {
+        msg.data.data.payload.diff.currentState.startTime =
+          expectedMsg.data.data.payload.diff.currentState.startTime;
+      }
     }
     expect(msg).toEqual(expectedMsg);
     console.log(msg);
