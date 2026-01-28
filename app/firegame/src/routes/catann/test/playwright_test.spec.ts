@@ -52,6 +52,23 @@ const choreo = (
     );
 
     const iframe = await createRoom(page);
+    const newFirstGameStateMsg = expectedMessages.find(
+      (msg) =>
+        msg.trigger === "serverData" && msg.data.data.payload.databaseGameId,
+    );
+    await page.evaluate(
+      (__testOverrides) => {
+        window.__testOverrides = __testOverrides;
+      },
+      {
+        newFirstGameState: {
+          gameSettingId: newFirstGameStateMsg!.data.data.payload.gameSettingId,
+          databaseGameId:
+            newFirstGameStateMsg!.data.data.payload.databaseGameId,
+          serverId: newFirstGameStateMsg!.data.data.payload.serverId,
+        },
+      },
+    );
     await spliceTestMessages(iframe);
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
@@ -325,9 +342,9 @@ const mapAppearsClickable = async (
 
 const createRoom = async (page: Page): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
-    page.on("console", (msg) => {
-      console.log(msg.text());
-    });
+    // page.on("console", (msg) => {
+    //   console.log(msg.text());
+    // });
     await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
     const iframe = page.locator('iframe[title="iframe"]');
     await expect(iframe).toBeVisible({ timeout: 1000 });
@@ -357,7 +374,10 @@ const getExpectedMessages = async (recordingPath: string) => {
     const data = fs.readFileSync(fullPath, "utf8");
     return JSON.parse(data) as { trigger: string; data: any }[];
   };
-  return openRecordingJson(recordingPath).filter((msg) => isNotHeartbeat(msg));
+  const expectedMessages = openRecordingJson(recordingPath).filter((msg) =>
+    isNotHeartbeat(msg),
+  );
+  return expectedMessages;
 };
 
 const spliceTestMessages = async (

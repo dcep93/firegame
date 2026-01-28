@@ -4,6 +4,12 @@ import { firebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
 import { State } from "./CatannFilesEnums";
 
+declare global {
+  interface Window {
+    __testOverrides: { newFirstGameState: any };
+  }
+}
+
 export const newUserState = () => {
   return {
     userState: {
@@ -1081,11 +1087,12 @@ export const startGame = () => {
       data: {
         type: 1,
         payload: {
-          serverId: "08CC38",
+          serverId: room.data.roomId,
           databaseGameId: room.data.roomId,
           gameSettingId: room.data.roomId,
-          shouldResetGameClient: false,
+          shouldResetGameClient: true,
           isReconnectingSession: false,
+          ...window.__testOverrides?.newFirstGameState,
         },
       },
     };
