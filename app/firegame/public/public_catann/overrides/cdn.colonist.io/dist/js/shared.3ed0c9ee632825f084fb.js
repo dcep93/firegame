@@ -24109,7 +24109,7 @@
           const t = V.D4(e.data);
           window.__socketCatannMessages.push({
             trigger: "serverData",
-            data: t,
+            data: JSON.parse(JSON.stringify(t)),
           });
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
@@ -24218,7 +24218,7 @@
         send(e, t, s, i, n) {
           window.__socketCatannMessages.push({
             trigger: "clientData",
-            data: i,
+            data: JSON.parse(JSON.stringify(i)),
           });
           const r = j(e, t, s, Y.l(i));
           this.sessionWasEstablished
