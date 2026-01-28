@@ -410,18 +410,20 @@ const verifyTestMessages = async (
     }
     try {
       expect(expectedMsg).toBeDefined();
-      expect(msg.trigger).toEqual(expectedMsg.trigger);
     } catch (e) {
-      console.log(JSON.stringify({ msg, expectedMsg }, null, 2));
+      console.log(JSON.stringify(msg, null, 2));
       throw e;
     }
+    expect({ trigger: msg.trigger, msg, expectedMsg }).toEqual({
+      trigger: expectedMsg.trigger,
+      msg,
+      expectedMsg,
+    });
     if (msg.trigger === "clientData") {
       if (expectedMsg.data.sequence)
         msg.data.sequence = expectedMsg.data.sequence;
     } else {
       msg.data.data.sequence = expectedMsg.data.data.sequence;
-      delete expectedMsg.data.data.payload.diff?.currentState.startTime;
-      delete msg.data.data.payload.diff?.currentState.startTime;
     }
     expect(msg).toEqual(expectedMsg);
     console.log(msg);
