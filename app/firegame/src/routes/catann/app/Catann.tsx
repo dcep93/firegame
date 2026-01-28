@@ -1,11 +1,13 @@
 import React from "react";
 import FirebaseWrapper from "./FirebaseWrapper";
 import IframeScriptString from "./IframeScriptString";
+import { initializeCatannConfig } from "./gameLogic/config";
 
 class Catann extends React.Component {
   private didInitIframe = false;
 
   render() {
+    initializeCatannConfig();
     const iframeRef = React.createRef<HTMLIFrameElement>();
     const handleIframeLoad = () => {
       if (this.didInitIframe) return;

@@ -3,80 +3,61 @@ import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
 import { State } from "./CatannFilesEnums";
+import {
+  type SessionDataConfig,
+  getCatannConfig,
+  mergeCatannConfig,
+} from "./config";
 
 export const newUserState = () => {
-  return {
-    userState: {
-      accessLevel: 1,
-      colonistCoins: 0,
-      colonistVersion: 2890,
-      giftedMemberships: [],
-      icon: 12,
-      id: "102003699",
-      interactedWithSite: true,
-      isLoggedIn: false,
-      hasJoinedColonistDiscordServer: false,
-      karma: 0,
-      karmaCompletedGameCount: 0,
-      membershipPaymentMethod: null,
-      membershipPending: false,
-      isMuted: false,
-      ownedItems: [],
-      totalCompletedGameCount: 0,
-      ckTotalGameCount: 0,
-      ckNextRerollAt: "2026-01-28T05:55:25.976Z",
-      username: "Hedley#1901",
-      language: null,
-      usernameChangeAttemptsLeft: 1,
-      forceSubscription: true,
-      expiresAt: "2026-02-27T04:55:25.975Z",
+  const config = getCatannConfig();
+  return mergeCatannConfig(
+    {
+      userState: {
+        accessLevel: 1,
+        colonistCoins: 0,
+        colonistVersion: 2890,
+        giftedMemberships: [],
+        icon: 12,
+        id: "102003699",
+        interactedWithSite: true,
+        isLoggedIn: false,
+        hasJoinedColonistDiscordServer: false,
+        karma: 0,
+        karmaCompletedGameCount: 0,
+        membershipPaymentMethod: null,
+        membershipPending: false,
+        isMuted: false,
+        ownedItems: [],
+        totalCompletedGameCount: 0,
+        ckTotalGameCount: 0,
+        ckNextRerollAt: "2026-01-28T05:55:25.976Z",
+        username: "Hedley#1901",
+        language: null,
+        usernameChangeAttemptsLeft: 1,
+        forceSubscription: true,
+        expiresAt: "2026-02-27T04:55:25.975Z",
+      },
+      csrfToken:
+        "f15d756694a7f1e46bd03aead75b34bcc4e328679aa35cb9e9d2ea57ba631d12e66ca47eca7005c60047369816fe58dbfca41ca2368e54ba8d4faaa06f01deb6",
+      abTests: {
+        BOT_GAME_TAB_CTA: "DEFAULT",
+        CHAT_TOXICITY_SHOW_MONITORED_WARNING: "DEFAULT",
+        CK_MONETIZATION_DICE_ROLL: "DEFAULT",
+        GIFTING_CHANGE_BEST_VALUE_HINT: "DEFAULT",
+        MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
+        REFERRAL_PROGRAM: "DEFAULT",
+      },
     },
-    csrfToken:
-      "f15d756694a7f1e46bd03aead75b34bcc4e328679aa35cb9e9d2ea57ba631d12e66ca47eca7005c60047369816fe58dbfca41ca2368e54ba8d4faaa06f01deb6",
-    abTests: {
-      BOT_GAME_TAB_CTA: "DEFAULT",
-      CHAT_TOXICITY_SHOW_MONITORED_WARNING: "DEFAULT",
-      CK_MONETIZATION_DICE_ROLL: "DEFAULT",
-      GIFTING_CHANGE_BEST_VALUE_HINT: "DEFAULT",
-      MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
-      REFERRAL_PROGRAM: "DEFAULT",
+    {
+      userState: config.userStateOverrides,
     },
-  };
+  );
 };
 
 export const newRoom = () => {
-  return {
-    id: State.RoomEvent.toString(),
-    data: {
-      roomId: `roomIdx${store.me.roomId}`,
-      type: "StateUpdated",
-      updateSequence: Date.now(),
-      private: true,
-      playOrderSelectionActive: false,
-      minimumKarma: 0,
-      gameMode: "classic4P",
-      map: "classic4P",
-      diceType: "balanced",
-      victoryPointsToWin: 10,
-      victoryPointsRecommendedLimit: 22,
-      victoryPointsMaxAllowed: 20,
-      cardDiscardLimit: 7,
-      maxPlayers: 4,
-      gameSpeed: "base120s",
-      botSpeed: "normal",
-      hiddenBankCards: false,
-      friendlyRobber: true,
-      isTournament: false,
-      isTestFreeExpansionsAndMaps: false,
-      kickedUserIds: [],
-      creationPhase: "settings",
-      sessions: [],
-    },
-  };
-};
-
-export const newRoomMe = () => {
-  return {
+  const config = getCatannConfig();
+  const sessionDefaults: SessionDataConfig = {
     roomSessionId: "1141816",
     userSessionId: store.me.userId,
     userId: store.me.userId,
@@ -92,12 +73,101 @@ export const newRoomMe = () => {
     availableColors: ["red", "blue", "orange", "green"],
     botDifficulty: null,
   };
+  const session = mergeCatannConfig(sessionDefaults, config.sessionData);
+  const baseRoomData = {
+    roomId: `roomIdx${store.me.roomId}`,
+    type: "StateUpdated",
+    updateSequence: Date.now(),
+    private: true,
+    playOrderSelectionActive: false,
+    minimumKarma: 0,
+    gameMode: "classic4P",
+    map: "classic4P",
+    diceType: "balanced",
+    victoryPointsToWin: 10,
+    victoryPointsRecommendedLimit: 22,
+    victoryPointsMaxAllowed: 20,
+    cardDiscardLimit: 7,
+    maxPlayers: 4,
+    gameSpeed: "base120s",
+    botSpeed: "normal",
+    hiddenBankCards: false,
+    friendlyRobber: true,
+    isTournament: false,
+    isTestFreeExpansionsAndMaps: false,
+    kickedUserIds: [],
+    creationPhase: "settings",
+  };
+  const roomData = applyRoomConfigOverrides(baseRoomData);
+  return {
+    id: State.RoomEvent.toString(),
+    data: {
+      ...roomData,
+      sessions: [session],
+    },
+  };
+};
+
+const applyRoomConfigOverrides = (roomData: any) => {
+  const config = getCatannConfig();
+  return mergeCatannConfig(roomData, config.roomData);
+};
+
+export const newRoomMe = () => {
+  const config = getCatannConfig();
+  return mergeCatannConfig(
+    {
+      roomSessionId: "1141816",
+      userSessionId: store.me.userId,
+      userId: store.me.userId,
+      isBot: false,
+      isReadyToPlay: true,
+      selectedColor: "red",
+      username: store.me.userId,
+      isMember: false,
+      icon: 12,
+      profilePictureUrl: null,
+      karmaCompletedGames: 0,
+      karmaTotalGames: 0,
+      availableColors: ["red", "blue", "orange", "green"],
+      botDifficulty: null,
+    } as SessionDataConfig,
+    config.sessionData,
+  );
 };
 
 export const newGame = () => {
+  const config = getCatannConfig();
   const room = firebaseData.ROOM;
   const sessions = room.data.sessions as any[];
-  const mapState = newMapState();
+  const mapState = config.mapState
+    ? mergeCatannConfig(newMapState(), config.mapState)
+    : newMapState();
+  const gameSettings = mergeCatannConfig(
+    {
+      id: room.data.roomId,
+      channelId: null,
+      gameType: 3,
+      privateGame: false,
+      playOrderSelectionActive: false,
+      minimumKarma: 0,
+      eloType: 0,
+      modeSetting: 0,
+      extensionSetting: 0,
+      scenarioSetting: 0,
+      mapSetting: 0,
+      diceSetting: 1,
+      victoryPointsToWin: 10,
+      karmaActive: false,
+      cardDiscardLimit: 7,
+      maxPlayers: 4,
+      gameSpeed: 2,
+      botSpeed: 1,
+      hideBankCards: false,
+      friendlyRobber: false,
+    },
+    config.gameSettingsOverrides,
+  );
   return {
     id: State.GameStateUpdate.toString(),
     data: {
@@ -234,28 +304,7 @@ export const newGame = () => {
         },
         isReplay: false,
         isAfterLiveGame: false,
-        gameSettings: {
-          id: room.data.roomId,
-          channelId: null,
-          gameType: 3,
-          privateGame: false,
-          playOrderSelectionActive: false,
-          minimumKarma: 0,
-          eloType: 0,
-          modeSetting: 0,
-          extensionSetting: 0,
-          scenarioSetting: 0,
-          mapSetting: 0,
-          diceSetting: 1,
-          victoryPointsToWin: 10,
-          karmaActive: false,
-          cardDiscardLimit: 7,
-          maxPlayers: 4,
-          gameSpeed: 2,
-          botSpeed: 1,
-          hideBankCards: false,
-          friendlyRobber: false,
-        },
+        gameSettings,
         timeLeftInState: 180,
       },
     },
@@ -1074,18 +1123,25 @@ const newMapState = () => {
 };
 
 export const startGame = () => {
+  const config = getCatannConfig();
   const newFirstGameState = () => {
     const room = firebaseData.ROOM;
+    const startGameOverrides = mergeCatannConfig(
+      {
+        serverId: "08CC38",
+        databaseGameId: room.data.roomId,
+        gameSettingId: room.data.roomId,
+        shouldResetGameClient: false,
+        isReconnectingSession: false,
+      },
+      config.startGameOverrides,
+    );
     return {
       id: State.GameStateUpdate.toString(),
       data: {
         type: 1,
         payload: {
-          serverId: "08CC38",
-          databaseGameId: room.data.roomId,
-          gameSettingId: room.data.roomId,
-          shouldResetGameClient: false,
-          isReconnectingSession: false,
+          ...startGameOverrides,
         },
       },
     };

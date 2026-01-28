@@ -14,6 +14,12 @@ import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
 import { State } from "../app/gameLogic/CatannFilesEnums";
+import {
+  type CatannConfig,
+  type DeepPartial,
+  getDefaultCatannConfig,
+  mergeCatannConfig,
+} from "../app/gameLogic/config";
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
   return async ({ page }: { page: Page }, testInfo: any) => {
@@ -36,7 +42,8 @@ const choreo = (
   ) => Promise<void>,
 ) => {
   return async ({ page }: { page: Page }) => {
-    const expectedMessages = await getExpectedMessages(fileName);
+    const { messages: expectedMessages, config: configOverrides } =
+      await getExpectedMessages(fileName);
     const startIndex = expectedMessages.findIndex(
       (msg) => msg.data.type === "startGame",
     );
@@ -51,7 +58,7 @@ const choreo = (
       expectedMessages.length,
     );
 
-    const iframe = await createRoom(page);
+    const iframe = await createRoom(page, configOverrides);
     const spliced = await spliceTestMessages(iframe);
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
@@ -317,8 +324,16 @@ const mapAppearsClickable = async (
 
 //
 
-const createRoom = async (page: Page): Promise<FrameLocator> => {
+const createRoom = async (
+  page: Page,
+  configOverrides?: DeepPartial<CatannConfig>,
+): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
+    if (configOverrides) {
+      await page.addInitScript((config) => {
+        window.__catannTestConfig = config;
+      }, configOverrides);
+    }
     await page.goto(`${APP_URL}catann`, { waitUntil: "load" });
     const iframe = page.locator('iframe[title="iframe"]');
     await expect(iframe).toBeVisible({ timeout: 1000 });
@@ -340,6 +355,165 @@ const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   return true;
 };
 
+const deepEqual = (a: any, b: any): boolean => {
+  if (Object.is(a, b)) return true;
+  if (Array.isArray(a) || Array.isArray(b)) {
+    if (!Array.isArray(a) || !Array.isArray(b)) return false;
+    if (a.length !== b.length) return false;
+    return a.every((value, index) => deepEqual(value, b[index]));
+  }
+  if (a && b && typeof a === "object" && typeof b === "object") {
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+    if (keysA.length !== keysB.length) return false;
+    return keysA.every((key) => deepEqual(a[key], b[key]));
+  }
+  return false;
+};
+
+const buildDiffOverrides = <T,>(base: T, incoming: T): DeepPartial<T> => {
+  if (deepEqual(base, incoming)) return {};
+  if (Array.isArray(base) || Array.isArray(incoming)) {
+    return incoming as any;
+  }
+  if (
+    base &&
+    incoming &&
+    typeof base === "object" &&
+    typeof incoming === "object"
+  ) {
+    const diff: Record<string, any> = {};
+    Object.keys(incoming as Record<string, any>).forEach((key) => {
+      const baseValue = (base as Record<string, any>)[key];
+      const incomingValue = (incoming as Record<string, any>)[key];
+      if (incomingValue === undefined) return;
+      if (
+        baseValue &&
+        incomingValue &&
+        typeof baseValue === "object" &&
+        typeof incomingValue === "object" &&
+        !Array.isArray(baseValue) &&
+        !Array.isArray(incomingValue)
+      ) {
+        const nested = buildDiffOverrides(baseValue, incomingValue);
+        if (Object.keys(nested).length > 0) {
+          diff[key] = nested;
+        }
+        return;
+      }
+      if (!deepEqual(baseValue, incomingValue)) {
+        diff[key] = incomingValue;
+      }
+    });
+    return diff as DeepPartial<T>;
+  }
+  return incoming as any;
+};
+
+const extractExpectedConfig = (
+  messages: { trigger: string; data: any }[],
+): CatannConfig => {
+  const defaults = getDefaultCatannConfig();
+  const roomStateMessage = messages.find(
+    (msg) => msg.trigger === "serverData" && msg.data?.data?.type === "StateUpdated",
+  );
+  const roomState = roomStateMessage?.data?.data ?? {};
+  const roomSession = roomState?.sessions?.[0] ?? {};
+
+  const gameStateMessage = messages.find(
+    (msg) => msg.trigger === "serverData" && msg.data?.data?.payload?.gameState,
+  );
+  const gamePayload = gameStateMessage?.data?.data?.payload ?? {};
+  const playerUserState = gamePayload?.playerUserStates?.[0] ?? {};
+
+  const startGameMessage = messages.find(
+    (msg) =>
+      msg.trigger === "serverData" &&
+      msg.data?.data?.payload?.serverId,
+  );
+  const startGamePayload = startGameMessage?.data?.data?.payload ?? {};
+
+  const diceEntry = messages
+    .flatMap((msg) =>
+      msg.trigger === "serverData"
+        ? Object.values(
+            msg.data?.data?.payload?.diff?.gameLogState ??
+              msg.data?.data?.payload?.gameLogState ??
+              {},
+          )
+        : [],
+    )
+    .find(
+      (entry: any) =>
+        entry?.text?.type === 10 &&
+        typeof entry?.text?.firstDice === "number",
+    ) as { text?: { firstDice?: number; secondDice?: number } } | undefined;
+
+  const expectedConfig = mergeCatannConfig(defaults, {
+    roomData: {
+      roomId: roomState?.roomId,
+      private: roomState?.private,
+      playOrderSelectionActive: roomState?.playOrderSelectionActive,
+      minimumKarma: roomState?.minimumKarma,
+      gameMode: roomState?.gameMode,
+      map: roomState?.map,
+      diceType: roomState?.diceType,
+      victoryPointsToWin: roomState?.victoryPointsToWin,
+      victoryPointsRecommendedLimit: roomState?.victoryPointsRecommendedLimit,
+      victoryPointsMaxAllowed: roomState?.victoryPointsMaxAllowed,
+      cardDiscardLimit: roomState?.cardDiscardLimit,
+      maxPlayers: roomState?.maxPlayers,
+      gameSpeed: roomState?.gameSpeed,
+      botSpeed: roomState?.botSpeed,
+      hiddenBankCards: roomState?.hiddenBankCards,
+      friendlyRobber: roomState?.friendlyRobber,
+      isTournament: roomState?.isTournament,
+      isTestFreeExpansionsAndMaps: roomState?.isTestFreeExpansionsAndMaps,
+      kickedUserIds: roomState?.kickedUserIds,
+      creationPhase: roomState?.creationPhase,
+    },
+    sessionData: {
+      roomSessionId: roomSession?.roomSessionId,
+      userSessionId: roomSession?.userSessionId,
+      userId: roomSession?.userId,
+      isBot: roomSession?.isBot,
+      isReadyToPlay: roomSession?.isReadyToPlay,
+      selectedColor: roomSession?.selectedColor,
+      username: roomSession?.username,
+      isMember: roomSession?.isMember,
+      icon: roomSession?.icon,
+      profilePictureUrl: roomSession?.profilePictureUrl,
+      karmaCompletedGames: roomSession?.karmaCompletedGames,
+      karmaTotalGames: roomSession?.karmaTotalGames,
+      availableColors: roomSession?.availableColors,
+      botDifficulty: roomSession?.botDifficulty,
+    },
+    userStateOverrides: {
+      id: playerUserState?.userId ?? roomSession?.userId,
+      username: playerUserState?.username ?? roomSession?.username,
+      icon: playerUserState?.databaseIcon ?? roomSession?.icon,
+    },
+    gameSettingsOverrides: {
+      mapSetting: gamePayload?.gameSettings?.mapSetting,
+      diceSetting: gamePayload?.gameSettings?.diceSetting,
+    },
+    diceRoll: {
+      dice1: diceEntry?.text?.firstDice ?? defaults.diceRoll.dice1,
+      dice2: diceEntry?.text?.secondDice ?? defaults.diceRoll.dice2,
+    },
+    mapState: gamePayload?.gameState?.mapState,
+    startGameOverrides: {
+      serverId: startGamePayload?.serverId,
+      databaseGameId: startGamePayload?.databaseGameId,
+      gameSettingId: startGamePayload?.gameSettingId,
+      shouldResetGameClient: startGamePayload?.shouldResetGameClient,
+      isReconnectingSession: startGamePayload?.isReconnectingSession,
+    },
+  });
+
+  return expectedConfig;
+};
+
 const getExpectedMessages = async (recordingPath: string) => {
   const openRecordingJson = (
     recordingPath: string,
@@ -348,7 +522,13 @@ const getExpectedMessages = async (recordingPath: string) => {
     const data = fs.readFileSync(fullPath, "utf8");
     return JSON.parse(data) as { trigger: string; data: any }[];
   };
-  return openRecordingJson(recordingPath).filter((msg) => isNotHeartbeat(msg));
+  const messages = openRecordingJson(recordingPath).filter((msg) =>
+    isNotHeartbeat(msg),
+  );
+  const defaults = getDefaultCatannConfig();
+  const expectedConfig = extractExpectedConfig(messages);
+  const configOverrides = buildDiffOverrides(defaults, expectedConfig);
+  return { messages, config: configOverrides };
 };
 
 const spliceTestMessages = async (
