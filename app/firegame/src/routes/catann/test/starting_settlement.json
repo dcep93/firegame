@@ -5,7 +5,7 @@
       "action": 3,
       "payload": {
         "roomType": 0,
-        "clientVersion": 288
+        "clientVersion": 289
       }
     }
   },
@@ -983,7 +983,7 @@
     "trigger": "clientData",
     "data": {
       "type": "startGame",
-      "clientVersion": 288
+      "clientVersion": 289
     }
   },
   {
