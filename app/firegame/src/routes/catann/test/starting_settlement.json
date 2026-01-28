@@ -159,7 +159,6 @@
       }
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {
@@ -186,6 +185,7 @@
       "sequence": 5
     }
   },
+  { "trigger": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {

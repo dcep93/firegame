@@ -25,9 +25,51 @@ const getGameStateSnapshot = (gameData: any) => {
   }
 };
 
-const buildGameStateUpdated = (gameData: any) => {
+const isObject = (value: any) =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+
+const deepEqual = (a: any, b: any): boolean => {
+  if (Object.is(a, b)) return true;
+  if (Array.isArray(a) || Array.isArray(b)) {
+    if (!Array.isArray(a) || !Array.isArray(b)) return false;
+    if (a.length !== b.length) return false;
+    return a.every((value, index) => deepEqual(value, b[index]));
+  }
+  if (isObject(a) && isObject(b)) {
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+    if (keysA.length !== keysB.length) return false;
+    return keysA.every((key) => deepEqual(a[key], b[key]));
+  }
+  return false;
+};
+
+const buildDiff = (previous: any, current: any): any | undefined => {
+  if (deepEqual(previous, current)) return undefined;
+  if (Array.isArray(previous) || Array.isArray(current)) {
+    if (!Array.isArray(previous) || !Array.isArray(current)) return current;
+    return deepEqual(previous, current) ? undefined : current;
+  }
+  if (isObject(previous) && isObject(current)) {
+    const diff: Record<string, any> = {};
+    Object.keys(current).forEach((key) => {
+      const childDiff = buildDiff(previous[key], current[key]);
+      if (childDiff !== undefined) {
+        diff[key] = childDiff;
+      }
+    });
+    return Object.keys(diff).length > 0 ? diff : undefined;
+  }
+  return current;
+};
+
+const buildGameStateUpdated = (gameData: any, previousState?: any) => {
   const gameState = gameData?.data?.payload?.gameState;
   if (!gameState) return null;
+  const diff = previousState ? buildDiff(previousState, gameState) : gameState;
+  if (!diff || (isObject(diff) && Object.keys(diff).length === 0)) {
+    return null;
+  }
   const timeLeftInState =
     gameData?.data?.payload?.timeLeftInState ??
     gameState?.currentState?.allocatedTime ??
@@ -37,7 +79,7 @@ const buildGameStateUpdated = (gameData: any) => {
     data: {
       type: GameStateUpdateType.GameStateUpdated,
       payload: {
-        diff: gameState,
+        diff,
         timeLeftInState,
       },
     },
@@ -73,7 +115,10 @@ function receiveFirebaseDataCatann(catann: any) {
       return;
     }
     if (snapshot === lastGameStateSnapshot) return;
-    const update = buildGameStateUpdated(firebaseData.GAME);
+    const previousState = lastGameStateSnapshot
+      ? JSON.parse(lastGameStateSnapshot)
+      : null;
+    const update = buildGameStateUpdated(firebaseData.GAME, previousState);
     if (update) {
       sendToMainSocket?.(update);
     }

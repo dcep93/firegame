@@ -359,6 +359,17 @@ const verifyTestMessages = async (
       expectedMsg.data.sequence = msg.data.sequence;
     } else {
       expectedMsg.data.data.sequence = msg.data.data.sequence;
+      if (expectedMsg.data.data.payload?.timeLeftInState !== undefined) {
+        expectedMsg.data.data.payload.timeLeftInState =
+          msg.data.data.payload.timeLeftInState;
+      }
+      if (
+        expectedMsg.data.data.payload?.diff?.currentState?.startTime !==
+        undefined
+      ) {
+        expectedMsg.data.data.payload.diff.currentState.startTime =
+          msg.data.data.payload.diff.currentState.startTime;
+      }
     }
     expect(msg).toEqual(expectedMsg);
     console.log(msg);

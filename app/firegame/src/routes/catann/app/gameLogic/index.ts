@@ -12,6 +12,122 @@ import {
   TileType,
 } from "./CatannFilesEnums";
 
+const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
+  switch (edgeState.z) {
+    case EdgeDirection.NorthWest:
+      return [
+        { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
+        { x: edgeState.x, y: edgeState.y, z: CornerDirection.North },
+      ];
+    case EdgeDirection.West:
+      return [
+        { x: edgeState.x - 1, y: edgeState.y + 1, z: CornerDirection.North },
+        { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
+      ];
+    case EdgeDirection.SouthWest:
+      return [
+        { x: edgeState.x, y: edgeState.y, z: CornerDirection.South },
+        { x: edgeState.x - 1, y: edgeState.y + 1, z: CornerDirection.North },
+      ];
+    default:
+      return [];
+  }
+};
+
+const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
+  const indices = Object.keys(gameLogState)
+    .map((key) => Number.parseInt(key, 10))
+    .filter((value) => Number.isFinite(value));
+  if (indices.length === 0) return 4;
+  const nextIndex = Math.max(...indices) + 1;
+  return nextIndex < 4 ? 4 : nextIndex;
+};
+
+const addGameLogEntry = (gameState: any, entry: any) => {
+  if (!gameState.gameLogState) {
+    gameState.gameLogState = {};
+  }
+  const nextIndex = getNextGameLogIndex(gameState.gameLogState);
+  gameState.gameLogState[String(nextIndex)] = entry;
+};
+
+const updateCurrentState = (
+  gameData: any,
+  updates: Partial<{
+    actionState: number;
+    completedTurns: number;
+    turnState: number;
+    allocatedTime: number;
+  }>,
+) => {
+  const gameState = gameData.data.payload.gameState;
+  Object.assign(gameState.currentState, updates);
+  gameState.currentState.startTime = Date.now();
+  if (typeof updates.allocatedTime === "number") {
+    gameData.data.payload.timeLeftInState = updates.allocatedTime;
+  }
+};
+
+const addPlayerResourceCards = (
+  gameState: any,
+  playerColor: number,
+  cards: number[],
+  distributionType: number,
+) => {
+  if (cards.length === 0) return;
+  const bankState = gameState.bankState;
+  const playerState = gameState.playerStates[playerColor];
+  if (!playerState.resourceCards) {
+    playerState.resourceCards = { cards: [] };
+  }
+  cards.forEach((card) => {
+    if (bankState?.resourceCards?.[card] !== undefined) {
+      bankState.resourceCards[card] -= 1;
+    }
+    playerState.resourceCards.cards.push(card);
+  });
+  addGameLogEntry(gameState, {
+    text: {
+      type: 47,
+      playerColor,
+      cardsToBroadcast: cards,
+      distributionType,
+    },
+    from: playerColor,
+  });
+};
+
+const applyPortOwnership = (
+  gameState: any,
+  cornerState: any,
+  playerColor: number,
+) => {
+  const portEdgeStates = gameState.mapState?.portEdgeStates;
+  if (!portEdgeStates) return;
+  Object.entries(portEdgeStates).forEach(
+    ([key, portEdgeState]: [string, any]) => {
+      const endpoints = edgeEndpoints(portEdgeState as any);
+      const isAdjacent = endpoints.some(
+        (endpoint) =>
+          endpoint.x === cornerState.x &&
+          endpoint.y === cornerState.y &&
+          endpoint.z === cornerState.z,
+      );
+      if (!isAdjacent) return;
+      portEdgeStates[key] = { ...portEdgeState, owner: playerColor };
+      if (portEdgeState.type === 4) {
+        const ratios =
+          gameState.playerStates?.[playerColor]?.bankTradeRatiosState;
+        if (ratios) {
+          Object.keys(ratios).forEach((ratioKey) => {
+            ratios[ratioKey] = 3;
+          });
+        }
+      }
+    },
+  );
+};
+
 export const sendCornerHighlights = (gameData: any) => {
   const isClose = (a: any, b: any) => {
     if (a.z === b.z) {
@@ -65,36 +181,6 @@ export const sendCornerHighlights = (gameData: any) => {
 const sendEdgeHighlights = (gameData: any) => {
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
-
-  const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
-    switch (edgeState.z) {
-      case EdgeDirection.NorthWest:
-        return [
-          { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
-          { x: edgeState.x, y: edgeState.y, z: CornerDirection.North },
-        ];
-      case EdgeDirection.West:
-        return [
-          {
-            x: edgeState.x - 1,
-            y: edgeState.y + 1,
-            z: CornerDirection.North,
-          },
-          { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
-        ];
-      case EdgeDirection.SouthWest:
-        return [
-          { x: edgeState.x, y: edgeState.y, z: CornerDirection.South },
-          {
-            x: edgeState.x - 1,
-            y: edgeState.y + 1,
-            z: CornerDirection.North,
-          },
-        ];
-      default:
-        return [];
-    }
-  };
 
   const edgeStates = gameData.data.payload.gameState.mapState.tileEdgeStates;
   const cornerStates =
@@ -160,8 +246,28 @@ export const placeSettlement = (cornerIndex: number) => {
     settlementState.bankSettlementAmount -= 1;
   }
 
-  gameState.currentState.actionState =
-    PlayerActionState.InitialPlacementRoadPlacement;
+  updateCurrentState(gameData, {
+    actionState: PlayerActionState.InitialPlacementRoadPlacement,
+    allocatedTime: 45,
+  });
+
+  const playerState = gameState.playerStates[playerColor];
+  if (!playerState.victoryPointsState) {
+    playerState.victoryPointsState = {};
+  }
+  playerState.victoryPointsState["0"] =
+    (playerState.victoryPointsState["0"] ?? 0) + 1;
+
+  addGameLogEntry(gameState, {
+    text: {
+      type: 4,
+      playerColor,
+      pieceEnum: 2,
+    },
+    from: playerColor,
+  });
+
+  applyPortOwnership(gameState, cornerState, playerColor);
 
   sendCornerHighlights(gameData);
   sendEdgeHighlights(gameData);
@@ -188,9 +294,7 @@ export const placeSettlement = (cornerIndex: number) => {
           ];
     const adjacentTiles = adjacentCoords
       .map((coord) => tileIndexByCoord.get(`${coord.x},${coord.y}`))
-      .filter((tileIndex): tileIndex is number =>
-        Number.isFinite(tileIndex),
-      );
+      .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
     const resourcesToGive: {
       owner: number;
       tileIndex: number;
@@ -213,6 +317,14 @@ export const placeSettlement = (cornerIndex: number) => {
           });
         }
       });
+    }
+    if (resourcesToGive.length > 0) {
+      addPlayerResourceCards(
+        gameState,
+        playerColor,
+        resourcesToGive.map((resource) => resource.card),
+        0,
+      );
     }
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
@@ -250,8 +362,38 @@ export const placeRoad = (edgeIndex: number) => {
     roadState.bankRoadAmount -= 1;
   }
 
-  gameState.currentState.actionState =
-    PlayerActionState.InitialPlacementPlaceSettlement;
+  const completedTurns = gameState.currentState.completedTurns ?? 0;
+  if (completedTurns === 0) {
+    updateCurrentState(gameData, {
+      completedTurns: 1,
+      actionState: PlayerActionState.InitialPlacementPlaceSettlement,
+      allocatedTime: 180,
+    });
+    if (gameState.mechanicLongestRoadState?.[playerColor]) {
+      gameState.mechanicLongestRoadState[playerColor].longestRoad = 1;
+    }
+  } else {
+    updateCurrentState(gameData, {
+      completedTurns: completedTurns + 1,
+      turnState: 1,
+      actionState: PlayerActionState.None,
+      allocatedTime: 8,
+    });
+  }
+
+  addGameLogEntry(gameState, {
+    text: {
+      type: 4,
+      playerColor,
+      pieceEnum: 0,
+    },
+    from: playerColor,
+  });
+  addGameLogEntry(gameState, {
+    text: {
+      type: 44,
+    },
+  });
 
   sendCornerHighlights(gameData);
   sendEdgeHighlights(gameData);
@@ -263,6 +405,34 @@ export const placeRoad = (edgeIndex: number) => {
       edgeIndex,
     },
   );
+
+  if (completedTurns >= 1) {
+    gameState.diceState = {
+      diceThrown: true,
+      dice1: 5,
+      dice2: 4,
+    };
+    updateCurrentState(gameData, {
+      turnState: 2,
+      allocatedTime: 120,
+    });
+    addGameLogEntry(gameState, {
+      text: {
+        type: 10,
+        playerColor,
+        firstDice: 5,
+        secondDice: 4,
+      },
+      from: playerColor,
+    });
+    addPlayerResourceCards(gameState, playerColor, [5], 1);
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "rollDice",
+      },
+    );
+  }
 };
 
 export const applyGameAction = (parsed: {
