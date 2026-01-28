@@ -12,7 +12,6 @@ import {
   State,
   TileType,
 } from "./CatannFilesEnums";
-import { getCatannConfig } from "./config";
 
 const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
   switch (edgeState.z) {
@@ -300,8 +299,6 @@ const sendExitInitialPlacement62 = (gameData: any) => {
 };
 
 const sendInitialPlacementDiceRoll = (gameData: any) => {
-  const config = getCatannConfig();
-  const { dice1, dice2 } = config.diceRoll;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
   const distribution = [
@@ -322,8 +319,8 @@ const sendInitialPlacementDiceRoll = (gameData: any) => {
 
   gameState.diceState = {
     diceThrown: true,
-    dice1,
-    dice2,
+    dice1: 5,
+    dice2: 4,
   };
   if (!gameState.bankState) {
     gameState.bankState = { resourceCards: {} };
@@ -340,8 +337,8 @@ const sendInitialPlacementDiceRoll = (gameData: any) => {
     text: {
       type: 10,
       playerColor,
-      firstDice: dice1,
-      secondDice: dice2,
+      firstDice: 5,
+      secondDice: 4,
     },
     from: playerColor,
   };
