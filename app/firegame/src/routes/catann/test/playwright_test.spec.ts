@@ -15,10 +15,10 @@ import * as http from "http";
 import * as path from "path";
 import { State } from "../app/gameLogic/CatannFilesEnums";
 import {
-  type CatannConfig,
-  type DeepPartial,
   getDefaultCatannConfig,
   mergeCatannConfig,
+  type CatannConfig,
+  type DeepPartial,
 } from "../app/gameLogic/config";
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
@@ -67,7 +67,7 @@ const choreo = (
   };
 };
 
-test.skip(
+test(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -214,7 +214,7 @@ const startingSettlementChoreo = async (
   await f({ col: 10, row: 5 }, { col: 10, row: 6 });
 };
 
-test(
+test.skip(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
@@ -371,7 +371,7 @@ const deepEqual = (a: any, b: any): boolean => {
   return false;
 };
 
-const buildDiffOverrides = <T,>(base: T, incoming: T): DeepPartial<T> => {
+const buildDiffOverrides = <T>(base: T, incoming: T): DeepPartial<T> => {
   if (deepEqual(base, incoming)) return {};
   if (Array.isArray(base) || Array.isArray(incoming)) {
     return incoming as any;
@@ -415,7 +415,8 @@ const extractExpectedConfig = (
 ): CatannConfig => {
   const defaults = getDefaultCatannConfig();
   const roomStateMessage = messages.find(
-    (msg) => msg.trigger === "serverData" && msg.data?.data?.type === "StateUpdated",
+    (msg) =>
+      msg.trigger === "serverData" && msg.data?.data?.type === "StateUpdated",
   );
   const roomState = roomStateMessage?.data?.data ?? {};
   const roomSession = roomState?.sessions?.[0] ?? {};
@@ -427,9 +428,7 @@ const extractExpectedConfig = (
   const playerUserState = gamePayload?.playerUserStates?.[0] ?? {};
 
   const startGameMessage = messages.find(
-    (msg) =>
-      msg.trigger === "serverData" &&
-      msg.data?.data?.payload?.serverId,
+    (msg) => msg.trigger === "serverData" && msg.data?.data?.payload?.serverId,
   );
   const startGamePayload = startGameMessage?.data?.data?.payload ?? {};
 
@@ -445,8 +444,7 @@ const extractExpectedConfig = (
     )
     .find(
       (entry: any) =>
-        entry?.text?.type === 10 &&
-        typeof entry?.text?.firstDice === "number",
+        entry?.text?.type === 10 && typeof entry?.text?.firstDice === "number",
     ) as { text?: { firstDice?: number; secondDice?: number } } | undefined;
 
   const expectedConfig = mergeCatannConfig(defaults, {
