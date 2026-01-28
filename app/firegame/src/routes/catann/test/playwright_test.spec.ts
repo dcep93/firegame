@@ -1,3 +1,7 @@
+// TODO
+// dont splice in the beginning
+// start from random point, interact, verify
+
 import {
   expect,
   Locator,
