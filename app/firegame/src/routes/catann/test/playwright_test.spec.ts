@@ -52,6 +52,9 @@ const choreo = (
     );
 
     const iframe = await createRoom(page);
+    const gameState = expectedMessages.find(
+      (msg) => msg.data.data?.payload.gameState,
+    )!.data.data.payload.gameState;
     await page.evaluate(
       (__testOverrides) => {
         window.__testOverrides = __testOverrides;
@@ -62,11 +65,10 @@ const choreo = (
             msg.trigger === "serverData" &&
             msg.data.data.payload.databaseGameId,
         )!.data.data.payload,
-        startTime: expectedMessages.find(
-          (msg) => msg.data.data?.payload.gameState,
-        )!.data.data.payload.gameState.currentState.startTime,
+        startTime: gameState.currentState.startTime,
         session: expectedSpliced.find((msg) => msg.data.data?.sessions)!.data
           .data.sessions[0],
+        mapState: gameState.mapState,
       },
     );
     await spliceTestMessages(iframe);
@@ -439,10 +441,10 @@ const MAP_CONFIRM_OFFSET = 53;
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: 300_000 });
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 test.beforeAll(async ({}, testInfo) => {
   const waitForServer = async (url: string, timeoutMs: number) => {
-    const delay = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
     const deadline = Date.now() + timeoutMs;
 
     while (Date.now() < deadline) {

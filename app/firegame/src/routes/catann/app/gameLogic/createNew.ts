@@ -10,6 +10,7 @@ declare global {
       databaseGame: any;
       session: any;
       startTime: number;
+      mapState: any;
     };
   }
 }
@@ -107,7 +108,7 @@ export const newRoomMe = () => {
 export const newGame = () => {
   const room = firebaseData.ROOM;
   const sessions = room.data.sessions as any[];
-  const mapState = newMapState();
+  const mapState = window.__testOverrides?.mapState ?? newMapState();
   return {
     id: State.GameStateUpdate.toString(),
     data: {
@@ -222,13 +223,13 @@ export const newGame = () => {
             "1": {},
           },
           mechanicRobberState: {
-            locationTileIndex: 2,
+            locationTileIndex: 3,
             isActive: true,
           },
         },
         playerUserStates: sessions.map((s) => ({
-          userId: s.userId,
-          username: s.username,
+          userId: window.__testOverrides?.session.userId ?? s.userId,
+          username: window.__testOverrides?.session.username ?? s.username,
           databaseIcon: s.icon,
           selectedColor: 1,
           isBot: false,
