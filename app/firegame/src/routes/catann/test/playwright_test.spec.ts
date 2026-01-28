@@ -361,7 +361,7 @@ const verifyTestMessages = async (
     try {
       expect(msg.trigger).toEqual(expectedMsg.trigger);
     } catch (e) {
-      console.log({ msg, expectedMsg });
+      console.log(JSON.stringify({ msg, expectedMsg }));
       throw e;
     }
     if (msg.trigger === "clientData") {
