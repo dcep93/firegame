@@ -1,105 +1,45 @@
 import { sendCornerHighlights30 } from ".";
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
-import { FUTURE, sendToMainSocket } from "../handleMessage";
+import { sendToMainSocket } from "../handleMessage";
 import { State } from "./CatannFilesEnums";
 
 export const newUserState = () => {
   return {
     userState: {
-      userSessionId: store.me.userId,
       accessLevel: 1,
-      colonistCoins: 108_000,
-      colonistVersion: 1080,
+      colonistCoins: 0,
+      colonistVersion: 2890,
       giftedMemberships: [],
-      icon: 11,
-      id: store.me.userId,
+      icon: 12,
+      id: "102003699",
       interactedWithSite: true,
-      isLoggedIn: true,
+      isLoggedIn: false,
       hasJoinedColonistDiscordServer: false,
-      karma: 20,
-      karmaCompletedGameCount: 20,
-      totalCompletedGameCount: 1,
-      membershipPaymentMethod: "Stripe",
+      karma: 0,
+      karmaCompletedGameCount: 0,
+      membershipPaymentMethod: null,
       membershipPending: false,
-      membership: 5,
-      membershipEndDate: FUTURE,
       isMuted: false,
-      ownedItems: [
-        // Expansions (category 1)
-        { category: 1, type: 0 }, // Seafarers4P
-        { category: 1, type: 1 }, // CitiesAndKnights4P
-        { category: 1, type: 2 }, // TradersAndBarbarians
-        { category: 1, type: 3 }, // ExplorersAndPirates
-        { category: 1, type: 4 }, // Classic56P
-        { category: 1, type: 5 }, // Classic78P
-        { category: 1, type: 6 }, // Seafarers56P
-        { category: 1, type: 7 }, // CitiesAndKnights56P
-        { category: 1, type: 8 }, // CitiesAndKnightsSeafarers4P
-        { category: 1, type: 9 }, // CitiesAndKnightsSeafarers56P
-        // Maps (category 2)
-        { category: 2, type: 0 }, // Earth
-        { category: 2, type: 1 }, // USA
-        { category: 2, type: 2 }, // UK
-        { category: 2, type: 3 }, // Diamond
-        { category: 2, type: 4 }, // Gear
-        { category: 2, type: 5 }, // Lakes
-        { category: 2, type: 6 }, // Pond
-        { category: 2, type: 7 }, // Twirl
-        { category: 2, type: 8 }, // Classic4PRandom
-        { category: 2, type: 9 }, // ShuffleBoard
-        { category: 2, type: 10 }, // BlackForest
-        { category: 2, type: 11 }, // Volcano
-        { category: 2, type: 12 }, // GoldRush
-        // Avatars (category 3)
-        { category: 3, type: 0 }, // FounderHat
-        { category: 3, type: 1 }, // ColonistHat
-        { category: 3, type: 2 }, // SettlerHat
-        { category: 3, type: 3 }, // ChristmasHat
-        { category: 3, type: 4 }, // Player
-        { category: 3, type: 5 }, // PirateShip
-        { category: 3, type: 6 }, // MedalGold
-        { category: 3, type: 7 }, // MedalSilver
-        { category: 3, type: 8 }, // MedalBronze
-        { category: 3, type: 9 }, // Elephant
-        { category: 3, type: 10 }, // Avocado
-        { category: 3, type: 11 }, // Cactus
-        { category: 3, type: 12 }, // Crown
-        { category: 3, type: 13 }, // Swords
-        { category: 3, type: 14 }, // Helmet
-        { category: 3, type: 15 }, // Snorkel
-        { category: 3, type: 16 }, // Scarf
-        { category: 3, type: 17 }, // Tie
-        { category: 3, type: 18 }, // Worker
-        { category: 3, type: 19 }, // Sombrero
-        { category: 3, type: 20 }, // Farmer
-        { category: 3, type: 21 }, // RobberSanta
-        { category: 3, type: 22 }, // RobberLunar
-        { category: 3, type: 23 }, // RobberCupid
-        { category: 3, type: 24 }, // Mummy
-        { category: 3, type: 25 }, // Gifter
-      ],
-      //   totalCompletedGameCount: 441,
-      //   ckTotalGameCount: 0,
-      //   ckNextRerollAt: "2026-01-17T19:30:46.992Z",
-      username: store.me.userId,
+      ownedItems: [],
+      totalCompletedGameCount: 0,
+      ckTotalGameCount: 0,
+      ckNextRerollAt: "2026-01-28T05:55:25.976Z",
+      username: "Hedley#1901",
       language: null,
-      //   usernameChangeAttemptsLeft: 0,
+      usernameChangeAttemptsLeft: 1,
       forceSubscription: true,
-      //   vliHash:
-      //     "be7ff6257c114e96bf8bd088e74f557e7d0763d174985bb66a9f00b0df4e0661",
-      expiresAt: FUTURE,
+      expiresAt: "2026-02-27T04:55:25.975Z",
     },
     csrfToken:
-      "e3eb1249fa0460b5c60c8c51c405365f88d9b20a0c0e9b6b1684a2b048b4aad0ab6e1f8424b0185bb61b1f6373f9324a94644e964ce348927fc8347eedd7d16b",
+      "f15d756694a7f1e46bd03aead75b34bcc4e328679aa35cb9e9d2ea57ba631d12e66ca47eca7005c60047369816fe58dbfca41ca2368e54ba8d4faaa06f01deb6",
     abTests: {
-      //   CHAT_TOXICITY_SHOW_MONITORED_WARNING:
-      //     "SHOW_CHAT_IS_MONITORED_WARNING",
-      //   CK_MONETIZATION_DICE_ROLL: "FREE_PLAYS_THEN_DICE_ROLL",
-      //   GIFTING_CHANGE_BEST_VALUE_HINT: "SHOW_MOST_POPULAR",
-      //   MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
-      //   REACTIVATE_DISCORD_INACTIVE_USERS:
-      //     "GROUP_A_YOU_HAVE_NOT_PLAYED_FOR_A_WHILE",
+      BOT_GAME_TAB_CTA: "DEFAULT",
+      CHAT_TOXICITY_SHOW_MONITORED_WARNING: "DEFAULT",
+      CK_MONETIZATION_DICE_ROLL: "DEFAULT",
+      GIFTING_CHANGE_BEST_VALUE_HINT: "DEFAULT",
+      MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
+      REFERRAL_PROGRAM: "DEFAULT",
     },
   };
 };

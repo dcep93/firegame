@@ -2,18 +2,1608 @@
   {
     "trigger": "clientData",
     "data": {
-      "id": "136",
+      "action": 3,
+      "payload": {
+        "roomType": 0,
+        "clientVersion": 289
+      }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 14,
+      "payload": {}
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "133",
       "data": {
-        "timestamp": 1769554588011
+        "type": 2,
+        "payload": {
+          "id": "07F81D.17648737"
+        }
+      }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 9,
+      "payload": false
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 1
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 10,
+      "payload": true
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "133",
+      "data": {
+        "type": 12,
+        "payload": {
+          "full": true,
+          "rooms": [
+            {
+              "id": "wall1052",
+              "players": [
+                {
+                  "username": "Jeandaywoyst",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                },
+                {
+                  "username": "Wye0474",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                },
+                {
+                  "username": "Barcus8380",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                },
+                {
+                  "username": "Keet",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 4,
+              "map": 0,
+              "speed": 0,
+              "mode": 0,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            },
+            {
+              "id": "map5265",
+              "players": [
+                {
+                  "username": "Eddie#5642",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 2,
+                  "karmaTotalGames": 2,
+                  "membership": null
+                },
+                {
+                  "username": "Ohare#1647",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 0,
+                  "karmaTotalGames": 0,
+                  "membership": null
+                },
+                {
+                  "username": "tuty1920",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 4,
+                  "karmaTotalGames": 4,
+                  "membership": null
+                },
+                {
+                  "username": "Reuben#4724",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 0,
+                  "karmaTotalGames": 0,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 4,
+              "map": 0,
+              "speed": 1,
+              "mode": 0,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            },
+            {
+              "id": "wood4729",
+              "players": [
+                {
+                  "username": "Morgan9",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 18,
+                  "karmaTotalGames": 18,
+                  "membership": null
+                },
+                {
+                  "username": "paigeee",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                },
+                {
+                  "username": "Poppas3997",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 16,
+                  "karmaTotalGames": 16,
+                  "membership": null
+                },
+                {
+                  "username": "cody57#3133",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 4,
+              "map": 0,
+              "speed": 0,
+              "mode": 0,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            },
+            {
+              "id": "farm2674",
+              "players": [
+                {
+                  "username": "Law#0118",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 4,
+              "map": 29,
+              "speed": 5,
+              "mode": 12,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            },
+            {
+              "id": "203794403",
+              "players": [
+                {
+                  "username": "Hamal#9388",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                },
+                {
+                  "username": "elCheeno",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 2,
+              "map": 29,
+              "speed": 0,
+              "mode": 0,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            },
+            {
+              "id": "rule7702",
+              "players": [
+                {
+                  "username": "lordwar",
+                  "icon": 11,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                },
+                {
+                  "username": "Pierro#1375",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 20,
+                  "karmaTotalGames": 20,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 4,
+              "map": 0,
+              "speed": 2,
+              "mode": 0,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            }
+          ]
+        }
       }
     }
   },
   {
     "trigger": "serverData",
     "data": {
-      "id": "136",
+      "id": "139",
       "data": {
-        "timestamp": 1769554588011
+        "type": 1,
+        "payload": {
+          "playerCount": 4,
+          "modeId": 12,
+          "mapId": 0,
+          "endDate": "2026-02-03T23:59:59.999Z",
+          "isBotGame": false
+        }
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "139",
+      "data": {
+        "type": 2,
+        "payload": {
+          "totalGameCount": 0,
+          "playedToday": false,
+          "freeGamesTotalCount": 5
+        }
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "137",
+      "data": {
+        "type": "InfoMessageUpdated",
+        "messageType": "none"
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "133",
+      "data": {
+        "type": 12,
+        "payload": {
+          "full": false,
+          "rooms": [
+            {
+              "id": "area7700",
+              "players": [
+                {
+                  "username": "Hedley#1901",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 0,
+                  "karmaTotalGames": 0,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 4,
+              "map": 0,
+              "speed": 2,
+              "mode": 0,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "137",
+      "data": {
+        "type": "StateUpdated",
+        "roomId": "area7700",
+        "updateSequence": 1769579652075,
+        "private": false,
+        "playOrderSelectionActive": false,
+        "minimumKarma": 0,
+        "gameMode": "classic4P",
+        "map": "classic4P",
+        "diceType": "balanced",
+        "victoryPointsToWin": 10,
+        "victoryPointsRecommendedLimit": 22,
+        "victoryPointsMaxAllowed": 20,
+        "cardDiscardLimit": 7,
+        "maxPlayers": 4,
+        "gameSpeed": "base120s",
+        "botSpeed": "normal",
+        "hiddenBankCards": false,
+        "friendlyRobber": true,
+        "isTournament": false,
+        "isTestFreeExpansionsAndMaps": false,
+        "kickedUserIds": [],
+        "creationPhase": "settings",
+        "sessions": [
+          {
+            "roomSessionId": "18738",
+            "userSessionId": "07F81D.17648737",
+            "userId": "102003699",
+            "isBot": false,
+            "isReadyToPlay": true,
+            "selectedColor": "red",
+            "username": "Hedley#1901",
+            "isMember": false,
+            "icon": 12,
+            "profilePictureUrl": null,
+            "karmaCompletedGames": 0,
+            "karmaTotalGames": 0,
+            "availableColors": ["red", "blue", "orange", "green"],
+            "botDifficulty": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 15,
+      "payload": {}
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "133",
+      "data": {
+        "type": 12,
+        "payload": {
+          "full": false,
+          "rooms": [
+            {
+              "id": "area7700",
+              "players": [
+                {
+                  "username": "Hedley#1901",
+                  "icon": 12,
+                  "isBot": false,
+                  "karmaCompletedGames": 0,
+                  "karmaTotalGames": 0,
+                  "membership": null
+                }
+              ],
+              "maxPlayers": 4,
+              "map": 0,
+              "speed": 2,
+              "mode": 0,
+              "modePlayable": true,
+              "mapPlayable": true,
+              "minimumKarma": 0,
+              "visible": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "137",
+      "data": {
+        "type": "StateUpdated",
+        "roomId": "area7700",
+        "updateSequence": 1769579652076,
+        "private": false,
+        "playOrderSelectionActive": false,
+        "minimumKarma": 0,
+        "gameMode": "classic4P",
+        "map": "classic4P",
+        "diceType": "balanced",
+        "victoryPointsToWin": 10,
+        "victoryPointsRecommendedLimit": 22,
+        "victoryPointsMaxAllowed": 20,
+        "cardDiscardLimit": 7,
+        "maxPlayers": 4,
+        "gameSpeed": "base120s",
+        "botSpeed": "normal",
+        "hiddenBankCards": false,
+        "friendlyRobber": true,
+        "isTournament": false,
+        "isTestFreeExpansionsAndMaps": false,
+        "kickedUserIds": [],
+        "creationPhase": "settings",
+        "sessions": [
+          {
+            "roomSessionId": "18738",
+            "userSessionId": "07F81D.17648737",
+            "userId": "102003699",
+            "isBot": false,
+            "isReadyToPlay": true,
+            "selectedColor": "red",
+            "username": "Hedley#1901",
+            "isMember": false,
+            "icon": 12,
+            "profilePictureUrl": null,
+            "karmaCompletedGames": 0,
+            "karmaTotalGames": 0,
+            "availableColors": ["red", "blue", "orange", "green"],
+            "botDifficulty": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "type": "startGame",
+      "clientVersion": 289
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 6,
+        "payload": false,
+        "sequence": 1
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 1,
+        "payload": {
+          "gameSettingId": "area7700",
+          "shouldResetGameClient": true,
+          "databaseGameId": "203795915",
+          "serverId": "09EC39",
+          "isReconnectingSession": false
+        },
+        "sequence": 2
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 59,
+        "payload": [],
+        "sequence": 3
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 4,
+        "payload": {
+          "playerColor": 1,
+          "playOrder": [1],
+          "gameState": {
+            "diceState": {
+              "diceThrown": true,
+              "dice1": 1,
+              "dice2": 1
+            },
+            "bankState": {
+              "hideBankCards": false,
+              "resourceCards": {
+                "1": 19,
+                "2": 19,
+                "3": 18,
+                "4": 19,
+                "5": 19
+              }
+            },
+            "mapState": {
+              "tileHexStates": {
+                "0": {
+                  "x": 0,
+                  "y": -2,
+                  "type": 4,
+                  "diceNumber": 5
+                },
+                "1": {
+                  "x": -1,
+                  "y": -1,
+                  "type": 3,
+                  "diceNumber": 8
+                },
+                "2": {
+                  "x": -2,
+                  "y": 0,
+                  "type": 3,
+                  "diceNumber": 4
+                },
+                "3": {
+                  "x": -2,
+                  "y": 1,
+                  "type": 3,
+                  "diceNumber": 11
+                },
+                "4": {
+                  "x": -2,
+                  "y": 2,
+                  "type": 4,
+                  "diceNumber": 12
+                },
+                "5": {
+                  "x": -1,
+                  "y": 2,
+                  "type": 0,
+                  "diceNumber": 0
+                },
+                "6": {
+                  "x": 0,
+                  "y": 2,
+                  "type": 1,
+                  "diceNumber": 9
+                },
+                "7": {
+                  "x": 1,
+                  "y": 1,
+                  "type": 4,
+                  "diceNumber": 10
+                },
+                "8": {
+                  "x": 2,
+                  "y": 0,
+                  "type": 3,
+                  "diceNumber": 8
+                },
+                "9": {
+                  "x": 2,
+                  "y": -1,
+                  "type": 5,
+                  "diceNumber": 3
+                },
+                "10": {
+                  "x": 2,
+                  "y": -2,
+                  "type": 1,
+                  "diceNumber": 6
+                },
+                "11": {
+                  "x": 1,
+                  "y": -2,
+                  "type": 1,
+                  "diceNumber": 2
+                },
+                "12": {
+                  "x": 0,
+                  "y": -1,
+                  "type": 2,
+                  "diceNumber": 10
+                },
+                "13": {
+                  "x": -1,
+                  "y": 0,
+                  "type": 5,
+                  "diceNumber": 3
+                },
+                "14": {
+                  "x": -1,
+                  "y": 1,
+                  "type": 5,
+                  "diceNumber": 6
+                },
+                "15": {
+                  "x": 0,
+                  "y": 1,
+                  "type": 2,
+                  "diceNumber": 5
+                },
+                "16": {
+                  "x": 1,
+                  "y": 0,
+                  "type": 4,
+                  "diceNumber": 4
+                },
+                "17": {
+                  "x": 1,
+                  "y": -1,
+                  "type": 2,
+                  "diceNumber": 9
+                },
+                "18": {
+                  "x": 0,
+                  "y": 0,
+                  "type": 1,
+                  "diceNumber": 11
+                }
+              },
+              "tileCornerStates": {
+                "0": {
+                  "x": 0,
+                  "y": -2,
+                  "z": 0
+                },
+                "1": {
+                  "x": 1,
+                  "y": -3,
+                  "z": 1
+                },
+                "2": {
+                  "x": 0,
+                  "y": -1,
+                  "z": 0
+                },
+                "3": {
+                  "x": 0,
+                  "y": -2,
+                  "z": 1
+                },
+                "4": {
+                  "x": -1,
+                  "y": -1,
+                  "z": 0
+                },
+                "5": {
+                  "x": 0,
+                  "y": -3,
+                  "z": 1
+                },
+                "6": {
+                  "x": -1,
+                  "y": 0,
+                  "z": 0
+                },
+                "7": {
+                  "x": -1,
+                  "y": -1,
+                  "z": 1
+                },
+                "8": {
+                  "x": -2,
+                  "y": 0,
+                  "z": 0
+                },
+                "9": {
+                  "x": -1,
+                  "y": -2,
+                  "z": 1
+                },
+                "10": {
+                  "x": -2,
+                  "y": 1,
+                  "z": 0
+                },
+                "11": {
+                  "x": -2,
+                  "y": 0,
+                  "z": 1
+                },
+                "12": {
+                  "x": -3,
+                  "y": 1,
+                  "z": 0
+                },
+                "13": {
+                  "x": -2,
+                  "y": -1,
+                  "z": 1,
+                  "owner": 1,
+                  "buildingType": 1,
+                  "bonuses": []
+                },
+                "14": {
+                  "x": -1,
+                  "y": 0,
+                  "z": 1
+                },
+                "15": {
+                  "x": -2,
+                  "y": 2,
+                  "z": 0
+                },
+                "16": {
+                  "x": -2,
+                  "y": 1,
+                  "z": 1
+                },
+                "17": {
+                  "x": -3,
+                  "y": 2,
+                  "z": 0
+                },
+                "18": {
+                  "x": -1,
+                  "y": 1,
+                  "z": 1
+                },
+                "19": {
+                  "x": -2,
+                  "y": 3,
+                  "z": 0
+                },
+                "20": {
+                  "x": -2,
+                  "y": 2,
+                  "z": 1
+                },
+                "21": {
+                  "x": -3,
+                  "y": 3,
+                  "z": 0
+                },
+                "22": {
+                  "x": -1,
+                  "y": 2,
+                  "z": 0
+                },
+                "23": {
+                  "x": 0,
+                  "y": 1,
+                  "z": 1
+                },
+                "24": {
+                  "x": -1,
+                  "y": 3,
+                  "z": 0
+                },
+                "25": {
+                  "x": -1,
+                  "y": 2,
+                  "z": 1
+                },
+                "26": {
+                  "x": 0,
+                  "y": 2,
+                  "z": 0
+                },
+                "27": {
+                  "x": 1,
+                  "y": 1,
+                  "z": 1
+                },
+                "28": {
+                  "x": 0,
+                  "y": 3,
+                  "z": 0
+                },
+                "29": {
+                  "x": 0,
+                  "y": 2,
+                  "z": 1
+                },
+                "30": {
+                  "x": 1,
+                  "y": 1,
+                  "z": 0
+                },
+                "31": {
+                  "x": 2,
+                  "y": 0,
+                  "z": 1
+                },
+                "32": {
+                  "x": 1,
+                  "y": 2,
+                  "z": 0
+                },
+                "33": {
+                  "x": 1,
+                  "y": 0,
+                  "z": 1
+                },
+                "34": {
+                  "x": 2,
+                  "y": 0,
+                  "z": 0
+                },
+                "35": {
+                  "x": 3,
+                  "y": -1,
+                  "z": 1,
+                  "owner": 1,
+                  "buildingType": 1,
+                  "bonuses": []
+                },
+                "36": {
+                  "x": 2,
+                  "y": 1,
+                  "z": 0
+                },
+                "37": {
+                  "x": 2,
+                  "y": -1,
+                  "z": 1
+                },
+                "38": {
+                  "x": 2,
+                  "y": -1,
+                  "z": 0
+                },
+                "39": {
+                  "x": 3,
+                  "y": -2,
+                  "z": 1
+                },
+                "40": {
+                  "x": 1,
+                  "y": 0,
+                  "z": 0
+                },
+                "41": {
+                  "x": 2,
+                  "y": -2,
+                  "z": 1
+                },
+                "42": {
+                  "x": 2,
+                  "y": -2,
+                  "z": 0
+                },
+                "43": {
+                  "x": 3,
+                  "y": -3,
+                  "z": 1
+                },
+                "44": {
+                  "x": 1,
+                  "y": -1,
+                  "z": 0
+                },
+                "45": {
+                  "x": 2,
+                  "y": -3,
+                  "z": 1
+                },
+                "46": {
+                  "x": 1,
+                  "y": -2,
+                  "z": 0
+                },
+                "47": {
+                  "x": 1,
+                  "y": -2,
+                  "z": 1
+                },
+                "48": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "49": {
+                  "x": 0,
+                  "y": -1,
+                  "z": 1
+                },
+                "50": {
+                  "x": -1,
+                  "y": 1,
+                  "z": 0
+                },
+                "51": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 1
+                },
+                "52": {
+                  "x": 0,
+                  "y": 1,
+                  "z": 0
+                },
+                "53": {
+                  "x": 1,
+                  "y": -1,
+                  "z": 1
+                }
+              },
+              "tileEdgeStates": {
+                "0": {
+                  "x": 1,
+                  "y": -3,
+                  "z": 2
+                },
+                "1": {
+                  "x": 1,
+                  "y": -2,
+                  "z": 1
+                },
+                "2": {
+                  "x": 0,
+                  "y": -1,
+                  "z": 0
+                },
+                "3": {
+                  "x": 0,
+                  "y": -2,
+                  "z": 2
+                },
+                "4": {
+                  "x": 0,
+                  "y": -2,
+                  "z": 1
+                },
+                "5": {
+                  "x": 0,
+                  "y": -2,
+                  "z": 0
+                },
+                "6": {
+                  "x": 0,
+                  "y": -1,
+                  "z": 1
+                },
+                "7": {
+                  "x": -1,
+                  "y": 0,
+                  "z": 0
+                },
+                "8": {
+                  "x": -1,
+                  "y": -1,
+                  "z": 2
+                },
+                "9": {
+                  "x": -1,
+                  "y": -1,
+                  "z": 1
+                },
+                "10": {
+                  "x": -1,
+                  "y": -1,
+                  "z": 0
+                },
+                "11": {
+                  "x": -1,
+                  "y": 0,
+                  "z": 1
+                },
+                "12": {
+                  "x": -2,
+                  "y": 1,
+                  "z": 0
+                },
+                "13": {
+                  "x": -2,
+                  "y": 0,
+                  "z": 2
+                },
+                "14": {
+                  "x": -2,
+                  "y": 0,
+                  "z": 1,
+                  "owner": 1,
+                  "type": 1
+                },
+                "15": {
+                  "x": -2,
+                  "y": 0,
+                  "z": 0
+                },
+                "16": {
+                  "x": -1,
+                  "y": 0,
+                  "z": 2
+                },
+                "17": {
+                  "x": -1,
+                  "y": 1,
+                  "z": 1
+                },
+                "18": {
+                  "x": -2,
+                  "y": 2,
+                  "z": 0
+                },
+                "19": {
+                  "x": -2,
+                  "y": 1,
+                  "z": 2
+                },
+                "20": {
+                  "x": -2,
+                  "y": 1,
+                  "z": 1
+                },
+                "21": {
+                  "x": -1,
+                  "y": 1,
+                  "z": 2
+                },
+                "22": {
+                  "x": -1,
+                  "y": 2,
+                  "z": 1
+                },
+                "23": {
+                  "x": -2,
+                  "y": 3,
+                  "z": 0
+                },
+                "24": {
+                  "x": -2,
+                  "y": 2,
+                  "z": 2
+                },
+                "25": {
+                  "x": -2,
+                  "y": 2,
+                  "z": 1
+                },
+                "26": {
+                  "x": 0,
+                  "y": 1,
+                  "z": 2
+                },
+                "27": {
+                  "x": 0,
+                  "y": 2,
+                  "z": 1
+                },
+                "28": {
+                  "x": -1,
+                  "y": 3,
+                  "z": 0
+                },
+                "29": {
+                  "x": -1,
+                  "y": 2,
+                  "z": 2
+                },
+                "30": {
+                  "x": -1,
+                  "y": 2,
+                  "z": 0
+                },
+                "31": {
+                  "x": 1,
+                  "y": 1,
+                  "z": 2
+                },
+                "32": {
+                  "x": 1,
+                  "y": 2,
+                  "z": 1
+                },
+                "33": {
+                  "x": 0,
+                  "y": 3,
+                  "z": 0
+                },
+                "34": {
+                  "x": 0,
+                  "y": 2,
+                  "z": 2
+                },
+                "35": {
+                  "x": 0,
+                  "y": 2,
+                  "z": 0
+                },
+                "36": {
+                  "x": 2,
+                  "y": 0,
+                  "z": 2
+                },
+                "37": {
+                  "x": 2,
+                  "y": 1,
+                  "z": 1
+                },
+                "38": {
+                  "x": 1,
+                  "y": 2,
+                  "z": 0
+                },
+                "39": {
+                  "x": 1,
+                  "y": 1,
+                  "z": 1
+                },
+                "40": {
+                  "x": 1,
+                  "y": 1,
+                  "z": 0
+                },
+                "41": {
+                  "x": 3,
+                  "y": -1,
+                  "z": 2
+                },
+                "42": {
+                  "x": 3,
+                  "y": 0,
+                  "z": 1,
+                  "owner": 1,
+                  "type": 1
+                },
+                "43": {
+                  "x": 2,
+                  "y": 1,
+                  "z": 0
+                },
+                "44": {
+                  "x": 2,
+                  "y": 0,
+                  "z": 1
+                },
+                "45": {
+                  "x": 2,
+                  "y": 0,
+                  "z": 0
+                },
+                "46": {
+                  "x": 3,
+                  "y": -2,
+                  "z": 2
+                },
+                "47": {
+                  "x": 3,
+                  "y": -1,
+                  "z": 1
+                },
+                "48": {
+                  "x": 2,
+                  "y": -1,
+                  "z": 2
+                },
+                "49": {
+                  "x": 2,
+                  "y": -1,
+                  "z": 1
+                },
+                "50": {
+                  "x": 2,
+                  "y": -1,
+                  "z": 0
+                },
+                "51": {
+                  "x": 3,
+                  "y": -3,
+                  "z": 2
+                },
+                "52": {
+                  "x": 3,
+                  "y": -2,
+                  "z": 1
+                },
+                "53": {
+                  "x": 2,
+                  "y": -2,
+                  "z": 2
+                },
+                "54": {
+                  "x": 2,
+                  "y": -2,
+                  "z": 1
+                },
+                "55": {
+                  "x": 2,
+                  "y": -2,
+                  "z": 0
+                },
+                "56": {
+                  "x": 2,
+                  "y": -3,
+                  "z": 2
+                },
+                "57": {
+                  "x": 1,
+                  "y": -1,
+                  "z": 0
+                },
+                "58": {
+                  "x": 1,
+                  "y": -2,
+                  "z": 2
+                },
+                "59": {
+                  "x": 1,
+                  "y": -2,
+                  "z": 0
+                },
+                "60": {
+                  "x": 1,
+                  "y": -1,
+                  "z": 1
+                },
+                "61": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "62": {
+                  "x": 0,
+                  "y": -1,
+                  "z": 2
+                },
+                "63": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 1
+                },
+                "64": {
+                  "x": -1,
+                  "y": 1,
+                  "z": 0
+                },
+                "65": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 2
+                },
+                "66": {
+                  "x": 0,
+                  "y": 1,
+                  "z": 1
+                },
+                "67": {
+                  "x": 1,
+                  "y": 0,
+                  "z": 2
+                },
+                "68": {
+                  "x": 0,
+                  "y": 1,
+                  "z": 0
+                },
+                "69": {
+                  "x": 1,
+                  "y": 0,
+                  "z": 1
+                },
+                "70": {
+                  "x": 1,
+                  "y": 0,
+                  "z": 0
+                },
+                "71": {
+                  "x": 1,
+                  "y": -1,
+                  "z": 2
+                }
+              },
+              "portEdgeStates": {
+                "0": {
+                  "x": 0,
+                  "y": -2,
+                  "z": 0,
+                  "type": 1
+                },
+                "1": {
+                  "x": -2,
+                  "y": 2,
+                  "z": 2,
+                  "type": 1
+                },
+                "2": {
+                  "x": -1,
+                  "y": 3,
+                  "z": 0,
+                  "type": 6
+                },
+                "3": {
+                  "x": 3,
+                  "y": 0,
+                  "z": 1,
+                  "type": 4,
+                  "owner": 1
+                },
+                "4": {
+                  "x": -1,
+                  "y": -1,
+                  "z": 1,
+                  "type": 3
+                },
+                "5": {
+                  "x": -2,
+                  "y": 1,
+                  "z": 1,
+                  "type": 1
+                },
+                "6": {
+                  "x": 1,
+                  "y": 2,
+                  "z": 0,
+                  "type": 1
+                },
+                "7": {
+                  "x": 2,
+                  "y": -3,
+                  "z": 2,
+                  "type": 5
+                },
+                "8": {
+                  "x": 3,
+                  "y": -2,
+                  "z": 2,
+                  "type": 2
+                }
+              }
+            },
+            "currentState": {
+              "completedTurns": 2,
+              "turnState": 2,
+              "actionState": 0,
+              "currentTurnPlayerColor": 1,
+              "startTime": 1769579659463,
+              "allocatedTime": 120
+            },
+            "tradeState": {
+              "activeOffers": {},
+              "closedOffers": {},
+              "embargoState": {
+                "1": {
+                  "activeEmbargosAgainst": []
+                }
+              }
+            },
+            "playerStates": {
+              "1": {
+                "color": 1,
+                "victoryPointsState": {
+                  "0": 2
+                },
+                "bankTradeRatiosState": {
+                  "1": 4,
+                  "2": 4,
+                  "3": 2,
+                  "4": 4,
+                  "5": 4
+                },
+                "resourceCards": {
+                  "cards": [3]
+                },
+                "cardDiscardLimit": 7,
+                "isConnected": true,
+                "isTakingAction": false
+              }
+            },
+            "gameLogState": {
+              "0": {
+                "text": {
+                  "type": 2,
+                  "isDiscord": false
+                }
+              },
+              "1": {
+                "text": {
+                  "type": 44
+                }
+              },
+              "2": {
+                "text": {
+                  "type": 4,
+                  "playerColor": 1,
+                  "pieceEnum": 2
+                },
+                "from": 1
+              },
+              "3": {
+                "text": {
+                  "type": 4,
+                  "playerColor": 1,
+                  "pieceEnum": 0
+                },
+                "from": 1
+              },
+              "4": {
+                "text": {
+                  "type": 44
+                }
+              },
+              "5": {
+                "text": {
+                  "type": 4,
+                  "playerColor": 1,
+                  "pieceEnum": 2
+                },
+                "from": 1
+              },
+              "6": {
+                "text": {
+                  "type": 47,
+                  "playerColor": 1,
+                  "cardsToBroadcast": [3],
+                  "distributionType": 0
+                },
+                "from": 1
+              },
+              "7": {
+                "text": {
+                  "type": 4,
+                  "playerColor": 1,
+                  "pieceEnum": 0
+                },
+                "from": 1
+              },
+              "8": {
+                "text": {
+                  "type": 44
+                }
+              },
+              "9": {
+                "text": {
+                  "type": 10,
+                  "playerColor": 1,
+                  "firstDice": 1,
+                  "secondDice": 1
+                },
+                "from": 1
+              }
+            },
+            "gameChatState": {},
+            "mechanicSettlementState": {
+              "1": {
+                "bankSettlementAmount": 3
+              }
+            },
+            "mechanicCityState": {
+              "1": {
+                "bankCityAmount": 4
+              }
+            },
+            "mechanicRoadState": {
+              "1": {
+                "bankRoadAmount": 13
+              }
+            },
+            "mechanicDevelopmentCardsState": {
+              "bankDevelopmentCards": {
+                "cards": [
+                  10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+                  10, 10, 10, 10, 10, 10, 10, 10, 10, 10
+                ]
+              },
+              "players": {
+                "1": {
+                  "developmentCards": {
+                    "cards": []
+                  },
+                  "developmentCardsUsed": []
+                }
+              }
+            },
+            "mechanicLongestRoadState": {
+              "1": {
+                "longestRoad": 1
+              }
+            },
+            "mechanicLargestArmyState": {
+              "1": {}
+            },
+            "mechanicRobberState": {
+              "locationTileIndex": 5,
+              "isActive": true
+            }
+          },
+          "playerUserStates": [
+            {
+              "userId": "102003699",
+              "username": "Hedley#1901",
+              "databaseIcon": 12,
+              "selectedColor": 1,
+              "isBot": false,
+              "deviceType": 1,
+              "countryCode": "US",
+              "regionUpdated": null,
+              "membership": null,
+              "profilePictureUrl": null
+            }
+          ],
+          "gameDetails": {
+            "isRanked": false,
+            "isDiscord": false
+          },
+          "gameSettings": {
+            "id": "area7700",
+            "channelId": null,
+            "gameType": 3,
+            "privateGame": false,
+            "playOrderSelectionActive": false,
+            "minimumKarma": 0,
+            "eloType": 0,
+            "modeSetting": 0,
+            "extensionSetting": 0,
+            "scenarioSetting": 0,
+            "mapSetting": 0,
+            "diceSetting": 1,
+            "victoryPointsToWin": 10,
+            "karmaActive": false,
+            "cardDiscardLimit": 7,
+            "maxPlayers": 4,
+            "gameSpeed": 2,
+            "botSpeed": 1,
+            "hideBankCards": false,
+            "friendlyRobber": true
+          },
+          "timeLeftInState": 180
+        },
+        "sequence": 4
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 78,
+        "payload": false,
+        "sequence": 5
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 30,
+        "payload": [
+          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
+          37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53
+        ],
+        "sequence": 6
       }
     }
   },
@@ -22,7 +1612,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554589011
+        "timestamp": 1769579653961
       }
     }
   },
@@ -31,7 +1621,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554589011
+        "timestamp": 1769579653961
       }
     }
   },
@@ -41,24 +1631,6 @@
       "action": 66,
       "payload": 13,
       "sequence": 2
-    }
-  },
-  {
-    "trigger": "clientData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554590010
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554590010
-      }
     }
   },
   {
@@ -83,7 +1655,7 @@
       "data": {
         "type": 30,
         "payload": [],
-        "sequence": 9
+        "sequence": 7
       }
     }
   },
@@ -94,7 +1666,7 @@
       "data": {
         "type": 31,
         "payload": [15, 14],
-        "sequence": 10
+        "sequence": 8
       }
     }
   },
@@ -105,7 +1677,7 @@
       "data": {
         "type": 28,
         "payload": [],
-        "sequence": 11
+        "sequence": 9
       }
     }
   },
@@ -127,7 +1699,7 @@
             },
             "currentState": {
               "actionState": 3,
-              "startTime": 1769554590560,
+              "startTime": 1769579654695,
               "allocatedTime": 45
             },
             "playerStates": {
@@ -138,7 +1710,7 @@
               }
             },
             "gameLogState": {
-              "4": {
+              "2": {
                 "text": {
                   "type": 4,
                   "playerColor": 1,
@@ -155,8 +1727,16 @@
           },
           "timeLeftInState": 45
         },
-        "sequence": 12
+        "sequence": 10
       }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 62,
+      "payload": false,
+      "sequence": 5
     }
   },
   {
@@ -164,7 +1744,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554591010
+        "timestamp": 1769579654959
       }
     }
   },
@@ -173,7 +1753,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554591010
+        "timestamp": 1769579654959
       }
     }
   },
@@ -182,14 +1762,14 @@
     "data": {
       "action": 66,
       "payload": 14,
-      "sequence": 5
+      "sequence": 6
     }
   },
   {
     "trigger": "clientData",
     "data": {
       "action": 66,
-      "sequence": 6
+      "sequence": 7
     }
   },
   {
@@ -197,7 +1777,29 @@
     "data": {
       "action": 11,
       "payload": 14,
-      "sequence": 7
+      "sequence": 8
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 31,
+        "payload": [],
+        "sequence": 11
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 32,
+        "payload": [],
+        "sequence": 12
+      }
     }
   },
   {
@@ -216,7 +1818,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 32,
+        "type": 30,
         "payload": [],
         "sequence": 14
       }
@@ -227,7 +1829,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 31,
+        "type": 33,
         "payload": [],
         "sequence": 15
       }
@@ -238,7 +1840,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 30,
+        "type": 31,
         "payload": [],
         "sequence": 16
       }
@@ -249,7 +1851,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 33,
+        "type": 32,
         "payload": [],
         "sequence": 17
       }
@@ -260,31 +1862,9 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 31,
-        "payload": [],
-        "sequence": 18
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "130",
-      "data": {
-        "type": 32,
-        "payload": [],
-        "sequence": 19
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "130",
-      "data": {
         "type": 59,
         "payload": [],
-        "sequence": 20
+        "sequence": 18
       }
     }
   },
@@ -299,7 +1879,7 @@
           23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
           40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53
         ],
-        "sequence": 21
+        "sequence": 19
       }
     }
   },
@@ -322,11 +1902,11 @@
             "currentState": {
               "completedTurns": 1,
               "actionState": 1,
-              "startTime": 1769554591981,
+              "startTime": 1769579655769,
               "allocatedTime": 180
             },
             "gameLogState": {
-              "5": {
+              "3": {
                 "text": {
                   "type": 4,
                   "playerColor": 1,
@@ -334,7 +1914,7 @@
                 },
                 "from": 1
               },
-              "6": {
+              "4": {
                 "text": {
                   "type": 44
                 }
@@ -353,8 +1933,16 @@
           },
           "timeLeftInState": 180
         },
-        "sequence": 22
+        "sequence": 20
       }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 62,
+      "payload": false,
+      "sequence": 9
     }
   },
   {
@@ -362,7 +1950,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554592014
+        "timestamp": 1769579655959
       }
     }
   },
@@ -371,7 +1959,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554592014
+        "timestamp": 1769579655959
       }
     }
   },
@@ -380,7 +1968,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554593010
+        "timestamp": 1769579656959
       }
     }
   },
@@ -389,7 +1977,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554593010
+        "timestamp": 1769579656959
       }
     }
   },
@@ -398,14 +1986,14 @@
     "data": {
       "action": 66,
       "payload": 35,
-      "sequence": 8
+      "sequence": 10
     }
   },
   {
     "trigger": "clientData",
     "data": {
       "action": 66,
-      "sequence": 9
+      "sequence": 11
     }
   },
   {
@@ -413,7 +2001,7 @@
     "data": {
       "action": 15,
       "payload": 35,
-      "sequence": 10
+      "sequence": 12
     }
   },
   {
@@ -423,7 +2011,7 @@
       "data": {
         "type": 30,
         "payload": [],
-        "sequence": 23
+        "sequence": 21
       }
     }
   },
@@ -434,7 +2022,7 @@
       "data": {
         "type": 31,
         "payload": [42, 41],
-        "sequence": 24
+        "sequence": 22
       }
     }
   },
@@ -449,10 +2037,10 @@
             "owner": 1,
             "tileIndex": 8,
             "distributionType": 0,
-            "card": 4
+            "card": 3
           }
         ],
-        "sequence": 25
+        "sequence": 23
       }
     }
   },
@@ -466,7 +2054,7 @@
           "diff": {
             "bankState": {
               "resourceCards": {
-                "4": 18
+                "3": 18
               }
             },
             "mapState": {
@@ -484,7 +2072,7 @@
             },
             "currentState": {
               "actionState": 3,
-              "startTime": 1769554593819,
+              "startTime": 1769579657705,
               "allocatedTime": 45
             },
             "playerStates": {
@@ -493,19 +2081,15 @@
                   "0": 2
                 },
                 "bankTradeRatiosState": {
-                  "1": 3,
-                  "2": 3,
-                  "3": 3,
-                  "4": 3,
-                  "5": 3
+                  "3": 2
                 },
                 "resourceCards": {
-                  "cards": [4]
+                  "cards": [3]
                 }
               }
             },
             "gameLogState": {
-              "7": {
+              "5": {
                 "text": {
                   "type": 4,
                   "playerColor": 1,
@@ -513,11 +2097,11 @@
                 },
                 "from": 1
               },
-              "8": {
+              "6": {
                 "text": {
                   "type": 47,
                   "playerColor": 1,
-                  "cardsToBroadcast": [4],
+                  "cardsToBroadcast": [3],
                   "distributionType": 0
                 },
                 "from": 1
@@ -531,8 +2115,16 @@
           },
           "timeLeftInState": 45
         },
-        "sequence": 26
+        "sequence": 24
       }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 62,
+      "payload": false,
+      "sequence": 13
     }
   },
   {
@@ -540,7 +2132,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554594011
+        "timestamp": 1769579657959
       }
     }
   },
@@ -549,7 +2141,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554594011
+        "timestamp": 1769579657959
       }
     }
   },
@@ -558,32 +2150,14 @@
     "data": {
       "action": 66,
       "payload": 42,
-      "sequence": 11
-    }
-  },
-  {
-    "trigger": "clientData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554595010
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554595010
-      }
+      "sequence": 14
     }
   },
   {
     "trigger": "clientData",
     "data": {
       "action": 66,
-      "sequence": 12
+      "sequence": 15
     }
   },
   {
@@ -591,7 +2165,29 @@
     "data": {
       "action": 11,
       "payload": 42,
-      "sequence": 13
+      "sequence": 16
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 31,
+        "payload": [],
+        "sequence": 25
+      }
+    }
+  },
+  {
+    "trigger": "serverData",
+    "data": {
+      "id": "130",
+      "data": {
+        "type": 32,
+        "payload": [],
+        "sequence": 26
+      }
     }
   },
   {
@@ -610,7 +2206,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 32,
+        "type": 30,
         "payload": [],
         "sequence": 28
       }
@@ -621,7 +2217,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 31,
+        "type": 33,
         "payload": [],
         "sequence": 29
       }
@@ -632,7 +2228,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 30,
+        "type": 31,
         "payload": [],
         "sequence": 30
       }
@@ -643,7 +2239,7 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 33,
+        "type": 32,
         "payload": [],
         "sequence": 31
       }
@@ -654,31 +2250,9 @@
     "data": {
       "id": "130",
       "data": {
-        "type": 31,
-        "payload": [],
-        "sequence": 32
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "130",
-      "data": {
-        "type": 32,
-        "payload": [],
-        "sequence": 33
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "130",
-      "data": {
         "type": 62,
         "payload": {},
-        "sequence": 34
+        "sequence": 32
       }
     }
   },
@@ -702,11 +2276,11 @@
               "completedTurns": 2,
               "turnState": 1,
               "actionState": 0,
-              "startTime": 1769554595487,
+              "startTime": 1769579658755,
               "allocatedTime": 8
             },
             "gameLogState": {
-              "9": {
+              "7": {
                 "text": {
                   "type": 4,
                   "playerColor": 1,
@@ -714,7 +2288,7 @@
                 },
                 "from": 1
               },
-              "10": {
+              "8": {
                 "text": {
                   "type": 44
                 }
@@ -728,8 +2302,16 @@
           },
           "timeLeftInState": 8
         },
-        "sequence": 35
+        "sequence": 33
       }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 62,
+      "payload": false,
+      "sequence": 17
     }
   },
   {
@@ -737,7 +2319,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554596010
+        "timestamp": 1769579658959
       }
     }
   },
@@ -746,7 +2328,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554596010
+        "timestamp": 1769579658959
       }
     }
   },
@@ -755,7 +2337,7 @@
     "data": {
       "action": 2,
       "payload": true,
-      "sequence": 14
+      "sequence": 18
     }
   },
   {
@@ -764,15 +2346,8 @@
       "id": "130",
       "data": {
         "type": 28,
-        "payload": [
-          {
-            "owner": 1,
-            "tileIndex": 2,
-            "distributionType": 1,
-            "card": 5
-          }
-        ],
-        "sequence": 36
+        "payload": [],
+        "sequence": 34
       }
     }
   },
@@ -785,43 +2360,20 @@
         "payload": {
           "diff": {
             "diceState": {
-              "diceThrown": true,
-              "dice1": 5,
-              "dice2": 4
-            },
-            "bankState": {
-              "resourceCards": {
-                "5": 18
-              }
+              "diceThrown": true
             },
             "currentState": {
               "turnState": 2,
-              "startTime": 1769554596423,
+              "startTime": 1769579659463,
               "allocatedTime": 120
             },
-            "playerStates": {
-              "1": {
-                "resourceCards": {
-                  "cards": [4, 5]
-                }
-              }
-            },
             "gameLogState": {
-              "11": {
+              "9": {
                 "text": {
                   "type": 10,
                   "playerColor": 1,
-                  "firstDice": 5,
-                  "secondDice": 4
-                },
-                "from": 1
-              },
-              "12": {
-                "text": {
-                  "type": 47,
-                  "playerColor": 1,
-                  "cardsToBroadcast": [5],
-                  "distributionType": 1
+                  "firstDice": 1,
+                  "secondDice": 1
                 },
                 "from": 1
               }
@@ -829,8 +2381,16 @@
           },
           "timeLeftInState": 120
         },
-        "sequence": 37
+        "sequence": 35
       }
+    }
+  },
+  {
+    "trigger": "clientData",
+    "data": {
+      "action": 62,
+      "payload": false,
+      "sequence": 19
     }
   },
   {
@@ -838,7 +2398,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554597010
+        "timestamp": 1769579659959
       }
     }
   },
@@ -847,7 +2407,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554597010
+        "timestamp": 1769579659959
       }
     }
   },
@@ -856,7 +2416,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554598010
+        "timestamp": 1769579660960
       }
     }
   },
@@ -865,7 +2425,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554598010
+        "timestamp": 1769579660960
       }
     }
   },
@@ -874,7 +2434,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554599011
+        "timestamp": 1769579661960
       }
     }
   },
@@ -883,7 +2443,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554599011
+        "timestamp": 1769579661960
       }
     }
   },
@@ -892,7 +2452,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554600010
+        "timestamp": 1769579662959
       }
     }
   },
@@ -901,7 +2461,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554600010
+        "timestamp": 1769579662959
       }
     }
   },
@@ -910,7 +2470,7 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554601010
+        "timestamp": 1769579663959
       }
     }
   },
@@ -919,63 +2479,8 @@
     "data": {
       "id": "136",
       "data": {
-        "timestamp": 1769554601010
+        "timestamp": 1769579663959
       }
     }
-  },
-  {
-    "trigger": "clientData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554602010
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554602010
-      }
-    }
-  },
-  {
-    "trigger": "clientData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554603011
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554603011
-      }
-    }
-  },
-  {
-    "trigger": "clientData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554604011
-      }
-    }
-  },
-  {
-    "trigger": "serverData",
-    "data": {
-      "id": "136",
-      "data": {
-        "timestamp": 1769554604011
-      }
-    }
-  },
-  { "trigger": "debug", "data": {} }
+  }
 ]
