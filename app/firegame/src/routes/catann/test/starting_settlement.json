@@ -758,7 +758,6 @@
       "sequence": 14
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "serverData",
     "data": {
@@ -977,5 +976,6 @@
         "timestamp": 1769554604011
       }
     }
-  }
+  },
+  { "trigger": "debug", "data": {} }
 ]

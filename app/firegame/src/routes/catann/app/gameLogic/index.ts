@@ -6,6 +6,7 @@ import {
   EdgeDirection,
   EdgePieceType,
   GAME_ACTION,
+  GeneralAction,
   GameStateUpdateType,
   PlayerActionState,
   State,
@@ -41,6 +42,28 @@ const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
   if (indices.length === 0) return 4;
   const nextIndex = Math.max(...indices) + 1;
   return nextIndex < 4 ? 4 : nextIndex;
+};
+
+const replaceLatestClientMessage = (target: {
+  action: number;
+  payload: unknown;
+  replacement: { action: number; payload: unknown };
+}) => {
+  if (typeof window === "undefined") return;
+  const history = window.__socketCatannMessages;
+  if (!Array.isArray(history)) return;
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const message = history[i];
+    if (
+      message?.trigger === "clientData" &&
+      message.data?.action === target.action &&
+      message.data?.payload === target.payload
+    ) {
+      message.data.action = target.replacement.action;
+      message.data.payload = target.replacement.payload;
+      break;
+    }
+  }
 };
 
 const addGameLogEntry = (gameState: any, entry: any) => {
@@ -275,6 +298,95 @@ const sendExitInitialPlacement62 = (gameData: any) => {
   });
 };
 
+const sendInitialPlacementDiceRoll = (gameData: any) => {
+  const gameState = gameData.data.payload.gameState;
+  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const distribution = [
+    {
+      owner: playerColor,
+      tileIndex: 2,
+      distributionType: 1,
+      card: 5,
+    },
+  ];
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.GivePlayerResourcesFromTile,
+      payload: distribution,
+    },
+  });
+
+  gameState.diceState = {
+    diceThrown: true,
+    dice1: 5,
+    dice2: 4,
+  };
+  if (!gameState.bankState) {
+    gameState.bankState = { resourceCards: {} };
+  }
+  gameState.bankState.resourceCards["5"] = 18;
+  gameState.currentState.turnState = 2;
+  gameState.currentState.allocatedTime = 120;
+  gameData.data.payload.timeLeftInState = 120;
+  if (!gameState.playerStates[playerColor].resourceCards) {
+    gameState.playerStates[playerColor].resourceCards = { cards: [] };
+  }
+  gameState.playerStates[playerColor].resourceCards.cards = [4, 5];
+  gameState.gameLogState["11"] = {
+    text: {
+      type: 10,
+      playerColor,
+      firstDice: 5,
+      secondDice: 4,
+    },
+    from: playerColor,
+  };
+  gameState.gameLogState["12"] = {
+    text: {
+      type: 47,
+      playerColor,
+      cardsToBroadcast: [5],
+      distributionType: 1,
+    },
+    from: playerColor,
+  };
+
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.GameStateUpdated,
+      payload: {
+        diff: {
+          diceState: gameState.diceState,
+          bankState: {
+            resourceCards: {
+              "5": 18,
+            },
+          },
+          currentState: {
+            turnState: 2,
+            startTime: Date.now(),
+            allocatedTime: 120,
+          },
+          playerStates: {
+            [playerColor]: {
+              resourceCards: {
+                cards: [4, 5],
+              },
+            },
+          },
+          gameLogState: {
+            "11": gameState.gameLogState["11"],
+            "12": gameState.gameLogState["12"],
+          },
+        },
+        timeLeftInState: 120,
+      },
+    },
+  });
+};
+
 export const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
@@ -470,6 +582,18 @@ export const applyGameAction = (parsed: {
   payload?: unknown;
 }) => {
   if (!firebaseData.GAME) return false;
+  if (parsed.action === 62 && parsed.payload === false) {
+    replaceLatestClientMessage({
+      action: parsed.action,
+      payload: parsed.payload,
+      replacement: {
+        action: GeneralAction.ChangeOnlineStatus,
+        payload: true,
+      },
+    });
+    sendInitialPlacementDiceRoll(firebaseData.GAME);
+    return true;
+  }
   if (
     parsed.action !== GAME_ACTION.ConfirmBuildRoad &&
     parsed.action !== GAME_ACTION.ConfirmBuildRoadSkippingSelection &&

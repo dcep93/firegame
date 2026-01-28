@@ -354,11 +354,11 @@ const verifyTestMessages = async (
   );
   testMessages.forEach((msg) => {
     const expectedMsg = expectedMessages.shift()!;
-    expect(expectedMsg).toBeDefined();
-    if (expectedMsg.trigger === "debug") {
+    if (expectedMsg?.trigger === "debug") {
       test.skip();
     }
     try {
+      expect(expectedMsg).toBeDefined();
       expect(msg.trigger).toEqual(expectedMsg.trigger);
     } catch (e) {
       console.log(JSON.stringify({ msg, expectedMsg }, null, 2));
