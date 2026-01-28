@@ -1102,36 +1102,8 @@ export const startGame = () => {
       },
     };
   };
-  const gameStarter = () => {
-    return {
-      id: "130",
-      data: {
-        type: 91,
-        payload: {
-          diff: {
-            playerStates: {
-              "1": {
-                isConnected: true,
-              },
-            },
-            gameLogState: {
-              "3": {
-                text: {
-                  type: 0,
-                  playerColor: 1,
-                },
-                from: 1,
-              },
-            },
-          },
-          timeLeftInState: 167.958,
-        },
-      },
-    };
-  };
 
-  const firstGameState = newFirstGameState();
-  sendToMainSocket?.(firstGameState);
+  sendToMainSocket?.(newFirstGameState());
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
@@ -1148,8 +1120,6 @@ export const startGame = () => {
     },
   });
   sendCornerHighlights30(firebaseData.GAME);
-  const gameStartUpdate = gameStarter();
-  sendToMainSocket?.(gameStartUpdate);
 };
 
 export const spoofHostRoom = () => {
