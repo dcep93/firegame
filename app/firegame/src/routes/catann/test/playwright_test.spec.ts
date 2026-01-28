@@ -358,7 +358,12 @@ const verifyTestMessages = async (
     if (expectedMsg.trigger === "debug") {
       test.skip();
     }
-    expect(msg.trigger).toEqual(expectedMsg.trigger);
+    try {
+      expect(msg.trigger).toEqual(expectedMsg.trigger);
+    } catch (e) {
+      console.log({ msg, expectedMsg });
+      throw e;
+    }
     if (msg.trigger === "clientData") {
       msg.data.sequence = expectedMsg.data.sequence;
     } else {

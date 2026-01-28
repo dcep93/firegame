@@ -758,6 +758,7 @@
       "sequence": 14
     }
   },
+  { "trigger": "debug", "data": {} },
   {
     "trigger": "serverData",
     "data": {
