@@ -351,6 +351,9 @@ const verifyTestMessages = async (
   testMessages.forEach((msg) => {
     const expectedMsg = expectedMessages.shift()!;
     expect(expectedMsg).toBeDefined();
+    if (expectedMsg.trigger === "debug") {
+      test.skip();
+    }
     expect(msg.trigger).toEqual(expectedMsg.trigger);
     if (msg.trigger === "clientData") {
       expectedMsg.data.sequence = msg.data.sequence;

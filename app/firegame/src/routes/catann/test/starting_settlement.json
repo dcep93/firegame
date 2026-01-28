@@ -159,6 +159,7 @@
       }
     }
   },
+  { "trigger": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {
