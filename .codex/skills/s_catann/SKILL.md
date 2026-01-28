@@ -52,9 +52,11 @@ screenshot (if available).
 ## Fix mode (only if explicitly requested)
 
 If the prompt explicitly requests, fix the failing test and **rerun the Catann
-workflow until it passes**. For a solution, are only allowed to change files in firegame/app/firegame/src/routes/catann/app/gameLogic. Do **not** stop after a single failing attempt or
-timeout; keep re-running the test command after each fix until you get a clean
-pass. Once it passes, continue with the screenshot steps.
+workflow until it passes**. For a solution, are only allowed to change files in
+firegame/app/firegame/src/routes/catann/app/gameLogic. Do **not** stop after a
+single failing attempt or timeout; keep re-running the test command after each
+fix until you get a clean pass. Once it passes, continue with the screenshot steps.
+Follow AGENTS.md in the same folder as this skill doc.
 
 ## 3) Locate output image (if present)
 
