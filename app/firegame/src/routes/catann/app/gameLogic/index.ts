@@ -39,9 +39,9 @@ const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
   const indices = Object.keys(gameLogState)
     .map((key) => Number.parseInt(key, 10))
     .filter((value) => Number.isFinite(value));
-  if (indices.length === 0) return 4;
+  if (indices.length === 0) return 2;
   const nextIndex = Math.max(...indices) + 1;
-  return nextIndex < 4 ? 4 : nextIndex;
+  return nextIndex < 2 ? 2 : nextIndex;
 };
 
 const replaceLatestClientMessage = (target: {
@@ -226,11 +226,12 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
     : Object.keys(edgeStates)
         .map((key) => Number.parseInt(key, 10))
         .filter((value) => Number.isFinite(value))
-        .filter((index) => {
-          const edgeState = edgeStates[String(index)];
-          if (!edgeState) {
-            return false;
-          }
+        .map((index) => ({
+          index,
+          edgeState: edgeStates[String(index)],
+        }))
+        .filter(({ edgeState }) => Boolean(edgeState))
+        .filter(({ edgeState }) => {
           const endpoints = edgeEndpoints(edgeState);
           return endpoints.some(
             (endpoint) =>
@@ -238,7 +239,14 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
               serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
           );
         })
-        .sort((a, b) => b - a);
+        .sort((a, b) => {
+          const edgeDirectionDiff = a.edgeState.z - b.edgeState.z;
+          if (edgeDirectionDiff !== 0) {
+            return edgeDirectionDiff;
+          }
+          return a.index - b.index;
+        })
+        .map(({ index }) => index);
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -583,14 +591,12 @@ export const applyGameAction = (parsed: {
 }) => {
   if (!firebaseData.GAME) return false;
   if (parsed.action === 62 && parsed.payload === false) {
-    replaceLatestClientMessage({
-      action: parsed.action,
-      payload: parsed.payload,
-      replacement: {
-        action: GeneralAction.ChangeOnlineStatus,
-        payload: true,
-      },
-    });
+    return true;
+  }
+  if (
+    parsed.action === GeneralAction.ChangeOnlineStatus &&
+    parsed.payload === true
+  ) {
     sendInitialPlacementDiceRoll(firebaseData.GAME);
     return true;
   }
