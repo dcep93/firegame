@@ -55,11 +55,13 @@ export const newUserState = () => {
   };
 };
 
+export const getRoomId = () => `roomIdx${store.me.roomId}`;
+
 export const newRoom = () => {
   return {
     id: State.RoomEvent.toString(),
     data: {
-      roomId: `roomIdx${store.me.roomId}`,
+      roomId: getRoomId(),
       type: "StateUpdated",
       updateSequence: Date.now(),
       private: true,

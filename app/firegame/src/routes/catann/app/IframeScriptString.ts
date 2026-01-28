@@ -1,5 +1,4 @@
-import store, { MeType } from "../../../shared/store";
-import { newUserState } from "./gameLogic/createNew";
+import { getRoomId, newUserState } from "./gameLogic/createNew";
 import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
@@ -16,12 +15,12 @@ declare global {
 }
 
 function main({
-  me,
+  roomId,
   isDev,
   future,
   userState,
 }: {
-  me: MeType;
+  roomId: string;
   isDev: boolean;
   future: string;
   userState: { userState: {} };
@@ -304,7 +303,7 @@ function main({
               ),
       )
       .then((resp) => {
-        window.history.replaceState(null, "", `/#roomIdx${me.roomId}`);
+        window.history.replaceState(null, "", `/#${roomId}`);
         document.open();
         document.write(resp);
         document.close();
@@ -400,5 +399,5 @@ function main({
 }
 
 const IframeScriptString = () =>
-  `(${main.toString()})(${JSON.stringify({ me: store.me, isDev, future: FUTURE, userState: newUserState() })});`;
+  `(${main.toString()})(${JSON.stringify({ roomId: getRoomId(), isDev, future: FUTURE, userState: newUserState() })});`;
 export default IframeScriptString;
