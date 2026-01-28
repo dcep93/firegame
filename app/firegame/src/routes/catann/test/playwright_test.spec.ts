@@ -94,7 +94,7 @@ test(
           const shouldBeClickable = f({ col, row });
           await expect
             .poll(async () => await mapAppearsClickable(canvas, vertexOffset), {
-              timeout: 5000,
+              timeout: 3000,
             })
             .toBe(shouldBeClickable);
         }
@@ -281,7 +281,11 @@ const checkCanvasHandle = async (iframe: FrameLocator) => {
   }
   await waitForCanvasPaint(canvasHandle);
   const canvasBox = await canvasHandle.boundingBox();
-  expect(canvasBox).toEqual({ x: 0, y: 0, width: 1280, height: 720 });
+  expect(canvasBox).toEqual({
+    ...MAP_OFFSET,
+    width: 1280 - 2 * MAP_OFFSET.x,
+    height: 720 - 2 * MAP_OFFSET.y,
+  });
 };
 
 const getSettlementOffset = (position: { col: number; row: number }) => {
@@ -579,8 +583,9 @@ const verifyTestMessages = async (
 const APP_PORT = 3000;
 const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 10_000;
-const MAP_ZERO_ZERO = { x: 232, y: 79 };
-const MAP_HEX_SIDE_LENGTH = 61;
+const MAP_OFFSET = { x: 165, y: 11.5 };
+const MAP_ZERO_ZERO = { x: 245, y: 89 };
+const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
 
 test.use({ ignoreHTTPSErrors: true });
