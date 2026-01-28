@@ -172,7 +172,6 @@ const startingSettlementChoreo = async (
   expectedMessages: { trigger: string; data: any }[],
 ) => {
   await verifyTestMessages(iframe, expectedMessages);
-  test.skip();
 
   const canvas = iframe.locator("canvas#game-canvas");
 
@@ -201,6 +200,7 @@ const startingSettlementChoreo = async (
     });
 
     await verifyTestMessages(iframe, expectedMessages);
+    test.skip();
 
     const roadOffset = {
       x: (settlementOffset.x + destinationOffset.x) / 2,
@@ -225,7 +225,7 @@ const startingSettlementChoreo = async (
 
     await verifyTestMessages(iframe, expectedMessages);
   };
-  await f({ col: 0, row: 5 }, { col: 0, row: 6 });
+  await f({ col: 2, row: 5 }, { col: 0, row: 6 });
   await f({ col: 10, row: 5 }, { col: 10, row: 6 });
 };
 
