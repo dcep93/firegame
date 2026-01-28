@@ -6,8 +6,8 @@ import {
   EdgeDirection,
   EdgePieceType,
   GAME_ACTION,
-  GeneralAction,
   GameStateUpdateType,
+  GeneralAction,
   PlayerActionState,
   State,
   TileType,
@@ -42,28 +42,6 @@ const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
   if (indices.length === 0) return 2;
   const nextIndex = Math.max(...indices) + 1;
   return nextIndex < 2 ? 2 : nextIndex;
-};
-
-const replaceLatestClientMessage = (target: {
-  action: number;
-  payload: unknown;
-  replacement: { action: number; payload: unknown };
-}) => {
-  if (typeof window === "undefined") return;
-  const history = window.__socketCatannMessages;
-  if (!Array.isArray(history)) return;
-  for (let i = history.length - 1; i >= 0; i -= 1) {
-    const message = history[i];
-    if (
-      message?.trigger === "clientData" &&
-      message.data?.action === target.action &&
-      message.data?.payload === target.payload
-    ) {
-      message.data.action = target.replacement.action;
-      message.data.payload = target.replacement.payload;
-      break;
-    }
-  }
 };
 
 const addGameLogEntry = (gameState: any, entry: any) => {
