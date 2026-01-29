@@ -192,6 +192,18 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
   const cornerKey =
     cornerState &&
     serializeCornerKey(cornerState.x, cornerState.y, cornerState.z);
+  const edgeDirectionOrder =
+    cornerState?.z === CornerDirection.North
+      ? new Map<number, number>([
+          [EdgeDirection.West, 0],
+          [EdgeDirection.SouthWest, 1],
+          [EdgeDirection.NorthWest, 2],
+        ])
+      : new Map<number, number>([
+          [EdgeDirection.NorthWest, 0],
+          [EdgeDirection.West, 1],
+          [EdgeDirection.SouthWest, 2],
+        ]);
   const edgeIndices = ![
     PlayerActionState.InitialPlacementRoadPlacement,
     PlayerActionState.PlaceRoad,
@@ -217,7 +229,9 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
           );
         })
         .sort((a, b) => {
-          const edgeDirectionDiff = a.edgeState.z - b.edgeState.z;
+          const edgeDirectionDiff =
+            (edgeDirectionOrder.get(a.edgeState.z) ?? 0) -
+            (edgeDirectionOrder.get(b.edgeState.z) ?? 0);
           if (edgeDirectionDiff !== 0) {
             return edgeDirectionDiff;
           }
@@ -306,13 +320,57 @@ const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
     .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
 };
 
+const findCornerIndexByCoord = (
+  cornerStates: Record<string, any>,
+  cornerCoord: { x: number; y: number; z: number },
+) => {
+  const entry = Object.entries(cornerStates).find(
+    ([, corner]) =>
+      corner.x === cornerCoord.x &&
+      corner.y === cornerCoord.y &&
+      corner.z === cornerCoord.z,
+  );
+  return entry ? Number.parseInt(entry[0], 10) : null;
+};
+
+const resolveInitialPlacementCornerIndex = (
+  gameState: any,
+  cornerIndex: number,
+) => {
+  if (
+    gameState.currentState.actionState !==
+    PlayerActionState.InitialPlacementPlaceSettlement
+  ) {
+    return cornerIndex;
+  }
+  if ((gameState.currentState.completedTurns ?? 0) > 0) {
+    return cornerIndex;
+  }
+  const cornerStates = gameState.mapState.tileCornerStates;
+  const cornerState = cornerStates[String(cornerIndex)];
+  if (!cornerState || cornerState.z !== CornerDirection.South) {
+    return cornerIndex;
+  }
+  const northCornerIndex = findCornerIndexByCoord(cornerStates, {
+    x: cornerState.x,
+    y: cornerState.y + 1,
+    z: CornerDirection.North,
+  });
+  return northCornerIndex ?? cornerIndex;
+};
+
 export const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
-  const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
+  const resolvedCornerIndex = resolveInitialPlacementCornerIndex(
+    gameState,
+    cornerIndex,
+  );
+  const cornerState =
+    gameState.mapState.tileCornerStates[String(resolvedCornerIndex)];
 
-  gameState.mapState.tileCornerStates[String(cornerIndex)] = {
+  gameState.mapState.tileCornerStates[String(resolvedCornerIndex)] = {
     ...cornerState,
     owner: playerColor,
     buildingType: CornerPieceType.Settlement,
@@ -347,7 +405,7 @@ export const placeSettlement = (cornerIndex: number) => {
   applyPortOwnership(gameState, cornerState, playerColor);
 
   sendCornerHighlights30(gameData);
-  sendEdgeHighlights31(gameData, cornerIndex);
+  sendEdgeHighlights31(gameData, resolvedCornerIndex);
 
   const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
     const gameState = gameData.data.payload.gameState;
@@ -397,13 +455,13 @@ export const placeSettlement = (cornerIndex: number) => {
       },
     });
   };
-  sendResourcesFromTile(gameData, cornerIndex);
+  sendResourcesFromTile(gameData, resolvedCornerIndex);
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {
       action: "placeSettlement",
-      cornerIndex,
+      cornerIndex: resolvedCornerIndex,
     },
   );
 };
@@ -601,7 +659,8 @@ export const applyGameAction = (parsed: {
     parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
     parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
     parsed.action !== GAME_ACTION.WantToBuildSettlement &&
-    parsed.action !== GAME_ACTION.ClickedDice
+    parsed.action !== GAME_ACTION.ClickedDice &&
+    parsed.action !== GAME_ACTION.SelectedInitialPlacementIndex
   ) {
     return false;
   }
@@ -615,6 +674,10 @@ export const applyGameAction = (parsed: {
 
   if (parsed.action === GAME_ACTION.ClickedDice) {
     rollDice();
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.SelectedInitialPlacementIndex) {
     return true;
   }
 

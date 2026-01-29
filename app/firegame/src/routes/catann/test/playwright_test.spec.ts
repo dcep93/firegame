@@ -1,5 +1,4 @@
 // TODO
-// dont splice in the beginning
 // start from random point, interact, verify
 
 import {
@@ -127,7 +126,8 @@ test.skip(
 
     await checkClickable((_) => true);
 
-    await playSettlementAndRoad(canvas, settlementCoords, destinationCoords);
+    await playSettlement(canvas, settlementCoords);
+    await playRoad(canvas, settlementCoords, destinationCoords);
 
     // the road appears clickable, because it has a mouse over
     // "Road Length: 1"
@@ -139,7 +139,11 @@ test.skip(
       })
       .toBe(false);
 
-    await playSettlementAndRoad(
+    await playSettlement(canvas, {
+      row: settlementCoords.row,
+      col: settlementCoords.col + 2,
+    });
+    await playRoad(
       canvas,
       { row: settlementCoords.row, col: settlementCoords.col + 2 },
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
@@ -169,8 +173,10 @@ const startingSettlementChoreo = async (
 ) => {
   const canvas = iframe.locator("canvas#game-canvas");
 
-  await playSettlementAndRoad(canvas, { col: 2, row: 5 }, { col: 2, row: 6 });
-  await playSettlementAndRoad(canvas, { col: 8, row: 5 }, { col: 8, row: 6 });
+  await playSettlement(canvas, { col: 2, row: 5 });
+  await playRoad(canvas, { col: 2, row: 5 }, { col: 2, row: 6 });
+  await playSettlement(canvas, { col: 8, row: 5 });
+  await playRoad(canvas, { col: 8, row: 5 }, { col: 8, row: 6 });
 
   const diceState = expectedMessages.find(
     (msg) => msg.data.data?.payload.diff?.diceState,
@@ -181,19 +187,22 @@ const startingSettlementChoreo = async (
   await verifyTestMessages(iframe, expectedMessages);
 };
 
+test.skip(
+  "starting_settlement",
+  screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
+);
+
 const singlePlayerChoreo = async (
   iframe: FrameLocator,
   expectedMessages: { trigger: string; data: any }[],
 ) => {
   const canvas = iframe.locator("canvas#game-canvas");
-  await playSettlementAndRoad(canvas, { col: 2, row: 5 }, { col: 2, row: 6 });
+  await playSettlement(canvas, { col: 3, row: 4 });
+  await playRoad(canvas, { col: 3, row: 4 }, { col: 4, row: 5 });
+  await playSettlement(canvas, { col: 6, row: 5 });
+  await playRoad(canvas, { col: 6, row: 5 }, { col: 5, row: 4 });
   await verifyTestMessages(iframe, expectedMessages);
 };
-
-test.skip(
-  "starting_settlement",
-  screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
-);
 
 test(
   "single_player",
@@ -269,18 +278,12 @@ const checkCanvasHandle = async (iframe: FrameLocator) => {
   });
 };
 
-const playSettlementAndRoad = async (
+const playSettlement = async (
   canvas: Locator,
   settlementCoords: { col: number; row: number },
-  destinationCoords: { col: number; row: number },
 ) => {
   const settlementOffset = getSettlementOffset(settlementCoords);
 
-  await expect
-    .poll(async () => mapAppearsClickable(canvas, settlementOffset), {
-      timeout: 5000,
-    })
-    .toBe(true);
   await canvas.click({
     position: settlementOffset,
     force: true,
@@ -291,18 +294,20 @@ const playSettlementAndRoad = async (
     position: confirmSettlementOffset,
     force: true,
   });
+};
 
+const playRoad = async (
+  canvas: Locator,
+  settlementCoords: { col: number; row: number },
+  destinationCoords: { col: number; row: number },
+) => {
+  const settlementOffset = getSettlementOffset(settlementCoords);
   const destinationOffset = getSettlementOffset(destinationCoords);
   const roadOffset = {
     x: (settlementOffset.x + destinationOffset.x) / 2,
     y: (settlementOffset.y + destinationOffset.y) / 2,
   };
 
-  await expect
-    .poll(async () => mapAppearsClickable(canvas, roadOffset), {
-      timeout: 5000,
-    })
-    .toBe(true);
   await canvas.click({
     position: roadOffset,
     force: true,
