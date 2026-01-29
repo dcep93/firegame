@@ -164,7 +164,7 @@ const choreo = (fileName: string, f: (c: ControllerType) => Promise<void>) => {
     await spliceTestMessages(iframe);
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
-    await delay(1000);
+    await _delay(1000);
     const c = Controller(iframe, expectedMessages);
     await c.verifyTestMessages();
     await f(c);
@@ -257,7 +257,8 @@ const SERVER_START_TIMEOUT_MS = 10_000;
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: 300_000 });
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const _delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 test.beforeAll(async ({ request }) => {
   void request;
@@ -279,7 +280,7 @@ test.beforeAll(async ({ request }) => {
         });
         return;
       } catch (error) {
-        await delay(500);
+        await _delay(500);
       }
     }
 

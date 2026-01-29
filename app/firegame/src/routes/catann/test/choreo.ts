@@ -16,4 +16,6 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.playSettlement({ col: 6, row: 5 });
   await c.playRoad({ col: 6, row: 5 }, { col: 5, row: 4 });
   await c.verifyTestMessages();
+  await c.rollNextDice();
+  await c.verifyTestMessages();
 };

@@ -5,7 +5,7 @@ import {
   Locator,
   test,
 } from "@playwright/test";
-import { spliceTestMessages } from "./playwright_test.spec";
+import { _delay, spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
@@ -19,6 +19,7 @@ const Controller = (
   _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
   ((canvas) => ({
+    delay: async (durationMs: number) => _delay(durationMs),
     playSettlement: async (settlementCoords: { col: number; row: number }) => {
       const settlementOffset = getSettlementOffset(settlementCoords);
 
@@ -102,6 +103,7 @@ const Controller = (
       )!.data.data.payload.diff.diceState;
 
       await _rollDice(canvas, [diceState.dice1, diceState.dice2]);
+      await _delay(500);
     },
   }))(getCanvas(iframe));
 
