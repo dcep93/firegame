@@ -9,7 +9,9 @@ import { GAME_ACTION, State } from "../app/gameLogic/CatannFilesEnums";
 import { singlePlayerChoreo, startingSettlementChoreo } from "./choreo";
 import Controller, {
   checkCanvasHandle,
+  ControllerType,
   getSettlementOffset,
+  MAP_DICE_COORDS,
 } from "./Controller";
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
@@ -105,13 +107,7 @@ test.skip(
   }),
 );
 
-const choreo = (
-  fileName: string,
-  f: (
-    iframe: FrameLocator,
-    expectedMessages: { trigger: string; data: any }[],
-  ) => Promise<void>,
-) => {
+const choreo = (fileName: string, f: (c: ControllerType) => Promise<void>) => {
   return async ({ page }: { page: Page }) => {
     const expectedMessages = await getExpectedMessages(fileName);
     const startIndex = expectedMessages.findIndex(
@@ -156,7 +152,7 @@ const choreo = (
     await delay(1000);
     const c = Controller(iframe, expectedMessages);
     await c.verifyTestMessages();
-    await f(iframe, expectedMessages);
+    await f(c);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
   };
 };
@@ -241,7 +237,7 @@ const getExpectedMessages = async (recordingPath: string) => {
   return expectedMessages;
 };
 
-const spliceTestMessages = async (
+export const spliceTestMessages = async (
   iframe: FrameLocator,
 ): Promise<{ trigger: string; data: any }[]> => {
   return (

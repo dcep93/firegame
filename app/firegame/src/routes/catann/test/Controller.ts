@@ -1,15 +1,22 @@
-import { FrameLocator, Locator } from "@playwright/test";
+import {
+  ElementHandle,
+  expect,
+  FrameLocator,
+  Locator,
+  test,
+} from "@playwright/test";
+import { spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
-const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
+export const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
 
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
   iframe: FrameLocator,
-  expectedMessages: { trigger: string; data: any }[] | undefined,
+  _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
   ((canvas) => ({
     playSettlement: async (settlementCoords: { col: number; row: number }) => {
@@ -60,6 +67,7 @@ const Controller = (
       });
     },
     verifyTestMessages: async () => {
+      const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
       console.log(
         "verifyTestMessages",
@@ -96,9 +104,12 @@ const Controller = (
       });
     },
     mapAppearsClickable: async (offset: { x: number; y: number }) => {
-      if (expectedMessages === undefined) throw new Error("not allowed");
+      if (_expectedMessages === undefined) throw new Error("not allowed");
       return await _mapAppearsClickable(canvas, offset);
     },
+    getNextDice: () =>
+      _expectedMessages!.find((msg) => msg.data.data?.payload.diff?.diceState)!
+        .data.data.payload.diff.diceState,
   }))(iframe.locator("canvas#game-canvas"));
 
 export default Controller;
