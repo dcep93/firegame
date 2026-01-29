@@ -306,8 +306,6 @@ const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
     .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
 };
 
-const sendInitialPlacementDiceRoll = 1;
-
 export const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;

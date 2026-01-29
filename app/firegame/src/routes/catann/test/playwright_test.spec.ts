@@ -549,7 +549,8 @@ test.describe.configure({ timeout: 300_000 });
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-test.beforeAll(async (obj, testInfo) => {
+test.beforeAll(async ({ request }) => {
+  void request;
   const waitForServer = async (url: string, timeoutMs: number) => {
     const deadline = Date.now() + timeoutMs;
 
