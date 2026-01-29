@@ -11,7 +11,7 @@ Fix Catann test failures by refining the choreography that drives the Catann gam
 
 ## Workflow
 
-Read this entire SKILL.md before taking any action.
+Read this entire SKILL.md and ./FINDINGS.md before taking any action.
 
 1. Run the s_catann workflow to reproduce the failure and capture logs/screenshots.
 2. Identify the failing choreography and adjust Catann logic.
