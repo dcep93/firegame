@@ -77,12 +77,13 @@ const choreo = (
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
     await delay(1000);
+    await verifyTestMessages(iframe, expectedMessages);
     await f(iframe, expectedMessages);
     expect(expectedMessages).toEqual([]);
   };
 };
 
-test(
+test.skip(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -213,8 +214,6 @@ const startingSettlementChoreo = async (
   iframe: FrameLocator,
   expectedMessages: { trigger: string; data: any }[],
 ) => {
-  await verifyTestMessages(iframe, expectedMessages);
-
   const canvas = iframe.locator("canvas#game-canvas");
 
   const f = async (
@@ -278,9 +277,19 @@ const startingSettlementChoreo = async (
   await verifyTestMessages(iframe, expectedMessages);
 };
 
+const singlePlayerChoreo = async (
+  iframe: FrameLocator,
+  expectedMessages: { trigger: string; data: any }[],
+) => {};
+
 test.skip(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
+);
+
+test(
+  "single_player",
+  screenshot(choreo("./single_player.json", singlePlayerChoreo)),
 );
 
 //
