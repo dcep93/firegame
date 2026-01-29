@@ -89,7 +89,7 @@ test(
 
     const iframe = await createRoom(page);
     const startButton = getStartButton(iframe);
-    await startButton.click({ force: true });
+    // await startButton.click({ force: true });
 
     await checkCanvasHandle(iframe);
     const canvas = iframe.locator("canvas#game-canvas");
@@ -125,51 +125,78 @@ test(
 
     await checkClickable((_) => true);
 
-    const settlementOffset = getSettlementOffset(settlementCoords);
+    const f = async (
+      settlementCoords: { col: number; row: number },
+      destinationCoords: { col: number; row: number },
+      isFirst: boolean,
+    ) => {
+      const settlementOffset = getSettlementOffset(settlementCoords);
 
-    await expect
-      .poll(async () => mapAppearsClickable(canvas, settlementOffset), {
-        timeout: 5000,
-      })
-      .toBe(true);
-    await canvas.click({
-      position: settlementOffset,
-      force: true,
-    });
+      await expect
+        .poll(async () => mapAppearsClickable(canvas, settlementOffset), {
+          timeout: 5000,
+        })
+        .toBe(true);
+      await canvas.click({
+        position: settlementOffset,
+        force: true,
+      });
 
-    const confirmSettlementOffset = getConfirmOffset(settlementOffset);
-    await canvas.click({
-      position: confirmSettlementOffset,
-      force: true,
-    });
+      const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+      await canvas.click({
+        position: confirmSettlementOffset,
+        force: true,
+      });
 
-    await checkClickable((_) => false);
+      if (isFirst) await checkClickable((_) => false);
 
-    const destinationOffset = getSettlementOffset(destinationCoords);
-    const roadOffset = {
-      x: (settlementOffset.x + destinationOffset.x) / 2,
-      y: (settlementOffset.y + destinationOffset.y) / 2,
+      const destinationOffset = getSettlementOffset(destinationCoords);
+      const roadOffset = {
+        x: (settlementOffset.x + destinationOffset.x) / 2,
+        y: (settlementOffset.y + destinationOffset.y) / 2,
+      };
+
+      await expect
+        .poll(async () => mapAppearsClickable(canvas, roadOffset), {
+          timeout: 5000,
+        })
+        .toBe(true);
+      await canvas.click({
+        position: roadOffset,
+        force: true,
+      });
+
+      const confirmRoadOffset = getConfirmOffset(roadOffset);
+      await canvas.click({
+        position: confirmRoadOffset,
+        force: true,
+      });
     };
-
-    await expect
-      .poll(async () => mapAppearsClickable(canvas, roadOffset), {
-        timeout: 5000,
-      })
-      .toBe(true);
-    await canvas.click({
-      position: roadOffset,
-      force: true,
-    });
-
-    const confirmRoadOffset = getConfirmOffset(roadOffset);
-    await canvas.click({
-      position: confirmRoadOffset,
-      force: true,
-    });
+    await f(settlementCoords, destinationCoords, true);
 
     // the road appears clickable, because it has a mouse over
     // "Road Length: 1"
     await checkClickable((offset) => offset.col !== 0);
+
+    await expect
+      .poll(async () => mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+        timeout: 5000,
+      })
+      .toBe(false);
+
+    await f(
+      { row: settlementCoords.row, col: settlementCoords.col + 2 },
+      { row: destinationCoords.row, col: destinationCoords.col + 2 },
+      false,
+    );
+
+    await expect
+      .poll(async () => mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+        timeout: 5000,
+      })
+      .toBe(true);
+
+    await rollDice(canvas);
   }),
 );
 
