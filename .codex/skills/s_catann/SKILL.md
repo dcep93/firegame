@@ -7,8 +7,11 @@ description: Run the Firegame catann test workflow (start dev server, run test s
 
 Always include the screenshot (if `screenshot.png` exists) as the **first part
 of the final response**, even when the test fails. Always include the full
-`test_catann.sh` output in the final response. This output is often color coded,
-to handle it properly so the user sees readable colored text. 
+`test_catann.sh` output in the final response. The output can include ANSI color
+codes; when presenting it, render a human-readable version with ANSI removed
+(plain text) unless the user explicitly asks for raw ANSI. If raw ANSI is
+requested, use a fenced `ansi` code block and include the control characters as
+they appeared in the log.
 
 ## Summary flow
 
