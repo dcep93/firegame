@@ -13,7 +13,7 @@ import {
 import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
-import { State } from "../app/gameLogic/CatannFilesEnums";
+import { GAME_ACTION, State } from "../app/gameLogic/CatannFilesEnums";
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
   return async ({ page }: { page: Page }, testInfo: any) => {
@@ -430,10 +430,16 @@ const getStartButton = (iframe: FrameLocator) => {
 const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
-  // isLoggedIn: false,
+  // isLoggedIn: false, TODO audit
   if (
     msg.trigger === "clientData" &&
-    [2, 3, 15, 62, 66].includes(msg.data.action)
+    [
+      GAME_ACTION.ClickedDice,
+      GAME_ACTION.SelectedTile,
+      GAME_ACTION.ConfirmBuildSettlement,
+      GAME_ACTION.RequestBeginnerHint,
+      GAME_ACTION.SelectedInitialPlacementIndex,
+    ].includes(msg.data.action)
   )
     return false;
   return true;
