@@ -1,0 +1,26 @@
+# Catann Choreography Skill Guide (authoritative, self-updating)
+
+This document is the **single source of truth** for fixing Catann choreography
+failures. Update it in-place whenever new knowledge is discovered so it stays
+accurate and complete. Do **not** add a changelog.
+
+## Purpose
+- Capture reliable choreography fixes for Catann test failures.
+- Constrain edits to the approved Catann game logic surfaces.
+
+## Guardrails
+- Only edit files under `firegame/app/firegame/src/routes/catann/app/gameLogic`.
+- Canvas interactions are allowed **only** via choreography click actions.
+- If a required change is outside those areas, stop and report the needed change.
+
+## Testing workflow
+- Always run the s_catann workflow to reproduce and validate fixes.
+- Keep iterating until the Catann Playwright test passes.
+
+## Catann test context
+- Test harness: `firegame/app/firegame/src/routes/catann/test/playwright_test.spec.ts`
+- Expected message recordings: `firegame/app/firegame/src/routes/catann/test/starting_settlement.json`
+
+## Known choreography expectations
+- The test compares recorded socket message bytes after filtering heartbeats.
+- The choreography should drive the UI through **click interactions only**.
