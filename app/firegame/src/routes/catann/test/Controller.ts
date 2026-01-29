@@ -1,0 +1,211 @@
+import { FrameLocator, Locator } from "@playwright/test";
+
+const MAP_OFFSET = { x: 165, y: 11.5 };
+const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
+const MAP_HEX_SIDE_LENGTH = 59;
+const MAP_CONFIRM_OFFSET = 53;
+const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
+
+export type ControllerType = ReturnType<typeof Controller>;
+const Controller = (
+  iframe: FrameLocator,
+  expectedMessages: { trigger: string; data: any }[] | undefined,
+) =>
+  ((canvas) => ({
+    playSettlement: async (settlementCoords: { col: number; row: number }) => {
+      const settlementOffset = getSettlementOffset(settlementCoords);
+
+      await canvas.click({
+        position: settlementOffset,
+        force: true,
+      });
+
+      const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+      await canvas.click({
+        position: confirmSettlementOffset,
+        force: true,
+      });
+    },
+    playRoad: async (
+      settlementCoords: { col: number; row: number },
+      destinationCoords: { col: number; row: number },
+    ) => {
+      const settlementOffset = getSettlementOffset(settlementCoords);
+      const destinationOffset = getSettlementOffset(destinationCoords);
+      const roadOffset = {
+        x: (settlementOffset.x + destinationOffset.x) / 2,
+        y: (settlementOffset.y + destinationOffset.y) / 2,
+      };
+
+      await canvas.click({
+        position: roadOffset,
+        force: true,
+      });
+
+      const confirmRoadOffset = getConfirmOffset(roadOffset);
+      await canvas.click({
+        position: confirmRoadOffset,
+        force: true,
+      });
+    },
+    rollDice: async (diceState: [number, number] | null = null) => {
+      if (diceState !== null)
+        await canvas.evaluate((_, diceState) => {
+          window.parent.__diceState = diceState;
+        }, diceState);
+
+      await canvas.click({
+        position: MAP_DICE_COORDS,
+        force: true,
+      });
+    },
+    verifyTestMessages: async () => {
+      const testMessages = await spliceTestMessages(iframe);
+      console.log(
+        "verifyTestMessages",
+        testMessages.length,
+        expectedMessages.length,
+      );
+      testMessages.forEach((msg) => {
+        const expectedMsg = expectedMessages.shift()!;
+        if (expectedMsg?.trigger === "debug") {
+          test.skip();
+        }
+        try {
+          expect(expectedMsg).toBeDefined();
+          expect(msg.trigger).toEqual(expectedMsg.trigger);
+        } catch (e) {
+          console.log(JSON.stringify({ msg, expectedMsg }, null, 2));
+          throw e;
+        }
+        if (msg.trigger === "clientData") {
+          if (expectedMsg.data.sequence)
+            msg.data.sequence = expectedMsg.data.sequence;
+        } else {
+          msg.data.data.sequence = expectedMsg.data.data.sequence;
+          if (
+            msg.data.data.payload.diff?.currentState.startTime &&
+            expectedMsg.data.data.payload.diff?.currentState.startTime
+          ) {
+            msg.data.data.payload.diff.currentState.startTime =
+              expectedMsg.data.data.payload.diff?.currentState.startTime;
+          }
+        }
+        expect(msg).toEqual(expectedMsg);
+        console.log(msg);
+      });
+    },
+    mapAppearsClickable: async (offset: { x: number; y: number }) => {
+      if (expectedMessages === undefined) throw new Error("not allowed");
+      return await _mapAppearsClickable(canvas, offset);
+    },
+  }))(iframe.locator("canvas#game-canvas"));
+
+export default Controller;
+
+export const _mapAppearsClickable = async (
+  canvas: Locator,
+  offset: { x: number; y: number },
+) => {
+  await canvas
+    .page()
+    .mouse.move(offset.x + MAP_OFFSET.x, offset.y + MAP_OFFSET.y);
+  const hasPointerCursor = await canvas.evaluate((element, hoverOffset) => {
+    const htmlElement = element as HTMLElement;
+    const rect = htmlElement.getBoundingClientRect();
+    const target = document.elementFromPoint(
+      rect.left + hoverOffset.x,
+      rect.top + hoverOffset.y,
+    ) as HTMLElement | null;
+    const cursor = target
+      ? window.getComputedStyle(target).cursor
+      : window.getComputedStyle(htmlElement).cursor;
+    return cursor === "pointer";
+  }, offset);
+  return hasPointerCursor;
+};
+
+export const checkCanvasHandle = async (iframe: FrameLocator) => {
+  const waitForCanvasPaint = async (
+    canvasHandle: ElementHandle<HTMLCanvasElement>,
+  ) => {
+    await expect
+      .poll(
+        () =>
+          canvasHandle.evaluate((canvas) => {
+            const htmlCanvas = canvas as HTMLCanvasElement;
+            if (htmlCanvas.width === 0 || htmlCanvas.height === 0) {
+              return false;
+            }
+
+            const gl =
+              htmlCanvas.getContext("webgl") || htmlCanvas.getContext("webgl2");
+            if (!gl) return false;
+            const glCtx = gl as WebGLRenderingContext | WebGL2RenderingContext;
+            const width = glCtx.drawingBufferWidth;
+            const height = glCtx.drawingBufferHeight;
+            if (width === 0 || height === 0) return false;
+            const stepX = Math.max(1, Math.floor(width / 10));
+            const stepY = Math.max(1, Math.floor(height / 10));
+            const pixel = new Uint8Array(4);
+            try {
+              for (let x = 0; x < width; x += stepX) {
+                for (let y = 0; y < height; y += stepY) {
+                  glCtx.readPixels(
+                    x,
+                    y,
+                    1,
+                    1,
+                    glCtx.RGBA,
+                    glCtx.UNSIGNED_BYTE,
+                    pixel,
+                  );
+                  if (pixel[3] > 0) {
+                    return true;
+                  }
+                }
+              }
+            } catch {
+              return false;
+            }
+            return false;
+          }),
+        {
+          timeout: 1000,
+        },
+      )
+      .toBe(true);
+  };
+  const gameCanvas = iframe.locator("canvas#game-canvas");
+  await expect(gameCanvas).toBeVisible({ timeout: 1000 });
+  const canvasHandle =
+    (await gameCanvas.elementHandle()) as ElementHandle<HTMLCanvasElement>;
+  if (!canvasHandle) {
+    throw new Error("Unable to locate game canvas.");
+  }
+  await waitForCanvasPaint(canvasHandle);
+  const canvasBox = await canvasHandle.boundingBox();
+  expect(canvasBox).toEqual({
+    ...MAP_OFFSET,
+    width: 1280 - 2 * MAP_OFFSET.x,
+    height: 720 - 2 * MAP_OFFSET.y,
+  });
+};
+
+export const getSettlementOffset = (position: { col: number; row: number }) => {
+  return {
+    x: Math.round(
+      MAP_ZERO_ZERO.x +
+        (position.col * (MAP_HEX_SIDE_LENGTH * Math.sqrt(3))) / 2,
+    ),
+    y: Math.round(
+      MAP_ZERO_ZERO.y +
+        (position.row % 2) * 0.5 * MAP_HEX_SIDE_LENGTH +
+        Math.floor(position.row / 2) * 1.5 * MAP_HEX_SIDE_LENGTH,
+    ),
+  };
+};
+
+const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
+  return { x: baseOffset.x, y: baseOffset.y - MAP_CONFIRM_OFFSET };
+};
