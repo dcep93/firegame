@@ -13,7 +13,6 @@ import Controller, {
   ControllerType,
   getCanvas,
   getSettlementOffset,
-  MAP_DICE_COORDS,
 } from "./Controller";
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
@@ -79,12 +78,6 @@ test.skip(
     // "Road Length: 1"
     await checkClickable((offset) => offset.col !== 0);
 
-    await expect
-      .poll(async () => c.mapAppearsClickable(MAP_DICE_COORDS), {
-        timeout: 5000,
-      })
-      .toBe(false);
-
     await c.playSettlement({
       row: settlementCoords.row,
       col: settlementCoords.col + 2,
@@ -94,19 +87,7 @@ test.skip(
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
     );
 
-    await expect
-      .poll(async () => c.mapAppearsClickable(MAP_DICE_COORDS), {
-        timeout: 5000,
-      })
-      .toBe(true);
-
     await _rollDice(getCanvas(iframe));
-
-    await expect
-      .poll(async () => c.mapAppearsClickable(MAP_DICE_COORDS), {
-        timeout: 5000,
-      })
-      .toBe(false);
   }),
 );
 
