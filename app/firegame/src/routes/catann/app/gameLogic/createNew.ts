@@ -28,7 +28,7 @@ export const newUserState = () => {
       icon: 12,
       id: "102003699",
       interactedWithSite: true,
-      isLoggedIn: false,
+      isLoggedIn: true,
       hasJoinedColonistDiscordServer: false,
       karma: 0,
       karmaCompletedGameCount: 0,

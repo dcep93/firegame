@@ -89,7 +89,7 @@ test(
 
     const iframe = await createRoom(page);
     const startButton = getStartButton(iframe);
-    // await startButton.click({ force: true });
+    await startButton.click({ force: true });
 
     await checkCanvasHandle(iframe);
     const canvas = iframe.locator("canvas#game-canvas");
@@ -197,6 +197,7 @@ test(
       .toBe(true);
 
     await rollDice(canvas);
+    await delay(1000);
   }),
 );
 
