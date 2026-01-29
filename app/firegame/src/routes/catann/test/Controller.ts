@@ -11,7 +11,7 @@ const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
-export const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
+const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
 
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
@@ -82,11 +82,11 @@ const Controller = (
         } else {
           msg.data.data.sequence = expectedMsg.data.data.sequence;
           if (
-            msg.data.data.payload.diff?.currentState.startTime &&
-            expectedMsg.data.data.payload.diff?.currentState.startTime
+            msg.data.data.payload?.diff?.currentState.startTime &&
+            expectedMsg.data.data.payload?.diff?.currentState.startTime
           ) {
             msg.data.data.payload.diff.currentState.startTime =
-              expectedMsg.data.data.payload.diff?.currentState.startTime;
+              expectedMsg.data.data.payload?.diff?.currentState.startTime;
           }
         }
         expect(msg).toEqual(expectedMsg);
@@ -221,9 +221,9 @@ export const _rollDice = async (
       window.parent.__diceState = diceState;
     }, diceState);
 
-  expect
+  await expect
     .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
-      timeout: 1000,
+      timeout: 5000,
     })
     .toBe(true);
 
@@ -231,6 +231,12 @@ export const _rollDice = async (
     position: MAP_DICE_COORDS,
     force: true,
   });
+
+  await expect
+    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+      timeout: 5000,
+    })
+    .toBe(false);
 };
 
 export const getCanvas = (iframe: FrameLocator) =>
