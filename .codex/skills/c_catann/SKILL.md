@@ -31,8 +31,13 @@ If the user provides a time constraint (often ~15 minutes), treat it as a hard s
 - Only edit files under `firegame/app/firegame/src/routes/catann/app/gameLogic`.
 - You may also adjust **canvas clicks** inside the choreography function if needed.
 - If a required change is outside those locations, **stop and report what you need to change** instead of editing.
+- Never manipulate `__socketCatannMessages` or `expectedMessages`, except to perform `verifyTestMessages`.
 
 ## Notes
 
 - Always follow `firegame/.codex/skills/s_catann/SKILL.md` for the test workflow.
 - Maintain `firegame/.codex/skills/c_catann/AGENTS.md` similar to the s_catann guide: update it in-place when you discover new Catann-specific choreography knowledge.
+
+## Time constraint default
+
+If no time constraint is provided, stop after implementing a single code improvement and present the change.

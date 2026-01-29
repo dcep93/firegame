@@ -79,7 +79,7 @@ const choreo = (
     await delay(1000);
     await verifyTestMessages(iframe, expectedMessages);
     await f(iframe, expectedMessages);
-    expect(expectedMessages).toEqual([]);
+    expect(expectedMessages.slice(0, 1)).toEqual([]);
   };
 };
 
@@ -441,7 +441,7 @@ const getStartButton = (iframe: FrameLocator) => {
   return iframe.locator("#room_center_start_button");
 };
 
-const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
+const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
   if (
@@ -478,7 +478,7 @@ const getExpectedMessages = async (recordingPath: string) => {
     return JSON.parse(data) as { trigger: string; data: any }[];
   };
   const expectedMessages = openRecordingJson(recordingPath).filter((msg) =>
-    isNotHeartbeat(msg),
+    isRealMessage(msg),
   );
   return expectedMessages;
 };
@@ -490,7 +490,7 @@ const spliceTestMessages = async (
     await iframe
       .locator("body")
       .evaluate(() => window.parent.__socketCatannMessages.splice(0))
-  ).filter((msg) => isNotHeartbeat(msg));
+  ).filter((msg) => isRealMessage(msg));
 };
 
 const verifyTestMessages = async (
