@@ -6,12 +6,15 @@ import { GameStateUpdateType, State } from "./CatannFilesEnums";
 
 declare global {
   interface Window {
-    __testOverrides: {
-      databaseGame: any;
-      session: any;
-      startTime: number;
-      mapState: any;
-    };
+    __testOverrides:
+      | {
+          databaseGame: any;
+          session: any;
+          startTime: number;
+          mapState: any;
+        }
+      | undefined;
+    __diceState: [number, number] | undefined;
   }
 }
 

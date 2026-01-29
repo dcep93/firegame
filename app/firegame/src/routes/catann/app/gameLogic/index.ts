@@ -302,11 +302,18 @@ const sendInitialPlacementDiceRoll = (gameData: any) => {
     },
   });
 
-  gameState.diceState = {
-    diceThrown: true,
-    dice1: 5,
-    dice2: 4,
-  };
+  gameState.diceState =
+    window.__diceState !== undefined
+      ? {
+          diceThrown: true,
+          dice1: window.__diceState[0],
+          dice2: window.__diceState[1],
+        }
+      : {
+          diceThrown: true,
+          dice1: Math.ceil(Math.random() * 6),
+          dice2: Math.ceil(Math.random() * 6),
+        };
   if (!gameState.bankState) {
     gameState.bankState = { resourceCards: {} };
   }

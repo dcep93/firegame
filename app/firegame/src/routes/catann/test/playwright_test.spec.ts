@@ -226,6 +226,10 @@ const startingSettlementChoreo = async (
   };
   await f({ col: 2, row: 5 }, { col: 2, row: 6 });
   await f({ col: 8, row: 5 }, { col: 8, row: 6 });
+
+  await rollDice(canvas, [6, 2]);
+
+  await verifyTestMessages(iframe, expectedMessages);
 };
 
 test(
@@ -342,6 +346,21 @@ const mapAppearsClickable = async (
   return hasPointerCursor;
 };
 
+const rollDice = async (
+  canvas: Locator,
+  diceState: [number, number] | null = null,
+) => {
+  if (diceState !== null)
+    await canvas.evaluate((_, diceState) => {
+      window.parent.__diceState = diceState;
+    }, diceState);
+
+  await canvas.click({
+    position: MAP_DICE_COORDS,
+    force: true,
+  });
+};
+
 //
 
 const createRoom = async (
@@ -446,6 +465,7 @@ const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
+const MAP_DICE_COORDS = { x: 553, y: 540 };
 
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: 300_000 });
