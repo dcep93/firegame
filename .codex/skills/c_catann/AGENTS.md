@@ -16,6 +16,14 @@ accurate and complete. Do **not** add a changelog.
 ## Testing workflow
 - Always run the s_catann workflow to reproduce and validate fixes.
 - Keep iterating until the Catann Playwright test passes.
+ - If a time constraint is provided, treat it as a hard stop and focus on advancing the choreography.
+
+## Timebox procedure
+- Track elapsed time from the first test run or code change (whichever comes first).
+- Make minimal, high-leverage edits to move the choreography forward.
+- When time is exceeded, stop immediately and package progress:
+  - Ensure files are saved and changes are in a commit-ready state.
+  - Record what was attempted, what advanced, and the next action to resume.
 
 ## Catann test context
 - Test harness: `firegame/app/firegame/src/routes/catann/test/playwright_test.spec.ts`

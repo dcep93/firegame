@@ -229,7 +229,12 @@ export const newGame = () => {
             "1": {},
           },
           mechanicRobberState: {
-            locationTileIndex: 3,
+            locationTileIndex: Object.entries(mapState.tileHexStates)
+              .map(([indexStr, data]) => ({
+                index: parseInt(indexStr),
+                data: data as any,
+              }))
+              .find(({ data }) => data.type === 0)!.index,
             isActive: true,
           },
         },
