@@ -470,7 +470,6 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
 };
 
 const getExpectedMessages = async (recordingPath: string) => {
-  const x = 1;
   const openRecordingJson = (
     recordingPath: string,
   ): { trigger: string; data: any }[] => {
@@ -550,7 +549,7 @@ test.describe.configure({ timeout: 300_000 });
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-test.beforeAll(async ({}, testInfo) => {
+test.beforeAll(async (obj, testInfo) => {
   const waitForServer = async (url: string, timeoutMs: number) => {
     const deadline = Date.now() + timeoutMs;
 

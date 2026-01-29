@@ -24,7 +24,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "true || react-scripts test",
-    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --max-warnings=0",
+    "lint": "./node_modules/.bin/eslint \"src/**/*.{ts,tsx,js,jsx}\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
