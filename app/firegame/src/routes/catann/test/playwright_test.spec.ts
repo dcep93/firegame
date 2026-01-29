@@ -470,6 +470,7 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
 };
 
 const getExpectedMessages = async (recordingPath: string) => {
+  const x = 1;
   const openRecordingJson = (
     recordingPath: string,
   ): { trigger: string; data: any }[] => {

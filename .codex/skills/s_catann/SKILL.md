@@ -17,6 +17,15 @@ fails.
 4. Host the image locally and attach it.
 5. Report results + full logs.
 
+## Pre-commit validation
+
+Before committing changes, validate TypeScript by running:
+
+```bash
+cd /workspace/firegame/app/firegame
+yarn lint
+```
+
 ## Timestamp format (NYC time)
 
 At the start of each numbered step, record a timestamp in America/New_York
