@@ -306,6 +306,8 @@ const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
     .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
 };
 
+const sendInitialPlacementDiceRoll = 1;
+
 export const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
@@ -522,10 +524,7 @@ const rollDice = () => {
       const tileState = tileHexStates[String(tileIndex)];
       if (!tileState) return;
       if (tileState.diceNumber !== diceTotal) return;
-      if (
-        tileState.type === TileType.Desert ||
-        tileState.type === TileType.Sea
-      )
+      if (tileState.type === TileType.Desert || tileState.type === TileType.Sea)
         return;
       const cardCount =
         cornerState.buildingType === CornerPieceType.City ? 2 : 1;
