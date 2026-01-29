@@ -278,48 +278,6 @@ const checkCanvasHandle = async (iframe: FrameLocator) => {
   });
 };
 
-const playSettlement = async (
-  canvas: Locator,
-  settlementCoords: { col: number; row: number },
-) => {
-  const settlementOffset = getSettlementOffset(settlementCoords);
-
-  await canvas.click({
-    position: settlementOffset,
-    force: true,
-  });
-
-  const confirmSettlementOffset = getConfirmOffset(settlementOffset);
-  await canvas.click({
-    position: confirmSettlementOffset,
-    force: true,
-  });
-};
-
-const playRoad = async (
-  canvas: Locator,
-  settlementCoords: { col: number; row: number },
-  destinationCoords: { col: number; row: number },
-) => {
-  const settlementOffset = getSettlementOffset(settlementCoords);
-  const destinationOffset = getSettlementOffset(destinationCoords);
-  const roadOffset = {
-    x: (settlementOffset.x + destinationOffset.x) / 2,
-    y: (settlementOffset.y + destinationOffset.y) / 2,
-  };
-
-  await canvas.click({
-    position: roadOffset,
-    force: true,
-  });
-
-  const confirmRoadOffset = getConfirmOffset(roadOffset);
-  await canvas.click({
-    position: confirmRoadOffset,
-    force: true,
-  });
-};
-
 const getSettlementOffset = (position: { col: number; row: number }) => {
   return {
     x: Math.round(
@@ -358,21 +316,6 @@ const mapAppearsClickable = async (
     return cursor === "pointer";
   }, offset);
   return hasPointerCursor;
-};
-
-const rollDice = async (
-  canvas: Locator,
-  diceState: [number, number] | null = null,
-) => {
-  if (diceState !== null)
-    await canvas.evaluate((_, diceState) => {
-      window.parent.__diceState = diceState;
-    }, diceState);
-
-  await canvas.click({
-    position: MAP_DICE_COORDS,
-    force: true,
-  });
 };
 
 //
@@ -536,3 +479,62 @@ test.beforeAll(async ({ request }) => {
 
   await waitForServer(APP_URL, SERVER_START_TIMEOUT_MS);
 });
+
+// CODEX_ALLOWED_FUNCTIONS
+
+const playSettlement = async (
+  canvas: Locator,
+  settlementCoords: { col: number; row: number },
+) => {
+  const settlementOffset = getSettlementOffset(settlementCoords);
+
+  await canvas.click({
+    position: settlementOffset,
+    force: true,
+  });
+
+  const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+  await canvas.click({
+    position: confirmSettlementOffset,
+    force: true,
+  });
+};
+
+const playRoad = async (
+  canvas: Locator,
+  settlementCoords: { col: number; row: number },
+  destinationCoords: { col: number; row: number },
+) => {
+  const settlementOffset = getSettlementOffset(settlementCoords);
+  const destinationOffset = getSettlementOffset(destinationCoords);
+  const roadOffset = {
+    x: (settlementOffset.x + destinationOffset.x) / 2,
+    y: (settlementOffset.y + destinationOffset.y) / 2,
+  };
+
+  await canvas.click({
+    position: roadOffset,
+    force: true,
+  });
+
+  const confirmRoadOffset = getConfirmOffset(roadOffset);
+  await canvas.click({
+    position: confirmRoadOffset,
+    force: true,
+  });
+};
+
+const rollDice = async (
+  canvas: Locator,
+  diceState: [number, number] | null = null,
+) => {
+  if (diceState !== null)
+    await canvas.evaluate((_, diceState) => {
+      window.parent.__diceState = diceState;
+    }, diceState);
+
+  await canvas.click({
+    position: MAP_DICE_COORDS,
+    force: true,
+  });
+};

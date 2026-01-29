@@ -11,6 +11,8 @@ Fix Catann test failures by refining the choreography that drives the Catann gam
 
 ## Workflow
 
+Read this entire SKILL.md before taking any action.
+
 1) Run the s_catann workflow to reproduce the failure and capture logs/screenshots.
 2) Identify the failing choreography and adjust Catann logic.
 3) Re-run the s_catann workflow until the test passes.
@@ -29,9 +31,10 @@ If the user provides a time constraint (often ~15 minutes), treat it as a hard s
 ## Constraints (must follow)
 
 - Only edit files under `firegame/app/firegame/src/routes/catann/app/gameLogic`.
-- You may also adjust **canvas clicks** inside the choreography function if needed.
+- You may only append to choreography methods, and you may only use those functions after the `CODEX_ALLOWED_FUNCTIONS` comment.
 - If a required change is outside those locations, **stop and report what you need to change** instead of editing.
 - Never manipulate `__socketCatannMessages` or `expectedMessages`, except to perform `verifyTestMessages`.
+- If you create a commit, append to `firegame/Findings.md` (create it if missing). The entry must be organized by topic and include: the problem the commit solved, why tests are not passing, and a guess at how the problem will be solved.
 
 ## Notes
 
