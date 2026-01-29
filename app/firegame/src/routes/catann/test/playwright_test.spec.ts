@@ -404,7 +404,6 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
     msg.data.payload &&
     typeof msg.data.payload === "object" &&
     !Array.isArray(msg.data.payload) &&
-    Object.keys(msg.data.payload).length === 1 &&
     msg.data.payload["-1"] !== undefined
   )
     return false;
