@@ -32,3 +32,4 @@ accurate and complete. Do **not** add a changelog.
 ## Known choreography expectations
 - The test compares recorded socket message bytes after filtering heartbeats.
 - The choreography should drive the UI through **click interactions only**.
+- If the replay logs transient `SelectedCards` payloads containing only a `"-1"` key, filter them in the test harness `isNotHeartbeat` so they do not shift replay ordering.

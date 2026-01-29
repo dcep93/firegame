@@ -444,6 +444,16 @@ const getStartButton = (iframe: FrameLocator) => {
 const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
+  if (
+    msg.trigger === "clientData" &&
+    msg.data.action === GAME_ACTION.SelectedCards &&
+    msg.data.payload &&
+    typeof msg.data.payload === "object" &&
+    !Array.isArray(msg.data.payload) &&
+    Object.keys(msg.data.payload).length === 1 &&
+    Object.prototype.hasOwnProperty.call(msg.data.payload, "-1")
+  )
+    return false;
   // isLoggedIn: false, TODO audit
   if (
     msg.trigger === "clientData" &&
