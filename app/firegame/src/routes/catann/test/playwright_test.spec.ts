@@ -197,7 +197,12 @@ test(
       .toBe(true);
 
     await rollDice(canvas);
-    await delay(1000);
+
+    await expect
+      .poll(async () => mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+        timeout: 5000,
+      })
+      .toBe(false);
   }),
 );
 
