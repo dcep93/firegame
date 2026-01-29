@@ -21,6 +21,7 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
     try {
       await f({ page });
     } finally {
+      await _delay(5000);
       await page.screenshot({
         path: testInfo.outputPath("screenshot.png"),
         fullPage: true,

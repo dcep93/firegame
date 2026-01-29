@@ -221,6 +221,12 @@ export const _rollDice = async (
       window.parent.__diceState = diceState;
     }, diceState);
 
+  expect
+    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+      timeout: 1000,
+    })
+    .toBe(true);
+
   await canvas.click({
     position: MAP_DICE_COORDS,
     force: true,
