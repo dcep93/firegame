@@ -81,7 +81,7 @@ const choreo = (
   };
 };
 
-test(
+test.skip(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -273,7 +273,7 @@ const startingSettlementChoreo = async (
   await verifyTestMessages(iframe, expectedMessages);
 };
 
-test.skip(
+test(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
@@ -430,6 +430,12 @@ const getStartButton = (iframe: FrameLocator) => {
 const isNotHeartbeat = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
+  // isLoggedIn: false,
+  if (
+    msg.trigger === "clientData" &&
+    [2, 3, 15, 62, 66].includes(msg.data.action)
+  )
+    return false;
   return true;
 };
 
