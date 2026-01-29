@@ -8,8 +8,10 @@ import * as path from "path";
 import { GAME_ACTION, State } from "../app/gameLogic/CatannFilesEnums";
 import { singlePlayerChoreo, startingSettlementChoreo } from "./choreo";
 import Controller, {
+  _rollDice,
   checkCanvasHandle,
   ControllerType,
+  getCanvas,
   getSettlementOffset,
   MAP_DICE_COORDS,
 } from "./Controller";
@@ -97,7 +99,7 @@ test.skip(
       })
       .toBe(true);
 
-    await c.rollDice();
+    await _rollDice(getCanvas(iframe));
 
     await expect
       .poll(async () => c.mapAppearsClickable(MAP_DICE_COORDS), {
@@ -109,6 +111,19 @@ test.skip(
 
 const choreo = (fileName: string, f: (c: ControllerType) => Promise<void>) => {
   return async ({ page }: { page: Page }) => {
+    const getExpectedMessages = async (recordingPath: string) => {
+      const openRecordingJson = (
+        recordingPath: string,
+      ): { trigger: string; data: any }[] => {
+        const fullPath = path.resolve(__dirname, recordingPath);
+        const data = fs.readFileSync(fullPath, "utf8");
+        return JSON.parse(data) as { trigger: string; data: any }[];
+      };
+      const expectedMessages = openRecordingJson(recordingPath).filter((msg) =>
+        isRealMessage(msg),
+      );
+      return expectedMessages;
+    };
     const expectedMessages = await getExpectedMessages(fileName);
     const startIndex = expectedMessages.findIndex(
       (msg) => msg.data.type === "startGame",
@@ -221,20 +236,6 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
   )
     return false;
   return true;
-};
-
-const getExpectedMessages = async (recordingPath: string) => {
-  const openRecordingJson = (
-    recordingPath: string,
-  ): { trigger: string; data: any }[] => {
-    const fullPath = path.resolve(__dirname, recordingPath);
-    const data = fs.readFileSync(fullPath, "utf8");
-    return JSON.parse(data) as { trigger: string; data: any }[];
-  };
-  const expectedMessages = openRecordingJson(recordingPath).filter((msg) =>
-    isRealMessage(msg),
-  );
-  return expectedMessages;
 };
 
 export const spliceTestMessages = async (

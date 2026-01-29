@@ -5,10 +5,7 @@ export const startingSettlementChoreo = async (c: ControllerType) => {
   await c.playRoad({ col: 2, row: 5 }, { col: 2, row: 6 });
   await c.playSettlement({ col: 8, row: 5 });
   await c.playRoad({ col: 8, row: 5 }, { col: 8, row: 6 });
-
-  const diceState = c.getNextDice();
-
-  await c.rollDice([diceState.dice1, diceState.dice2]);
+  await c.rollNextDice();
 
   await c.verifyTestMessages();
 };

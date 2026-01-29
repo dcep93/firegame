@@ -55,17 +55,6 @@ const Controller = (
         force: true,
       });
     },
-    rollDice: async (diceState: [number, number] | null = null) => {
-      if (diceState !== null)
-        await canvas.evaluate((_, diceState) => {
-          window.parent.__diceState = diceState;
-        }, diceState);
-
-      await canvas.click({
-        position: MAP_DICE_COORDS,
-        force: true,
-      });
-    },
     verifyTestMessages: async () => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
@@ -107,10 +96,14 @@ const Controller = (
       if (_expectedMessages === undefined) throw new Error("not allowed");
       return await _mapAppearsClickable(canvas, offset);
     },
-    getNextDice: () =>
-      _expectedMessages!.find((msg) => msg.data.data?.payload.diff?.diceState)!
-        .data.data.payload.diff.diceState,
-  }))(iframe.locator("canvas#game-canvas"));
+    rollNextDice: async () => {
+      const diceState = _expectedMessages!.find(
+        (msg) => msg.data.data?.payload.diff?.diceState,
+      )!.data.data.payload.diff.diceState;
+
+      await _rollDice(canvas, [diceState.dice1, diceState.dice2]);
+    },
+  }))(getCanvas(iframe));
 
 export default Controller;
 
@@ -216,6 +209,24 @@ export const getSettlementOffset = (position: { col: number; row: number }) => {
     ),
   };
 };
+
+export const _rollDice = async (
+  canvas: Locator,
+  diceState: [number, number] | null = null,
+) => {
+  if (diceState !== null)
+    await canvas.evaluate((_, diceState) => {
+      window.parent.__diceState = diceState;
+    }, diceState);
+
+  await canvas.click({
+    position: MAP_DICE_COORDS,
+    force: true,
+  });
+};
+
+export const getCanvas = (iframe: FrameLocator) =>
+  iframe.locator("canvas#game-canvas");
 
 const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
   return { x: baseOffset.x, y: baseOffset.y - MAP_CONFIRM_OFFSET };
