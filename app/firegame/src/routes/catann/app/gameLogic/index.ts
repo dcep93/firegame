@@ -317,10 +317,6 @@ const sendInitialPlacementDiceRoll = (gameData: any) => {
   if (!gameState.bankState) {
     gameState.bankState = { resourceCards: {} };
   }
-  gameState.bankState.resourceCards["5"] = 18;
-  gameState.currentState.turnState = 2;
-  gameState.currentState.allocatedTime = 120;
-  gameData.data.payload.timeLeftInState = 120;
   if (!gameState.playerStates[playerColor].resourceCards) {
     gameState.playerStates[playerColor].resourceCards = { cards: [] };
   }

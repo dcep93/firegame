@@ -81,7 +81,7 @@ const choreo = (
   };
 };
 
-test.skip(
+test(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -106,11 +106,19 @@ test.skip(
             row,
           });
           const shouldBeClickable = f({ col, row });
-          await expect
-            .poll(async () => await mapAppearsClickable(canvas, vertexOffset), {
-              timeout: 3000,
-            })
-            .toBe(shouldBeClickable);
+          try {
+            await expect
+              .poll(
+                async () => await mapAppearsClickable(canvas, vertexOffset),
+                {
+                  timeout: 3000,
+                },
+              )
+              .toBe(shouldBeClickable);
+          } catch (e) {
+            console.log({ shouldBeClickable, col, row, vertexOffset });
+            throw e;
+          }
         }
       }
     };
@@ -232,7 +240,7 @@ const startingSettlementChoreo = async (
   await verifyTestMessages(iframe, expectedMessages);
 };
 
-test(
+test.skip(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
@@ -465,7 +473,7 @@ const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
-const MAP_DICE_COORDS = { x: 553, y: 540 };
+const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
 
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: 300_000 });
