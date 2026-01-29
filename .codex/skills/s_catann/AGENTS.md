@@ -27,8 +27,8 @@ stays accurate and complete. Do **not** add a changelog.
 - The Playwright test compares captured `socket.send` messages to the expected
   list **after filtering ignorable heartbeats** (payloads that start with
   `[4, 8, ...]`).
-- Only click interactions should drive the test flow; avoid DOM or canvas
-  injections in finished tests.
+- Only click interactions should drive the test flow; you are never allowed
+  to introduce DOM or style manipulation code. 
 
 ## Asset and file locations
 - Catann client assets: `public/public_catann/catann_files/`
