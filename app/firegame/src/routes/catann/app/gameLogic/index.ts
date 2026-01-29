@@ -283,6 +283,29 @@ const sendExitInitialPlacement62 = (gameData: any) => {
   });
 };
 
+const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
+  const tileHexStates = gameState.mapState.tileHexStates ?? {};
+  const tileIndexByCoord = new Map<string, number>();
+  Object.entries(tileHexStates).forEach(([index, tileState]: any) => {
+    tileIndexByCoord.set(`${tileState.x},${tileState.y}`, Number(index));
+  });
+  const adjacentCoords =
+    cornerState.z === CornerDirection.North
+      ? [
+          { x: cornerState.x, y: cornerState.y },
+          { x: cornerState.x - 1, y: cornerState.y },
+          { x: cornerState.x + 1, y: cornerState.y - 1 },
+        ]
+      : [
+          { x: cornerState.x, y: cornerState.y },
+          { x: cornerState.x, y: cornerState.y + 1 },
+          { x: cornerState.x - 1, y: cornerState.y + 1 },
+        ];
+  return adjacentCoords
+    .map((coord) => tileIndexByCoord.get(`${coord.x},${coord.y}`))
+    .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
+};
+
 export const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
@@ -331,25 +354,10 @@ export const placeSettlement = (cornerIndex: number) => {
     const cornerState =
       gameState.mapState.tileCornerStates[String(cornerIndex)];
     const tileHexStates = gameState.mapState.tileHexStates ?? {};
-    const tileIndexByCoord = new Map<string, number>();
-    Object.entries(tileHexStates).forEach(([index, tileState]: any) => {
-      tileIndexByCoord.set(`${tileState.x},${tileState.y}`, Number(index));
-    });
-    const adjacentCoords =
-      cornerState.z === CornerDirection.North
-        ? [
-            { x: cornerState.x, y: cornerState.y },
-            { x: cornerState.x - 1, y: cornerState.y },
-            { x: cornerState.x + 1, y: cornerState.y - 1 },
-          ]
-        : [
-            { x: cornerState.x, y: cornerState.y },
-            { x: cornerState.x, y: cornerState.y + 1 },
-            { x: cornerState.x - 1, y: cornerState.y + 1 },
-          ];
-    const adjacentTiles = adjacentCoords
-      .map((coord) => tileIndexByCoord.get(`${coord.x},${coord.y}`))
-      .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
+    const adjacentTiles = getAdjacentTileIndicesForCorner(
+      gameState,
+      cornerState,
+    );
     const resourcesToGive: {
       owner: number;
       tileIndex: number;
@@ -473,6 +481,111 @@ export const placeRoad = (edgeIndex: number) => {
   );
 };
 
+const rollDice = () => {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData.data.payload.gameState;
+  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const overrideDiceState = (
+    window as typeof window & { __diceState?: [number, number] }
+  ).__diceState;
+  const dice1 =
+    Array.isArray(overrideDiceState) && overrideDiceState.length === 2
+      ? overrideDiceState[0]
+      : Math.floor(Math.random() * 6) + 1;
+  const dice2 =
+    Array.isArray(overrideDiceState) && overrideDiceState.length === 2
+      ? overrideDiceState[1]
+      : Math.floor(Math.random() * 6) + 1;
+  const diceTotal = dice1 + dice2;
+  const tileHexStates = gameState.mapState.tileHexStates ?? {};
+  const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
+  const resourcesToGive: {
+    owner: number;
+    tileIndex: number;
+    distributionType: number;
+    card: number;
+  }[] = [];
+  const cardsByOwner = new Map<number, number[]>();
+
+  Object.values(tileCornerStates).forEach((cornerState: any) => {
+    if (!cornerState?.owner) return;
+    if (
+      cornerState.buildingType !== CornerPieceType.Settlement &&
+      cornerState.buildingType !== CornerPieceType.City
+    )
+      return;
+    const adjacentTiles = getAdjacentTileIndicesForCorner(
+      gameState,
+      cornerState,
+    );
+    adjacentTiles.forEach((tileIndex) => {
+      const tileState = tileHexStates[String(tileIndex)];
+      if (!tileState) return;
+      if (tileState.diceNumber !== diceTotal) return;
+      if (
+        tileState.type === TileType.Desert ||
+        tileState.type === TileType.Sea
+      )
+        return;
+      const cardCount =
+        cornerState.buildingType === CornerPieceType.City ? 2 : 1;
+      for (let i = 0; i < cardCount; i += 1) {
+        resourcesToGive.push({
+          owner: cornerState.owner,
+          tileIndex,
+          distributionType: 1,
+          card: tileState.type,
+        });
+        const ownerCards = cardsByOwner.get(cornerState.owner) ?? [];
+        ownerCards.push(tileState.type);
+        cardsByOwner.set(cornerState.owner, ownerCards);
+      }
+    });
+  });
+
+  gameState.diceState = {
+    ...gameState.diceState,
+    diceThrown: true,
+    dice1,
+    dice2,
+  };
+  updateCurrentState(gameData, {
+    turnState: 2,
+    allocatedTime: 120,
+  });
+  addGameLogEntry(gameState, {
+    text: {
+      type: 10,
+      playerColor,
+      firstDice: dice1,
+      secondDice: dice2,
+    },
+    from: playerColor,
+  });
+
+  cardsByOwner.forEach((cards, owner) => {
+    addPlayerResourceCards(gameState, owner, cards, 1);
+  });
+
+  if (resourcesToGive.length > 0) {
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.GivePlayerResourcesFromTile,
+        payload: resourcesToGive,
+      },
+    });
+  }
+
+  setFirebaseData(
+    { ...firebaseData, GAME: gameData },
+    {
+      action: "rollDice",
+      dice: [dice1, dice2],
+    },
+  );
+};
+
 export const applyGameAction = (parsed: {
   action?: number;
   payload?: unknown;
@@ -490,7 +603,8 @@ export const applyGameAction = (parsed: {
     parsed.action !== GAME_ACTION.WantToBuildRoad &&
     parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
     parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
-    parsed.action !== GAME_ACTION.WantToBuildSettlement
+    parsed.action !== GAME_ACTION.WantToBuildSettlement &&
+    parsed.action !== GAME_ACTION.ClickedDice
   ) {
     return false;
   }
@@ -499,6 +613,11 @@ export const applyGameAction = (parsed: {
     return true;
   }
   if (parsed.action === GAME_ACTION.WantToBuildRoad) {
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.ClickedDice) {
+    rollDice();
     return true;
   }
 

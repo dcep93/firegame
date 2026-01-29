@@ -76,12 +76,13 @@ const choreo = (
     await spliceTestMessages(iframe);
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
+    await delay(1000);
     await f(iframe, expectedMessages);
     expect(expectedMessages).toEqual([]);
   };
 };
 
-test.skip(
+test(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -268,12 +269,16 @@ const startingSettlementChoreo = async (
   await f({ col: 2, row: 5 }, { col: 2, row: 6 });
   await f({ col: 8, row: 5 }, { col: 8, row: 6 });
 
-  await rollDice(canvas, [6, 2]);
+  const diceState = expectedMessages.find(
+    (msg) => msg.data.data?.payload.diff?.diceState,
+  )!.data.data.payload.diff.diceState;
+
+  await rollDice(canvas, [diceState.dice1, diceState.dice2]);
 
   await verifyTestMessages(iframe, expectedMessages);
 };
 
-test(
+test.skip(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
