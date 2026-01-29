@@ -5,9 +5,9 @@ description: Run the Firegame catann test workflow (start dev server, run test s
 
 # Skill: catann
 
-Always include the full `test_catann.sh` output in the final response. If
-`screenshot.png` exists, always show it in the response even when the test
-fails.
+Always include the screenshot (if `screenshot.png` exists) as the **first part
+of the final response**, even when the test fails. Always include the full
+`test_catann.sh` output in the final response.
 
 ## Summary flow
 
