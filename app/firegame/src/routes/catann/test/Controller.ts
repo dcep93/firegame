@@ -93,10 +93,8 @@ const Controller = (
         console.log(msg);
       });
     },
-    mapAppearsClickable: async (offset: { x: number; y: number }) => {
-      if (_expectedMessages === undefined) throw new Error("not allowed");
-      return await _mapAppearsClickable(canvas, offset);
-    },
+    mapAppearsClickable: async (offset: { x: number; y: number }) =>
+      await _mapAppearsClickable(canvas, offset),
     rollNextDice: async () => {
       const diceState = _expectedMessages!.find(
         (msg) => msg.data.data?.payload.diff?.diceState,

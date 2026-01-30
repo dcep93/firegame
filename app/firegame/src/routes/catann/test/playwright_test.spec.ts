@@ -29,7 +29,7 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
   };
 };
 
-test.skip(
+test(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -161,7 +161,7 @@ test.skip(
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
 
-test(
+test.skip(
   "single_player",
   screenshot(choreo("./single_player.json", singlePlayerChoreo)),
 );
