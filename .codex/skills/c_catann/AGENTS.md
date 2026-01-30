@@ -11,3 +11,4 @@
 - After the robber roll update (sequence 49), the next expected client action is
   a pass-turn click (`GAME_ACTION.PassedTurn`, action 6), followed by reset
   trade state (type 80) and a new turn-state update.
+- After the robber roll (sequence 49) and the subsequent pass-turn click (action 6, sequence 37), the recorded single_player flow expects a reset trade state update (type 80, sequence 50) and a follow-on GameStateUpdated message; choreo must continue past this point to drain expected messages.

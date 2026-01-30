@@ -10,3 +10,9 @@
 - what you changed: Added `autoPlaceRobber` in `gameLogic/index.ts` to update `mechanicRobberState.locationTileIndex`, log entries (types 11 and 74), clear tile highlights, and emit a follow-up GameStateUpdated after a robber roll.
 - why the test isn't passing: The choreography stops after the robber roll; the remaining expected messages start with a pass-turn action (client action 6, sequence 37) and subsequent server updates that aren't triggered.
 - next suggested step: Extend `singlePlayerChoreo` with another `passTurn()` and follow-on actions (rolls/build road) to consume the remaining expected messages in `single_player.json`.
+
+## Single-player pass-turn follow-on
+- what would've saved time to get your bearings: The recorded single_player flow continues past the robber roll with a pass-turn action that emits a reset trade state (type 80) and follow-on GameStateUpdated messages; stopping after the client pass leaves expected messages queued.
+- what you changed: Added an extra pass-turn + verification at the end of singlePlayerChoreo to consume the next clientData action (action 6, sequence 37).
+- why the test isn't passing: The choreo still stops before consuming the subsequent serverData reset trade state (type 80, sequence 50) and the rest of the recorded sequence, so expectedMessages remains non-empty.
+- next suggested step: Extend singlePlayerChoreo to continue the recorded flow after the pass-turn (wait for reset trade state and continue with the following recorded actions), or expand the choreography to cover the remaining client action sequence from single_player.json.

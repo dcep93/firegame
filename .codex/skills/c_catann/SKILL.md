@@ -16,8 +16,8 @@ Read this entire SKILL.md and ./FINDINGS.md before taking any action.
 1. Run the s_catann workflow to reproduce the failure and capture logs/screenshots.
 2. Identify the failing choreography and adjust Catann logic.
 3. Re-run the s_catann workflow until the test passes.
-4. Summarize changes and update skills/s_catann/AGENTS.md with new discoveries.
-5. MUST DO: append to ./FINDINGS.md, organize by topic
+4. Update `skills/c_catann/AGENTS.md` with new choreography knowledge.
+5. MUST DO: append to ./FINDINGS.md, organized by topic:
    a. what would've saved time to get your bearings
    b. what you changed
    c. why the test isn't passing
@@ -40,11 +40,11 @@ If the user provides a time constraint, treat it as a soft stop:
 ## Notes
 
 - Always follow `firegame/.codex/skills/s_catann/SKILL.md` for the test workflow.
-- Maintain `firegame/.codex/skills/c_catann/AGENTS.md` similar to the s_catann guide: update it in-place when you discover new Catann-specific choreography knowledge.
+- Keep `firegame/.codex/skills/c_catann/AGENTS.md` updated with new choreography knowledge.
 
 ## Time constraint default
 
-If no time constraint is provided, stop after implementing a single code improvement and present the change.
+If no time constraint is provided, keep iterating and updating `test/choreo.ts` until the test passes or until the second time you need to change `gameLogic`. At that point, stop and report what remains.
 
 ## Known choreography expectations
 
