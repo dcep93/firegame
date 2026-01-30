@@ -23,4 +23,12 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   //
   await c.rollNextDice();
   await c.verifyTestMessages();
+  //
+  await c.passTurn();
+  await c.delay(1000);
+  await c.passTurn();
+  await c.verifyTestMessages();
+  //
+  await c.rollNextDice();
+  await c.verifyTestMessages();
 };
