@@ -12,6 +12,7 @@ const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
 const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
+const MAP_PASS_COORDS = { x: 800 - MAP_OFFSET.x, y: 672 - MAP_OFFSET.y };
 
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
@@ -22,17 +23,10 @@ const Controller = (
     delay: async (durationMs: number) => _delay(durationMs),
     playSettlement: async (settlementCoords: { col: number; row: number }) => {
       const settlementOffset = getSettlementOffset(settlementCoords);
-
-      await canvas.click({
-        position: settlementOffset,
-        force: true,
-      });
+      await clickCanvas(canvas, settlementOffset);
 
       const confirmSettlementOffset = getConfirmOffset(settlementOffset);
-      await canvas.click({
-        position: confirmSettlementOffset,
-        force: true,
-      });
+      await clickCanvas(canvas, confirmSettlementOffset);
     },
     playRoad: async (
       settlementCoords: { col: number; row: number },
@@ -44,17 +38,10 @@ const Controller = (
         x: (settlementOffset.x + destinationOffset.x) / 2,
         y: (settlementOffset.y + destinationOffset.y) / 2,
       };
-
-      await canvas.click({
-        position: roadOffset,
-        force: true,
-      });
+      await clickCanvas(canvas, roadOffset);
 
       const confirmRoadOffset = getConfirmOffset(roadOffset);
-      await canvas.click({
-        position: confirmRoadOffset,
-        force: true,
-      });
+      await clickCanvas(canvas, confirmRoadOffset);
     },
     verifyTestMessages: async () => {
       const expectedMessages = _expectedMessages!;
@@ -103,15 +90,37 @@ const Controller = (
           )!.data.data.payload.diff.gameLogState,
         ).find((log: any) => log.text.firstDice) as any
       ).text;
-
       await _rollDice(canvas, [
         diceStateLog.firstDice,
         diceStateLog.secondDice,
       ]);
     },
+    passTurn: async () => await _passTurn(canvas),
   }))(getCanvas(iframe));
 
 export default Controller;
+
+export const clickCanvas = async (
+  canvas: Locator,
+  position: { x: number; y: number },
+) => {
+  await expect
+    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+      timeout: 5000,
+    })
+    .toBe(true);
+
+  await canvas.click({
+    position,
+    force: true,
+  });
+
+  await expect
+    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+      timeout: 5000,
+    })
+    .toBe(false);
+};
 
 export const _mapAppearsClickable = async (
   canvas: Locator,
@@ -225,22 +234,11 @@ export const _rollDice = async (
       window.parent.__diceState = diceState;
     }, diceState);
 
-  await expect
-    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
-      timeout: 5000,
-    })
-    .toBe(true);
+  clickCanvas(canvas, MAP_DICE_COORDS);
+};
 
-  await canvas.click({
-    position: MAP_DICE_COORDS,
-    force: true,
-  });
-
-  await expect
-    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
-      timeout: 5000,
-    })
-    .toBe(false);
+const _passTurn = async (canvas: Locator) => {
+  await clickCanvas(canvas, MAP_PASS_COORDS);
 };
 
 export const getCanvas = (iframe: FrameLocator) =>
