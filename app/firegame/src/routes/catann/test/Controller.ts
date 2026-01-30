@@ -5,7 +5,7 @@ import {
   Locator,
   test,
 } from "@playwright/test";
-import { _delay, spliceTestMessages } from "./playwright_test.spec";
+import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
@@ -64,10 +64,13 @@ const Controller = (
           throw e;
         }
         if (msg.trigger === "clientData") {
-          if (expectedMsg.data.sequence)
+          if (expectedMsg.data.sequence) {
             msg.data.sequence = expectedMsg.data.sequence;
+            codex[msg.trigger] = msg.data.sequence;
+          }
         } else {
           msg.data.data.sequence = expectedMsg.data.data.sequence;
+          codex[msg.trigger] = msg.data.data.sequence;
           if (
             msg.data.data.payload?.diff?.currentState.startTime &&
             expectedMsg.data.data.payload?.diff?.currentState.startTime

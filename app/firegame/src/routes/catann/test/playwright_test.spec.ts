@@ -15,12 +15,15 @@ import Controller, {
   getSettlementOffset,
 } from "./Controller";
 
+export const codex: Record<string, number> = {};
+
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
   return async ({ page }: { page: Page }, testInfo: any) => {
     try {
       await f({ page });
     } finally {
       await _delay(5000);
+      console.log({ codex });
       await page.screenshot({
         path: testInfo.outputPath("screenshot.png"),
         fullPage: true,

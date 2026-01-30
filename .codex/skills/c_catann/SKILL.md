@@ -55,4 +55,4 @@ If no time constraint is provided, keep iterating and updating `test/choreo.ts` 
 
 - The test compares recorded socket message bytes after filtering heartbeats.
 - The choreography should drive the UI through **click interactions only**.
-- In responses, lead with the final JSON message successfully handled in the last Catann run (the final logged message before the first error).
+- In responses, lead with the `console.log({ codex: ... })` object
