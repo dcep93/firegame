@@ -16,3 +16,9 @@
 - what you changed: Added an extra pass-turn + verification at the end of singlePlayerChoreo to consume the next clientData action (action 6, sequence 37).
 - why the test isn't passing: The choreo still stops before consuming the subsequent serverData reset trade state (type 80, sequence 50) and the rest of the recorded sequence, so expectedMessages remains non-empty.
 - next suggested step: Extend singlePlayerChoreo to continue the recorded flow after the pass-turn (wait for reset trade state and continue with the following recorded actions), or expand the choreography to cover the remaining client action sequence from single_player.json.
+
+## Robber follow-on road build mismatch
+- what would've saved time to get your bearings: The post-robber-roll flow expects a `WantToBuildRoad` client action (action 10, payload true) before the confirm road action; direct edge clicks are yielding `ConfirmBuildRoadSkippingSelection` (action 12) instead.
+- what you changed: Adjusted pass-turn staging logic, robber highlight tile filtering, and auto-robber placement; extended singlePlayerChoreo to roll dice and attempt the follow-on road build after the second robber roll.
+- why the test isn't passing: The choreography still produces action 12 with payload 61 instead of the expected action 10, so the expected messages are left unconsumed after the second robber roll.
+- next suggested step: Find a choreography click path (likely a build-road UI click) that emits action 10 before clicking the road edge for action 11 (payload 63), or update the controller to support clicking the build road UI once allowed.

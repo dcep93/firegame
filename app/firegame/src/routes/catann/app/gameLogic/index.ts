@@ -679,9 +679,12 @@ const rollDice = () => {
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-    sendTileHighlights33(gameData, [
-      0, 2, 3, 4, 5, 6, 8, 9, 10, 11, 14, 15,
-    ]);
+    const robberHighlightTiles = [
+      0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15,
+    ].filter(
+      (index) => index !== gameState.mechanicRobberState?.locationTileIndex,
+    );
+    sendTileHighlights33(gameData, robberHighlightTiles);
   }
 
   setFirebaseData(
@@ -693,7 +696,9 @@ const rollDice = () => {
   );
 
   if (shouldTriggerRobber) {
-    autoPlaceRobber(gameData, playerColor, 4);
+    const autoRobberTileIndex =
+      gameState.mechanicRobberState?.locationTileIndex === 4 ? 3 : 4;
+    autoPlaceRobber(gameData, playerColor, autoRobberTileIndex);
   }
 };
 
@@ -772,7 +777,7 @@ export const applyGameAction = (parsed: {
     if (
       gameState.currentState.turnState === 2 &&
       gameState.currentState.actionState === PlayerActionState.None &&
-      (gameState.currentState.completedTurns ?? 0) >= 3
+      (gameState.currentState.completedTurns ?? 0) === 3
     ) {
       gameState.currentState.actionState =
         PlayerActionState.SelectCardsToDiscard;
