@@ -101,7 +101,6 @@ const Controller = (
       )!.data.data.payload.diff.diceState;
 
       await _rollDice(canvas, [diceState.dice1, diceState.dice2]);
-      await _delay(500);
     },
   }))(getCanvas(iframe));
 

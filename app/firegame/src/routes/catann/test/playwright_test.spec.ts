@@ -149,6 +149,7 @@ const choreo = (fileName: string, f: (c: ControllerType) => Promise<void>) => {
     await _delay(1000);
     const c = Controller(iframe, expectedMessages);
     await c.verifyTestMessages();
+    page.on("pageerror", (msg) => console.log(msg));
     await f(c);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
   };
