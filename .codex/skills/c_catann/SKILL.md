@@ -17,18 +17,18 @@ Read this entire SKILL.md and ./FINDINGS.md before taking any action.
 2. Identify the failing choreography and adjust Catann logic.
 3. Re-run the s_catann workflow until the test passes.
 4. Summarize changes and update skills/s_catann/AGENTS.md with new discoveries.
+5. MUST DO: append to ./FINDINGS.md, organize by topic
+   a. what would've saved time to get your bearings
+   b. what you changed
+   c. why the test isn't passing
+   d. next suggested step
 
 ## Timebox support
 
 If the user provides a time constraint, treat it as a soft stop:
 
 - Prefer changes that advance the choreography even if the full test does not pass.
-- When time expires, stop immediately and package the work:
-  - MUST DO: append to ./FINDINGS.md, organize by topic
-    1. what would've saved time to get your bearings
-    2. what you changed
-    3. why the test isn't passing
-    4. next suggested step
+- When time expires, stop immediately and package the work.
 
 ## Constraints (must follow)
 
