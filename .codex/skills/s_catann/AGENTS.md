@@ -27,6 +27,10 @@ stays accurate and complete. Do **not** add a changelog.
 - The Playwright test compares captured `socket.send` messages to the expected
   list **after filtering ignorable heartbeats** (payloads that start with
   `[4, 8, ...]`).
+- The `single_player` recording expects a robber-roll highlight clear
+  (type 33 with empty payload) followed by a game-state update that sets
+  `mechanicRobberState.locationTileIndex` before a pass-turn action resumes
+  the flow.
 - Only click interactions should drive the test flow; you are never allowed
   to introduce DOM or style manipulation code. 
 

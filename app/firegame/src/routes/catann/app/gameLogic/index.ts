@@ -97,6 +97,61 @@ const addPlayerResourceCards = (
   });
 };
 
+const autoPlaceRobber = (
+  gameData: any,
+  playerColor: number,
+  tileIndex: number,
+) => {
+  const gameState = gameData.data.payload.gameState;
+  const tileHexStates = gameState.mapState.tileHexStates ?? {};
+  const tileState = tileHexStates[String(tileIndex)];
+
+  gameState.mechanicRobberState = {
+    ...gameState.mechanicRobberState,
+    locationTileIndex: tileIndex,
+    isActive: true,
+  };
+
+  updateCurrentState(gameData, {
+    turnState: 2,
+    actionState: PlayerActionState.None,
+    allocatedTime: 120,
+  });
+
+  addGameLogEntry(gameState, {
+    text: {
+      type: 11,
+      playerColor,
+      pieceEnum: 5,
+      tileInfo: tileState
+        ? {
+            tileType: tileState.type,
+            diceNumber: tileState.diceNumber,
+            resourceType: tileState.type,
+          }
+        : undefined,
+    },
+    from: playerColor,
+  });
+
+  addGameLogEntry(gameState, {
+    text: {
+      type: 74,
+    },
+    from: playerColor,
+  });
+
+  sendTileHighlights33(gameData, []);
+
+  setFirebaseData(
+    { ...firebaseData, GAME: gameData },
+    {
+      action: "placeRobber",
+      tileIndex,
+    },
+  );
+};
+
 const applyPortOwnership = (
   gameState: any,
   cornerState: any,
@@ -636,6 +691,10 @@ const rollDice = () => {
       dice: [dice1, dice2],
     },
   );
+
+  if (shouldTriggerRobber) {
+    autoPlaceRobber(gameData, playerColor, 4);
+  }
 };
 
 const passTurn = () => {
