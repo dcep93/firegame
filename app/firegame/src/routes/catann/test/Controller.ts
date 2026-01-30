@@ -7,10 +7,10 @@ import {
 } from "@playwright/test";
 import { _delay, spliceTestMessages } from "./playwright_test.spec";
 
-const MAP_OFFSET = { x: 165, y: 11.5 };
-const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
+const MAP_OFFSET = { x: 165, y: 11.5 };
+const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
 const MAP_DICE_COORDS = { x: 717 - MAP_OFFSET.x, y: 551 - MAP_OFFSET.y };
 const MAP_PASS_COORDS = { x: 800 - MAP_OFFSET.x, y: 672 - MAP_OFFSET.y };
 
