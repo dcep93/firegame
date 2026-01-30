@@ -248,12 +248,12 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
   });
 };
 
-const sendTileHighlights33 = (gameData: any) => {
+const sendTileHighlights33 = (gameData: any, payload: number[] = []) => {
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
       type: GameStateUpdateType.HighlightTiles,
-      payload: [],
+      payload,
     },
   });
 };
@@ -293,6 +293,16 @@ const sendExitInitialPlacement62 = (gameData: any) => {
     data: {
       type: GameStateUpdateType.ExitInitialPlacement,
       payload: {},
+    },
+  });
+};
+
+const sendResetTradeStateAtEndOfTurn80 = () => {
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.ResetTradeStateAtEndOfTurn,
+      payload: null,
     },
   });
 };
@@ -511,6 +521,7 @@ const rollDice = () => {
       ? overrideDiceState[1]
       : Math.floor(Math.random() * 6) + 1;
   const diceTotal = dice1 + dice2;
+  const shouldTriggerRobber = diceTotal === 7;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
   const resourcesToGive: {
@@ -521,38 +532,43 @@ const rollDice = () => {
   }[] = [];
   const cardsByOwner = new Map<number, number[]>();
 
-  Object.values(tileCornerStates).forEach((cornerState: any) => {
-    if (!cornerState?.owner) return;
-    if (
-      cornerState.buildingType !== CornerPieceType.Settlement &&
-      cornerState.buildingType !== CornerPieceType.City
-    )
-      return;
-    const adjacentTiles = getAdjacentTileIndicesForCorner(
-      gameState,
-      cornerState,
-    );
-    adjacentTiles.forEach((tileIndex) => {
-      const tileState = tileHexStates[String(tileIndex)];
-      if (!tileState) return;
-      if (tileState.diceNumber !== diceTotal) return;
-      if (tileState.type === TileType.Desert || tileState.type === TileType.Sea)
+  if (!shouldTriggerRobber) {
+    Object.values(tileCornerStates).forEach((cornerState: any) => {
+      if (!cornerState?.owner) return;
+      if (
+        cornerState.buildingType !== CornerPieceType.Settlement &&
+        cornerState.buildingType !== CornerPieceType.City
+      )
         return;
-      const cardCount =
-        cornerState.buildingType === CornerPieceType.City ? 2 : 1;
-      for (let i = 0; i < cardCount; i += 1) {
-        resourcesToGive.push({
-          owner: cornerState.owner,
-          tileIndex,
-          distributionType: 1,
-          card: tileState.type,
-        });
-        const ownerCards = cardsByOwner.get(cornerState.owner) ?? [];
-        ownerCards.push(tileState.type);
-        cardsByOwner.set(cornerState.owner, ownerCards);
-      }
+      const adjacentTiles = getAdjacentTileIndicesForCorner(
+        gameState,
+        cornerState,
+      );
+      adjacentTiles.forEach((tileIndex) => {
+        const tileState = tileHexStates[String(tileIndex)];
+        if (!tileState) return;
+        if (tileState.diceNumber !== diceTotal) return;
+        if (
+          tileState.type === TileType.Desert ||
+          tileState.type === TileType.Sea
+        )
+          return;
+        const cardCount =
+          cornerState.buildingType === CornerPieceType.City ? 2 : 1;
+        for (let i = 0; i < cardCount; i += 1) {
+          resourcesToGive.push({
+            owner: cornerState.owner,
+            tileIndex,
+            distributionType: 1,
+            card: tileState.type,
+          });
+          const ownerCards = cardsByOwner.get(cornerState.owner) ?? [];
+          ownerCards.push(tileState.type);
+          cardsByOwner.set(cornerState.owner, ownerCards);
+        }
+      });
     });
-  });
+  }
 
   gameState.diceState = {
     ...gameState.diceState,
@@ -560,10 +576,17 @@ const rollDice = () => {
     dice1,
     dice2,
   };
-  updateCurrentState(gameData, {
-    turnState: 2,
-    allocatedTime: 120,
-  });
+  if (shouldTriggerRobber) {
+    updateCurrentState(gameData, {
+      actionState: PlayerActionState.PlaceRobberOrPirate,
+      allocatedTime: 40,
+    });
+  } else {
+    updateCurrentState(gameData, {
+      turnState: 2,
+      allocatedTime: 120,
+    });
+  }
   addGameLogEntry(gameState, {
     text: {
       type: 10,
@@ -573,12 +596,22 @@ const rollDice = () => {
     },
     from: playerColor,
   });
+  if (shouldTriggerRobber) {
+    addGameLogEntry(gameState, {
+      text: {
+        type: 60,
+        all: false,
+      },
+    });
+  }
 
-  cardsByOwner.forEach((cards, owner) => {
-    addPlayerResourceCards(gameState, owner, cards, 1);
-  });
+  if (!shouldTriggerRobber) {
+    cardsByOwner.forEach((cards, owner) => {
+      addPlayerResourceCards(gameState, owner, cards, 1);
+    });
+  }
 
-  if (resourcesToGive.length > 0) {
+  if (!shouldTriggerRobber) {
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
@@ -586,6 +619,14 @@ const rollDice = () => {
         payload: resourcesToGive,
       },
     });
+  } else {
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendTileHighlights33(gameData, [
+      0, 2, 3, 4, 5, 6, 8, 9, 10, 11, 14, 15,
+    ]);
   }
 
   setFirebaseData(
@@ -593,6 +634,39 @@ const rollDice = () => {
     {
       action: "rollDice",
       dice: [dice1, dice2],
+    },
+  );
+};
+
+const passTurn = () => {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData.data.payload.gameState;
+  const completedTurns = gameState.currentState.completedTurns ?? 0;
+
+  gameState.diceState = {
+    ...gameState.diceState,
+    diceThrown: false,
+  };
+
+  updateCurrentState(gameData, {
+    completedTurns: completedTurns + 1,
+    turnState: 1,
+    actionState: PlayerActionState.None,
+    allocatedTime: 8,
+  });
+
+  addGameLogEntry(gameState, {
+    text: {
+      type: 44,
+    },
+  });
+
+  sendResetTradeStateAtEndOfTurn80();
+
+  setFirebaseData(
+    { ...firebaseData, GAME: gameData },
+    {
+      action: "passTurn",
     },
   );
 };
@@ -616,6 +690,7 @@ export const applyGameAction = (parsed: {
     parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
     parsed.action !== GAME_ACTION.WantToBuildSettlement &&
     parsed.action !== GAME_ACTION.ClickedDice &&
+    parsed.action !== GAME_ACTION.PassedTurn &&
     parsed.action !== GAME_ACTION.SelectedInitialPlacementIndex
   ) {
     return false;
@@ -630,6 +705,30 @@ export const applyGameAction = (parsed: {
 
   if (parsed.action === GAME_ACTION.ClickedDice) {
     rollDice();
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.PassedTurn) {
+    const gameState = firebaseData.GAME.data.payload.gameState;
+    if (
+      gameState.currentState.turnState === 2 &&
+      gameState.currentState.actionState === PlayerActionState.None &&
+      (gameState.currentState.completedTurns ?? 0) >= 3
+    ) {
+      gameState.currentState.actionState =
+        PlayerActionState.SelectCardsToDiscard;
+      return true;
+    }
+    if (
+      gameState.currentState.turnState === 2 &&
+      gameState.currentState.actionState ===
+        PlayerActionState.SelectCardsToDiscard
+    ) {
+      gameState.currentState.actionState = PlayerActionState.None;
+      passTurn();
+      return true;
+    }
+    passTurn();
     return true;
   }
 
