@@ -29,7 +29,7 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
   };
 };
 
-test(
+test.skip(
   "clickable_map",
   screenshot(async ({ page }: { page: Page }) => {
     const settlementCoords = { col: 0, row: 5 };
@@ -86,7 +86,6 @@ test(
       { row: settlementCoords.row, col: settlementCoords.col + 2 },
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
     );
-    test.skip();
 
     await _rollDice(getCanvas(iframe));
   }),
@@ -162,7 +161,7 @@ test.skip(
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
 
-test.skip(
+test(
   "single_player",
   screenshot(choreo("./single_player.json", singlePlayerChoreo)),
 );

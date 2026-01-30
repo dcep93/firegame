@@ -320,57 +320,13 @@ const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
     .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
 };
 
-const findCornerIndexByCoord = (
-  cornerStates: Record<string, any>,
-  cornerCoord: { x: number; y: number; z: number },
-) => {
-  const entry = Object.entries(cornerStates).find(
-    ([, corner]) =>
-      corner.x === cornerCoord.x &&
-      corner.y === cornerCoord.y &&
-      corner.z === cornerCoord.z,
-  );
-  return entry ? Number.parseInt(entry[0], 10) : null;
-};
-
-const resolveInitialPlacementCornerIndex = (
-  gameState: any,
-  cornerIndex: number,
-) => {
-  if (
-    gameState.currentState.actionState !==
-    PlayerActionState.InitialPlacementPlaceSettlement
-  ) {
-    return cornerIndex;
-  }
-  if ((gameState.currentState.completedTurns ?? 0) > 0) {
-    return cornerIndex;
-  }
-  const cornerStates = gameState.mapState.tileCornerStates;
-  const cornerState = cornerStates[String(cornerIndex)];
-  if (!cornerState || cornerState.z !== CornerDirection.South) {
-    return cornerIndex;
-  }
-  const northCornerIndex = findCornerIndexByCoord(cornerStates, {
-    x: cornerState.x,
-    y: cornerState.y + 1,
-    z: CornerDirection.North,
-  });
-  return northCornerIndex ?? cornerIndex;
-};
-
 const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
-  const resolvedCornerIndex = resolveInitialPlacementCornerIndex(
-    gameState,
-    cornerIndex,
-  );
-  const cornerState =
-    gameState.mapState.tileCornerStates[String(resolvedCornerIndex)];
+  const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
 
-  gameState.mapState.tileCornerStates[String(resolvedCornerIndex)] = {
+  gameState.mapState.tileCornerStates[String(cornerIndex)] = {
     ...cornerState,
     owner: playerColor,
     buildingType: CornerPieceType.Settlement,
@@ -405,7 +361,7 @@ const placeSettlement = (cornerIndex: number) => {
   applyPortOwnership(gameState, cornerState, playerColor);
 
   sendCornerHighlights30(gameData);
-  sendEdgeHighlights31(gameData, resolvedCornerIndex);
+  sendEdgeHighlights31(gameData, cornerIndex);
 
   const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
     const gameState = gameData.data.payload.gameState;
@@ -455,13 +411,13 @@ const placeSettlement = (cornerIndex: number) => {
       },
     });
   };
-  sendResourcesFromTile(gameData, resolvedCornerIndex);
+  sendResourcesFromTile(gameData, cornerIndex);
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {
       action: "placeSettlement",
-      cornerIndex: resolvedCornerIndex,
+      cornerIndex,
     },
   );
 };
