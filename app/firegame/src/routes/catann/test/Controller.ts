@@ -96,11 +96,18 @@ const Controller = (
     mapAppearsClickable: async (offset: { x: number; y: number }) =>
       await _mapAppearsClickable(canvas, offset),
     rollNextDice: async () => {
-      const diceState = _expectedMessages!.find(
-        (msg) => msg.data.data?.payload.diff?.diceState,
-      )!.data.data.payload.diff.diceState;
+      const diceStateLog = (
+        Object.values(
+          _expectedMessages!.find(
+            (msg) => msg.data.data?.payload.diff?.diceState?.diceThrown,
+          )!.data.data.payload.diff.gameLogState,
+        ).find((log: any) => log.text.firstDice) as any
+      ).text;
 
-      await _rollDice(canvas, [diceState.dice1, diceState.dice2]);
+      await _rollDice(canvas, [
+        diceStateLog.firstDice,
+        diceStateLog.secondDice,
+      ]);
     },
   }))(getCanvas(iframe));
 
