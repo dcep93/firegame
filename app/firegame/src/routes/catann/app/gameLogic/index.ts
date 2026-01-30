@@ -359,7 +359,7 @@ const resolveInitialPlacementCornerIndex = (
   return northCornerIndex ?? cornerIndex;
 };
 
-export const placeSettlement = (cornerIndex: number) => {
+const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
@@ -466,7 +466,7 @@ export const placeSettlement = (cornerIndex: number) => {
   );
 };
 
-export const placeRoad = (edgeIndex: number) => {
+const placeRoad = (edgeIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
