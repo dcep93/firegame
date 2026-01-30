@@ -36,11 +36,16 @@ If the user provides a time constraint, treat it as a soft stop:
 - You may also edit test/choreo.ts, but you may not add imports.
 - If a required change is outside those locations, **stop and report what you need to change** instead of editing.
 - Never manipulate `__socketCatannMessages`
+- Game-logic edits must be done one at a time (single focused change per run).
+  Choreography additions can be batched.
 
 ## Notes
 
 - Always follow `firegame/.codex/skills/s_catann/SKILL.md` for the test workflow.
 - Keep `firegame/.codex/skills/c_catann/AGENTS.md` updated with new choreography knowledge.
+- Debug flow to keep in mind: iframe -> `handleMessage` -> `parseClientData` ->
+  `applyGameAction` -> `setFirebaseData` -> `FirebaseWrapper` diff ->
+  `sendToMainSocket` -> iframe.
 
 ## Time constraint default
 

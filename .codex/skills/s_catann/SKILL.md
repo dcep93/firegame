@@ -24,7 +24,7 @@ codes; when presenting it, render a human-readable version with ANSI removed
 Before committing changes, validate TypeScript by running:
 
 ```bash
-cd /workspace/firegame/app/firegame
+cd firegame/app/firegame
 yarn lint
 ```
 
@@ -42,7 +42,7 @@ Include the raw command output in your notes/output for that step.
 ## 1) Start the dev server (keep running for hot reloads)
 
 ```bash
-cd /workspace/firegame/app/firegame
+cd firegame/app/firegame
 yarn start
 ```
 
@@ -53,12 +53,15 @@ Keep this command running.
 In another shell:
 
 ```bash
-cd /workspace/firegame/app
+cd firegame/app
 timeout 300s bash ./test_catann.sh --codex
 ```
 
 If the timeout is hit, report it as a failure and proceed to collect the
 screenshot (if available).
+
+If `CODEX_HOME` is not set, omit `--codex` so `test_catann.sh` can start the
+server for you.
 
 ## Fix mode (only if explicitly requested)
 
@@ -72,7 +75,7 @@ Follow AGENTS.md in the same folder as this skill doc. Do **not** introduce glob
 ## 3) Locate output image (if present)
 
 ```bash
-cd /workspace/firegame/app/firegame/test-results
+cd firegame/app/firegame/test-results
 ls
 # pick the folder just created, then:
 cd <test-results-subfolder>

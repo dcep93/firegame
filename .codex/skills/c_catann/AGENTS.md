@@ -12,3 +12,10 @@
   a pass-turn click (`GAME_ACTION.PassedTurn`, action 6), followed by reset
   trade state (type 80) and a new turn-state update.
 - After the robber roll (sequence 49) and the subsequent pass-turn click (action 6, sequence 37), the recorded single_player flow expects a reset trade state update (type 80, sequence 50) and a follow-on GameStateUpdated message; choreo must continue past this point to drain expected messages.
+- `applyGameAction` only handles a narrow set of actions (confirm road/settlement,
+  clicked dice, passed turn, selected initial placement). Any unhandled
+  `clientData` that isn't filtered out by `isRealMessage` will surface as a
+  `not implemented` error in `handleMessage.ts`.
+- `Controller.rollNextDice()` reads the next expected dice roll from the
+  recording and sets `window.parent.__diceState` before clicking the dice, so
+  mismatched recordings often point to an out-of-sync expectedMessages list.
