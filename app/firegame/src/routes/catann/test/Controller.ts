@@ -234,7 +234,7 @@ export const _rollDice = async (
       window.parent.__diceState = diceState;
     }, diceState);
 
-  clickCanvas(canvas, MAP_DICE_COORDS);
+  await clickCanvas(canvas, MAP_DICE_COORDS);
 };
 
 const _passTurn = async (canvas: Locator) => {
