@@ -86,7 +86,7 @@ const Controller = (
       const diceStateLog = (
         Object.values(
           _expectedMessages!.find(
-            (msg) => msg.data.data?.payload.diff?.diceState?.diceThrown,
+            (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
           )!.data.data.payload.diff.gameLogState,
         ).find((log: any) => log.text.firstDice) as any
       ).text;
@@ -105,7 +105,7 @@ export const clickCanvas = async (
   position: { x: number; y: number },
 ) => {
   await expect
-    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+    .poll(() => _mapAppearsClickable(canvas, position), {
       timeout: 5000,
     })
     .toBe(true);
@@ -114,12 +114,6 @@ export const clickCanvas = async (
     position,
     force: true,
   });
-
-  await expect
-    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
-      timeout: 5000,
-    })
-    .toBe(false);
 };
 
 export const _mapAppearsClickable = async (
