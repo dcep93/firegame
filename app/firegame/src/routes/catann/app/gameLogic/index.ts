@@ -765,8 +765,14 @@ const rollDice = () => {
   );
 
   if (shouldTriggerRobber) {
+    const currentRobberTileIndex =
+      gameState.mechanicRobberState?.locationTileIndex;
     const autoRobberTileIndex =
-      gameState.mechanicRobberState?.locationTileIndex === 4 ? 3 : 4;
+      currentRobberTileIndex === 4
+        ? 3
+        : currentRobberTileIndex === 3
+          ? 14
+          : 4;
     autoPlaceRobber(gameData, playerColor, autoRobberTileIndex);
   }
 };

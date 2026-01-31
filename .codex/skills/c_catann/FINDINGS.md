@@ -52,3 +52,9 @@
 - what you changed: Extended `singlePlayerChoreo` with two more roll-dice/pass-turn cycles to consume sequences 76–83.
 - why the test isn't passing: The remaining expected message starts at sequence 84 (type 30), which suggests another client action (likely an ExitInitialPlacement click) is still missing from the choreography.
 - next suggested step: Identify and click the UI element that emits action 62 after sequence 83, then continue consuming the highlight/dice sequence beginning at sequence 84.
+
+## Robber auto-placement and extended roll/pass loop
+- what would've saved time to get your bearings: The recording continues past sequence 93 with multiple roll/pass cycles and later client actions (action 9, 67, 68); by sequence 110 the expected resource distribution is empty, so any extra resources indicate a state divergence.
+- what you changed: Extended `singlePlayerChoreo` with additional roll/pass cycles and adjusted `autoPlaceRobber` to move from tile 3 to tile 14 on the next robber roll.
+- why the test isn't passing: After consuming through sequence 109, the dice roll at sequence 110 delivers resources (tileIndex 2, card 3) instead of an empty payload, likely because the choreography is missing later client actions (action 9 buy development card and action 67/68 reconnect actions) that alter the game state.
+- next suggested step: Either add choreography support for the action 9 and action 67/68 UI interactions (requires a new controller helper), or adjust game logic/state to prevent resource distribution at sequence 110 once those actions are skipped.

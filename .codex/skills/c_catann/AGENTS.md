@@ -43,3 +43,9 @@
 - After the pass-turn following edge 63, the recording continues with
   action 62 (payload false), a dice roll update (type 28 + type 91), and
   another pass-turn loop; choreo must continue to drain sequences 76–79.
+- When the robber roll occurs with the current robber location at tile 3, the
+  expected auto-placement in the recording moves it to tile 14 (tile info
+  diceNumber 5, resourceType 3) before continuing the pass/roll loop.
+- Past client action sequence 75, the recording expects empty resource
+  distributions for sequence 110; mismatches suggest missing UI actions like
+  the action 9 (buy development card) or the action 67/68 reconnect messages.
