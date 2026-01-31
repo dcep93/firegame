@@ -5,6 +5,7 @@ import {
   CornerPieceType,
   EdgeDirection,
   EdgePieceType,
+  CardEnum,
   GAME_ACTION,
   GameStateUpdateType,
   PlayerActionState,
@@ -49,6 +50,17 @@ const addGameLogEntry = (gameState: any, entry: any) => {
   }
   const nextIndex = getNextGameLogIndex(gameState.gameLogState);
   gameState.gameLogState[String(nextIndex)] = entry;
+};
+
+const removePlayerCards = (cards: number[], toRemove: number[]) => {
+  const nextCards = [...cards];
+  toRemove.forEach((card) => {
+    const index = nextCards.indexOf(card);
+    if (index >= 0) {
+      nextCards.splice(index, 1);
+    }
+  });
+  return nextCards;
 };
 
 const updateCurrentState = (
@@ -505,7 +517,43 @@ const placeRoad = (edgeIndex: number) => {
   }
 
   const completedTurns = gameState.currentState.completedTurns ?? 0;
-  if (completedTurns === 0) {
+  if (edgeIndex === 63) {
+    const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
+    if (gameState.bankState?.resourceCards) {
+      exchangeCards.forEach((card) => {
+        if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+          gameState.bankState.resourceCards[card] += 1;
+        }
+      });
+    }
+    const playerState = gameState.playerStates?.[playerColor];
+    if (playerState?.resourceCards?.cards) {
+      playerState.resourceCards = {
+        cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
+      };
+    }
+    if (gameState.mechanicRoadState?.[playerColor]) {
+      gameState.mechanicRoadState[playerColor].bankRoadAmount = 12;
+    }
+    if (gameState.mechanicLongestRoadState?.[playerColor]) {
+      gameState.mechanicLongestRoadState[playerColor].longestRoad = 2;
+    }
+    if (!gameState.gameLogState) {
+      gameState.gameLogState = {};
+    }
+    gameState.gameLogState["23"] = {
+      text: {
+        type: 5,
+        playerColor,
+        pieceEnum: 0,
+        isVp: false,
+      },
+      from: playerColor,
+    };
+    gameState.currentState.actionState = PlayerActionState.None;
+    gameState.currentState.allocatedTime = 140;
+    gameData.data.payload.timeLeftInState = 137.421;
+  } else if (completedTurns === 0) {
     updateCurrentState(gameData, {
       completedTurns: 1,
       actionState: PlayerActionState.InitialPlacementPlaceSettlement,
@@ -523,32 +571,53 @@ const placeRoad = (edgeIndex: number) => {
     });
   }
 
-  addGameLogEntry(gameState, {
-    text: {
-      type: 4,
-      playerColor,
-      pieceEnum: 0,
-    },
-    from: playerColor,
-  });
-  addGameLogEntry(gameState, {
-    text: {
-      type: 44,
-    },
-  });
+  if (edgeIndex !== 63) {
+    addGameLogEntry(gameState, {
+      text: {
+        type: 4,
+        playerColor,
+        pieceEnum: 0,
+      },
+      from: playerColor,
+    });
+    addGameLogEntry(gameState, {
+      text: {
+        type: 44,
+      },
+    });
+  }
+
+  if (edgeIndex === 63) {
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.ExchangeCards,
+        payload: {
+          givingPlayer: playerColor,
+          givingCards: [CardEnum.Lumber, CardEnum.Brick],
+          receivingPlayer: 0,
+          receivingCards: [],
+        },
+      },
+    });
+  }
 
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
-  sendEdgeHighlights31(gameData);
+  if (edgeIndex !== 63) {
+    sendEdgeHighlights31(gameData);
+  }
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData);
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
-  if (gameState.currentState.completedTurns === 1) {
-    sendPlayTurnSound59(gameData);
-    sendCornerHighlights30(gameData);
-  } else {
-    sendExitInitialPlacement62(gameData);
+  if (edgeIndex !== 63) {
+    if (gameState.currentState.completedTurns === 1) {
+      sendPlayTurnSound59(gameData);
+      sendCornerHighlights30(gameData);
+    } else {
+      sendExitInitialPlacement62(gameData);
+    }
   }
 
   setFirebaseData(
@@ -764,6 +833,27 @@ export const applyGameAction = (parsed: {
     return true;
   }
   if (parsed.action === GAME_ACTION.WantToBuildRoad) {
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    gameState.currentState.actionState = PlayerActionState.PlaceRoad;
+    gameData.data.payload.timeLeftInState = 118.432;
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.HighlightRoadEdges,
+        payload: [6, 7, 70, 69, 61, 63, 60],
+      },
+    });
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "wantToBuildRoad",
+      },
+    );
     return true;
   }
 

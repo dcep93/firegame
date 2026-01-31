@@ -22,3 +22,24 @@
   mismatched recordings often point to an out-of-sync expectedMessages list.
 - Auto-placing the robber after a 7 roll should switch from tile 4 on the first
   robber roll to tile 3 on the next (when the current robber location is 4).
+- The build-road action button can be clicked via
+  `div[class*="actionButton"] img[src*="road_"]` to emit
+  `WantToBuildRoad` (action 10) before clicking the road edge.
+- Always treat Catann logic as a stand-in for the server: derive updates from
+  the current game state (resource counts, player cards, etc.) instead of
+  hardcoding values.
+- Avoid color-specific UI selectors; use generic asset matches so any player
+  color works.
+- Responses should start with the codex trigger dictionary
+  (`console.log({ codex: ... })`), followed immediately by a screenshot when one
+  is available.
+- The edge 63 road click in the single-player flow maps to the
+  `{ col: 4, row: 5 }` → `{ col: 4, row: 6 }` midpoint; use the unchecked
+  click helper if pointer detection blocks it.
+- After confirming edge 63, the expected sequence starts with a
+  `GameStateUpdateType.ExchangeCards` (type 43) payload before highlight
+  resets (31/32/30/33/31/32), skipping the second `HighlightRoadEdges`
+  call normally sent by `placeRoad`.
+- After the pass-turn following edge 63, the recording continues with
+  action 62 (payload false), a dice roll update (type 28 + type 91), and
+  another pass-turn loop; choreo must continue to drain sequences 76–79.

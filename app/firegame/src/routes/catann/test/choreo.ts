@@ -39,6 +39,27 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.rollNextDice();
   await c.verifyTestMessages();
   //
-  await c.playRoad({ col: 4, row: 5 }, { col: 5, row: 4 });
+  await c.wantToBuildRoad();
+  await c.verifyTestMessages();
+  await c.delay(1000);
+  await c.verifyTestMessages();
+  await c.playRoadWithoutCheck({ col: 4, row: 5 }, { col: 4, row: 6 });
+  await c.verifyTestMessages();
+  //
+  await c.passTurn();
+  await c.verifyTestMessages();
+  await c.delay(1000);
+  await c.verifyTestMessages();
+  //
+  await c.rollNextDice();
+  await c.verifyTestMessages();
+  //
+  await c.passTurn();
+  await c.verifyTestMessages();
+  //
+  await c.rollNextDice();
+  await c.verifyTestMessages();
+  //
+  await c.passTurn();
   await c.verifyTestMessages();
 };
