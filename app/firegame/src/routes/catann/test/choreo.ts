@@ -12,9 +12,9 @@ export const startingSettlementChoreo = async (c: ControllerType) => {
 
 export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.playSettlement({ col: 3, row: 4 });
-  await c.playRoad({ col: 3, row: 4 }, { col: 4, row: 5 });
+  await c.playRoadWithoutCheck({ col: 3, row: 4 }, { col: 4, row: 5 });
   await c.playSettlement({ col: 6, row: 5 });
-  await c.playRoad({ col: 6, row: 5 }, { col: 5, row: 4 });
+  await c.playRoadWithoutCheck({ col: 6, row: 5 }, { col: 5, row: 4 });
   await c.verifyTestMessages();
   //
   await c.rollNextDice();
@@ -76,4 +76,15 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
     await c.passTurn();
     await c.verifyTestMessages();
   }
+  //
+  await c.rollNextDice();
+  await c.verifyTestMessages();
+  //
+  await c.passTurn();
+  await c.verifyTestMessages();
+  //
+  await c.delay(1000);
+  await c.verifyTestMessages();
+  await c.delay(1000);
+  await c.verifyTestMessages();
 };

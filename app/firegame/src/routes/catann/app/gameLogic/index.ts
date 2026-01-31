@@ -646,6 +646,9 @@ const rollDice = () => {
       : Math.floor(Math.random() * 6) + 1;
   const diceTotal = dice1 + dice2;
   const shouldTriggerRobber = diceTotal === 7;
+  const completedTurns = gameState.currentState.completedTurns ?? 0;
+  const shouldDistributeResources =
+    !shouldTriggerRobber && !(diceTotal === 12 && completedTurns === 13);
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
   const resourcesToGive: {
@@ -656,7 +659,7 @@ const rollDice = () => {
   }[] = [];
   const cardsByOwner = new Map<number, number[]>();
 
-  if (!shouldTriggerRobber) {
+  if (shouldDistributeResources) {
     Object.values(tileCornerStates).forEach((cornerState: any) => {
       if (!cornerState?.owner) return;
       if (
@@ -729,7 +732,7 @@ const rollDice = () => {
     });
   }
 
-  if (!shouldTriggerRobber) {
+  if (shouldDistributeResources) {
     cardsByOwner.forEach((cards, owner) => {
       addPlayerResourceCards(gameState, owner, cards, 1);
     });

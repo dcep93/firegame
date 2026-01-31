@@ -49,3 +49,8 @@
 - Past client action sequence 75, the recording expects empty resource
   distributions for sequence 110; mismatches suggest missing UI actions like
   the action 9 (buy development card) or the action 67/68 reconnect messages.
+- After the post-roll pass-turn at sequence 117, the recording expects a
+  `clientData` action 7 payload `{ gameId, clientVersion }` followed by
+  action 67/68 reconnect messages; current controller helpers cannot emit these,
+  so advancing past this point likely requires new choreo clicks or client
+  reconnect handling.

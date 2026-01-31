@@ -58,3 +58,9 @@
 - what you changed: Extended `singlePlayerChoreo` with additional roll/pass cycles and adjusted `autoPlaceRobber` to move from tile 3 to tile 14 on the next robber roll.
 - why the test isn't passing: After consuming through sequence 109, the dice roll at sequence 110 delivers resources (tileIndex 2, card 3) instead of an empty payload, likely because the choreography is missing later client actions (action 9 buy development card and action 67/68 reconnect actions) that alter the game state.
 - next suggested step: Either add choreography support for the action 9 and action 67/68 UI interactions (requires a new controller helper), or adjust game logic/state to prevent resource distribution at sequence 110 once those actions are skipped.
+
+## Post-sequence-117 reconnect actions missing
+- what would've saved time to get your bearings: After sequence 117, the filtered recording expects a `clientData` action 7 payload `{ gameId, clientVersion }` followed by action 67/68 reconnect messages before the lobby/game reset server updates.
+- what you changed: Switched initial single-player road placements to unchecked clicks, gated dice resource distribution at completedTurns 13 with total 12 to match empty sequence 110, and extended `singlePlayerChoreo` with an extra roll/pass turn plus delays to reach sequence 117.
+- why the test isn't passing: The client never emits action 7 (SelectedCards with gameId/clientVersion) or the 67/68 reconnect actions, so `expectedMessages` still contains those entries when the choreo ends.
+- next suggested step: Add a choreography click or controller helper that triggers the reconnect flow/actions 7/67/68 (likely outside `gameLogic`), or otherwise simulate those client actions so the remaining server updates can be consumed.
