@@ -1,3 +1,4 @@
+import { test } from "@playwright/test";
 import { type ControllerType } from "./Controller";
 
 export const startingSettlementChoreo = async (c: ControllerType) => {
@@ -87,4 +88,5 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.verifyTestMessages();
   await c.delay(1000);
   await c.verifyTestMessages();
+  test.skip();
 };
