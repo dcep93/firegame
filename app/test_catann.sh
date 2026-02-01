@@ -80,4 +80,4 @@ else
     print_elapsed_since_init
 fi
 
-npx playwright test src/routes/catann/test/playwright_test.spec.ts
+time npx playwright test src/routes/catann/test/playwright_test.spec.ts
