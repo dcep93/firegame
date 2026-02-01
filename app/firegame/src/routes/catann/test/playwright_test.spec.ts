@@ -1,4 +1,8 @@
 // TODO
+// redo single_player
+// 2 player setup, first turns
+// 4 player setup, first turns
+// 2 player game
 // start from random point, interact, verify
 
 import { expect, test, type FrameLocator, type Page } from "@playwright/test";
