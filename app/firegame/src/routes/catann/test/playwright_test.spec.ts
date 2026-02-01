@@ -216,8 +216,13 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
   // isLoggedIn: false, TODO audit
   if (
     msg.trigger === "clientData" &&
+    msg.data.action === GAME_ACTION.ClickedDice &&
+    msg.data.payload === 3
+  )
+    return false;
+  if (
+    msg.trigger === "clientData" &&
     [
-      GAME_ACTION.ClickedDice,
       GAME_ACTION.SelectedTile,
       GAME_ACTION.ConfirmBuildSettlement,
       GAME_ACTION.RequestBeginnerHint,
