@@ -64,6 +64,17 @@ const Controller = (
       );
       await roadButton.first().click({ force: true });
     },
+    buyDevelopmentCard: async () => {
+      const devCardButton = iframe.locator(
+        'div[class*="actionButton"] img[src*="development"], div[class*="actionButton"] img[src*="dev"], div[class*="actionButton"] img[src*="card_"]',
+      );
+      if ((await devCardButton.count()) > 0) {
+        await devCardButton.first().click({ force: true });
+        return;
+      }
+      const actionButtons = iframe.locator('div[class*="actionButton"]');
+      await actionButtons.last().click({ force: true });
+    },
     verifyTestMessages: async () => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);

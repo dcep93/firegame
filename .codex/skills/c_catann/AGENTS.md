@@ -56,3 +56,4 @@
   reconnect handling.
 - Reconnect-stage dice roll with total 11 expects the GivePlayerResourcesFromTile payload ordered as tileIndex 1 (card 3) before tileIndex 18 (card 4), and the subsequent GameStateUpdated log indices to be offset by +2 (keys 51/52 instead of 49/50).
 - The post-reconnect sequence now fails on a missing BuyDevelopmentCard client action (action 9) where the choreography currently emits a PassTurn (action 6); resolving requires a choreo click that triggers the dev card buy UI.
+- The BuyDevelopmentCard flow expects highlight clears (types 30/33/31/32), ExchangeCards payloads for paying resources and receiving a Knight (11), plus a GameStateUpdated diff with `allocatedTime` 140, `timeLeftInState` 137.595, and `developmentCardsBoughtThisTurn: [11]` before a later pass-turn clears it to `null`.

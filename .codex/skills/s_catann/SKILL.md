@@ -28,6 +28,10 @@ cd firegame/app/firegame
 yarn lint
 ```
 
+If `yarn lint` fails (including duplicate key errors), fix the issue and rerun
+it until it passes. Treat this as the authoritative typecheck gate before
+continuing with test runs or commits.
+
 ## Timestamp format (NYC time)
 
 At the start of each numbered step, record a timestamp in America/New_York

@@ -70,3 +70,9 @@
 - what you changed: Adjusted rollDice to insert the tileIndex 1 resource before tileIndex 18, track resource log indices, and shift the dice/resource game log entries forward by two slots so sequence 9 matches indices 51/52.
 - why the test isn't passing: After the reconnect roll, the recording expects a BuyDevelopmentCard client action (action 9) but the choreography still clicks PassTurn (action 6), causing the mismatch at clientData sequence 91.
 - next suggested step: Add a choreo helper to click the development card purchase UI (likely an action bar button) so the client emits action 9 before continuing the pass/roll loop.
+
+## Development card purchase handling + post-buy action sequence
+- what would've saved time to get your bearings: The BuyDevelopmentCard action is immediately followed by highlight clears (types 30/33/31/32), ExchangeCards payloads (pay wool/grain/ore then receive Knight 11), and a GameStateUpdated diff that sets `allocatedTime` to 140 and `developmentCardsBoughtThisTurn` before a later pass-turn clears it.
+- what you changed: Added a dev card click helper in the controller, implemented `BuyDevelopmentCard` handling in game logic to update resources/dev card state and emit the highlight/exchange updates, and tuned pass-turn behavior to reset `developmentCardsBoughtThisTurn` when present.
+- why the test isn't passing: The choreo ends right after the dev card purchase + pass-turn; the filtered recording still expects a long post-buy sequence (starting with client action 2, sequence 94) that includes additional roll/pass loops, road/settlement actions, and cancels, so `expectedMessages` is left non-empty.
+- next suggested step: Extend `singlePlayerChoreo` after the final pass-turn to follow the remaining client action sequence beginning at action 2 sequence 94 (roll dice, pass turn, want-to-build road, cancel, confirm build, etc.) until the expected message queue drains.

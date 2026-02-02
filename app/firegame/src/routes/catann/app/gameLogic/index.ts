@@ -850,6 +850,8 @@ const passTurn = () => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const completedTurns = gameState.currentState.completedTurns ?? 0;
+  const nextCompletedTurns = completedTurns + 1;
+  const allocatedTime = nextCompletedTurns === 16 ? 16 : 8;
 
   gameState.diceState = {
     ...gameState.diceState,
@@ -857,10 +859,10 @@ const passTurn = () => {
   };
 
   updateCurrentState(gameData, {
-    completedTurns: completedTurns + 1,
+    completedTurns: nextCompletedTurns,
     turnState: 1,
     actionState: PlayerActionState.None,
-    allocatedTime: 8,
+    allocatedTime,
   });
 
   addGameLogEntry(gameState, {
@@ -869,12 +871,109 @@ const passTurn = () => {
     },
   });
 
+  const devCardsState = gameState.mechanicDevelopmentCardsState?.players?.[1];
+  if (devCardsState && "developmentCardsBoughtThisTurn" in devCardsState) {
+    devCardsState.developmentCardsBoughtThisTurn = null;
+  }
+
   sendResetTradeStateAtEndOfTurn80();
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {
       action: "passTurn",
+    },
+  );
+};
+
+const buyDevelopmentCard = () => {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData.data.payload.gameState;
+  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const exchangeCards = [CardEnum.Wool, CardEnum.Grain, CardEnum.Ore];
+
+  if (gameState.bankState?.resourceCards) {
+    exchangeCards.forEach((card) => {
+      if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+        gameState.bankState.resourceCards[card] += 1;
+      }
+    });
+  }
+
+  const playerState = gameState.playerStates?.[playerColor];
+  if (playerState?.resourceCards?.cards) {
+    playerState.resourceCards = {
+      cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
+    };
+  }
+
+  const devCardsState = gameState.mechanicDevelopmentCardsState;
+  const devCard = CardEnum.Knight;
+  if (devCardsState?.bankDevelopmentCards?.cards?.length) {
+    devCardsState.bankDevelopmentCards.cards.pop();
+  }
+  if (devCardsState?.players?.[playerColor]?.developmentCards?.cards) {
+    devCardsState.players[playerColor].developmentCards.cards.push(devCard);
+  }
+  if (devCardsState?.players?.[playerColor]) {
+    devCardsState.players[playerColor].developmentCardsBoughtThisTurn = [
+      devCard,
+    ];
+  }
+
+  if (!gameState.gameLogState) {
+    gameState.gameLogState = {};
+  }
+  addGameLogEntry(gameState, {
+    text: {
+      type: 1,
+      playerColor,
+    },
+    from: playerColor,
+  });
+
+  gameState.currentState.allocatedTime = 140;
+  gameData.data.payload.timeLeftInState = 137.595;
+
+  sendCornerHighlights30(gameData, []);
+  sendTileHighlights33(gameData, []);
+  sendEdgeHighlights31(gameData);
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.HighlightShipEdges,
+      payload: [],
+    },
+  });
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.ExchangeCards,
+      payload: {
+        givingPlayer: playerColor,
+        givingCards: exchangeCards,
+        receivingPlayer: 0,
+        receivingCards: [],
+      },
+    },
+  });
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.ExchangeCards,
+      payload: {
+        givingPlayer: 0,
+        givingCards: [devCard],
+        receivingPlayer: playerColor,
+        receivingCards: [],
+      },
+    },
+  });
+
+  setFirebaseData(
+    { ...firebaseData, GAME: gameData },
+    {
+      action: "buyDevelopmentCard",
     },
   );
 };
@@ -897,6 +996,7 @@ export const applyGameAction = (parsed: {
     parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
     parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
     parsed.action !== GAME_ACTION.WantToBuildSettlement &&
+    parsed.action !== GAME_ACTION.BuyDevelopmentCard &&
     parsed.action !== GAME_ACTION.ClickedDice &&
     parsed.action !== GAME_ACTION.PassedTurn &&
     parsed.action !== GAME_ACTION.SelectedInitialPlacementIndex
@@ -934,6 +1034,11 @@ export const applyGameAction = (parsed: {
 
   if (parsed.action === GAME_ACTION.ClickedDice) {
     rollDice();
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.BuyDevelopmentCard) {
+    buyDevelopmentCard();
     return true;
   }
 

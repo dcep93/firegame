@@ -49,6 +49,8 @@ stays accurate and complete. Do **not** add a changelog.
   the flow.
 - Only click interactions should drive the test flow; you are never allowed
   to introduce DOM or style manipulation code. 
+- `yarn lint` is the typecheck gate for Catann changes; if it fails (for example,
+  duplicate keys in the controller), fix and rerun before proceeding.
 
 ## Recording choreographies
 - Clear the buffer with `window.__socketCatannMessages.splice(0)` in the parent
