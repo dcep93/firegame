@@ -167,6 +167,7 @@ const choreo = (
     page.on("pageerror", (msg) => console.log(msg));
     await f(c);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
+    await expect(page.locator('iframe[title="iframe"]')).toBeVisible();
   };
 };
 
