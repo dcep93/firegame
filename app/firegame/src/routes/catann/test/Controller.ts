@@ -120,7 +120,31 @@ const Controller = (
       ]);
     },
     passTurn: async () => await _passTurn(canvas),
-    handleReconnect: async () => {},
+    handleReconnect: async () => {
+      const expectedMessages = _expectedMessages;
+      if (!expectedMessages || expectedMessages.length === 0) return;
+
+      const currentSequence = codex["serverData"];
+      let baselineSequence: number | undefined =
+        typeof currentSequence === "number" ? currentSequence : undefined;
+      if (baselineSequence === undefined) {
+        const firstServerMessage = expectedMessages.find(
+          (msg) =>
+            msg?.trigger === "serverData" &&
+            typeof msg?.data?.data?.sequence === "number",
+        );
+        if (!firstServerMessage) return;
+        baselineSequence = firstServerMessage.data.data.sequence;
+      }
+
+      const cutoffIndex = expectedMessages.findIndex((msg) => {
+        if (msg?.trigger !== "serverData") return false;
+        const sequence = msg?.data?.data?.sequence;
+        return typeof sequence === "number" && sequence < baselineSequence!;
+      });
+      if (cutoffIndex === -1) return;
+      expectedMessages.splice(0, cutoffIndex + 1);
+    },
   }))(getCanvas(iframe));
 
 export default Controller;
