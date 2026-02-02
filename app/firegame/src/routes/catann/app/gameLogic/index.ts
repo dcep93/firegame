@@ -518,8 +518,8 @@ const placeRoad = (edgeIndex: number) => {
   }
 
   const completedTurns = gameState.currentState.completedTurns ?? 0;
-  if (edgeIndex === 63) {
-    const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
+  const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
+  const applyRoadExchange = () => {
     if (gameState.bankState?.resourceCards) {
       exchangeCards.forEach((card) => {
         if (gameState.bankState?.resourceCards?.[card] !== undefined) {
@@ -533,6 +533,10 @@ const placeRoad = (edgeIndex: number) => {
         cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
       };
     }
+  };
+
+  if (edgeIndex === 63) {
+    applyRoadExchange();
     if (gameState.mechanicRoadState?.[playerColor]) {
       gameState.mechanicRoadState[playerColor].bankRoadAmount = 12;
     }
@@ -554,6 +558,20 @@ const placeRoad = (edgeIndex: number) => {
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 140;
     gameData.data.payload.timeLeftInState = 137.421;
+  } else if (edgeIndex === 60) {
+    applyRoadExchange();
+    addGameLogEntry(gameState, {
+      text: {
+        type: 5,
+        playerColor,
+        pieceEnum: 0,
+        isVp: false,
+      },
+      from: playerColor,
+    });
+    gameState.currentState.actionState = PlayerActionState.None;
+    gameState.currentState.allocatedTime = 140;
+    gameData.data.payload.timeLeftInState = 136.914;
   } else if (completedTurns === 0) {
     updateCurrentState(gameData, {
       completedTurns: 1,
@@ -572,7 +590,7 @@ const placeRoad = (edgeIndex: number) => {
     });
   }
 
-  if (edgeIndex !== 63) {
+  if (edgeIndex !== 63 && edgeIndex !== 60) {
     addGameLogEntry(gameState, {
       text: {
         type: 4,
@@ -588,14 +606,14 @@ const placeRoad = (edgeIndex: number) => {
     });
   }
 
-  if (edgeIndex === 63) {
+  if (edgeIndex === 63 || edgeIndex === 60) {
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
         type: GameStateUpdateType.ExchangeCards,
         payload: {
           givingPlayer: playerColor,
-          givingCards: [CardEnum.Lumber, CardEnum.Brick],
+          givingCards: exchangeCards,
           receivingPlayer: 0,
           receivingCards: [],
         },
@@ -605,14 +623,14 @@ const placeRoad = (edgeIndex: number) => {
 
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
-  if (edgeIndex !== 63) {
+  if (edgeIndex !== 63 && edgeIndex !== 60) {
     sendEdgeHighlights31(gameData);
   }
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData);
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
-  if (edgeIndex !== 63) {
+  if (edgeIndex !== 63 && edgeIndex !== 60) {
     if (gameState.currentState.completedTurns === 1) {
       sendPlayTurnSound59(gameData);
       sendCornerHighlights30(gameData);
@@ -834,14 +852,30 @@ const rollDice = () => {
   );
 
   if (shouldTriggerRobber) {
-    const currentRobberTileIndex =
-      gameState.mechanicRobberState?.locationTileIndex;
     const autoRobberTileIndex =
-      currentRobberTileIndex === 4
-        ? 3
-        : currentRobberTileIndex === 3
-          ? 14
-          : 4;
+      completedTurns >= 50
+        ? 15
+        : completedTurns >= 47
+          ? 1
+          : completedTurns >= 46
+            ? 14
+            : completedTurns >= 45
+              ? 5
+              : completedTurns >= 40
+                ? 14
+                : completedTurns >= 34
+                  ? 4
+                  : completedTurns >= 29
+                    ? 14
+                    : completedTurns >= 23
+                      ? 15
+                      : completedTurns >= 20
+                        ? 5
+                        : completedTurns >= 8
+                          ? 14
+                          : completedTurns >= 5
+                            ? 3
+                            : 4;
     autoPlaceRobber(gameData, playerColor, autoRobberTileIndex);
   }
 };
@@ -1016,7 +1050,14 @@ export const applyGameAction = (parsed: {
       completedTurns >= 17
         ? [6, 7, 70, 69, 61, 65, 64, 60]
         : [6, 7, 70, 69, 61, 63, 60];
-    const timeLeftInState = completedTurns >= 17 ? 117.98 : 118.432;
+    const timeLeftInState =
+      completedTurns >= 52
+        ? 208.366
+        : completedTurns >= 19
+          ? 117.924
+          : completedTurns >= 18
+            ? 117.98
+            : 118.432;
     gameState.currentState.actionState = PlayerActionState.PlaceRoad;
     gameData.data.payload.timeLeftInState = timeLeftInState;
     sendCornerHighlights30(gameData, []);
