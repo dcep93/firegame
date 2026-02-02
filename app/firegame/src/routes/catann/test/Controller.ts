@@ -120,6 +120,7 @@ const Controller = (
       ]);
     },
     passTurn: async () => await _passTurn(canvas),
+    handleReconnect: async () => {},
   }))(getCanvas(iframe));
 
 export default Controller;
