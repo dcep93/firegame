@@ -9,7 +9,11 @@ import { expect, test, type FrameLocator, type Page } from "@playwright/test";
 import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
-import { GAME_ACTION, State } from "../app/gameLogic/CatannFilesEnums";
+import {
+  GAME_ACTION,
+  GameStateUpdateType,
+  State,
+} from "../app/gameLogic/CatannFilesEnums";
 import { singlePlayerChoreo, startingSettlementChoreo } from "./choreo";
 import Controller, {
   _rollDice,
@@ -204,6 +208,8 @@ const getStartButton = (iframe: FrameLocator) => {
 const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
+  if (msg.data.id === GameStateUpdateType.FirstGameState) return false;
+  if (msg.data.id === GameStateUpdateType.PlayerReconnected) return false;
   if (
     msg.trigger === "clientData" &&
     msg.data.action === GAME_ACTION.SelectedCards &&
