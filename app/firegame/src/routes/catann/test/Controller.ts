@@ -92,12 +92,19 @@ const Controller = (
         } else {
           msg.data.data.sequence = expectedMsg.data.data.sequence;
           codex[msg.trigger] = msg.data.data.sequence;
-          if (
-            msg.data.data.payload?.diff?.currentState.startTime &&
-            expectedMsg.data.data.payload?.diff?.currentState.startTime
-          ) {
-            msg.data.data.payload.diff.currentState.startTime =
-              expectedMsg.data.data.payload?.diff?.currentState.startTime;
+          const msgStartTime =
+            msg.data.data.payload?.diff?.currentState?.startTime;
+          const expectedStartTime =
+            expectedMsg.data.data.payload?.diff?.currentState?.startTime;
+          if (msgStartTime == null || expectedStartTime == null) {
+            if (msg.data.data.payload?.diff?.currentState) {
+              delete msg.data.data.payload.diff.currentState.startTime;
+            }
+            if (expectedMsg.data.data.payload?.diff?.currentState) {
+              delete expectedMsg.data.data.payload.diff.currentState.startTime;
+            }
+          } else {
+            msg.data.data.payload.diff.currentState.startTime = expectedStartTime;
           }
         }
         expect(msg).toEqual(expectedMsg);
