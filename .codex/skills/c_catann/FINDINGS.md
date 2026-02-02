@@ -64,3 +64,9 @@
 - what you changed: Switched initial single-player road placements to unchecked clicks, gated dice resource distribution at completedTurns 13 with total 12 to match empty sequence 110, and extended `singlePlayerChoreo` with an extra roll/pass turn plus delays to reach sequence 117.
 - why the test isn't passing: The client never emits action 7 (SelectedCards with gameId/clientVersion) or the 67/68 reconnect actions, so `expectedMessages` still contains those entries when the choreo ends.
 - next suggested step: Add a choreography click or controller helper that triggers the reconnect flow/actions 7/67/68 (likely outside `gameLogic`), or otherwise simulate those client actions so the remaining server updates can be consumed.
+
+## Reconnect dice roll log offset + buy development card action
+- what would've saved time to get your bearings: The reconnect snapshot expects the dice roll with total 11 to emit resource payloads in tileIndex order (1 then 18) and log entries with indices 51/52, plus a subsequent BuyDevelopmentCard client action (action 9) that the current choreography never triggers.
+- what you changed: Adjusted rollDice to insert the tileIndex 1 resource before tileIndex 18, track resource log indices, and shift the dice/resource game log entries forward by two slots so sequence 9 matches indices 51/52.
+- why the test isn't passing: After the reconnect roll, the recording expects a BuyDevelopmentCard client action (action 9) but the choreography still clicks PassTurn (action 6), causing the mismatch at clientData sequence 91.
+- next suggested step: Add a choreo helper to click the development card purchase UI (likely an action bar button) so the client emits action 9 before continuing the pass/roll loop.

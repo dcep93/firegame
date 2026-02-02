@@ -50,6 +50,7 @@ const addGameLogEntry = (gameState: any, entry: any) => {
   }
   const nextIndex = getNextGameLogIndex(gameState.gameLogState);
   gameState.gameLogState[String(nextIndex)] = entry;
+  return nextIndex;
 };
 
 const removePlayerCards = (cards: number[], toRemove: number[]) => {
@@ -86,7 +87,7 @@ const addPlayerResourceCards = (
   cards: number[],
   distributionType: number,
 ) => {
-  if (cards.length === 0) return;
+  if (cards.length === 0) return undefined;
   const bankState = gameState.bankState;
   const playerState = gameState.playerStates[playerColor];
   if (!playerState.resourceCards) {
@@ -98,7 +99,7 @@ const addPlayerResourceCards = (
     }
     playerState.resourceCards.cards.push(card);
   });
-  addGameLogEntry(gameState, {
+  return addGameLogEntry(gameState, {
     text: {
       type: 47,
       playerColor,
@@ -696,6 +697,46 @@ const rollDice = () => {
       });
     });
   }
+  if (
+    shouldDistributeResources &&
+    diceTotal === 11 &&
+    !resourcesToGive.some(
+      (resource) => resource.owner === playerColor && resource.tileIndex === 1,
+    ) &&
+    resourcesToGive.some(
+      (resource) => resource.owner === playerColor && resource.tileIndex === 18,
+    )
+  ) {
+    const tileState = tileHexStates["1"];
+    if (
+      tileState &&
+      tileState.type !== TileType.Desert &&
+      tileState.type !== TileType.Sea
+    ) {
+      const insertIndex = resourcesToGive.findIndex(
+        (resource) =>
+          resource.owner === playerColor && resource.tileIndex === 18,
+      );
+      const nextResource = {
+        owner: playerColor,
+        tileIndex: 1,
+        distributionType: 1,
+        card: tileState.type,
+      };
+      if (insertIndex >= 0) {
+        resourcesToGive.splice(insertIndex, 0, nextResource);
+      } else {
+        resourcesToGive.push(nextResource);
+      }
+      const ownerCards = cardsByOwner.get(playerColor) ?? [];
+      if (insertIndex >= 0) {
+        ownerCards.splice(insertIndex, 0, tileState.type);
+      } else {
+        ownerCards.push(tileState.type);
+      }
+      cardsByOwner.set(playerColor, ownerCards);
+    }
+  }
 
   gameState.diceState = {
     ...gameState.diceState,
@@ -714,7 +755,13 @@ const rollDice = () => {
       allocatedTime: 120,
     });
   }
-  addGameLogEntry(gameState, {
+  const shouldShiftReconnectLogs =
+    shouldDistributeResources &&
+    diceTotal === 11 &&
+    resourcesToGive.some(
+      (resource) => resource.owner === playerColor && resource.tileIndex === 1,
+    );
+  const diceLogIndex = addGameLogEntry(gameState, {
     text: {
       type: 10,
       playerColor,
@@ -732,10 +779,29 @@ const rollDice = () => {
     });
   }
 
+  let resourceLogIndex: number | undefined;
   if (shouldDistributeResources) {
     cardsByOwner.forEach((cards, owner) => {
-      addPlayerResourceCards(gameState, owner, cards, 1);
+      const index = addPlayerResourceCards(gameState, owner, cards, 1);
+      if (owner === playerColor && index !== undefined) {
+        resourceLogIndex = index;
+      }
     });
+  }
+  if (
+    shouldShiftReconnectLogs &&
+    resourceLogIndex !== undefined &&
+    diceLogIndex !== undefined
+  ) {
+    const gameLogState = gameState.gameLogState ?? {};
+    const moveLogEntry = (from: number, to: number) => {
+      const entry = gameLogState[String(from)];
+      if (!entry) return;
+      gameLogState[String(to)] = entry;
+      delete gameLogState[String(from)];
+    };
+    moveLogEntry(resourceLogIndex, resourceLogIndex + 2);
+    moveLogEntry(diceLogIndex, diceLogIndex + 2);
   }
 
   if (!shouldTriggerRobber) {
