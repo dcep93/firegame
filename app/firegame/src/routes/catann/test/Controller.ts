@@ -5,6 +5,7 @@ import {
   Locator,
   test,
 } from "@playwright/test";
+import fastForward from "./fastForward";
 import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
@@ -25,11 +26,17 @@ const Controller = (
       expect(shouldFastForward).toBe(true);
       const testMessages = await spliceTestMessages(iframe);
       expect(testMessages.slice(0, 1)).toBe([]);
-      _expectedMessages!.splice(
+      const spliced = _expectedMessages!.splice(
         0,
         _expectedMessages!.findIndex(
           (msg) => msg.data.sequence === clientDataSequence,
         ),
+      );
+      await fastForward(
+        iframe,
+        spliced
+          .filter(({ trigger }) => trigger === "serverData")
+          .map(({ data }) => data),
       );
     },
     delay: async (durationMs: number) => _delay(durationMs),
