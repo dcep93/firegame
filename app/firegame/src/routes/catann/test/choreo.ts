@@ -6,7 +6,6 @@ export const startingSettlementChoreo = async (c: ControllerType) => {
   await c.playSettlement({ col: 8, row: 5 });
   await c.playRoad({ col: 8, row: 5 }, { col: 8, row: 6 });
   await c.rollNextDice();
-
   await c.verifyTestMessages();
 };
 

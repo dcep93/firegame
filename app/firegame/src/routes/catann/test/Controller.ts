@@ -18,10 +18,12 @@ export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
+  clientDataFastForward: number,
 ) =>
   ((canvas) => ({
     delay: async (durationMs: number) => _delay(durationMs),
     playSettlement: async (settlementCoords: { col: number; row: number }) => {
+      throw new Error("should be skipped");
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
 
@@ -130,9 +132,9 @@ const Controller = (
         (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
       )!;
       const diceStateLog = (
-        Object.values(diceStateMessage.data.data.payload.diff.gameLogState).find(
-          (log: any) => log.text.firstDice,
-        ) as any
+        Object.values(
+          diceStateMessage.data.data.payload.diff.gameLogState,
+        ).find((log: any) => log.text.firstDice) as any
       ).text;
       const diceStateSequence: number | undefined =
         diceStateMessage.data.data.sequence;

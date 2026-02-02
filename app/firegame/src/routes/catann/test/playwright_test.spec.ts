@@ -52,7 +52,7 @@ test.skip(
 
     await checkCanvasHandle(iframe);
 
-    const c = Controller(iframe, undefined);
+    const c = Controller(iframe, undefined, -1);
 
     const checkClickable = async (
       f: (offset: { col: number; row: number }) => boolean,
@@ -102,7 +102,11 @@ test.skip(
   }),
 );
 
-const choreo = (fileName: string, f: (c: ControllerType) => Promise<void>) => {
+const choreo = (
+  fileName: string,
+  f: (c: ControllerType) => Promise<void>,
+  clientDataFastForward: number = -1,
+) => {
   return async ({ page }: { page: Page }) => {
     const getExpectedMessages = async (recordingPath: string) => {
       const openRecordingJson = (
@@ -158,7 +162,7 @@ const choreo = (fileName: string, f: (c: ControllerType) => Promise<void>) => {
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
     await _delay(1000);
-    const c = Controller(iframe, expectedMessages);
+    const c = Controller(iframe, expectedMessages, clientDataFastForward);
     await c.verifyTestMessages();
     page.on("pageerror", (msg) => console.log(msg));
     await f(c);
@@ -168,12 +172,14 @@ const choreo = (fileName: string, f: (c: ControllerType) => Promise<void>) => {
 
 //
 
-test.skip(
+test(
   "starting_settlement",
-  screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
+  screenshot(
+    choreo("./starting_settlement.json", startingSettlementChoreo, 18),
+  ),
 );
 
-test(
+test.skip(
   "single_player",
   screenshot(choreo("./single_player.json", singlePlayerChoreo)),
 );
