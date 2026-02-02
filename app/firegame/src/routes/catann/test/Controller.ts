@@ -19,13 +19,15 @@ export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
-  shouldFastForward: boolean,
-) =>
-  ((canvas) => ({
+  _shouldFastForward: boolean,
+) => {
+  let shouldFastForward = _shouldFastForward;
+  return ((canvas) => ({
     fastForward: async (clientDataSequence: number) => {
       expect(shouldFastForward).toBe(true);
+      shouldFastForward = false;
       const testMessages = await spliceTestMessages(iframe);
-      expect(testMessages.slice(0, 1)).toBe([]);
+      expect(testMessages.slice(0, 1)).toEqual([]);
       const spliced = _expectedMessages!.splice(
         0,
         _expectedMessages!.findIndex(
@@ -191,6 +193,7 @@ const Controller = (
       expectedMessages.splice(0, clientIndex);
     },
   }))(getCanvas(iframe));
+};
 
 export default Controller;
 
