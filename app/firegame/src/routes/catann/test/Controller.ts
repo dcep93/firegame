@@ -109,7 +109,7 @@ const Controller = (
           }
         }
         expect(msg).toEqual(expectedMsg);
-        console.log(msg);
+        // console.log(msg);
       });
     },
     mapAppearsClickable: async (offset: { x: number; y: number }) =>
