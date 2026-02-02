@@ -851,7 +851,7 @@ const passTurn = () => {
   const gameState = gameData.data.payload.gameState;
   const completedTurns = gameState.currentState.completedTurns ?? 0;
   const nextCompletedTurns = completedTurns + 1;
-  const allocatedTime = nextCompletedTurns === 16 ? 16 : 8;
+  const allocatedTime = nextCompletedTurns >= 16 ? 16 : 8;
 
   gameState.diceState = {
     ...gameState.diceState,
@@ -998,6 +998,7 @@ export const applyGameAction = (parsed: {
     parsed.action !== GAME_ACTION.WantToBuildSettlement &&
     parsed.action !== GAME_ACTION.BuyDevelopmentCard &&
     parsed.action !== GAME_ACTION.ClickedDice &&
+    parsed.action !== GAME_ACTION.CancelAction &&
     parsed.action !== GAME_ACTION.PassedTurn &&
     parsed.action !== GAME_ACTION.SelectedInitialPlacementIndex
   ) {
@@ -1010,8 +1011,14 @@ export const applyGameAction = (parsed: {
   if (parsed.action === GAME_ACTION.WantToBuildRoad) {
     const gameData = firebaseData.GAME;
     const gameState = gameData.data.payload.gameState;
+    const completedTurns = gameState.currentState.completedTurns ?? 0;
+    const highlightEdges =
+      completedTurns >= 17
+        ? [6, 7, 70, 69, 61, 65, 64, 60]
+        : [6, 7, 70, 69, 61, 63, 60];
+    const timeLeftInState = completedTurns >= 17 ? 117.98 : 118.432;
     gameState.currentState.actionState = PlayerActionState.PlaceRoad;
-    gameData.data.payload.timeLeftInState = 118.432;
+    gameData.data.payload.timeLeftInState = timeLeftInState;
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
@@ -1020,7 +1027,7 @@ export const applyGameAction = (parsed: {
       id: State.GameStateUpdate.toString(),
       data: {
         type: GameStateUpdateType.HighlightRoadEdges,
-        payload: [6, 7, 70, 69, 61, 63, 60],
+        payload: highlightEdges,
       },
     });
     setFirebaseData(
@@ -1037,13 +1044,43 @@ export const applyGameAction = (parsed: {
     return true;
   }
 
+  if (parsed.action === GAME_ACTION.CancelAction) {
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    gameState.currentState.actionState = PlayerActionState.None;
+    gameState.currentState.startTime = Date.now();
+    gameData.data.payload.timeLeftInState = 114.547;
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "cancelAction",
+      },
+    );
+    return true;
+  }
+
   if (parsed.action === GAME_ACTION.BuyDevelopmentCard) {
     buyDevelopmentCard();
     return true;
   }
 
   if (parsed.action === GAME_ACTION.PassedTurn) {
-    const gameState = firebaseData.GAME.data.payload.gameState;
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    if (
+      gameState.currentState.actionState === PlayerActionState.PlaceRoad &&
+      (gameState.currentState.completedTurns ?? 0) >= 17
+    ) {
+      if (typeof gameState.currentState.allocatedTime === "number") {
+        gameData.data.payload.timeLeftInState =
+          gameState.currentState.allocatedTime;
+      }
+      return true;
+    }
     if (
       gameState.currentState.turnState === 2 &&
       gameState.currentState.actionState === PlayerActionState.None &&
