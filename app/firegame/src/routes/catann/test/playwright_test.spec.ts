@@ -209,7 +209,8 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
   if (msg.data.id === GameStateUpdateType.FirstGameState) return false;
-  if (msg.data.id === GameStateUpdateType.PlayerReconnected) return false;
+  if (msg.data.data?.type === GameStateUpdateType.PlayerReconnected)
+    return false;
   if (
     msg.trigger === "clientData" &&
     msg.data.action === GAME_ACTION.SelectedCards &&
