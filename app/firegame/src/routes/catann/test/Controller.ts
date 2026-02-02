@@ -126,18 +126,21 @@ const Controller = (
     mapAppearsClickable: async (offset: { x: number; y: number }) =>
       await _mapAppearsClickable(canvas, offset),
     rollNextDice: async () => {
+      const diceStateMessage = _expectedMessages!.find(
+        (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
+      )!;
       const diceStateLog = (
-        Object.values(
-          _expectedMessages!.find(
-            (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
-          )!.data.data.payload.diff.gameLogState,
-        ).find((log: any) => log.text.firstDice) as any
+        Object.values(diceStateMessage.data.data.payload.diff.gameLogState).find(
+          (log: any) => log.text.firstDice,
+        ) as any
       ).text;
+      const diceStateSequence: number | undefined =
+        diceStateMessage.data.data.sequence;
       const diceState: [number, number] = [
         diceStateLog.firstDice,
         diceStateLog.secondDice,
       ];
-      console.log("rolling", diceState);
+      console.log("rolling", diceState, "sequence", diceStateSequence);
       await _rollDice(canvas, diceState);
     },
     passTurn: async () => await _passTurn(canvas),
