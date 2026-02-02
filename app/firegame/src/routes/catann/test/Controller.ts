@@ -18,9 +18,20 @@ export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
-  clientDataFastForward: number,
+  shouldFastForward: boolean,
 ) =>
   ((canvas) => ({
+    fastForward: async (clientDataSequence: number) => {
+      expect(shouldFastForward).toBe(true);
+      const testMessages = await spliceTestMessages(iframe);
+      expect(testMessages.slice(0, 1)).toBe([]);
+      _expectedMessages!.splice(
+        0,
+        _expectedMessages!.findIndex(
+          (msg) => msg.data.sequence === clientDataSequence,
+        ),
+      );
+    },
     delay: async (durationMs: number) => _delay(durationMs),
     playSettlement: async (settlementCoords: { col: number; row: number }) => {
       throw new Error("should be skipped");

@@ -52,7 +52,7 @@ test.skip(
 
     await checkCanvasHandle(iframe);
 
-    const c = Controller(iframe, undefined, -1);
+    const c = Controller(iframe, undefined, false);
 
     const checkClickable = async (
       f: (offset: { col: number; row: number }) => boolean,
@@ -105,7 +105,7 @@ test.skip(
 const choreo = (
   fileName: string,
   f: (c: ControllerType) => Promise<void>,
-  clientDataFastForward: number = -1,
+  shouldFastForward: boolean = false,
 ) => {
   return async ({ page }: { page: Page }) => {
     const getExpectedMessages = async (recordingPath: string) => {
@@ -162,7 +162,7 @@ const choreo = (
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
     await _delay(1000);
-    const c = Controller(iframe, expectedMessages, clientDataFastForward);
+    const c = Controller(iframe, expectedMessages, shouldFastForward);
     await c.verifyTestMessages();
     page.on("pageerror", (msg) => console.log(msg));
     await f(c);
@@ -175,7 +175,7 @@ const choreo = (
 test(
   "starting_settlement",
   screenshot(
-    choreo("./starting_settlement.json", startingSettlementChoreo, 18),
+    choreo("./starting_settlement.json", startingSettlementChoreo, true),
   ),
 );
 
