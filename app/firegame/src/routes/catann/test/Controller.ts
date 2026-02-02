@@ -122,13 +122,40 @@ const Controller = (
           )!.data.data.payload.diff.gameLogState,
         ).find((log: any) => log.text.firstDice) as any
       ).text;
-      await _rollDice(canvas, [
+      const diceState: [number, number] = [
         diceStateLog.firstDice,
         diceStateLog.secondDice,
-      ]);
+      ];
+      console.log("rolling", diceState);
+      await _rollDice(canvas, diceState);
     },
     passTurn: async () => await _passTurn(canvas),
-    handleReconnect: async () => {},
+    handleReconnect: async () => {
+      const expectedMessages = _expectedMessages!;
+      let serverIndex = -1;
+      for (let i = 0; i < expectedMessages.length; i += 1) {
+        const msg = expectedMessages[i];
+        if (msg.trigger !== "serverData") continue;
+        const sequence = msg.data?.data?.sequence;
+        if (sequence == null) continue;
+        serverIndex = i;
+        expect(sequence).toBe(1);
+        break;
+      }
+      expect(serverIndex).toBeGreaterThanOrEqual(0);
+
+      let clientIndex = -1;
+      for (let i = serverIndex + 1; i < expectedMessages.length; i += 1) {
+        const msg = expectedMessages[i];
+        if (msg.trigger !== "clientData") continue;
+        const sequence = msg.data?.sequence;
+        if (sequence == null) continue;
+        clientIndex = i;
+        break;
+      }
+      expect(clientIndex).toBeGreaterThan(serverIndex);
+      expectedMessages.splice(0, clientIndex);
+    },
   }))(getCanvas(iframe));
 
 export default Controller;
