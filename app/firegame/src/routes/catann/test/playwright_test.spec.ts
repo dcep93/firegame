@@ -52,7 +52,7 @@ test.skip(
 
     await checkCanvasHandle(iframe);
 
-    const c = Controller(iframe, undefined, false);
+    const c = Controller(iframe, undefined);
 
     const checkClickable = async (
       f: (offset: { col: number; row: number }) => boolean,
@@ -162,7 +162,7 @@ const choreo = (
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
     await _delay(1000);
-    const c = Controller(iframe, expectedMessages, shouldFastForward);
+    const c = Controller(iframe, expectedMessages);
     await c.verifyTestMessages();
     page.on("pageerror", (msg) => console.log(msg));
     await f(c);

@@ -19,31 +19,12 @@ export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
-  _shouldFastForward: boolean,
-) => {
-  let shouldFastForward = _shouldFastForward;
-  return ((canvas) => ({
-    fastForward: async (clientDataSequence: number) => {
-      expect(shouldFastForward).toBe(true);
-      shouldFastForward = false;
-      const testMessages = await spliceTestMessages(iframe);
-      expect(testMessages.slice(0, 1)).toEqual([]);
-      const spliced = _expectedMessages!.splice(
-        0,
-        _expectedMessages!.findIndex(
-          (msg) => msg.data.sequence === clientDataSequence,
-        ),
-      );
-      await fastForward(
-        iframe,
-        spliced
-          .filter(({ trigger }) => trigger === "serverData")
-          .map(({ data }) => data),
-      );
-    },
+) =>
+  ((canvas) => ({
+    fastForward: async (clientDataSequence: number, c: any) =>
+      await fastForward(iframe, _expectedMessages, clientDataSequence, c),
     delay: async (durationMs: number) => _delay(durationMs),
     playSettlement: async (settlementCoords: { col: number; row: number }) => {
-      throw new Error("should be skipped");
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
 
@@ -193,7 +174,6 @@ const Controller = (
       expectedMessages.splice(0, clientIndex);
     },
   }))(getCanvas(iframe));
-};
 
 export default Controller;
 
