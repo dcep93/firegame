@@ -119,7 +119,7 @@ const autoPlaceRobber = (
   const eligibleTiles = getRobberEligibleTiles(gameData);
   const resolvedTileIndex = eligibleTiles.includes(tileIndex)
     ? tileIndex
-    : eligibleTiles[0] ?? tileIndex;
+    : (eligibleTiles[0] ?? tileIndex);
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileState = tileHexStates[String(resolvedTileIndex)];
 
@@ -389,7 +389,7 @@ const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
     cornerState.z === CornerDirection.North
       ? [
           { x: cornerState.x, y: cornerState.y },
-          { x: cornerState.x - 1, y: cornerState.y },
+          { x: cornerState.x, y: cornerState.y - 1 },
           { x: cornerState.x + 1, y: cornerState.y - 1 },
         ]
       : [
@@ -550,7 +550,10 @@ const placeSettlement = (cornerIndex: number) => {
     }
     if (playerState?.resourceCards?.cards) {
       playerState.resourceCards = {
-        cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
+        cards: removePlayerCards(
+          playerState.resourceCards.cards,
+          exchangeCards,
+        ),
       };
     }
     sendToMainSocket?.({
@@ -930,12 +933,13 @@ const rollDice = () => {
       (resource) => resource.owner === playerColor && resource.tileIndex === 1,
     );
   if (shouldTriggerRobber) {
-    addGameLogEntry(gameState, {
-      text: {
-        type: 60,
-        all: false,
-      },
-    });
+    if (getFriendlyRobberBlockedTiles(gameData).size > 0)
+      addGameLogEntry(gameState, {
+        text: {
+          type: 60,
+          all: false,
+        },
+      });
   }
 
   let resourceLogIndex: number | undefined;
@@ -1179,10 +1183,7 @@ export const applyGameAction = (parsed: {
     const gameData = firebaseData.GAME;
     const gameState = gameData.data.payload.gameState;
     const completedTurns = gameState.currentState.completedTurns ?? 0;
-    const timeLeftInState =
-      completedTurns >= 43
-        ? 118.663
-        : 118.095;
+    const timeLeftInState = completedTurns >= 43 ? 118.663 : 118.095;
     const highlightCorners = completedTurns >= 43 ? [50] : [47, 50];
     gameState.currentState.actionState = PlayerActionState.PlaceSettlement;
     gameData.data.payload.timeLeftInState = timeLeftInState;
