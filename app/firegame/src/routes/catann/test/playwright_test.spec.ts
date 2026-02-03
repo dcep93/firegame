@@ -1,9 +1,13 @@
 // TODO
+// finish single_player
+// timeLeftInState
+// no magic numbers
 // redo single_player
 // 2 player setup, first turns
 // 4 player setup, first turns
 // 2 player game
-// start from random point, interact, verify
+// skill find bugs
+// expansions
 
 import { expect, test, type FrameLocator, type Page } from "@playwright/test";
 import * as fs from "fs";
