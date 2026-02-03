@@ -15,6 +15,8 @@ const MAP_PASS_COORDS = { x: 800 - MAP_OFFSET.x, y: 672 - MAP_OFFSET.y };
 const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
 
+const loaded = Date.now();
+
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
   page: Page,
@@ -25,8 +27,10 @@ const Controller = (
     const verifyTestMessages = async () => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
+      const durationMs = Date.now() - loaded;
       console.log(
         "verifyTestMessages",
+        (durationMs / 1000).toFixed(2),
         testMessages.length,
         expectedMessages.length,
       );
