@@ -359,6 +359,11 @@ export const _rollDice = async (
 
 const _passTurn = async (canvas: Locator) => {
   await clickCanvas(canvas, MAP_PASS_COORDS);
+  await expect
+    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+      timeout: 10000,
+    })
+    .toBe(true);
 };
 
 export const getCanvas = (iframe: FrameLocator) =>
