@@ -402,6 +402,8 @@ const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
+  const isStandardBuild =
+    gameState.currentState.actionState === PlayerActionState.PlaceSettlement;
   const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
 
   gameState.mapState.tileCornerStates[String(cornerIndex)] = {
@@ -415,10 +417,17 @@ const placeSettlement = (cornerIndex: number) => {
     settlementState.bankSettlementAmount -= 1;
   }
 
-  updateCurrentState(gameData, {
-    actionState: PlayerActionState.InitialPlacementRoadPlacement,
-    allocatedTime: 45,
-  });
+  if (isStandardBuild) {
+    gameState.currentState.actionState = PlayerActionState.None;
+    gameState.currentState.allocatedTime = 140;
+    gameState.currentState.startTime = Date.now();
+    gameData.data.payload.timeLeftInState = 136.266;
+  } else {
+    updateCurrentState(gameData, {
+      actionState: PlayerActionState.InitialPlacementRoadPlacement,
+      allocatedTime: 45,
+    });
+  }
 
   const playerState = gameState.playerStates[playerColor];
   if (!playerState.victoryPointsState) {
@@ -427,19 +436,72 @@ const placeSettlement = (cornerIndex: number) => {
   playerState.victoryPointsState["0"] =
     (playerState.victoryPointsState["0"] ?? 0) + 1;
 
-  addGameLogEntry(gameState, {
-    text: {
-      type: 4,
-      playerColor,
-      pieceEnum: 2,
-    },
-    from: playerColor,
-  });
+  if (isStandardBuild) {
+    addGameLogEntry(gameState, {
+      text: {
+        type: 5,
+        playerColor,
+        pieceEnum: 2,
+        isVp: true,
+      },
+      from: playerColor,
+    });
+  } else {
+    addGameLogEntry(gameState, {
+      text: {
+        type: 4,
+        playerColor,
+        pieceEnum: 2,
+      },
+      from: playerColor,
+    });
+  }
 
   applyPortOwnership(gameState, cornerState, playerColor);
 
-  sendCornerHighlights30(gameData);
-  sendEdgeHighlights31(gameData, cornerIndex);
+  if (isStandardBuild) {
+    const exchangeCards = [
+      CardEnum.Lumber,
+      CardEnum.Brick,
+      CardEnum.Wool,
+      CardEnum.Grain,
+    ];
+    if (gameState.bankState?.resourceCards) {
+      exchangeCards.forEach((card) => {
+        if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+          gameState.bankState.resourceCards[card] += 1;
+        }
+      });
+    }
+    if (playerState?.resourceCards?.cards) {
+      playerState.resourceCards = {
+        cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
+      };
+    }
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.ExchangeCards,
+        payload: {
+          givingPlayer: playerColor,
+          givingCards: exchangeCards,
+          receivingPlayer: 0,
+          receivingCards: [],
+        },
+      },
+    });
+  }
+
+  if (isStandardBuild) {
+    sendCornerHighlights30(gameData, []);
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData, []);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+  } else {
+    sendCornerHighlights30(gameData);
+    sendEdgeHighlights31(gameData, cornerIndex);
+  }
 
   const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
     const gameState = gameData.data.payload.gameState;
@@ -489,7 +551,9 @@ const placeSettlement = (cornerIndex: number) => {
       },
     });
   };
-  sendResourcesFromTile(gameData, cornerIndex);
+  if (!isStandardBuild) {
+    sendResourcesFromTile(gameData, cornerIndex);
+  }
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },

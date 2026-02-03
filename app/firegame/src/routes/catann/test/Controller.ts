@@ -110,6 +110,31 @@ const Controller = (
         const confirmRoadOffset = getConfirmOffset(roadOffset);
         await clickCanvas(canvas, confirmRoadOffset);
       },
+      buildRoad: async (
+        settlementCoords: { col: number; row: number },
+        destinationCoords: { col: number; row: number },
+      ) => {
+        const settlementOffset = getSettlementOffset(settlementCoords);
+        const destinationOffset = getSettlementOffset(destinationCoords);
+        const roadOffset = {
+          x: (settlementOffset.x + destinationOffset.x) / 2,
+          y: (settlementOffset.y + destinationOffset.y) / 2,
+        };
+        await clickCanvasWithoutCheck(canvas, roadOffset);
+
+        const confirmRoadOffset = getConfirmOffset(roadOffset);
+        await clickCanvas(canvas, confirmRoadOffset);
+      },
+      buildSettlement: async (settlementCoords: {
+        col: number;
+        row: number;
+      }) => {
+        const settlementOffset = getSettlementOffset(settlementCoords);
+        await clickCanvas(canvas, settlementOffset);
+
+        const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+        await clickCanvas(canvas, confirmSettlementOffset);
+      },
       wantToBuildRoad: async () => {
         const roadButton = iframe.locator(
           'div[class*="roadButton-"] div[class*="container-"]',

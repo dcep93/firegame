@@ -75,3 +75,9 @@
 - The late-turn want-to-build-road loop expects action 6 to be staged (no server updates) when `actionState` is PlaceRoad at completedTurns >= 17, followed by a CancelAction (47) that clears highlights and sets `timeLeftInState` to 114.547.
 - Edge index 60 maps to the settlement midpoint between `{ col: 5, row: 3 }` and `{ col: 5, row: 4 }` (edge state x=1,y=-1,z=West), based on the inferred corner-to-grid formula `col = 2x + y + 5`, `row = -x + y + 4z + 3` from tileCornerStates.
 - Robber auto-placement is keyed off `completedTurns` in the recording: completedTurns 4→4, 5→3, 8→14, 20→5, 23→15, 29→14, 34→4, 40→14, 45→5, 46→14, 47→1, 50→15 (use thresholds in `rollDice` to match this sequence).
+- The non-initial settlement build sequence expects an ExchangeCards (type 43)
+  for lumber/brick/wool/grain, followed by highlight clears in the order
+  30/30/33/31/32 and a GameStateUpdated diff that sets actionState None with
+  allocatedTime 140.
+- If later build-road clicks fail pointer detection, use the unchecked canvas
+  click helper for the road midpoint before confirming.

@@ -130,3 +130,9 @@
 - what you changed: No additional changes beyond the choreo call; this confirmed the mismatch between the expected WantToBuildSettlement action and the available helper behavior.
 - why the test isn't passing: The choreography cannot emit action 14 with the current controller API, so expectedMessages remains out of sync.
 - next suggested step: Add a settlement action-button click helper in `Controller.ts` (outside allowed scope) so the choreography can emit action 14 before confirming placement.
+
+## Build-road/build-settlement helpers + settlement exchange ordering
+- what would've saved time to get your bearings: The single_player recording expects a type-43 ExchangeCards payload immediately after the confirm-build-settlement action, then highlight clears in the order 30/30/33/31/32, plus a GameStateUpdated diff that sets actionState None and allocatedTime 140 with a reduced timeLeftInState.
+- what you changed: Added buildRoad/buildSettlement helpers in the Playwright controller, switched buildRoad to use unchecked canvas clicks, and updated settlement placement logic to emit ExchangeCards, adjust resources/logs/currentState for non-initial builds, and send highlight clears in the expected order.
+- why the test isn't passing: The latest run completed with Playwright reporting all three tests as skipped (no failures), so re-run if you need to confirm a full pass or validate the skip condition.
+- next suggested step: Re-run the Catann workflow and verify whether the skips are expected; if skips are unintended, locate the trigger (e.g., debug messages) that causes the tests to mark themselves skipped.
