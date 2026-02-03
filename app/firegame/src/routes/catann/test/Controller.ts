@@ -71,7 +71,7 @@ const Controller = (
       });
     };
     return {
-      ready: async () => {},
+      ready: async () => expect(true).toBe(false),
       clickStartButton: async () => {
         const startButton = getStartButton(iframe);
         await startButton.click({ force: true });
