@@ -1041,7 +1041,8 @@ export const applyGameAction = (parsed: {
     return false;
   }
   if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
-    return false;
+    throw new Error("not implemented");
+    return true;
   }
   if (parsed.action === GAME_ACTION.WantToBuildRoad) {
     const gameData = firebaseData.GAME;
