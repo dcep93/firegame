@@ -5,53 +5,56 @@ import { spliceTestMessages } from "./playwright_test.spec";
 export default async function fastForward(
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
-  clientDataSequence: number,
   c: ControllerType,
+  clientDataSequence: number,
 ) {
-  const testMessages = await spliceTestMessages(iframe);
-  expect(testMessages.slice(0, 1)).toEqual([]);
-
-  const spliced = _expectedMessages!
-    .splice(
-      0,
-      _expectedMessages!.findIndex(
-        (msg) => msg.data.sequence === clientDataSequence,
-      ),
-    )
-    .filter(({ trigger }) => trigger === "serverData")
-    .map(({ data }) => data);
-
-  const aggregated = spliced.find(
-    (msg) => msg.data.sequence && !msg.data.payload.diff,
-  );
-  spliced
-    .filter((msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null)
-    .forEach((msg) => mergeDiff(aggregated, msg.data.payload.diff));
-
-  await iframe.locator("body").evaluate(
-    (_, databaseGame) => {
-      window.parent.__testOverrides = {
-        databaseGame,
-        session: null,
-        startTime: -1,
-        mapState: null,
-      };
-    },
-    { aggregated },
-  );
-
   const cachedC = { ...c };
-  const fakeC = new Proxy(
-    {},
-    {
-      get:
-        (_, p) =>
-        (...a: any[]) =>
-          0,
-    },
-  ) as ControllerType;
-  Object.assign(c, fakeC);
-  return () => Object.assign(c, cachedC);
+  Object.assign(
+    c,
+    Object.fromEntries(Object.keys(c).map((k) => [k, () => null])),
+  );
+  console.log({ fastForward });
+  return async () => {
+    console.log({ fastForward });
+    const testMessages = await spliceTestMessages(iframe);
+    expect(testMessages).toEqual([]);
+
+    const spliced = _expectedMessages!
+      .splice(
+        0,
+        _expectedMessages!.findIndex(
+          (msg) => msg.data.sequence === clientDataSequence,
+        ),
+      )
+      .filter(({ trigger }) => trigger === "serverData")
+      .map(({ data }) => data);
+    console.log({ spliced });
+
+    const aggregated = spliced.find(
+      (msg) => msg.data.sequence && !msg.data.payload.diff,
+    );
+    spliced
+      .filter((msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null)
+      .forEach((msg) => mergeDiff(aggregated, msg.data.payload.diff));
+
+    await iframe.locator("body").evaluate(
+      (_, databaseGame) => {
+        window.parent.__testOverrides = {
+          databaseGame,
+          session: null,
+          startTime: -1,
+          mapState: null,
+        };
+      },
+      { aggregated },
+    );
+    await c.clickStartButton();
+
+    return () => {
+      console.log({ fastForward });
+      Object.assign(c, cachedC);
+    };
+  };
 }
 
 const mergeDiff = (

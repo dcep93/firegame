@@ -21,6 +21,7 @@ import Controller, {
   ControllerType,
   getCanvas,
   getSettlementOffset,
+  getStartButton,
 } from "./Controller";
 import fastForward from "./fastForward";
 
@@ -106,7 +107,7 @@ test.skip(
 const choreo = (
   fileName: string,
   f: (c: ControllerType) => Promise<void>,
-  shouldFastForward: boolean = false,
+  clientDataSequence: number = -1,
 ) => {
   return async ({ page }: { page: Page }) => {
     const getExpectedMessages = async (recordingPath: string) => {
@@ -161,14 +162,10 @@ const choreo = (
     );
     await spliceTestMessages(iframe);
     const c = Controller(iframe, expectedMessages);
-    if (shouldFastForward) {
-      c.ready = async (clientDataSequence: number, c: any) =>
-        await fastForward(iframe, expectedMessages, clientDataSequence, c);
+    if (clientDataSequence !== -1) {
+      await fastForward(iframe, expectedMessages, c, clientDataSequence);
     }
-    const startButton = getStartButton(iframe);
-    await startButton.click({ force: true });
-    await _delay(1000);
-    await c.verifyTestMessages();
+    await c.clickStartButton();
     page.on("pageerror", (msg) => console.log(msg));
     await f(c);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
@@ -181,7 +178,7 @@ const choreo = (
 test(
   "starting_settlement",
   screenshot(
-    choreo("./starting_settlement.json", startingSettlementChoreo, true),
+    choreo("./starting_settlement.json", startingSettlementChoreo, 18),
   ),
 );
 
@@ -211,10 +208,6 @@ const createRoom = async (
   const startButton = getStartButton(iframe);
   await expect(startButton).toBeVisible({ timeout: 30_000 });
   return iframe;
-};
-
-const getStartButton = (iframe: FrameLocator) => {
-  return iframe.locator("#room_center_start_button");
 };
 
 const isRealMessage = (msg: { trigger: string; data: any }) => {

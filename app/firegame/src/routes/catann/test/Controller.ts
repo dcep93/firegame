@@ -19,64 +19,8 @@ const Controller = (
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
-  ((canvas) => ({
-    ready: async (clientDataSequence: number, c: any) => null as any,
-    delay: async (durationMs: number) => _delay(durationMs),
-    playSettlement: async (settlementCoords: { col: number; row: number }) => {
-      const settlementOffset = getSettlementOffset(settlementCoords);
-      await clickCanvas(canvas, settlementOffset);
-
-      const confirmSettlementOffset = getConfirmOffset(settlementOffset);
-      await clickCanvas(canvas, confirmSettlementOffset);
-    },
-    playRoad: async (
-      settlementCoords: { col: number; row: number },
-      destinationCoords: { col: number; row: number },
-    ) => {
-      const settlementOffset = getSettlementOffset(settlementCoords);
-      const destinationOffset = getSettlementOffset(destinationCoords);
-      const roadOffset = {
-        x: (settlementOffset.x + destinationOffset.x) / 2,
-        y: (settlementOffset.y + destinationOffset.y) / 2,
-      };
-      await clickCanvas(canvas, roadOffset);
-
-      const confirmRoadOffset = getConfirmOffset(roadOffset);
-      await clickCanvas(canvas, confirmRoadOffset);
-    },
-    playRoadWithoutCheck: async (
-      settlementCoords: { col: number; row: number },
-      destinationCoords: { col: number; row: number },
-    ) => {
-      const settlementOffset = getSettlementOffset(settlementCoords);
-      const destinationOffset = getSettlementOffset(destinationCoords);
-      const roadOffset = {
-        x: (settlementOffset.x + destinationOffset.x) / 2,
-        y: (settlementOffset.y + destinationOffset.y) / 2,
-      };
-      await clickCanvasWithoutCheck(canvas, roadOffset);
-
-      const confirmRoadOffset = getConfirmOffset(roadOffset);
-      await clickCanvasWithoutCheck(canvas, confirmRoadOffset);
-    },
-    wantToBuildRoad: async () => {
-      const roadButton = iframe.locator(
-        'div[class*="actionButton"] img[src*="road_"]',
-      );
-      await roadButton.first().click({ force: true });
-    },
-    buyDevelopmentCard: async () => {
-      const devCardButton = iframe.locator(
-        'div[class*="actionButton"] img[src*="development"], div[class*="actionButton"] img[src*="dev"], div[class*="actionButton"] img[src*="card_"]',
-      );
-      if ((await devCardButton.count()) > 0) {
-        await devCardButton.first().click({ force: true });
-        return;
-      }
-      const actionButtons = iframe.locator('div[class*="actionButton"]');
-      await actionButtons.last().click({ force: true });
-    },
-    verifyTestMessages: async () => {
+  ((canvas) => {
+    const verifyTestMessages = async () => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
       console.log(
@@ -123,55 +67,124 @@ const Controller = (
         expect(msg).toEqual(expectedMsg);
         // console.log(msg);
       });
-    },
-    mapAppearsClickable: async (offset: { x: number; y: number }) =>
-      await _mapAppearsClickable(canvas, offset),
-    rollNextDice: async () => {
-      const diceStateMessage = _expectedMessages!.find(
-        (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
-      )!;
-      const diceStateLog = (
-        Object.values(
-          diceStateMessage.data.data.payload.diff.gameLogState,
-        ).find((log: any) => log.text.firstDice) as any
-      ).text;
-      const diceStateSequence: number | undefined =
-        diceStateMessage.data.data.sequence;
-      const diceState: [number, number] = [
-        diceStateLog.firstDice,
-        diceStateLog.secondDice,
-      ];
-      console.log("rolling", diceState, "sequence", diceStateSequence);
-      await _rollDice(canvas, diceState);
-    },
-    passTurn: async () => await _passTurn(canvas),
-    handleReconnect: async () => {
-      const expectedMessages = _expectedMessages!;
-      let serverIndex = -1;
-      for (let i = 0; i < expectedMessages.length; i += 1) {
-        const msg = expectedMessages[i];
-        if (msg.trigger !== "serverData") continue;
-        const sequence = msg.data?.data?.sequence;
-        if (sequence == null) continue;
-        serverIndex = i;
-        expect(sequence).toBe(1);
-        break;
-      }
-      expect(serverIndex).toBeGreaterThanOrEqual(0);
+    };
+    return {
+      ready: async () => null,
+      clickStartButton: async () => {
+        const startButton = getStartButton(iframe);
+        await startButton.click({ force: true });
+        await _delay(1000);
+        await verifyTestMessages();
+      },
+      delay: async (durationMs: number) => _delay(durationMs),
+      playSettlement: async (settlementCoords: {
+        col: number;
+        row: number;
+      }) => {
+        throw new Error("should be skipped");
+        const settlementOffset = getSettlementOffset(settlementCoords);
+        await clickCanvas(canvas, settlementOffset);
 
-      let clientIndex = -1;
-      for (let i = serverIndex + 1; i < expectedMessages.length; i += 1) {
-        const msg = expectedMessages[i];
-        if (msg.trigger !== "clientData") continue;
-        const sequence = msg.data?.sequence;
-        if (sequence == null) continue;
-        clientIndex = i;
-        break;
-      }
-      expect(clientIndex).toBeGreaterThan(serverIndex);
-      expectedMessages.splice(0, clientIndex);
-    },
-  }))(getCanvas(iframe));
+        const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+        await clickCanvas(canvas, confirmSettlementOffset);
+      },
+      playRoad: async (
+        settlementCoords: { col: number; row: number },
+        destinationCoords: { col: number; row: number },
+      ) => {
+        const settlementOffset = getSettlementOffset(settlementCoords);
+        const destinationOffset = getSettlementOffset(destinationCoords);
+        const roadOffset = {
+          x: (settlementOffset.x + destinationOffset.x) / 2,
+          y: (settlementOffset.y + destinationOffset.y) / 2,
+        };
+        await clickCanvas(canvas, roadOffset);
+
+        const confirmRoadOffset = getConfirmOffset(roadOffset);
+        await clickCanvas(canvas, confirmRoadOffset);
+      },
+      playRoadWithoutCheck: async (
+        settlementCoords: { col: number; row: number },
+        destinationCoords: { col: number; row: number },
+      ) => {
+        const settlementOffset = getSettlementOffset(settlementCoords);
+        const destinationOffset = getSettlementOffset(destinationCoords);
+        const roadOffset = {
+          x: (settlementOffset.x + destinationOffset.x) / 2,
+          y: (settlementOffset.y + destinationOffset.y) / 2,
+        };
+        await clickCanvasWithoutCheck(canvas, roadOffset);
+
+        const confirmRoadOffset = getConfirmOffset(roadOffset);
+        await clickCanvasWithoutCheck(canvas, confirmRoadOffset);
+      },
+      wantToBuildRoad: async () => {
+        const roadButton = iframe.locator(
+          'div[class*="actionButton"] img[src*="road_"]',
+        );
+        await roadButton.first().click({ force: true });
+      },
+      buyDevelopmentCard: async () => {
+        const devCardButton = iframe.locator(
+          'div[class*="actionButton"] img[src*="development"], div[class*="actionButton"] img[src*="dev"], div[class*="actionButton"] img[src*="card_"]',
+        );
+        if ((await devCardButton.count()) > 0) {
+          await devCardButton.first().click({ force: true });
+          return;
+        }
+        const actionButtons = iframe.locator('div[class*="actionButton"]');
+        await actionButtons.last().click({ force: true });
+      },
+      verifyTestMessages,
+      mapAppearsClickable: async (offset: { x: number; y: number }) =>
+        await _mapAppearsClickable(canvas, offset),
+      rollNextDice: async () => {
+        const diceStateMessage = _expectedMessages!.find(
+          (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
+        )!;
+        const diceStateLog = (
+          Object.values(
+            diceStateMessage.data.data.payload.diff.gameLogState,
+          ).find((log: any) => log.text.firstDice) as any
+        ).text;
+        const diceStateSequence: number | undefined =
+          diceStateMessage.data.data.sequence;
+        const diceState: [number, number] = [
+          diceStateLog.firstDice,
+          diceStateLog.secondDice,
+        ];
+        console.log("rolling", diceState, "sequence", diceStateSequence);
+        await _rollDice(canvas, diceState);
+      },
+      passTurn: async () => await _passTurn(canvas),
+      handleReconnect: async () => {
+        const expectedMessages = _expectedMessages!;
+        let serverIndex = -1;
+        for (let i = 0; i < expectedMessages.length; i += 1) {
+          const msg = expectedMessages[i];
+          if (msg.trigger !== "serverData") continue;
+          const sequence = msg.data?.data?.sequence;
+          if (sequence == null) continue;
+          serverIndex = i;
+          expect(sequence).toBe(1);
+          break;
+        }
+        expect(serverIndex).toBeGreaterThanOrEqual(0);
+
+        let clientIndex = -1;
+        for (let i = serverIndex + 1; i < expectedMessages.length; i += 1) {
+          const msg = expectedMessages[i];
+          if (msg.trigger !== "clientData") continue;
+          const sequence = msg.data?.sequence;
+          if (sequence == null) continue;
+          clientIndex = i;
+          break;
+        }
+        expect(clientIndex).toBeGreaterThan(serverIndex);
+        expectedMessages.splice(0, clientIndex);
+      },
+    };
+  })(getCanvas(iframe));
 
 export default Controller;
 
@@ -331,4 +344,8 @@ export const getCanvas = (iframe: FrameLocator) =>
 
 const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
   return { x: baseOffset.x, y: baseOffset.y - MAP_CONFIRM_OFFSET };
+};
+
+export const getStartButton = (iframe: FrameLocator) => {
+  return iframe.locator("#room_center_start_button");
 };
