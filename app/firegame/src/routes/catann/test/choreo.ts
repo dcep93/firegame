@@ -1,3 +1,4 @@
+import autoChoreo from "./autoChoreo";
 import { type ControllerType } from "./Controller";
 
 export const startingSettlementChoreo = async (c: ControllerType) => {
@@ -134,10 +135,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.verifyTestMessages();
 
   await c.fastForward();
-  await c.delay(5000);
-  return;
-  // await c.wantToBuildSettlement();
-  // await c.verifyTestMessages();
-  // await c.buildSettlement({ col: 5, row: 3 });
-  // await c.verifyTestMessages();
+  await c.wantToBuildSettlement();
+  await c.buildSettlement({ col: 5, row: 3 });
+  await autoChoreo(c);
 };

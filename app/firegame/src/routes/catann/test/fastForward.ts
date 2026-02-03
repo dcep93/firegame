@@ -21,7 +21,7 @@ export default async function fastForward(
       .splice(
         0,
         _expectedMessages!.findIndex(
-          (msg) => msg.data.sequence === clientDataSequence,
+          (msg) => msg.data.sequence >= clientDataSequence,
         ),
       )
       .filter(({ trigger }) => trigger === "serverData")
