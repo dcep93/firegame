@@ -54,6 +54,21 @@
   action 67/68 reconnect messages; current controller helpers cannot emit these,
   so advancing past this point likely requires new choreo clicks or client
   reconnect handling.
+- If the single-player choreo ends with a roll sequence and the next expected
+  message is a client pass-turn (action 6), add another `passTurn` + verification
+  at the end of the flow to drain it.
+- If a subsequent expected message is action 2 (ClickedDice), extend the choreo
+  with another `rollNextDice` + verification after the final pass-turn.
+- Restrict the reconnect dice-log index shift to early log indices (e.g., below
+  60) so later 11 rolls don't get an extra +2 offset.
+- If the expected client action is WantToBuildSettlement (action 14) and no
+  settlement action-button helper exists, try using `playSettlement` directly
+  (map click + confirm) to emit the action sequence.
+- If `playSettlement` does not emit action 14, adding a settlement action-button
+  click in `Controller.ts` is required (outside the allowed edit scope).
+- `playSettlement` currently emits action 16 (ConfirmBuildSettlementSkippingSelection)
+  directly, so it cannot satisfy an expected action 14 without a new action-button
+  click helper.
 - Reconnect-stage dice roll with total 11 expects the GivePlayerResourcesFromTile payload ordered as tileIndex 1 (card 3) before tileIndex 18 (card 4), and the subsequent GameStateUpdated log indices to be offset by +2 (keys 51/52 instead of 49/50).
 - The post-reconnect sequence now fails on a missing BuyDevelopmentCard client action (action 9) where the choreography currently emits a PassTurn (action 6); resolving requires a choreo click that triggers the dev card buy UI.
 - The BuyDevelopmentCard flow expects highlight clears (types 30/33/31/32), ExchangeCards payloads for paying resources and receiving a Knight (11), plus a GameStateUpdated diff with `allocatedTime` 140, `timeLeftInState` 137.595, and `developmentCardsBoughtThisTurn: [11]` before a later pass-turn clears it to `null`.

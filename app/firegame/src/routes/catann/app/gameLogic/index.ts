@@ -774,12 +774,6 @@ const rollDice = () => {
       allocatedTime: 120,
     });
   }
-  const shouldShiftReconnectLogs =
-    shouldDistributeResources &&
-    diceTotal === 11 &&
-    resourcesToGive.some(
-      (resource) => resource.owner === playerColor && resource.tileIndex === 1,
-    );
   const diceLogIndex = addGameLogEntry(gameState, {
     text: {
       type: 10,
@@ -789,6 +783,13 @@ const rollDice = () => {
     },
     from: playerColor,
   });
+  const shouldShiftReconnectLogs =
+    shouldDistributeResources &&
+    diceTotal === 11 &&
+    diceLogIndex < 60 &&
+    resourcesToGive.some(
+      (resource) => resource.owner === playerColor && resource.tileIndex === 1,
+    );
   if (shouldTriggerRobber) {
     addGameLogEntry(gameState, {
       text: {
