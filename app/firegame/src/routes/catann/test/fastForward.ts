@@ -1,4 +1,4 @@
-import { FrameLocator } from "@playwright/test";
+import { expect, FrameLocator } from "@playwright/test";
 import { ControllerType } from "./Controller";
 import { spliceTestMessages } from "./playwright_test.spec";
 
