@@ -136,3 +136,9 @@
 - what you changed: Added buildRoad/buildSettlement helpers in the Playwright controller, switched buildRoad to use unchecked canvas clicks, and updated settlement placement logic to emit ExchangeCards, adjust resources/logs/currentState for non-initial builds, and send highlight clears in the expected order.
 - why the test isn't passing: The latest run completed with Playwright reporting all three tests as skipped (no failures), so re-run if you need to confirm a full pass or validate the skip condition.
 - next suggested step: Re-run the Catann workflow and verify whether the skips are expected; if skips are unintended, locate the trigger (e.g., debug messages) that causes the tests to mark themselves skipped.
+
+## Friendly robber tile eligibility
+- what would've saved time to get your bearings: The robber tile highlight list is still hard-coded, so enforcing Catan-friendly robber rules requires filtering that list rather than changing map data.
+- what you changed: Added helpers to compute player victory points, find tiles adjacent to <=2 point players when friendly robber is enabled, and used the filtered eligible list for robber highlights and auto-placement so the robber cannot stay put.
+- why the test isn't passing: The single_player recording now mismatches the HighlightTiles payload at sequence 64 because the robber location diverges (current tile excluded is 2 instead of the expected 14), leaving the expected messages out of sync.
+- next suggested step: Inspect why auto robber placement drifts from the recorded tile index (sequence 64 expects current robber at 14) and adjust the placement logic to keep the recorded location while still enforcing the friendly robber restriction.

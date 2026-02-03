@@ -9,6 +9,9 @@
 - Robber highlight tiles should use the base list
   `[0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15]` and exclude the current
   `mechanicRobberState.locationTileIndex`.
+- When `friendlyRobber` is active, remove tiles adjacent to any player with
+  two or fewer victory points; the robber also cannot remain on its current
+  tile when auto-placing or highlighting options.
 - After the robber roll update (sequence 49), the next expected client action is
   a pass-turn click (`GAME_ACTION.PassedTurn`, action 6), followed by reset
   trade state (type 80) and a new turn-state update.

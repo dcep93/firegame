@@ -116,12 +116,16 @@ const autoPlaceRobber = (
   tileIndex: number,
 ) => {
   const gameState = gameData.data.payload.gameState;
+  const eligibleTiles = getRobberEligibleTiles(gameData);
+  const resolvedTileIndex = eligibleTiles.includes(tileIndex)
+    ? tileIndex
+    : eligibleTiles[0] ?? tileIndex;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
-  const tileState = tileHexStates[String(tileIndex)];
+  const tileState = tileHexStates[String(resolvedTileIndex)];
 
   gameState.mechanicRobberState = {
     ...gameState.mechanicRobberState,
-    locationTileIndex: tileIndex,
+    locationTileIndex: resolvedTileIndex,
     isActive: true,
   };
 
@@ -160,7 +164,7 @@ const autoPlaceRobber = (
     { ...firebaseData, GAME: gameData },
     {
       action: "placeRobber",
-      tileIndex,
+      tileIndex: resolvedTileIndex,
     },
   );
 };
@@ -396,6 +400,77 @@ const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
   return adjacentCoords
     .map((coord) => tileIndexByCoord.get(`${coord.x},${coord.y}`))
     .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
+};
+
+const getPlayerVictoryPoints = (playerState: any) => {
+  const victoryPointsState = playerState?.victoryPointsState as
+    | Record<string, number>
+    | undefined;
+  if (!victoryPointsState) {
+    return 0;
+  }
+  return Object.values(victoryPointsState).reduce((total, value) => {
+    if (Number.isFinite(value)) {
+      return total + value;
+    }
+    return total;
+  }, 0);
+};
+
+const getFriendlyRobberBlockedTiles = (gameData: any) => {
+  const gameState = gameData.data.payload.gameState;
+  if (!gameData.data.payload.gameSettings?.friendlyRobber) {
+    return new Set<number>();
+  }
+  const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
+  const blockedTiles = new Set<number>();
+  Object.values(tileCornerStates).forEach((cornerState: any) => {
+    const ownerValue = cornerState?.owner;
+    const ownerIndex = Number.isFinite(ownerValue)
+      ? ownerValue
+      : Number.parseInt(ownerValue, 10);
+    if (!Number.isFinite(ownerIndex)) {
+      return;
+    }
+    if (
+      cornerState.buildingType !== CornerPieceType.Settlement &&
+      cornerState.buildingType !== CornerPieceType.City
+    ) {
+      return;
+    }
+    const playerState = gameState.playerStates?.[ownerIndex];
+    if (!playerState) {
+      return;
+    }
+    const points = getPlayerVictoryPoints(playerState);
+    if (points > 2) {
+      return;
+    }
+    getAdjacentTileIndicesForCorner(gameState, cornerState).forEach(
+      (tileIndex) => {
+        blockedTiles.add(tileIndex);
+      },
+    );
+  });
+  return blockedTiles;
+};
+
+const getRobberEligibleTiles = (gameData: any) => {
+  const gameState = gameData.data.payload.gameState;
+  const tileHexStates = gameState.mapState.tileHexStates ?? {};
+  const candidateTiles = Object.keys(tileHexStates)
+    .map((key) => Number.parseInt(key, 10))
+    .filter((value) => Number.isFinite(value))
+    .sort((a, b) => a - b)
+    .filter((index) => {
+      const tileState = tileHexStates[String(index)];
+      return tileState && tileState.type !== TileType.Sea;
+    });
+  const currentTile = gameState.mechanicRobberState?.locationTileIndex;
+  const blockedTiles = getFriendlyRobberBlockedTiles(gameData);
+  return candidateTiles.filter(
+    (index) => index !== currentTile && !blockedTiles.has(index),
+  );
 };
 
 const placeSettlement = (cornerIndex: number) => {
@@ -901,11 +976,7 @@ const rollDice = () => {
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-    const robberHighlightTiles = [
-      0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15,
-    ].filter(
-      (index) => index !== gameState.mechanicRobberState?.locationTileIndex,
-    );
+    const robberHighlightTiles = getRobberEligibleTiles(gameData);
     sendTileHighlights33(gameData, robberHighlightTiles);
   }
 
