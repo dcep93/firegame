@@ -45,9 +45,8 @@ export default async function fastForward(
       },
       { aggregated },
     );
-    await c.clickStartButton();
-
     Object.assign(c, cachedC);
+    await c.clickStartButton();
   };
 }
 
