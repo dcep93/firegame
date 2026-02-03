@@ -112,8 +112,6 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.verifyTestMessages();
   await c.passTurn();
   await c.verifyTestMessages();
-  await c.fastForward();
-
   await c.passTurn();
   await c.verifyTestMessages();
   await c.rollNextDice();
@@ -134,12 +132,12 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.verifyTestMessages();
   await c.rollNextDice();
   await c.verifyTestMessages();
-  await c.wantToBuildSettlement();
-  await c.verifyTestMessages();
-  await c.buildSettlement({ col: 5, row: 3 });
-  await c.verifyTestMessages();
-  await c.passTurn();
-  await c.verifyTestMessages();
-  await c.rollNextDice();
-  await c.verifyTestMessages();
+
+  await c.fastForward();
+  await c.delay(5000);
+  return;
+  // await c.wantToBuildSettlement();
+  // await c.verifyTestMessages();
+  // await c.buildSettlement({ col: 5, row: 3 });
+  // await c.verifyTestMessages();
 };

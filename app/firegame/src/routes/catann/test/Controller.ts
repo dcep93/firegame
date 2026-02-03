@@ -27,6 +27,7 @@ const Controller = (
     const verifyTestMessages = async () => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
+      expect(testMessages.length).not.toBe(0);
       const durationMs = Date.now() - loaded;
       console.log(
         "verifyTestMessages",
@@ -75,6 +76,7 @@ const Controller = (
       });
     };
     return {
+      _peek: () => _expectedMessages![0],
       verifyTestMessages,
       fastForward: async () =>
         expect(_expectedMessages!.find((msg) => msg.data.sequence)).toBe(null),
