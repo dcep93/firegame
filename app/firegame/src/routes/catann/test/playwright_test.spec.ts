@@ -161,8 +161,10 @@ const choreo = (
     );
     await spliceTestMessages(iframe);
     const c = Controller(iframe, expectedMessages);
-    c.ready = async (clientDataSequence: number, c: any) =>
-      await fastForward(iframe, expectedMessages, clientDataSequence, c);
+    if (shouldFastForward) {
+      c.ready = async (clientDataSequence: number, c: any) =>
+        await fastForward(iframe, expectedMessages, clientDataSequence, c);
+    }
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
     await _delay(1000);
