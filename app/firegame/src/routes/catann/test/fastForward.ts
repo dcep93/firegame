@@ -13,7 +13,7 @@ export default async function fastForward(
     c,
     Object.fromEntries(Object.keys(c).map((k) => [k, () => null])),
   );
-  c.ready = async () => {
+  c.fastForward = async () => {
     const testMessages = await spliceTestMessages(iframe);
     expect(testMessages).toEqual([]);
 

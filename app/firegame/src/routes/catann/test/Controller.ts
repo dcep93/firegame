@@ -71,7 +71,8 @@ const Controller = (
       });
     };
     return {
-      ready: async () => expect(true).toBe(false),
+      fastForward: async () =>
+        expect(_expectedMessages!.find((msg) => msg.data.sequence)).toBe(null),
       clickStartButton: async () => {
         const startButton = getStartButton(iframe);
         await startButton.click({ force: true });

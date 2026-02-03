@@ -175,14 +175,14 @@ const choreo = (
 
 //
 
-test(
+test.skip(
   "starting_settlement",
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
 
-test.skip(
+test(
   "single_player",
-  screenshot(choreo("./single_player.json", singlePlayerChoreo)),
+  screenshot(choreo("./single_player.json", singlePlayerChoreo, 107)),
 );
 
 //
