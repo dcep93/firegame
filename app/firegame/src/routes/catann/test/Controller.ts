@@ -87,34 +87,26 @@ const Controller = (
         page.on("pageerror", (msg) => console.log(msg));
       },
       delay: async (durationMs: number) => _delay(durationMs),
-      playStartingSettlement: async (settlementCoords: {
-        col: number;
-        row: number;
-      }) => {
+      buildSettlement: async (
+        settlementCoords: {
+          col: number;
+          row: number;
+        },
+        skipConfirm: boolean = false,
+      ) => {
+        console.log("\t", "buildSettlement");
         const settlementOffset = getSettlementOffset(settlementCoords);
         await clickCanvas(canvas, settlementOffset);
 
-        const confirmSettlementOffset = getConfirmOffset(settlementOffset);
-        await clickCanvas(canvas, confirmSettlementOffset);
-      },
-      playStartingRoad: async (
-        settlementCoords: { col: number; row: number },
-        destinationCoords: { col: number; row: number },
-      ) => {
-        const settlementOffset = getSettlementOffset(settlementCoords);
-        const destinationOffset = getSettlementOffset(destinationCoords);
-        const roadOffset = {
-          x: (settlementOffset.x + destinationOffset.x) / 2,
-          y: (settlementOffset.y + destinationOffset.y) / 2,
-        };
-        await clickCanvas(canvas, roadOffset);
-
-        const confirmRoadOffset = getConfirmOffset(roadOffset);
-        await clickCanvas(canvas, confirmRoadOffset);
+        if (!skipConfirm) {
+          const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+          await clickCanvas(canvas, confirmSettlementOffset);
+        }
       },
       buildRoad: async (
         settlementCoords: { col: number; row: number },
         destinationCoords: { col: number; row: number },
+        skipConfirm: boolean = false,
       ) => {
         console.log("\t", "buildRoad");
         const settlementOffset = getSettlementOffset(settlementCoords);
@@ -125,31 +117,24 @@ const Controller = (
         };
         await clickCanvas(canvas, roadOffset);
 
-        const confirmRoadOffset = getConfirmOffset(roadOffset);
-        await clickCanvas(canvas, confirmRoadOffset);
-      },
-      buildSettlement: async (settlementCoords: {
-        col: number;
-        row: number;
-      }) => {
-        console.log("\t", "buildSettlement");
-        const settlementOffset = getSettlementOffset(settlementCoords);
-        await clickCanvas(canvas, settlementOffset);
-
-        const confirmSettlementOffset = getConfirmOffset(settlementOffset);
-        await clickCanvas(canvas, confirmSettlementOffset);
+        if (!skipConfirm) {
+          const confirmRoadOffset = getConfirmOffset(roadOffset);
+          await clickCanvas(canvas, confirmRoadOffset);
+        }
       },
       wantToBuildRoad: async () => {
         const roadButton = iframe.locator(
           'div[class*="roadButton-"] div[class*="container-"]',
         );
         await roadButton.first().click({ force: true });
+        await _delay(100);
       },
       wantToBuildSettlement: async () => {
         const settlementButton = iframe.locator(
           'div[class*="settlementButton-"] div[class*="container-"]',
         );
         await settlementButton.first().click({ force: true });
+        await _delay(100);
       },
       buyDevelopmentCard: async () => {
         const devCardButton = iframe.locator(

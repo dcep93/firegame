@@ -98,18 +98,18 @@ test.skip(
 
     await checkClickable((_) => true);
 
-    await c.playStartingSettlement(settlementCoords);
-    await c.playStartingRoad(settlementCoords, destinationCoords);
+    await c.buildSettlement(settlementCoords);
+    await c.buildRoad(settlementCoords, destinationCoords);
 
     // the road appears clickable, because it has a mouse over
     // "Road Length: 1"
     await checkClickable((offset) => offset.col !== 0);
 
-    await c.playStartingSettlement({
+    await c.buildSettlement({
       row: settlementCoords.row,
       col: settlementCoords.col + 2,
     });
-    await c.playStartingRoad(
+    await c.buildRoad(
       { row: settlementCoords.row, col: settlementCoords.col + 2 },
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
     );
