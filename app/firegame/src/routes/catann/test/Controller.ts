@@ -116,13 +116,14 @@ const Controller = (
         settlementCoords: { col: number; row: number },
         destinationCoords: { col: number; row: number },
       ) => {
+        console.log("buildRoad");
         const settlementOffset = getSettlementOffset(settlementCoords);
         const destinationOffset = getSettlementOffset(destinationCoords);
         const roadOffset = {
           x: (settlementOffset.x + destinationOffset.x) / 2,
           y: (settlementOffset.y + destinationOffset.y) / 2,
         };
-        await clickCanvasWithoutCheck(canvas, roadOffset);
+        await clickCanvas(canvas, roadOffset);
 
         const confirmRoadOffset = getConfirmOffset(roadOffset);
         await clickCanvas(canvas, confirmRoadOffset);
@@ -169,13 +170,11 @@ const Controller = (
             diceStateMessage.data.data.payload.diff.gameLogState,
           ).find((log: any) => log.text.firstDice) as any
         ).text;
-        const diceStateSequence: number | undefined =
-          diceStateMessage.data.data.sequence;
         const diceState: [number, number] = [
           diceStateLog.firstDice,
           diceStateLog.secondDice,
         ];
-        console.log("rolling", diceState, "sequence", diceStateSequence);
+        console.log("rolling", diceState);
         await _rollDice(canvas, diceState);
       },
       passTurn: async () => await _passTurn(canvas),
@@ -220,16 +219,6 @@ export const clickCanvas = async (
     })
     .toBe(true);
 
-  await canvas.click({
-    position,
-    force: true,
-  });
-};
-
-export const clickCanvasWithoutCheck = async (
-  canvas: Locator,
-  position: { x: number; y: number },
-) => {
   await canvas.click({
     position,
     force: true,

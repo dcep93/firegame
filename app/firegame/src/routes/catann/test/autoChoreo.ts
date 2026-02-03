@@ -5,13 +5,13 @@ import { ControllerType } from "./Controller";
 
 export default async function autoChoreo(
   c: ControllerType,
-  clientDataSequence: number = -1,
+  reconnectClientDataSequence: number = -1,
 ) {
   await c.verifyTestMessages();
   const msg = c._peek();
   if (!msg) return; // fastForward
   expect(msg.trigger).toBe("clientData");
-  if (msg.data.sequence === clientDataSequence) return;
+  if (msg.data.sequence === reconnectClientDataSequence) return;
   if (msg.data.action === GAME_ACTION.PassedTurn) {
     await c.passTurn();
   } else if (msg.data.action === GAME_ACTION.ClickedDice) {
@@ -20,5 +20,5 @@ export default async function autoChoreo(
     return;
   }
   console.log("autoChoreo", msg.data.sequence, msg.data.action);
-  await autoChoreo(c, clientDataSequence);
+  await autoChoreo(c, reconnectClientDataSequence);
 }
