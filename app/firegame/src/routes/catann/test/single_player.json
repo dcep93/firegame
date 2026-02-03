@@ -9582,7 +9582,6 @@
       }
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {
@@ -9759,6 +9758,7 @@
       }
     }
   },
+  { "trigger": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {

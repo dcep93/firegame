@@ -1041,7 +1041,27 @@ export const applyGameAction = (parsed: {
     return false;
   }
   if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
-    throw new Error("not implemented");
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    const completedTurns = gameState.currentState.completedTurns ?? 0;
+    const timeLeftInState =
+      completedTurns >= 43
+        ? 118.663
+        : 118.095;
+    const highlightCorners = completedTurns >= 43 ? [50] : [47, 50];
+    gameState.currentState.actionState = PlayerActionState.PlaceSettlement;
+    gameData.data.payload.timeLeftInState = timeLeftInState;
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendCornerHighlights30(gameData, highlightCorners);
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "wantToBuildSettlement",
+      },
+    );
     return true;
   }
   if (parsed.action === GAME_ACTION.WantToBuildRoad) {

@@ -85,7 +85,7 @@ const Controller = (
         page.on("pageerror", (msg) => console.log(msg));
       },
       delay: async (durationMs: number) => _delay(durationMs),
-      playSettlement: async (settlementCoords: {
+      playStartingSettlement: async (settlementCoords: {
         col: number;
         row: number;
       }) => {
@@ -95,7 +95,7 @@ const Controller = (
         const confirmSettlementOffset = getConfirmOffset(settlementOffset);
         await clickCanvas(canvas, confirmSettlementOffset);
       },
-      playRoad: async (
+      playStartingRoad: async (
         settlementCoords: { col: number; row: number },
         destinationCoords: { col: number; row: number },
       ) => {
@@ -109,21 +109,6 @@ const Controller = (
 
         const confirmRoadOffset = getConfirmOffset(roadOffset);
         await clickCanvas(canvas, confirmRoadOffset);
-      },
-      playRoadWithoutCheck: async (
-        settlementCoords: { col: number; row: number },
-        destinationCoords: { col: number; row: number },
-      ) => {
-        const settlementOffset = getSettlementOffset(settlementCoords);
-        const destinationOffset = getSettlementOffset(destinationCoords);
-        const roadOffset = {
-          x: (settlementOffset.x + destinationOffset.x) / 2,
-          y: (settlementOffset.y + destinationOffset.y) / 2,
-        };
-        await clickCanvasWithoutCheck(canvas, roadOffset);
-
-        const confirmRoadOffset = getConfirmOffset(roadOffset);
-        await clickCanvasWithoutCheck(canvas, confirmRoadOffset);
       },
       wantToBuildRoad: async () => {
         const roadButton = iframe.locator(
