@@ -116,7 +116,7 @@ const Controller = (
         settlementCoords: { col: number; row: number },
         destinationCoords: { col: number; row: number },
       ) => {
-        console.log("buildRoad");
+        console.log("\t", "buildRoad", arguments);
         const settlementOffset = getSettlementOffset(settlementCoords);
         const destinationOffset = getSettlementOffset(destinationCoords);
         const roadOffset = {
@@ -132,6 +132,7 @@ const Controller = (
         col: number;
         row: number;
       }) => {
+        console.log("\t", "buildSettlement");
         const settlementOffset = getSettlementOffset(settlementCoords);
         await clickCanvas(canvas, settlementOffset);
 
@@ -352,12 +353,13 @@ const _passTurn = async (canvas: Locator) => {
       timeout: 5000,
     })
     .toBe(false);
-  await clickCanvas(canvas, MAP_PASS_COORDS);
-  await _delay(500);
-  await clickCanvas(canvas, MAP_PASS_COORDS);
+  for (let i = 0; i < 5; i++) {
+    await clickCanvas(canvas, MAP_PASS_COORDS);
+    await _delay(50);
+  }
   await expect
     .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
-      timeout: 10000,
+      timeout: 5000,
     })
     .toBe(true);
 };
