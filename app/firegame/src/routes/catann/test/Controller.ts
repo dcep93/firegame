@@ -3,6 +3,7 @@ import {
   expect,
   FrameLocator,
   Locator,
+  Page,
   test,
 } from "@playwright/test";
 import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
@@ -16,6 +17,7 @@ const MAP_CONFIRM_OFFSET = 53;
 
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
+  page: Page,
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
@@ -74,6 +76,7 @@ const Controller = (
         const startButton = getStartButton(iframe);
         await startButton.click({ force: true });
         await _delay(1000);
+        page.on("pageerror", (msg) => console.log(msg));
       },
       delay: async (durationMs: number) => _delay(durationMs),
       playSettlement: async (settlementCoords: {
@@ -138,6 +141,7 @@ const Controller = (
       mapAppearsClickable: async (offset: { x: number; y: number }) =>
         await _mapAppearsClickable(canvas, offset),
       rollNextDice: async () => {
+        test.skip();
         const diceStateMessage = _expectedMessages!.find(
           (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
         )!;
@@ -320,7 +324,6 @@ export const _rollDice = async (
   canvas: Locator,
   diceState: [number, number] | null = null,
 ) => {
-  test.skip();
   if (diceState !== null)
     await canvas.evaluate((_, diceState) => {
       window.parent.__diceState = diceState;

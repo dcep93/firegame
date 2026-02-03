@@ -54,7 +54,7 @@ test.skip(
 
     await checkCanvasHandle(iframe);
 
-    const c = Controller(iframe, undefined);
+    const c = Controller(page, iframe, undefined);
 
     const checkClickable = async (
       f: (offset: { col: number; row: number }) => boolean,
@@ -161,13 +161,12 @@ const choreo = (
       },
     );
     await spliceTestMessages(iframe);
-    const c = Controller(iframe, expectedMessages);
+    const c = Controller(page, iframe, expectedMessages);
     if (clientDataSequence !== -1) {
       await fastForward(iframe, expectedMessages, c, clientDataSequence);
     }
     await c.clickStartButton();
     await c.verifyTestMessages();
-    page.on("pageerror", (msg) => console.log(msg));
     await f(c);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
     await expect(page.locator('iframe[title="iframe"]')).toBeVisible();

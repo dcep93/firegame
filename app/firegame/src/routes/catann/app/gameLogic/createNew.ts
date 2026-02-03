@@ -111,7 +111,6 @@ export const newRoomMe = () => {
 };
 
 export const newGame = () => {
-  throw new Error("115");
   const room = firebaseData.ROOM;
   const sessions = room.data.sessions as any[];
   const mapState = window.__testOverrides?.mapState ?? newMapState();
