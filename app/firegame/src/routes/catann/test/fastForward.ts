@@ -28,7 +28,7 @@ export default async function fastForward(
       .map(({ data }) => data);
 
     const aggregated = spliced.find(
-      (msg) => msg.data.sequence && !msg.data.payload.diff,
+      (msg) => msg.data.sequence && msg.data.payload.gameState,
     );
     spliced
       .filter((msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null)
