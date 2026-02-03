@@ -16,6 +16,7 @@ import {
 } from "../app/gameLogic/CatannFilesEnums";
 import { singlePlayerChoreo, startingSettlementChoreo } from "./choreo";
 import Controller, {
+  _mapAppearsClickable,
   _rollDice,
   checkCanvasHandle,
   ControllerType,
@@ -55,6 +56,7 @@ test.skip(
     await checkCanvasHandle(iframe);
 
     const c = Controller(page, iframe, undefined);
+    const canvas = getCanvas(iframe);
 
     const checkClickable = async (
       f: (offset: { col: number; row: number }) => boolean,
@@ -70,9 +72,12 @@ test.skip(
           const shouldBeClickable = f({ col, row });
           try {
             await expect
-              .poll(async () => await c.mapAppearsClickable(vertexOffset), {
-                timeout: 3000,
-              })
+              .poll(
+                async () => await _mapAppearsClickable(canvas, vertexOffset),
+                {
+                  timeout: 3000,
+                },
+              )
               .toBe(shouldBeClickable);
           } catch (e) {
             console.log({ shouldBeClickable, col, row, vertexOffset });
@@ -100,7 +105,7 @@ test.skip(
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
     );
 
-    await _rollDice(getCanvas(iframe));
+    await _rollDice(canvas);
   }),
 );
 

@@ -71,6 +71,7 @@ const Controller = (
       });
     };
     return {
+      verifyTestMessages,
       fastForward: async () =>
         expect(_expectedMessages!.find((msg) => msg.data.sequence)).toBe(null),
       clickStartButton: async () => {
@@ -137,9 +138,6 @@ const Controller = (
         const actionButtons = iframe.locator('div[class*="actionButton"]');
         await actionButtons.last().click({ force: true });
       },
-      verifyTestMessages,
-      mapAppearsClickable: async (offset: { x: number; y: number }) =>
-        await _mapAppearsClickable(canvas, offset),
       rollNextDice: async () => {
         const diceStateMessage = _expectedMessages!.find(
           (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
