@@ -116,7 +116,7 @@ const Controller = (
         settlementCoords: { col: number; row: number },
         destinationCoords: { col: number; row: number },
       ) => {
-        console.log("\t", "buildRoad", arguments);
+        console.log("\t", "buildRoad");
         const settlementOffset = getSettlementOffset(settlementCoords);
         const destinationOffset = getSettlementOffset(destinationCoords);
         const roadOffset = {
