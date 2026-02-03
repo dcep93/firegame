@@ -6,6 +6,7 @@ import {
   Page,
   test,
 } from "@playwright/test";
+import { GAME_ACTION } from "../app/gameLogic/CatannFilesEnums";
 import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
@@ -189,6 +190,15 @@ const Controller = (
         }
         expect(clientIndex).toBeGreaterThan(serverIndex);
         expectedMessages.splice(0, clientIndex);
+      },
+      prefixCancel: () => {
+        // unclear how the recording
+        // clicked wantToBuildRoad then pass
+        // without cancelling in between
+        _expectedMessages?.unshift({
+          trigger: "clientData",
+          data: { action: GAME_ACTION.CancelAction },
+        });
       },
     };
   })(getCanvas(iframe));
