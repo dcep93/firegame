@@ -177,7 +177,10 @@ export default function handleMessage(
           },
         });
         setFirebaseData(
-          { ...firebaseData, GAME: newGame() },
+          {
+            ...firebaseData,
+            GAME: window.__testOverrides?.databaseGame?.aggregated ?? newGame(),
+          },
           { parsed: clientData },
         );
         return;

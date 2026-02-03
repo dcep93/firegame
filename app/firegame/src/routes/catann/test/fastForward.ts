@@ -46,6 +46,7 @@ export default async function fastForward(
       { aggregated },
     );
     Object.assign(c, cachedC);
+    console.log(JSON.stringify({ spliced }, null, 2));
     await c.clickStartButton();
   };
 }
