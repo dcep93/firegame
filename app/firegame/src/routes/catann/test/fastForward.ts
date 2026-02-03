@@ -13,9 +13,7 @@ export default async function fastForward(
     c,
     Object.fromEntries(Object.keys(c).map((k) => [k, () => null])),
   );
-  console.log({ fastForward });
-  return async () => {
-    console.log({ fastForward });
+  c.ready = async () => {
     const testMessages = await spliceTestMessages(iframe);
     expect(testMessages).toEqual([]);
 
@@ -28,7 +26,6 @@ export default async function fastForward(
       )
       .filter(({ trigger }) => trigger === "serverData")
       .map(({ data }) => data);
-    console.log({ spliced });
 
     const aggregated = spliced.find(
       (msg) => msg.data.sequence && !msg.data.payload.diff,
@@ -50,10 +47,7 @@ export default async function fastForward(
     );
     await c.clickStartButton();
 
-    return () => {
-      console.log({ fastForward });
-      Object.assign(c, cachedC);
-    };
+    Object.assign(c, cachedC);
   };
 }
 
