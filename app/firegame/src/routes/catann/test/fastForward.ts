@@ -48,6 +48,7 @@ export default async function fastForward(
     );
     Object.assign(c, cachedC);
     await c.clickStartButton();
+    await spliceTestMessages(iframe);
   };
 }
 
