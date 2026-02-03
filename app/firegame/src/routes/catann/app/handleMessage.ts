@@ -128,7 +128,6 @@ export default function handleMessage(
         return;
       }
     }
-    return;
   }
   if (clientData._header[0] === SocketRouteType.RouteToServerType) {
     if (clientData._header[1] === ServerActionType.GeneralAction) {

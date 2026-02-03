@@ -127,9 +127,15 @@ const Controller = (
       },
       wantToBuildRoad: async () => {
         const roadButton = iframe.locator(
-          'div[class*="actionButton"] img[src*="road_"]',
+          'div[class*="roadButton-"] div[class*="container-"]',
         );
         await roadButton.first().click({ force: true });
+      },
+      wantToBuildSettlement: async () => {
+        const settlementButton = iframe.locator(
+          'div[class*="settlementButton-"] div[class*="container-"]',
+        );
+        await settlementButton.first().click({ force: true });
       },
       buyDevelopmentCard: async () => {
         const devCardButton = iframe.locator(

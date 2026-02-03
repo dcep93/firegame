@@ -1040,9 +1040,8 @@ export const applyGameAction = (parsed: {
   ) {
     return false;
   }
-
   if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
-    return true;
+    return false;
   }
   if (parsed.action === GAME_ACTION.WantToBuildRoad) {
     const gameData = firebaseData.GAME;
