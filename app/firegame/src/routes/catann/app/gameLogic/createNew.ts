@@ -1,4 +1,3 @@
-import { sendCornerHighlights30 } from ".";
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
@@ -112,6 +111,7 @@ export const newRoomMe = () => {
 };
 
 export const newGame = () => {
+  throw new Error("115");
   const room = firebaseData.ROOM;
   const sessions = room.data.sessions as any[];
   const mapState = window.__testOverrides?.mapState ?? newMapState();
@@ -1130,7 +1130,7 @@ export const startGame = () => {
       payload: false,
     },
   });
-  sendCornerHighlights30(firebaseData.GAME);
+  // sendCornerHighlights30(firebaseData.GAME);
 };
 
 export const spoofHostRoom = () => {

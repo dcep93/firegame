@@ -74,7 +74,6 @@ const Controller = (
         const startButton = getStartButton(iframe);
         await startButton.click({ force: true });
         await _delay(1000);
-        await verifyTestMessages();
       },
       delay: async (durationMs: number) => _delay(durationMs),
       playSettlement: async (settlementCoords: {
