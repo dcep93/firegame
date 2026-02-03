@@ -5,7 +5,6 @@ import {
   Locator,
   test,
 } from "@playwright/test";
-import fastForward from "./fastForward";
 import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
@@ -21,8 +20,7 @@ const Controller = (
   _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
   ((canvas) => ({
-    fastForward: async (clientDataSequence: number, c: any) =>
-      await fastForward(iframe, _expectedMessages, clientDataSequence, c),
+    ready: async (clientDataSequence: number, c: any) => null as any,
     delay: async (durationMs: number) => _delay(durationMs),
     playSettlement: async (settlementCoords: { col: number; row: number }) => {
       const settlementOffset = getSettlementOffset(settlementCoords);

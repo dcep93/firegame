@@ -1,11 +1,11 @@
 import { firebaseData, setFirebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
 import {
+  CardEnum,
   CornerDirection,
   CornerPieceType,
   EdgeDirection,
   EdgePieceType,
-  CardEnum,
   GAME_ACTION,
   GameStateUpdateType,
   PlayerActionState,
@@ -530,7 +530,10 @@ const placeRoad = (edgeIndex: number) => {
     const playerState = gameState.playerStates?.[playerColor];
     if (playerState?.resourceCards?.cards) {
       playerState.resourceCards = {
-        cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
+        cards: removePlayerCards(
+          playerState.resourceCards.cards,
+          exchangeCards,
+        ),
       };
     }
   };
@@ -652,9 +655,7 @@ const rollDice = () => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
-  const overrideDiceState = (
-    window as typeof window & { __diceState?: [number, number] }
-  ).__diceState;
+  const overrideDiceState = window.__diceState;
   const dice1 =
     Array.isArray(overrideDiceState) && overrideDiceState.length === 2
       ? overrideDiceState[0]

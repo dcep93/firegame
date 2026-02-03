@@ -22,6 +22,7 @@ import Controller, {
   getCanvas,
   getSettlementOffset,
 } from "./Controller";
+import fastForward from "./fastForward";
 
 export const codex: Record<string, number> = {};
 
@@ -159,10 +160,12 @@ const choreo = (
       },
     );
     await spliceTestMessages(iframe);
+    const c = Controller(iframe, expectedMessages);
+    c.ready = async (clientDataSequence: number, c: any) =>
+      await fastForward(iframe, expectedMessages, clientDataSequence, c);
     const startButton = getStartButton(iframe);
     await startButton.click({ force: true });
     await _delay(1000);
-    const c = Controller(iframe, expectedMessages);
     await c.verifyTestMessages();
     page.on("pageerror", (msg) => console.log(msg));
     await f(c);

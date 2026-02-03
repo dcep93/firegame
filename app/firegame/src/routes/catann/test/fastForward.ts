@@ -28,9 +28,17 @@ export default async function fastForward(
     .filter((msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null)
     .forEach((msg) => mergeDiff(aggregated, msg.data.payload.diff));
 
-  await iframe.locator("body").evaluate((_, aggregated) => {
-    window.parent.postMessage({ catann: true, aggregated }, "*");
-  }, aggregated);
+  await iframe.locator("body").evaluate(
+    (_, databaseGame) => {
+      window.parent.__testOverrides = {
+        databaseGame,
+        session: null,
+        startTime: -1,
+        mapState: null,
+      };
+    },
+    { aggregated },
+  );
 
   const cachedC = { ...c };
   const fakeC = new Proxy(

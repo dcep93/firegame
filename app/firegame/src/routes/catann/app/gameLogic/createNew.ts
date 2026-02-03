@@ -1098,20 +1098,22 @@ const newMapState = () => {
 export const startGame = () => {
   const newFirstGameState = () => {
     const room = firebaseData.ROOM;
-    return {
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: 1,
-        payload: {
-          serverId: room.data.roomId,
-          databaseGameId: room.data.roomId,
-          gameSettingId: room.data.roomId,
-          shouldResetGameClient: false,
-          isReconnectingSession: false,
-          ...window.__testOverrides?.databaseGame,
+    return (
+      window.__testOverrides?.databaseGame?.aggregated ?? {
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: 1,
+          payload: {
+            serverId: room.data.roomId,
+            databaseGameId: room.data.roomId,
+            gameSettingId: room.data.roomId,
+            shouldResetGameClient: false,
+            isReconnectingSession: false,
+            ...window.__testOverrides?.databaseGame,
+          },
         },
-      },
-    };
+      }
+    );
   };
 
   sendToMainSocket?.(newFirstGameState());
