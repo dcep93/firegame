@@ -3,9 +3,12 @@
 // timeLeftInState
 // no magic numbers
 // redo single_player
+// audit skills
 // 2 player setup, first turns
 // 4 player setup, first turns
+// audit skills
 // 2 player game
+// audit skills
 // skill find bugs
 // expansions
 
