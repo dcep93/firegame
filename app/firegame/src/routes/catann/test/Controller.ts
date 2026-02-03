@@ -141,7 +141,6 @@ const Controller = (
       mapAppearsClickable: async (offset: { x: number; y: number }) =>
         await _mapAppearsClickable(canvas, offset),
       rollNextDice: async () => {
-        test.skip();
         const diceStateMessage = _expectedMessages!.find(
           (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
         )!;

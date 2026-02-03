@@ -32,7 +32,8 @@ export default async function fastForward(
     );
     spliced
       .filter((msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null)
-      .forEach((msg) => mergeDiff(aggregated, msg.data.payload.diff));
+      .map((msg) => msg.data.payload.diff)
+      .forEach((diff) => mergeDiff(aggregated.data.payload.gameState, diff));
 
     await iframe.locator("body").evaluate(
       (_, databaseGame) => {
