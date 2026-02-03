@@ -19,7 +19,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c);
   await c.wantToBuildRoad();
   await c.buildRoad({ col: 4, row: 5 }, { col: 4, row: 6 });
-  await autoChoreo(c);
+  await autoChoreo(c, 85);
   await c.handleReconnect();
   return;
   await autoChoreo(c);
