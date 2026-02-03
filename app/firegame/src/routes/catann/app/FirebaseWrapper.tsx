@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
+import { sendCornerHighlights30 } from "./gameLogic";
 import { GameStateUpdateType, State } from "./gameLogic/CatannFilesEnums";
 import {
   newRoom,
@@ -112,6 +113,14 @@ function receiveFirebaseDataCatann(catann: any) {
     if (!hasSentInitialGame) {
       markInitialGameSent(firebaseData.GAME);
       startGame();
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.KarmaState,
+          payload: false,
+        },
+      });
+      sendCornerHighlights30(firebaseData.GAME);
       return;
     }
     if (snapshot === lastGameStateSnapshot) return;

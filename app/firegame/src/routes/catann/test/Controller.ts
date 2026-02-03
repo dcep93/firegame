@@ -83,7 +83,6 @@ const Controller = (
         col: number;
         row: number;
       }) => {
-        throw new Error("should be skipped");
         const settlementOffset = getSettlementOffset(settlementCoords);
         await clickCanvas(canvas, settlementOffset);
 

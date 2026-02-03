@@ -1122,14 +1122,6 @@ export const startGame = () => {
     },
   });
   sendToMainSocket?.(firebaseData.GAME);
-  sendToMainSocket?.({
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.KarmaState,
-      payload: false,
-    },
-  });
-  // sendCornerHighlights30(firebaseData.GAME);
 };
 
 export const spoofHostRoom = () => {

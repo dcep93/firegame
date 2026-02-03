@@ -8,6 +8,7 @@ export default async function fastForward(
   c: ControllerType,
   clientDataSequence: number,
 ) {
+  expect(true).toBe(false);
   const cachedC = { ...c };
   Object.assign(
     c,
