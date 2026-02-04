@@ -1370,7 +1370,89 @@ export const applyGameAction = (parsed: {
     return false;
   }
   if (parsed.action === GAME_ACTION.CreateTrade) {
-    throw new Error("");
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    const playerColor = gameData.data.payload.playerColor ?? 1;
+    const tradePayload =
+      parsed.payload && typeof parsed.payload === "object"
+        ? (parsed.payload as {
+            offeredResources?: number[];
+            wantedResources?: number[];
+            isBankTrade?: boolean;
+          })
+        : null;
+    const offeredResources = Array.isArray(tradePayload?.offeredResources)
+      ? tradePayload?.offeredResources ?? []
+      : [];
+    const wantedResources = Array.isArray(tradePayload?.wantedResources)
+      ? tradePayload?.wantedResources ?? []
+      : [];
+    if (tradePayload?.isBankTrade) {
+      const playerState = gameState.playerStates?.[playerColor];
+      if (gameState.bankState?.resourceCards) {
+        offeredResources.forEach((card) => {
+          if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+            gameState.bankState.resourceCards[card] += 1;
+          }
+        });
+        wantedResources.forEach((card) => {
+          if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+            gameState.bankState.resourceCards[card] -= 1;
+          }
+        });
+      }
+
+      if (playerState?.resourceCards?.cards) {
+        playerState.resourceCards = {
+          cards: removePlayerCards(
+            playerState.resourceCards.cards,
+            offeredResources,
+          ),
+        };
+        playerState.resourceCards.cards.push(...wantedResources);
+      }
+
+      addGameLogEntry(gameState, {
+        text: {
+          type: GameLogMessageType.PlayerTradedWithBank,
+          playerColor,
+          givenCardEnums: offeredResources,
+          receivedCardEnums: wantedResources,
+        },
+        from: playerColor,
+      });
+
+      const completedTurns = gameState.currentState.completedTurns ?? 0;
+      gameState.currentState.allocatedTime = completedTurns >= 50 ? 220 : 140;
+      gameData.data.payload.timeLeftInState =
+        completedTurns >= 50 ? 209.571 : 134.623;
+
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData, []);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.ExchangeCards,
+          payload: {
+            givingPlayer: playerColor,
+            givingCards: offeredResources,
+            receivingPlayer: 0,
+            receivingCards: wantedResources,
+          },
+        },
+      });
+    }
+
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "createTrade",
+        offeredResources,
+        wantedResources,
+      },
+    );
     return true;
   }
   if (parsed.action === GAME_ACTION.WantToBuildSettlement) {

@@ -103,3 +103,13 @@
 - Corner highlight updates for city placement should target the current
   player's existing settlement corners (for upgrades) rather than the
   open settlement-placement spots.
+- Bank trade handling for `CreateTrade` should clear highlights, emit an
+  `ExchangeCards` update, and update bank/player resources plus a
+  `PlayerTradedWithBank` game log entry; trade timing has been keyed off
+  `completedTurns` (140/134.623 before 50, 220/209.571 at 50+).
+- The single-player recording expects a `CLIENT_TRADE_OFFER_TYPE` (77)
+  server update before the late-game bank trade, but it must be emitted
+  from real trade-state rules (not keyed off `completedTurns`).
+- Do not special-case game logic based on `completedTurns` values; that
+  kind of test-fitting is unacceptable. Changes must follow Catan rules
+  and be inferred from payload/current game state instead.

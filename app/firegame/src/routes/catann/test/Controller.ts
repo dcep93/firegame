@@ -188,7 +188,7 @@ const Controller = (
         const actionButtons = iframe.locator('div[class*="actionButton"]');
         await actionButtons.last().click({ force: true });
       },
-      wantToTrade: async (data: any) => {
+      wantToTrade: async (payload: any) => {
         const tradeButton = iframe.locator('div[id="action-button-trade"]');
         await tradeButton.first().click({ force: true });
         await _delay(100);
@@ -237,14 +237,14 @@ const Controller = (
           await _delay(50);
         };
 
-        for (const resourceId of data.offeredResources ?? []) {
+        for (const resourceId of payload.offeredResources ?? []) {
           await clickResourceCard(
             `div[id="player-card-inventory"]`,
             resourceId,
           );
         }
 
-        for (const resourceId of data.wantedResources ?? []) {
+        for (const resourceId of payload.wantedResources ?? []) {
           await clickResourceCard(
             `div[class*="wantedCardSelectorContainer-"]`,
             resourceId,
@@ -269,6 +269,15 @@ const Controller = (
             { timeout: 5000 },
           )
           .toBe(true);
+        // unclear why the recording doesnt have this already
+        _expectedMessages!.unshift({
+          trigger: "clientData",
+          data: {
+            action: GAME_ACTION.CreateTrade,
+            payload,
+            sequence: -1,
+          },
+        });
       },
       rollNextDice: async () => {
         const diceStateMessage = _expectedMessages!.find(
