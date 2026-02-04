@@ -2884,6 +2884,7 @@
       }
     }
   },
+  { "trigger": "deubg", "data": {} },
   {
     "trigger": "clientData",
     "data": {
