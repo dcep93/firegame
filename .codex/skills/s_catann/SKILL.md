@@ -5,11 +5,12 @@ description: Run the Firegame catann test workflow (start dev server, run test s
 
 # Skill: catann
 
-Always include the screenshot (if `screenshot.png` exists) as the **first part
-of the final response**, even when the test fails. Always include the full
-`test_catann.sh` output in the final response. The output can include ANSI color
-codes; when presenting it, render a human-readable version with ANSI removed
-(plain text).
+Always prepend the `{ codex: { ... } }` object from the test output (if it
+appears) to the final response, and then include the screenshot (if
+`screenshot.png` exists) as the **first visual part of the final response**,
+even when the test fails. Always include the full `test_catann.sh` output in the
+final response. The output can include ANSI color codes; when presenting it,
+render a human-readable version with ANSI removed (plain text).
 
 ## Summary flow
 
