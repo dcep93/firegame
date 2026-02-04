@@ -179,6 +179,11 @@ const Controller = (
         const actionButtons = iframe.locator('div[class*="actionButton"]');
         await actionButtons.last().click({ force: true });
       },
+      wantToTrade: async () => {
+        const tradeButton = iframe.locator('div[id="action-button-trade"]');
+        await tradeButton.first().click({ force: true });
+        await _delay(100);
+      },
       rollNextDice: async () => {
         const diceStateMessage = _expectedMessages!.find(
           (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
