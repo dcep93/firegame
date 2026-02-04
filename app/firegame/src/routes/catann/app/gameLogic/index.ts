@@ -250,7 +250,9 @@ export const sendCornerHighlights30 = (
               value.owner === playerColor
             );
           }
-          return !ownedCorners.some((ownedCorner) => isClose(ownedCorner, value));
+          return !ownedCorners.some((ownedCorner) =>
+            isClose(ownedCorner, value),
+          );
         })
         .map(({ key }) => key);
 
@@ -1037,9 +1039,7 @@ const rollDice = () => {
         if (tile1Resources.length > 0) {
           const remainingResources = resourcesToGive.filter(
             (resource) =>
-              !(
-                resource.owner === playerColor && resource.tileIndex === 1
-              ),
+              !(resource.owner === playerColor && resource.tileIndex === 1),
           );
           const remainingInsertIndex = remainingResources.findIndex(
             (resource) =>
@@ -1364,9 +1364,14 @@ export const applyGameAction = (parsed: {
       GAME_ACTION.PassedTurn,
       GAME_ACTION.SelectedInitialPlacementIndex,
       GAME_ACTION.SelectedTile,
+      GAME_ACTION.CreateTrade,
     ].includes(parsed.action!)
   ) {
     return false;
+  }
+  if (parsed.action === GAME_ACTION.CreateTrade) {
+    throw new Error("");
+    return true;
   }
   if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
     const gameData = firebaseData.GAME;

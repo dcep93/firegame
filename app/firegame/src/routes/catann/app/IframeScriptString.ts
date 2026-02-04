@@ -101,7 +101,7 @@ function main({
         );
       }
       // codex: dont remove this, its for debugging
-      const e = `not implemented: ${JSON.stringify(__meta)}`;
+      const e = `xhr not implemented: ${JSON.stringify(__meta)}`;
       console.error(e);
       return Promise.reject(new Error(e));
     }

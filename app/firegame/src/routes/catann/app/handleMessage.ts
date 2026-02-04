@@ -207,7 +207,7 @@ export default function handleMessage(
     }
   }
   // codex: dont remove this, its for debugging
-  const e = `not implemented: ${JSON.stringify(clientData)}`;
+  const e = `msg not implemented: ${JSON.stringify(clientData)}`;
   // console.error(e);
   throw new Error(e);
 }

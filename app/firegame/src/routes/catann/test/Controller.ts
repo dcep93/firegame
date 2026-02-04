@@ -192,6 +192,7 @@ const Controller = (
         const tradeButton = iframe.locator('div[id="action-button-trade"]');
         await tradeButton.first().click({ force: true });
         await _delay(100);
+
         await expect
           .poll(
             async () => {
@@ -206,14 +207,68 @@ const Controller = (
             { timeout: 5000 },
           )
           .toBe(true);
-        // data = {
-        //   creator: 1,
-        //   isBankTrade: true,
-        //   counterOfferInResponseToTradeId: null,
-        //   offeredResources: [4, 4, 4, 4],
-        //   wantedResources: [1],
-        // };
-        throw new Error("");
+
+        const resourceCardType: Record<number, string> = {
+          1: "lumber",
+          2: "brick",
+          3: "wool",
+          4: "grain",
+          5: "ore",
+          6: "cloth",
+          7: "coin",
+          8: "paper",
+        };
+
+        const tradeCard = iframe.locator('img[src*="card_"]');
+        await expect(tradeCard.first()).toBeVisible({ timeout: 5000 });
+
+        const clickResourceCard = async (
+          parent: string,
+          resourceId: number,
+        ) => {
+          const resourceType = resourceCardType[resourceId];
+          if (!resourceType) {
+            throw new Error(`Unknown resource type: ${resourceId}`);
+          }
+          const card = iframe.locator(
+            `${parent} img[src*="card_${resourceType}"]`,
+          );
+          await card.first().click({ force: true });
+          await _delay(50);
+        };
+
+        for (const resourceId of data.offeredResources ?? []) {
+          await clickResourceCard(
+            `div[id="player-card-inventory"]`,
+            resourceId,
+          );
+        }
+
+        for (const resourceId of data.wantedResources ?? []) {
+          await clickResourceCard(
+            `div[class*="wantedCardSelectorContainer-"]`,
+            resourceId,
+          );
+        }
+
+        const bankTradeButton = iframe.locator(
+          'div[id="action-button-trade-bank"]',
+        );
+        await bankTradeButton.first().click({ force: true });
+        await expect
+          .poll(
+            () =>
+              iframe
+                .locator("body")
+                .evaluate(() =>
+                  window.parent.__socketCatannMessages.some(
+                    (msg: { trigger?: string }) =>
+                      msg?.trigger === "serverData",
+                  ),
+                ),
+            { timeout: 5000 },
+          )
+          .toBe(true);
       },
       rollNextDice: async () => {
         const diceStateMessage = _expectedMessages!.find(
