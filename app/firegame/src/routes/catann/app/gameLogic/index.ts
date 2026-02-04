@@ -110,11 +110,9 @@ const addPlayerResourceCards = (
   });
 };
 
-const autoPlaceRobber = (
-  gameData: any,
-  playerColor: number,
-  tileIndex: number,
-) => {
+const autoPlaceRobber = (tileIndex: number) => {
+  const gameData = firebaseData.GAME;
+  const playerColor = gameData.data.payload.playerColor ?? 1;
   const gameState = gameData.data.payload.gameState;
   const eligibleTiles = getRobberEligibleTiles(gameData);
   const resolvedTileIndex = eligibleTiles.includes(tileIndex)
@@ -991,34 +989,6 @@ const rollDice = () => {
       dice: [dice1, dice2],
     },
   );
-
-  if (shouldTriggerRobber) {
-    const autoRobberTileIndex =
-      completedTurns >= 50
-        ? 15
-        : completedTurns >= 47
-          ? 1
-          : completedTurns >= 46
-            ? 14
-            : completedTurns >= 45
-              ? 5
-              : completedTurns >= 40
-                ? 14
-                : completedTurns >= 34
-                  ? 4
-                  : completedTurns >= 29
-                    ? 14
-                    : completedTurns >= 23
-                      ? 15
-                      : completedTurns >= 20
-                        ? 5
-                        : completedTurns >= 8
-                          ? 14
-                          : completedTurns >= 5
-                            ? 3
-                            : 4;
-    autoPlaceRobber(gameData, playerColor, autoRobberTileIndex);
-  }
 };
 
 const passTurn = () => {
@@ -1165,17 +1135,20 @@ export const applyGameAction = (parsed: {
     return true;
   }
   if (
-    parsed.action !== GAME_ACTION.ConfirmBuildRoad &&
-    parsed.action !== GAME_ACTION.ConfirmBuildRoadSkippingSelection &&
-    parsed.action !== GAME_ACTION.WantToBuildRoad &&
-    parsed.action !== GAME_ACTION.ConfirmBuildSettlement &&
-    parsed.action !== GAME_ACTION.ConfirmBuildSettlementSkippingSelection &&
-    parsed.action !== GAME_ACTION.WantToBuildSettlement &&
-    parsed.action !== GAME_ACTION.BuyDevelopmentCard &&
-    parsed.action !== GAME_ACTION.ClickedDice &&
-    parsed.action !== GAME_ACTION.CancelAction &&
-    parsed.action !== GAME_ACTION.PassedTurn &&
-    parsed.action !== GAME_ACTION.SelectedInitialPlacementIndex
+    ![
+      GAME_ACTION.ConfirmBuildRoad,
+      GAME_ACTION.ConfirmBuildRoadSkippingSelection,
+      GAME_ACTION.WantToBuildRoad,
+      GAME_ACTION.ConfirmBuildSettlement,
+      GAME_ACTION.ConfirmBuildSettlementSkippingSelection,
+      GAME_ACTION.WantToBuildSettlement,
+      GAME_ACTION.BuyDevelopmentCard,
+      GAME_ACTION.ClickedDice,
+      GAME_ACTION.CancelAction,
+      GAME_ACTION.PassedTurn,
+      GAME_ACTION.SelectedInitialPlacementIndex,
+      GAME_ACTION.SelectedTile,
+    ].includes(parsed.action!)
   ) {
     return false;
   }
@@ -1303,6 +1276,11 @@ export const applyGameAction = (parsed: {
   }
 
   if (parsed.action === GAME_ACTION.SelectedInitialPlacementIndex) {
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.SelectedTile) {
+    autoPlaceRobber(parsed.payload as number);
     return true;
   }
 
