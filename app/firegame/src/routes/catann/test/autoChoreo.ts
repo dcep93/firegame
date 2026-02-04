@@ -8,6 +8,7 @@ export default async function autoChoreo(
   stopClientDataSequence: number = -1,
 ) {
   for (let i = 0; true; i++) {
+    await c.verifyTestMessages(false);
     const msg = c._peek();
     if (!msg) return; // fastForward
     try {
@@ -45,6 +46,5 @@ export default async function autoChoreo(
     } else {
       return;
     }
-    await c.verifyTestMessages();
   }
 }

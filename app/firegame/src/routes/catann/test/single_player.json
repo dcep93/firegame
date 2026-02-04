@@ -2884,7 +2884,6 @@
       }
     }
   },
-  { "trigger": "deubg", "data": {} },
   {
     "trigger": "clientData",
     "data": {
@@ -12225,6 +12224,7 @@
       }
     }
   },
+  { "type": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {

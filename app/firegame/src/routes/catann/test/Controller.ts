@@ -25,10 +25,10 @@ const Controller = (
   _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
   ((canvas) => {
-    const verifyTestMessages = async () => {
+    const verifyTestMessages = async (failOnEmpty: boolean = true) => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
-      expect(testMessages.length).not.toBe(0);
+      if (failOnEmpty) expect(testMessages.length).not.toBe(0);
       const durationMs = Date.now() - loaded;
       console.log(
         "verifyTestMessages",

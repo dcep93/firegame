@@ -15,6 +15,10 @@ export default async function fastForward(
   );
   c.fastForward = async (choreoClientDataSequence: number) => {
     if (choreoClientDataSequence < clientDataSequence) return;
+    console.log("fastForward", {
+      clientDataSequence,
+      choreoClientDataSequence,
+    });
     const testMessages = await spliceTestMessages(iframe);
     expect(testMessages).toEqual([]);
 
