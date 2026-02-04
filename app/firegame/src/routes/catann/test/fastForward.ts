@@ -14,7 +14,7 @@ export default async function fastForward(
     Object.fromEntries(Object.keys(c).map((k) => [k, () => null])),
   );
   c.fastForward = async (choreoClientDataSequence: number) => {
-    if (choreoClientDataSequence !== clientDataSequence) return;
+    if (choreoClientDataSequence < clientDataSequence) return;
     const testMessages = await spliceTestMessages(iframe);
     expect(testMessages).toEqual([]);
 
