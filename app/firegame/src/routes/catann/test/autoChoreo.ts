@@ -32,10 +32,14 @@ export default async function autoChoreo(
       await c.wantToBuildRoad();
     } else if (msg.data.action === GAME_ACTION.WantToBuildSettlement) {
       await c.wantToBuildSettlement();
+    } else if (msg.data.action === GAME_ACTION.WantToBuildCity) {
+      await c.wantToBuildCity();
     } else if (msg.data.action === GAME_ACTION.BuyDevelopmentCard) {
       await c.buyDevelopmentCard();
     } else if (msg.data.action === GAME_ACTION.SelectedTile) {
       await c.playNextRobber();
+    } else if (msg.data.action === GAME_ACTION.CancelAction) {
+      await c.cancelAction();
     } else {
       return;
     }

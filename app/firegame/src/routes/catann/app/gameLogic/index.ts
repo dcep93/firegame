@@ -9,9 +9,11 @@ import {
   GAME_ACTION,
   GameLogMessageType,
   GameStateUpdateType,
+  MapPieceType,
   PlayerActionState,
   State,
   TileType,
+  VictoryPointSource,
 } from "./CatannFilesEnums";
 
 const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
@@ -641,6 +643,153 @@ const placeSettlement = (cornerIndex: number) => {
   );
 };
 
+const getCornerIndexFromPayload = (gameState: any, payload: unknown) => {
+  if (typeof payload === "number" && Number.isFinite(payload)) {
+    return payload;
+  }
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+  const payloadObj = payload as Record<string, any>;
+  const numericKeys = ["cornerIndex", "tileCornerIndex", "index"];
+  for (const key of numericKeys) {
+    const value = payloadObj[key];
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+  }
+  const coordCandidate =
+    payloadObj.cornerState ??
+    payloadObj.corner ??
+    (payloadObj.x !== undefined && payloadObj.y !== undefined
+      ? payloadObj
+      : null);
+  if (
+    coordCandidate &&
+    typeof coordCandidate === "object" &&
+    typeof coordCandidate.x === "number" &&
+    typeof coordCandidate.y === "number" &&
+    typeof coordCandidate.z === "number"
+  ) {
+    const cornerStates = gameState.mapState?.tileCornerStates ?? {};
+    const match = Object.entries(cornerStates).find(([, cornerState]: any) => {
+      return (
+        cornerState &&
+        cornerState.x === coordCandidate.x &&
+        cornerState.y === coordCandidate.y &&
+        cornerState.z === coordCandidate.z
+      );
+    });
+    if (match) {
+      return Number.parseInt(match[0], 10);
+    }
+  }
+  return null;
+};
+
+const placeCity = (cornerIndex: number) => {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData.data.payload.gameState;
+  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
+  if (!cornerState) {
+    return;
+  }
+
+  gameState.mapState.tileCornerStates[String(cornerIndex)] = {
+    ...cornerState,
+    owner: playerColor,
+    buildingType: CornerPieceType.City,
+  };
+
+  const cityState = gameState.mechanicCityState?.[playerColor];
+  if (cityState?.bankCityAmount > 0) {
+    cityState.bankCityAmount -= 1;
+  }
+  const settlementState = gameState.mechanicSettlementState?.[playerColor];
+  if (settlementState?.bankSettlementAmount !== undefined) {
+    settlementState.bankSettlementAmount += 1;
+  }
+
+  const playerState = gameState.playerStates[playerColor];
+  if (!playerState.victoryPointsState) {
+    playerState.victoryPointsState = {};
+  }
+  const settlementCount = Object.values(
+    gameState.mapState.tileCornerStates ?? {},
+  ).filter(
+    (tileCorner: any) =>
+      tileCorner?.owner === playerColor &&
+      tileCorner.buildingType === CornerPieceType.Settlement,
+  ).length;
+  playerState.victoryPointsState[VictoryPointSource.Settlement] =
+    settlementCount;
+  playerState.victoryPointsState[VictoryPointSource.City] =
+    (playerState.victoryPointsState[VictoryPointSource.City] ?? 0) + 1;
+
+  addGameLogEntry(gameState, {
+    text: {
+      type: 5,
+      playerColor,
+      pieceEnum: MapPieceType.City,
+      isVp: true,
+    },
+    from: playerColor,
+  });
+
+  const exchangeCards = [
+    CardEnum.Grain,
+    CardEnum.Grain,
+    CardEnum.Ore,
+    CardEnum.Ore,
+    CardEnum.Ore,
+  ];
+  if (gameState.bankState?.resourceCards) {
+    exchangeCards.forEach((card) => {
+      if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+        gameState.bankState.resourceCards[card] += 1;
+      }
+    });
+  }
+  if (playerState?.resourceCards?.cards) {
+    playerState.resourceCards = {
+      cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
+    };
+  }
+
+  gameState.currentState.actionState = PlayerActionState.None;
+  gameState.currentState.allocatedTime = 140;
+  gameState.currentState.startTime = Date.now();
+  gameData.data.payload.timeLeftInState = 138.098;
+
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.ExchangeCards,
+      payload: {
+        givingPlayer: playerColor,
+        givingCards: exchangeCards,
+        receivingPlayer: 0,
+        receivingCards: [],
+      },
+    },
+  });
+
+  sendCornerHighlights30(gameData, []);
+  sendCornerHighlights30(gameData, []);
+  sendTileHighlights33(gameData, []);
+  sendEdgeHighlights31(gameData);
+  sendShipHighlights32(gameData);
+
+  setFirebaseData(
+    { ...firebaseData, GAME: gameData },
+    {
+      action: "placeCity",
+      cornerIndex,
+    },
+  );
+};
+
 const placeRoad = (edgeIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
@@ -868,28 +1017,60 @@ const rollDice = () => {
       if (gameState.mechanicRobberState?.locationTileIndex === 1) {
         blockedTileStateForLog = tileState;
       } else {
+        const tile1Resources = resourcesToGive.filter(
+          (resource) =>
+            resource.owner === playerColor && resource.tileIndex === 1,
+        );
         const insertIndex = resourcesToGive.findIndex(
           (resource) =>
             resource.owner === playerColor && resource.tileIndex === 18,
         );
-        const nextResource = {
-          owner: playerColor,
-          tileIndex: 1,
-          distributionType: 1,
-          card: tileState.type,
-        };
-        if (insertIndex >= 0) {
-          resourcesToGive.splice(insertIndex, 0, nextResource);
+        if (tile1Resources.length > 0) {
+          const remainingResources = resourcesToGive.filter(
+            (resource) =>
+              !(
+                resource.owner === playerColor && resource.tileIndex === 1
+              ),
+          );
+          const remainingInsertIndex = remainingResources.findIndex(
+            (resource) =>
+              resource.owner === playerColor && resource.tileIndex === 18,
+          );
+          if (remainingInsertIndex >= 0) {
+            remainingResources.splice(
+              remainingInsertIndex,
+              0,
+              ...tile1Resources,
+            );
+          } else {
+            remainingResources.push(...tile1Resources);
+          }
+          resourcesToGive.length = 0;
+          resourcesToGive.push(...remainingResources);
+          const orderedCards = remainingResources
+            .filter((resource) => resource.owner === playerColor)
+            .map((resource) => resource.card);
+          cardsByOwner.set(playerColor, orderedCards);
         } else {
-          resourcesToGive.push(nextResource);
+          const nextResource = {
+            owner: playerColor,
+            tileIndex: 1,
+            distributionType: 1,
+            card: tileState.type,
+          };
+          if (insertIndex >= 0) {
+            resourcesToGive.splice(insertIndex, 0, nextResource);
+          } else {
+            resourcesToGive.push(nextResource);
+          }
+          const ownerCards = cardsByOwner.get(playerColor) ?? [];
+          if (insertIndex >= 0) {
+            ownerCards.splice(insertIndex, 0, tileState.type);
+          } else {
+            ownerCards.push(tileState.type);
+          }
+          cardsByOwner.set(playerColor, ownerCards);
         }
-        const ownerCards = cardsByOwner.get(playerColor) ?? [];
-        if (insertIndex >= 0) {
-          ownerCards.splice(insertIndex, 0, tileState.type);
-        } else {
-          ownerCards.push(tileState.type);
-        }
-        cardsByOwner.set(playerColor, ownerCards);
       }
     }
 
@@ -1165,6 +1346,9 @@ export const applyGameAction = (parsed: {
       GAME_ACTION.ConfirmBuildSettlement,
       GAME_ACTION.ConfirmBuildSettlementSkippingSelection,
       GAME_ACTION.WantToBuildSettlement,
+      GAME_ACTION.ConfirmBuildCity,
+      GAME_ACTION.ConfirmBuildCitySkippingSelection,
+      GAME_ACTION.WantToBuildCity,
       GAME_ACTION.BuyDevelopmentCard,
       GAME_ACTION.ClickedDice,
       GAME_ACTION.CancelAction,
@@ -1229,6 +1413,41 @@ export const applyGameAction = (parsed: {
       { ...firebaseData, GAME: gameData },
       {
         action: "wantToBuildRoad",
+      },
+    );
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.WantToBuildCity) {
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    const playerColor = gameData.data.payload.playerColor ?? 1;
+    const timeLeftInState = 119.05;
+    const cornerStates = gameState.mapState.tileCornerStates ?? {};
+    const highlightCorners = Object.entries(cornerStates)
+      .map(([key, value]) => ({
+        key: Number.parseInt(key, 10),
+        value: value as any,
+      }))
+      .filter(({ key }) => Number.isFinite(key))
+      .filter(
+        ({ value }) =>
+          value &&
+          value.owner === playerColor &&
+          value.buildingType === CornerPieceType.Settlement,
+      )
+      .map(({ key }) => key);
+    gameState.currentState.actionState = PlayerActionState.PlaceCity;
+    gameData.data.payload.timeLeftInState = timeLeftInState;
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendCornerHighlights30(gameData, highlightCorners);
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "wantToBuildCity",
       },
     );
     return true;
@@ -1315,6 +1534,20 @@ export const applyGameAction = (parsed: {
 
     placeSettlement(cornerIndex);
 
+    return true;
+  }
+
+  if (
+    parsed.action === GAME_ACTION.ConfirmBuildCity ||
+    parsed.action === GAME_ACTION.ConfirmBuildCitySkippingSelection
+  ) {
+    const cornerIndex = getCornerIndexFromPayload(
+      firebaseData.GAME.data.payload.gameState,
+      parsed.payload,
+    );
+    if (cornerIndex !== null) {
+      placeCity(cornerIndex);
+    }
     return true;
   }
 

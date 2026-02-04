@@ -82,6 +82,15 @@
   for lumber/brick/wool/grain, followed by highlight clears in the order
   30/30/33/31/32 and a GameStateUpdated diff that sets actionState None with
   allocatedTime 140.
+- City placement now infers the corner index from the client payload (numeric
+  index or x/y/z coords) and upgrades an owned settlement to a city while
+  emitting the ExchangeCards payload for 3 ore + 2 grain.
+- The city action button can be clicked via
+  `div[class*="cityButton-"] div[class*="container-"]` to emit
+  `WantToBuildCity` (action 17) before clicking the settlement corner.
+- The cancel action (action 47) can be triggered by clicking the action box
+  close button (`div[class*="closeButton-"]`), falling back to Escape if
+  needed.
 - If later build-road clicks fail pointer detection, use the unchecked canvas
   click helper for the road midpoint before confirming.
 - Robber tile clicks in Playwright should map tile hex axial coords to canvas

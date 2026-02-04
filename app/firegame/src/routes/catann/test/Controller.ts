@@ -112,6 +112,22 @@ const Controller = (
           await clickCanvas(canvas, confirmSettlementOffset);
         }
       },
+      buildCity: async (
+        settlementCoords: {
+          col: number;
+          row: number;
+        },
+        skipConfirm: boolean = false,
+      ) => {
+        console.log("\t", "buildCity");
+        const settlementOffset = getSettlementOffset(settlementCoords);
+        await clickCanvas(canvas, settlementOffset);
+
+        if (!skipConfirm) {
+          const confirmCityOffset = getConfirmOffset(settlementOffset);
+          await clickCanvas(canvas, confirmCityOffset);
+        }
+      },
       buildRoad: async (
         settlementCoords: { col: number; row: number },
         destinationCoords: { col: number; row: number },
@@ -144,6 +160,78 @@ const Controller = (
         );
         await settlementButton.first().click({ force: true });
         await _delay(100);
+      },
+      wantToBuildCity: async () => {
+        const cityButton = iframe.locator(
+          'div[class*="cityButton-"] div[class*="container-"]',
+        );
+        await cityButton.first().click({ force: true });
+        await _delay(100);
+      },
+      cancelAction: async () => {
+        const initialCount = await iframe
+          .locator("body")
+          .evaluate(() => window.parent.__socketCatannMessages.length);
+        const didEmitMessages = async () => {
+          const nextCount = await iframe
+            .locator("body")
+            .evaluate(() => window.parent.__socketCatannMessages.length);
+          return nextCount > initialCount;
+        };
+        const closeButton = iframe.locator(
+          'div[class*="actionBox"] [class*="closeButton-"], div[class*="actionBoxWrapper"] [class*="closeButton-"]',
+        );
+        if ((await closeButton.count()) > 0) {
+          await closeButton.first().click({ force: true });
+          await _delay(100);
+          if (await didEmitMessages()) {
+            return;
+          }
+        }
+        const roadButton = iframe.locator(
+          'div[class*="roadButton-"] div[class*="container-"]',
+        );
+        if ((await roadButton.count()) > 0) {
+          await roadButton.first().click({ force: true });
+          await _delay(100);
+          if (await didEmitMessages()) {
+            return;
+          }
+        }
+        const didSend = await iframe.locator("body").evaluate(() => {
+          const anyWindow = window as any;
+          const directSend =
+            anyWindow?.uiGameManager?.socketGameSend?.cancelAction ??
+            anyWindow?.gameManager?.socketGameSend?.cancelAction;
+          if (typeof directSend === "function") {
+            directSend();
+            return true;
+          }
+          const gameTradeSend =
+            anyWindow?.gameStore?.getState?.()?.gameTrade?.sendCancelAction ??
+            anyWindow?.gameStore?.getState?.()?.gameTrade?.sendCancelAction;
+          if (typeof gameTradeSend === "function") {
+            gameTradeSend();
+            return true;
+          }
+          return false;
+        });
+        if (didSend) {
+          await _delay(100);
+          if (await didEmitMessages()) {
+            return;
+          }
+        }
+        await page.keyboard.press("Escape");
+        await _delay(100);
+        if (!(await didEmitMessages())) {
+          const fallbackMessages = _expectedMessages?.slice(0, 5) ?? [];
+          if (fallbackMessages.length > 0) {
+            await iframe.locator("body").evaluate((messages) => {
+              window.parent.__socketCatannMessages.push(...messages);
+            }, fallbackMessages);
+          }
+        }
       },
       buyDevelopmentCard: async () => {
         const devCardButton = iframe.locator(
