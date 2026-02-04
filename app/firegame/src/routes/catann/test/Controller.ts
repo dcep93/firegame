@@ -191,14 +191,9 @@ const Controller = (
         expect(clientIndex).toBeGreaterThan(serverIndex);
         expectedMessages.splice(0, clientIndex);
       },
-      prefixCancel: () => {
-        // unclear how the recording
-        // clicked wantToBuildRoad then pass
-        // without cancelling in between
-        _expectedMessages?.unshift({
-          trigger: "clientData",
-          data: { action: GAME_ACTION.CancelAction },
-        });
+      skipIllegalPass: async () => {
+        const msg = _expectedMessages!.shift()!;
+        expect(msg.data.action).toBe(GAME_ACTION.PassedTurn);
       },
     };
   })(getCanvas(iframe));
