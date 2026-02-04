@@ -32,6 +32,7 @@ If the user provides a time constraint, treat it as a soft stop:
 
 ## Constraints (must follow)
 
+- Only run this skill when explicitly instructed by the user.
 - Only edit files under `firegame/app/firegame/src/routes/catann/app/gameLogic`.
 - You may also edit test/choreo.ts, but you may not add imports.
 - If a required change is outside those locations, **stop and report what you need to change** instead of editing.
