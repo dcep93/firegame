@@ -42,5 +42,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 179);
 
   await c.fastForward(179);
+  await c.wantToTrade();
+  await c.verifyTestMessages();
   await autoChoreo(c);
 };
