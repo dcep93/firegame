@@ -236,6 +236,16 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (msg.data.data?.type === GameStateUpdateType.PlayerReconnected)
     return false;
   if (
+    msg.trigger === "serverData" &&
+    msg.data.data?.type === 91 &&
+    typeof msg.data.data?.payload?.diff === "object" &&
+    Object.keys(msg.data.data.payload.diff).length === 1 &&
+    typeof msg.data.data?.payload?.diff.currentState === "object" &&
+    Object.keys(msg.data.data.payload.diff.currentState).length === 1 &&
+    msg.data.data.payload.diff.currentState.startTime > 0
+  )
+    return false;
+  if (
     msg.trigger === "clientData" &&
     msg.data.action === GAME_ACTION.SelectedCards &&
     msg.data.payload &&

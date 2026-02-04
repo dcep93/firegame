@@ -6,7 +6,10 @@ import {
   Page,
   test,
 } from "@playwright/test";
-import { GAME_ACTION } from "../app/gameLogic/CatannFilesEnums";
+import {
+  CLIENT_TRADE_OFFER_TYPE,
+  GAME_ACTION,
+} from "../app/gameLogic/CatannFilesEnums";
 import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
@@ -28,7 +31,12 @@ const Controller = (
     const verifyTestMessages = async (failOnEmpty: boolean = true) => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
-      if (failOnEmpty) expect(testMessages.length).not.toBe(0);
+      try {
+        if (failOnEmpty) expect(testMessages.length).not.toBe(0);
+      } catch (e) {
+        console.log(JSON.stringify(expectedMessages[0], null, 2));
+        throw e;
+      }
       const durationMs = Date.now() - loaded;
       console.log(
         "verifyTestMessages",
@@ -184,6 +192,9 @@ const Controller = (
         const tradeButton = iframe.locator('div[id="action-button-trade"]');
         await tradeButton.first().click({ force: true });
         await _delay(100);
+        verifyTestMessages();
+        expect(_expectedMessages![0].data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
+        _expectedMessages![0].trigger = "clientData";
       },
       rollNextDice: async () => {
         const diceStateMessage = _expectedMessages!.find(

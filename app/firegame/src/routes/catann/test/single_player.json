@@ -12224,7 +12224,6 @@
       }
     }
   },
-  { "type": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {

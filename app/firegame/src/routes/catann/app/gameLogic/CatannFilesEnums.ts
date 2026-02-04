@@ -1203,3 +1203,5 @@ export enum PlatformType {
   MobileUnknown = 7,
   DiscordMobile = 8,
 }
+
+export const CLIENT_TRADE_OFFER_TYPE = 77;
