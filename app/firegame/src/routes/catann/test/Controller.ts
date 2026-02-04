@@ -192,8 +192,20 @@ const Controller = (
         const tradeButton = iframe.locator('div[id="action-button-trade"]');
         await tradeButton.first().click({ force: true });
         await _delay(100);
-        verifyTestMessages();
-        expect(_expectedMessages![0].data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
+        await expect
+          .poll(
+            async () => {
+              await verifyTestMessages(false);
+              return (
+                _expectedMessages &&
+                _expectedMessages[0].data.data.type ===
+                  CLIENT_TRADE_OFFER_TYPE &&
+                _expectedMessages[0].trigger === "serverData"
+              );
+            },
+            { timeout: 5000 },
+          )
+          .toBe(true);
         _expectedMessages![0].trigger = "clientData";
       },
       rollNextDice: async () => {
