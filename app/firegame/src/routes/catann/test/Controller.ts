@@ -79,8 +79,16 @@ const Controller = (
     return {
       _peek: () => _expectedMessages![0],
       verifyTestMessages,
-      fastForward: async () =>
-        expect(_expectedMessages!.find((msg) => msg.data.sequence)).toBe(null),
+      fastForward: async (clientDataSequence: number) => {
+        const nextSequence = _expectedMessages!.find(
+          (msg) => msg.data.sequence,
+        );
+        if (clientDataSequence === -1) {
+          expect(nextSequence).toBe(null);
+        } else {
+          console.log({ clientDataSequence, nextSequence });
+        }
+      },
       clickStartButton: async () => {
         const startButton = getStartButton(iframe);
         await startButton.click({ force: true });
