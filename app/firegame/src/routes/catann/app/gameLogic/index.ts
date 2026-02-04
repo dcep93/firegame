@@ -807,7 +807,6 @@ const rollDice = () => {
       : Math.floor(Math.random() * 6) + 1;
   const diceTotal = dice1 + dice2;
   const shouldTriggerRobber = diceTotal === 7;
-  const completedTurns = gameState.currentState.completedTurns ?? 0;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
   const resourcesToGive: {
