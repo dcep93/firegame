@@ -80,6 +80,7 @@ const Controller = (
       _peek: () => _expectedMessages![0],
       verifyTestMessages,
       fastForward: async (clientDataSequence: number) => {
+        await verifyTestMessages();
         const nextSequence = _expectedMessages!.find(
           (msg) => msg.data.sequence,
         );

@@ -16,6 +16,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.buildSettlement({ col: 6, row: 5 });
   await c.buildRoad({ col: 6, row: 5 }, { col: 5, row: 4 });
 
+  await c.fastForward(24);
   await autoChoreo(c);
   await c.buildRoad({ col: 4, row: 5 }, { col: 4, row: 6 }, true);
   await autoChoreo(c, 85);
@@ -28,6 +29,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.wantToBuildRoad();
   await autoChoreo(c);
 
+  await c.fastForward(112);
   await c.buildRoad({ col: 5, row: 3 }, { col: 5, row: 4 }, true);
   await autoChoreo(c);
 
@@ -37,4 +39,5 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
 
   await c.fastForward(152);
   await c.buildCity({ col: 3, row: 4 }, true);
+  await autoChoreo(c);
 };
