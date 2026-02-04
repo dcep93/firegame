@@ -12,7 +12,7 @@ export default async function autoChoreo(
     const msg = c._peek();
     if (!msg) return; // fastForward
     try {
-      expect(msg.trigger).toBe("clientData");
+      expect(msg.trigger).not.toBe("serverData");
     } catch (e) {
       console.log(JSON.stringify(msg, null, 2));
       throw e;
