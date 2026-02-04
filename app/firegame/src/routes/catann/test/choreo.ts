@@ -42,7 +42,13 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 179);
 
   await c.fastForward(179);
-  await c.wantToTrade();
+  await c.wantToTrade({
+    creator: 1,
+    isBankTrade: true,
+    counterOfferInResponseToTradeId: null,
+    offeredResources: [4, 4, 4, 4],
+    wantedResources: [1],
+  });
   await c.verifyTestMessages();
   await autoChoreo(c);
 };

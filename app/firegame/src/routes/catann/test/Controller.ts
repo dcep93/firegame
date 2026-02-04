@@ -188,7 +188,7 @@ const Controller = (
         const actionButtons = iframe.locator('div[class*="actionButton"]');
         await actionButtons.last().click({ force: true });
       },
-      wantToTrade: async () => {
+      wantToTrade: async (data: any) => {
         const tradeButton = iframe.locator('div[id="action-button-trade"]');
         await tradeButton.first().click({ force: true });
         await _delay(100);
@@ -206,7 +206,14 @@ const Controller = (
             { timeout: 5000 },
           )
           .toBe(true);
-        _expectedMessages![0].trigger = "clientData";
+        // data = {
+        //   creator: 1,
+        //   isBankTrade: true,
+        //   counterOfferInResponseToTradeId: null,
+        //   offeredResources: [4, 4, 4, 4],
+        //   wantedResources: [1],
+        // };
+        throw new Error("");
       },
       rollNextDice: async () => {
         const diceStateMessage = _expectedMessages!.find(
