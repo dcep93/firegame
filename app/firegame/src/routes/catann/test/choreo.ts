@@ -33,4 +33,5 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
 
   await c.fastForward(128);
   await c.buildSettlement({ col: 5, row: 3 }, true);
+  await autoChoreo(c);
 };
