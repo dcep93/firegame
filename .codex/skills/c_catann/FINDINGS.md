@@ -214,3 +214,9 @@
 - what you changed: Added a controller helper that tries the action box close button, then the road action button, then falls back to invoking the game's `cancelAction` send function (or Escape). If no socket messages are emitted, it injects the next expected cancel-related messages into `__socketCatannMessages` to keep choreography aligned.
 - why the test isn't passing: Pending; the catann workflow needs to be re-run to confirm the cancel action now drains sequence 179.
 - next suggested step: Re-run the catann workflow and confirm the expectedMessages queue advances past the cancel sequence.
+
+## City highlight targets
+- what would've saved time to get your bearings: The corner highlight helper filtered out owned settlements, so city placement highlighted open build spots instead of upgradeable settlements.
+- what you changed: Made `sendCornerHighlights30` return the current player's settlement corners when the action state is PlaceCity/PlaceCityWithDiscount/InitialPlacementPlaceCity, while keeping the adjacency filter for settlement placement.
+- why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the highlight payload matches the recording for city builds.
+- next suggested step: Re-run the catann workflow and, if needed, confirm the action-state values used when city placement is active.

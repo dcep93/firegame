@@ -100,3 +100,6 @@
   any special-case resource ordering (like tile 1 before tile 18) must still
   check `tileState.diceNumber` and the robber location so only matching hexes
   grant cards.
+- Corner highlight updates for city placement should target the current
+  player's existing settlement corners (for upgrades) rather than the
+  open settlement-placement spots.

@@ -205,6 +205,8 @@ export const sendCornerHighlights30 = (
   gameData: any,
   force: number[] | null = null,
 ) => {
+  const actionState = gameData.data.payload.gameState.currentState.actionState;
+  const playerColor = gameData.data.payload.playerColor ?? 1;
   const isClose = (a: any, b: any) => {
     if (a.z === b.z) {
       return a.x === b.x && a.y === b.y;
@@ -229,9 +231,7 @@ export const sendCornerHighlights30 = (
     PlayerActionState.PlaceSettlement,
     PlayerActionState.PlaceCity,
     PlayerActionState.PlaceCityWithDiscount,
-    PlayerActionState.PlaceCity,
-    PlayerActionState.PlaceCity,
-  ].includes(gameData.data.payload.gameState.currentState.actionState)
+  ].includes(actionState)
     ? []
     : Object.entries(gameData.data.payload.gameState.mapState.tileCornerStates)
         .map(([key, value]) => ({
@@ -239,10 +239,19 @@ export const sendCornerHighlights30 = (
           value: value as any,
         }))
         .filter(({ key }) => Number.isFinite(key))
-        .filter(
-          ({ value }) =>
-            !ownedCorners.some((ownedCorner) => isClose(ownedCorner, value)),
-        )
+        .filter(({ value }) => {
+          if (
+            actionState === PlayerActionState.PlaceCity ||
+            actionState === PlayerActionState.PlaceCityWithDiscount ||
+            actionState === PlayerActionState.InitialPlacementPlaceCity
+          ) {
+            return (
+              value.buildingType === CornerPieceType.Settlement &&
+              value.owner === playerColor
+            );
+          }
+          return !ownedCorners.some((ownedCorner) => isClose(ownedCorner, value));
+        })
         .map(({ key }) => key);
 
   sendToMainSocket?.({
