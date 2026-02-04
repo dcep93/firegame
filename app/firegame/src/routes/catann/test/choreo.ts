@@ -30,9 +30,4 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c);
   await c.buildRoad({ col: 5, row: 3 }, { col: 5, row: 4 }, true);
   await autoChoreo(c);
-  return;
-
-  await c.fastForward();
-  await c.buildSettlement({ col: 5, row: 3 });
-  await autoChoreo(c);
 };

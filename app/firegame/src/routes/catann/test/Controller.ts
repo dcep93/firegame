@@ -376,6 +376,36 @@ export const getStartButton = (iframe: FrameLocator) => {
 };
 
 const getTilePosition = (tileIndex: number) => {
-  console.log("TODO", tileIndex);
-  return { x: 230, y: 481 };
+  const TILE_HEX_COORDS: Record<number, { x: number; y: number }> = {
+    10: { x: 2, y: -2 },
+    11: { x: 1, y: -2 },
+    0: { x: 0, y: -2 },
+
+    1: { x: -1, y: -1 },
+    9: { x: 2, y: -1 },
+    12: { x: 0, y: -1 },
+    17: { x: 1, y: -1 },
+
+    2: { x: -2, y: 0 },
+    16: { x: 1, y: 0 },
+    18: { x: 0, y: 0 },
+    8: { x: 2, y: 0 },
+    13: { x: -1, y: 0 },
+
+    3: { x: -2, y: 1 },
+    7: { x: 1, y: 1 },
+    14: { x: -1, y: 1 },
+    15: { x: 0, y: 1 },
+
+    4: { x: -2, y: 2 },
+    5: { x: -1, y: 2 },
+    6: { x: 0, y: 2 },
+  };
+
+  const tileState = TILE_HEX_COORDS[tileIndex];
+  const center = {
+    col: 5 + 2 * (tileState.x + 0.5 * tileState.y),
+    row: 5 + 2 * tileState.y,
+  };
+  return getSettlementOffset(center);
 };

@@ -222,6 +222,15 @@ const createRoom = async (
 
 const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
+  // lying enums
+  if (
+    msg.data.action === GAME_ACTION.SelectedTile &&
+    typeof msg.data.payload === "object"
+  )
+    return false;
+  if (msg.data.action === GAME_ACTION.ClickedDice && msg.data.payload === 3)
+    return false;
+  //
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
   if (msg.data.id === GameStateUpdateType.FirstGameState) return false;
   if (msg.data.data?.type === GameStateUpdateType.PlayerReconnected)
@@ -233,13 +242,6 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
     typeof msg.data.payload === "object" &&
     !Array.isArray(msg.data.payload) &&
     msg.data.payload["-1"] !== undefined
-  )
-    return false;
-  // isLoggedIn: false, TODO audit
-  if (
-    msg.trigger === "clientData" &&
-    msg.data.action === GAME_ACTION.ClickedDice &&
-    msg.data.payload === 3
   )
     return false;
   if (

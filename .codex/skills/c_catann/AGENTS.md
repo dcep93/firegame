@@ -84,3 +84,6 @@
   allocatedTime 140.
 - If later build-road clicks fail pointer detection, use the unchecked canvas
   click helper for the road midpoint before confirming.
+- Robber tile clicks in Playwright should map tile hex axial coords to canvas
+  centers using pointy-hex math: `center + size * (sqrt(3) * (x + y/2), 1.5 * y)`,
+  with tile hex coords sourced from `createNew`'s `tileHexStates`.

@@ -142,3 +142,9 @@
 - what you changed: Added helpers to compute player victory points, find tiles adjacent to <=2 point players when friendly robber is enabled, and used the filtered eligible list for robber highlights and auto-placement so the robber cannot stay put.
 - why the test isn't passing: The single_player recording now mismatches the HighlightTiles payload at sequence 64 because the robber location diverges (current tile excluded is 2 instead of the expected 14), leaving the expected messages out of sync.
 - next suggested step: Inspect why auto robber placement drifts from the recorded tile index (sequence 64 expects current robber at 14) and adjust the placement logic to keep the recorded location while still enforcing the friendly robber restriction.
+
+## Robber tile coordinate mapping for clicks
+- what would've saved time to get your bearings: The Playwright controller needs a tile-index-to-canvas-position mapper for robber clicks; the tile axial coords live in `createNew`'s `tileHexStates` and can be converted with pointy-hex math.
+- what you changed: Implemented `getTilePosition` in the controller to translate tile axial coords into canvas center positions using the map center and `MAP_HEX_SIDE_LENGTH`.
+- why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the new mapping drives the correct SelectedTile payloads.
+- next suggested step: Re-run the catann workflow to validate SelectedTile actions, and adjust the center/origin if a tile index still maps to the wrong click target.
