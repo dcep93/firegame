@@ -376,5 +376,6 @@ export const getStartButton = (iframe: FrameLocator) => {
 };
 
 const getTilePosition = (tileIndex: number) => {
+  console.log("TODO", tileIndex);
   return { x: 230, y: 481 };
 };
