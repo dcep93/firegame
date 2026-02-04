@@ -195,6 +195,16 @@ const Controller = (
         const msg = _expectedMessages!.shift()!;
         expect(msg.data.action).toBe(GAME_ACTION.PassedTurn);
       },
+      playNextRobber: async () => {
+        const msg = _expectedMessages![0];
+        expect(msg.trigger).toBe("clientData");
+        expect(msg.data.action).toBe(GAME_ACTION.SelectedTile);
+        const robberOffset = getTilePosition(msg.data.payload);
+        await clickCanvas(canvas, robberOffset);
+
+        const confirmRobberOffset = getConfirmOffset(robberOffset);
+        await clickCanvas(canvas, confirmRobberOffset);
+      },
     };
   })(getCanvas(iframe));
 
@@ -363,4 +373,8 @@ const getConfirmOffset = (baseOffset: { x: number; y: number }) => {
 
 export const getStartButton = (iframe: FrameLocator) => {
   return iframe.locator("#room_center_start_button");
+};
+
+const getTilePosition = (tileIndex: number) => {
+  return { x: 230, y: 481 };
 };

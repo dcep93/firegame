@@ -1135,6 +1135,11 @@ export const applyGameAction = (parsed: {
     return true;
   }
   if (
+    parsed.action === GAME_ACTION.SelectedTile &&
+    typeof parsed.payload === "object"
+  )
+    return false;
+  if (
     ![
       GAME_ACTION.ConfirmBuildRoad,
       GAME_ACTION.ConfirmBuildRoadSkippingSelection,
