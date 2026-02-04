@@ -87,3 +87,7 @@
 - Robber tile clicks in Playwright should map tile hex axial coords to canvas
   centers using pointy-hex math: `center + size * (sqrt(3) * (x + y/2), 1.5 * y)`,
   with tile hex coords sourced from `createNew`'s `tileHexStates`.
+- `rollDice` should skip resource distribution entirely when a 7 is rolled, and
+  any special-case resource ordering (like tile 1 before tile 18) must still
+  check `tileState.diceNumber` and the robber location so only matching hexes
+  grant cards.

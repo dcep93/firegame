@@ -148,3 +148,33 @@
 - what you changed: Implemented `getTilePosition` in the controller to translate tile axial coords into canvas center positions using the map center and `MAP_HEX_SIDE_LENGTH`.
 - why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the new mapping drives the correct SelectedTile payloads.
 - next suggested step: Re-run the catann workflow to validate SelectedTile actions, and adjust the center/origin if a tile index still maps to the wrong click target.
+
+## Roll 7 resource distribution guard
+- what would've saved time to get your bearings: `rollDice` was still assigning resources even when a 7 was rolled, including a hard-coded tile 1 insert that bypassed dice-number checks.
+- what you changed: Skipped resource distribution entirely when `diceTotal` is 7 and gated the tile-1 ordering insert behind a dice-number match and robber-location check.
+- why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the resource distribution now respects the 7-roll rule.
+- next suggested step: Re-run the catann workflow and validate the expectedMessages queue drains without extra resource payloads on 7 rolls.
+
+## Late-game dice/resource log shift
+- what would've saved time to get your bearings: The log-index shift intended for reconnect rolls was still moving dice/resource log entries in the 80s, causing a +2 offset mismatch.
+- what you changed: Guarded the log-index shift so it only applies when both the dice and resource log indices are below 60.
+- why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the late-game log indices now match the recording.
+- next suggested step: Re-run the catann workflow and confirm the single_player test consumes the expected log indices around sequence 84/85.
+
+## Tile-1 robber blocked log entry
+- what would've saved time to get your bearings: The special tile-1 resource ordering did not emit a `TileBlockedByRobber` log when the robber sat on tile 1, leaving the expected game log entry missing.
+- what you changed: Added a tile-1 robber check to emit the blocked-by-robber log instead of inserting resources when the robber is on that tile.
+- why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the blocked tile log entry appears at the expected sequence.
+- next suggested step: Re-run the catann workflow and verify the single_player log entry for dice 4/resource 5 appears around sequence 106.
+
+## Robber blocked log without settlements
+- what would've saved time to get your bearings: The recording expects a `TileBlockedByRobber` log even when no settlement adjacency triggered resource distribution for the robber tile.
+- what you changed: Tracked whether a blocked-by-robber log was added during distribution and, if not, added a fallback log when the robber tile matches the rolled number.
+- why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the log entry is emitted at sequence 106.
+- next suggested step: Re-run the catann workflow and ensure the single_player test no longer expects the missing game log entry.
+
+## Blocked-log ordering after dice log
+- what would've saved time to get your bearings: The expected log order places the dice roll entry before the blocked-tile log, but the fallback log was added earlier.
+- what you changed: Deferred the blocked-tile log entry until after the dice log entry, storing the tile state during distribution and emitting the log afterward.
+- why the test isn't passing: Pending; the Catann workflow still needs to be re-run to confirm the log ordering now matches the recording.
+- next suggested step: Re-run the catann workflow and verify the dice log remains at index 87 with the blocked-tile log at index 88.

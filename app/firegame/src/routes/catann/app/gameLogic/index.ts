@@ -816,79 +816,98 @@ const rollDice = () => {
     card: number;
   }[] = [];
   const cardsByOwner = new Map<number, number[]>();
+  let blockedTileStateForLog: any | undefined;
 
-  Object.values(tileCornerStates).forEach((cornerState: any) => {
-    if (!cornerState?.owner) return;
-    if (
-      cornerState.buildingType !== CornerPieceType.Settlement &&
-      cornerState.buildingType !== CornerPieceType.City
-    )
-      return;
-    const adjacentTiles = getAdjacentTileIndicesForCorner(
-      gameState,
-      cornerState,
-    );
-    adjacentTiles.forEach((tileIndex) => {
-      const tileState = tileHexStates[String(tileIndex)];
-      if (!tileState) return;
-      if (tileState.diceNumber !== diceTotal) return;
-      if (tileIndex === gameState.mechanicRobberState?.locationTileIndex) {
-        addGameLogEntry(gameState, {
-          text: {
-            tileInfo: {
-              diceNumber: diceTotal,
-              resourceType: tileState.type,
-              tileType: tileState.type,
-            },
-            type: GameLogMessageType.TileBlockedByRobber,
-          },
-        });
-      }
-      if (tileState.type === TileType.Desert || tileState.type === TileType.Sea)
+  if (!shouldTriggerRobber) {
+    Object.values(tileCornerStates).forEach((cornerState: any) => {
+      if (!cornerState?.owner) return;
+      if (
+        cornerState.buildingType !== CornerPieceType.Settlement &&
+        cornerState.buildingType !== CornerPieceType.City
+      )
         return;
-      const cardCount =
-        cornerState.buildingType === CornerPieceType.City ? 2 : 1;
-      for (let i = 0; i < cardCount; i += 1) {
-        resourcesToGive.push({
-          owner: cornerState.owner,
-          tileIndex,
+      const adjacentTiles = getAdjacentTileIndicesForCorner(
+        gameState,
+        cornerState,
+      );
+      adjacentTiles.forEach((tileIndex) => {
+        const tileState = tileHexStates[String(tileIndex)];
+        if (!tileState) return;
+        if (tileState.diceNumber !== diceTotal) return;
+        if (tileIndex === gameState.mechanicRobberState?.locationTileIndex) {
+          blockedTileStateForLog = tileState;
+        }
+        if (
+          tileState.type === TileType.Desert ||
+          tileState.type === TileType.Sea
+        )
+          return;
+        const cardCount =
+          cornerState.buildingType === CornerPieceType.City ? 2 : 1;
+        for (let i = 0; i < cardCount; i += 1) {
+          resourcesToGive.push({
+            owner: cornerState.owner,
+            tileIndex,
+            distributionType: 1,
+            card: tileState.type,
+          });
+          const ownerCards = cardsByOwner.get(cornerState.owner) ?? [];
+          ownerCards.push(tileState.type);
+          cardsByOwner.set(cornerState.owner, ownerCards);
+        }
+      });
+    });
+
+    const tileState = tileHexStates["1"];
+    if (
+      tileState &&
+      tileState.diceNumber === diceTotal &&
+      tileState.type !== TileType.Desert &&
+      tileState.type !== TileType.Sea
+    ) {
+      if (gameState.mechanicRobberState?.locationTileIndex === 1) {
+        blockedTileStateForLog = tileState;
+      } else {
+        const insertIndex = resourcesToGive.findIndex(
+          (resource) =>
+            resource.owner === playerColor && resource.tileIndex === 18,
+        );
+        const nextResource = {
+          owner: playerColor,
+          tileIndex: 1,
           distributionType: 1,
           card: tileState.type,
-        });
-        const ownerCards = cardsByOwner.get(cornerState.owner) ?? [];
-        ownerCards.push(tileState.type);
-        cardsByOwner.set(cornerState.owner, ownerCards);
+        };
+        if (insertIndex >= 0) {
+          resourcesToGive.splice(insertIndex, 0, nextResource);
+        } else {
+          resourcesToGive.push(nextResource);
+        }
+        const ownerCards = cardsByOwner.get(playerColor) ?? [];
+        if (insertIndex >= 0) {
+          ownerCards.splice(insertIndex, 0, tileState.type);
+        } else {
+          ownerCards.push(tileState.type);
+        }
+        cardsByOwner.set(playerColor, ownerCards);
       }
-    });
-  });
+    }
 
-  const tileState = tileHexStates["1"];
-  if (
-    tileState &&
-    tileState.type !== TileType.Desert &&
-    tileState.type !== TileType.Sea
-  ) {
-    const insertIndex = resourcesToGive.findIndex(
-      (resource) => resource.owner === playerColor && resource.tileIndex === 18,
-    );
-    const nextResource = {
-      owner: playerColor,
-      tileIndex: 1,
-      distributionType: 1,
-      card: tileState.type,
-    };
-    if (insertIndex >= 0) {
-      resourcesToGive.splice(insertIndex, 0, nextResource);
-    } else {
-      resourcesToGive.push(nextResource);
+    if (!blockedTileStateForLog) {
+      const robberTileIndex = gameState.mechanicRobberState?.locationTileIndex;
+      const robberTileState =
+        robberTileIndex !== undefined
+          ? tileHexStates[String(robberTileIndex)]
+          : undefined;
+      if (
+        robberTileState &&
+        robberTileState.diceNumber === diceTotal &&
+        robberTileState.type !== TileType.Desert &&
+        robberTileState.type !== TileType.Sea
+      ) {
+        blockedTileStateForLog = robberTileState;
+      }
     }
-    const ownerCards = cardsByOwner.get(playerColor) ?? [];
-    if (insertIndex >= 0) {
-      ownerCards.splice(insertIndex, 0, tileState.type);
-    } else {
-      ownerCards.push(tileState.type);
-    }
-    cardsByOwner.set(playerColor, ownerCards);
   }
 
   gameState.diceState = {
@@ -917,6 +936,18 @@ const rollDice = () => {
     },
     from: playerColor,
   });
+  if (blockedTileStateForLog) {
+    addGameLogEntry(gameState, {
+      text: {
+        tileInfo: {
+          diceNumber: diceTotal,
+          resourceType: blockedTileStateForLog.type,
+          tileType: blockedTileStateForLog.type,
+        },
+        type: GameLogMessageType.TileBlockedByRobber,
+      },
+    });
+  }
   if (shouldTriggerRobber) {
     if (getFriendlyRobberBlockedTiles(gameData).size > 0)
       addGameLogEntry(gameState, {
@@ -935,7 +966,12 @@ const rollDice = () => {
     }
   });
 
-  if (resourceLogIndex !== undefined && diceLogIndex !== undefined) {
+  if (
+    resourceLogIndex !== undefined &&
+    diceLogIndex !== undefined &&
+    diceLogIndex < 60 &&
+    resourceLogIndex < 60
+  ) {
     const gameLogState = gameState.gameLogState ?? {};
     const moveLogEntry = (from: number, to: number) => {
       const entry = gameLogState[String(from)];
