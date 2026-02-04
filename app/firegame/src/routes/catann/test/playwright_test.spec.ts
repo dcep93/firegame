@@ -245,8 +245,6 @@ const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (
     msg.trigger === "clientData" &&
     [
-      GAME_ACTION.SelectedTile,
-      GAME_ACTION.ConfirmBuildSettlement,
       GAME_ACTION.RequestBeginnerHint,
       GAME_ACTION.SelectedInitialPlacementIndex,
     ].includes(msg.data.action)

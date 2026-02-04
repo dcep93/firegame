@@ -10,7 +10,12 @@ export default async function autoChoreo(
   await c.verifyTestMessages();
   const msg = c._peek();
   if (!msg) return; // fastForward
-  expect(msg.trigger).toBe("clientData");
+  try {
+    expect(msg.trigger).toBe("clientData");
+  } catch (e) {
+    console.log(JSON.stringify(msg, null, 2));
+    throw e;
+  }
   console.log("autoChoreo", msg.data.sequence, GAME_ACTION[msg.data.action]);
   if (msg.data.sequence === stopClientDataSequence) return;
   if (msg.data.action === GAME_ACTION.PassedTurn) {
