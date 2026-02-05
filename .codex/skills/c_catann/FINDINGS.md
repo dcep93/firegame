@@ -250,3 +250,9 @@
 - what you changed: Updated `rollDice` robber handling to emit discard prompt payload (with discard limit metadata and selectable cards) after highlight clears when hand size is over 7, and set the current player's `isTakingAction` flag when entering `SelectCardsToDiscard`.
 - why the test isn't passing: Latest run reached sequence 42 and still mismatched because the expected post-discard `GameStateUpdated` shape is sensitive; further verification is needed after setting `isTakingAction`.
 - next suggested step: Re-run catann workflow and, if needed, align the exact `setFirebaseData` diff emitted immediately after sequence 41 while in `SelectCardsToDiscard`.
+
+## Robber discard threshold and friendly-robber experiment
+- what would've saved time to get your bearings: The sequence-214 robber roll in `single_player` expects discard prompt server updates (type 13) and then quickly diverges if the browser emits `SelectedCardsState` client action 8 that the expectation queue does not consume.
+- what you changed: Tightened robber discard trigger logic to only prompt discards when the active player has more than 7 resource cards (`Math.floor(len/2)` only when `len > 7`), and validated this still preserves the expected type-13 prompt at sequence 41.
+- why the test isn't passing: The run still fails after sequence 214 because the client sends `SelectedCardsState` (action 8) after the discard prompt, leaving an unexpected clientData message in the queue.
+- next suggested step: Handle the discard-response path explicitly (either by matching the expected follow-up server/client choreography around action 8 or by aligning discard prompt/card payload ordering so the client does not emit the extra action at this step).
