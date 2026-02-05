@@ -939,7 +939,7 @@ const rollDice = () => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? 1;
-  const overrideDiceState = window.__diceState;
+  const overrideDiceState = window.__testSeed;
   const dice1 =
     Array.isArray(overrideDiceState) && overrideDiceState.length === 2
       ? overrideDiceState[0]

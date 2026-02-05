@@ -494,7 +494,7 @@ export const _rollDice = async (
 ) => {
   if (diceState !== null)
     await canvas.evaluate((_, diceState) => {
-      window.parent.__diceState = diceState;
+      window.parent.__testSeed = diceState;
     }, diceState);
 
   await clickCanvas(canvas, MAP_DICE_COORDS);

@@ -13,7 +13,7 @@ declare global {
           mapState: any;
         }
       | undefined;
-    __diceState: [number, number] | undefined;
+    __testSeed: any;
   }
 }
 
