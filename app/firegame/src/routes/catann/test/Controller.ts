@@ -81,7 +81,7 @@ const Controller = (
           }
         }
         expect(msg).toEqual(expectedMsg);
-        // console.log(msg);
+        console.log(msg);
       });
     };
     return {
@@ -269,15 +269,15 @@ const Controller = (
             { timeout: 5000 },
           )
           .toBe(true);
-        // unclear why the recording doesnt have this already
-        _expectedMessages!.unshift({
-          trigger: "clientData",
-          data: {
-            action: GAME_ACTION.CreateTrade,
-            payload,
-            sequence: -1,
-          },
-        });
+        const shifted = _expectedMessages!.shift()!;
+        try {
+          expect(shifted.data.data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
+        } catch (e) {
+          console.log(shifted);
+          throw e;
+        }
+        _expectedMessages![0].data.payload.counterOfferInResponseToTradeId =
+          null;
       },
       rollNextDice: async () => {
         const diceStateMessage = _expectedMessages!.find(

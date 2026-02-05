@@ -45,9 +45,8 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.wantToTrade({
     creator: 1,
     isBankTrade: true,
-    counterOfferInResponseToTradeId: null,
     offeredResources: [4, 4, 4, 4],
-    wantedResources: [1],
+    wantedResources: [5],
   });
   await c.verifyTestMessages();
   await autoChoreo(c);
