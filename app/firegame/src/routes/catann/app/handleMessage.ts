@@ -17,9 +17,13 @@ import { packServerData, parseClientData } from "./parseMessagepack";
 declare global {
   interface Window {
     __socketCatannMessages: { trigger: string; data: any }[];
+    __getFirebaseData: () => any;
+    __setFirebaseData: (data: any, change?: any) => void;
   }
 }
 window.__socketCatannMessages = [];
+window.__setFirebaseData = setFirebaseData;
+window.__getFirebaseData = () => firebaseData;
 
 window.addEventListener("message", (event) => {
   const { id, clientData, catann } = event.data || {};

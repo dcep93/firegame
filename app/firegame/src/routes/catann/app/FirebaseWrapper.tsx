@@ -168,6 +168,11 @@ export function setFirebaseData(newData: any, change: any) {
     ...newData,
     __meta: { change, me: store.me, now: Date.now() },
   };
+  if (change === undefined) {
+    firebaseData = newData;
+    lastGameStateSnapshot = getGameStateSnapshot(firebaseData.GAME);
+    return;
+  }
   // TODO reduce writes by using update instead of set
   // also only change diffs
   SHOULD_MOCK

@@ -9,7 +9,9 @@ import {
 import {
   CLIENT_TRADE_OFFER_TYPE,
   GAME_ACTION,
+  GameLogMessageType,
 } from "../app/gameLogic/CatannFilesEnums";
+import { addGameLogEntry } from "../app/gameLogic/utils";
 import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
@@ -321,6 +323,32 @@ const Controller = (
         }
         expect(clientIndex).toBeGreaterThan(serverIndex);
         expectedMessages.splice(0, clientIndex);
+
+        const firebaseData = await page.evaluate(() =>
+          window.__getFirebaseData(),
+        );
+        const gameState = firebaseData.GAME.data.payload.gameState;
+        const playerColor = 1;
+        addGameLogEntry(gameState, {
+          text: {
+            type: GameLogMessageType.Disconnected,
+            playerColor,
+            is10SecondRuleDisabled: true,
+          },
+          from: playerColor,
+        });
+        addGameLogEntry(gameState, {
+          text: {
+            type: GameLogMessageType.PlayerReconnecting,
+            playerColor,
+          },
+          from: playerColor,
+        });
+
+        await page.evaluate(
+          (_firebaseData) => window.__setFirebaseData(_firebaseData),
+          firebaseData,
+        );
       },
       skipIllegalPass: async () => {
         const msg = _expectedMessages!.shift()!;

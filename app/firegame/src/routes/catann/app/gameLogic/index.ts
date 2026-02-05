@@ -15,6 +15,7 @@ import {
   TileType,
   VictoryPointSource,
 } from "./CatannFilesEnums";
+import { addGameLogEntry } from "./utils";
 
 const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
   switch (edgeState.z) {
@@ -36,24 +37,6 @@ const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
     default:
       return [];
   }
-};
-
-const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
-  const indices = Object.keys(gameLogState)
-    .map((key) => Number.parseInt(key, 10))
-    .filter((value) => Number.isFinite(value));
-  if (indices.length === 0) return 2;
-  const nextIndex = Math.max(...indices) + 1;
-  return nextIndex < 2 ? 2 : nextIndex;
-};
-
-const addGameLogEntry = (gameState: any, entry: any) => {
-  if (!gameState.gameLogState) {
-    gameState.gameLogState = {};
-  }
-  const nextIndex = getNextGameLogIndex(gameState.gameLogState);
-  gameState.gameLogState[String(nextIndex)] = entry;
-  return nextIndex;
 };
 
 const removePlayerCards = (cards: number[], toRemove: number[]) => {
@@ -1382,10 +1365,10 @@ export const applyGameAction = (parsed: {
           })
         : null;
     const offeredResources = Array.isArray(tradePayload?.offeredResources)
-      ? tradePayload?.offeredResources ?? []
+      ? (tradePayload?.offeredResources ?? [])
       : [];
     const wantedResources = Array.isArray(tradePayload?.wantedResources)
-      ? tradePayload?.wantedResources ?? []
+      ? (tradePayload?.wantedResources ?? [])
       : [];
     if (tradePayload?.isBankTrade) {
       const playerState = gameState.playerStates?.[playerColor];
