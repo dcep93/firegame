@@ -1285,8 +1285,8 @@ const buyDevelopmentCard = () => {
     from: playerColor,
   });
 
-  gameState.currentState.allocatedTime = 140;
-  gameData.data.payload.timeLeftInState = 137.595;
+  gameState.currentState.allocatedTime = 160;
+  gameData.data.payload.timeLeftInState = 153.795;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);

@@ -49,5 +49,9 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
     wantedResources: [5],
   });
   await c.verifyTestMessages();
+  await autoChoreo(c, 188);
+
+  await c.fastForward(188);
+  await c.handleReconnect();
   await autoChoreo(c);
 };

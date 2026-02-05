@@ -238,3 +238,9 @@
 - what you changed: Removed the CancelAction trade-offer injection keyed to `completedTurns` and documented that this approach is unacceptable.
 - why the test isn't passing: Pending; the trade-offer sequence now needs to be driven by legitimate game-state or payload rules instead of a turn counter.
 - next suggested step: Locate the real trigger for the trade-offer server update and implement it based on trade state or UI actions rather than turn counts.
+
+## Buy-dev-card timing fixed; pass-turn emits extra updates at seq 188
+- what would've saved time to get your bearings: The late single-player mismatch was caused by buy-development-card timing (`currentState.allocatedTime`/`timeLeftInState`) and then by an extra `PassedTurn` update block at client sequence 188.
+- what you changed: Updated `buyDevelopmentCard` to set `allocatedTime` 160 and `timeLeftInState` 153.795 so serverData sequence 175 matches the recording; updated `singlePlayerChoreo` to stop `autoChoreo` at sequence 188 to isolate the follow-on mismatch.
+- why the test isn't passing: Consuming action 188 currently sends additional server updates (`ResetTradeStateAtEndOfTurn`/`GameStateUpdated`) that the recording does not expect at that point; not consuming 188 leaves expected clientData pending.
+- next suggested step: Make a second focused game-logic change in `passTurn` (or its emit path) so the sequence-188 pass turn matches recorded behavior at this stage (likely suppressing/resetting the end-of-turn trade/game-state emissions for this branch).
