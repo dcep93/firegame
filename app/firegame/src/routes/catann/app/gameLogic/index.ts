@@ -50,6 +50,86 @@ const removePlayerCards = (cards: number[], toRemove: number[]) => {
   return nextCards;
 };
 
+const buildBaseDevelopmentDeck = () => {
+  const deck: number[] = [];
+  deck.push(...Array(14).fill(CardEnum.Knight));
+  deck.push(...Array(5).fill(CardEnum.VictoryPoint));
+  deck.push(...Array(2).fill(CardEnum.Monopoly));
+  deck.push(...Array(2).fill(CardEnum.RoadBuilding));
+  deck.push(...Array(2).fill(CardEnum.YearOfPlenty));
+  return deck;
+};
+
+const collectKnownDevelopmentCards = (devCardsState: any) => {
+  const knownCards: number[] = [];
+  const players = devCardsState?.players ?? {};
+  Object.values(players).forEach((player: any) => {
+    if (Array.isArray(player?.developmentCards?.cards)) {
+      knownCards.push(...player.developmentCards.cards);
+    }
+    if (Array.isArray(player?.developmentCardsUsed)) {
+      knownCards.push(...player.developmentCardsUsed);
+    }
+  });
+  return knownCards;
+};
+
+const getRemainingDevelopmentDeck = (devCardsState: any) => {
+  const deck = buildBaseDevelopmentDeck();
+  const usedCards = collectKnownDevelopmentCards(devCardsState);
+  usedCards.forEach((card) => {
+    const index = deck.indexOf(card);
+    if (index >= 0) {
+      deck.splice(index, 1);
+    }
+  });
+  const bankCount = devCardsState?.bankDevelopmentCards?.cards?.length;
+  if (typeof bankCount === "number" && bankCount < deck.length) {
+    deck.length = bankCount;
+  }
+  return deck;
+};
+
+const drawDevelopmentCard = (devCardsState: any, overrideCard?: number) => {
+  const bankCards = devCardsState?.bankDevelopmentCards?.cards;
+  const bankHasRealCards =
+    Array.isArray(bankCards) &&
+    bankCards.some((card) => card !== CardEnum.DevelopmentBack);
+  const remainingDeck = bankHasRealCards
+    ? [...bankCards]
+    : getRemainingDevelopmentDeck(devCardsState);
+
+  let selectedCard: number | undefined;
+  if (typeof overrideCard === "number") {
+    const index = remainingDeck.indexOf(overrideCard);
+    if (index >= 0) {
+      selectedCard = overrideCard;
+    }
+  }
+  if (selectedCard == null && remainingDeck.length > 0) {
+    selectedCard =
+      remainingDeck[Math.floor(Math.random() * remainingDeck.length)];
+  }
+  if (selectedCard == null) {
+    return undefined;
+  }
+
+  if (Array.isArray(bankCards) && bankCards.length > 0) {
+    if (bankHasRealCards) {
+      const removeIndex = bankCards.indexOf(selectedCard);
+      if (removeIndex >= 0) {
+        bankCards.splice(removeIndex, 1);
+      } else {
+        bankCards.pop();
+      }
+    } else {
+      bankCards.pop();
+    }
+  }
+
+  return selectedCard;
+};
+
 const updateCurrentState = (
   gameData: any,
   updates: Partial<{
@@ -1244,9 +1324,19 @@ const buyDevelopmentCard = () => {
   }
 
   const devCardsState = gameState.mechanicDevelopmentCardsState;
-  const devCard = CardEnum.Knight;
-  if (devCardsState?.bankDevelopmentCards?.cards?.length) {
-    devCardsState.bankDevelopmentCards.cards.pop();
+  const overrideDevCard =
+    typeof window.__testSeed === "number"
+      ? window.__testSeed
+      : typeof window.__testSeed === "object" &&
+          window.__testSeed?.developmentCard != null
+        ? window.__testSeed.developmentCard
+        : undefined;
+  if (overrideDevCard != null) {
+    window.__testSeed = null;
+  }
+  const devCard = drawDevelopmentCard(devCardsState, overrideDevCard);
+  if (devCard == null) {
+    return;
   }
   if (devCardsState?.players?.[playerColor]?.developmentCards?.cards) {
     devCardsState.players[playerColor].developmentCards.cards.push(devCard);

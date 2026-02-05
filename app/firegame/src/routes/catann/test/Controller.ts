@@ -8,7 +8,9 @@ import {
 } from "@playwright/test";
 import {
   CLIENT_TRADE_OFFER_TYPE,
+  CardEnum,
   GAME_ACTION,
+  GameStateUpdateType,
   GameLogMessageType,
 } from "../app/gameLogic/CatannFilesEnums";
 import { addGameLogEntry } from "../app/gameLogic/utils";
@@ -22,6 +24,48 @@ const MAP_HEX_SIDE_LENGTH = 59;
 const MAP_CONFIRM_OFFSET = 53;
 
 const loaded = Date.now();
+
+const DEVELOPMENT_CARD_SET = new Set<number>([
+  CardEnum.Knight,
+  CardEnum.VictoryPoint,
+  CardEnum.Monopoly,
+  CardEnum.RoadBuilding,
+  CardEnum.YearOfPlenty,
+]);
+
+const isDevelopmentCard = (card: number) => DEVELOPMENT_CARD_SET.has(card);
+
+const findUpcomingDevelopmentCard = (
+  expectedMessages: { trigger: string; data: any }[],
+) => {
+  for (const msg of expectedMessages) {
+    if (msg?.trigger !== "serverData") continue;
+    const data = msg?.data?.data;
+    const payload = data?.payload;
+    if (data?.type === GameStateUpdateType.ExchangeCards) {
+      const givingCards = payload?.givingCards;
+      if (
+        payload?.givingPlayer === 0 &&
+        Array.isArray(givingCards) &&
+        givingCards.length === 1 &&
+        isDevelopmentCard(givingCards[0])
+      ) {
+        return givingCards[0];
+      }
+    }
+    const devPlayers =
+      payload?.diff?.mechanicDevelopmentCardsState?.players ?? {};
+    for (const player of Object.values(devPlayers)) {
+      const bought = (player as any)?.developmentCardsBoughtThisTurn;
+      if (Array.isArray(bought) && bought.length > 0) {
+        if (isDevelopmentCard(bought[0])) {
+          return bought[0];
+        }
+      }
+    }
+  }
+  return null;
+};
 
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
@@ -180,6 +224,14 @@ const Controller = (
         await _delay(100);
       },
       buyDevelopmentCard: async () => {
+        const upcomingDevCard = _expectedMessages
+          ? findUpcomingDevelopmentCard(_expectedMessages)
+          : null;
+        if (typeof upcomingDevCard === "number") {
+          await canvas.evaluate((_, devCard) => {
+            window.parent.__testSeed = devCard;
+          }, upcomingDevCard);
+        }
         const devCardButton = iframe.locator(
           'div[class*="actionButton"] img[src*="development"], div[class*="actionButton"] img[src*="dev"], div[class*="actionButton"] img[src*="card_"]',
         );
