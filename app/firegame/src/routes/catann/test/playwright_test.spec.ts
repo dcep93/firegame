@@ -182,7 +182,6 @@ const choreo = (
     await c.clickStartButton();
     await c.verifyTestMessages();
     await f(c);
-    test.skip();
     expect(expectedMessages.slice(0, 1)).toEqual([]);
     await expect(page.locator('iframe[title="iframe"]')).toBeVisible();
   };
