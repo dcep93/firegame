@@ -244,3 +244,9 @@
 - what you changed: Updated `buyDevelopmentCard` to set `allocatedTime` 160 and `timeLeftInState` 153.795 so serverData sequence 175 matches the recording; updated `singlePlayerChoreo` to stop `autoChoreo` at sequence 188 to isolate the follow-on mismatch.
 - why the test isn't passing: Consuming action 188 currently sends additional server updates (`ResetTradeStateAtEndOfTurn`/`GameStateUpdated`) that the recording does not expect at that point; not consuming 188 leaves expected clientData pending.
 - next suggested step: Make a second focused game-logic change in `passTurn` (or its emit path) so the sequence-188 pass turn matches recorded behavior at this stage (likely suppressing/resetting the end-of-turn trade/game-state emissions for this branch).
+
+## Robber discard prompt ordering after 7 roll
+- what would've saved time to get your bearings: The expected recording wants robber highlight clears first (types 30/33/31/32), then `AmountOfCardsToDiscard` (type 13), then a `GameStateUpdated` diff with `playerStates[playerColor].isTakingAction = true`.
+- what you changed: Updated `rollDice` robber handling to emit discard prompt payload (with discard limit metadata and selectable cards) after highlight clears when hand size is over 7, and set the current player's `isTakingAction` flag when entering `SelectCardsToDiscard`.
+- why the test isn't passing: Latest run reached sequence 42 and still mismatched because the expected post-discard `GameStateUpdated` shape is sensitive; further verification is needed after setting `isTakingAction`.
+- next suggested step: Re-run catann workflow and, if needed, align the exact `setFirebaseData` diff emitted immediately after sequence 41 while in `SelectCardsToDiscard`.

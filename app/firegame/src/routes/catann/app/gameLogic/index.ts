@@ -1249,8 +1249,44 @@ const rollDice = () => {
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-    const robberHighlightTiles = getRobberEligibleTiles(gameData);
-    sendTileHighlights33(gameData, robberHighlightTiles);
+
+    const playerCards = [
+      ...(gameState.playerStates?.[playerColor]?.resourceCards?.cards ?? []),
+    ];
+    const amountToDiscard = Math.floor(playerCards.length / 2);
+    if (amountToDiscard > 0) {
+      gameState.currentState.actionState = PlayerActionState.SelectCardsToDiscard;
+      if (gameState.playerStates?.[playerColor]) {
+        gameState.playerStates[playerColor].isTakingAction = true;
+      }
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.AmountOfCardsToDiscard,
+          payload: {
+            title: { key: "strings:game.prompts.discardCards" },
+            body: {
+              key: "strings:game.prompts.youHaveMoreThanXCards",
+              options: {
+                count: 7,
+                amountToDiscard,
+              },
+            },
+            selectCardFormat: {
+              amountOfCardsToSelect: amountToDiscard,
+              validCardsToSelect: playerCards,
+              allowableActionState: PlayerActionState.SelectCardsToDiscard,
+              showCardBadge: true,
+              cancelButtonActive: false,
+            },
+            showCondensedCardInformation: false,
+          },
+        },
+      });
+    } else {
+      const robberHighlightTiles = getRobberEligibleTiles(gameData);
+      sendTileHighlights33(gameData, robberHighlightTiles);
+    }
   }
 
   setFirebaseData(
@@ -1347,6 +1383,21 @@ const buyDevelopmentCard = () => {
     ];
   }
 
+  if (devCard === CardEnum.VictoryPoint) {
+    const playerState = gameState.playerStates?.[playerColor];
+    if (playerState) {
+      if (!playerState.victoryPointsState) {
+        playerState.victoryPointsState = {};
+      }
+      playerState.victoryPointsState[
+        VictoryPointSource.DevelopmentCardVictoryPoint
+      ] =
+        (playerState.victoryPointsState[
+          VictoryPointSource.DevelopmentCardVictoryPoint
+        ] ?? 0) + 1;
+    }
+  }
+
   if (!gameState.gameLogState) {
     gameState.gameLogState = {};
   }
@@ -1358,8 +1409,8 @@ const buyDevelopmentCard = () => {
     from: playerColor,
   });
 
-  gameState.currentState.allocatedTime = 160;
-  gameData.data.payload.timeLeftInState = 153.795;
+  gameState.currentState.allocatedTime = 140;
+  gameData.data.payload.timeLeftInState = 137.827;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);

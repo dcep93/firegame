@@ -114,3 +114,4 @@
   kind of test-fitting is unacceptable. Changes must follow Catan rules
   and be inferred from payload/current game state instead.
 - Late single-player flow now expects `buyDevelopmentCard` to publish `currentState.allocatedTime = 160` and `timeLeftInState = 153.795`; after that, sequence 188 (`PassedTurn`) is still sensitive because emitted end-of-turn updates can desync expected message order.
+- On robber rolls that require discards, the expected socket order is highlight clears (30/33/31/32) before `AmountOfCardsToDiscard` (13); the following `GameStateUpdated` must include `playerStates[current].isTakingAction = true` while actionState is `SelectCardsToDiscard`.
