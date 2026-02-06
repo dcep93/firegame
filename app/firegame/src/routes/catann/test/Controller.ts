@@ -355,7 +355,7 @@ const Controller = (
         await expect
           .poll(
             async () => {
-              confirmButton.first().click({ force: true });
+              await confirmButton.first().click({ force: true });
               await verifyTestMessages(false);
               return (
                 _expectedMessages?.[0].data.action !== GAME_ACTION.SelectedCards

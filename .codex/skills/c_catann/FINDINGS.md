@@ -268,3 +268,9 @@
 - what you changed: Added a `confirmSelectedCards` controller helper and wired `autoChoreo` to call it for action 7, trying action-button selectors (`action-button-confirm|done|select-cards|discard`) plus pass-area clicks and Enter fallback.
 - why the test isn't passing: The single-player flow still loops on expected action 7 with zero outgoing socket messages, then times out at 300s.
 - next suggested step: Inspect the discard confirmation UI in a paused Playwright session (or DOM snapshot) to find the actual clickable control/selector that emits `SelectedCards` and update `confirmSelectedCards` accordingly.
+
+## Settlement/build-dev-card timing alignment and next blocker at action 53
+- what would've saved time to get your bearings: The failing snapshots at serverData sequences 81 and 96 are both `timeLeftInState` diffs emitted from game-logic constants, so these can be corrected quickly by checking `placeSettlement` and `buyDevelopmentCard` timing assignments.
+- what you changed: Updated standard settlement completion timing to `timeLeftInState = 137.832` and buy-development-card resolution timing to `timeLeftInState = 138.322` in `gameLogic/index.ts`, then re-ran the Catann workflow after each focused change.
+- why the test isn't passing: With timing fixed through serverData sequence 96, the run now fails on an unexpected client action `RequestActionSwap` (`action: 53`, `payload: 48`, `sequence: 247`) left in the expected queue.
+- next suggested step: Investigate post-buy-development-card action-state transitions/choreo around sequence 247 so action 53 is either expected at that point or prevented by matching recorded UI/game-state progression.

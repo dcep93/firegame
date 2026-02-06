@@ -571,7 +571,7 @@ const placeSettlement = (cornerIndex: number) => {
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 140;
     gameState.currentState.startTime = Date.now();
-    gameData.data.payload.timeLeftInState = 136.266;
+    gameData.data.payload.timeLeftInState = 137.832;
   } else {
     updateCurrentState(gameData, {
       actionState: PlayerActionState.InitialPlacementRoadPlacement,
@@ -1411,7 +1411,7 @@ const buyDevelopmentCard = () => {
   });
 
   gameState.currentState.allocatedTime = 140;
-  gameData.data.payload.timeLeftInState = 137.827;
+  gameData.data.payload.timeLeftInState = 138.322;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);
