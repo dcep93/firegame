@@ -1490,6 +1490,8 @@ export const applyGameAction = (parsed: {
       GAME_ACTION.SelectedInitialPlacementIndex,
       GAME_ACTION.SelectedTile,
       GAME_ACTION.CreateTrade,
+      GAME_ACTION.SelectedCards,
+      GAME_ACTION.SelectedCardsState,
     ].includes(parsed.action!)
   ) {
     return false;
@@ -1700,6 +1702,83 @@ export const applyGameAction = (parsed: {
 
   if (parsed.action === GAME_ACTION.BuyDevelopmentCard) {
     buyDevelopmentCard();
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.SelectedCardsState) {
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.SelectedCards) {
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    const selectedCards = Array.isArray(parsed.payload)
+      ? (parsed.payload as number[])
+      : [];
+    const currentPlayer = gameData.data.payload.playerColor ?? 1;
+    const playerState = gameState.playerStates?.[currentPlayer];
+    if (playerState?.resourceCards?.cards) {
+      playerState.resourceCards = {
+        cards: removePlayerCards(playerState.resourceCards.cards, selectedCards),
+      };
+    }
+    if (gameState.bankState?.resourceCards) {
+      selectedCards.forEach((card) => {
+        gameState.bankState.resourceCards[card] =
+          (gameState.bankState.resourceCards[card] ?? 0) + 1;
+      });
+    }
+
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.ExchangeCards,
+        payload: {
+          givingPlayer: currentPlayer,
+          givingCards: selectedCards,
+          receivingPlayer: 0,
+          receivingCards: [],
+        },
+      },
+    });
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.ClosePopupUI,
+        payload: null,
+      },
+    });
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
+
+    gameState.currentState.actionState = PlayerActionState.PlaceRobberOrPirate;
+    if (gameState.playerStates?.[currentPlayer]) {
+      gameState.playerStates[currentPlayer].isTakingAction = false;
+    }
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.PlayerDiscarded,
+        playerColor: currentPlayer,
+        cardEnums: selectedCards,
+        areResourceCards: true,
+      },
+      from: currentPlayer,
+    });
+
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "selectedCards",
+        selectedCards,
+      },
+    );
     return true;
   }
 

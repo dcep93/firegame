@@ -115,3 +115,5 @@
   and be inferred from payload/current game state instead.
 - Late single-player flow now expects `buyDevelopmentCard` to publish `currentState.allocatedTime = 160` and `timeLeftInState = 153.795`; after that, sequence 188 (`PassedTurn`) is still sensitive because emitted end-of-turn updates can desync expected message order.
 - On robber rolls that require discards, the expected socket order is highlight clears (30/33/31/32) before `AmountOfCardsToDiscard` (13); the following `GameStateUpdated` must include `playerStates[current].isTakingAction = true` while actionState is `SelectCardsToDiscard`.
+- The discard-card stage in single-player currently reaches `SelectedCards` (action 7, sequence 220) but stalls unless choreography explicitly performs the discard confirmation interaction; selecting cards alone (action 8 payload growth) is insufficient.
+- When adding new game actions in `applyGameAction`, update both the explicit action branches and the upfront allowlist; otherwise `handleMessage` throws `msg not implemented` before branch logic runs.

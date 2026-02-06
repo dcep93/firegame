@@ -416,6 +416,30 @@ const Controller = (
         const confirmRobberOffset = getConfirmOffset(robberOffset);
         await clickCanvas(canvas, confirmRobberOffset);
       },
+      selectNextDiscardCard: async () => {
+        const msg = _expectedMessages![0];
+        expect(msg.trigger).toBe("clientData");
+        expect(msg.data.action).toBe(GAME_ACTION.SelectedCardsState);
+        const payload = Array.isArray(msg.data.payload) ? msg.data.payload : [];
+        const nextCard = payload[payload.length - 1];
+        const resourceCardType: Record<number, string> = {
+          1: "lumber",
+          2: "brick",
+          3: "wool",
+          4: "grain",
+          5: "ore",
+          6: "cloth",
+          7: "coin",
+          8: "paper",
+        };
+        const resourceType = resourceCardType[nextCard];
+        expect(resourceType).toBeDefined();
+        const card = iframe.locator(
+          `div[id="player-card-inventory"] img[src*="card_${resourceType}"]`,
+        );
+        await card.first().click({ force: true });
+        await _delay(100);
+      },
     };
   })(getCanvas(iframe));
 
