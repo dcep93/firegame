@@ -262,3 +262,9 @@
 - what you changed: Added choreography support for discard prompts (`SelectedCardsState` in `autoChoreo` + card clicking in `Controller`), added game-logic branches for `SelectedCardsState` and `SelectedCards`, and allowed actions 7/8 through the `applyGameAction` allowlist.
 - why the test isn't passing: At sequence 220 (`SelectedCards`), the flow stalls with zero incoming messages, so the expected post-discard server updates (types 43/27/30/33/31/32/.../91) never arrive.
 - next suggested step: Confirm the UI interaction that actually submits the discard selection (likely a modal confirm button) and drive that click from choreography, or verify `SelectedCards` payload path reaches the server-side emulation branch and emits the expected discard updates.
+
+## Discard confirmation choreography probe
+- what would've saved time to get your bearings: The run stalls at client action 7 (`SelectedCards`) after the four discard card selections; repeated pass-area clicks and Enter key presses did not emit the expected confirm client message in this environment.
+- what you changed: Added a `confirmSelectedCards` controller helper and wired `autoChoreo` to call it for action 7, trying action-button selectors (`action-button-confirm|done|select-cards|discard`) plus pass-area clicks and Enter fallback.
+- why the test isn't passing: The single-player flow still loops on expected action 7 with zero outgoing socket messages, then times out at 300s.
+- next suggested step: Inspect the discard confirmation UI in a paused Playwright session (or DOM snapshot) to find the actual clickable control/selector that emits `SelectedCards` and update `confirmSelectedCards` accordingly.

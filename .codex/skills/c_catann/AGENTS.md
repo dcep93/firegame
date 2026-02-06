@@ -117,3 +117,4 @@
 - On robber rolls that require discards, the expected socket order is highlight clears (30/33/31/32) before `AmountOfCardsToDiscard` (13); the following `GameStateUpdated` must include `playerStates[current].isTakingAction = true` while actionState is `SelectCardsToDiscard`.
 - The discard-card stage in single-player currently reaches `SelectedCards` (action 7, sequence 220) but stalls unless choreography explicitly performs the discard confirmation interaction; selecting cards alone (action 8 payload growth) is insufficient.
 - When adding new game actions in `applyGameAction`, update both the explicit action branches and the upfront allowlist; otherwise `handleMessage` throws `msg not implemented` before branch logic runs.
+- Discard stage remains stuck at client action 7 (`SelectedCards`) after action 8 payload reaches `[1,1,1,5]`; current confirm attempts via action-button selectors, pass-area clicks, and Enter do not emit a client message in this environment.

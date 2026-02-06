@@ -350,6 +350,27 @@ const Controller = (
         await _rollDice(canvas, diceState);
       },
       passTurn: async () => await _passTurn(canvas),
+      confirmSelectedCards: async () => {
+        const confirmButton = iframe.locator(
+          [
+            "div[id=\"action-button-confirm\"]",
+            "div[id=\"action-button-done\"]",
+            "div[id=\"action-button-select-cards\"]",
+            "div[id=\"action-button-discard\"]",
+          ].join(", "),
+        );
+        if ((await confirmButton.count()) > 0) {
+          await confirmButton.first().click({ force: true });
+          await _delay(100);
+          return;
+        }
+        for (let i = 0; i < 3; i++) {
+          await clickCanvas(canvas, MAP_PASS_COORDS);
+          await _delay(50);
+        }
+        await page.keyboard.press("Enter");
+        await _delay(100);
+      },
       handleReconnect: async () => {
         const expectedMessages = _expectedMessages!;
         let serverIndex = -1;
