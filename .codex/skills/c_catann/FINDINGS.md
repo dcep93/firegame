@@ -256,3 +256,9 @@
 - what you changed: Tightened robber discard trigger logic to only prompt discards when the active player has more than 7 resource cards (`Math.floor(len/2)` only when `len > 7`), and validated this still preserves the expected type-13 prompt at sequence 41.
 - why the test isn't passing: The run still fails after sequence 214 because the client sends `SelectedCardsState` (action 8) after the discard prompt, leaving an unexpected clientData message in the queue.
 - next suggested step: Handle the discard-response path explicitly (either by matching the expected follow-up server/client choreography around action 8 or by aligning discard prompt/card payload ordering so the client does not emit the extra action at this step).
+
+## Discard flow action 8/7 handling attempt
+- what would've saved time to get your bearings: `applyGameAction` has an allowlist gate; adding branches for new actions is not enough unless the action IDs are also added to the allowlist.
+- what you changed: Added choreography support for discard prompts (`SelectedCardsState` in `autoChoreo` + card clicking in `Controller`), added game-logic branches for `SelectedCardsState` and `SelectedCards`, and allowed actions 7/8 through the `applyGameAction` allowlist.
+- why the test isn't passing: At sequence 220 (`SelectedCards`), the flow stalls with zero incoming messages, so the expected post-discard server updates (types 43/27/30/33/31/32/.../91) never arrive.
+- next suggested step: Confirm the UI interaction that actually submits the discard selection (likely a modal confirm button) and drive that click from choreography, or verify `SelectedCards` payload path reaches the server-side emulation branch and emits the expected discard updates.

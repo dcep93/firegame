@@ -38,6 +38,12 @@ export default async function autoChoreo(
       await c.buyDevelopmentCard();
     } else if (msg.data.action === GAME_ACTION.SelectedTile) {
       await c.playNextRobber();
+    } else if (msg.data.action === GAME_ACTION.SelectedCardsState) {
+      await c.selectNextDiscardCard();
+    } else if (msg.data.action === GAME_ACTION.SelectedCards) {
+      await c.delay(200);
+    } else if (msg.data.action === 62) {
+      await c.delay(1200);
     } else {
       return;
     }
