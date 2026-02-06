@@ -41,7 +41,7 @@ export default async function autoChoreo(
     } else if (msg.data.action === GAME_ACTION.SelectedCardsState) {
       await c.selectNextDiscardCard();
     } else if (msg.data.action === GAME_ACTION.SelectedCards) {
-      await c.delay(200);
+      await c.confirmSelectedCards();
     } else if (msg.data.action === 62) {
       await c.delay(1200);
     } else {
