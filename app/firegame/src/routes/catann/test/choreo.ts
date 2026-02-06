@@ -60,5 +60,8 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.confirmSelectedCards();
   await autoChoreo(c);
   await c.buildSettlement({ col: 4, row: 6 }, true);
+  await autoChoreo(c, 244);
+
+  await c.fastForward(244);
   await autoChoreo(c);
 };

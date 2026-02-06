@@ -196,7 +196,7 @@ test.skip(
 
 test(
   "single_player",
-  screenshot(choreo("./single_player.json", singlePlayerChoreo, 212)),
+  screenshot(choreo("./single_player.json", singlePlayerChoreo, 244)),
 );
 
 //
