@@ -7,11 +7,11 @@ import {
   test,
 } from "@playwright/test";
 import {
-  CLIENT_TRADE_OFFER_TYPE,
   CardEnum,
+  CLIENT_TRADE_OFFER_TYPE,
   GAME_ACTION,
-  GameStateUpdateType,
   GameLogMessageType,
+  GameStateUpdateType,
 } from "../app/gameLogic/CatannFilesEnums";
 import { addGameLogEntry } from "../app/gameLogic/utils";
 import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
@@ -351,25 +351,19 @@ const Controller = (
       },
       passTurn: async () => await _passTurn(canvas),
       confirmSelectedCards: async () => {
-        const confirmButton = iframe.locator(
-          [
-            "div[id=\"action-button-confirm\"]",
-            "div[id=\"action-button-done\"]",
-            "div[id=\"action-button-select-cards\"]",
-            "div[id=\"action-button-discard\"]",
-          ].join(", "),
-        );
-        if ((await confirmButton.count()) > 0) {
-          await confirmButton.first().click({ force: true });
-          await _delay(100);
-          return;
-        }
-        for (let i = 0; i < 3; i++) {
-          await clickCanvas(canvas, MAP_PASS_COORDS);
-          await _delay(50);
-        }
-        await page.keyboard.press("Enter");
-        await _delay(100);
+        const confirmButton = iframe.locator('div[class*="confirmButton-"]');
+        await expect
+          .poll(
+            async () => {
+              confirmButton.first().click({ force: true });
+              await verifyTestMessages(false);
+              return (
+                _expectedMessages?.[0].data.action !== GAME_ACTION.SelectedCards
+              );
+            },
+            { timeout: 5000 },
+          )
+          .toBe(true);
       },
       handleReconnect: async () => {
         const expectedMessages = _expectedMessages!;

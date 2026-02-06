@@ -8,7 +8,7 @@ export default async function autoChoreo(
   stopClientDataSequence: number = -1,
 ) {
   for (let i = 0; true; i++) {
-    await c.verifyTestMessages(false);
+    await c.verifyTestMessages(i > 0);
     const msg = c._peek();
     if (!msg) return; // fastForward
     try {
@@ -40,10 +40,6 @@ export default async function autoChoreo(
       await c.playNextRobber();
     } else if (msg.data.action === GAME_ACTION.SelectedCardsState) {
       await c.selectNextDiscardCard();
-    } else if (msg.data.action === GAME_ACTION.SelectedCards) {
-      await c.confirmSelectedCards();
-    } else if (msg.data.action === 62) {
-      await c.delay(1200);
     } else {
       return;
     }
