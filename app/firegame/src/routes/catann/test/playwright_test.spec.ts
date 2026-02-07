@@ -220,7 +220,7 @@ const createRoom = async (
   return iframe;
 };
 
-const isRealMessage = (msg: { trigger: string; data: any }) => {
+export const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   // lying enums
   if (

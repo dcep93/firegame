@@ -14,7 +14,12 @@ import {
   GameStateUpdateType,
 } from "../app/gameLogic/CatannFilesEnums";
 import { addGameLogEntry } from "../app/gameLogic/utils";
-import { _delay, codex, spliceTestMessages } from "./playwright_test.spec";
+import {
+  _delay,
+  codex,
+  isRealMessage,
+  spliceTestMessages,
+} from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
@@ -89,6 +94,7 @@ const Controller = (
         (durationMs / 1000).toFixed(2),
         testMessages.length,
         expectedMessages.length,
+        { failOnEmpty },
       );
       testMessages.forEach((msg) => {
         const expectedMsg = expectedMessages.shift()!;
@@ -235,12 +241,14 @@ const Controller = (
         const devCardButton = iframe.locator(
           'div[class*="actionButton"] img[src*="development"], div[class*="actionButton"] img[src*="dev"], div[class*="actionButton"] img[src*="card_"]',
         );
+        await verifyTestMessages(false);
         if ((await devCardButton.count()) > 0) {
           await devCardButton.first().click({ force: true });
-          return;
+        } else {
+          const actionButtons = iframe.locator('div[class*="actionButton"]');
+          await actionButtons.last().click({ force: true });
         }
-        const actionButtons = iframe.locator('div[class*="actionButton"]');
-        await actionButtons.last().click({ force: true });
+        await waitForTrigger(iframe, "clientData");
       },
 
       playDevelopmentCardFromHand: async () => {
@@ -317,20 +325,7 @@ const Controller = (
           'div[id="action-button-trade-bank"]',
         );
         await bankTradeButton.first().click({ force: true });
-        await expect
-          .poll(
-            () =>
-              iframe
-                .locator("body")
-                .evaluate(() =>
-                  window.parent.__socketCatannMessages.some(
-                    (msg: { trigger?: string }) =>
-                      msg?.trigger === "serverData",
-                  ),
-                ),
-            { timeout: 5000 },
-          )
-          .toBe(true);
+        await waitForTrigger(iframe, "serverData");
         const shifted = _expectedMessages!.shift()!;
         try {
           expect(shifted.data.data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
@@ -667,3 +662,18 @@ const getTilePosition = (tileIndex: number) => {
   };
   return getSettlementOffset(center);
 };
+
+const waitForTrigger = async (iframe: FrameLocator, trigger: string) =>
+  await expect
+    .poll(
+      async () =>
+        (
+          await iframe
+            .locator("body")
+            .evaluate(() => window.parent.__socketCatannMessages)
+        )
+          .filter((msg) => isRealMessage(msg))
+          .some((msg: { trigger?: string }) => msg?.trigger === trigger),
+      { timeout: 5000 },
+    )
+    .toBe(true);
