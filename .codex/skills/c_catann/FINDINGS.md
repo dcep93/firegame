@@ -274,3 +274,9 @@
 - what you changed: Updated standard settlement completion timing to `timeLeftInState = 137.832` and buy-development-card resolution timing to `timeLeftInState = 138.322` in `gameLogic/index.ts`, then re-ran the Catann workflow after each focused change.
 - why the test isn't passing: With timing fixed through serverData sequence 96, the run now fails on an unexpected client action `RequestActionSwap` (`action: 53`, `payload: 48`, `sequence: 247`) left in the expected queue.
 - next suggested step: Investigate post-buy-development-card action-state transitions/choreo around sequence 247 so action 53 is either expected at that point or prevented by matching recorded UI/game-state progression.
+
+## RequestActionSwap / ClickedDevelopmentCard follow-up
+- what would've saved time to get your bearings: After BuyDevelopmentCard at client sequence 246, the recording expects `RequestActionSwap` (53, payload 48) followed by highlight clears (30/33/31/32), then `ClickedDevelopmentCard` (48, payload 11). Missing support for action 53 in `applyGameAction` causes `msg not implemented` and stalls the sequence.
+- what you changed: Added `RequestActionSwap` to the `applyGameAction` allowlist and implemented a branch that clears highlights and commits state updates; extended `autoChoreo` to actively trigger `RequestActionSwap` and `ClickedDevelopmentCard` interactions.
+- why the test isn't passing: The choreo now emits action 48, but the mocked game logic still does not produce the expected post-48 server updates, so `verifyTestMessages` sees no new messages and fails.
+- next suggested step: Implement `GAME_ACTION.ClickedDevelopmentCard` handling in `gameLogic/index.ts` (likely knight flow from payload 11) to emit the expected update sequence after client action 48.

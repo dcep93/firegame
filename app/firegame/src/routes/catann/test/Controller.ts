@@ -242,6 +242,14 @@ const Controller = (
         const actionButtons = iframe.locator('div[class*="actionButton"]');
         await actionButtons.last().click({ force: true });
       },
+
+      playDevelopmentCardFromHand: async () => {
+        const devCard = iframe.locator(
+          'div[id="player-card-inventory"] img[src*="card_knight"], div[id="player-card-inventory"] img[src*="card_victory"], div[id="player-card-inventory"] img[src*="card_monopoly"], div[id="player-card-inventory"] img[src*="card_road"], div[id="player-card-inventory"] img[src*="card_year"], div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
+        );
+        await devCard.first().click({ force: true });
+        await _delay(100);
+      },
       wantToTrade: async (payload: any) => {
         const tradeButton = iframe.locator('div[id="action-button-trade"]');
         await tradeButton.first().click({ force: true });

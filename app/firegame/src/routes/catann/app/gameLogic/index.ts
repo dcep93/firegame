@@ -1492,6 +1492,7 @@ export const applyGameAction = (parsed: {
       GAME_ACTION.CreateTrade,
       GAME_ACTION.SelectedCards,
       GAME_ACTION.SelectedCardsState,
+      GAME_ACTION.RequestActionSwap,
     ].includes(parsed.action!)
   ) {
     return false;
@@ -1678,6 +1679,25 @@ export const applyGameAction = (parsed: {
 
   if (parsed.action === GAME_ACTION.ClickedDice) {
     rollDice();
+    return true;
+  }
+
+
+  if (parsed.action === GAME_ACTION.RequestActionSwap) {
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    gameState.currentState.actionState = PlayerActionState.None;
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "requestActionSwap",
+        payload: parsed.payload,
+      },
+    );
     return true;
   }
 
