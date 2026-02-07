@@ -465,6 +465,9 @@ const Controller = (
         await card.first().click({ force: true });
         await _delay(100);
       },
+      playKnight: async () => {
+        throw new Error("not implemented");
+      },
     };
   })(getCanvas(iframe));
 

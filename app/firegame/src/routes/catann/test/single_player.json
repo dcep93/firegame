@@ -18158,7 +18158,6 @@
       "sequence": 248
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "serverData",
     "data": {
