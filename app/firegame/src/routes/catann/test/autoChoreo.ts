@@ -36,10 +36,6 @@ export default async function autoChoreo(
       await c.wantToBuildCity();
     } else if (msg.data.action === GAME_ACTION.BuyDevelopmentCard) {
       await c.buyDevelopmentCard();
-    } else if (msg.data.action === GAME_ACTION.RequestActionSwap) {
-      await c.playDevelopmentCardFromHand();
-    } else if (msg.data.action === GAME_ACTION.SelectedTile) {
-      await c.playNextRobber();
     } else if (msg.data.action === GAME_ACTION.SelectedCardsState) {
       await c.selectNextDiscardCard();
     } else {

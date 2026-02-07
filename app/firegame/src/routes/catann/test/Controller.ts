@@ -136,6 +136,21 @@ const Controller = (
         console.log(msg);
       });
     };
+    const confirmSelectedCards = async () => {
+      const confirmButton = iframe.locator('div[class*="confirmButton-"]');
+      await expect
+        .poll(
+          async () => {
+            await confirmButton.first().click({ force: true });
+            await verifyTestMessages(false);
+            return (
+              _expectedMessages?.[0].data.action !== GAME_ACTION.SelectedCards
+            );
+          },
+          { timeout: 5000 },
+        )
+        .toBe(true);
+    };
     return {
       _peek: () => _expectedMessages![0],
       verifyTestMessages,
@@ -264,6 +279,7 @@ const Controller = (
         );
         await fallbackDevCard.first().click({ force: true });
         await _delay(100);
+        await confirmSelectedCards();
       },
       wantToTrade: async (payload: any) => {
         const tradeButton = iframe.locator('div[id="action-button-trade"]');
@@ -360,21 +376,7 @@ const Controller = (
         await _rollDice(canvas, diceState);
       },
       passTurn: async () => await _passTurn(canvas),
-      confirmSelectedCards: async () => {
-        const confirmButton = iframe.locator('div[class*="confirmButton-"]');
-        await expect
-          .poll(
-            async () => {
-              await confirmButton.first().click({ force: true });
-              await verifyTestMessages(false);
-              return (
-                _expectedMessages?.[0].data.action !== GAME_ACTION.SelectedCards
-              );
-            },
-            { timeout: 5000 },
-          )
-          .toBe(true);
-      },
+      confirmSelectedCards,
       handleReconnect: async () => {
         const expectedMessages = _expectedMessages!;
         let serverIndex = -1;
@@ -464,9 +466,6 @@ const Controller = (
         );
         await card.first().click({ force: true });
         await _delay(100);
-      },
-      playKnight: async () => {
-        throw new Error("not implemented");
       },
     };
   })(getCanvas(iframe));
