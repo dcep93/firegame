@@ -280,3 +280,9 @@
 - what you changed: Added `RequestActionSwap` to the `applyGameAction` allowlist and implemented a branch that clears highlights and commits state updates; extended `autoChoreo` to actively trigger `RequestActionSwap` and `ClickedDevelopmentCard` interactions.
 - why the test isn't passing: The choreo now emits action 48, but the mocked game logic still does not produce the expected post-48 server updates, so `verifyTestMessages` sees no new messages and fails.
 - next suggested step: Implement `GAME_ACTION.ClickedDevelopmentCard` handling in `gameLogic/index.ts` (likely knight flow from payload 11) to emit the expected update sequence after client action 48.
+
+## Dev-card click path after action swap
+- what would've saved time to get your bearings: In the late single-player sequence, expected client actions are `RequestActionSwap` (53) followed immediately by `ClickedDevelopmentCard` (48, payload 11); clicking a generic dev-card selector can repeatedly emit 53 instead of 48.
+- what you changed: Updated `autoChoreo` to drive `RequestActionSwap` via a click helper and split controller behavior so dev-card clicks prefer concrete hand-card selectors (`card_knight`, `card_victory`, `card_monopoly`, `card_road`, `card_year`) instead of generic `development/dev` icons.
+- why the test isn't passing: The `ClickedDevelopmentCard` step is still producing action 53 (payload 48), so the choreography is clicking the swap control again rather than the in-hand knight card.
+- next suggested step: Add a stage-specific selector for the hand card widget visible after swap (or a deterministic canvas click coordinate for the in-hand knight card) and assert it emits action 48 before continuing autoChoreo.

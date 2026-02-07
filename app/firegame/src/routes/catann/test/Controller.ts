@@ -250,12 +250,19 @@ const Controller = (
         }
         await waitForTrigger(iframe, "clientData");
       },
-
       playDevelopmentCardFromHand: async () => {
-        const devCard = iframe.locator(
-          'div[id="player-card-inventory"] img[src*="card_knight"], div[id="player-card-inventory"] img[src*="card_victory"], div[id="player-card-inventory"] img[src*="card_monopoly"], div[id="player-card-inventory"] img[src*="card_road"], div[id="player-card-inventory"] img[src*="card_year"], div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
+        const handDevCard = iframe.locator(
+          'div[id="player-card-inventory"] img[src*="card_knight"], div[id="player-card-inventory"] img[src*="card_victory"], div[id="player-card-inventory"] img[src*="card_monopoly"], div[id="player-card-inventory"] img[src*="card_road"], div[id="player-card-inventory"] img[src*="card_year"]',
         );
-        await devCard.first().click({ force: true });
+        if ((await handDevCard.count()) > 0) {
+          await handDevCard.first().click({ force: true });
+          await _delay(100);
+          return;
+        }
+        const fallbackDevCard = iframe.locator(
+          'div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
+        );
+        await fallbackDevCard.first().click({ force: true });
         await _delay(100);
       },
       wantToTrade: async (payload: any) => {

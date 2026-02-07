@@ -39,7 +39,7 @@ export default async function autoChoreo(
     } else if (msg.data.action === GAME_ACTION.RequestActionSwap) {
       await c.playDevelopmentCardFromHand();
     } else if (msg.data.action === GAME_ACTION.ClickedDevelopmentCard) {
-      await c.buyDevelopmentCard();
+      await c.playDevelopmentCardFromHand();
     } else if (msg.data.action === GAME_ACTION.SelectedTile) {
       await c.playNextRobber();
     } else if (msg.data.action === GAME_ACTION.SelectedCardsState) {
