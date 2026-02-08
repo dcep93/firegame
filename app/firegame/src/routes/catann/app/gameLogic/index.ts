@@ -1733,10 +1733,7 @@ export const applyGameAction = (parsed: {
     gameData.data.payload.timeLeftInState = 140;
 
     sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(
-      gameData,
-      [],
-    );
+    sendTileHighlights33(gameData, []);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
     sendToMainSocket?.({
@@ -1756,6 +1753,8 @@ export const applyGameAction = (parsed: {
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
     sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
+
+    throw new Error("fix here");
 
     setFirebaseData({ ...firebaseData, GAME: gameData }, undefined);
     return true;
