@@ -298,3 +298,9 @@
 - what you changed: In `gameLogic/index.ts`, changed knight card highlight payload to `[]` and added an `ExchangeCards` emission in the `ClickedDevelopmentCard` branch (`givingCards: [clickedCard]`) so sequence 105 now matches expected type 43.
 - why the test isn't passing: The same branch still calls `setFirebaseData`, which emits a type 91 at sequence 106 where the recording expects type 30, causing deterministic mismatch.
 - next suggested step: In `ClickedDevelopmentCard`, avoid (or defer) `setFirebaseData` until after the expected highlight clear sequence so type 30/33/31/32 can occupy sequences 106+.
+
+## Post-dev-card highlight chain progression
+- what would've saved time to get your bearings: The failing point after `ClickedDevelopmentCard` is a long, strict highlight/message chain; once sequence 105 matches, the recorder still expects 30/33/31/32, then robber-eligible 33, then subsequent state/log updates.
+- what you changed: In `gameLogic/index.ts`, updated the `ClickedDevelopmentCard` branch to avoid Firebase diff emission (`setFirebaseData(..., undefined)`), then explicitly emit the extra post-card highlight clear set and robber-eligible tile highlight; also guarded `SelectedCards` so it only mutates/discards during `SelectCardsToDiscard`.
+- why the test isn't passing: The run now advances from codex serverData 105 to 110, but still stalls waiting for additional expected messages starting at sequence 111 (next expected is a `GameStateUpdated` diff including dev-card side effects/timing).
+- next suggested step: Align the post-`ClickedDevelopmentCard` `GameStateUpdated` emission (diff shape and `timeLeftInState`) to match the recording immediately after sequence 110, likely by sending a controlled update after the highlight chain rather than relying on implicit state propagation.
