@@ -169,9 +169,7 @@ export function setFirebaseData(newData: any, change: any) {
     __meta: { change, me: store.me, now: Date.now() },
   };
   if (change === undefined) {
-    firebaseData = newData;
-    lastGameStateSnapshot = getGameStateSnapshot(firebaseData.GAME);
-    return;
+    throw new Error("need to define a change");
   }
   // TODO reduce writes by using update instead of set
   // also only change diffs

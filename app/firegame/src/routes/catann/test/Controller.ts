@@ -408,7 +408,8 @@ const Controller = (
       });
 
       await page.evaluate(
-        (_firebaseData) => window.__setFirebaseData(_firebaseData),
+        (_firebaseData) =>
+          window.__setFirebaseData(_firebaseData, "test.Controller"),
         firebaseData,
       );
     };
