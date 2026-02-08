@@ -15,8 +15,8 @@ import {
 } from "../app/gameLogic/CatannFilesEnums";
 import { addGameLogEntry } from "../app/gameLogic/utils";
 import {
-  _delay,
   codex,
+  delay,
   isRealMessage,
   spliceTestMessages,
 } from "./playwright_test.spec";
@@ -144,337 +144,361 @@ const Controller = (
       await verifyTestMessages(false);
       const confirmButton = iframe.locator('div[class*="confirmButton-"]');
       await confirmButton.first().click({ force: true });
-      await _delay(1000);
+      await delay(1000);
+    };
+    const fastForward = async (clientDataSequence: number) => {
+      await verifyTestMessages();
+      const nextSequence = _expectedMessages!.find((msg) => msg.data.sequence);
+      if (clientDataSequence === -1) {
+        expect(nextSequence).toBe(null);
+      } else {
+        console.log({ clientDataSequence, nextSequence });
+      }
+    };
+    const clickStartButton = async () => {
+      const startButton = getStartButton(iframe);
+      await startButton.click({ force: true });
+      await delay(1000);
+      page.on("pageerror", (msg) => console.log(msg));
+    };
+    const buildSettlement = async (
+      settlementCoords: {
+        col: number;
+        row: number;
+      },
+      skipConfirm: boolean = false,
+    ) => {
+      console.log("\t", "buildSettlement");
+      const settlementOffset = getSettlementOffset(settlementCoords);
+      await clickCanvas(canvas, settlementOffset);
+
+      if (!skipConfirm) {
+        const confirmSettlementOffset = getConfirmOffset(settlementOffset);
+        await clickCanvas(canvas, confirmSettlementOffset);
+      }
+    };
+    const buildCity = async (
+      settlementCoords: {
+        col: number;
+        row: number;
+      },
+      skipConfirm: boolean = false,
+    ) => {
+      console.log("\t", "buildCity");
+      const settlementOffset = getSettlementOffset(settlementCoords);
+      await clickCanvas(canvas, settlementOffset);
+
+      if (!skipConfirm) {
+        const confirmCityOffset = getConfirmOffset(settlementOffset);
+        await clickCanvas(canvas, confirmCityOffset);
+      }
+    };
+    const buildRoad = async (
+      settlementCoords: { col: number; row: number },
+      destinationCoords: { col: number; row: number },
+      skipConfirm: boolean = false,
+    ) => {
+      console.log("\t", "buildRoad");
+      const settlementOffset = getSettlementOffset(settlementCoords);
+      const destinationOffset = getSettlementOffset(destinationCoords);
+      const roadOffset = {
+        x: (settlementOffset.x + destinationOffset.x) / 2,
+        y: (settlementOffset.y + destinationOffset.y) / 2,
+      };
+      await clickCanvas(canvas, roadOffset);
+
+      if (!skipConfirm) {
+        const confirmRoadOffset = getConfirmOffset(roadOffset);
+        await clickCanvas(canvas, confirmRoadOffset);
+      }
+    };
+    const wantToBuildRoad = async () => {
+      const roadButton = iframe.locator(
+        'div[class*="roadButton-"] div[class*="container-"]',
+      );
+      await roadButton.first().click({ force: true });
+      await delay(100);
+    };
+    const wantToBuildSettlement = async () => {
+      const settlementButton = iframe.locator(
+        'div[class*="settlementButton-"] div[class*="container-"]',
+      );
+      await settlementButton.first().click({ force: true });
+      await delay(100);
+    };
+    const wantToBuildCity = async () => {
+      const cityButton = iframe.locator(
+        'div[class*="cityButton-"] div[class*="container-"]',
+      );
+      await cityButton.first().click({ force: true });
+      await delay(100);
+    };
+    const buyDevelopmentCard = async () => {
+      const upcomingDevCard = _expectedMessages
+        ? findUpcomingDevelopmentCard(_expectedMessages)
+        : null;
+      if (typeof upcomingDevCard === "number") {
+        await canvas.evaluate((_, devCard) => {
+          window.parent.__testSeed = devCard;
+        }, upcomingDevCard);
+      }
+      const devCardButton = iframe.locator(
+        'div[class*="actionButton"] img[src*="development"], div[class*="actionButton"] img[src*="dev"], div[class*="actionButton"] img[src*="card_"]',
+      );
+      await verifyTestMessages(false);
+      if ((await devCardButton.count()) > 0) {
+        await devCardButton.first().click({ force: true });
+      } else {
+        const actionButtons = iframe.locator('div[class*="actionButton"]');
+        await actionButtons.last().click({ force: true });
+      }
+      await waitForTrigger(iframe, "clientData");
+    };
+    const playDevelopmentCardFromHand = async () => {
+      const handDevCard = iframe.locator(
+        'div[id="player-card-inventory"] img[src*="card_knight"], div[id="player-card-inventory"] img[src*="card_victory"], div[id="player-card-inventory"] img[src*="card_monopoly"], div[id="player-card-inventory"] img[src*="card_road"], div[id="player-card-inventory"] img[src*="card_year"]',
+      );
+      if ((await handDevCard.count()) > 0) {
+        await handDevCard.first().click({ force: true });
+      } else {
+        const fallbackDevCard = iframe.locator(
+          'div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
+        );
+        await fallbackDevCard.first().click({ force: true });
+      }
+      await delay(100);
+      await confirmSelectedCards();
+    };
+    const wantToTrade = async (payload: any) => {
+      const tradeButton = iframe.locator('div[id="action-button-trade"]');
+      await tradeButton.first().click({ force: true });
+      await delay(100);
+
+      await expect
+        .poll(
+          async () => {
+            await verifyTestMessages(false);
+            return (
+              _expectedMessages &&
+              _expectedMessages[0].data.data.type === CLIENT_TRADE_OFFER_TYPE &&
+              _expectedMessages[0].trigger === "serverData"
+            );
+          },
+          { timeout: 5000 },
+        )
+        .toBe(true);
+
+      const resourceCardType: Record<number, string> = {
+        1: "lumber",
+        2: "brick",
+        3: "wool",
+        4: "grain",
+        5: "ore",
+        6: "cloth",
+        7: "coin",
+        8: "paper",
+      };
+
+      const tradeCard = iframe.locator('img[src*="card_"]');
+      await expect(tradeCard.first()).toBeVisible({ timeout: 5000 });
+
+      const clickResourceCard = async (parent: string, resourceId: number) => {
+        const resourceType = resourceCardType[resourceId];
+        if (!resourceType) {
+          throw new Error(`Unknown resource type: ${resourceId}`);
+        }
+        const card = iframe.locator(
+          `${parent} img[src*="card_${resourceType}"]`,
+        );
+        await card.first().click({ force: true });
+        await delay(50);
+      };
+
+      for (const resourceId of payload.offeredResources ?? []) {
+        await clickResourceCard(`div[id="player-card-inventory"]`, resourceId);
+      }
+
+      for (const resourceId of payload.wantedResources ?? []) {
+        await clickResourceCard(
+          `div[class*="wantedCardSelectorContainer-"]`,
+          resourceId,
+        );
+      }
+
+      const bankTradeButton = iframe.locator(
+        'div[id="action-button-trade-bank"]',
+      );
+      await bankTradeButton.first().click({ force: true });
+      await waitForTrigger(iframe, "serverData");
+      const shifted = _expectedMessages!.shift()!;
+      try {
+        expect(shifted.data.data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
+      } catch (e) {
+        console.log(shifted);
+        throw e;
+      }
+      _expectedMessages![0].data.payload.counterOfferInResponseToTradeId = null;
+    };
+    const rollNextDice = async () => {
+      const diceStateMessage = _expectedMessages!.find(
+        (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
+      )!;
+      const diceStateLog = (
+        Object.values(
+          diceStateMessage.data.data.payload.diff.gameLogState,
+        ).find((log: any) => log.text.firstDice) as any
+      ).text;
+      const diceState: [number, number] = [
+        diceStateLog.firstDice,
+        diceStateLog.secondDice,
+      ];
+      console.log("rolling", diceState);
+      await canvasRollDice(canvas, diceState);
+    };
+    const passTurn = async () => {
+      await expect
+        .poll(() => canvasMapAppearsClickable(canvas, MAP_DICE_COORDS), {
+          timeout: 5000,
+        })
+        .toBe(false);
+      for (let i = 0; i < 5; i++) {
+        await clickCanvas(canvas, MAP_PASS_COORDS);
+        await delay(50);
+      }
+      await expect
+        .poll(() => canvasMapAppearsClickable(canvas, MAP_DICE_COORDS), {
+          timeout: 5000,
+        })
+        .toBe(true);
+    };
+    const handleReconnect = async () => {
+      const expectedMessages = _expectedMessages!;
+      let serverIndex = -1;
+      for (let i = 0; i < expectedMessages.length; i += 1) {
+        const msg = expectedMessages[i];
+        if (msg.trigger !== "serverData") continue;
+        const sequence = msg.data?.data?.sequence;
+        if (sequence == null) continue;
+        serverIndex = i;
+        expect(sequence).toBe(1);
+        break;
+      }
+      expect(serverIndex).toBeGreaterThanOrEqual(0);
+
+      let clientIndex = -1;
+      for (let i = serverIndex + 1; i < expectedMessages.length; i += 1) {
+        const msg = expectedMessages[i];
+        if (msg.trigger !== "clientData") continue;
+        const sequence = msg.data?.sequence;
+        if (sequence == null) continue;
+        clientIndex = i;
+        break;
+      }
+      expect(clientIndex).toBeGreaterThan(serverIndex);
+      expectedMessages.splice(0, clientIndex);
+
+      const firebaseData = await page.evaluate(() =>
+        window.__getFirebaseData(),
+      );
+      const gameState = firebaseData.GAME.data.payload.gameState;
+      const playerColor = 1;
+      addGameLogEntry(gameState, {
+        text: {
+          type: GameLogMessageType.Disconnected,
+          playerColor,
+          is10SecondRuleDisabled: true,
+        },
+        from: playerColor,
+      });
+      addGameLogEntry(gameState, {
+        text: {
+          type: GameLogMessageType.PlayerReconnecting,
+          playerColor,
+        },
+        from: playerColor,
+      });
+
+      await page.evaluate(
+        (_firebaseData) => window.__setFirebaseData(_firebaseData),
+        firebaseData,
+      );
+    };
+    const skipIllegalPass = async () => {
+      const msg = _expectedMessages!.shift()!;
+      expect(msg.data.action).toBe(GAME_ACTION.PassedTurn);
+    };
+    const playNextRobber = async () => {
+      const msg = _expectedMessages![0];
+      expect(msg.trigger).toBe("clientData");
+      expect(msg.data.action).toBe(GAME_ACTION.SelectedTile);
+      const robberOffset = getTilePosition(msg.data.payload);
+      await clickCanvas(canvas, robberOffset);
+
+      const confirmRobberOffset = getConfirmOffset(robberOffset);
+      await clickCanvas(canvas, confirmRobberOffset);
+    };
+    const selectNextDiscardCard = async () => {
+      const msg = _expectedMessages![0];
+      expect(msg.trigger).toBe("clientData");
+      expect(msg.data.action).toBe(GAME_ACTION.SelectedCardsState);
+      const payload = Array.isArray(msg.data.payload) ? msg.data.payload : [];
+      const nextCard = payload[payload.length - 1];
+      const resourceCardType: Record<number, string> = {
+        1: "lumber",
+        2: "brick",
+        3: "wool",
+        4: "grain",
+        5: "ore",
+        6: "cloth",
+        7: "coin",
+        8: "paper",
+      };
+      const resourceType = resourceCardType[nextCard];
+      expect(resourceType).toBeDefined();
+      const card = iframe.locator(
+        `div[id="player-card-inventory"] img[src*="card_${resourceType}"]`,
+      );
+      await card.first().click({ force: true });
+      await delay(100);
     };
     return {
       _peek: () => _expectedMessages![0],
       verifyTestMessages,
-      fastForward: async (clientDataSequence: number) => {
-        await verifyTestMessages();
-        const nextSequence = _expectedMessages!.find(
-          (msg) => msg.data.sequence,
-        );
-        if (clientDataSequence === -1) {
-          expect(nextSequence).toBe(null);
-        } else {
-          console.log({ clientDataSequence, nextSequence });
-        }
-      },
-      clickStartButton: async () => {
-        const startButton = getStartButton(iframe);
-        await startButton.click({ force: true });
-        await _delay(1000);
-        page.on("pageerror", (msg) => console.log(msg));
-      },
-      delay: async (durationMs: number) => _delay(durationMs),
-      buildSettlement: async (
-        settlementCoords: {
-          col: number;
-          row: number;
-        },
-        skipConfirm: boolean = false,
-      ) => {
-        console.log("\t", "buildSettlement");
-        const settlementOffset = getSettlementOffset(settlementCoords);
-        await clickCanvas(canvas, settlementOffset);
-
-        if (!skipConfirm) {
-          const confirmSettlementOffset = getConfirmOffset(settlementOffset);
-          await clickCanvas(canvas, confirmSettlementOffset);
-        }
-      },
-      buildCity: async (
-        settlementCoords: {
-          col: number;
-          row: number;
-        },
-        skipConfirm: boolean = false,
-      ) => {
-        console.log("\t", "buildCity");
-        const settlementOffset = getSettlementOffset(settlementCoords);
-        await clickCanvas(canvas, settlementOffset);
-
-        if (!skipConfirm) {
-          const confirmCityOffset = getConfirmOffset(settlementOffset);
-          await clickCanvas(canvas, confirmCityOffset);
-        }
-      },
-      buildRoad: async (
-        settlementCoords: { col: number; row: number },
-        destinationCoords: { col: number; row: number },
-        skipConfirm: boolean = false,
-      ) => {
-        console.log("\t", "buildRoad");
-        const settlementOffset = getSettlementOffset(settlementCoords);
-        const destinationOffset = getSettlementOffset(destinationCoords);
-        const roadOffset = {
-          x: (settlementOffset.x + destinationOffset.x) / 2,
-          y: (settlementOffset.y + destinationOffset.y) / 2,
-        };
-        await clickCanvas(canvas, roadOffset);
-
-        if (!skipConfirm) {
-          const confirmRoadOffset = getConfirmOffset(roadOffset);
-          await clickCanvas(canvas, confirmRoadOffset);
-        }
-      },
-      wantToBuildRoad: async () => {
-        const roadButton = iframe.locator(
-          'div[class*="roadButton-"] div[class*="container-"]',
-        );
-        await roadButton.first().click({ force: true });
-        await _delay(100);
-      },
-      wantToBuildSettlement: async () => {
-        const settlementButton = iframe.locator(
-          'div[class*="settlementButton-"] div[class*="container-"]',
-        );
-        await settlementButton.first().click({ force: true });
-        await _delay(100);
-      },
-      wantToBuildCity: async () => {
-        const cityButton = iframe.locator(
-          'div[class*="cityButton-"] div[class*="container-"]',
-        );
-        await cityButton.first().click({ force: true });
-        await _delay(100);
-      },
-      buyDevelopmentCard: async () => {
-        const upcomingDevCard = _expectedMessages
-          ? findUpcomingDevelopmentCard(_expectedMessages)
-          : null;
-        if (typeof upcomingDevCard === "number") {
-          await canvas.evaluate((_, devCard) => {
-            window.parent.__testSeed = devCard;
-          }, upcomingDevCard);
-        }
-        const devCardButton = iframe.locator(
-          'div[class*="actionButton"] img[src*="development"], div[class*="actionButton"] img[src*="dev"], div[class*="actionButton"] img[src*="card_"]',
-        );
-        await verifyTestMessages(false);
-        if ((await devCardButton.count()) > 0) {
-          await devCardButton.first().click({ force: true });
-        } else {
-          const actionButtons = iframe.locator('div[class*="actionButton"]');
-          await actionButtons.last().click({ force: true });
-        }
-        await waitForTrigger(iframe, "clientData");
-      },
-      playDevelopmentCardFromHand: async () => {
-        const handDevCard = iframe.locator(
-          'div[id="player-card-inventory"] img[src*="card_knight"], div[id="player-card-inventory"] img[src*="card_victory"], div[id="player-card-inventory"] img[src*="card_monopoly"], div[id="player-card-inventory"] img[src*="card_road"], div[id="player-card-inventory"] img[src*="card_year"]',
-        );
-        if ((await handDevCard.count()) > 0) {
-          await handDevCard.first().click({ force: true });
-        } else {
-          const fallbackDevCard = iframe.locator(
-            'div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
-          );
-          await fallbackDevCard.first().click({ force: true });
-        }
-        await _delay(100);
-        await confirmSelectedCards();
-      },
-      wantToTrade: async (payload: any) => {
-        const tradeButton = iframe.locator('div[id="action-button-trade"]');
-        await tradeButton.first().click({ force: true });
-        await _delay(100);
-
-        await expect
-          .poll(
-            async () => {
-              await verifyTestMessages(false);
-              return (
-                _expectedMessages &&
-                _expectedMessages[0].data.data.type ===
-                  CLIENT_TRADE_OFFER_TYPE &&
-                _expectedMessages[0].trigger === "serverData"
-              );
-            },
-            { timeout: 5000 },
-          )
-          .toBe(true);
-
-        const resourceCardType: Record<number, string> = {
-          1: "lumber",
-          2: "brick",
-          3: "wool",
-          4: "grain",
-          5: "ore",
-          6: "cloth",
-          7: "coin",
-          8: "paper",
-        };
-
-        const tradeCard = iframe.locator('img[src*="card_"]');
-        await expect(tradeCard.first()).toBeVisible({ timeout: 5000 });
-
-        const clickResourceCard = async (
-          parent: string,
-          resourceId: number,
-        ) => {
-          const resourceType = resourceCardType[resourceId];
-          if (!resourceType) {
-            throw new Error(`Unknown resource type: ${resourceId}`);
-          }
-          const card = iframe.locator(
-            `${parent} img[src*="card_${resourceType}"]`,
-          );
-          await card.first().click({ force: true });
-          await _delay(50);
-        };
-
-        for (const resourceId of payload.offeredResources ?? []) {
-          await clickResourceCard(
-            `div[id="player-card-inventory"]`,
-            resourceId,
-          );
-        }
-
-        for (const resourceId of payload.wantedResources ?? []) {
-          await clickResourceCard(
-            `div[class*="wantedCardSelectorContainer-"]`,
-            resourceId,
-          );
-        }
-
-        const bankTradeButton = iframe.locator(
-          'div[id="action-button-trade-bank"]',
-        );
-        await bankTradeButton.first().click({ force: true });
-        await waitForTrigger(iframe, "serverData");
-        const shifted = _expectedMessages!.shift()!;
-        try {
-          expect(shifted.data.data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
-        } catch (e) {
-          console.log(shifted);
-          throw e;
-        }
-        _expectedMessages![0].data.payload.counterOfferInResponseToTradeId =
-          null;
-      },
-      rollNextDice: async () => {
-        const diceStateMessage = _expectedMessages!.find(
-          (msg) => msg.data.data?.payload?.diff?.diceState?.diceThrown,
-        )!;
-        const diceStateLog = (
-          Object.values(
-            diceStateMessage.data.data.payload.diff.gameLogState,
-          ).find((log: any) => log.text.firstDice) as any
-        ).text;
-        const diceState: [number, number] = [
-          diceStateLog.firstDice,
-          diceStateLog.secondDice,
-        ];
-        console.log("rolling", diceState);
-        await _rollDice(canvas, diceState);
-      },
-      passTurn: async () => await _passTurn(canvas),
+      fastForward,
+      clickStartButton,
+      delay,
+      buildSettlement,
+      buildCity,
+      buildRoad,
+      wantToBuildRoad,
+      wantToBuildSettlement,
+      wantToBuildCity,
+      buyDevelopmentCard,
+      playDevelopmentCardFromHand,
+      wantToTrade,
+      rollNextDice,
+      passTurn,
       confirmSelectedCards,
-      handleReconnect: async () => {
-        const expectedMessages = _expectedMessages!;
-        let serverIndex = -1;
-        for (let i = 0; i < expectedMessages.length; i += 1) {
-          const msg = expectedMessages[i];
-          if (msg.trigger !== "serverData") continue;
-          const sequence = msg.data?.data?.sequence;
-          if (sequence == null) continue;
-          serverIndex = i;
-          expect(sequence).toBe(1);
-          break;
-        }
-        expect(serverIndex).toBeGreaterThanOrEqual(0);
-
-        let clientIndex = -1;
-        for (let i = serverIndex + 1; i < expectedMessages.length; i += 1) {
-          const msg = expectedMessages[i];
-          if (msg.trigger !== "clientData") continue;
-          const sequence = msg.data?.sequence;
-          if (sequence == null) continue;
-          clientIndex = i;
-          break;
-        }
-        expect(clientIndex).toBeGreaterThan(serverIndex);
-        expectedMessages.splice(0, clientIndex);
-
-        const firebaseData = await page.evaluate(() =>
-          window.__getFirebaseData(),
-        );
-        const gameState = firebaseData.GAME.data.payload.gameState;
-        const playerColor = 1;
-        addGameLogEntry(gameState, {
-          text: {
-            type: GameLogMessageType.Disconnected,
-            playerColor,
-            is10SecondRuleDisabled: true,
-          },
-          from: playerColor,
-        });
-        addGameLogEntry(gameState, {
-          text: {
-            type: GameLogMessageType.PlayerReconnecting,
-            playerColor,
-          },
-          from: playerColor,
-        });
-
-        await page.evaluate(
-          (_firebaseData) => window.__setFirebaseData(_firebaseData),
-          firebaseData,
-        );
-      },
-      skipIllegalPass: async () => {
-        const msg = _expectedMessages!.shift()!;
-        expect(msg.data.action).toBe(GAME_ACTION.PassedTurn);
-      },
-      playNextRobber: async () => {
-        const msg = _expectedMessages![0];
-        expect(msg.trigger).toBe("clientData");
-        expect(msg.data.action).toBe(GAME_ACTION.SelectedTile);
-        const robberOffset = getTilePosition(msg.data.payload);
-        await clickCanvas(canvas, robberOffset);
-
-        const confirmRobberOffset = getConfirmOffset(robberOffset);
-        await clickCanvas(canvas, confirmRobberOffset);
-      },
-      selectNextDiscardCard: async () => {
-        const msg = _expectedMessages![0];
-        expect(msg.trigger).toBe("clientData");
-        expect(msg.data.action).toBe(GAME_ACTION.SelectedCardsState);
-        const payload = Array.isArray(msg.data.payload) ? msg.data.payload : [];
-        const nextCard = payload[payload.length - 1];
-        const resourceCardType: Record<number, string> = {
-          1: "lumber",
-          2: "brick",
-          3: "wool",
-          4: "grain",
-          5: "ore",
-          6: "cloth",
-          7: "coin",
-          8: "paper",
-        };
-        const resourceType = resourceCardType[nextCard];
-        expect(resourceType).toBeDefined();
-        const card = iframe.locator(
-          `div[id="player-card-inventory"] img[src*="card_${resourceType}"]`,
-        );
-        await card.first().click({ force: true });
-        await _delay(100);
-      },
+      handleReconnect,
+      skipIllegalPass,
+      playNextRobber,
+      selectNextDiscardCard,
     };
   })(getCanvas(iframe));
 
 export default Controller;
 
-export const clickCanvas = async (
+const clickCanvas = async (
   canvas: Locator,
   position: { x: number; y: number },
+  checkClickable = true,
 ) => {
-  await expect
-    .poll(() => _mapAppearsClickable(canvas, position), {
-      timeout: 10_000,
-    })
-    .toBe(true);
+  if (checkClickable)
+    await expect
+      .poll(() => canvasMapAppearsClickable(canvas, position), {
+        timeout: 10_000,
+      })
+      .toBe(true);
 
   await canvas.click({
     position,
@@ -482,7 +506,7 @@ export const clickCanvas = async (
   });
 };
 
-export const _mapAppearsClickable = async (
+export const canvasMapAppearsClickable = async (
   canvas: Locator,
   offset: { x: number; y: number },
 ) => {
@@ -585,7 +609,7 @@ export const getSettlementOffset = (position: { col: number; row: number }) => {
   };
 };
 
-export const _rollDice = async (
+export const canvasRollDice = async (
   canvas: Locator,
   diceState: [number, number] | null = null,
 ) => {
@@ -597,27 +621,10 @@ export const _rollDice = async (
   await clickCanvas(canvas, MAP_DICE_COORDS);
 
   await expect
-    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
+    .poll(() => canvasMapAppearsClickable(canvas, MAP_DICE_COORDS), {
       timeout: 5000,
     })
     .toBe(false);
-};
-
-const _passTurn = async (canvas: Locator) => {
-  await expect
-    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
-      timeout: 5000,
-    })
-    .toBe(false);
-  for (let i = 0; i < 5; i++) {
-    await clickCanvas(canvas, MAP_PASS_COORDS);
-    await _delay(50);
-  }
-  await expect
-    .poll(() => _mapAppearsClickable(canvas, MAP_DICE_COORDS), {
-      timeout: 5000,
-    })
-    .toBe(true);
 };
 
 export const getCanvas = (iframe: FrameLocator) =>

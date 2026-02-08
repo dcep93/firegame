@@ -25,8 +25,8 @@ import {
 } from "../app/gameLogic/CatannFilesEnums";
 import { singlePlayerChoreo, startingSettlementChoreo } from "./choreo";
 import Controller, {
-  _mapAppearsClickable,
-  _rollDice,
+  canvasMapAppearsClickable,
+  canvasRollDice,
   checkCanvasHandle,
   ControllerType,
   getCanvas,
@@ -42,7 +42,7 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
     try {
       await f({ page });
     } finally {
-      await _delay(5000);
+      await delay(5000);
       console.log({ codex });
       await page.screenshot({
         path: testInfo.outputPath("screenshot.png"),
@@ -82,7 +82,8 @@ test.skip(
           try {
             await expect
               .poll(
-                async () => await _mapAppearsClickable(canvas, vertexOffset),
+                async () =>
+                  await canvasMapAppearsClickable(canvas, vertexOffset),
                 {
                   timeout: 3000,
                 },
@@ -114,7 +115,7 @@ test.skip(
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
     );
 
-    await _rollDice(canvas);
+    await canvasRollDice(canvas);
   }),
 );
 
@@ -284,7 +285,7 @@ const SERVER_START_TIMEOUT_MS = 10_000;
 test.use({ ignoreHTTPSErrors: true });
 test.describe.configure({ timeout: 300_000 });
 
-export const _delay = (ms: number) =>
+export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 test.beforeAll(async ({ request }) => {
@@ -307,7 +308,7 @@ test.beforeAll(async ({ request }) => {
         });
         return;
       } catch (error) {
-        await _delay(500);
+        await delay(500);
       }
     }
 
