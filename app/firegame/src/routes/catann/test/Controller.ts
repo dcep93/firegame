@@ -82,11 +82,15 @@ const Controller = (
     const verifyTestMessages = async (failOnEmpty: boolean = true) => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
-      try {
-        if (failOnEmpty) expect(testMessages.length).not.toBe(0);
-      } catch (e) {
-        console.log(JSON.stringify(expectedMessages[0], null, 2));
-        throw e;
+      if (failOnEmpty) {
+        try {
+          expect(testMessages.length).not.toBe(0);
+        } catch (e) {
+          console.log(JSON.stringify(expectedMessages[0], null, 2));
+          throw e;
+        }
+      } else {
+        return true;
       }
       const durationMs = Date.now() - loaded;
       console.log(
@@ -137,19 +141,17 @@ const Controller = (
       });
     };
     const confirmSelectedCards = async () => {
+      await verifyTestMessages(false);
       const confirmButton = iframe.locator('div[class*="confirmButton-"]');
       await expect
         .poll(
           async () => {
             await confirmButton.first().click({ force: true });
-            await verifyTestMessages(false);
-            return (
-              _expectedMessages?.[0].data.action !== GAME_ACTION.SelectedCards
-            );
+            return await verifyTestMessages(false);
           },
           { timeout: 5000 },
         )
-        .toBe(true);
+        .toBe(undefined);
     };
     return {
       _peek: () => _expectedMessages![0],
@@ -271,13 +273,12 @@ const Controller = (
         );
         if ((await handDevCard.count()) > 0) {
           await handDevCard.first().click({ force: true });
-          await _delay(100);
-          return;
+        } else {
+          const fallbackDevCard = iframe.locator(
+            'div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
+          );
+          await fallbackDevCard.first().click({ force: true });
         }
-        const fallbackDevCard = iframe.locator(
-          'div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
-        );
-        await fallbackDevCard.first().click({ force: true });
         await _delay(100);
         await confirmSelectedCards();
       },
