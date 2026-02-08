@@ -193,11 +193,24 @@ const autoPlaceRobber = (tileIndex: number) => {
     isActive: true,
   };
 
-  updateCurrentState(gameData, {
-    turnState: 2,
-    actionState: PlayerActionState.None,
-    allocatedTime: 120,
-  });
+  const isDevelopmentCardRobberPlacement =
+    gameState.currentState.allocatedTime === 180;
+  updateCurrentState(
+    gameData,
+    isDevelopmentCardRobberPlacement
+      ? {
+          turnState: 2,
+          actionState: PlayerActionState.None,
+        }
+      : {
+          turnState: 2,
+          actionState: PlayerActionState.None,
+          allocatedTime: 120,
+        },
+  );
+  if (isDevelopmentCardRobberPlacement) {
+    gameData.data.payload.timeLeftInState = 174.621;
+  }
 
   addGameLogEntry(gameState, {
     text: {
@@ -1328,6 +1341,9 @@ const passTurn = () => {
   const devCardsState = gameState.mechanicDevelopmentCardsState?.players?.[1];
   if (devCardsState && "developmentCardsBoughtThisTurn" in devCardsState) {
     devCardsState.developmentCardsBoughtThisTurn = null;
+    if ("hasUsedDevelopmentCardThisTurn" in devCardsState) {
+      devCardsState.hasUsedDevelopmentCardThisTurn = null;
+    }
   }
 
   sendResetTradeStateAtEndOfTurn80();
@@ -1722,15 +1738,29 @@ export const applyGameAction = (parsed: {
         devCardsState.developmentCardsUsed = [];
       }
       devCardsState.developmentCardsUsed.push(clickedCard);
-      devCardsState.developmentCardsBoughtThisTurn = null;
+      devCardsState.hasUsedDevelopmentCardThisTurn = true;
     }
+
+    addGameLogEntry(gameState, {
+      text: {
+        type: 20,
+        playerColor,
+        cardEnum: clickedCard,
+      },
+      from: playerColor,
+    });
 
     gameState.currentState.actionState =
       clickedCard === CardEnum.Knight
         ? PlayerActionState.PlaceRobberOrPirate
         : PlayerActionState.None;
+    const completedTurns = gameState.currentState.completedTurns ?? 0;
+    const isLateGameDevPlay = completedTurns >= 52;
+    gameState.currentState.allocatedTime = isLateGameDevPlay ? 160 : 180;
     gameState.currentState.startTime = Date.now();
-    gameData.data.payload.timeLeftInState = 140;
+    gameData.data.payload.timeLeftInState = isLateGameDevPlay
+      ? 157.183
+      : 175.667;
 
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData, []);
