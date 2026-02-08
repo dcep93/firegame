@@ -1735,10 +1735,22 @@ export const applyGameAction = (parsed: {
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(
       gameData,
-      clickedCard === CardEnum.Knight ? getRobberEligibleTiles(gameData) : [],
+      [],
     );
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.ExchangeCards,
+        payload: {
+          givingPlayer: playerColor,
+          givingCards: clickedCard != null ? [clickedCard] : [],
+          receivingPlayer: 0,
+          receivingCards: [],
+        },
+      },
+    });
 
     setFirebaseData(
       { ...firebaseData, GAME: gameData },

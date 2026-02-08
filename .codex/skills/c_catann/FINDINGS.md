@@ -292,3 +292,9 @@
 - what you changed: Added `GAME_ACTION.ClickedDevelopmentCard` handling in `gameLogic/index.ts` (allowlist + branch) to update development-card state, set action state for knight play, emit highlight updates, and persist via `setFirebaseData`.
 - why the test isn't passing: The choreography still calls `playDevelopmentCardFromHand`, which internally calls `confirmSelectedCards`; that helper currently times out before the expected client action 48/server follow-up can be drained.
 - next suggested step: Modify `src/routes/catann/test/Controller.ts` (outside c_catann allowed scope) to fix or bypass `confirmSelectedCards` for dev-card play, or adjust `test/choreo.ts` to drive action 48 without calling that helper.
+
+## ClickedDevelopmentCard post-exchange ordering
+- what would've saved time to get your bearings: After `ClickedDevelopmentCard` (action 48, payload 11), the expected stream requires `ExchangeCards` (type 43) and then highlight clears (starting type 30) before any additional `GameStateUpdated` diff.
+- what you changed: In `gameLogic/index.ts`, changed knight card highlight payload to `[]` and added an `ExchangeCards` emission in the `ClickedDevelopmentCard` branch (`givingCards: [clickedCard]`) so sequence 105 now matches expected type 43.
+- why the test isn't passing: The same branch still calls `setFirebaseData`, which emits a type 91 at sequence 106 where the recording expects type 30, causing deterministic mismatch.
+- next suggested step: In `ClickedDevelopmentCard`, avoid (or defer) `setFirebaseData` until after the expected highlight clear sequence so type 30/33/31/32 can occupy sequences 106+.
