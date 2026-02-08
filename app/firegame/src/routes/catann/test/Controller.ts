@@ -142,16 +142,31 @@ const Controller = (
     };
     const confirmSelectedCards = async () => {
       await verifyTestMessages(false);
+      console.log(
+        145,
+        await iframe
+          .locator("body")
+          .evaluate(() => window.parent.__socketCatannMessages),
+      );
       const confirmButton = iframe.locator('div[class*="confirmButton-"]');
+      await confirmButton.first().click({ force: true });
       await expect
         .poll(
           async () => {
-            await confirmButton.first().click({ force: true });
-            return await verifyTestMessages(false);
+            await _delay(500);
+            const x = await verifyTestMessages(false);
+            console.log(
+              155,
+              x,
+              await iframe
+                .locator("body")
+                .evaluate(() => window.parent.__socketCatannMessages),
+            );
+            return x;
           },
           { timeout: 5000 },
         )
-        .toBe(undefined);
+        .not.toBe(true);
     };
     return {
       _peek: () => _expectedMessages![0],

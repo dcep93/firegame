@@ -286,3 +286,9 @@
 - what you changed: Updated `autoChoreo` to drive `RequestActionSwap` via a click helper and split controller behavior so dev-card clicks prefer concrete hand-card selectors (`card_knight`, `card_victory`, `card_monopoly`, `card_road`, `card_year`) instead of generic `development/dev` icons.
 - why the test isn't passing: The `ClickedDevelopmentCard` step is still producing action 53 (payload 48), so the choreography is clicking the swap control again rather than the in-hand knight card.
 - next suggested step: Add a stage-specific selector for the hand card widget visible after swap (or a deterministic canvas click coordinate for the in-hand knight card) and assert it emits action 48 before continuing autoChoreo.
+
+## ClickedDevelopmentCard handling + controller blocker
+- what would've saved time to get your bearings: The immediate blocker after sequence 246 is no longer only game-logic allowlisting; the run now fails in `Controller.confirmSelectedCards` (`Controller.ts:146`) during `playDevelopmentCardFromHand`, which times out because the polling callback never returns `undefined`.
+- what you changed: Added `GAME_ACTION.ClickedDevelopmentCard` handling in `gameLogic/index.ts` (allowlist + branch) to update development-card state, set action state for knight play, emit highlight updates, and persist via `setFirebaseData`.
+- why the test isn't passing: The choreography still calls `playDevelopmentCardFromHand`, which internally calls `confirmSelectedCards`; that helper currently times out before the expected client action 48/server follow-up can be drained.
+- next suggested step: Modify `src/routes/catann/test/Controller.ts` (outside c_catann allowed scope) to fix or bypass `confirmSelectedCards` for dev-card play, or adjust `test/choreo.ts` to drive action 48 without calling that helper.

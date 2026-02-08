@@ -1256,7 +1256,8 @@ const rollDice = () => {
     const amountToDiscard =
       playerCards.length > 7 ? Math.floor(playerCards.length / 2) : 0;
     if (amountToDiscard > 0) {
-      gameState.currentState.actionState = PlayerActionState.SelectCardsToDiscard;
+      gameState.currentState.actionState =
+        PlayerActionState.SelectCardsToDiscard;
       if (gameState.playerStates?.[playerColor]) {
         gameState.playerStates[playerColor].isTakingAction = true;
       }
@@ -1493,6 +1494,7 @@ export const applyGameAction = (parsed: {
       GAME_ACTION.SelectedCards,
       GAME_ACTION.SelectedCardsState,
       GAME_ACTION.RequestActionSwap,
+      GAME_ACTION.ClickedDevelopmentCard,
     ].includes(parsed.action!)
   ) {
     return false;
@@ -1682,7 +1684,6 @@ export const applyGameAction = (parsed: {
     return true;
   }
 
-
   if (parsed.action === GAME_ACTION.RequestActionSwap) {
     const gameData = firebaseData.GAME;
     const gameState = gameData.data.payload.gameState;
@@ -1696,6 +1697,54 @@ export const applyGameAction = (parsed: {
       {
         action: "requestActionSwap",
         payload: parsed.payload,
+      },
+    );
+    return true;
+  }
+
+  if (parsed.action === GAME_ACTION.ClickedDevelopmentCard) {
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    const playerColor = gameData.data.payload.playerColor ?? 1;
+    const clickedCard =
+      typeof parsed.payload === "number" ? parsed.payload : undefined;
+    const devCardsState =
+      gameState.mechanicDevelopmentCardsState?.players?.[playerColor];
+    const handCards = devCardsState?.developmentCards?.cards;
+    if (Array.isArray(handCards) && clickedCard != null) {
+      const cardIndex = handCards.indexOf(clickedCard);
+      if (cardIndex >= 0) {
+        handCards.splice(cardIndex, 1);
+      }
+    }
+    if (devCardsState && clickedCard != null) {
+      if (!Array.isArray(devCardsState.developmentCardsUsed)) {
+        devCardsState.developmentCardsUsed = [];
+      }
+      devCardsState.developmentCardsUsed.push(clickedCard);
+      devCardsState.developmentCardsBoughtThisTurn = null;
+    }
+
+    gameState.currentState.actionState =
+      clickedCard === CardEnum.Knight
+        ? PlayerActionState.PlaceRobberOrPirate
+        : PlayerActionState.None;
+    gameState.currentState.startTime = Date.now();
+    gameData.data.payload.timeLeftInState = 140;
+
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(
+      gameData,
+      clickedCard === CardEnum.Knight ? getRobberEligibleTiles(gameData) : [],
+    );
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "clickedDevelopmentCard",
+        card: clickedCard,
       },
     );
     return true;
@@ -1739,7 +1788,10 @@ export const applyGameAction = (parsed: {
     const playerState = gameState.playerStates?.[currentPlayer];
     if (playerState?.resourceCards?.cards) {
       playerState.resourceCards = {
-        cards: removePlayerCards(playerState.resourceCards.cards, selectedCards),
+        cards: removePlayerCards(
+          playerState.resourceCards.cards,
+          selectedCards,
+        ),
       };
     }
     if (gameState.bankState?.resourceCards) {
