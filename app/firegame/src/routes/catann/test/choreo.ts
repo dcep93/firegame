@@ -77,4 +77,6 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
 
   await c.fastForward(263);
   await autoChoreo(c);
+  await c.playNextRobber();
+  await autoChoreo(c);
 };

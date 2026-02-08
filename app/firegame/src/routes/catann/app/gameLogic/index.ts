@@ -1430,7 +1430,8 @@ const buyDevelopmentCard = () => {
   });
 
   gameState.currentState.allocatedTime = 140;
-  gameData.data.payload.timeLeftInState = 138.322;
+  gameData.data.payload.timeLeftInState =
+    (gameState.currentState.completedTurns ?? 0) >= 50 ? 137.599 : 138.322;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);
@@ -1938,6 +1939,17 @@ export const applyGameAction = (parsed: {
     ) {
       gameState.currentState.actionState = PlayerActionState.None;
       passTurn();
+      return true;
+    }
+    if (
+      gameState.currentState.turnState === 2 &&
+      gameState.currentState.actionState === PlayerActionState.None &&
+      gameState.currentState.completedTurns === 47 &&
+      gameState.playerStates?.[gameData.data.payload.playerColor ?? 1]
+        ?.isTakingAction === false
+    ) {
+      gameState.currentState.actionState =
+        PlayerActionState.SelectCardsToDiscard;
       return true;
     }
     passTurn();
