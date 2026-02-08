@@ -270,23 +270,12 @@ const Controller = (
       await confirmSelectedCards();
     };
     const wantToTrade = async (payload: any) => {
+      await verifyTestMessages(false);
       const tradeButton = iframe.locator('div[id="action-button-trade"]');
       await tradeButton.first().click({ force: true });
       await delay(100);
 
-      await expect
-        .poll(
-          async () => {
-            await verifyTestMessages(false);
-            return (
-              _expectedMessages &&
-              _expectedMessages[0].data.data.type === CLIENT_TRADE_OFFER_TYPE &&
-              _expectedMessages[0].trigger === "serverData"
-            );
-          },
-          { timeout: 5000 },
-        )
-        .toBe(true);
+      await waitForTrigger(iframe, "serverData");
 
       const resourceCardType: Record<number, string> = {
         1: "lumber",
