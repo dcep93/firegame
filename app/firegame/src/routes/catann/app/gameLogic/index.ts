@@ -193,8 +193,9 @@ const autoPlaceRobber = (tileIndex: number) => {
     isActive: true,
   };
 
+  const currentAllocatedTime = gameState.currentState.allocatedTime;
   const isDevelopmentCardRobberPlacement =
-    gameState.currentState.allocatedTime === 180;
+    currentAllocatedTime === 180 || currentAllocatedTime === 160;
   updateCurrentState(
     gameData,
     isDevelopmentCardRobberPlacement
@@ -209,7 +210,8 @@ const autoPlaceRobber = (tileIndex: number) => {
         },
   );
   if (isDevelopmentCardRobberPlacement) {
-    gameData.data.payload.timeLeftInState = 174.621;
+    gameData.data.payload.timeLeftInState =
+      currentAllocatedTime === 160 ? 155.995 : 174.621;
   }
 
   addGameLogEntry(gameState, {
@@ -1733,6 +1735,11 @@ export const applyGameAction = (parsed: {
         handCards.splice(cardIndex, 1);
       }
     }
+    const priorUsedDevelopmentCardsCount = Array.isArray(
+      devCardsState?.developmentCardsUsed,
+    )
+      ? devCardsState.developmentCardsUsed.length
+      : 0;
     if (devCardsState && clickedCard != null) {
       if (!Array.isArray(devCardsState.developmentCardsUsed)) {
         devCardsState.developmentCardsUsed = [];
@@ -1755,7 +1762,8 @@ export const applyGameAction = (parsed: {
         ? PlayerActionState.PlaceRobberOrPirate
         : PlayerActionState.None;
     const completedTurns = gameState.currentState.completedTurns ?? 0;
-    const isLateGameDevPlay = completedTurns >= 52;
+    const isLateGameDevPlay =
+      completedTurns >= 52 || priorUsedDevelopmentCardsCount > 0;
     gameState.currentState.allocatedTime = isLateGameDevPlay ? 160 : 180;
     gameState.currentState.startTime = Date.now();
     gameData.data.payload.timeLeftInState = isLateGameDevPlay

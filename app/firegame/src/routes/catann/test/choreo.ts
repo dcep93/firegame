@@ -70,4 +70,11 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c);
   await c.playDevelopmentCardFromHand();
   await autoChoreo(c);
+  await c.playNextRobber();
+  await autoChoreo(c);
+  await c.playNextRobber();
+  await autoChoreo(c, 263);
+
+  await c.fastForward(263);
+  await autoChoreo(c);
 };
