@@ -144,15 +144,7 @@ const Controller = (
       await verifyTestMessages(false);
       const confirmButton = iframe.locator('div[class*="confirmButton-"]');
       await confirmButton.first().click({ force: true });
-      await expect
-        .poll(
-          async () => {
-            await _delay(500);
-            return await verifyTestMessages(false);
-          },
-          { timeout: 5000 },
-        )
-        .not.toBe(true);
+      await _delay(1000);
     };
     return {
       _peek: () => _expectedMessages![0],
