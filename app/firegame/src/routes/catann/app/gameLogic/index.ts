@@ -1754,8 +1754,6 @@ export const applyGameAction = (parsed: {
     sendShipHighlights32(gameData);
     sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
 
-    throw new Error("fix here");
-
     setFirebaseData({ ...firebaseData, GAME: gameData }, undefined);
     return true;
   }
