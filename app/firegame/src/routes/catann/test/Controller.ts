@@ -82,15 +82,15 @@ const Controller = (
     const verifyTestMessages = async (failOnEmpty: boolean = true) => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
-      if (failOnEmpty) {
-        try {
-          expect(testMessages.length).not.toBe(0);
-        } catch (e) {
+      try {
+        expect(testMessages.length).not.toBe(0);
+      } catch (e) {
+        if (failOnEmpty) {
           console.log(JSON.stringify(expectedMessages[0], null, 2));
           throw e;
+        } else {
+          return true;
         }
-      } else {
-        return true;
       }
       const durationMs = Date.now() - loaded;
       console.log(
@@ -142,27 +142,13 @@ const Controller = (
     };
     const confirmSelectedCards = async () => {
       await verifyTestMessages(false);
-      console.log(
-        145,
-        await iframe
-          .locator("body")
-          .evaluate(() => window.parent.__socketCatannMessages),
-      );
       const confirmButton = iframe.locator('div[class*="confirmButton-"]');
       await confirmButton.first().click({ force: true });
       await expect
         .poll(
           async () => {
             await _delay(500);
-            const x = await verifyTestMessages(false);
-            console.log(
-              155,
-              x,
-              await iframe
-                .locator("body")
-                .evaluate(() => window.parent.__socketCatannMessages),
-            );
-            return x;
+            return await verifyTestMessages(false);
           },
           { timeout: 5000 },
         )
