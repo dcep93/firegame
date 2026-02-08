@@ -1751,14 +1751,13 @@ export const applyGameAction = (parsed: {
         },
       },
     });
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData, []);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
 
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "clickedDevelopmentCard",
-        card: clickedCard,
-      },
-    );
+    setFirebaseData({ ...firebaseData, GAME: gameData }, undefined);
     return true;
   }
 
@@ -1793,6 +1792,12 @@ export const applyGameAction = (parsed: {
   if (parsed.action === GAME_ACTION.SelectedCards) {
     const gameData = firebaseData.GAME;
     const gameState = gameData.data.payload.gameState;
+    if (
+      gameState.currentState.actionState !==
+      PlayerActionState.SelectCardsToDiscard
+    ) {
+      return true;
+    }
     const selectedCards = Array.isArray(parsed.payload)
       ? (parsed.payload as number[])
       : [];
