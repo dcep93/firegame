@@ -56,4 +56,4 @@ If no time constraint is provided, keep iterating and updating `test/choreo.ts` 
 
 - The test compares recorded socket message bytes after filtering heartbeats.
 - The choreography should drive the UI through **click interactions only**.
-- In responses, lead with the `console.log({ codex: ... })` object
+- In responses, lead with the `console.log({ codex: ... })` object from both the first and final runs.
