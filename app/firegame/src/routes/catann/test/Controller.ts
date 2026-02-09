@@ -451,6 +451,13 @@ const Controller = (
       await card.first().click({ force: true });
       await delay(100);
     };
+    const playFreeRoad = async () => {
+      const payload = _expectedMessages!.find(
+        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
+      )!.data.payload;
+      // TODO coords should be based on payload
+      await buildRoad({ col: 3, row: 7 }, { col: 4, row: 6 }, true);
+    };
     return {
       _peek: () => _expectedMessages![0],
       verifyTestMessages,
@@ -473,6 +480,7 @@ const Controller = (
       skipIllegalPass,
       playNextRobber,
       selectNextDiscardCard,
+      playFreeRoad,
     };
   })(getCanvas(iframe));
 

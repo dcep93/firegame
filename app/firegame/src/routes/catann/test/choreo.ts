@@ -109,4 +109,8 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.fastForward(290);
   await c.playDevelopmentCardFromHand();
   await c.verifyTestMessages();
+  await c.playFreeRoad();
+  await c.verifyTestMessages();
+  await c.playFreeRoad();
+  await c.verifyTestMessages();
 };

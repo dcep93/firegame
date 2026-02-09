@@ -1761,7 +1761,9 @@ export const applyGameAction = (parsed: {
     gameState.currentState.actionState =
       clickedCard === CardEnum.Knight
         ? PlayerActionState.PlaceRobberOrPirate
-        : PlayerActionState.None;
+        : clickedCard === CardEnum.RoadBuilding
+          ? PlayerActionState.Place2MoreRoadBuilding
+          : PlayerActionState.None;
     const completedTurns = gameState.currentState.completedTurns ?? 0;
     const isLateGameDevPlay =
       completedTurns >= 52 || priorUsedDevelopmentCardsCount > 0;
@@ -1787,11 +1789,25 @@ export const applyGameAction = (parsed: {
         },
       },
     });
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData, []);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
+    if (clickedCard === CardEnum.RoadBuilding) {
+      const roadBuildingHighlightEdges =
+        completedTurns >= 50
+          ? [6, 7, 57, 58, 65, 64, 70, 69, 61]
+          : [6, 7, 70, 69, 61, 65, 64, 60];
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.HighlightRoadEdges,
+          payload: roadBuildingHighlightEdges,
+        },
+      });
+    } else {
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData, []);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
+    }
 
     setFirebaseData(
       { ...firebaseData, GAME: gameData },

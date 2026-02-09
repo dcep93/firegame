@@ -23416,26 +23416,6 @@
     }
   },
   {
-    "trigger": "serverData",
-    "data": {
-      "id": "130",
-      "data": {
-        "type": 77,
-        "payload": {
-          "type": 49,
-          "data": {
-            "creator": 1,
-            "isBankTrade": true,
-            "counterOfferInResponseToTradeId": null,
-            "offeredResources": [4, 4, 4, 4],
-            "wantedResources": [1]
-          }
-        },
-        "sequence": 21
-      }
-    }
-  },
-  {
     "trigger": "clientData",
     "data": {
       "id": "136",
