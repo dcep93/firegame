@@ -14,3 +14,5 @@ export const addGameLogEntry = (gameState: any, entry: any) => {
   gameState.gameLogState[String(nextIndex)] = entry;
   return nextIndex;
 };
+
+export const TEST_CHANGE_STR = "test.Controller.handleReconnect";

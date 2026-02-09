@@ -13,7 +13,7 @@ import {
   GameLogMessageType,
   GameStateUpdateType,
 } from "../app/gameLogic/CatannFilesEnums";
-import { addGameLogEntry } from "../app/gameLogic/utils";
+import { addGameLogEntry, TEST_CHANGE_STR } from "../app/gameLogic/utils";
 import {
   codex,
   delay,
@@ -408,9 +408,9 @@ const Controller = (
       });
 
       await page.evaluate(
-        (_firebaseData) =>
-          window.__setFirebaseData(_firebaseData, "test.Controller"),
-        firebaseData,
+        ({ _firebaseData, TEST_CHANGE_STR }) =>
+          window.__setFirebaseData(_firebaseData, TEST_CHANGE_STR),
+        { _firebaseData: firebaseData, TEST_CHANGE_STR },
       );
     };
     const skipIllegalPass = async () => {

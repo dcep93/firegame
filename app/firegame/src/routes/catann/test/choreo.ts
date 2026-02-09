@@ -103,16 +103,10 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
 
   await c.fastForward(283);
   await autoChoreo(c, 285);
-
-  await c.fastForward(285);
   await c.handleReconnect();
-  //   {
-  //   "trigger": "clientData",
-  //   "data": {
-  //     "action": 2,
-  //     "payload": true,
-  //     "sequence": 288
-  //   }
-  // },
-  await autoChoreo(c);
+  await autoChoreo(c, 290);
+
+  await c.fastForward(290);
+  await c.playDevelopmentCardFromHand();
+  await c.verifyTestMessages();
 };

@@ -10,6 +10,7 @@ import {
   spoofHostRoom,
   startGame,
 } from "./gameLogic/createNew";
+import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
 
 export var firebaseData: any = {};
@@ -168,8 +169,10 @@ export function setFirebaseData(newData: any, change: any) {
     ...newData,
     __meta: { change, me: store.me, now: Date.now() },
   };
-  if (change === undefined) {
-    throw new Error("need to define a change");
+  if (change === TEST_CHANGE_STR) {
+    firebaseData = newData;
+    lastGameStateSnapshot = getGameStateSnapshot(firebaseData.GAME);
+    return;
   }
   // TODO reduce writes by using update instead of set
   // also only change diffs
