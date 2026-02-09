@@ -255,17 +255,14 @@ const Controller = (
       await waitForTrigger(iframe, "clientData");
     };
     const playDevelopmentCardFromHand = async () => {
+      await verifyTestMessages(false);
+      const card = _expectedMessages!.find(
+        (msg) => msg.data.action === GAME_ACTION.ClickedDevelopmentCard,
+      )!.data.payload;
       const handDevCard = iframe.locator(
-        'div[id="player-card-inventory"] img[src*="card_knight"], div[id="player-card-inventory"] img[src*="card_victory"], div[id="player-card-inventory"] img[src*="card_monopoly"], div[id="player-card-inventory"] img[src*="card_road"], div[id="player-card-inventory"] img[src*="card_year"]',
+        `div[class*="cardContainer-"][class*="clickable-"][data-card-enum="${card}"]`,
       );
-      if ((await handDevCard.count()) > 0) {
-        await handDevCard.first().click({ force: true });
-      } else {
-        const fallbackDevCard = iframe.locator(
-          'div[id="player-card-inventory"] img[src*="development"], div[id="player-card-inventory"] img[src*="dev"]',
-        );
-        await fallbackDevCard.first().click({ force: true });
-      }
+      await handDevCard.first().click({ force: true });
       await delay(100);
       await confirmSelectedCards();
     };
