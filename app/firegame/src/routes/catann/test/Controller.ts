@@ -144,7 +144,6 @@ const Controller = (
       await verifyTestMessages(false);
       const confirmButton = iframe.locator('div[class*="confirmButton-"]');
       await confirmButton.first().click({ force: true });
-      await delay(1000);
     };
     const fastForward = async (clientDataSequence: number) => {
       await verifyTestMessages(false);
@@ -264,6 +263,10 @@ const Controller = (
       );
       await handDevCard.first().click({ force: true });
       await delay(100);
+
+      // click the dice to remove the tooltip of the selected cards
+      await clickCanvas(canvas, MAP_DICE_COORDS, false);
+
       await confirmSelectedCards();
     };
     const wantToTrade = async (payload: any) => {
