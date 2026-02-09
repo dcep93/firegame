@@ -455,8 +455,21 @@ const Controller = (
       const payload = _expectedMessages!.find(
         (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
       )!.data.payload;
-      // TODO coords should be based on payload
-      await buildRoad({ col: 3, row: 7 }, { col: 4, row: 6 }, true);
+      const edgeCoordsByPayload: Record<
+        number,
+        [{ col: number; row: number }, { col: number; row: number }]
+      > = {
+        68: [
+          { col: 5, row: 7 },
+          { col: 6, row: 6 },
+        ],
+        69: [
+          { col: 6, row: 6 },
+          { col: 6, row: 5 },
+        ],
+      };
+      const [start, destination] = edgeCoordsByPayload[payload];
+      await buildRoad(start, destination, true);
     };
     return {
       _peek: () => _expectedMessages![0],

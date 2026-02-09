@@ -328,3 +328,9 @@
 - what you changed: In `gameLogic/index.ts`, mapped `ClickedDevelopmentCard` with card `14` to `Place2MoreRoadBuilding` action state and emitted `HighlightRoadEdges` payload `[6, 7, 57, 58, 65, 64, 70, 69, 61]` during the post-exchange highlight phase.
 - why the test isn't passing: After fixing sequence 19, the run advances to codex `{ clientData: 291, serverData: 20 }` and then fails due leftover expected messages because an unexpected `CLIENT_TRADE_OFFER_TYPE` (type 77, sequence 21) is emitted where the recording expects queue drain.
 - next suggested step: Align late-stage trade-offer emission rules around this dev-card/road-building phase so type 77 is only sent when a real trade-offer state transition occurs (state-derived, not timing heuristic), then rerun `test_catann.sh --codex`.
+
+## playFreeRoad payload-driven coordinate mapping attempt
+- what would've saved time to get your bearings: `Controller.playFreeRoad()` was still hardcoded and ignored the queued `ConfirmBuildRoad` payload, so the late single-player run could not target the expected edge deterministically.
+- what you changed: Updated `src/routes/catann/test/Controller.ts` so `playFreeRoad()` reads the upcoming `ConfirmBuildRoad` payload and selects coordinates from a payload->edge map (with fallback to the previous hardcoded road click).
+- why the test isn't passing: The run progressed, but the mapped coordinates are still not aligned with actual clickable road geometry in this environment; one attempt emitted payload 64 instead of 69, and another attempt timed out waiting for clickability.
+- next suggested step: Derive free-road click positions from live edge geometry (or existing edge highlight payload) rather than static row/col guesses, then rerun Catann flow.
