@@ -9,11 +9,17 @@ import {
 import {
   CardEnum,
   CLIENT_TRADE_OFFER_TYPE,
+  CornerDirection,
   GAME_ACTION,
   GameLogMessageType,
   GameStateUpdateType,
 } from "../app/gameLogic/CatannFilesEnums";
-import { addGameLogEntry, TEST_CHANGE_STR } from "../app/gameLogic/utils";
+import {
+  addGameLogEntry,
+  edgeEndpoints,
+  TEST_CHANGE_STR,
+  tileEdgeStates,
+} from "../app/gameLogic/utils";
 import {
   codex,
   delay,
@@ -452,24 +458,22 @@ const Controller = (
       await delay(100);
     };
     const playFreeRoad = async () => {
-      const payload = _expectedMessages!.find(
+      const payload: keyof typeof tileEdgeStates = _expectedMessages!.find(
         (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
       )!.data.payload;
-      const edgeCoordsByPayload: Record<
-        number,
-        [{ col: number; row: number }, { col: number; row: number }]
-      > = {
-        68: [
-          { col: 5, row: 7 },
-          { col: 6, row: 6 },
-        ],
-        69: [
-          { col: 6, row: 6 },
-          { col: 6, row: 5 },
-        ],
+      const [start, destination] = edgeEndpoints(tileEdgeStates[payload]);
+      const getColRow = ({
+        x,
+        y,
+        z,
+      }: {
+        x: number;
+        y: number;
+        z: CornerDirection;
+      }) => {
+        throw new Error("implement me");
       };
-      const [start, destination] = edgeCoordsByPayload[payload];
-      await buildRoad(start, destination, true);
+      await buildRoad(getColRow(start), getColRow(destination), true);
     };
     return {
       _peek: () => _expectedMessages![0],

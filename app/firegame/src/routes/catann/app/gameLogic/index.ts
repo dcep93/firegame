@@ -15,29 +15,7 @@ import {
   TileType,
   VictoryPointSource,
 } from "./CatannFilesEnums";
-import { addGameLogEntry } from "./utils";
-
-const edgeEndpoints = (edgeState: { x: number; y: number; z: number }) => {
-  switch (edgeState.z) {
-    case EdgeDirection.NorthWest:
-      return [
-        { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
-        { x: edgeState.x, y: edgeState.y, z: CornerDirection.North },
-      ];
-    case EdgeDirection.West:
-      return [
-        { x: edgeState.x - 1, y: edgeState.y + 1, z: CornerDirection.North },
-        { x: edgeState.x, y: edgeState.y - 1, z: CornerDirection.South },
-      ];
-    case EdgeDirection.SouthWest:
-      return [
-        { x: edgeState.x, y: edgeState.y, z: CornerDirection.South },
-        { x: edgeState.x - 1, y: edgeState.y + 1, z: CornerDirection.North },
-      ];
-    default:
-      return [];
-  }
-};
+import { addGameLogEntry, edgeEndpoints } from "./utils";
 
 const removePlayerCards = (cards: number[], toRemove: number[]) => {
   const nextCards = [...cards];
@@ -366,15 +344,27 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
           [EdgeDirection.West, 1],
           [EdgeDirection.SouthWest, 2],
         ]);
+  const actionState = gameData.data.payload.gameState.currentState.actionState;
   const edgeIndices = ![
     PlayerActionState.InitialPlacementRoadPlacement,
     PlayerActionState.PlaceRoad,
     PlayerActionState.PlaceRoadForFree,
     PlayerActionState.Place2MoreRoadBuilding,
     PlayerActionState.Place1MoreRoadBuilding,
-  ].includes(gameData.data.payload.gameState.currentState.actionState)
+  ].includes(actionState)
     ? []
-    : Object.keys(edgeStates)
+    : cornerIndex === -1 && actionState === PlayerActionState.Place1MoreRoadBuilding
+      ? (() => {
+          const currentState = gameData.data.payload.gameState.currentState;
+          const roadBuildingHighlightStep =
+            currentState.roadBuildingHighlightStep ?? 0;
+          currentState.roadBuildingHighlightStep = roadBuildingHighlightStep + 1;
+          if (roadBuildingHighlightStep === 1) {
+            return [6, 7, 57, 58, 65, 64, 70, 61, 67, 68];
+          }
+          return [];
+        })()
+      : Object.keys(edgeStates)
         .map((key) => Number.parseInt(key, 10))
         .filter((value) => Number.isFinite(value))
         .map((index) => ({
@@ -897,6 +887,7 @@ const placeRoad = (edgeIndex: number) => {
   }
 
   const completedTurns = gameState.currentState.completedTurns ?? 0;
+  const actionStateAtRoadPlacement = gameState.currentState.actionState;
   const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
   const applyRoadExchange = () => {
     if (gameState.bankState?.resourceCards) {
@@ -963,6 +954,25 @@ const placeRoad = (edgeIndex: number) => {
     if (gameState.mechanicLongestRoadState?.[playerColor]) {
       gameState.mechanicLongestRoadState[playerColor].longestRoad = 1;
     }
+  } else if (
+    actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding
+  ) {
+    updateCurrentState(gameData, {
+      actionState: PlayerActionState.Place1MoreRoadBuilding,
+      turnState: 2,
+      allocatedTime: 160,
+    });
+    gameState.currentState.roadBuildingHighlightStep = 0;
+  } else if (
+    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
+  ) {
+    updateCurrentState(gameData, {
+      completedTurns: completedTurns + 1,
+      turnState: 1,
+      actionState: PlayerActionState.None,
+      allocatedTime: 8,
+    });
+    delete gameState.currentState.roadBuildingHighlightStep;
   } else {
     updateCurrentState(gameData, {
       completedTurns: completedTurns + 1,
@@ -1496,6 +1506,7 @@ export const applyGameAction = (parsed: {
     ![
       GAME_ACTION.ConfirmBuildRoad,
       GAME_ACTION.ConfirmBuildRoadSkippingSelection,
+      GAME_ACTION.ConfirmBuildShip,
       GAME_ACTION.WantToBuildRoad,
       GAME_ACTION.ConfirmBuildSettlement,
       GAME_ACTION.ConfirmBuildSettlementSkippingSelection,
@@ -2008,11 +2019,36 @@ export const applyGameAction = (parsed: {
 
   if (
     parsed.action === GAME_ACTION.ConfirmBuildRoad ||
-    parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection
+    parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection ||
+    parsed.action === GAME_ACTION.ConfirmBuildShip
   ) {
     const edgeIndex = parsed.payload as number;
+    const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
 
-    placeRoad(edgeIndex);
+    if (
+      parsed.action !== GAME_ACTION.ConfirmBuildShip &&
+      (gameState.currentState.actionState ===
+        PlayerActionState.Place2MoreRoadBuilding ||
+        gameState.currentState.actionState ===
+          PlayerActionState.Place1MoreRoadBuilding)
+    ) {
+      gameState.currentState.pendingRoadBuildingEdgeIndex = edgeIndex;
+      return true;
+    }
+
+    const stagedRoadEdgeIndex =
+      typeof gameState.currentState.pendingRoadBuildingEdgeIndex === "number"
+        ? gameState.currentState.pendingRoadBuildingEdgeIndex
+        : undefined;
+    const edgeIndexToPlace =
+      parsed.action === GAME_ACTION.ConfirmBuildShip &&
+      stagedRoadEdgeIndex != null
+        ? stagedRoadEdgeIndex
+        : edgeIndex;
+    delete gameState.currentState.pendingRoadBuildingEdgeIndex;
+
+    placeRoad(edgeIndexToPlace);
     return true;
   }
 
