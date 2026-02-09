@@ -147,7 +147,7 @@ const Controller = (
       await delay(1000);
     };
     const fastForward = async (clientDataSequence: number) => {
-      await verifyTestMessages();
+      await verifyTestMessages(false);
       const nextSequence = _expectedMessages!.find((msg) => msg.data.sequence);
       if (clientDataSequence === -1) {
         expect(nextSequence).toBe(null);

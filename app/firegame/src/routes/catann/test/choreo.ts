@@ -78,5 +78,41 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.fastForward(263);
   await autoChoreo(c);
   await c.playNextRobber();
+  await autoChoreo(c, 283);
+
+  // {
+  //   "trigger": "serverData",
+  //   "data": {
+  //     "id": "130",
+  //     "data": {
+  //       "type": 77,
+  //       "payload": {
+  //         "type": 49,
+  //         "data": {
+  //           "creator": 1,
+  //           "isBankTrade": true,
+  //           "counterOfferInResponseToTradeId": null,
+  //           "offeredResources": [4, 4, 4, 4],
+  //           "wantedResources": [1]
+  //         }
+  //       },
+  //       "sequence": 174
+  //     }
+  //   }
+  // },
+
+  await c.fastForward(283);
+  await autoChoreo(c, 285);
+
+  await c.fastForward(285);
+  await c.handleReconnect();
+  //   {
+  //   "trigger": "clientData",
+  //   "data": {
+  //     "action": 2,
+  //     "payload": true,
+  //     "sequence": 288
+  //   }
+  // },
   await autoChoreo(c);
 };
