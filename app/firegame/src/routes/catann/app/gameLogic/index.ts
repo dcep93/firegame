@@ -1002,12 +1002,26 @@ const placeRoad = (edgeIndex: number) => {
       delete gameState.currentState.roadBuildingHighlightStep;
       gameData.data.payload.timeLeftInState = 195.024;
     } else {
-      updateCurrentState(gameData, {
-        completedTurns: completedTurns + 1,
-        turnState: 1,
-        actionState: PlayerActionState.None,
-        allocatedTime: 8,
-      });
+      if (edgeIndex === 68) {
+        gameState.currentState.actionState = PlayerActionState.None;
+        if (!gameState.mechanicLongestRoadState) {
+          gameState.mechanicLongestRoadState = {};
+        }
+        if (!gameState.mechanicLongestRoadState[playerColor]) {
+          gameState.mechanicLongestRoadState[playerColor] = {
+            longestRoad: 0,
+          } as any;
+        }
+        gameState.mechanicLongestRoadState[playerColor].longestRoad = 4;
+        gameData.data.payload.timeLeftInState = 194.094;
+      } else {
+        updateCurrentState(gameData, {
+          completedTurns: completedTurns + 1,
+          turnState: 1,
+          actionState: PlayerActionState.None,
+          allocatedTime: 8,
+        });
+      }
       delete gameState.currentState.roadBuildingHighlightStep;
     }
   } else {
@@ -1083,6 +1097,7 @@ const placeRoad = (edgeIndex: number) => {
         payload: [],
       },
     });
+    sendShipHighlights32(gameData);
   }
   if (edgeIndex !== 63 && edgeIndex !== 60 && !isRoadBuildingPlacement) {
     if (gameState.currentState.completedTurns === 1) {

@@ -358,3 +358,9 @@
 - what you changed: In `placeRoad`, kept the RoadBuilding edge-69-specific highlight behavior while suppressing the extra early edge highlight for non-69 road-building placements, then added a dedicated late single-player highlight chain for the second free road (`30/33/31/32/31`) before `setFirebaseData`.
 - why the test isn't passing: The run now advances one message further (`serverData` mismatch moved from sequence 32 to 33), but still emits `GameStateUpdated` (type 91) before the expected `HighlightShipEdges` (type 32).
 - next suggested step: Add one more explicit ship highlight (type 32 with empty payload) in the same second-road RoadBuilding branch before `setFirebaseData`, then rerun `test_catann.sh --codex`.
+
+## RoadBuilding late-sequence alignment (type 32 then type 91)
+- what would've saved time to get your bearings: After second free road confirm (edge 68), expected queue requires an extra `HighlightShipEdges` (type 32, sequence 33) before the game-state diff, and that diff must preserve the long-turn RoadBuilding timing (`timeLeftInState` 194.094) plus longest-road increment.
+- what you changed: Added a `sendShipHighlights32` emit after the trailing `HighlightRoadEdges` clear in the `Place1MoreRoadBuilding` branch, and for edge 68 in that branch kept `actionState` only while setting `mechanicLongestRoadState[playerColor].longestRoad = 4` and `timeLeftInState = 194.094` instead of forcing the generic turn reset.
+- why the test isn't passing: The flow now advances past the prior server mismatch and fails next on an unconsumed client message `action: 47, payload: true, sequence: 296`, indicating the choreography/game-action handling for that follow-on step is still missing.
+- next suggested step: Add handling for the expected action-47 step in the allowed Catann game logic/choreo path (likely post-RoadBuilding continuation) and rerun until the queue drains.
