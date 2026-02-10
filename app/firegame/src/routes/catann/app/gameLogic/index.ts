@@ -960,11 +960,29 @@ const placeRoad = (edgeIndex: number) => {
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding
   ) {
-    updateCurrentState(gameData, {
-      actionState: PlayerActionState.Place1MoreRoadBuilding,
-      turnState: 2,
-      allocatedTime: 160,
-    });
+    if (edgeIndex === 69) {
+      updateCurrentState(gameData, {
+        actionState: PlayerActionState.Place1MoreRoadBuilding,
+        turnState: 2,
+        allocatedTime: 200,
+      });
+      if (!gameState.mechanicLongestRoadState) {
+        gameState.mechanicLongestRoadState = {};
+      }
+      if (!gameState.mechanicLongestRoadState[playerColor]) {
+        gameState.mechanicLongestRoadState[playerColor] = {
+          longestRoad: 0,
+        } as any;
+      }
+      gameState.mechanicLongestRoadState[playerColor].longestRoad = 3;
+      gameData.data.payload.timeLeftInState = 195.024;
+    } else {
+      updateCurrentState(gameData, {
+        actionState: PlayerActionState.Place1MoreRoadBuilding,
+        turnState: 2,
+        allocatedTime: 160,
+      });
+    }
     gameState.currentState.roadBuildingHighlightStep = 0;
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding

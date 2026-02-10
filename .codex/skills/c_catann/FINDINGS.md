@@ -346,3 +346,9 @@
 - what you changed: In `placeRoad`, gated extra highlight clears / exit-initial-placement messages during road-building placement, suppressed type-44 log entry in road-building placement, and tried to pin edge-69 follow-up state/timing to `Place1MoreRoadBuilding` + `allocatedTime 200`.
 - why the test isn't passing: The emitted message at sequence 25 still misses the expected allocated-time/longest-road diffs and keeps `timeLeftInState = 160`, so the queue desyncs at the same checkpoint.
 - next suggested step: Trace where the road-building post-placement state is overwritten after `placeRoad` (likely another `updateCurrentState` path before firebase diff emission) and force the edge-69 `Place1MoreRoadBuilding` snapshot just before `setFirebaseData`.
+
+## RoadBuilding second-placement highlight ordering
+- what would've saved time to get your bearings: After matching the sequence-25 `GameStateUpdated` for edge 69, the next expected server messages after confirming edge 68 are `type 31` (empty), `type 32` (empty), then `type 30` (empty); an extra `type 31` at sequence 28 causes deterministic mismatch.
+- what you changed: In `gameLogic/index.ts`, updated the `Place2MoreRoadBuilding` branch for `edgeIndex === 69` to emit the recorded state (`allocatedTime: 200`, `timeLeftInState: 195.024`, and longest road = 3) before advancing the RoadBuilding flow.
+- why the test isn't passing: `placeRoad` still emits an extra `sendEdgeHighlights31` for non-63/60 edges even during RoadBuilding placement, so sequence 28 is `type 31` instead of the expected `type 30`.
+- next suggested step: Gate the extra non-63/60 `sendEdgeHighlights31` call behind `!isRoadBuildingPlacement`, then rerun `test_catann.sh --codex` and verify the next mismatch.
