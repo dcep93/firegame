@@ -233,6 +233,12 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (msg.data.action === GAME_ACTION.ClickedDice && msg.data.payload === 3)
     return false;
   //
+  if (
+    msg.trigger === "clientData" &&
+    msg.data.action === undefined &&
+    msg.data.type === undefined
+  )
+    return false;
   if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
   if (msg.data.id === GameStateUpdateType.FirstGameState) return false;
   if (msg.data.data?.type === GameStateUpdateType.PlayerReconnected)

@@ -394,3 +394,9 @@
 - what you changed: In `gameLogic/index.ts`, kept `timeLeftInState = 0` for the largest-army knight snapshot and extended the knight post-`setFirebaseData` tail to emit `HighlightTiles` clear followed by another `HighlightCorners` clear.
 - why the test isn't passing: The queue now advances to `{ codex: { clientData: 306, serverData: 82 } }` but still leaves the next expected `serverData` highlight clear (`type 33`, sequence 83) unconsumed.
 - next suggested step: Continue mirroring the recorded post-knight empty highlight sequence (likely alternating 33/30/31/32 clears) or move this tail handling into choreography-driven consumption so `expectedMessages` drains completely.
+
+## Game end messaging from applyGameAction
+- what would've saved time to get your bearings: The single-player recording expects a win-finalization burst after sequence 85: a `GameStateUpdated` diff with win logs, `CanResignGame` false, `GameEndState`, then `RequestBeginnerModeLevelEnd` follow-up messages.
+- what you changed: In `applyGameAction`, added winner-finalization logic that emits the win log diff via `setFirebaseData`, sends `CanResignGame` and `GameEndState`, and handles `RequestBeginnerModeLevelEnd` by sending lobby user-state update + `BeginnerHintActivated`.
+- why the test isn't passing: After matching through expected sequence 89, the run emits an extra malformed `clientData` message (`{ payload: 15 }`) and the browser logs `Cannot read properties of undefined (reading 'receive')`, which desynchronizes the remaining expected queue.
+- next suggested step: Trace the source of the post-sequence-89 malformed client message in the iframe bridge/handler path and adjust the `RequestBeginnerModeLevelEnd` response shape or ordering so no extra client message is produced.

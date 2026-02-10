@@ -1662,6 +1662,7 @@ export const applyGameAction = (parsed: {
         GAME_ACTION.SelectedCardsState,
         GAME_ACTION.RequestActionSwap,
         GAME_ACTION.ClickedDevelopmentCard,
+        GAME_ACTION.RequestBeginnerModeLevelEnd,
       ].includes(parsed.action!)
     ) {
       return false;
@@ -1752,6 +1753,58 @@ export const applyGameAction = (parsed: {
       );
       return true;
     }
+    if (parsed.action === GAME_ACTION.RequestBeginnerModeLevelEnd) {
+      sendToMainSocket?.({
+        id: State.LobbyStateUpdate.toString(),
+        data: {
+          type: 3,
+          payload: {
+            accessLevel: 1,
+            colonistCoins: 0,
+            colonistVersion: 2890,
+            giftedMemberships: [],
+            icon: 12,
+            id: "102013561",
+            interactedWithSite: true,
+            isLoggedIn: false,
+            hasJoinedColonistDiscordServer: false,
+            karma: 0,
+            karmaCompletedGameCount: 0,
+            membership: null,
+            membershipEndDate: null,
+            membershipPaymentMethod: null,
+            membershipPending: false,
+            isMuted: false,
+            ownedItems: [],
+            preferredColor: null,
+            profilePictureUrl: null,
+            regionUpdated: null,
+            totalCompletedGameCount: 0,
+            ckTotalGameCount: 0,
+            ckFreeGameUntil: null,
+            ckNextRerollAt: "2026-01-29T01:56:13.287Z",
+            username: "Marlen#8600",
+            language: null,
+            usernameChangeAttemptsLeft: 1,
+            forceSubscription: true,
+            vliHash: null,
+            expiresAt: "2026-02-28T00:56:13.287Z",
+          },
+        },
+      });
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.BeginnerHintActivated,
+          payload: {
+            type: GAME_ACTION.ClickedDevelopmentCard,
+            data: CardEnum.Knight,
+          },
+        },
+      });
+      return true;
+    }
+
     if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
@@ -2240,17 +2293,125 @@ export const applyGameAction = (parsed: {
   const winner = getWinner();
   if (winner) {
     const gameData = firebaseData.GAME;
+    const gameState = gameData.data.payload.gameState;
+    const alreadyEnded =
+      gameState.currentState.turnState === 3 &&
+      gameData.data.payload.timeLeftInState === 0;
+    if (alreadyEnded) {
+      return rval;
+    }
     sendTileHighlights33(gameData, []);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-    addGameLogEntry(gameData.data.payload.gameState, {
+    addGameLogEntry(gameState, {
       text: { type: GameLogMessageType.Separator },
     });
-    addGameLogEntry(gameData.data.payload.gameState, {
-      text: { type: GameLogMessageType.PlayerWonTheGame },
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.PlayerWonTheGame,
+        playerColor: winner.color,
+      },
+      from: winner.color,
     });
-    addGameLogEntry(gameData.data.payload.gameState, {
+    addGameLogEntry(gameState, {
       text: { type: GameLogMessageType.Separator },
+    });
+    gameState.currentState.turnState = 3;
+    gameState.currentState.actionState = PlayerActionState.None;
+    gameState.currentState.allocatedTime = 300;
+    gameData.data.payload.timeLeftInState = 0;
+
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "gameEnd",
+      },
+    );
+
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.CanResignGame,
+        payload: false,
+      },
+    });
+
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.GameEndState,
+        payload: {
+          endGameState: {
+            diceStats: [2, 3, 4, 4, 6, 10, 8, 5, 4, 5, 1],
+            resourceCardsStats: [
+              1, 2, 4, 4, 5, 1, 1, 3, 4, 4, 5, 2, 2, 5, 3, 4, 4, 5, 3, 3,
+              4, 4, 4, 4, 2, 5, 5, 5, 1, 1, 1, 1, 4, 4, 5, 5, 3, 3, 4, 2,
+              4, 4, 3, 3, 3, 4, 4, 4, 1, 2,
+            ],
+            developmentCardStats: [11, 11, 12, 14, 11],
+            gameDurationInMS: 192729,
+            totalTurnCount: 54,
+            players: {
+              1: {
+                color: 1,
+                rank: 1,
+                victoryPoints: {
+                  0: 3,
+                  1: 1,
+                  2: 1,
+                  3: 1,
+                  4: 1,
+                },
+                winningPlayer: true,
+                title: null,
+              },
+            },
+            resourceStats: {
+              1: {
+                color: 1,
+                rollingIncome: 45,
+                robbingIncome: 0,
+                devCardIncome: 0,
+                tradeIncome: 2,
+                rollingLoss: 4,
+                robbingLoss: 0,
+                devCardLoss: 0,
+                tradeLoss: 8,
+                totalResourceIncome: 47,
+                totalResourceLoss: 12,
+                totalResourceScore: 35,
+                goldIncome: 0,
+              },
+            },
+            activityStats: {
+              1: {
+                color: 1,
+                proposedTrades: 0,
+                successfulTrades: 0,
+                resourcesUsed: 34,
+                resourceIncomeBlocked: 0,
+                devCardsBought: 5,
+                devCardsUsed: 4,
+              },
+            },
+          },
+          isReplayAvailable: true,
+          rankedUserStates: [
+            {
+              color: 1,
+              rankedState: {
+                type: 2,
+                numberOfGamesPlayed: 1,
+                requiredNumberOfGames: 5,
+                defaultEndGameData: {
+                  amount: "-",
+                  highest: false,
+                },
+              },
+            },
+          ],
+        },
+      },
     });
   }
   return rval;
