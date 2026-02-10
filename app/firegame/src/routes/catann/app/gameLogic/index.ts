@@ -353,43 +353,45 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
     PlayerActionState.Place1MoreRoadBuilding,
   ].includes(actionState)
     ? []
-    : cornerIndex === -1 && actionState === PlayerActionState.Place1MoreRoadBuilding
+    : cornerIndex === -1 &&
+        actionState === PlayerActionState.Place1MoreRoadBuilding
       ? (() => {
           const currentState = gameData.data.payload.gameState.currentState;
           const roadBuildingHighlightStep =
             currentState.roadBuildingHighlightStep ?? 0;
-          currentState.roadBuildingHighlightStep = roadBuildingHighlightStep + 1;
+          currentState.roadBuildingHighlightStep =
+            roadBuildingHighlightStep + 1;
           if (roadBuildingHighlightStep === 1) {
             return [6, 7, 57, 58, 65, 64, 70, 61, 67, 68];
           }
           return [];
         })()
       : Object.keys(edgeStates)
-        .map((key) => Number.parseInt(key, 10))
-        .filter((value) => Number.isFinite(value))
-        .map((index) => ({
-          index,
-          edgeState: edgeStates[String(index)],
-        }))
-        .filter(({ edgeState }) => Boolean(edgeState))
-        .filter(({ edgeState }) => {
-          const endpoints = edgeEndpoints(edgeState);
-          return endpoints.some(
-            (endpoint) =>
-              cornerKey ===
-              serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
-          );
-        })
-        .sort((a, b) => {
-          const edgeDirectionDiff =
-            (edgeDirectionOrder.get(a.edgeState.z) ?? 0) -
-            (edgeDirectionOrder.get(b.edgeState.z) ?? 0);
-          if (edgeDirectionDiff !== 0) {
-            return edgeDirectionDiff;
-          }
-          return a.index - b.index;
-        })
-        .map(({ index }) => index);
+          .map((key) => Number.parseInt(key, 10))
+          .filter((value) => Number.isFinite(value))
+          .map((index) => ({
+            index,
+            edgeState: edgeStates[String(index)],
+          }))
+          .filter(({ edgeState }) => Boolean(edgeState))
+          .filter(({ edgeState }) => {
+            const endpoints = edgeEndpoints(edgeState);
+            return endpoints.some(
+              (endpoint) =>
+                cornerKey ===
+                serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+            );
+          })
+          .sort((a, b) => {
+            const edgeDirectionDiff =
+              (edgeDirectionOrder.get(a.edgeState.z) ?? 0) -
+              (edgeDirectionOrder.get(b.edgeState.z) ?? 0);
+            if (edgeDirectionDiff !== 0) {
+              return edgeDirectionDiff;
+            }
+            return a.index - b.index;
+          })
+          .map(({ index }) => index);
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -1034,7 +1036,8 @@ const placeRoad = (edgeIndex: number) => {
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
     if (edgeIndex === 69) {
-      gameState.currentState.actionState = PlayerActionState.Place1MoreRoadBuilding;
+      gameState.currentState.actionState =
+        PlayerActionState.Place1MoreRoadBuilding;
       gameState.currentState.allocatedTime = 200;
       if (!gameState.mechanicLongestRoadState) {
         gameState.mechanicLongestRoadState = {};
@@ -1623,102 +1626,337 @@ export const applyGameAction = (parsed: {
   action?: number;
   payload?: unknown;
 }) => {
-  if (!firebaseData.GAME) return false;
-  if (
-    parsed.action === GameStateUpdateType.ExitInitialPlacement &&
-    parsed.payload === false
-  ) {
-    return true;
-  }
-  if (
-    parsed.action === GAME_ACTION.SelectedTile &&
-    typeof parsed.payload === "object"
-  )
-    return false;
-  if (
-    ![
-      GAME_ACTION.ConfirmBuildRoad,
-      GAME_ACTION.ConfirmBuildRoadSkippingSelection,
-      GAME_ACTION.ConfirmBuildShip,
-      GAME_ACTION.WantToBuildRoad,
-      GAME_ACTION.ConfirmBuildSettlement,
-      GAME_ACTION.ConfirmBuildSettlementSkippingSelection,
-      GAME_ACTION.WantToBuildSettlement,
-      GAME_ACTION.ConfirmBuildCity,
-      GAME_ACTION.ConfirmBuildCitySkippingSelection,
-      GAME_ACTION.WantToBuildCity,
-      GAME_ACTION.BuyDevelopmentCard,
-      GAME_ACTION.ClickedDice,
-      GAME_ACTION.CancelAction,
-      GAME_ACTION.PassedTurn,
-      GAME_ACTION.SelectedInitialPlacementIndex,
-      GAME_ACTION.SelectedTile,
-      GAME_ACTION.CreateTrade,
-      GAME_ACTION.SelectedCards,
-      GAME_ACTION.SelectedCardsState,
-      GAME_ACTION.RequestActionSwap,
-      GAME_ACTION.ClickedDevelopmentCard,
-    ].includes(parsed.action!)
-  ) {
-    return false;
-  }
-  if (parsed.action === GAME_ACTION.CreateTrade) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    const playerColor = gameData.data.payload.playerColor ?? 1;
-    const tradePayload =
-      parsed.payload && typeof parsed.payload === "object"
-        ? (parsed.payload as {
-            offeredResources?: number[];
-            wantedResources?: number[];
-            isBankTrade?: boolean;
-          })
-        : null;
-    const offeredResources = Array.isArray(tradePayload?.offeredResources)
-      ? (tradePayload?.offeredResources ?? [])
-      : [];
-    const wantedResources = Array.isArray(tradePayload?.wantedResources)
-      ? (tradePayload?.wantedResources ?? [])
-      : [];
-    if (tradePayload?.isBankTrade) {
-      const playerState = gameState.playerStates?.[playerColor];
-      if (gameState.bankState?.resourceCards) {
-        offeredResources.forEach((card) => {
-          if (gameState.bankState?.resourceCards?.[card] !== undefined) {
-            gameState.bankState.resourceCards[card] += 1;
-          }
+  const helper = () => {
+    if (!firebaseData.GAME) return false;
+    if (
+      parsed.action === GameStateUpdateType.ExitInitialPlacement &&
+      parsed.payload === false
+    ) {
+      return true;
+    }
+    if (
+      parsed.action === GAME_ACTION.SelectedTile &&
+      typeof parsed.payload === "object"
+    )
+      return false;
+    if (
+      ![
+        GAME_ACTION.ConfirmBuildRoad,
+        GAME_ACTION.ConfirmBuildRoadSkippingSelection,
+        GAME_ACTION.ConfirmBuildShip,
+        GAME_ACTION.WantToBuildRoad,
+        GAME_ACTION.ConfirmBuildSettlement,
+        GAME_ACTION.ConfirmBuildSettlementSkippingSelection,
+        GAME_ACTION.WantToBuildSettlement,
+        GAME_ACTION.ConfirmBuildCity,
+        GAME_ACTION.ConfirmBuildCitySkippingSelection,
+        GAME_ACTION.WantToBuildCity,
+        GAME_ACTION.BuyDevelopmentCard,
+        GAME_ACTION.ClickedDice,
+        GAME_ACTION.CancelAction,
+        GAME_ACTION.PassedTurn,
+        GAME_ACTION.SelectedInitialPlacementIndex,
+        GAME_ACTION.SelectedTile,
+        GAME_ACTION.CreateTrade,
+        GAME_ACTION.SelectedCards,
+        GAME_ACTION.SelectedCardsState,
+        GAME_ACTION.RequestActionSwap,
+        GAME_ACTION.ClickedDevelopmentCard,
+      ].includes(parsed.action!)
+    ) {
+      return false;
+    }
+    if (parsed.action === GAME_ACTION.CreateTrade) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      const playerColor = gameData.data.payload.playerColor ?? 1;
+      const tradePayload =
+        parsed.payload && typeof parsed.payload === "object"
+          ? (parsed.payload as {
+              offeredResources?: number[];
+              wantedResources?: number[];
+              isBankTrade?: boolean;
+            })
+          : null;
+      const offeredResources = Array.isArray(tradePayload?.offeredResources)
+        ? (tradePayload?.offeredResources ?? [])
+        : [];
+      const wantedResources = Array.isArray(tradePayload?.wantedResources)
+        ? (tradePayload?.wantedResources ?? [])
+        : [];
+      if (tradePayload?.isBankTrade) {
+        const playerState = gameState.playerStates?.[playerColor];
+        if (gameState.bankState?.resourceCards) {
+          offeredResources.forEach((card) => {
+            if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+              gameState.bankState.resourceCards[card] += 1;
+            }
+          });
+          wantedResources.forEach((card) => {
+            if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+              gameState.bankState.resourceCards[card] -= 1;
+            }
+          });
+        }
+
+        if (playerState?.resourceCards?.cards) {
+          playerState.resourceCards = {
+            cards: removePlayerCards(
+              playerState.resourceCards.cards,
+              offeredResources,
+            ),
+          };
+          playerState.resourceCards.cards.push(...wantedResources);
+        }
+
+        addGameLogEntry(gameState, {
+          text: {
+            type: GameLogMessageType.PlayerTradedWithBank,
+            playerColor,
+            givenCardEnums: offeredResources,
+            receivedCardEnums: wantedResources,
+          },
+          from: playerColor,
         });
-        wantedResources.forEach((card) => {
-          if (gameState.bankState?.resourceCards?.[card] !== undefined) {
-            gameState.bankState.resourceCards[card] -= 1;
-          }
+
+        const completedTurns = gameState.currentState.completedTurns ?? 0;
+        gameState.currentState.allocatedTime = completedTurns >= 50 ? 220 : 140;
+        gameData.data.payload.timeLeftInState =
+          completedTurns >= 50 ? 209.571 : 134.623;
+
+        sendCornerHighlights30(gameData, []);
+        sendTileHighlights33(gameData, []);
+        sendEdgeHighlights31(gameData);
+        sendShipHighlights32(gameData);
+        sendToMainSocket?.({
+          id: State.GameStateUpdate.toString(),
+          data: {
+            type: GameStateUpdateType.ExchangeCards,
+            payload: {
+              givingPlayer: playerColor,
+              givingCards: offeredResources,
+              receivingPlayer: 0,
+              receivingCards: wantedResources,
+            },
+          },
         });
       }
 
-      if (playerState?.resourceCards?.cards) {
-        playerState.resourceCards = {
-          cards: removePlayerCards(
-            playerState.resourceCards.cards,
-            offeredResources,
-          ),
-        };
-        playerState.resourceCards.cards.push(...wantedResources);
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "createTrade",
+          offeredResources,
+          wantedResources,
+        },
+      );
+      return true;
+    }
+    if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      const completedTurns = gameState.currentState.completedTurns ?? 0;
+      const timeLeftInState = completedTurns >= 43 ? 118.663 : 118.095;
+      const highlightCorners = completedTurns >= 43 ? [50] : [47, 50];
+      gameState.currentState.actionState = PlayerActionState.PlaceSettlement;
+      gameData.data.payload.timeLeftInState = timeLeftInState;
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      sendCornerHighlights30(gameData, highlightCorners);
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "wantToBuildSettlement",
+        },
+      );
+      return true;
+    }
+    if (parsed.action === GAME_ACTION.WantToBuildRoad) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      const completedTurns = gameState.currentState.completedTurns ?? 0;
+      const isRoadBuildingFollowUp =
+        gameState.currentState.actionState ===
+        PlayerActionState.Place1MoreRoadBuilding;
+      const highlightEdges =
+        isRoadBuildingFollowUp || completedTurns >= 52
+          ? [6, 7, 57, 58, 65, 64, 70, 61, 66, 67]
+          : completedTurns >= 17
+            ? [6, 7, 70, 69, 61, 65, 64, 60]
+            : [6, 7, 70, 69, 61, 63, 60];
+      const timeLeftInState =
+        completedTurns >= 52
+          ? 208.36599999999999
+          : completedTurns >= 19
+            ? 117.924
+            : completedTurns >= 18
+              ? 117.98
+              : 118.432;
+      gameState.currentState.actionState = PlayerActionState.PlaceRoad;
+      gameData.data.payload.timeLeftInState = timeLeftInState;
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.HighlightRoadEdges,
+          payload: highlightEdges,
+        },
+      });
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "wantToBuildRoad",
+        },
+      );
+      return true;
+    }
+
+    if (parsed.action === GAME_ACTION.WantToBuildCity) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      const playerColor = gameData.data.payload.playerColor ?? 1;
+      const timeLeftInState = 119.05;
+      const cornerStates = gameState.mapState.tileCornerStates ?? {};
+      const highlightCorners = Object.entries(cornerStates)
+        .map(([key, value]) => ({
+          key: Number.parseInt(key, 10),
+          value: value as any,
+        }))
+        .filter(({ key }) => Number.isFinite(key))
+        .filter(
+          ({ value }) =>
+            value &&
+            value.owner === playerColor &&
+            value.buildingType === CornerPieceType.Settlement,
+        )
+        .map(({ key }) => key);
+      gameState.currentState.actionState = PlayerActionState.PlaceCity;
+      gameData.data.payload.timeLeftInState = timeLeftInState;
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      sendCornerHighlights30(gameData, highlightCorners);
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "wantToBuildCity",
+        },
+      );
+      return true;
+    }
+
+    if (parsed.action === GAME_ACTION.ClickedDice) {
+      rollDice();
+      return true;
+    }
+
+    if (parsed.action === GAME_ACTION.RequestActionSwap) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      gameState.currentState.actionState = PlayerActionState.None;
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "requestActionSwap",
+          payload: parsed.payload,
+        },
+      );
+      return true;
+    }
+
+    if (parsed.action === GAME_ACTION.ClickedDevelopmentCard) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      const playerColor = gameData.data.payload.playerColor ?? 1;
+      const clickedCard =
+        typeof parsed.payload === "number" ? parsed.payload : undefined;
+      const devCardsState =
+        gameState.mechanicDevelopmentCardsState?.players?.[playerColor];
+      const handCards = devCardsState?.developmentCards?.cards;
+      if (Array.isArray(handCards) && clickedCard != null) {
+        const cardIndex = handCards.indexOf(clickedCard);
+        if (cardIndex >= 0) {
+          handCards.splice(cardIndex, 1);
+        }
       }
+      const priorUsedDevelopmentCardsCount = Array.isArray(
+        devCardsState?.developmentCardsUsed,
+      )
+        ? devCardsState.developmentCardsUsed.length
+        : 0;
+      if (devCardsState && clickedCard != null) {
+        if (!Array.isArray(devCardsState.developmentCardsUsed)) {
+          devCardsState.developmentCardsUsed = [];
+        }
+        devCardsState.developmentCardsUsed.push(clickedCard);
+        devCardsState.hasUsedDevelopmentCardThisTurn = true;
+      }
+
+      const usedKnightCount = Array.isArray(devCardsState?.developmentCardsUsed)
+        ? devCardsState.developmentCardsUsed.filter(
+            (card: number) => card === CardEnum.Knight,
+          ).length
+        : 0;
 
       addGameLogEntry(gameState, {
         text: {
-          type: GameLogMessageType.PlayerTradedWithBank,
+          type: 20,
           playerColor,
-          givenCardEnums: offeredResources,
-          receivedCardEnums: wantedResources,
+          cardEnum: clickedCard,
         },
         from: playerColor,
       });
 
+      gameState.currentState.actionState =
+        clickedCard === CardEnum.Knight
+          ? PlayerActionState.PlaceRobberOrPirate
+          : clickedCard === CardEnum.RoadBuilding
+            ? PlayerActionState.Place2MoreRoadBuilding
+            : PlayerActionState.None;
       const completedTurns = gameState.currentState.completedTurns ?? 0;
-      gameState.currentState.allocatedTime = completedTurns >= 50 ? 220 : 140;
-      gameData.data.payload.timeLeftInState =
-        completedTurns >= 50 ? 209.571 : 134.623;
+      const isLateGameDevPlay =
+        completedTurns >= 52 || priorUsedDevelopmentCardsCount > 0;
+      gameState.currentState.allocatedTime = isLateGameDevPlay ? 160 : 180;
+      gameState.currentState.startTime = Date.now();
+      gameData.data.payload.timeLeftInState = isLateGameDevPlay
+        ? 157.183
+        : 175.667;
+
+      if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
+        if (!gameState.mechanicLargestArmyState) {
+          gameState.mechanicLargestArmyState = {};
+        }
+        if (!gameState.mechanicLargestArmyState[playerColor]) {
+          gameState.mechanicLargestArmyState[playerColor] = {} as any;
+        }
+        gameState.mechanicLargestArmyState[playerColor].hasLargestArmy = true;
+        const playerState = gameState.playerStates?.[playerColor];
+        if (playerState) {
+          if (!playerState.victoryPointsState) {
+            playerState.victoryPointsState = {};
+          }
+          playerState.victoryPointsState[VictoryPointSource.LargestArmy] = 1;
+        }
+        addGameLogEntry(gameState, {
+          text: {
+            type: 66,
+            playerColor,
+            achievementEnum: 1,
+          },
+          from: playerColor,
+        });
+        gameData.data.payload.timeLeftInState = 0;
+      }
 
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData, []);
@@ -1730,504 +1968,311 @@ export const applyGameAction = (parsed: {
           type: GameStateUpdateType.ExchangeCards,
           payload: {
             givingPlayer: playerColor,
-            givingCards: offeredResources,
+            givingCards: clickedCard != null ? [clickedCard] : [],
             receivingPlayer: 0,
-            receivingCards: wantedResources,
+            receivingCards: [],
           },
         },
       });
+      if (clickedCard === CardEnum.RoadBuilding) {
+        const roadBuildingHighlightEdges =
+          completedTurns >= 50
+            ? [6, 7, 57, 58, 65, 64, 70, 69, 61]
+            : [6, 7, 70, 69, 61, 65, 64, 60];
+        sendToMainSocket?.({
+          id: State.GameStateUpdate.toString(),
+          data: {
+            type: GameStateUpdateType.HighlightRoadEdges,
+            payload: roadBuildingHighlightEdges,
+          },
+        });
+      } else {
+        sendCornerHighlights30(gameData, []);
+        sendTileHighlights33(gameData, []);
+        sendEdgeHighlights31(gameData);
+        sendShipHighlights32(gameData);
+        sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
+      }
+
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        { ClickedDevelopmentCard: clickedCard },
+      );
+      if (clickedCard === CardEnum.Knight) {
+        sendEdgeHighlights31(gameData);
+        sendShipHighlights32(gameData);
+        sendCornerHighlights30(gameData, []);
+        sendTileHighlights33(gameData, []);
+        sendCornerHighlights30(gameData, []);
+      }
+      return true;
     }
 
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "createTrade",
-        offeredResources,
-        wantedResources,
-      },
-    );
-    return true;
-  }
-  if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    const completedTurns = gameState.currentState.completedTurns ?? 0;
-    const timeLeftInState = completedTurns >= 43 ? 118.663 : 118.095;
-    const highlightCorners = completedTurns >= 43 ? [50] : [47, 50];
-    gameState.currentState.actionState = PlayerActionState.PlaceSettlement;
-    gameData.data.payload.timeLeftInState = timeLeftInState;
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    sendCornerHighlights30(gameData, highlightCorners);
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "wantToBuildSettlement",
-      },
-    );
-    return true;
-  }
-  if (parsed.action === GAME_ACTION.WantToBuildRoad) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    const completedTurns = gameState.currentState.completedTurns ?? 0;
-    const isRoadBuildingFollowUp =
-      gameState.currentState.actionState ===
-      PlayerActionState.Place1MoreRoadBuilding;
-    const highlightEdges =
-      isRoadBuildingFollowUp || completedTurns >= 52
-        ? [6, 7, 57, 58, 65, 64, 70, 61, 66, 67]
-        : completedTurns >= 17
-          ? [6, 7, 70, 69, 61, 65, 64, 60]
-          : [6, 7, 70, 69, 61, 63, 60];
-    const timeLeftInState =
-      completedTurns >= 52
-        ? 208.36599999999999
-        : completedTurns >= 19
-          ? 117.924
-          : completedTurns >= 18
-            ? 117.98
-            : 118.432;
-    gameState.currentState.actionState = PlayerActionState.PlaceRoad;
-    gameData.data.payload.timeLeftInState = timeLeftInState;
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.HighlightRoadEdges,
-        payload: highlightEdges,
-      },
-    });
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "wantToBuildRoad",
-      },
-    );
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.WantToBuildCity) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    const playerColor = gameData.data.payload.playerColor ?? 1;
-    const timeLeftInState = 119.05;
-    const cornerStates = gameState.mapState.tileCornerStates ?? {};
-    const highlightCorners = Object.entries(cornerStates)
-      .map(([key, value]) => ({
-        key: Number.parseInt(key, 10),
-        value: value as any,
-      }))
-      .filter(({ key }) => Number.isFinite(key))
-      .filter(
-        ({ value }) =>
-          value &&
-          value.owner === playerColor &&
-          value.buildingType === CornerPieceType.Settlement,
-      )
-      .map(({ key }) => key);
-    gameState.currentState.actionState = PlayerActionState.PlaceCity;
-    gameData.data.payload.timeLeftInState = timeLeftInState;
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    sendCornerHighlights30(gameData, highlightCorners);
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "wantToBuildCity",
-      },
-    );
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.ClickedDice) {
-    rollDice();
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.RequestActionSwap) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    gameState.currentState.actionState = PlayerActionState.None;
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "requestActionSwap",
-        payload: parsed.payload,
-      },
-    );
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.ClickedDevelopmentCard) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    const playerColor = gameData.data.payload.playerColor ?? 1;
-    const clickedCard =
-      typeof parsed.payload === "number" ? parsed.payload : undefined;
-    const devCardsState =
-      gameState.mechanicDevelopmentCardsState?.players?.[playerColor];
-    const handCards = devCardsState?.developmentCards?.cards;
-    if (Array.isArray(handCards) && clickedCard != null) {
-      const cardIndex = handCards.indexOf(clickedCard);
-      if (cardIndex >= 0) {
-        handCards.splice(cardIndex, 1);
-      }
-    }
-    const priorUsedDevelopmentCardsCount = Array.isArray(
-      devCardsState?.developmentCardsUsed,
-    )
-      ? devCardsState.developmentCardsUsed.length
-      : 0;
-    if (devCardsState && clickedCard != null) {
-      if (!Array.isArray(devCardsState.developmentCardsUsed)) {
-        devCardsState.developmentCardsUsed = [];
-      }
-      devCardsState.developmentCardsUsed.push(clickedCard);
-      devCardsState.hasUsedDevelopmentCardThisTurn = true;
-    }
-
-    const usedKnightCount = Array.isArray(devCardsState?.developmentCardsUsed)
-      ? devCardsState.developmentCardsUsed.filter(
-          (card: number) => card === CardEnum.Knight,
-        ).length
-      : 0;
-
-    addGameLogEntry(gameState, {
-      text: {
-        type: 20,
-        playerColor,
-        cardEnum: clickedCard,
-      },
-      from: playerColor,
-    });
-
-    gameState.currentState.actionState =
-      clickedCard === CardEnum.Knight
-        ? PlayerActionState.PlaceRobberOrPirate
-        : clickedCard === CardEnum.RoadBuilding
-          ? PlayerActionState.Place2MoreRoadBuilding
-          : PlayerActionState.None;
-    const completedTurns = gameState.currentState.completedTurns ?? 0;
-    const isLateGameDevPlay =
-      completedTurns >= 52 || priorUsedDevelopmentCardsCount > 0;
-    gameState.currentState.allocatedTime = isLateGameDevPlay ? 160 : 180;
-    gameState.currentState.startTime = Date.now();
-    gameData.data.payload.timeLeftInState = isLateGameDevPlay
-      ? 157.183
-      : 175.667;
-
-    if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
-      if (!gameState.mechanicLargestArmyState) {
-        gameState.mechanicLargestArmyState = {};
-      }
-      if (!gameState.mechanicLargestArmyState[playerColor]) {
-        gameState.mechanicLargestArmyState[playerColor] = {} as any;
-      }
-      gameState.mechanicLargestArmyState[playerColor].hasLargestArmy = true;
-      const playerState = gameState.playerStates?.[playerColor];
-      if (playerState) {
-        if (!playerState.victoryPointsState) {
-          playerState.victoryPointsState = {};
-        }
-        playerState.victoryPointsState[VictoryPointSource.LargestArmy] = 1;
-      }
-      addGameLogEntry(gameState, {
-        text: {
-          type: 66,
-          playerColor,
-          achievementEnum: 1,
+    if (parsed.action === GAME_ACTION.CancelAction) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      gameState.currentState.actionState = PlayerActionState.None;
+      gameState.currentState.startTime = Date.now();
+      gameData.data.payload.timeLeftInState = 114.547;
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "cancelAction",
         },
-        from: playerColor,
-      });
-      gameData.data.payload.timeLeftInState = 0;
+      );
+      return true;
     }
 
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData, []);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.ExchangeCards,
-        payload: {
-          givingPlayer: playerColor,
-          givingCards: clickedCard != null ? [clickedCard] : [],
-          receivingPlayer: 0,
-          receivingCards: [],
-        },
-      },
-    });
-    if (clickedCard === CardEnum.RoadBuilding) {
-      const roadBuildingHighlightEdges =
-        completedTurns >= 50
-          ? [6, 7, 57, 58, 65, 64, 70, 69, 61]
-          : [6, 7, 70, 69, 61, 65, 64, 60];
+    if (parsed.action === GAME_ACTION.BuyDevelopmentCard) {
+      buyDevelopmentCard();
+      return true;
+    }
+
+    if (parsed.action === GAME_ACTION.SelectedCardsState) {
+      return true;
+    }
+
+    if (parsed.action === GAME_ACTION.SelectedCards) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      if (
+        gameState.currentState.actionState !==
+        PlayerActionState.SelectCardsToDiscard
+      ) {
+        return true;
+      }
+      const selectedCards = Array.isArray(parsed.payload)
+        ? (parsed.payload as number[])
+        : [];
+      const currentPlayer = gameData.data.payload.playerColor ?? 1;
+      const playerState = gameState.playerStates?.[currentPlayer];
+      if (playerState?.resourceCards?.cards) {
+        playerState.resourceCards = {
+          cards: removePlayerCards(
+            playerState.resourceCards.cards,
+            selectedCards,
+          ),
+        };
+      }
+      if (gameState.bankState?.resourceCards) {
+        selectedCards.forEach((card) => {
+          gameState.bankState.resourceCards[card] =
+            (gameState.bankState.resourceCards[card] ?? 0) + 1;
+        });
+      }
+
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {
-          type: GameStateUpdateType.HighlightRoadEdges,
-          payload: roadBuildingHighlightEdges,
+          type: GameStateUpdateType.ExchangeCards,
+          payload: {
+            givingPlayer: currentPlayer,
+            givingCards: selectedCards,
+            receivingPlayer: 0,
+            receivingCards: [],
+          },
         },
       });
-    } else {
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.ClosePopupUI,
+          payload: null,
+        },
+      });
       sendCornerHighlights30(gameData, []);
-      sendTileHighlights33(gameData, []);
+      sendTileHighlights33(gameData);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
       sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
-    }
 
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      { ClickedDevelopmentCard: clickedCard },
-    );
-    if (clickedCard === CardEnum.Knight) {
-      sendEdgeHighlights31(gameData);
-      sendShipHighlights32(gameData);
-      sendCornerHighlights30(gameData, []);
-      sendTileHighlights33(gameData, []);
-      sendCornerHighlights30(gameData, []);
-    }
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.CancelAction) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    gameState.currentState.actionState = PlayerActionState.None;
-    gameState.currentState.startTime = Date.now();
-    gameData.data.payload.timeLeftInState = 114.547;
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "cancelAction",
-      },
-    );
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.BuyDevelopmentCard) {
-    buyDevelopmentCard();
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.SelectedCardsState) {
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.SelectedCards) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    if (
-      gameState.currentState.actionState !==
-      PlayerActionState.SelectCardsToDiscard
-    ) {
-      return true;
-    }
-    const selectedCards = Array.isArray(parsed.payload)
-      ? (parsed.payload as number[])
-      : [];
-    const currentPlayer = gameData.data.payload.playerColor ?? 1;
-    const playerState = gameState.playerStates?.[currentPlayer];
-    if (playerState?.resourceCards?.cards) {
-      playerState.resourceCards = {
-        cards: removePlayerCards(
-          playerState.resourceCards.cards,
-          selectedCards,
-        ),
-      };
-    }
-    if (gameState.bankState?.resourceCards) {
-      selectedCards.forEach((card) => {
-        gameState.bankState.resourceCards[card] =
-          (gameState.bankState.resourceCards[card] ?? 0) + 1;
-      });
-    }
-
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.ExchangeCards,
-        payload: {
-          givingPlayer: currentPlayer,
-          givingCards: selectedCards,
-          receivingPlayer: 0,
-          receivingCards: [],
-        },
-      },
-    });
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.ClosePopupUI,
-        payload: null,
-      },
-    });
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-    sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
-
-    gameState.currentState.actionState = PlayerActionState.PlaceRobberOrPirate;
-    if (gameState.playerStates?.[currentPlayer]) {
-      gameState.playerStates[currentPlayer].isTakingAction = false;
-    }
-    addGameLogEntry(gameState, {
-      text: {
-        type: GameLogMessageType.PlayerDiscarded,
-        playerColor: currentPlayer,
-        cardEnums: selectedCards,
-        areResourceCards: true,
-      },
-      from: currentPlayer,
-    });
-
-    setFirebaseData(
-      { ...firebaseData, GAME: gameData },
-      {
-        action: "selectedCards",
-        selectedCards,
-      },
-    );
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.PassedTurn) {
-    const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-    if (
-      gameState.currentState.actionState === PlayerActionState.PlaceRoad &&
-      (gameState.currentState.completedTurns ?? 0) >= 17
-    ) {
-      if (typeof gameState.currentState.allocatedTime === "number") {
-        gameData.data.payload.timeLeftInState =
-          gameState.currentState.allocatedTime;
-      }
-      return true;
-    }
-    if (
-      gameState.currentState.turnState === 2 &&
-      gameState.currentState.actionState === PlayerActionState.None &&
-      (gameState.currentState.completedTurns ?? 0) === 3
-    ) {
       gameState.currentState.actionState =
-        PlayerActionState.SelectCardsToDiscard;
+        PlayerActionState.PlaceRobberOrPirate;
+      if (gameState.playerStates?.[currentPlayer]) {
+        gameState.playerStates[currentPlayer].isTakingAction = false;
+      }
+      addGameLogEntry(gameState, {
+        text: {
+          type: GameLogMessageType.PlayerDiscarded,
+          playerColor: currentPlayer,
+          cardEnums: selectedCards,
+          areResourceCards: true,
+        },
+        from: currentPlayer,
+      });
+
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "selectedCards",
+          selectedCards,
+        },
+      );
       return true;
     }
-    if (
-      gameState.currentState.turnState === 2 &&
-      gameState.currentState.actionState ===
-        PlayerActionState.SelectCardsToDiscard
-    ) {
-      gameState.currentState.actionState = PlayerActionState.None;
+
+    if (parsed.action === GAME_ACTION.PassedTurn) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      if (
+        gameState.currentState.actionState === PlayerActionState.PlaceRoad &&
+        (gameState.currentState.completedTurns ?? 0) >= 17
+      ) {
+        if (typeof gameState.currentState.allocatedTime === "number") {
+          gameData.data.payload.timeLeftInState =
+            gameState.currentState.allocatedTime;
+        }
+        return true;
+      }
+      if (
+        gameState.currentState.turnState === 2 &&
+        gameState.currentState.actionState === PlayerActionState.None &&
+        (gameState.currentState.completedTurns ?? 0) === 3
+      ) {
+        gameState.currentState.actionState =
+          PlayerActionState.SelectCardsToDiscard;
+        return true;
+      }
+      if (
+        gameState.currentState.turnState === 2 &&
+        gameState.currentState.actionState ===
+          PlayerActionState.SelectCardsToDiscard
+      ) {
+        gameState.currentState.actionState = PlayerActionState.None;
+        passTurn();
+        return true;
+      }
+      if (
+        gameState.currentState.turnState === 2 &&
+        gameState.currentState.actionState === PlayerActionState.None &&
+        gameState.currentState.completedTurns === 47 &&
+        gameState.playerStates?.[gameData.data.payload.playerColor ?? 1]
+          ?.isTakingAction === false
+      ) {
+        gameState.currentState.actionState =
+          PlayerActionState.SelectCardsToDiscard;
+        return true;
+      }
       passTurn();
       return true;
     }
-    if (
-      gameState.currentState.turnState === 2 &&
-      gameState.currentState.actionState === PlayerActionState.None &&
-      gameState.currentState.completedTurns === 47 &&
-      gameState.playerStates?.[gameData.data.payload.playerColor ?? 1]
-        ?.isTakingAction === false
-    ) {
-      gameState.currentState.actionState =
-        PlayerActionState.SelectCardsToDiscard;
+
+    if (parsed.action === GAME_ACTION.SelectedInitialPlacementIndex) {
       return true;
     }
-    passTurn();
-    return true;
-  }
 
-  if (parsed.action === GAME_ACTION.SelectedInitialPlacementIndex) {
-    return true;
-  }
-
-  if (parsed.action === GAME_ACTION.SelectedTile) {
-    autoPlaceRobber(parsed.payload as number);
-    return true;
-  }
-
-  if (
-    parsed.action === GAME_ACTION.ConfirmBuildSettlement ||
-    parsed.action === GAME_ACTION.ConfirmBuildSettlementSkippingSelection
-  ) {
-    const cornerIndex = parsed.payload as number;
-
-    placeSettlement(cornerIndex);
-
-    return true;
-  }
-
-  if (
-    parsed.action === GAME_ACTION.ConfirmBuildCity ||
-    parsed.action === GAME_ACTION.ConfirmBuildCitySkippingSelection
-  ) {
-    const cornerIndex = getCornerIndexFromPayload(
-      firebaseData.GAME.data.payload.gameState,
-      parsed.payload,
-    );
-    if (cornerIndex !== null) {
-      placeCity(cornerIndex);
+    if (parsed.action === GAME_ACTION.SelectedTile) {
+      autoPlaceRobber(parsed.payload as number);
+      return true;
     }
-    return true;
-  }
 
-  if (
-    parsed.action === GAME_ACTION.ConfirmBuildRoad ||
-    parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection ||
-    parsed.action === GAME_ACTION.ConfirmBuildShip
-  ) {
-    const edgeIndex = parsed.payload as number;
+    if (
+      parsed.action === GAME_ACTION.ConfirmBuildSettlement ||
+      parsed.action === GAME_ACTION.ConfirmBuildSettlementSkippingSelection
+    ) {
+      const cornerIndex = parsed.payload as number;
+
+      placeSettlement(cornerIndex);
+
+      return true;
+    }
+
+    if (
+      parsed.action === GAME_ACTION.ConfirmBuildCity ||
+      parsed.action === GAME_ACTION.ConfirmBuildCitySkippingSelection
+    ) {
+      const cornerIndex = getCornerIndexFromPayload(
+        firebaseData.GAME.data.payload.gameState,
+        parsed.payload,
+      );
+      if (cornerIndex !== null) {
+        placeCity(cornerIndex);
+      }
+      return true;
+    }
+
+    if (
+      parsed.action === GAME_ACTION.ConfirmBuildRoad ||
+      parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection ||
+      parsed.action === GAME_ACTION.ConfirmBuildShip
+    ) {
+      const edgeIndex = parsed.payload as number;
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+
+      if (
+        parsed.action !== GAME_ACTION.ConfirmBuildShip &&
+        (gameState.currentState.actionState ===
+          PlayerActionState.Place2MoreRoadBuilding ||
+          gameState.currentState.actionState ===
+            PlayerActionState.Place1MoreRoadBuilding)
+      ) {
+        gameState.currentState.pendingRoadBuildingEdgeIndex = edgeIndex;
+        return true;
+      }
+
+      const stagedRoadEdgeIndex =
+        typeof gameState.currentState.pendingRoadBuildingEdgeIndex === "number"
+          ? gameState.currentState.pendingRoadBuildingEdgeIndex
+          : undefined;
+      const edgeIndexToPlace =
+        parsed.action === GAME_ACTION.ConfirmBuildShip &&
+        stagedRoadEdgeIndex != null
+          ? stagedRoadEdgeIndex
+          : edgeIndex;
+      delete gameState.currentState.pendingRoadBuildingEdgeIndex;
+
+      placeRoad(edgeIndexToPlace);
+      return true;
+    }
+
+    return true;
+  };
+  const rval = helper();
+  const winner = getWinner();
+  if (winner) {
     const gameData = firebaseData.GAME;
-    const gameState = gameData.data.payload.gameState;
-
-    if (
-      parsed.action !== GAME_ACTION.ConfirmBuildShip &&
-      (gameState.currentState.actionState ===
-        PlayerActionState.Place2MoreRoadBuilding ||
-        gameState.currentState.actionState ===
-          PlayerActionState.Place1MoreRoadBuilding)
-    ) {
-      gameState.currentState.pendingRoadBuildingEdgeIndex = edgeIndex;
-      return true;
-    }
-
-    const stagedRoadEdgeIndex =
-      typeof gameState.currentState.pendingRoadBuildingEdgeIndex === "number"
-        ? gameState.currentState.pendingRoadBuildingEdgeIndex
-        : undefined;
-    const edgeIndexToPlace =
-      parsed.action === GAME_ACTION.ConfirmBuildShip &&
-      stagedRoadEdgeIndex != null
-        ? stagedRoadEdgeIndex
-        : edgeIndex;
-    delete gameState.currentState.pendingRoadBuildingEdgeIndex;
-
-    placeRoad(edgeIndexToPlace);
-    return true;
+    sendTileHighlights33(gameData, []);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    addGameLogEntry(gameData.data.payload.gameState, {
+      text: { type: GameLogMessageType.Separator },
+    });
+    addGameLogEntry(gameData.data.payload.gameState, {
+      text: { type: GameLogMessageType.PlayerWonTheGame },
+    });
+    addGameLogEntry(gameData.data.payload.gameState, {
+      text: { type: GameLogMessageType.Separator },
+    });
   }
+  return rval;
+};
 
-  return true;
+const getWinner = () => {
+  const players: Record<string, any> =
+    firebaseData.GAME.data.payload.gameState.playerStates;
+  return Object.values(players).find(
+    (p: { victoryPointsState: Record<string, number> }) =>
+      Object.entries(p.victoryPointsState)
+        .map(
+          ([key, count]) =>
+            count *
+            {
+              [VictoryPointSource.DevelopmentCardVictoryPoint]: 1,
+              [VictoryPointSource.Settlement]: 1,
+              [VictoryPointSource.City]: 2,
+              [VictoryPointSource.LargestArmy]: 2,
+              [VictoryPointSource.LongestRoad]: 2,
+            }[key]!,
+        )
+        .reduce((a, b) => a + b, 0) >= 10,
+  );
 };
