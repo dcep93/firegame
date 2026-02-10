@@ -471,7 +471,9 @@ const Controller = (
         y: number;
         z: CornerDirection;
       }) => {
-        throw new Error("implement me");
+        const col = 5 + 2 * x + y;
+        const row = (z === CornerDirection.North ? 4 : 7) + 2 * y;
+        return { col, row };
       };
       await buildRoad(getColRow(start), getColRow(destination), true);
     };

@@ -334,3 +334,9 @@
 - what you changed: Updated `src/routes/catann/test/Controller.ts` so `playFreeRoad()` reads the upcoming `ConfirmBuildRoad` payload and selects coordinates from a payload->edge map (with fallback to the previous hardcoded road click).
 - why the test isn't passing: The run progressed, but the mapped coordinates are still not aligned with actual clickable road geometry in this environment; one attempt emitted payload 64 instead of 69, and another attempt timed out waiting for clickability.
 - next suggested step: Derive free-road click positions from live edge geometry (or existing edge highlight payload) rather than static row/col guesses, then rerun Catann flow.
+
+## Implemented getColRow for free-road endpoint mapping
+- what would've saved time to get your bearings: `getTilePosition` already encodes the board axial-to-canvas mapping (`col = 5 + 2x + y`, `row` parity by corner direction), so reusing that pattern for corner coordinates avoids ad-hoc edge midpoint guesses.
+- what you changed: Implemented `getColRow` in `src/routes/catann/test/Controller.ts` to map `{x,y,z}` corner endpoints into `{col,row}` using `CornerDirection` (`North => row = 4 + 2y`, `South => row = 7 + 2y`) and the shared col transform.
+- why the test isn't passing: The run advances past the previous throw but still desyncs in late `single_player` road-building/dev-card flow (expected server type 91 at sequence 25, received type 30 highlight clear), so additional choreography/game-logic alignment is still needed after free-road placement.
+- next suggested step: Inspect the expected message block around client actions 291-293 and server sequences 19-25 to decide whether choreography should place the second free road before verification or game logic should collapse highlight/update ordering.
