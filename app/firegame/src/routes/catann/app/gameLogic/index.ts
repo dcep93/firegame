@@ -1203,7 +1203,7 @@ const rollDice = () => {
 
     const playerCards = [
       ...(gameState.playerStates?.[playerColor]?.resourceCards?.cards ?? []),
-    ];
+    ].sort((a, b) => a - b);
     const amountToDiscard =
       playerCards.length > 7 ? Math.floor(playerCards.length / 2) : 0;
     if (amountToDiscard > 0) {
