@@ -407,7 +407,7 @@ const Controller = (
         })
         .toBe(true);
     };
-    const handleReconnect = async () => {
+    const handleReconnect = async (addLog: boolean) => {
       const expectedMessages = _expectedMessages!;
       let serverIndex = -1;
       for (let i = 0; i < expectedMessages.length; i += 1) {
@@ -438,21 +438,23 @@ const Controller = (
       );
       const gameState = firebaseData.GAME.data.payload.gameState;
       const playerColor = 1;
-      addGameLogEntry(gameState, {
-        text: {
-          type: GameLogMessageType.Disconnected,
-          playerColor,
-          is10SecondRuleDisabled: true,
-        },
-        from: playerColor,
-      });
-      addGameLogEntry(gameState, {
-        text: {
-          type: GameLogMessageType.PlayerReconnecting,
-          playerColor,
-        },
-        from: playerColor,
-      });
+      if (addLog) {
+        addGameLogEntry(gameState, {
+          text: {
+            type: GameLogMessageType.Disconnected,
+            playerColor,
+            is10SecondRuleDisabled: true,
+          },
+          from: playerColor,
+        });
+        addGameLogEntry(gameState, {
+          text: {
+            type: GameLogMessageType.PlayerReconnecting,
+            playerColor,
+          },
+          from: playerColor,
+        });
+      }
 
       await page.evaluate(
         ({ _firebaseData, TEST_CHANGE_STR }) =>
