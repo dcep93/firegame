@@ -496,7 +496,54 @@ const Controller = (
       expect(msg.trigger).toBe("clientData");
       expect(msg.data.action).toBe(GAME_ACTION.SelectedCardsState);
       const payload = Array.isArray(msg.data.payload) ? msg.data.payload : [];
-      const nextCard = payload[payload.length - 1];
+      const desiredCounts = (payload as number[]).reduce<
+        Record<number, number>
+      >(
+        (counts, card) => {
+          counts[card] = (counts[card] ?? 0) + 1;
+          return counts;
+        },
+        {} as Record<number, number>,
+      );
+      const currentCounts = await iframe.locator("body").evaluate(() => {
+        const counts: Record<number, number> = {};
+        const selectedCards = document.querySelectorAll(
+          'div[class*="cardSelectionContainer-"] [data-card-enum]',
+        );
+        selectedCards.forEach((node) => {
+          const cardEnum = Number(
+            (node as HTMLElement).getAttribute("data-card-enum"),
+          );
+          if (!Number.isFinite(cardEnum)) return;
+          const countNode = (node as HTMLElement).querySelector(
+            'div[class*="count-"]',
+          );
+          const count = countNode ? Number(countNode.textContent ?? "1") : 1;
+          counts[cardEnum] = Number.isFinite(count) ? count : 1;
+        });
+        return counts;
+      });
+
+      const allCardEnums = Array.from(
+        new Set<number>([
+          ...Object.keys(currentCounts).map(Number),
+          ...Object.keys(desiredCounts).map(Number),
+        ]),
+      );
+      const cardToRemove = [...allCardEnums].find(
+        (card) => (currentCounts[card] ?? 0) > (desiredCounts[card] ?? 0),
+      );
+      const nextCard =
+        cardToRemove ??
+        [...allCardEnums].find(
+          (card) => (desiredCounts[card] ?? 0) > (currentCounts[card] ?? 0),
+        );
+
+      if (nextCard == null) {
+        await delay(100);
+        return;
+      }
+
       const resourceCardType: Record<number, string> = {
         1: "lumber",
         2: "brick",
@@ -509,9 +556,13 @@ const Controller = (
       };
       const resourceType = resourceCardType[nextCard];
       expect(resourceType).toBeDefined();
-      const card = iframe.locator(
-        `div[id="player-card-inventory"] img[src*="card_${resourceType}"]`,
-      );
+      const card = cardToRemove
+        ? iframe.locator(
+            `div[class*="cardSelectionContainer-"] [data-card-enum="${nextCard}"]`,
+          )
+        : iframe.locator(
+            `div[id="player-card-inventory"] img[src*="card_${resourceType}"]`,
+          );
       await card.first().click({ force: true });
       await delay(100);
     };

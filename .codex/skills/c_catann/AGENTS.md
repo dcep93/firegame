@@ -159,3 +159,5 @@
 - In 1p.v2 around client sequence 53 (first bank trade), expected server diff includes `currentState.allocatedTime = 70`; omitting that field causes an immediate desync.
 
 - Sorting `playerStates[playerColor].resourceCards.cards` after 4:1 wool bank trades advances 1p.v2 past the early trade ordering checks (clientData 53 and 85), but later discard prompts still fail on `validCardsToSelect` ordering/content around clientData 97.
+
+- In discard prompts (`SelectedCardsState`), payload and UI can diverge in both directions; when expected count decreases, click the selected-card chip in `cardSelectionContainer` (by `data-card-enum`) to undo, not the inventory card image.

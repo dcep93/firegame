@@ -430,3 +430,10 @@
 - what you changed: Updated the `CreateTrade` bank-trade branch to sort `playerState.resourceCards.cards` whenever the trade is exactly 4 wool for 1 resource, instead of only a single hardcoded target resource.
 - why the test isn't passing: The run now progresses much farther (to clientData 97 / serverData 290) and fails on discard prompt `validCardsToSelect` ordering/content during a 7-roll discard state.
 - next suggested step: In the discard-card flow for 7 rolls, derive `validCardsToSelect` directly from the current player hand in recorded order (not a recomputed/sorted surrogate), then rerun `test_catann.sh --codex`.
+
+
+## Discard selection state alignment in controller
+- what would've saved time to get your bearings: `SelectedCardsState` is incremental and can move both forward and backward; when the expected payload shrinks, the UI requires clicking the selected discard stack (not the inventory hand) to undo.
+- what you changed: Updated `Controller.selectNextDiscardCard` to diff current selected-card counts against the expected payload counts, then either add from inventory or remove from `cardSelectionContainer` by `data-card-enum`.
+- why the test isn't passing: After fixing discard toggling, the run advances deep into `1p.v2` and now fails later on a `GameStateUpdated` diff around client sequence 124 (longest-road/victory-point fields mismatch), outside this discard interaction scope.
+- next suggested step: Investigate the late-road-placement `GameStateUpdated` composition around sequence 375 (longest-road and log/victory-point updates) in `gameLogic/index.ts`.
