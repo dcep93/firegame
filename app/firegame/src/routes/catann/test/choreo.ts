@@ -49,6 +49,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
     offeredResources: [4, 4, 4, 4],
     wantedResources: [5],
   });
+  await c.fixWeirdTrade();
   await c.verifyTestMessages();
   await autoChoreo(c, 188);
 
@@ -117,6 +118,14 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
 
   await c.fastForward(296);
   await c.wantToTrade();
+  await c.verifyTestMessages();
+  await c.makeTrade({
+    creator: 1,
+    isBankTrade: true,
+    offeredResources: [4, 4, 4, 4],
+    wantedResources: [1],
+  });
+  await c.fixWeirdTrade();
   await c.verifyTestMessages();
   await autoChoreo(c);
 };

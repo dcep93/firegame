@@ -8,7 +8,6 @@ import {
 } from "@playwright/test";
 import {
   CardEnum,
-  CLIENT_TRADE_OFFER_TYPE,
   CornerDirection,
   GAME_ACTION,
   GameLogMessageType,
@@ -325,15 +324,16 @@ const Controller = (
       );
       await bankTradeButton.first().click({ force: true });
       await waitForTrigger(iframe, "serverData");
-      const shifted = _expectedMessages!.shift()!;
-      console.log({ shifted });
+    };
+    const fixWeirdTrade = async () => {
+      const nextMsg = _expectedMessages![0];
       try {
-        expect(shifted.data.data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
+        expect(nextMsg.data.action).toBe(GAME_ACTION.CreateTrade);
       } catch (e) {
-        console.log(shifted);
+        console.log(JSON.stringify(nextMsg, null, 2));
         throw e;
       }
-      _expectedMessages![0].data.payload.counterOfferInResponseToTradeId = null;
+      nextMsg.data.payload.counterOfferInResponseToTradeId = null;
     };
     const rollNextDice = async () => {
       const diceStateMessage = _expectedMessages!.find(
@@ -494,6 +494,7 @@ const Controller = (
       playDevelopmentCardFromHand,
       wantToTrade,
       makeTrade,
+      fixWeirdTrade,
       rollNextDice,
       passTurn,
       confirmSelectedCards,
