@@ -22,12 +22,11 @@ import {
   GameStateUpdateType,
   State,
 } from "../app/gameLogic/CatannFilesEnums";
-import { singlePlayerChoreo, startingSettlementChoreo } from "./choreo";
+import autoChoreo from "./autoChoreo";
 import Controller, {
   canvasMapAppearsClickable,
   canvasRollDice,
   checkCanvasHandle,
-  ControllerType,
   getCanvas,
   getSettlementOffset,
   getStartButton,
@@ -98,31 +97,35 @@ test.skip(
 
     await checkClickable((_) => true);
 
-    await c.buildSettlement(settlementCoords);
-    await c.buildRoad(settlementCoords, destinationCoords);
+    await spliceTestMessages(iframe);
+    await c.buildSettlement(settlementCoords, false);
+    await spliceTestMessages(iframe);
+    await c.buildRoad(settlementCoords, destinationCoords, false);
 
     // the road appears clickable, because it has a mouse over
     // "Road Length: 1"
     await checkClickable((offset) => offset.col !== 0);
 
-    await c.buildSettlement({
-      row: settlementCoords.row,
-      col: settlementCoords.col + 2,
-    });
+    await spliceTestMessages(iframe);
+    await c.buildSettlement(
+      {
+        row: settlementCoords.row,
+        col: settlementCoords.col + 2,
+      },
+      false,
+    );
+    await spliceTestMessages(iframe);
     await c.buildRoad(
       { row: settlementCoords.row, col: settlementCoords.col + 2 },
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
+      false,
     );
 
     await canvasRollDice(canvas);
   }),
 );
 
-const choreo = (
-  fileName: string,
-  f: (c: ControllerType) => Promise<void>,
-  clientDataSequence: number = -1,
-) => {
+const choreo = (fileName: string, clientDataSequence: number = -1) => {
   return async ({ page }: { page: Page }) => {
     const getExpectedMessages = async (recordingPath: string) => {
       const openRecordingJson = (
@@ -181,7 +184,7 @@ const choreo = (
     }
     await c.clickStartButton();
     await c.verifyTestMessages();
-    await f(c);
+    await autoChoreo(c);
     await c.verifyTestMessages(false);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
     await expect(page.locator('iframe[title="iframe"]')).toBeVisible();
@@ -190,15 +193,9 @@ const choreo = (
 
 //
 
-test.skip(
-  "starting_settlement",
-  screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
-);
+test("starting_settlement", screenshot(choreo("./starting_settlement.json")));
 
-test(
-  "single_player",
-  screenshot(choreo("./single_player.json", singlePlayerChoreo)),
-);
+test.skip("single_player", screenshot(choreo("./single_player.json")));
 
 //
 

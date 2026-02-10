@@ -1227,71 +1227,6 @@ const rollDice = () => {
       });
     });
 
-    const tileState = tileHexStates["1"];
-    if (
-      tileState &&
-      tileState.diceNumber === diceTotal &&
-      tileState.type !== TileType.Desert &&
-      tileState.type !== TileType.Sea
-    ) {
-      if (gameState.mechanicRobberState?.locationTileIndex === 1) {
-        blockedTileStateForLog = tileState;
-      } else {
-        const tile1Resources = resourcesToGive.filter(
-          (resource) =>
-            resource.owner === playerColor && resource.tileIndex === 1,
-        );
-        const insertIndex = resourcesToGive.findIndex(
-          (resource) =>
-            resource.owner === playerColor && resource.tileIndex === 18,
-        );
-        if (tile1Resources.length > 0) {
-          const remainingResources = resourcesToGive.filter(
-            (resource) =>
-              !(resource.owner === playerColor && resource.tileIndex === 1),
-          );
-          const remainingInsertIndex = remainingResources.findIndex(
-            (resource) =>
-              resource.owner === playerColor && resource.tileIndex === 18,
-          );
-          if (remainingInsertIndex >= 0) {
-            remainingResources.splice(
-              remainingInsertIndex,
-              0,
-              ...tile1Resources,
-            );
-          } else {
-            remainingResources.push(...tile1Resources);
-          }
-          resourcesToGive.length = 0;
-          resourcesToGive.push(...remainingResources);
-          const orderedCards = remainingResources
-            .filter((resource) => resource.owner === playerColor)
-            .map((resource) => resource.card);
-          cardsByOwner.set(playerColor, orderedCards);
-        } else {
-          const nextResource = {
-            owner: playerColor,
-            tileIndex: 1,
-            distributionType: 1,
-            card: tileState.type,
-          };
-          if (insertIndex >= 0) {
-            resourcesToGive.splice(insertIndex, 0, nextResource);
-          } else {
-            resourcesToGive.push(nextResource);
-          }
-          const ownerCards = cardsByOwner.get(playerColor) ?? [];
-          if (insertIndex >= 0) {
-            ownerCards.splice(insertIndex, 0, tileState.type);
-          } else {
-            ownerCards.push(tileState.type);
-          }
-          cardsByOwner.set(playerColor, ownerCards);
-        }
-      }
-    }
-
     if (!blockedTileStateForLog) {
       const robberTileIndex = gameState.mechanicRobberState?.locationTileIndex;
       const robberTileState =
@@ -1326,6 +1261,15 @@ const rollDice = () => {
       allocatedTime: 120,
     });
   }
+  addGameLogEntry(gameState, {
+    text: {
+      type: 10,
+      playerColor,
+      firstDice: dice1,
+      secondDice: dice2,
+    },
+    from: playerColor,
+  });
   if (blockedTileStateForLog) {
     addGameLogEntry(gameState, {
       text: {

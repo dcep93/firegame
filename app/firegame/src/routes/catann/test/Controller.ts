@@ -180,11 +180,14 @@ const Controller = (
       await delay(1000);
       page.on("pageerror", (msg) => console.log(msg));
     };
-    const buildSettlement = async (settlementCoords: {
-      col: number;
-      row: number;
-    }) => {
-      await verifyTestMessages(false);
+    const buildSettlement = async (
+      settlementCoords: {
+        col: number;
+        row: number;
+      },
+      shouldVerify: boolean = true,
+    ) => {
+      if (shouldVerify) await verifyTestMessages(false);
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
       await delay(100);
@@ -211,7 +214,9 @@ const Controller = (
     const buildRoad = async (
       settlementCoords: { col: number; row: number },
       destinationCoords: { col: number; row: number },
+      shouldVerify: boolean = true,
     ) => {
+      if (shouldVerify) verifyTestMessages(false);
       const settlementOffset = getSettlementOffset(settlementCoords);
       const destinationOffset = getSettlementOffset(destinationCoords);
       const roadOffset = {
@@ -458,6 +463,18 @@ const Controller = (
         { _firebaseData: firebaseData, TEST_CHANGE_STR },
       );
     };
+    const getNextReconnect = async () => {
+      let nextReconnect = -1;
+      const expectedMessages = _expectedMessages!;
+      for (let i = 0; i < expectedMessages.length; i += 1) {
+        const msg = expectedMessages[i];
+        if (msg.trigger !== "serverData") continue;
+        const clientSequence = expectedMessages[i + 1]?.data.sequence;
+        if (clientSequence) nextReconnect = clientSequence;
+        const sequence = msg.data?.data?.sequence;
+        if (sequence === 1) return nextReconnect;
+      }
+    };
     const skipIllegalPass = async () => {
       await verifyTestMessages(false);
       const msg = _expectedMessages!.shift()!;
@@ -544,6 +561,7 @@ const Controller = (
       passTurn,
       confirmSelectedCards,
       handleReconnect,
+      getNextReconnect,
       skipIllegalPass,
       playNextRobber,
       selectNextDiscardCard,

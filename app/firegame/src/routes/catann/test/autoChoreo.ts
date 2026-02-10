@@ -7,6 +7,7 @@ export default async function autoChoreo(
   c: ControllerType,
   stopClientDataSequence: number = -1,
 ) {
+  let nextReconnect = await c.getNextReconnect();
   for (let i = 0; true; i++) {
     await c.verifyTestMessages(i > 0);
     const msg = c._peek();
@@ -23,8 +24,15 @@ export default async function autoChoreo(
       i,
       GAME_ACTION[msg.data.action],
       msg.data.payload,
+      nextReconnect,
     );
     if (msg.data.sequence === stopClientDataSequence) return;
+
+    if (msg.data.sequence === nextReconnect) {
+      console.log("handleReconnect");
+      c.handleReconnect();
+      nextReconnect = await c.getNextReconnect();
+    }
 
     const handlers: Partial<Record<GAME_ACTION, () => Promise<void>>> = {
       [GAME_ACTION.PassedTurn]: c.passTurn,
