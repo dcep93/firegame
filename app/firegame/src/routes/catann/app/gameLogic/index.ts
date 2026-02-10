@@ -1660,7 +1660,7 @@ export const applyGameAction = (parsed: {
         GAME_ACTION.CreateTrade,
         GAME_ACTION.SelectedCards,
         GAME_ACTION.SelectedCardsState,
-        GAME_ACTION.RequestActionSwap,
+        GAME_ACTION.PlayDevelopmentCardFromHand,
         GAME_ACTION.ClickedDevelopmentCard,
         GAME_ACTION.RequestBeginnerModeLevelEnd,
       ].includes(parsed.action!)
@@ -1909,7 +1909,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.RequestActionSwap) {
+    if (parsed.action === GAME_ACTION.PlayDevelopmentCardFromHand) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.None;
@@ -1920,7 +1920,7 @@ export const applyGameAction = (parsed: {
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
         {
-          action: "requestActionSwap",
+          action: "PlayDevelopmentCardFromHand",
           payload: parsed.payload,
         },
       );
@@ -2344,9 +2344,9 @@ export const applyGameAction = (parsed: {
           endGameState: {
             diceStats: [2, 3, 4, 4, 6, 10, 8, 5, 4, 5, 1],
             resourceCardsStats: [
-              1, 2, 4, 4, 5, 1, 1, 3, 4, 4, 5, 2, 2, 5, 3, 4, 4, 5, 3, 3,
-              4, 4, 4, 4, 2, 5, 5, 5, 1, 1, 1, 1, 4, 4, 5, 5, 3, 3, 4, 2,
-              4, 4, 3, 3, 3, 4, 4, 4, 1, 2,
+              1, 2, 4, 4, 5, 1, 1, 3, 4, 4, 5, 2, 2, 5, 3, 4, 4, 5, 3, 3, 4, 4,
+              4, 4, 2, 5, 5, 5, 1, 1, 1, 1, 4, 4, 5, 5, 3, 3, 4, 2, 4, 4, 3, 3,
+              3, 4, 4, 4, 1, 2,
             ],
             developmentCardStats: [11, 11, 12, 14, 11],
             gameDurationInMS: 192729,

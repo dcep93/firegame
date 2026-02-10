@@ -62,7 +62,7 @@ export enum GAME_ACTION {
   UpdateTradeResponse = 50,
   ExecuteTrade = 51,
   ToggledEmbargo = 52,
-  RequestActionSwap = 53,
+  PlayDevelopmentCardFromHand = 53,
   TogglePause = 54,
   LeaveGame = 55,
   Resign = 56,
