@@ -275,14 +275,14 @@ const Controller = (
 
       await confirmSelectedCards();
     };
-    const wantToTrade = async (payload: any) => {
+    const wantToTrade = async () => {
       await verifyTestMessages(false);
       const tradeButton = iframe.locator('div[id="action-button-trade"]');
       await tradeButton.first().click({ force: true });
       await delay(100);
-
       await waitForTrigger(iframe, "serverData");
-
+    };
+    const makeTrade = async (payload: any) => {
       const resourceCardType: Record<number, string> = {
         1: "lumber",
         2: "brick",
@@ -326,6 +326,7 @@ const Controller = (
       await bankTradeButton.first().click({ force: true });
       await waitForTrigger(iframe, "serverData");
       const shifted = _expectedMessages!.shift()!;
+      console.log({ shifted });
       try {
         expect(shifted.data.data.type).toBe(CLIENT_TRADE_OFFER_TYPE);
       } catch (e) {
@@ -492,6 +493,7 @@ const Controller = (
       buyDevelopmentCard,
       playDevelopmentCardFromHand,
       wantToTrade,
+      makeTrade,
       rollNextDice,
       passTurn,
       confirmSelectedCards,
