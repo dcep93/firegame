@@ -194,9 +194,13 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
 
 //
 
-test("starting_settlement", screenshot(choreo("./starting_settlement.json")));
+test.skip(
+  "starting_settlement",
+  screenshot(choreo("./choreo/starting_settlement.json")),
+);
 
-test.skip("single_player", screenshot(choreo("./single_player.json")));
+test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
+test.skip("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
 
 //
 
