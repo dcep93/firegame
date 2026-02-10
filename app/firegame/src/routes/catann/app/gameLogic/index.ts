@@ -1004,7 +1004,10 @@ const placeRoad = (edgeIndex: number) => {
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
   if (!isRoadBuildingPlacement) {
-    if (gameState.currentState.completedTurns <= 2) {
+    if (
+      actionStateAtRoadPlacement ===
+      PlayerActionState.InitialPlacementRoadPlacement
+    ) {
       sendEdgeHighlights31(gameData);
     }
     sendCornerHighlights30(gameData, []);
@@ -1252,7 +1255,6 @@ const passTurn = () => {
   const gameState = gameData.data.payload.gameState;
   const completedTurns = gameState.currentState.completedTurns ?? 0;
   const nextCompletedTurns = completedTurns + 1;
-  const allocatedTime = nextCompletedTurns >= 16 ? 16 : 8;
 
   gameState.diceState = {
     ...gameState.diceState,
@@ -1263,7 +1265,6 @@ const passTurn = () => {
     completedTurns: nextCompletedTurns,
     turnState: GamePhase.Dice,
     actionState: PlayerActionState.None,
-    allocatedTime,
   });
 
   addGameLogEntry(gameState, {
@@ -1506,7 +1507,6 @@ export const applyGameAction = (parsed: {
         });
 
         const completedTurns = gameState.currentState.completedTurns ?? 0;
-        gameState.currentState.allocatedTime = completedTurns >= 50 ? 220 : 140;
 
         sendCornerHighlights30(gameData, []);
         sendTileHighlights33(gameData, []);
@@ -1591,14 +1591,12 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const completedTurns = gameState.currentState.completedTurns ?? 0;
-      const highlightCorners = completedTurns >= 43 ? [50] : [47, 50];
       gameState.currentState.actionState = PlayerActionState.PlaceSettlement;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
-      sendCornerHighlights30(gameData, highlightCorners);
+      sendCornerHighlights30(gameData, getSettlementEligibleTiles());
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
         {
@@ -1736,10 +1734,6 @@ export const applyGameAction = (parsed: {
           : clickedCard === CardEnum.RoadBuilding
             ? PlayerActionState.Place2MoreRoadBuilding
             : PlayerActionState.None;
-      const completedTurns = gameState.currentState.completedTurns ?? 0;
-      const isLateGameDevPlay =
-        completedTurns >= 52 || priorUsedDevelopmentCardsCount > 0;
-      gameState.currentState.allocatedTime = isLateGameDevPlay ? 160 : 180;
       gameState.currentState.startTime = Date.now();
 
       if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
@@ -2248,3 +2242,64 @@ const calculateLongestRoad = (playerColor: number) => {
 
   return longestRoad;
 };
+function getSettlementEligibleTiles(): number[] | null | undefined {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData?.data?.payload?.gameState;
+  const playerColor = gameData?.data?.payload?.playerColor ?? 1;
+
+  if (!gameState) return null;
+
+  const cornerStates = gameState.mapState?.tileCornerStates ?? {};
+  const edgeStates = gameState.mapState?.tileEdgeStates ?? {};
+
+  const serializeCornerKey = (x: number, y: number, z: number) =>
+    `${x}:${y}:${z}`;
+
+  const ownedCorners = new Set<string>();
+  Object.values(cornerStates).forEach((cornerState: any) => {
+    if (cornerState?.owner === playerColor) {
+      ownedCorners.add(
+        serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
+      );
+    }
+  });
+
+  const eligibleCorners = Object.entries(cornerStates)
+    .map(([key, cornerState]: [string, any]) => ({
+      index: Number.parseInt(key, 10),
+      cornerState,
+    }))
+    .filter(({ index, cornerState }) => {
+      if (!Number.isFinite(index) || !cornerState) return false;
+
+      // Ensure the corner is unoccupied
+      if (cornerState.owner) return false;
+
+      // Ensure no adjacent corners are owned
+      const adjacentEdges = Object.values(edgeStates).filter((edgeState: any) =>
+        edgeEndpoints(edgeState).some(
+          (endpoint) =>
+            serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) ===
+            serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
+        ),
+      );
+
+      const adjacentCorners = adjacentEdges.flatMap((edgeState: any) =>
+        edgeEndpoints(edgeState).map((endpoint) =>
+          serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+        ),
+      );
+
+      if (adjacentCorners.some((cornerKey) => ownedCorners.has(cornerKey))) {
+        return false;
+      }
+
+      // Ensure the corner is adjacent to an owned road
+      return adjacentEdges.some(
+        (edgeState: any) => edgeState.owner === playerColor,
+      );
+    })
+    .map(({ index }) => index);
+
+  return eligibleCorners.length > 0 ? eligibleCorners : null;
+}
