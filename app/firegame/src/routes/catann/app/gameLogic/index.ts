@@ -1898,6 +1898,12 @@ export const applyGameAction = (parsed: {
       devCardsState.hasUsedDevelopmentCardThisTurn = true;
     }
 
+    const usedKnightCount = Array.isArray(devCardsState?.developmentCardsUsed)
+      ? devCardsState.developmentCardsUsed.filter(
+          (card: number) => card === CardEnum.Knight,
+        ).length
+      : 0;
+
     addGameLogEntry(gameState, {
       text: {
         type: 20,
@@ -1921,6 +1927,32 @@ export const applyGameAction = (parsed: {
     gameData.data.payload.timeLeftInState = isLateGameDevPlay
       ? 157.183
       : 175.667;
+
+    if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
+      if (!gameState.mechanicLargestArmyState) {
+        gameState.mechanicLargestArmyState = {};
+      }
+      if (!gameState.mechanicLargestArmyState[playerColor]) {
+        gameState.mechanicLargestArmyState[playerColor] = {} as any;
+      }
+      gameState.mechanicLargestArmyState[playerColor].hasLargestArmy = true;
+      const playerState = gameState.playerStates?.[playerColor];
+      if (playerState) {
+        if (!playerState.victoryPointsState) {
+          playerState.victoryPointsState = {};
+        }
+        playerState.victoryPointsState[VictoryPointSource.LargestArmy] = 1;
+      }
+      addGameLogEntry(gameState, {
+        text: {
+          type: 66,
+          playerColor,
+          achievementEnum: 1,
+        },
+        from: playerColor,
+      });
+      gameData.data.payload.timeLeftInState = 0;
+    }
 
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData, []);
@@ -1962,6 +1994,11 @@ export const applyGameAction = (parsed: {
       { ...firebaseData, GAME: gameData },
       { ClickedDevelopmentCard: clickedCard },
     );
+    if (clickedCard === CardEnum.Knight) {
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+      sendCornerHighlights30(gameData, []);
+    }
     return true;
   }
 

@@ -382,3 +382,9 @@
 - what you changed: In `gameLogic/index.ts`, changed late edge-65 road resolution to emit a `GameStateUpdated`-style turn snapshot (allocatedTime 240, timeLeft 227.522, longest-road/log/vp diffs) and prevented the exit-initial-placement emit for edge 65; in `test/choreo.ts`, added post-edge-65 continuation with `passTurn` then `skipIllegalPass` and verification.
 - why the test isn't passing: The run now advances to `{ codex: { clientData: 301, serverData: 60 } }`, but leaves a later client action (`action: 2`, sequence 303) unconsumed at test teardown.
 - next suggested step: Extend `singlePlayerChoreo` one step further after the seq-301 verification (likely a roll-dice/auto-choreo action) to consume client sequence 303 and drain remaining expected messages.
+
+## Late knight replay alignment after sequence 306 (partial)
+- what would've saved time to get your bearings: After client action 306 (`ClickedDevelopmentCard` payload 11), the recording expects `serverData` sequence 77 to include largest-army/victory-point diff and then a tight `31 -> 32 -> 30` chain before the next client robber tile click.
+- what you changed: In `gameLogic/index.ts`, updated `ClickedDevelopmentCard` handling to award largest army when the knight-use threshold is reached, emit the achievement log (`type 66` / `achievementEnum: 1`), set `VictoryPointSource.LargestArmy`, force `timeLeftInState = 0`, and append a post-`setFirebaseData` `31 -> 32 -> 30` highlight chain for knight plays.
+- why the test isn't passing: The run now advances farther (`serverData` 80), but still emits an unexpected `HighlightTiles` clear (`type 33`, sequence 81) before the choreography’s next client action, so the final robber step is still desynced.
+- next suggested step: Narrow the late-knight highlight emission path so no extra type-33 clear is sent after sequence 80, then rerun `test_catann.sh --codex` and re-check the next expected message around `playNextRobber`.
