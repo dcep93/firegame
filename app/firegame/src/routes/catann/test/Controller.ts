@@ -180,34 +180,30 @@ const Controller = (
       await delay(1000);
       page.on("pageerror", (msg) => console.log(msg));
     };
-    const buildSettlement = async (
-      settlementCoords: {
-        col: number;
-        row: number;
-      },
-      skipConfirm: boolean = false,
-    ) => {
-      console.log("\t", "buildSettlement");
+    const buildSettlement = async (settlementCoords: {
+      col: number;
+      row: number;
+    }) => {
+      await verifyTestMessages(false);
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
+      await delay(100);
 
-      if (!skipConfirm) {
+      const msgs = await spliceTestMessages(iframe, false);
+      if (msgs.length === 0) {
         const confirmSettlementOffset = getConfirmOffset(settlementOffset);
         await clickCanvas(canvas, confirmSettlementOffset);
       }
     };
-    const buildCity = async (
-      settlementCoords: {
-        col: number;
-        row: number;
-      },
-      skipConfirm: boolean = false,
-    ) => {
-      console.log("\t", "buildCity");
+    const buildCity = async (settlementCoords: {
+      col: number;
+      row: number;
+    }) => {
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
 
-      if (!skipConfirm) {
+      const msgs = await spliceTestMessages(iframe, false);
+      if (msgs.length === 0) {
         const confirmCityOffset = getConfirmOffset(settlementOffset);
         await clickCanvas(canvas, confirmCityOffset);
       }
@@ -215,9 +211,7 @@ const Controller = (
     const buildRoad = async (
       settlementCoords: { col: number; row: number },
       destinationCoords: { col: number; row: number },
-      skipConfirm: boolean = false,
     ) => {
-      console.log("\t", "buildRoad", settlementCoords, destinationCoords);
       const settlementOffset = getSettlementOffset(settlementCoords);
       const destinationOffset = getSettlementOffset(destinationCoords);
       const roadOffset = {
@@ -226,7 +220,8 @@ const Controller = (
       };
       await clickCanvas(canvas, roadOffset);
 
-      if (!skipConfirm) {
+      const msgs = await spliceTestMessages(iframe, false);
+      if (msgs.length === 0) {
         const confirmRoadOffset = getConfirmOffset(roadOffset);
         await clickCanvas(canvas, confirmRoadOffset);
       }
@@ -400,7 +395,6 @@ const Controller = (
       await expect
         .poll(
           async () => {
-            console.log("clicking");
             await clickCanvas(canvas, MAP_PASS_COORDS);
             await delay(50);
             return canvasMapAppearsClickable(canvas, MAP_DICE_COORDS);
@@ -513,17 +507,17 @@ const Controller = (
       payload: keyof typeof tileEdgeStates,
     ) => {
       const [start, destination] = edgeEndpoints(tileEdgeStates[payload]);
-      await buildRoad(getColRow(start), getColRow(destination), true);
+      await buildRoad(getColRow(start), getColRow(destination));
     };
     const buildSettlementFromPayload = async (
       payload: keyof typeof tileCornerStates,
     ) => {
-      await buildSettlement(getColRow(tileCornerStates[payload]), true);
+      await buildSettlement(getColRow(tileCornerStates[payload]));
     };
     const buildCityFromPayload = async (
       payload: keyof typeof tileCornerStates,
     ) => {
-      await buildCity(getColRow(tileCornerStates[payload]), true);
+      await buildCity(getColRow(tileCornerStates[payload]));
     };
     return {
       _peek: () => _expectedMessages![0],

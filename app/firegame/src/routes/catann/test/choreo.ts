@@ -11,10 +11,7 @@ export const startingSettlementChoreo = async (c: ControllerType) => {
 };
 
 export const singlePlayerChoreo = async (c: ControllerType) => {
-  await c.buildSettlement({ col: 3, row: 4 });
-  await c.buildRoad({ col: 3, row: 4 }, { col: 4, row: 5 });
-  await c.buildSettlement({ col: 6, row: 5 });
-  await c.buildRoad({ col: 6, row: 5 }, { col: 5, row: 4 });
+  await autoChoreo(c, 24);
 
   await c.fastForward(24);
   await autoChoreo(c, 85);
@@ -27,9 +24,6 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 104);
 
   await c.fastForward(104);
-  await autoChoreo(c, 105);
-  await c.skipIllegalPass();
-  await c.wantToBuildRoad();
   await autoChoreo(c, 111);
 
   await c.fastForward(111);

@@ -197,7 +197,7 @@ test.skip(
 
 test(
   "single_player",
-  screenshot(choreo("./single_player.json", singlePlayerChoreo, 85)),
+  screenshot(choreo("./single_player.json", singlePlayerChoreo)),
 );
 
 //
@@ -274,11 +274,18 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
 
 export const spliceTestMessages = async (
   iframe: FrameLocator,
+  shouldSplice: boolean = true,
 ): Promise<{ trigger: string; data: any }[]> => {
   return (
     await iframe
       .locator("body")
-      .evaluate(() => window.parent.__socketCatannMessages.splice(0))
+      .evaluate(
+        (_, _shouldSplice) =>
+          _shouldSplice
+            ? window.parent.__socketCatannMessages.splice(0)
+            : window.parent.__socketCatannMessages,
+        shouldSplice,
+      )
   ).filter((msg) => isRealMessage(msg));
 };
 

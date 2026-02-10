@@ -8196,14 +8196,6 @@
   {
     "trigger": "clientData",
     "data": {
-      "action": 6,
-      "payload": true,
-      "sequence": 105
-    }
-  },
-  {
-    "trigger": "clientData",
-    "data": {
       "id": "136",
       "data": {
         "timestamp": 1769651638264
@@ -8518,7 +8510,6 @@
       "sequence": 111
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "serverData",
     "data": {
