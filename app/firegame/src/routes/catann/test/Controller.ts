@@ -149,7 +149,10 @@ const Controller = (
           //
           const allocatedTime =
             expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
-          if (allocatedTime !== undefined) {
+          if (
+            allocatedTime !== undefined &&
+            msg.data.data.payload.diff.currentState
+          ) {
             msg.data.data.payload.diff.currentState.allocatedTime =
               allocatedTime;
           }

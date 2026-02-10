@@ -129,6 +129,30 @@ test.skip(
 const choreo = (fileName: string, clientDataSequence: number = -1) => {
   return async ({ page }: { page: Page }) => {
     const getExpectedMessages = async (recordingPath: string) => {
+      const sortCardsToBroadcast = (value: unknown): void => {
+        if (!value || typeof value !== "object") {
+          return;
+        }
+
+        if (Array.isArray(value)) {
+          value.forEach((entry) => sortCardsToBroadcast(entry));
+          return;
+        }
+
+        const entries = Object.entries(value);
+        entries.forEach(([key, nestedValue]) => {
+          if (
+            ["cards", "cardsToBroadcast"].includes(key) &&
+            Array.isArray(nestedValue) &&
+            nestedValue.every((entry) => typeof entry === "number")
+          ) {
+            nestedValue.sort((a, b) => a - b);
+            return;
+          }
+          sortCardsToBroadcast(nestedValue);
+        });
+      };
+
       const openRecordingJson = (
         recordingPath: string,
       ): { trigger: string; data: any }[] => {
@@ -140,6 +164,7 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
         .filter((msg) => isRealMessage(msg))
         .map((msg) => {
           if (msg.trigger === "serverData") {
+            sortCardsToBroadcast(msg.data);
             if (
               [
                 GameStateUpdateType.HighlightRoadEdges,

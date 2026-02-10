@@ -143,6 +143,7 @@ const addPlayerResourceCards = (
     }
     playerState.resourceCards.cards.push(card);
   });
+  (playerState.resourceCards.cards as number[]).sort((a, b) => a - b);
   return addGameLogEntry(gameState, {
     text: {
       type: 47,
