@@ -218,11 +218,15 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
     );
     await spliceTestMessages(iframe);
     const c = Controller(page, iframe, expectedMessages);
+    clientDataSequence = 51;
     if (clientDataSequence !== -1) {
       await fastForward(iframe, expectedMessages, c, clientDataSequence);
     }
     await c.clickStartButton();
     await c.verifyTestMessages();
+    if (clientDataSequence !== -1) {
+      await c.fastForward(clientDataSequence);
+    }
     await autoChoreo(c);
     await c.verifyTestMessages(false);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
