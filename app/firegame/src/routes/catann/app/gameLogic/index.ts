@@ -1326,15 +1326,6 @@ const rollDice = () => {
       allocatedTime: 120,
     });
   }
-  const diceLogIndex = addGameLogEntry(gameState, {
-    text: {
-      type: 10,
-      playerColor,
-      firstDice: dice1,
-      secondDice: dice2,
-    },
-    from: playerColor,
-  });
   if (blockedTileStateForLog) {
     addGameLogEntry(gameState, {
       text: {
@@ -1358,7 +1349,7 @@ const rollDice = () => {
   }
 
   cardsByOwner.forEach((cards, owner) => {
-    const index = addPlayerResourceCards(gameState, owner, cards, 1);
+    addPlayerResourceCards(gameState, owner, cards, 1);
   });
 
   if (!shouldTriggerRobber) {
