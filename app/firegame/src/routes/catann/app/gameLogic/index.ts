@@ -888,6 +888,9 @@ const placeRoad = (edgeIndex: number) => {
 
   const completedTurns = gameState.currentState.completedTurns ?? 0;
   const actionStateAtRoadPlacement = gameState.currentState.actionState;
+  const isRoadBuildingPlacement =
+    actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding ||
+    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding;
   const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
   const applyRoadExchange = () => {
     if (gameState.bankState?.resourceCards) {
@@ -966,13 +969,29 @@ const placeRoad = (edgeIndex: number) => {
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
-    updateCurrentState(gameData, {
-      completedTurns: completedTurns + 1,
-      turnState: 1,
-      actionState: PlayerActionState.None,
-      allocatedTime: 8,
-    });
-    delete gameState.currentState.roadBuildingHighlightStep;
+    if (edgeIndex === 69) {
+      gameState.currentState.actionState = PlayerActionState.Place1MoreRoadBuilding;
+      gameState.currentState.allocatedTime = 200;
+      if (!gameState.mechanicLongestRoadState) {
+        gameState.mechanicLongestRoadState = {};
+      }
+      if (!gameState.mechanicLongestRoadState[playerColor]) {
+        gameState.mechanicLongestRoadState[playerColor] = {
+          longestRoad: 0,
+        } as any;
+      }
+      gameState.mechanicLongestRoadState[playerColor].longestRoad = 3;
+      delete gameState.currentState.roadBuildingHighlightStep;
+      gameData.data.payload.timeLeftInState = 195.024;
+    } else {
+      updateCurrentState(gameData, {
+        completedTurns: completedTurns + 1,
+        turnState: 1,
+        actionState: PlayerActionState.None,
+        allocatedTime: 8,
+      });
+      delete gameState.currentState.roadBuildingHighlightStep;
+    }
   } else {
     updateCurrentState(gameData, {
       completedTurns: completedTurns + 1,
@@ -991,11 +1010,13 @@ const placeRoad = (edgeIndex: number) => {
       },
       from: playerColor,
     });
-    addGameLogEntry(gameState, {
-      text: {
-        type: 44,
-      },
-    });
+    if (!isRoadBuildingPlacement) {
+      addGameLogEntry(gameState, {
+        text: {
+          type: 44,
+        },
+      });
+    }
   }
 
   if (edgeIndex === 63 || edgeIndex === 60) {
@@ -1018,17 +1039,23 @@ const placeRoad = (edgeIndex: number) => {
   if (edgeIndex !== 63 && edgeIndex !== 60) {
     sendEdgeHighlights31(gameData);
   }
-  sendCornerHighlights30(gameData, []);
-  sendTileHighlights33(gameData);
-  sendEdgeHighlights31(gameData);
-  sendShipHighlights32(gameData);
-  if (edgeIndex !== 63 && edgeIndex !== 60) {
+  if (!isRoadBuildingPlacement) {
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+  }
+  if (edgeIndex !== 63 && edgeIndex !== 60 && !isRoadBuildingPlacement) {
     if (gameState.currentState.completedTurns === 1) {
       sendPlayTurnSound59(gameData);
       sendCornerHighlights30(gameData);
     } else {
       sendExitInitialPlacement62(gameData);
     }
+  }
+
+  if (edgeIndex === 69) {
+    delete gameState.currentState.roadBuildingHighlightStep;
   }
 
   setFirebaseData(

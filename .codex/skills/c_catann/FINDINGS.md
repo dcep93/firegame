@@ -340,3 +340,9 @@
 - what you changed: Implemented `getColRow` in `src/routes/catann/test/Controller.ts` to map `{x,y,z}` corner endpoints into `{col,row}` using `CornerDirection` (`North => row = 4 + 2y`, `South => row = 7 + 2y`) and the shared col transform.
 - why the test isn't passing: The run advances past the previous throw but still desyncs in late `single_player` road-building/dev-card flow (expected server type 91 at sequence 25, received type 30 highlight clear), so additional choreography/game-logic alignment is still needed after free-road placement.
 - next suggested step: Inspect the expected message block around client actions 291-293 and server sequences 19-25 to decide whether choreography should place the second free road before verification or game logic should collapse highlight/update ordering.
+
+## RoadBuilding second free-road mismatch at sequence 25
+- what would've saved time to get your bearings: After `ClickedDevelopmentCard` payload 14 and first free-road confirm on edge 69, the expected queue wants `GameStateUpdated` (type 91) at sequence 25 with `currentState.actionState = Place1MoreRoadBuilding`, `allocatedTime = 200`, longest-road diff, and `timeLeftInState = 195.024`.
+- what you changed: In `placeRoad`, gated extra highlight clears / exit-initial-placement messages during road-building placement, suppressed type-44 log entry in road-building placement, and tried to pin edge-69 follow-up state/timing to `Place1MoreRoadBuilding` + `allocatedTime 200`.
+- why the test isn't passing: The emitted message at sequence 25 still misses the expected allocated-time/longest-road diffs and keeps `timeLeftInState = 160`, so the queue desyncs at the same checkpoint.
+- next suggested step: Trace where the road-building post-placement state is overwritten after `placeRoad` (likely another `updateCurrentState` path before firebase diff emission) and force the edge-69 `Place1MoreRoadBuilding` snapshot just before `setFirebaseData`.
