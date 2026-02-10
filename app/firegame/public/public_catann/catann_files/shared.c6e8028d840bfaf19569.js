@@ -1515,7 +1515,7 @@
     },
     5675: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "assets/mobile_endgame_before.12d7950f34dd8a460a6a.png";
+      e.exports = s.p + "assets/mobile_endgame_before.08494ea34dd983236ed4.png";
     },
     6074: (e, t, s) => {
       "use strict";
@@ -2791,7 +2791,7 @@
         r = s(69714),
         o = s(19966),
         a = s(54801),
-        c = s(35274),
+        c = s(28255),
         l = s(15504),
         d = s(41931);
       const u = i.o8.UIGameEventEnums;
@@ -4483,38 +4483,38 @@
         l = s(41931);
       const d = {
         strings: {
-          af: s.p + "locales/af_strings.06874a58f8bdc797b655.json",
-          ar: s.p + "locales/ar_strings.fc304a83089acce27172.json",
-          ca: s.p + "locales/ca_strings.5eb07a0e2e384c3b4ea5.json",
-          cs: s.p + "locales/cs_strings.d0d5ce19ba378a86c009.json",
-          da: s.p + "locales/da_strings.b3713ccb19688b1317b0.json",
-          de: s.p + "locales/de_strings.1adee56d4c8e380c6d16.json",
-          el: s.p + "locales/el_strings.0d24190d28820e696c67.json",
+          af: s.p + "locales/af_strings.995aea163e982373b2aa.json",
+          ar: s.p + "locales/ar_strings.832667677c55b9e52f95.json",
+          ca: s.p + "locales/ca_strings.642e23964e0cecd44d1f.json",
+          cs: s.p + "locales/cs_strings.0b68d1d0b12954a64703.json",
+          da: s.p + "locales/da_strings.5718b91a5285e5414e73.json",
+          de: s.p + "locales/de_strings.f86d4313abba2f34b734.json",
+          el: s.p + "locales/el_strings.055030f7f65e500033b6.json",
           en: s(70925),
-          es: s.p + "locales/es_strings.4d92e98fbc12a01e8e67.json",
-          fi: s.p + "locales/fi_strings.b40d85318e932ee6aac8.json",
-          fr: s.p + "locales/fr_strings.2f3d079291723a8f7270.json",
-          he: s.p + "locales/he_strings.feaa5fab200f37146ad6.json",
-          hi: s.p + "locales/hi_strings.69485e82097b7581019e.json",
-          hu: s.p + "locales/hu_strings.6448ac5c985d9ee58ad9.json",
-          it: s.p + "locales/it_strings.723a72d7e8abf3c56437.json",
-          ja: s.p + "locales/ja_strings.3d9995efcd1d9c4eb328.json",
-          ko: s.p + "locales/ko_strings.d2ccd57e39cd00bcc581.json",
-          nl: s.p + "locales/nl_strings.f429f04ee62fe4690b53.json",
-          no: s.p + "locales/no_strings.2c4097d548b0f1f86e66.json",
-          pl: s.p + "locales/pl_strings.ceb3894c4641eaf8f0a2.json",
-          "pt-BR": s.p + "locales/pt-BR_strings.742407442c47dcccc6cb.json",
-          "pt-PT": s.p + "locales/pt-PT_strings.37972ef71d53bb56fead.json",
-          ro: s.p + "locales/ro_strings.b8816705807024a68de1.json",
-          ru: s.p + "locales/ru_strings.19f8776122c65b57e6c5.json",
-          sr: s.p + "locales/sr_strings.23e8d23deccf33009a83.json",
-          sv: s.p + "locales/sv_strings.369c3c64cac95132922a.json",
-          th: s.p + "locales/th_strings.f60350f09eb539c1db69.json",
-          tr: s.p + "locales/tr_strings.2a95a2e027992a04c8dc.json",
-          uk: s.p + "locales/uk_strings.90b9af2ebc2c276119ef.json",
-          vi: s.p + "locales/vi_strings.6bd7415b5c869baf75b0.json",
-          "zh-CN": s.p + "locales/zh-CN_strings.5db62bd49cf2caf30e3f.json",
-          "zh-TW": s.p + "locales/zh-TW_strings.a4523597fdbaef4b8de7.json",
+          es: s.p + "locales/es_strings.cfa3e082c39af2994e50.json",
+          fi: s.p + "locales/fi_strings.57ff0e04420aea22b9b3.json",
+          fr: s.p + "locales/fr_strings.e48047d949df49455947.json",
+          he: s.p + "locales/he_strings.1e9f0d07d2ac46a9632f.json",
+          hi: s.p + "locales/hi_strings.97753a69354d7ceb7987.json",
+          hu: s.p + "locales/hu_strings.de613e5a24429b5ac442.json",
+          it: s.p + "locales/it_strings.7da066b0733f6ca535cf.json",
+          ja: s.p + "locales/ja_strings.7d5f2024777ae699cead.json",
+          ko: s.p + "locales/ko_strings.275958a9282c36632898.json",
+          nl: s.p + "locales/nl_strings.9424ced8931accdce34d.json",
+          no: s.p + "locales/no_strings.123b996123aec884b023.json",
+          pl: s.p + "locales/pl_strings.b54fd67f22183e84ca65.json",
+          "pt-BR": s.p + "locales/pt-BR_strings.9b34c825d7df30706057.json",
+          "pt-PT": s.p + "locales/pt-PT_strings.2d2f8bd7155fe938023f.json",
+          ro: s.p + "locales/ro_strings.431f2fd8cb35521f74da.json",
+          ru: s.p + "locales/ru_strings.908985e38bed195dce50.json",
+          sr: s.p + "locales/sr_strings.9c8b6bb0cd0a0a99baa9.json",
+          sv: s.p + "locales/sv_strings.e28f9031eb498ef7952d.json",
+          th: s.p + "locales/th_strings.aef6cad607881875fe77.json",
+          tr: s.p + "locales/tr_strings.91049b12a38be1cbdca4.json",
+          uk: s.p + "locales/uk_strings.99b96cc84156b24dc94b.json",
+          vi: s.p + "locales/vi_strings.e263ec475218a467d3c8.json",
+          "zh-CN": s.p + "locales/zh-CN_strings.daa65f2e19576191aa78.json",
+          "zh-TW": s.p + "locales/zh-TW_strings.1253a618ed8033aa4939.json",
         },
       };
       !(function (e) {
@@ -4640,7 +4640,6 @@
         (r.isPushNotificationsEnabled = window.isPushNotificationsEnabled),
         (r.activeLandscapePortraitABTest =
           window.activeLandscapePortraitABTest),
-        (r.colonistRushEnabled = window.colonistRushEnabled),
         (r.rankedPrerollAdsEnabled = window.rankedPrerollAdsEnabled),
         (r.showUpdateAppPopupForVersion = window.showUpdateAppPopupForVersion),
         (r.hideLandscapeForNewPlayers = window.hideLandscapeForNewPlayers),
@@ -11110,6 +11109,12 @@
             `/api/leaderboards-my-sticky-row-data/${e}/${t}`,
         })));
     },
+    32534: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/stop-achievements-blocking-before.3ea7bff73a4a083dfc8a.png";
+    },
     32581: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/icon_hourglass.6bc68349265ccde43880.svg";
@@ -16630,16 +16635,24 @@
             c.set(G, JSON.stringify(e));
           }),
           (e.getLocalizedStoreSubscriptionData = function () {
-            var e;
-            return JSON.parse(
-              null !== (e = c.get(E)) && void 0 !== e ? e : "[]",
-            );
+            try {
+              var e;
+              return JSON.parse(
+                null !== (e = c.get(E)) && void 0 !== e ? e : "[]",
+              );
+            } catch {
+              return [];
+            }
           }),
           (e.getLocalizedStoreProductData = function () {
-            var e;
-            return JSON.parse(
-              null !== (e = c.get(G)) && void 0 !== e ? e : "[]",
-            );
+            try {
+              var e;
+              return JSON.parse(
+                null !== (e = c.get(G)) && void 0 !== e ? e : "[]",
+              );
+            } catch {
+              return [];
+            }
           }),
           (e.setLastScene = function (e) {
             c.set(x, e);
@@ -18209,6 +18222,7 @@
         new n.ZZ(),
         new n.r8(),
         new n.D8(),
+        new n.xm(),
         new n.LK(),
         new n.$G(),
         new n.xU(),
@@ -18590,7 +18604,7 @@
     52745: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/android_status_bar_after.8a51c2bac7ac668fc56d.png";
+        s.p + "assets/android_status_bar_after.229ee218427651ff312e.png";
     },
     52895: (e, t, s) => {
       "use strict";
@@ -20585,7 +20599,7 @@
     },
     62814: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "assets/mobile_endgame_after.e5c5eb39a54cb532a5a8.png";
+      e.exports = s.p + "assets/mobile_endgame_after.00de318409aa4b18bd71.png";
     },
     62945: (e, t, s) => {
       "use strict";
@@ -20621,67 +20635,74 @@
       "use strict";
       e.exports = s.p + "assets/room_guests_before.06ce7ee269464ac74f00.png";
     },
+    63977: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/stop-achievements-blocking-after.1b4ae1df9d229ef49a71.png";
+    },
     64038: (e, t, s) => {
       "use strict";
       s.d(t, {
-        RU: () => ae,
-        RF: () => v,
-        ac: () => b,
-        W1: () => f,
-        Hl: () => k,
-        Ge: () => P,
-        ef: () => S,
-        fB: () => y,
-        Ph: () => C,
+        RU: () => ce,
+        RF: () => S,
+        ac: () => v,
+        W1: () => y,
+        Hl: () => C,
+        Ge: () => _,
+        ef: () => k,
+        fB: () => b,
+        Ph: () => P,
         __: () => d,
         bf: () => u,
         kD: () => h,
         L$: () => p,
         r8: () => o,
         D8: () => a,
+        xm: () => f,
         $G: () => g,
         SN: () => c,
         ZZ: () => l,
         LK: () => m,
-        Vk: () => ce,
-        hK: () => M,
-        hd: () => L,
-        FK: () => T,
-        qD: () => q,
-        Jt: () => D,
-        bZ: () => I,
-        bE: () => x,
-        Gi: () => V,
-        lY: () => B,
-        pk: () => U,
-        p7: () => W,
-        j6: () => R,
-        z3: () => K,
-        lQ: () => _,
-        Ke: () => A,
-        rf: () => w,
-        XP: () => N,
-        yI: () => Q,
-        G: () => O,
-        NH: () => G,
-        SV: () => E,
-        YU: () => F,
-        yT: () => H,
-        Zc: () => ie,
-        jU: () => Y,
-        b6: () => $,
-        Ms: () => X,
-        xU: () => re,
-        lt: () => Z,
-        As: () => J,
-        dZ: () => te,
-        yl: () => se,
-        Ry: () => ee,
-        dS: () => j,
-        qW: () => z,
-        Xf: () => ne,
-        l2: () => oe,
-        v$: () => le,
+        Vk: () => le,
+        hK: () => L,
+        hd: () => B,
+        FK: () => I,
+        qD: () => Q,
+        Jt: () => E,
+        bZ: () => M,
+        bE: () => U,
+        Gi: () => q,
+        lY: () => D,
+        pk: () => O,
+        p7: () => K,
+        j6: () => T,
+        z3: () => V,
+        lQ: () => A,
+        Ke: () => w,
+        rf: () => R,
+        XP: () => F,
+        yI: () => $,
+        G: () => N,
+        NH: () => x,
+        SV: () => G,
+        YU: () => H,
+        yT: () => W,
+        Zc: () => ne,
+        jU: () => X,
+        b6: () => z,
+        Ms: () => Z,
+        xU: () => oe,
+        lt: () => J,
+        As: () => ee,
+        dZ: () => se,
+        yl: () => ie,
+        Ry: () => te,
+        dS: () => Y,
+        qW: () => j,
+        Xf: () => re,
+        l2: () => ae,
+        v$: () => de,
       });
       var i = s(53015),
         n = s(78311),
@@ -20837,6 +20858,21 @@
       class f extends r.k {
         constructor(...e) {
           (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.ColonistRush4P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.colonistRush.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.colonistRush.description"),
+            (this.price = 2800),
+            (this.image = n.am.GameModeColonistRush),
+            (this.activeInStore = !0));
+        }
+      }
+      class y extends r.k {
+        constructor(...e) {
+          (super(...e),
             (this.category = i.n9.Color),
             (this.type = i.WB.Gold),
             (this.name = { key: "strings:colonistCommon.playerColors.Gold" }),
@@ -20845,7 +20881,7 @@
             (this.activeInStore = !1));
         }
       }
-      class y extends r.k {
+      class b extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Color),
@@ -20856,7 +20892,7 @@
             (this.activeInStore = !1));
         }
       }
-      class b extends r.k {
+      class v extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Color),
@@ -20867,7 +20903,7 @@
             (this.activeInStore = !1));
         }
       }
-      class v extends r.k {
+      class S extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Color),
@@ -20878,7 +20914,7 @@
             (this.activeInStore = !0));
         }
       }
-      class S extends r.k {
+      class k extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Color),
@@ -20889,7 +20925,7 @@
             (this.activeInStore = !0));
         }
       }
-      class k extends r.k {
+      class C extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Color),
@@ -20902,7 +20938,7 @@
             (this.activeInStore = !0));
         }
       }
-      class C extends r.k {
+      class P extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Color),
@@ -20913,7 +20949,7 @@
             (this.activeInStore = !0));
         }
       }
-      class P extends r.k {
+      class _ extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Color),
@@ -20924,7 +20960,7 @@
             (this.activeInStore = !1));
         }
       }
-      class _ extends r.k {
+      class A extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -20935,7 +20971,7 @@
             (this.activeInStore = !0));
         }
       }
-      class A extends r.k {
+      class w extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -20946,7 +20982,7 @@
             (this.activeInStore = !0));
         }
       }
-      class w extends r.k {
+      class R extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -20957,7 +20993,7 @@
             (this.activeInStore = !1));
         }
       }
-      class R extends r.k {
+      class T extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -20968,7 +21004,7 @@
             (this.activeInStore = !0));
         }
       }
-      class T extends r.k {
+      class I extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -20979,7 +21015,7 @@
             (this.activeInStore = !0));
         }
       }
-      class I extends r.k {
+      class M extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -20990,7 +21026,7 @@
             (this.activeInStore = !1));
         }
       }
-      class M extends r.k {
+      class L extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21001,7 +21037,7 @@
             (this.activeInStore = !0));
         }
       }
-      class L extends r.k {
+      class B extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21012,7 +21048,7 @@
             (this.activeInStore = !0));
         }
       }
-      class B extends r.k {
+      class D extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21027,7 +21063,7 @@
             (this.hideOnDiscordMobile = !0));
         }
       }
-      class D extends r.k {
+      class E extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21038,7 +21074,7 @@
             (this.activeInStore = !0));
         }
       }
-      class E extends r.k {
+      class G extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21049,7 +21085,7 @@
             (this.activeInStore = !0));
         }
       }
-      class G extends r.k {
+      class x extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21060,7 +21096,7 @@
             (this.activeInStore = !0));
         }
       }
-      class x extends r.k {
+      class U extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21071,7 +21107,7 @@
             (this.activeInStore = !0));
         }
       }
-      class U extends r.k {
+      class O extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21082,7 +21118,7 @@
             (this.activeInStore = !0));
         }
       }
-      class O extends r.k {
+      class N extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21093,7 +21129,7 @@
             (this.activeInStore = !0));
         }
       }
-      class N extends r.k {
+      class F extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21104,7 +21140,7 @@
             (this.activeInStore = !0));
         }
       }
-      class F extends r.k {
+      class H extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21115,7 +21151,7 @@
             (this.activeInStore = !0));
         }
       }
-      class H extends r.k {
+      class W extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21126,7 +21162,7 @@
             (this.activeInStore = !0));
         }
       }
-      class W extends r.k {
+      class K extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21137,7 +21173,7 @@
             (this.activeInStore = !1));
         }
       }
-      class K extends r.k {
+      class V extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21148,7 +21184,7 @@
             (this.activeInStore = !0));
         }
       }
-      class V extends r.k {
+      class q extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21159,7 +21195,7 @@
             (this.activeInStore = !1));
         }
       }
-      class q extends r.k {
+      class Q extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21170,7 +21206,7 @@
             (this.activeInStore = !1));
         }
       }
-      class Q extends r.k {
+      class $ extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -21184,7 +21220,7 @@
       r.k;
       r.k;
       r.k;
-      class $ extends r.k {
+      class z extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21199,7 +21235,7 @@
             (this.activeInStore = !0));
         }
       }
-      class z extends r.k {
+      class j extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21214,7 +21250,7 @@
             (this.activeInStore = !0));
         }
       }
-      class j extends r.k {
+      class Y extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21229,7 +21265,7 @@
             (this.activeInStore = !0));
         }
       }
-      class Y extends r.k {
+      class X extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21244,7 +21280,7 @@
             (this.activeInStore = !0));
         }
       }
-      class X extends r.k {
+      class Z extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21259,7 +21295,7 @@
             (this.activeInStore = !0));
         }
       }
-      class Z extends r.k {
+      class J extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21274,7 +21310,7 @@
             (this.activeInStore = !0));
         }
       }
-      class J extends r.k {
+      class ee extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21289,7 +21325,7 @@
             (this.activeInStore = !0));
         }
       }
-      class ee extends r.k {
+      class te extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21304,7 +21340,7 @@
             (this.activeInStore = !0));
         }
       }
-      class te extends r.k {
+      class se extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21319,7 +21355,7 @@
             (this.activeInStore = !0));
         }
       }
-      class se extends r.k {
+      class ie extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21334,7 +21370,7 @@
             (this.activeInStore = !0));
         }
       }
-      class ie extends r.k {
+      class ne extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21349,7 +21385,7 @@
             (this.activeInStore = !0));
         }
       }
-      class ne extends r.k {
+      class re extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21364,7 +21400,7 @@
             (this.activeInStore = !0));
         }
       }
-      class re extends r.k {
+      class oe extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -21379,7 +21415,7 @@
             (this.activeInStore = !0));
         }
       }
-      class oe extends r.k {
+      class ae extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.PresalePack),
@@ -21390,7 +21426,7 @@
             (this.image = n.am.SettlerPack));
         }
       }
-      class ae extends r.k {
+      class ce extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.PresalePack),
@@ -21401,7 +21437,7 @@
             (this.image = n.am.ColonistPack));
         }
       }
-      class ce extends r.k {
+      class le extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.PresalePack),
@@ -21412,7 +21448,7 @@
             (this.image = n.am.FounderPack));
         }
       }
-      class le extends r.k {
+      class de extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Consumable),
@@ -23227,7 +23263,7 @@
           }, s);
         }
       }
-      var Ce = s(35274),
+      var Ce = s(28255),
         Pe = s(76092);
       if (837 != s.j) var _e = s(51178);
       if (837 != s.j) var Ae = s(2443);
@@ -24904,7 +24940,7 @@
         Xt = s.p + "assets/icon_square_framed_trade.28d7d5a642a8086def22.svg";
       var Zt = s(34915),
         Jt = s(30506),
-        es = s(35274),
+        es = s(28255),
         ts = s(18514);
       class ss {
         static replaceKeywordsWithImages(e) {
@@ -25783,7 +25819,7 @@
     },
     70925: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "locales/en_strings.7b10289c983fc99a0f5e.json";
+      e.exports = s.p + "locales/en_strings.6ddc6ad3ca3d49689923.json";
     },
     70970: (e, t, s) => {
       "use strict";
@@ -30163,6 +30199,7 @@
               "CitiesAndKnightsSeafarers4P"),
             (e[(e.CitiesAndKnightsSeafarers56P = 9)] =
               "CitiesAndKnightsSeafarers56P"),
+            (e[(e.ColonistRush4P = 10)] = "ColonistRush4P"),
             e
           );
         })({});
@@ -32106,7 +32143,7 @@
     83446: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/android_status_bar_before.566d98b4e4146f8e0ed5.png";
+        s.p + "assets/android_status_bar_before.7037d5c9de7b34d9417d.png";
     },
     83476: (e, t, s) => {
       "use strict";
@@ -35231,4 +35268,4 @@
     },
   },
 ]);
-//# sourceMappingURL=shared.3ed0c9ee632825f084fb.js.map
+//# sourceMappingURL=shared.c6e8028d840bfaf19569.js.map
