@@ -42,7 +42,7 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
     try {
       await f({ page });
     } finally {
-      await delay(5000);
+      await delay(1000);
       console.log({ codex });
       await page.screenshot({
         path: testInfo.outputPath("screenshot.png"),
@@ -196,7 +196,10 @@ test.skip(
   screenshot(choreo("./starting_settlement.json", startingSettlementChoreo)),
 );
 
-test("single_player", choreo("./single_player.json", singlePlayerChoreo, 247));
+test(
+  "single_player",
+  screenshot(choreo("./single_player.json", singlePlayerChoreo, 179)),
+);
 
 //
 

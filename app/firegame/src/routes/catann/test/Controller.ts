@@ -17,6 +17,7 @@ import {
   addGameLogEntry,
   edgeEndpoints,
   TEST_CHANGE_STR,
+  tileCornerStates,
   tileEdgeStates,
 } from "../app/gameLogic/utils";
 import {
@@ -330,13 +331,6 @@ const Controller = (
         (msg) => msg.data.payload?.offeredResources,
       )!;
       await makeTrade(tradeMsg.data.payload);
-
-      // await makeTrade({
-      //   creator: 1,
-      //   isBankTrade: true,
-      //   offeredResources: [4, 4, 4, 4],
-      //   wantedResources: [1],
-      // });
       await fixWeirdTrade();
     };
     const buildNextRoad = async () => {
@@ -344,6 +338,12 @@ const Controller = (
         (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
       )!;
       await buildRoadFromPayload(roadMsg.data.payload);
+    };
+    const buildNextSettlement = async () => {
+      const settlementMsg = _expectedMessages!.find(
+        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildSettlement,
+      )!;
+      await buildSettlementFromPayload(settlementMsg.data.payload);
     };
     const fixWeirdTrade = async () => {
       const nextMsg = _expectedMessages![0];
@@ -490,6 +490,11 @@ const Controller = (
       const [start, destination] = edgeEndpoints(tileEdgeStates[payload]);
       await buildRoad(getColRow(start), getColRow(destination), true);
     };
+    const buildSettlementFromPayload = async (
+      payload: keyof typeof tileCornerStates,
+    ) => {
+      await buildSettlement(getColRow(tileCornerStates[payload]), true);
+    };
     return {
       _peek: () => _expectedMessages![0],
       verifyTestMessages,
@@ -508,6 +513,7 @@ const Controller = (
       makeTrade,
       makeNextTrade,
       buildNextRoad,
+      buildNextSettlement,
       fixWeirdTrade,
       rollNextDice,
       passTurn,

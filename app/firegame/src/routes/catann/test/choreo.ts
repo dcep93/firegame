@@ -42,15 +42,6 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 179);
 
   await c.fastForward(179);
-  await c.wantToTrade();
-  await c.makeTrade({
-    creator: 1,
-    isBankTrade: true,
-    offeredResources: [4, 4, 4, 4],
-    wantedResources: [5],
-  });
-  await c.fixWeirdTrade();
-  await c.verifyTestMessages();
   await autoChoreo(c, 188);
 
   await c.fastForward(188);
@@ -58,43 +49,15 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 212);
 
   await c.fastForward(212);
-  await autoChoreo(c);
-  await c.confirmSelectedCards();
-  await autoChoreo(c);
-  await c.buildSettlement({ col: 4, row: 6 }, true);
   await autoChoreo(c, 247);
 
   await c.fastForward(247);
-  await c.playDevelopmentCardFromHand();
-  await c.verifyTestMessages();
   await autoChoreo(c, 263);
 
   await c.fastForward(263);
-  await autoChoreo(c, 283);
-
-  // {
-  //   "trigger": "serverData",
-  //   "data": {
-  //     "id": "130",
-  //     "data": {
-  //       "type": 77,
-  //       "payload": {
-  //         "type": 49,
-  //         "data": {
-  //           "creator": 1,
-  //           "isBankTrade": true,
-  //           "counterOfferInResponseToTradeId": null,
-  //           "offeredResources": [4, 4, 4, 4],
-  //           "wantedResources": [1]
-  //         }
-  //       },
-  //       "sequence": 174
-  //     }
-  //   }
-  // },
-
-  await c.fastForward(283);
   await autoChoreo(c, 285);
+
+  await c.fastForward(285);
   await c.handleReconnect();
   await autoChoreo(c, 290);
 

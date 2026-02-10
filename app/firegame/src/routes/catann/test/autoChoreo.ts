@@ -24,30 +24,27 @@ export default async function autoChoreo(
       GAME_ACTION[msg.data.action],
     );
     if (msg.data.sequence === stopClientDataSequence) return;
-    if (msg.data.action === GAME_ACTION.PassedTurn) {
-      await c.passTurn();
-    } else if (msg.data.action === GAME_ACTION.ClickedDice) {
-      await c.rollNextDice();
-    } else if (msg.data.action === GAME_ACTION.WantToBuildRoad) {
-      await c.wantToBuildRoad();
-    } else if (msg.data.action === GAME_ACTION.WantToBuildSettlement) {
-      await c.wantToBuildSettlement();
-    } else if (msg.data.action === GAME_ACTION.WantToBuildCity) {
-      await c.wantToBuildCity();
-    } else if (msg.data.action === GAME_ACTION.BuyDevelopmentCard) {
-      await c.buyDevelopmentCard();
-    } else if (msg.data.action === GAME_ACTION.SelectedCardsState) {
-      await c.selectNextDiscardCard();
-    } else if (msg.data.action === GAME_ACTION.PlayDevelopmentCardFromHand) {
-      await c.playDevelopmentCardFromHand();
-    } else if (msg.data.action === GAME_ACTION.PreCreateTrade) {
-      await c.wantToTrade();
-    } else if (msg.data.action === GAME_ACTION.CreateTrade) {
-      await c.makeNextTrade();
-    } else if (msg.data.action === GAME_ACTION.ConfirmBuildRoad) {
-      await c.buildNextRoad();
-    } else if (msg.data.action === GAME_ACTION.SelectedTile) {
-      await c.playNextRobber();
+
+    const handlers: Partial<Record<GAME_ACTION, () => Promise<void>>> = {
+      [GAME_ACTION.PassedTurn]: c.passTurn,
+      [GAME_ACTION.ClickedDice]: c.rollNextDice,
+      [GAME_ACTION.WantToBuildRoad]: c.wantToBuildRoad,
+      [GAME_ACTION.WantToBuildSettlement]: c.wantToBuildSettlement,
+      [GAME_ACTION.WantToBuildCity]: c.wantToBuildCity,
+      [GAME_ACTION.BuyDevelopmentCard]: c.buyDevelopmentCard,
+      [GAME_ACTION.SelectedCardsState]: c.selectNextDiscardCard,
+      [GAME_ACTION.PlayDevelopmentCardFromHand]: c.playDevelopmentCardFromHand,
+      [GAME_ACTION.PreCreateTrade]: c.wantToTrade,
+      [GAME_ACTION.CreateTrade]: c.makeNextTrade,
+      [GAME_ACTION.ConfirmBuildRoad]: c.buildNextRoad,
+      [GAME_ACTION.SelectedTile]: c.playNextRobber,
+      [GAME_ACTION.SelectedCards]: c.confirmSelectedCards,
+      [GAME_ACTION.ConfirmBuildSettlement]: c.buildNextSettlement,
+    };
+
+    const handler = handlers[msg.data.action as GAME_ACTION];
+    if (handler) {
+      await handler();
     } else {
       return;
     }
