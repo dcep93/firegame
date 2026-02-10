@@ -1360,30 +1360,9 @@ const rollDice = () => {
       });
   }
 
-  let resourceLogIndex: number | undefined;
   cardsByOwner.forEach((cards, owner) => {
     const index = addPlayerResourceCards(gameState, owner, cards, 1);
-    if (owner === playerColor && index !== undefined) {
-      resourceLogIndex = index;
-    }
   });
-
-  if (
-    resourceLogIndex !== undefined &&
-    diceLogIndex !== undefined &&
-    diceLogIndex < 60 &&
-    resourceLogIndex < 60
-  ) {
-    const gameLogState = gameState.gameLogState ?? {};
-    const moveLogEntry = (from: number, to: number) => {
-      const entry = gameLogState[String(from)];
-      if (!entry) return;
-      gameLogState[String(to)] = entry;
-      delete gameLogState[String(from)];
-    };
-    moveLogEntry(resourceLogIndex, resourceLogIndex + 2);
-    moveLogEntry(diceLogIndex, diceLogIndex + 2);
-  }
 
   if (!shouldTriggerRobber) {
     sendToMainSocket?.({
