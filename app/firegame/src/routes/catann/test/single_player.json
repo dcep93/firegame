@@ -16130,7 +16130,6 @@
       "sequence": 212
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "serverData",
     "data": {

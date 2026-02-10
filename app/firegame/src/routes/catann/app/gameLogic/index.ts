@@ -2051,13 +2051,6 @@ export const applyGameAction = (parsed: {
         { ...firebaseData, GAME: gameData },
         { ClickedDevelopmentCard: clickedCard },
       );
-      if (clickedCard === CardEnum.Knight) {
-        sendEdgeHighlights31(gameData);
-        sendShipHighlights32(gameData);
-        sendCornerHighlights30(gameData, []);
-        sendTileHighlights33(gameData, []);
-        sendCornerHighlights30(gameData, []);
-      }
       return true;
     }
 
