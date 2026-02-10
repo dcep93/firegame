@@ -187,10 +187,6 @@ const autoPlaceRobber = (tileIndex: number) => {
           allocatedTime: 120,
         },
   );
-  if (isDevelopmentCardRobberPlacement) {
-    gameData.data.payload.timeLeftInState =
-      currentAllocatedTime === 160 ? 155.995 : 174.621;
-  }
 
   addGameLogEntry(gameState, {
     text: {
@@ -578,7 +574,6 @@ const placeSettlement = (cornerIndex: number) => {
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 140;
     gameState.currentState.startTime = Date.now();
-    gameData.data.payload.timeLeftInState = 137.832;
   } else {
     updateCurrentState(gameData, {
       actionState: PlayerActionState.InitialPlacementRoadPlacement,
@@ -841,7 +836,6 @@ const placeCity = (cornerIndex: number) => {
   gameState.currentState.actionState = PlayerActionState.None;
   gameState.currentState.allocatedTime = 140;
   gameState.currentState.startTime = Date.now();
-  gameData.data.payload.timeLeftInState = 138.098;
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -935,7 +929,6 @@ const placeRoad = (edgeIndex: number) => {
     };
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 140;
-    gameData.data.payload.timeLeftInState = 137.421;
   } else if (edgeIndex === 60) {
     applyRoadExchange();
     addGameLogEntry(gameState, {
@@ -949,13 +942,11 @@ const placeRoad = (edgeIndex: number) => {
     });
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 140;
-    gameData.data.payload.timeLeftInState = 136.914;
   } else if (edgeIndex === 65) {
     applyRoadExchange();
     if (completedTurns >= 52) {
       gameState.currentState.actionState = PlayerActionState.None;
       gameState.currentState.allocatedTime = 240;
-      gameData.data.payload.timeLeftInState = 227.522;
       addGameLogEntry(gameState, {
         text: {
           type: 5,
@@ -1023,7 +1014,6 @@ const placeRoad = (edgeIndex: number) => {
         } as any;
       }
       gameState.mechanicLongestRoadState[playerColor].longestRoad = 3;
-      gameData.data.payload.timeLeftInState = 195.024;
     } else {
       updateCurrentState(gameData, {
         actionState: PlayerActionState.Place1MoreRoadBuilding,
@@ -1049,7 +1039,6 @@ const placeRoad = (edgeIndex: number) => {
       }
       gameState.mechanicLongestRoadState[playerColor].longestRoad = 3;
       delete gameState.currentState.roadBuildingHighlightStep;
-      gameData.data.payload.timeLeftInState = 195.024;
     } else {
       if (edgeIndex === 68) {
         gameState.currentState.actionState = PlayerActionState.None;
@@ -1062,7 +1051,6 @@ const placeRoad = (edgeIndex: number) => {
           } as any;
         }
         gameState.mechanicLongestRoadState[playerColor].longestRoad = 4;
-        gameData.data.payload.timeLeftInState = 194.094;
       } else {
         updateCurrentState(gameData, {
           completedTurns: completedTurns + 1,
@@ -1576,8 +1564,6 @@ const buyDevelopmentCard = () => {
   });
 
   gameState.currentState.allocatedTime = 140;
-  gameData.data.payload.timeLeftInState =
-    (gameState.currentState.completedTurns ?? 0) >= 50 ? 137.599 : 138.322;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);
@@ -1722,8 +1708,6 @@ export const applyGameAction = (parsed: {
 
         const completedTurns = gameState.currentState.completedTurns ?? 0;
         gameState.currentState.allocatedTime = completedTurns >= 50 ? 220 : 140;
-        gameData.data.payload.timeLeftInState =
-          completedTurns >= 50 ? 209.571 : 134.623;
 
         sendCornerHighlights30(gameData, []);
         sendTileHighlights33(gameData, []);
@@ -1809,10 +1793,8 @@ export const applyGameAction = (parsed: {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       const completedTurns = gameState.currentState.completedTurns ?? 0;
-      const timeLeftInState = completedTurns >= 43 ? 118.663 : 118.095;
       const highlightCorners = completedTurns >= 43 ? [50] : [47, 50];
       gameState.currentState.actionState = PlayerActionState.PlaceSettlement;
-      gameData.data.payload.timeLeftInState = timeLeftInState;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
@@ -1839,16 +1821,7 @@ export const applyGameAction = (parsed: {
           : completedTurns >= 17
             ? [6, 7, 70, 69, 61, 65, 64, 60]
             : [6, 7, 70, 69, 61, 63, 60];
-      const timeLeftInState =
-        completedTurns >= 52
-          ? 208.36599999999999
-          : completedTurns >= 19
-            ? 117.924
-            : completedTurns >= 18
-              ? 117.98
-              : 118.432;
       gameState.currentState.actionState = PlayerActionState.PlaceRoad;
-      gameData.data.payload.timeLeftInState = timeLeftInState;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
@@ -1873,7 +1846,6 @@ export const applyGameAction = (parsed: {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       const playerColor = gameData.data.payload.playerColor ?? 1;
-      const timeLeftInState = 119.05;
       const cornerStates = gameState.mapState.tileCornerStates ?? {};
       const highlightCorners = Object.entries(cornerStates)
         .map(([key, value]) => ({
@@ -1889,7 +1861,6 @@ export const applyGameAction = (parsed: {
         )
         .map(({ key }) => key);
       gameState.currentState.actionState = PlayerActionState.PlaceCity;
-      gameData.data.payload.timeLeftInState = timeLeftInState;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
@@ -1981,9 +1952,6 @@ export const applyGameAction = (parsed: {
         completedTurns >= 52 || priorUsedDevelopmentCardsCount > 0;
       gameState.currentState.allocatedTime = isLateGameDevPlay ? 160 : 180;
       gameState.currentState.startTime = Date.now();
-      gameData.data.payload.timeLeftInState = isLateGameDevPlay
-        ? 157.183
-        : 175.667;
 
       if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
         if (!gameState.mechanicLargestArmyState) {
@@ -2059,7 +2027,6 @@ export const applyGameAction = (parsed: {
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.None;
       gameState.currentState.startTime = Date.now();
-      gameData.data.payload.timeLeftInState = 114.547;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);

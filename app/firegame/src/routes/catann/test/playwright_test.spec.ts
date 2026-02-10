@@ -1,7 +1,6 @@
 // TODO
 // finish single_player
 // explicitly place robber
-// timeLeftInState
 // no magic numbers
 // redo single_player
 // read everything
