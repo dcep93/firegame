@@ -7,6 +7,7 @@ import {
   EdgePieceType,
   GAME_ACTION,
   GameLogMessageType,
+  GamePhase,
   GameStateUpdateType,
   MapPieceType,
   PlayerActionState,
@@ -177,11 +178,11 @@ const autoPlaceRobber = (tileIndex: number) => {
     gameData,
     isDevelopmentCardRobberPlacement
       ? {
-          turnState: 2,
+          turnState: GamePhase.Turn,
           actionState: PlayerActionState.None,
         }
       : {
-          turnState: 2,
+          turnState: GamePhase.Turn,
           actionState: PlayerActionState.None,
           allocatedTime: 120,
         },
@@ -398,7 +399,8 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
               cornerKey ===
               serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
           );
-        });
+        })
+        .map(({ index }) => index);
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -900,21 +902,46 @@ const placeRoad = (edgeIndex: number) => {
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding;
   const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
 
-  if (completedTurns === 0) {
-    updateCurrentState(gameData, {
-      completedTurns: 1,
-      actionState: PlayerActionState.InitialPlacementPlaceSettlement,
-      allocatedTime: 180,
+  addGameLogEntry(gameState, {
+    text: {
+      type: 4,
+      playerColor,
+      pieceEnum: 0,
+    },
+    from: playerColor,
+  });
+  if (!isRoadBuildingPlacement) {
+    addGameLogEntry(gameState, {
+      text: {
+        type: 44,
+      },
     });
-    if (gameState.mechanicLongestRoadState?.[playerColor]) {
-      gameState.mechanicLongestRoadState[playerColor].longestRoad = 1;
+  }
+
+  if (
+    actionStateAtRoadPlacement ===
+    PlayerActionState.InitialPlacementRoadPlacement
+  ) {
+    if (completedTurns === 0) {
+      updateCurrentState(gameData, {
+        completedTurns: completedTurns + 1,
+        actionState: PlayerActionState.InitialPlacementPlaceSettlement,
+        allocatedTime: 180,
+      });
+    } else {
+      updateCurrentState(gameData, {
+        completedTurns: completedTurns + 1,
+        actionState: PlayerActionState.None,
+        allocatedTime: 180,
+        turnState: GamePhase.Dice,
+      });
     }
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding
   ) {
     updateCurrentState(gameData, {
       actionState: PlayerActionState.Place1MoreRoadBuilding,
-      turnState: 2,
+      turnState: GamePhase.Turn,
       allocatedTime: 160,
     });
     gameState.currentState.roadBuildingHighlightStep = 0;
@@ -923,7 +950,7 @@ const placeRoad = (edgeIndex: number) => {
   ) {
     updateCurrentState(gameData, {
       completedTurns: completedTurns + 1,
-      turnState: 1,
+      turnState: GamePhase.Dice,
       actionState: PlayerActionState.None,
       allocatedTime: 8,
     });
@@ -947,40 +974,28 @@ const placeRoad = (edgeIndex: number) => {
     }
     updateCurrentState(gameData, {
       completedTurns: completedTurns + 1,
-      turnState: 1,
+      turnState: GamePhase.Dice,
       actionState: PlayerActionState.None,
       allocatedTime: 8,
     });
-  }
 
-  addGameLogEntry(gameState, {
-    text: {
-      type: 4,
-      playerColor,
-      pieceEnum: 0,
-    },
-    from: playerColor,
-  });
-  if (!isRoadBuildingPlacement) {
-    addGameLogEntry(gameState, {
-      text: {
-        type: 44,
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.ExchangeCards,
+        payload: {
+          givingPlayer: playerColor,
+          givingCards: exchangeCards,
+          receivingPlayer: 0,
+          receivingCards: [],
+        },
       },
     });
   }
 
-  sendToMainSocket?.({
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.ExchangeCards,
-      payload: {
-        givingPlayer: playerColor,
-        givingCards: exchangeCards,
-        receivingPlayer: 0,
-        receivingCards: [],
-      },
-    },
-  });
+  gameData.data.payload.gameState.mechanicLongestRoadState = {
+    1: { longestRoad: 1 },
+  };
 
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
@@ -990,9 +1005,14 @@ const placeRoad = (edgeIndex: number) => {
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-  }
-  if (
-    isRoadBuildingPlacement &&
+
+    if (gameState.currentState.completedTurns === 1) {
+      sendPlayTurnSound59(gameData);
+      sendCornerHighlights30(gameData);
+    } else {
+      sendExitInitialPlacement62(gameData);
+    }
+  } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
     sendCornerHighlights30(gameData, []);
@@ -1007,14 +1027,6 @@ const placeRoad = (edgeIndex: number) => {
       },
     });
     sendShipHighlights32(gameData);
-  }
-  if (!isRoadBuildingPlacement) {
-    if (gameState.currentState.completedTurns === 1) {
-      sendPlayTurnSound59(gameData);
-      sendCornerHighlights30(gameData);
-    } else {
-      sendExitInitialPlacement62(gameData);
-    }
   }
 
   setFirebaseData(
@@ -1122,7 +1134,7 @@ const rollDice = () => {
     });
   } else {
     updateCurrentState(gameData, {
-      turnState: 2,
+      turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
       allocatedTime: 120,
     });
@@ -1240,7 +1252,7 @@ const passTurn = () => {
 
   updateCurrentState(gameData, {
     completedTurns: nextCompletedTurns,
-    turnState: 1,
+    turnState: GamePhase.Dice,
     actionState: PlayerActionState.None,
     allocatedTime,
   });
@@ -1910,16 +1922,14 @@ export const applyGameAction = (parsed: {
         return true;
       }
       if (
-        gameState.currentState.turnState === 2 &&
         gameState.currentState.actionState ===
-          PlayerActionState.SelectCardsToDiscard
+        PlayerActionState.SelectCardsToDiscard
       ) {
         gameState.currentState.actionState = PlayerActionState.None;
         passTurn();
         return true;
       }
       if (
-        gameState.currentState.turnState === 2 &&
         gameState.currentState.actionState === PlayerActionState.None &&
         gameState.currentState.completedTurns === 47 &&
         gameState.playerStates?.[gameData.data.payload.playerColor ?? 1]
@@ -2010,7 +2020,7 @@ export const applyGameAction = (parsed: {
     const gameData = firebaseData.GAME;
     const gameState = gameData.data.payload.gameState;
     const alreadyEnded =
-      gameState.currentState.turnState === 3 &&
+      gameState.currentState.turnState === GamePhase.GameEnd &&
       gameData.data.payload.timeLeftInState === 0;
     if (alreadyEnded) {
       return rval;
@@ -2036,7 +2046,7 @@ export const applyGameAction = (parsed: {
     addGameLogEntry(gameState, {
       text: { type: GameLogMessageType.Separator },
     });
-    gameState.currentState.turnState = 3;
+    gameState.currentState.turnState = GamePhase.GameEnd;
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 300;
     gameData.data.payload.timeLeftInState = 0;
