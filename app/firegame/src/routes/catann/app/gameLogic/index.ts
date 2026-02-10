@@ -4,7 +4,6 @@ import {
   CardEnum,
   CornerDirection,
   CornerPieceType,
-  EdgeDirection,
   EdgePieceType,
   GAME_ACTION,
   GameLogMessageType,
@@ -284,7 +283,9 @@ const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
       index: Number.parseInt(key, 10),
       edgeState: edgeState as any,
     }))
-    .filter(({ index, edgeState }) => Number.isFinite(index) && Boolean(edgeState))
+    .filter(
+      ({ index, edgeState }) => Number.isFinite(index) && Boolean(edgeState),
+    )
     .filter(({ edgeState }) => !edgeState.owner)
     .filter(({ edgeState }) => {
       const endpoints = edgeEndpoints(edgeState);
@@ -373,18 +374,6 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
   const cornerKey =
     cornerState &&
     serializeCornerKey(cornerState.x, cornerState.y, cornerState.z);
-  const edgeDirectionOrder =
-    cornerState?.z === CornerDirection.North
-      ? new Map<number, number>([
-          [EdgeDirection.West, 0],
-          [EdgeDirection.SouthWest, 1],
-          [EdgeDirection.NorthWest, 2],
-        ])
-      : new Map<number, number>([
-          [EdgeDirection.NorthWest, 0],
-          [EdgeDirection.West, 1],
-          [EdgeDirection.SouthWest, 2],
-        ]);
   const actionState = gameData.data.payload.gameState.currentState.actionState;
   const edgeIndices = ![
     PlayerActionState.InitialPlacementRoadPlacement,
@@ -409,17 +398,7 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
               cornerKey ===
               serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
           );
-        })
-        .sort((a, b) => {
-          const edgeDirectionDiff =
-            (edgeDirectionOrder.get(a.edgeState.z) ?? 0) -
-            (edgeDirectionOrder.get(b.edgeState.z) ?? 0);
-          if (edgeDirectionDiff !== 0) {
-            return edgeDirectionDiff;
-          }
-          return a.index - b.index;
-        })
-        .map(({ index }) => index);
+        });
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -920,7 +899,36 @@ const placeRoad = (edgeIndex: number) => {
     actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding ||
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding;
   const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
-  const applyRoadExchange = () => {
+
+  if (completedTurns === 0) {
+    updateCurrentState(gameData, {
+      completedTurns: 1,
+      actionState: PlayerActionState.InitialPlacementPlaceSettlement,
+      allocatedTime: 180,
+    });
+    if (gameState.mechanicLongestRoadState?.[playerColor]) {
+      gameState.mechanicLongestRoadState[playerColor].longestRoad = 1;
+    }
+  } else if (
+    actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding
+  ) {
+    updateCurrentState(gameData, {
+      actionState: PlayerActionState.Place1MoreRoadBuilding,
+      turnState: 2,
+      allocatedTime: 160,
+    });
+    gameState.currentState.roadBuildingHighlightStep = 0;
+  } else if (
+    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
+  ) {
+    updateCurrentState(gameData, {
+      completedTurns: completedTurns + 1,
+      turnState: 1,
+      actionState: PlayerActionState.None,
+      allocatedTime: 8,
+    });
+    delete gameState.currentState.roadBuildingHighlightStep;
+  } else {
     if (gameState.bankState?.resourceCards) {
       exchangeCards.forEach((card) => {
         if (gameState.bankState?.resourceCards?.[card] !== undefined) {
@@ -937,160 +945,6 @@ const placeRoad = (edgeIndex: number) => {
         ),
       };
     }
-  };
-
-  if (edgeIndex === 63) {
-    applyRoadExchange();
-    if (gameState.mechanicRoadState?.[playerColor]) {
-      gameState.mechanicRoadState[playerColor].bankRoadAmount = 12;
-    }
-    if (gameState.mechanicLongestRoadState?.[playerColor]) {
-      gameState.mechanicLongestRoadState[playerColor].longestRoad = 2;
-    }
-    addGameLogEntry(gameState, {
-      text: {
-        type: 5,
-        playerColor,
-        pieceEnum: 0,
-        isVp: false,
-      },
-      from: playerColor,
-    });
-    gameState.currentState.actionState = PlayerActionState.None;
-    gameState.currentState.allocatedTime = 140;
-  } else if (edgeIndex === 60) {
-    applyRoadExchange();
-    addGameLogEntry(gameState, {
-      text: {
-        type: 5,
-        playerColor,
-        pieceEnum: 0,
-        isVp: false,
-      },
-      from: playerColor,
-    });
-    gameState.currentState.actionState = PlayerActionState.None;
-    gameState.currentState.allocatedTime = 140;
-  } else if (edgeIndex === 65) {
-    applyRoadExchange();
-    if (completedTurns >= 52) {
-      gameState.currentState.actionState = PlayerActionState.None;
-      gameState.currentState.allocatedTime = 240;
-      addGameLogEntry(gameState, {
-        text: {
-          type: 5,
-          playerColor,
-          pieceEnum: 0,
-          isVp: false,
-        },
-        from: playerColor,
-      });
-      addGameLogEntry(gameState, {
-        text: {
-          type: 66,
-          playerColor,
-          achievementEnum: 0,
-        },
-        from: playerColor,
-      });
-      if (!gameState.mechanicLongestRoadState) {
-        gameState.mechanicLongestRoadState = {};
-      }
-      if (!gameState.mechanicLongestRoadState[playerColor]) {
-        gameState.mechanicLongestRoadState[playerColor] = {} as any;
-      }
-      gameState.mechanicLongestRoadState[playerColor].longestRoad = 7;
-      gameState.mechanicLongestRoadState[playerColor].hasLongestRoad = true;
-      const playerState = gameState.playerStates?.[playerColor];
-      if (playerState) {
-        if (!playerState.victoryPointsState) {
-          playerState.victoryPointsState = {};
-        }
-        playerState.victoryPointsState[4] = 1;
-      }
-    } else {
-      updateCurrentState(gameData, {
-        completedTurns: completedTurns + 1,
-        turnState: 1,
-        actionState: PlayerActionState.None,
-        allocatedTime: 8,
-      });
-    }
-  } else if (completedTurns === 0) {
-    updateCurrentState(gameData, {
-      completedTurns: 1,
-      actionState: PlayerActionState.InitialPlacementPlaceSettlement,
-      allocatedTime: 180,
-    });
-    if (gameState.mechanicLongestRoadState?.[playerColor]) {
-      gameState.mechanicLongestRoadState[playerColor].longestRoad = 1;
-    }
-  } else if (
-    actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding
-  ) {
-    if (edgeIndex === 69) {
-      updateCurrentState(gameData, {
-        actionState: PlayerActionState.Place1MoreRoadBuilding,
-        turnState: 2,
-        allocatedTime: 200,
-      });
-      if (!gameState.mechanicLongestRoadState) {
-        gameState.mechanicLongestRoadState = {};
-      }
-      if (!gameState.mechanicLongestRoadState[playerColor]) {
-        gameState.mechanicLongestRoadState[playerColor] = {
-          longestRoad: 0,
-        } as any;
-      }
-      gameState.mechanicLongestRoadState[playerColor].longestRoad = 3;
-    } else {
-      updateCurrentState(gameData, {
-        actionState: PlayerActionState.Place1MoreRoadBuilding,
-        turnState: 2,
-        allocatedTime: 160,
-      });
-    }
-    gameState.currentState.roadBuildingHighlightStep = 0;
-  } else if (
-    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
-  ) {
-    if (edgeIndex === 69) {
-      gameState.currentState.actionState =
-        PlayerActionState.Place1MoreRoadBuilding;
-      gameState.currentState.allocatedTime = 200;
-      if (!gameState.mechanicLongestRoadState) {
-        gameState.mechanicLongestRoadState = {};
-      }
-      if (!gameState.mechanicLongestRoadState[playerColor]) {
-        gameState.mechanicLongestRoadState[playerColor] = {
-          longestRoad: 0,
-        } as any;
-      }
-      gameState.mechanicLongestRoadState[playerColor].longestRoad = 3;
-      delete gameState.currentState.roadBuildingHighlightStep;
-    } else {
-      if (edgeIndex === 68) {
-        gameState.currentState.actionState = PlayerActionState.None;
-        if (!gameState.mechanicLongestRoadState) {
-          gameState.mechanicLongestRoadState = {};
-        }
-        if (!gameState.mechanicLongestRoadState[playerColor]) {
-          gameState.mechanicLongestRoadState[playerColor] = {
-            longestRoad: 0,
-          } as any;
-        }
-        gameState.mechanicLongestRoadState[playerColor].longestRoad = 4;
-      } else {
-        updateCurrentState(gameData, {
-          completedTurns: completedTurns + 1,
-          turnState: 1,
-          actionState: PlayerActionState.None,
-          allocatedTime: 8,
-        });
-      }
-      delete gameState.currentState.roadBuildingHighlightStep;
-    }
-  } else {
     updateCurrentState(gameData, {
       completedTurns: completedTurns + 1,
       turnState: 1,
@@ -1099,49 +953,38 @@ const placeRoad = (edgeIndex: number) => {
     });
   }
 
-  if (edgeIndex !== 63 && edgeIndex !== 60 && edgeIndex !== 65) {
+  addGameLogEntry(gameState, {
+    text: {
+      type: 4,
+      playerColor,
+      pieceEnum: 0,
+    },
+    from: playerColor,
+  });
+  if (!isRoadBuildingPlacement) {
     addGameLogEntry(gameState, {
       text: {
-        type: 4,
-        playerColor,
-        pieceEnum: 0,
+        type: 44,
       },
-      from: playerColor,
     });
-    if (!isRoadBuildingPlacement) {
-      addGameLogEntry(gameState, {
-        text: {
-          type: 44,
-        },
-      });
-    }
   }
 
-  if (edgeIndex === 63 || edgeIndex === 60 || edgeIndex === 65) {
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.ExchangeCards,
-        payload: {
-          givingPlayer: playerColor,
-          givingCards: exchangeCards,
-          receivingPlayer: 0,
-          receivingCards: [],
-        },
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.ExchangeCards,
+      payload: {
+        givingPlayer: playerColor,
+        givingCards: exchangeCards,
+        receivingPlayer: 0,
+        receivingCards: [],
       },
-    });
-  }
+    },
+  });
 
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
-  if (
-    edgeIndex !== 63 &&
-    edgeIndex !== 60 &&
-    edgeIndex !== 65 &&
-    (!isRoadBuildingPlacement || edgeIndex === 69)
-  ) {
-    sendEdgeHighlights31(gameData);
-  }
+  sendEdgeHighlights31(gameData);
   if (!isRoadBuildingPlacement) {
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
@@ -1150,8 +993,7 @@ const placeRoad = (edgeIndex: number) => {
   }
   if (
     isRoadBuildingPlacement &&
-    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding &&
-    edgeIndex !== 69
+    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData, []);
@@ -1166,22 +1008,13 @@ const placeRoad = (edgeIndex: number) => {
     });
     sendShipHighlights32(gameData);
   }
-  if (
-    edgeIndex !== 63 &&
-    edgeIndex !== 60 &&
-    edgeIndex !== 65 &&
-    !isRoadBuildingPlacement
-  ) {
+  if (!isRoadBuildingPlacement) {
     if (gameState.currentState.completedTurns === 1) {
       sendPlayTurnSound59(gameData);
       sendCornerHighlights30(gameData);
     } else {
       sendExitInitialPlacement62(gameData);
     }
-  }
-
-  if (edgeIndex === 69) {
-    delete gameState.currentState.roadBuildingHighlightStep;
   }
 
   setFirebaseData(

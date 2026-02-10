@@ -147,7 +147,7 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
                 GameStateUpdateType.HighlightTiles,
               ].includes(msg.data.data.type)
             ) {
-              msg.data.data.payload.sort();
+              (msg.data.data.payload as number[]).sort((a, b) => a - b);
             }
           }
           return msg;
