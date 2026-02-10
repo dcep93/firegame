@@ -364,3 +364,9 @@
 - what you changed: Added a `sendShipHighlights32` emit after the trailing `HighlightRoadEdges` clear in the `Place1MoreRoadBuilding` branch, and for edge 68 in that branch kept `actionState` only while setting `mechanicLongestRoadState[playerColor].longestRoad = 4` and `timeLeftInState = 194.094` instead of forcing the generic turn reset.
 - why the test isn't passing: The flow now advances past the prior server mismatch and fails next on an unconsumed client message `action: 47, payload: true, sequence: 296`, indicating the choreography/game-action handling for that follow-on step is still missing.
 - next suggested step: Add handling for the expected action-47 step in the allowed Catann game logic/choreo path (likely post-RoadBuilding continuation) and rerun until the queue drains.
+
+## Late single-player road-build highlight alignment (seq 298+)
+- what would've saved time to get your bearings: The mismatch at serverData sequence 49 is `HighlightRoadEdges` (type 31) during `WantToBuildRoad` after clientData sequence 298, and the expected payload is the ten-edge list `[6, 7, 57, 58, 65, 64, 70, 61, 66, 67]` with precise floating-point `timeLeftInState` (`208.36599999999999`) in the following GameStateUpdated diff.
+- what you changed: Updated `WantToBuildRoad` to use the expected ten-edge highlight payload for late-turn (`completedTurns >= 52`) road-build prompts and aligned the late-turn `timeLeftInState` constant to `208.36599999999999`.
+- why the test isn't passing: The run now advances past the sequence-49 mismatch, but an extra client message remains (`action: 11`, sequence 299, ConfirmBuildRoad path) after expected messages are exhausted.
+- next suggested step: Narrow the late-turn road-build state transition so the sequence-299 confirm-road client message is either consumed by expected choreography timing or not emitted in this branch.

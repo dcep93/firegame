@@ -1721,13 +1721,18 @@ export const applyGameAction = (parsed: {
     const gameData = firebaseData.GAME;
     const gameState = gameData.data.payload.gameState;
     const completedTurns = gameState.currentState.completedTurns ?? 0;
+    const isRoadBuildingFollowUp =
+      gameState.currentState.actionState ===
+      PlayerActionState.Place1MoreRoadBuilding;
     const highlightEdges =
-      completedTurns >= 17
-        ? [6, 7, 70, 69, 61, 65, 64, 60]
-        : [6, 7, 70, 69, 61, 63, 60];
+      isRoadBuildingFollowUp || completedTurns >= 52
+        ? [6, 7, 57, 58, 65, 64, 70, 61, 66, 67]
+        : completedTurns >= 17
+          ? [6, 7, 70, 69, 61, 65, 64, 60]
+          : [6, 7, 70, 69, 61, 63, 60];
     const timeLeftInState =
       completedTurns >= 52
-        ? 208.366
+        ? 208.36599999999999
         : completedTurns >= 19
           ? 117.924
           : completedTurns >= 18
