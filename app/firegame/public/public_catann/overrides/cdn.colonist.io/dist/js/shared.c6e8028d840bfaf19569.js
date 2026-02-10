@@ -24057,6 +24057,8 @@
         K = s(4651);
       if (837 != s.j) var V = s(64853);
       var q = s(70970);
+      alert("__socketCatannMessages");
+      window.__socketCatannMessages = [];
       class Q {
         isSocketOpen() {
           var e;
@@ -24141,6 +24143,11 @@
         }
         handleWebSocketMessage(e) {
           const t = V.D4(e.data);
+          window.__socketCatannMessages.push({
+            trigger: "serverData",
+            data: JSON.parse(JSON.stringify(t)),
+          });
+
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
               "======",
@@ -24246,6 +24253,10 @@
               (this.bufferedOutgoingPrimaryMessage = void 0)));
         }
         send(e, t, s, i, n) {
+          window.__socketCatannMessages.push({
+            trigger: "clientData",
+            data: JSON.parse(JSON.stringify(i)),
+          });
           const r = j(e, t, s, Y.l(i));
           this.sessionWasEstablished
             ? this.socket.send(r)
