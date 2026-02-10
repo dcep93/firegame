@@ -1956,7 +1956,7 @@
             {
               "userId": "102011157",
               "username": "Sella#2034",
-              "databaseIcon": 12,
+              "databaseIcon": 11,
               "selectedColor": 1,
               "isBot": false,
               "deviceType": 1,
@@ -1974,7 +1974,7 @@
             "id": "catan9814",
             "channelId": null,
             "gameType": 3,
-            "privateGame": false,
+            "privateGame": true,
             "playOrderSelectionActive": false,
             "minimumKarma": 0,
             "eloType": 0,
@@ -1987,8 +1987,8 @@
             "karmaActive": false,
             "cardDiscardLimit": 7,
             "maxPlayers": 4,
-            "gameSpeed": 2,
-            "botSpeed": 1,
+            "gameSpeed": 1,
+            "botSpeed": 0,
             "hideBankCards": false,
             "friendlyRobber": true
           },
