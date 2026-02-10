@@ -1054,7 +1054,11 @@ const placeRoad = (edgeIndex: number) => {
 
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
-  if (edgeIndex !== 63 && edgeIndex !== 60) {
+  if (
+    edgeIndex !== 63 &&
+    edgeIndex !== 60 &&
+    (!isRoadBuildingPlacement || edgeIndex === 69)
+  ) {
     sendEdgeHighlights31(gameData);
   }
   if (!isRoadBuildingPlacement) {
@@ -1062,6 +1066,23 @@ const placeRoad = (edgeIndex: number) => {
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
+  }
+  if (
+    isRoadBuildingPlacement &&
+    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding &&
+    edgeIndex !== 69
+  ) {
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData, []);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.HighlightRoadEdges,
+        payload: [],
+      },
+    });
   }
   if (edgeIndex !== 63 && edgeIndex !== 60 && !isRoadBuildingPlacement) {
     if (gameState.currentState.completedTurns === 1) {

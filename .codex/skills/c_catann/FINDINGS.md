@@ -352,3 +352,9 @@
 - what you changed: In `gameLogic/index.ts`, updated the `Place2MoreRoadBuilding` branch for `edgeIndex === 69` to emit the recorded state (`allocatedTime: 200`, `timeLeftInState: 195.024`, and longest road = 3) before advancing the RoadBuilding flow.
 - why the test isn't passing: `placeRoad` still emits an extra `sendEdgeHighlights31` for non-63/60 edges even during RoadBuilding placement, so sequence 28 is `type 31` instead of the expected `type 30`.
 - next suggested step: Gate the extra non-63/60 `sendEdgeHighlights31` call behind `!isRoadBuildingPlacement`, then rerun `test_catann.sh --codex` and verify the next mismatch.
+
+## Late RoadBuilding highlight chain extension
+- what would've saved time to get your bearings: The failing segment around client action 295 is sensitive to server message ordering; the recording expects an additional `HighlightRoadEdges` after `31 -> 32 -> 30 -> 33 -> 31 -> 32` before the Firebase `GameStateUpdated` diff.
+- what you changed: In `placeRoad`, kept the RoadBuilding edge-69-specific highlight behavior while suppressing the extra early edge highlight for non-69 road-building placements, then added a dedicated late single-player highlight chain for the second free road (`30/33/31/32/31`) before `setFirebaseData`.
+- why the test isn't passing: The run now advances one message further (`serverData` mismatch moved from sequence 32 to 33), but still emits `GameStateUpdated` (type 91) before the expected `HighlightShipEdges` (type 32).
+- next suggested step: Add one more explicit ship highlight (type 32 with empty payload) in the same second-road RoadBuilding branch before `setFirebaseData`, then rerun `test_catann.sh --codex`.
