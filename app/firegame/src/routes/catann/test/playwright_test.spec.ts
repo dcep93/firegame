@@ -136,9 +136,22 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
         const data = fs.readFileSync(fullPath, "utf8");
         return JSON.parse(data) as { trigger: string; data: any }[];
       };
-      const expectedMessages = openRecordingJson(recordingPath).filter((msg) =>
-        isRealMessage(msg),
-      );
+      const expectedMessages = openRecordingJson(recordingPath)
+        .filter((msg) => isRealMessage(msg))
+        .map((msg) => {
+          if (msg.trigger === "serverData") {
+            if (
+              [
+                GameStateUpdateType.HighlightRoadEdges,
+                GameStateUpdateType.HighlightCorners,
+                GameStateUpdateType.HighlightTiles,
+              ].includes(msg.data.data.type)
+            ) {
+              msg.data.data.payload.sort();
+            }
+          }
+          return msg;
+        });
       return expectedMessages;
     };
     const expectedMessages = await getExpectedMessages(fileName);
