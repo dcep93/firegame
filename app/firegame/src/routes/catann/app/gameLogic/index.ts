@@ -147,7 +147,7 @@ const addPlayerResourceCards = (
     text: {
       type: 47,
       playerColor,
-      cardsToBroadcast: cards,
+      cardsToBroadcast: cards.sort((a, b) => a - b),
       distributionType,
     },
     from: playerColor,
@@ -192,7 +192,7 @@ const autoPlaceRobber = (tileIndex: number) => {
     text: {
       type: 11,
       playerColor,
-      pieceEnum: 5,
+      pieceEnum: MapPieceType.Robber,
       tileInfo: tileState
         ? {
             tileType: tileState.type,
@@ -606,7 +606,7 @@ const placeSettlement = (cornerIndex: number) => {
       text: {
         type: 5,
         playerColor,
-        pieceEnum: 2,
+        pieceEnum: MapPieceType.Settlement,
         isVp: true,
       },
       from: playerColor,
@@ -616,7 +616,7 @@ const placeSettlement = (cornerIndex: number) => {
       text: {
         type: 4,
         playerColor,
-        pieceEnum: 2,
+        pieceEnum: MapPieceType.Settlement,
       },
       from: playerColor,
     });
@@ -902,26 +902,23 @@ const placeRoad = (edgeIndex: number) => {
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding;
   const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
 
-  addGameLogEntry(gameState, {
-    text: {
-      type: 4,
-      playerColor,
-      pieceEnum: 0,
-    },
-    from: playerColor,
-  });
-  if (!isRoadBuildingPlacement) {
-    addGameLogEntry(gameState, {
-      text: {
-        type: 44,
-      },
-    });
-  }
-
   if (
     actionStateAtRoadPlacement ===
     PlayerActionState.InitialPlacementRoadPlacement
   ) {
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.PlayerPlacedPiece,
+        playerColor,
+        pieceEnum: MapPieceType.Road,
+      },
+      from: playerColor,
+    });
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.Separator,
+      },
+    });
     if (completedTurns === 0) {
       updateCurrentState(gameData, {
         completedTurns: completedTurns + 1,
@@ -949,13 +946,21 @@ const placeRoad = (edgeIndex: number) => {
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
     updateCurrentState(gameData, {
-      completedTurns: completedTurns + 1,
-      turnState: GamePhase.Dice,
+      turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
       allocatedTime: 8,
     });
     delete gameState.currentState.roadBuildingHighlightStep;
   } else {
+    addGameLogEntry(gameState, {
+      text: {
+        isVp: false,
+        type: GameLogMessageType.BuiltPiece,
+        playerColor,
+        pieceEnum: MapPieceType.Road,
+      },
+      from: playerColor,
+    });
     if (gameState.bankState?.resourceCards) {
       exchangeCards.forEach((card) => {
         if (gameState.bankState?.resourceCards?.[card] !== undefined) {
@@ -973,8 +978,7 @@ const placeRoad = (edgeIndex: number) => {
       };
     }
     updateCurrentState(gameData, {
-      completedTurns: completedTurns + 1,
-      turnState: GamePhase.Dice,
+      turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
       allocatedTime: 8,
     });
@@ -994,13 +998,15 @@ const placeRoad = (edgeIndex: number) => {
   }
 
   gameData.data.payload.gameState.mechanicLongestRoadState = {
-    1: { longestRoad: 1 },
+    1: { longestRoad: calculateLongestRoad(1) },
   };
 
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
   if (!isRoadBuildingPlacement) {
-    sendEdgeHighlights31(gameData);
+    if (gameState.currentState.completedTurns <= 2) {
+      sendEdgeHighlights31(gameData);
+    }
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
@@ -1009,7 +1015,10 @@ const placeRoad = (edgeIndex: number) => {
     if (gameState.currentState.completedTurns === 1) {
       sendPlayTurnSound59(gameData);
       sendCornerHighlights30(gameData);
-    } else {
+    } else if (
+      actionStateAtRoadPlacement ===
+      PlayerActionState.InitialPlacementRoadPlacement
+    ) {
       sendExitInitialPlacement62(gameData);
     }
   } else if (
@@ -1179,7 +1188,7 @@ const rollDice = () => {
       id: State.GameStateUpdate.toString(),
       data: {
         type: GameStateUpdateType.GivePlayerResourcesFromTile,
-        payload: resourcesToGive,
+        payload: resourcesToGive.sort((a, b) => a.tileIndex - b.tileIndex),
       },
     });
   } else {
@@ -2166,4 +2175,76 @@ const getWinner = () => {
         )
         .reduce((a, b) => a + b, 0) >= 10,
   );
+};
+
+const calculateLongestRoad = (playerColor: number) => {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData.data.payload.gameState;
+  const edgeStates = gameState.mapState.tileEdgeStates ?? {};
+  const cornerStates = gameState.mapState.tileCornerStates ?? {};
+
+  const serializeCornerKey = (x: number, y: number, z: number) =>
+    `${x}:${y}:${z}`;
+
+  const visitedEdges = new Set<string>();
+  const visitedCorners = new Set<string>();
+
+  const dfs = (cornerKey: string, length: number): number => {
+    visitedCorners.add(cornerKey);
+    let maxLength = length;
+
+    Object.entries(edgeStates).forEach(
+      ([edgeKey, edgeState]: [string, any]) => {
+        if (edgeState.owner !== playerColor || visitedEdges.has(edgeKey))
+          return;
+
+        const endpoints = edgeEndpoints(edgeState);
+        const connectedCorner = endpoints.find(
+          (endpoint) =>
+            serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) ===
+            cornerKey,
+        );
+
+        if (connectedCorner) {
+          visitedEdges.add(edgeKey);
+          const otherCorner = endpoints.find(
+            (endpoint) =>
+              serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) !==
+              cornerKey,
+          );
+
+          if (otherCorner) {
+            const otherCornerKey = serializeCornerKey(
+              otherCorner.x,
+              otherCorner.y,
+              otherCorner.z,
+            );
+            if (!visitedCorners.has(otherCornerKey)) {
+              maxLength = Math.max(maxLength, dfs(otherCornerKey, length + 1));
+            }
+          }
+
+          visitedEdges.delete(edgeKey);
+        }
+      },
+    );
+
+    visitedCorners.delete(cornerKey);
+    return maxLength;
+  };
+
+  let longestRoad = 0;
+
+  Object.values(cornerStates).forEach((cornerState: any) => {
+    if (cornerState.owner === playerColor) {
+      const cornerKey = serializeCornerKey(
+        cornerState.x,
+        cornerState.y,
+        cornerState.z,
+      );
+      longestRoad = Math.max(longestRoad, dfs(cornerKey, 0));
+    }
+  });
+
+  return longestRoad;
 };

@@ -412,3 +412,9 @@
 - what you changed: Added `getBuildableRoadEdgeIndicesFromGameState(gameData)` in `gameLogic/index.ts`, removed hard-coded edge arrays for `WantToBuildRoad` and `ClickedDevelopmentCard` (`RoadBuilding`), and now emit those highlights from the computed edge set.
 - why the test isn't passing: The computed payload has the correct edge members but wrong ordering at sequence 44 (`type 31`), so deep-equality comparison still fails.
 - next suggested step: Change computed-edge ordering to mirror the recording’s traversal order (likely corner/network traversal order, not numeric sort), while keeping membership fully game-state-driven.
+
+## Road placement highlight chain + non-initial road side effects (current)
+- what would've saved time to get your bearings: The first mismatch (`seq 49`) was highlight ordering, but once fixed the next blocker was a hidden side-effect where `placeRoad` emitted initial-placement exit updates in a normal turn.
+- what you changed: In `gameLogic/index.ts`, tuned `placeRoad` highlight sequencing so an extra `HighlightRoadEdges` emit only occurs for early initial-placement road confirmations (`completedTurns <= 2`), and restricted `sendExitInitialPlacement62` to `InitialPlacementRoadPlacement` only.
+- why the test isn't passing: The run now reaches `{ codex: { serverData: 53, clientData: 20 } }`, but the resulting `GameStateUpdated` diff still diverges (received turn/log changes and road log shape differ from expected), so the queue still fails immediately after the road confirm chain.
+- next suggested step: For the `ConfirmBuildRoad` step around server sequence 53, align `placeRoad` state/log mutations with the recording (especially `completedTurns`, `turnState`, and road log payload type) while keeping the corrected highlight sequence intact.
