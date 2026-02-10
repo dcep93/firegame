@@ -5,7 +5,7 @@
       "action": 3,
       "payload": {
         "roomType": 0,
-        "clientVersion": 289
+        "clientVersion": 290
       }
     }
   },
@@ -859,7 +859,7 @@
     "trigger": "clientData",
     "data": {
       "type": "startGame",
-      "clientVersion": 289
+      "clientVersion": 290
     }
   },
   {
@@ -5675,7 +5675,7 @@
       "action": 7,
       "payload": {
         "gameId": "red7709",
-        "clientVersion": 289
+        "clientVersion": 290
       }
     }
   },
@@ -12838,7 +12838,7 @@
       "action": 7,
       "payload": {
         "gameId": "red7709",
-        "clientVersion": 289
+        "clientVersion": 290
       }
     }
   },
@@ -20420,7 +20420,7 @@
       "action": 7,
       "payload": {
         "gameId": "red7709",
-        "clientVersion": 289
+        "clientVersion": 290
       }
     }
   },
@@ -23159,7 +23159,7 @@
     "data": {
       "action": 62,
       "payload": false,
-      "sequence": 289
+      "sequence": 290
     }
   },
   {
@@ -24980,7 +24980,7 @@
         "payload": {
           "accessLevel": 1,
           "colonistCoins": 0,
-          "colonistVersion": 2890,
+          "colonistVersion": 2900,
           "giftedMemberships": [],
           "icon": 12,
           "id": "102013561",

@@ -1657,7 +1657,7 @@ export const applyGameAction = (parsed: {
           payload: {
             accessLevel: 1,
             colonistCoins: 0,
-            colonistVersion: 2890,
+            colonistVersion: 2900,
             giftedMemberships: [],
             icon: 12,
             id: "102013561",
