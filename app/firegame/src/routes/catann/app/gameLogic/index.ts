@@ -253,6 +253,51 @@ const applyPortOwnership = (
   );
 };
 
+const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
+  const gameState = gameData.data.payload.gameState;
+  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const edgeStates = gameState.mapState.tileEdgeStates ?? {};
+  const cornerStates = gameState.mapState.tileCornerStates ?? {};
+  const serializeCornerKey = (x: number, y: number, z: number) =>
+    `${x}:${y}:${z}`;
+
+  const connectedCornerKeys = new Set<string>();
+
+  Object.values(cornerStates).forEach((cornerState: any) => {
+    if (!cornerState || cornerState.owner !== playerColor) return;
+    connectedCornerKeys.add(
+      serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
+    );
+  });
+
+  Object.values(edgeStates).forEach((edgeState: any) => {
+    if (!edgeState || edgeState.owner !== playerColor) return;
+    edgeEndpoints(edgeState).forEach((endpoint) => {
+      connectedCornerKeys.add(
+        serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+      );
+    });
+  });
+
+  return Object.entries(edgeStates)
+    .map(([key, edgeState]) => ({
+      index: Number.parseInt(key, 10),
+      edgeState: edgeState as any,
+    }))
+    .filter(({ index, edgeState }) => Number.isFinite(index) && Boolean(edgeState))
+    .filter(({ edgeState }) => !edgeState.owner)
+    .filter(({ edgeState }) => {
+      const endpoints = edgeEndpoints(edgeState);
+      return endpoints.some((endpoint) =>
+        connectedCornerKeys.has(
+          serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+        ),
+      );
+    })
+    .map(({ index }) => index)
+    .sort((a, b) => a - b);
+};
+
 export const sendCornerHighlights30 = (
   gameData: any,
   force: number[] | null = null,
@@ -349,45 +394,32 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
     PlayerActionState.Place1MoreRoadBuilding,
   ].includes(actionState)
     ? []
-    : cornerIndex === -1 &&
-        actionState === PlayerActionState.Place1MoreRoadBuilding
-      ? (() => {
-          const currentState = gameData.data.payload.gameState.currentState;
-          const roadBuildingHighlightStep =
-            currentState.roadBuildingHighlightStep ?? 0;
-          currentState.roadBuildingHighlightStep =
-            roadBuildingHighlightStep + 1;
-          if (roadBuildingHighlightStep === 1) {
-            return [6, 7, 57, 58, 65, 64, 70, 61, 67, 68];
+    : Object.keys(edgeStates)
+        .map((key) => Number.parseInt(key, 10))
+        .filter((value) => Number.isFinite(value))
+        .map((index) => ({
+          index,
+          edgeState: edgeStates[String(index)],
+        }))
+        .filter(({ edgeState }) => Boolean(edgeState))
+        .filter(({ edgeState }) => {
+          const endpoints = edgeEndpoints(edgeState);
+          return endpoints.some(
+            (endpoint) =>
+              cornerKey ===
+              serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+          );
+        })
+        .sort((a, b) => {
+          const edgeDirectionDiff =
+            (edgeDirectionOrder.get(a.edgeState.z) ?? 0) -
+            (edgeDirectionOrder.get(b.edgeState.z) ?? 0);
+          if (edgeDirectionDiff !== 0) {
+            return edgeDirectionDiff;
           }
-          return [];
-        })()
-      : Object.keys(edgeStates)
-          .map((key) => Number.parseInt(key, 10))
-          .filter((value) => Number.isFinite(value))
-          .map((index) => ({
-            index,
-            edgeState: edgeStates[String(index)],
-          }))
-          .filter(({ edgeState }) => Boolean(edgeState))
-          .filter(({ edgeState }) => {
-            const endpoints = edgeEndpoints(edgeState);
-            return endpoints.some(
-              (endpoint) =>
-                cornerKey ===
-                serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
-            );
-          })
-          .sort((a, b) => {
-            const edgeDirectionDiff =
-              (edgeDirectionOrder.get(a.edgeState.z) ?? 0) -
-              (edgeDirectionOrder.get(b.edgeState.z) ?? 0);
-            if (edgeDirectionDiff !== 0) {
-              return edgeDirectionDiff;
-            }
-            return a.index - b.index;
-          })
-          .map(({ index }) => index);
+          return a.index - b.index;
+        })
+        .map(({ index }) => index);
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -1258,6 +1290,7 @@ const rollDice = () => {
   } else {
     updateCurrentState(gameData, {
       turnState: 2,
+      actionState: PlayerActionState.None,
       allocatedTime: 120,
     });
   }
@@ -1723,16 +1756,6 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GAME_ACTION.WantToBuildRoad) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const completedTurns = gameState.currentState.completedTurns ?? 0;
-      const isRoadBuildingFollowUp =
-        gameState.currentState.actionState ===
-        PlayerActionState.Place1MoreRoadBuilding;
-      const highlightEdges =
-        isRoadBuildingFollowUp || completedTurns >= 52
-          ? [6, 7, 57, 58, 65, 64, 70, 61, 66, 67]
-          : completedTurns >= 17
-            ? [6, 7, 70, 69, 61, 65, 64, 60]
-            : [6, 7, 70, 69, 61, 63, 60];
       gameState.currentState.actionState = PlayerActionState.PlaceRoad;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
@@ -1742,7 +1765,7 @@ export const applyGameAction = (parsed: {
         id: State.GameStateUpdate.toString(),
         data: {
           type: GameStateUpdateType.HighlightRoadEdges,
-          payload: highlightEdges,
+          payload: getBuildableRoadEdgeIndicesFromGameState(gameData),
         },
       });
       setFirebaseData(
@@ -1908,15 +1931,11 @@ export const applyGameAction = (parsed: {
         },
       });
       if (clickedCard === CardEnum.RoadBuilding) {
-        const roadBuildingHighlightEdges =
-          completedTurns >= 50
-            ? [6, 7, 57, 58, 65, 64, 70, 69, 61]
-            : [6, 7, 70, 69, 61, 65, 64, 60];
         sendToMainSocket?.({
           id: State.GameStateUpdate.toString(),
           data: {
             type: GameStateUpdateType.HighlightRoadEdges,
-            payload: roadBuildingHighlightEdges,
+            payload: getBuildableRoadEdgeIndicesFromGameState(gameData),
           },
         });
       } else {
@@ -2055,15 +2074,6 @@ export const applyGameAction = (parsed: {
           gameData.data.payload.timeLeftInState =
             gameState.currentState.allocatedTime;
         }
-        return true;
-      }
-      if (
-        gameState.currentState.turnState === 2 &&
-        gameState.currentState.actionState === PlayerActionState.None &&
-        (gameState.currentState.completedTurns ?? 0) === 3
-      ) {
-        gameState.currentState.actionState =
-          PlayerActionState.SelectCardsToDiscard;
         return true;
       }
       if (

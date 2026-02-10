@@ -400,3 +400,15 @@
 - what you changed: In `applyGameAction`, added winner-finalization logic that emits the win log diff via `setFirebaseData`, sends `CanResignGame` and `GameEndState`, and handles `RequestBeginnerModeLevelEnd` by sending lobby user-state update + `BeginnerHintActivated`.
 - why the test isn't passing: After matching through expected sequence 89, the run emits an extra malformed `clientData` message (`{ payload: 15 }`) and the browser logs `Cannot read properties of undefined (reading 'receive')`, which desynchronizes the remaining expected queue.
 - next suggested step: Trace the source of the post-sequence-89 malformed client message in the iframe bridge/handler path and adjust the `RequestBeginnerModeLevelEnd` response shape or ordering so no extra client message is produced.
+
+## Early 1p.v2 pass-turn stall after first dice roll
+- what would've saved time to get your bearings: The failure happens before message desync; `autoChoreo` reaches action 17 (`PassedTurn`) and then `Controller.passTurn()` times out waiting for the dice area to become non-clickable, so this is a UI-state gating issue right after the first roll.
+- what you changed: Removed the `completedTurns === 3` pass-turn staging special-case and made non-robber `rollDice` explicitly set `currentState.actionState = None` when transitioning to `turnState = 2`.
+- why the test isn't passing: Neither game-logic adjustment changed the clickability behavior; dice remains clickable at the pass step and the choreography never emits the expected pass-turn click flow.
+- next suggested step: Trace the in-game pass eligibility predicate used by `canvasMapAppearsClickable(...MAP_DICE_COORDS)` around turn-state/action-state transitions after `ClickedDice`, then align roll/pass UI gating (or click target choreography) without adding completed-turn-specific hacks.
+
+## Game-state-derived road highlights (ordering mismatch)
+- what would've saved time to get your bearings: The reviewer request is specifically about deriving `HighlightRoadEdges` from game state; once implemented, the previous pass-turn timeout disappeared and the run advanced into the first `WantToBuildRoad` verification.
+- what you changed: Added `getBuildableRoadEdgeIndicesFromGameState(gameData)` in `gameLogic/index.ts`, removed hard-coded edge arrays for `WantToBuildRoad` and `ClickedDevelopmentCard` (`RoadBuilding`), and now emit those highlights from the computed edge set.
+- why the test isn't passing: The computed payload has the correct edge members but wrong ordering at sequence 44 (`type 31`), so deep-equality comparison still fails.
+- next suggested step: Change computed-edge ordering to mirror the recording’s traversal order (likely corner/network traversal order, not numeric sort), while keeping membership fully game-state-driven.
