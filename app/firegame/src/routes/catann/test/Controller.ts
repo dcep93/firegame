@@ -203,7 +203,7 @@ const Controller = (
       destinationCoords: { col: number; row: number },
       skipConfirm: boolean = false,
     ) => {
-      console.log("\t", "buildRoad");
+      console.log("\t", "buildRoad", settlementCoords, destinationCoords);
       const settlementOffset = getSettlementOffset(settlementCoords);
       const destinationOffset = getSettlementOffset(destinationCoords);
       const roadOffset = {
@@ -344,6 +344,12 @@ const Controller = (
         (msg) => msg.data.action === GAME_ACTION.ConfirmBuildSettlement,
       )!;
       await buildSettlementFromPayload(settlementMsg.data.payload);
+    };
+    const buildNextCity = async () => {
+      const cityMsg = _expectedMessages!.find(
+        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildCity,
+      )!;
+      await buildCityFromPayload(cityMsg.data.payload);
     };
     const fixWeirdTrade = async () => {
       const nextMsg = _expectedMessages![0];
@@ -495,6 +501,11 @@ const Controller = (
     ) => {
       await buildSettlement(getColRow(tileCornerStates[payload]), true);
     };
+    const buildCityFromPayload = async (
+      payload: keyof typeof tileCornerStates,
+    ) => {
+      await buildCity(getColRow(tileCornerStates[payload]), true);
+    };
     return {
       _peek: () => _expectedMessages![0],
       verifyTestMessages,
@@ -514,6 +525,7 @@ const Controller = (
       makeNextTrade,
       buildNextRoad,
       buildNextSettlement,
+      buildNextCity,
       fixWeirdTrade,
       rollNextDice,
       passTurn,
@@ -536,7 +548,7 @@ const clickCanvas = async (
   if (checkClickable)
     await expect
       .poll(() => canvasMapAppearsClickable(canvas, position), {
-        timeout: 10_000,
+        timeout: 5000,
       })
       .toBe(true);
 

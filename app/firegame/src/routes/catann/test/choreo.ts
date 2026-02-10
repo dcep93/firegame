@@ -27,18 +27,15 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.fastForward(105);
   await c.skipIllegalPass();
   await c.wantToBuildRoad();
-  await autoChoreo(c);
+  await autoChoreo(c, 111);
 
-  await c.fastForward(112);
-  await c.buildRoad({ col: 5, row: 3 }, { col: 5, row: 4 }, true);
-  await autoChoreo(c);
+  await c.fastForward(111);
+  await autoChoreo(c, 128);
 
   await c.fastForward(128);
-  await c.buildSettlement({ col: 5, row: 3 }, true);
-  await autoChoreo(c);
+  await autoChoreo(c, 152);
 
   await c.fastForward(152);
-  await c.buildCity({ col: 3, row: 4 }, true);
   await autoChoreo(c, 179);
 
   await c.fastForward(179);

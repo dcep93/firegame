@@ -40,6 +40,7 @@ export default async function autoChoreo(
       [GAME_ACTION.SelectedTile]: c.playNextRobber,
       [GAME_ACTION.SelectedCards]: c.confirmSelectedCards,
       [GAME_ACTION.ConfirmBuildSettlement]: c.buildNextSettlement,
+      [GAME_ACTION.ConfirmBuildCity]: c.buildNextCity,
     };
 
     const handler = handlers[msg.data.action as GAME_ACTION];
