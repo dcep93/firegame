@@ -915,10 +915,7 @@ const placeRoad = (edgeIndex: number) => {
     if (gameState.mechanicLongestRoadState?.[playerColor]) {
       gameState.mechanicLongestRoadState[playerColor].longestRoad = 2;
     }
-    if (!gameState.gameLogState) {
-      gameState.gameLogState = {};
-    }
-    gameState.gameLogState["23"] = {
+    addGameLogEntry(gameState, {
       text: {
         type: 5,
         playerColor,
@@ -926,7 +923,7 @@ const placeRoad = (edgeIndex: number) => {
         isVp: false,
       },
       from: playerColor,
-    };
+    });
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 140;
   } else if (edgeIndex === 60) {

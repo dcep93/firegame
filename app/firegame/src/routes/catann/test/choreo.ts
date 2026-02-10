@@ -20,13 +20,14 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 85);
 
   await c.fastForward(85);
-  await c.handleReconnect(false);
+  await c.handleReconnect();
   await autoChoreo(c, 95);
 
   await c.fastForward(95);
-  await autoChoreo(c, 105);
+  await autoChoreo(c, 104);
 
-  await c.fastForward(105);
+  await c.fastForward(104);
+  await autoChoreo(c, 105);
   await c.skipIllegalPass();
   await c.wantToBuildRoad();
   await autoChoreo(c, 111);
@@ -44,7 +45,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 188);
 
   await c.fastForward(188);
-  await c.handleReconnect(true);
+  await c.handleReconnect();
   await autoChoreo(c, 212);
 
   await c.fastForward(212);
@@ -57,7 +58,7 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 285);
 
   await c.fastForward(285);
-  await c.handleReconnect(true);
+  await c.handleReconnect();
   await autoChoreo(c, 290);
 
   await c.fastForward(290);
