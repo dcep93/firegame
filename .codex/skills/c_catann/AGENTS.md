@@ -146,3 +146,4 @@
 - Late `WantToBuildRoad` (single_player around clientData sequence 298) expects `HighlightRoadEdges` payload `[6, 7, 57, 58, 65, 64, 70, 61, 66, 67]`; using the generic mid-game road list (`[6, 7, 70, 69, 61, 65, 64, 60]`) causes a sequence-49 mismatch.
 - The same late-turn branch is sensitive to float precision: `timeLeftInState` must be `208.36599999999999` (not rounded `208.366`) for the following GameStateUpdated diff to match.
 - After fixing the sequence-49 payload/timing mismatch, current failure moves to an extra clientData `action: 11` at sequence 299 (ConfirmBuildRoad), indicating the branch still over-advances one click after expected messages are drained.
+- In the late single-player road build branch around client sequence 299 (edge 65), expected ordering is `43 -> 31 -> 32 -> 30 -> 33 -> 31 -> 32 -> 91`; emitting `62` (`ExitInitialPlacement`) at that point causes immediate desync.

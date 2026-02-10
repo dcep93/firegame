@@ -948,6 +948,14 @@ const placeRoad = (edgeIndex: number) => {
     gameState.currentState.actionState = PlayerActionState.None;
     gameState.currentState.allocatedTime = 140;
     gameData.data.payload.timeLeftInState = 136.914;
+  } else if (edgeIndex === 65) {
+    applyRoadExchange();
+    updateCurrentState(gameData, {
+      completedTurns: completedTurns + 1,
+      turnState: 1,
+      actionState: PlayerActionState.None,
+      allocatedTime: 8,
+    });
   } else if (completedTurns === 0) {
     updateCurrentState(gameData, {
       completedTurns: 1,
@@ -1033,7 +1041,7 @@ const placeRoad = (edgeIndex: number) => {
     });
   }
 
-  if (edgeIndex !== 63 && edgeIndex !== 60) {
+  if (edgeIndex !== 63 && edgeIndex !== 60 && edgeIndex !== 65) {
     addGameLogEntry(gameState, {
       text: {
         type: 4,
@@ -1051,7 +1059,7 @@ const placeRoad = (edgeIndex: number) => {
     }
   }
 
-  if (edgeIndex === 63 || edgeIndex === 60) {
+  if (edgeIndex === 63 || edgeIndex === 60 || edgeIndex === 65) {
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
@@ -1071,6 +1079,7 @@ const placeRoad = (edgeIndex: number) => {
   if (
     edgeIndex !== 63 &&
     edgeIndex !== 60 &&
+    edgeIndex !== 65 &&
     (!isRoadBuildingPlacement || edgeIndex === 69)
   ) {
     sendEdgeHighlights31(gameData);

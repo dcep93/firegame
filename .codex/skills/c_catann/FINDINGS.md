@@ -370,3 +370,9 @@
 - what you changed: Updated `WantToBuildRoad` to use the expected ten-edge highlight payload for late-turn (`completedTurns >= 52`) road-build prompts and aligned the late-turn `timeLeftInState` constant to `208.36599999999999`.
 - why the test isn't passing: The run now advances past the sequence-49 mismatch, but an extra client message remains (`action: 11`, sequence 299, ConfirmBuildRoad path) after expected messages are exhausted.
 - next suggested step: Narrow the late-turn road-build state transition so the sequence-299 confirm-road client message is either consumed by expected choreography timing or not emitted in this branch.
+
+## Late single-player edge-65 sequencing (partial)
+- what would've saved time to get your bearings: After client action 299 (`ConfirmBuildRoad` payload 65), expected output immediately needs `ExchangeCards` (type 43), then `31/32/30/33/31/32`, and then a `GameStateUpdated` (type 91) diff instead of `ExitInitialPlacement` (type 62).
+- what you changed: Updated `singlePlayerChoreo` to click the road-build action button before the final road click, then adjusted `placeRoad` to treat edge 65 as an exchange edge for ordering (`type 43` before highlights) and to suppress one extra pre-30 edge highlight.
+- why the test isn't passing: The flow now reaches server sequence 58 but emits `ExitInitialPlacement` (type 62) where the recording expects `GameStateUpdated` (type 91) with longest-road/resource diffs and `allocatedTime: 240`.
+- next suggested step: Add a targeted edge-65 late-turn branch in `placeRoad` that mirrors the recorded post-build transition (no exit-initial-placement emit, and state/log updates matching the expected type-91 diff at sequence 58).

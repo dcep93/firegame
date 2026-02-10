@@ -127,7 +127,8 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   });
   await c.fixWeirdTrade();
   await c.verifyTestMessages();
-  await autoChoreo(c);
+  await c.wantToBuildRoad();
+  await c.verifyTestMessages();
   await c.buildRoad({ col: 4, row: 6 }, { col: 5, row: 7 }, true);
   await c.verifyTestMessages();
 };
