@@ -397,14 +397,18 @@ const Controller = (
           timeout: 5000,
         })
         .toBe(false);
-      for (let i = 0; i < 5; i++) {
-        await clickCanvas(canvas, MAP_PASS_COORDS);
-        await delay(50);
-      }
       await expect
-        .poll(() => canvasMapAppearsClickable(canvas, MAP_DICE_COORDS), {
-          timeout: 5000,
-        })
+        .poll(
+          async () => {
+            console.log("clicking");
+            await clickCanvas(canvas, MAP_PASS_COORDS);
+            await delay(50);
+            return canvasMapAppearsClickable(canvas, MAP_DICE_COORDS);
+          },
+          {
+            timeout: 5000,
+          },
+        )
         .toBe(true);
     };
     const handleReconnect = async () => {
