@@ -23,14 +23,15 @@ import {
   State,
 } from "../app/gameLogic/CatannFilesEnums";
 import autoChoreo from "./autoChoreo";
-import Controller, {
+import {
   canvasMapAppearsClickable,
   canvasRollDice,
   checkCanvasHandle,
   getCanvas,
   getSettlementOffset,
   getStartButton,
-} from "./Controller";
+} from "./canvasGeometry";
+import Controller from "./Controller";
 import fastForward from "./fastForward";
 
 export const codex: Record<string, number> = {};
