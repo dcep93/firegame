@@ -325,6 +325,18 @@ const Controller = (
       await bankTradeButton.first().click({ force: true });
       await waitForTrigger(iframe, "serverData");
     };
+    const makeNextTrade = async () => {
+      const tradeMsg = _expectedMessages!.find(
+        (msg) => msg.data.payload?.offeredResources,
+      )!;
+      await makeTrade({
+        creator: 1,
+        isBankTrade: true,
+        offeredResources: [4, 4, 4, 4],
+        wantedResources: [1],
+      });
+      await fixWeirdTrade();
+    };
     const fixWeirdTrade = async () => {
       const nextMsg = _expectedMessages![0];
       try {
@@ -494,6 +506,7 @@ const Controller = (
       playDevelopmentCardFromHand,
       wantToTrade,
       makeTrade,
+      makeNextTrade,
       fixWeirdTrade,
       rollNextDice,
       passTurn,

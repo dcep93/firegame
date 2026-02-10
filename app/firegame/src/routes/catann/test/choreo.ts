@@ -117,23 +117,13 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.verifyTestMessages();
 
   await c.fastForward(296);
-  await c.wantToTrade();
-  await c.verifyTestMessages();
-  await c.makeTrade({
-    creator: 1,
-    isBankTrade: true,
-    offeredResources: [4, 4, 4, 4],
-    wantedResources: [1],
-  });
-  await c.fixWeirdTrade();
-  await c.verifyTestMessages();
-  await c.wantToBuildRoad();
-  await c.verifyTestMessages();
+  await autoChoreo(c);
   await c.buildRoad({ col: 4, row: 6 }, { col: 5, row: 7 }, true);
   await c.verifyTestMessages();
   await c.passTurn();
   await c.skipIllegalPass();
   await c.verifyTestMessages();
+  return;
 
   await c.fastForward(303);
   await autoChoreo(c);

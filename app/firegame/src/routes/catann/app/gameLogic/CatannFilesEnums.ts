@@ -56,7 +56,7 @@ export enum GAME_ACTION {
   ConfirmBuildMetropolis = 44,
   ConfirmPillageCity = 45,
   ConfirmDicePair = 46,
-  CancelAction = 47,
+  PreCreateTrade = 47,
   ClickedDevelopmentCard = 48,
   CreateTrade = 49,
   UpdateTradeResponse = 50,

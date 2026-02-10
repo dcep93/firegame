@@ -40,6 +40,10 @@ export default async function autoChoreo(
       await c.selectNextDiscardCard();
     } else if (msg.data.action === GAME_ACTION.PlayDevelopmentCardFromHand) {
       await c.playDevelopmentCardFromHand();
+    } else if (msg.data.action === GAME_ACTION.PreCreateTrade) {
+      await c.wantToTrade();
+    } else if (msg.data.action === GAME_ACTION.CreateTrade) {
+      await c.makeNextTrade();
     } else {
       return;
     }

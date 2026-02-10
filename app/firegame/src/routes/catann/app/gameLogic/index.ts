@@ -1653,7 +1653,7 @@ export const applyGameAction = (parsed: {
         GAME_ACTION.WantToBuildCity,
         GAME_ACTION.BuyDevelopmentCard,
         GAME_ACTION.ClickedDice,
-        GAME_ACTION.CancelAction,
+        GAME_ACTION.PreCreateTrade,
         GAME_ACTION.PassedTurn,
         GAME_ACTION.SelectedInitialPlacementIndex,
         GAME_ACTION.SelectedTile,
@@ -2061,7 +2061,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.CancelAction) {
+    if (parsed.action === GAME_ACTION.PreCreateTrade) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.None;
@@ -2074,7 +2074,7 @@ export const applyGameAction = (parsed: {
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
         {
-          action: "cancelAction",
+          action: "PreCreateTrade",
         },
       );
       return true;
