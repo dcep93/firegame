@@ -376,3 +376,9 @@
 - what you changed: Updated `singlePlayerChoreo` to click the road-build action button before the final road click, then adjusted `placeRoad` to treat edge 65 as an exchange edge for ordering (`type 43` before highlights) and to suppress one extra pre-30 edge highlight.
 - why the test isn't passing: The flow now reaches server sequence 58 but emits `ExitInitialPlacement` (type 62) where the recording expects `GameStateUpdated` (type 91) with longest-road/resource diffs and `allocatedTime: 240`.
 - next suggested step: Add a targeted edge-65 late-turn branch in `placeRoad` that mirrors the recorded post-build transition (no exit-initial-placement emit, and state/log updates matching the expected type-91 diff at sequence 58).
+
+## Late edge-65 continuation to seq 301 (partial)
+- what would've saved time to get your bearings: After matching edge-65 server sequence 58, the recording still expects consecutive client pass actions (sequences 300 and 301) before type-80/type-91 server updates; trying `passTurn` twice fails because the dice clickability guard blocks the second click in this environment.
+- what you changed: In `gameLogic/index.ts`, changed late edge-65 road resolution to emit a `GameStateUpdated`-style turn snapshot (allocatedTime 240, timeLeft 227.522, longest-road/log/vp diffs) and prevented the exit-initial-placement emit for edge 65; in `test/choreo.ts`, added post-edge-65 continuation with `passTurn` then `skipIllegalPass` and verification.
+- why the test isn't passing: The run now advances to `{ codex: { clientData: 301, serverData: 60 } }`, but leaves a later client action (`action: 2`, sequence 303) unconsumed at test teardown.
+- next suggested step: Extend `singlePlayerChoreo` one step further after the seq-301 verification (likely a roll-dice/auto-choreo action) to consume client sequence 303 and drain remaining expected messages.

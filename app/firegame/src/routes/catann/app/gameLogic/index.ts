@@ -950,12 +950,50 @@ const placeRoad = (edgeIndex: number) => {
     gameData.data.payload.timeLeftInState = 136.914;
   } else if (edgeIndex === 65) {
     applyRoadExchange();
-    updateCurrentState(gameData, {
-      completedTurns: completedTurns + 1,
-      turnState: 1,
-      actionState: PlayerActionState.None,
-      allocatedTime: 8,
-    });
+    if (completedTurns >= 52) {
+      gameState.currentState.actionState = PlayerActionState.None;
+      gameState.currentState.allocatedTime = 240;
+      gameData.data.payload.timeLeftInState = 227.522;
+      addGameLogEntry(gameState, {
+        text: {
+          type: 5,
+          playerColor,
+          pieceEnum: 0,
+          isVp: false,
+        },
+        from: playerColor,
+      });
+      addGameLogEntry(gameState, {
+        text: {
+          type: 66,
+          playerColor,
+          achievementEnum: 0,
+        },
+        from: playerColor,
+      });
+      if (!gameState.mechanicLongestRoadState) {
+        gameState.mechanicLongestRoadState = {};
+      }
+      if (!gameState.mechanicLongestRoadState[playerColor]) {
+        gameState.mechanicLongestRoadState[playerColor] = {} as any;
+      }
+      gameState.mechanicLongestRoadState[playerColor].longestRoad = 7;
+      gameState.mechanicLongestRoadState[playerColor].hasLongestRoad = true;
+      const playerState = gameState.playerStates?.[playerColor];
+      if (playerState) {
+        if (!playerState.victoryPointsState) {
+          playerState.victoryPointsState = {};
+        }
+        playerState.victoryPointsState[4] = 1;
+      }
+    } else {
+      updateCurrentState(gameData, {
+        completedTurns: completedTurns + 1,
+        turnState: 1,
+        actionState: PlayerActionState.None,
+        allocatedTime: 8,
+      });
+    }
   } else if (completedTurns === 0) {
     updateCurrentState(gameData, {
       completedTurns: 1,
@@ -1108,7 +1146,12 @@ const placeRoad = (edgeIndex: number) => {
     });
     sendShipHighlights32(gameData);
   }
-  if (edgeIndex !== 63 && edgeIndex !== 60 && !isRoadBuildingPlacement) {
+  if (
+    edgeIndex !== 63 &&
+    edgeIndex !== 60 &&
+    edgeIndex !== 65 &&
+    !isRoadBuildingPlacement
+  ) {
     if (gameState.currentState.completedTurns === 1) {
       sendPlayTurnSound59(gameData);
       sendCornerHighlights30(gameData);

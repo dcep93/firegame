@@ -131,4 +131,14 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.verifyTestMessages();
   await c.buildRoad({ col: 4, row: 6 }, { col: 5, row: 7 }, true);
   await c.verifyTestMessages();
+  await c.passTurn();
+  await c.skipIllegalPass();
+  await c.verifyTestMessages();
+
+  await c.fastForward(303);
+  await autoChoreo(c);
+  await c.playDevelopmentCardFromHand();
+  await c.verifyTestMessages();
+  await c.playNextRobber();
+  await c.verifyTestMessages();
 };

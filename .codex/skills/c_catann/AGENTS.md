@@ -147,3 +147,4 @@
 - The same late-turn branch is sensitive to float precision: `timeLeftInState` must be `208.36599999999999` (not rounded `208.366`) for the following GameStateUpdated diff to match.
 - After fixing the sequence-49 payload/timing mismatch, current failure moves to an extra clientData `action: 11` at sequence 299 (ConfirmBuildRoad), indicating the branch still over-advances one click after expected messages are drained.
 - In the late single-player road build branch around client sequence 299 (edge 65), expected ordering is `43 -> 31 -> 32 -> 30 -> 33 -> 31 -> 32 -> 91`; emitting `62` (`ExitInitialPlacement`) at that point causes immediate desync.
+- Late single-player continuation after edge-65 road placement now needs two explicit pass actions (`passTurn` then `skipIllegalPass`) to align client sequences 300/301 before the reset-trade-state server updates; a direct second `passTurn` can fail clickability polling.
