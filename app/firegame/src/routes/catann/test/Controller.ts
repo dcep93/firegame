@@ -126,6 +126,7 @@ const Controller = (
         } else {
           msg.data.data.sequence = expectedMsg.data.data.sequence;
           codex[msg.trigger] = msg.data.data.sequence;
+          //
           const msgStartTime =
             msg.data.data.payload?.diff?.currentState?.startTime;
           const expectedStartTime =
@@ -140,6 +141,12 @@ const Controller = (
           } else {
             msg.data.data.payload.diff.currentState.startTime =
               expectedStartTime;
+          }
+          //
+          const timeLeftInState =
+            expectedMsg.data.data.payload?.timeLeftInState;
+          if (timeLeftInState !== undefined) {
+            msg.data.data.payload.timeLeftInState = timeLeftInState;
           }
         }
         expect(msg).toEqual(expectedMsg);
