@@ -1,6 +1,5 @@
 import { ElementHandle, expect, FrameLocator, Locator } from "@playwright/test";
 import { CornerDirection } from "../app/gameLogic/CatannFilesEnums";
-import { isRealMessage } from "./playwright_test.spec";
 
 const MAP_OFFSET = { x: 165, y: 11.5 };
 const MAP_ZERO_ZERO = { x: 245 - MAP_OFFSET.x, y: 89 - MAP_OFFSET.y };
@@ -193,21 +192,6 @@ export const getTilePosition = (tileIndex: number) => {
   };
   return getSettlementOffset(center);
 };
-
-export const waitForTrigger = async (iframe: FrameLocator, trigger: string) =>
-  await expect
-    .poll(
-      async () =>
-        (
-          await iframe
-            .locator("body")
-            .evaluate(() => window.parent.__socketCatannMessages)
-        )
-          .filter((msg) => isRealMessage(msg))
-          .some((msg: { trigger?: string }) => msg?.trigger === trigger),
-      { timeout: 5000 },
-    )
-    .toBe(true);
 
 export const getColRow = ({
   x,

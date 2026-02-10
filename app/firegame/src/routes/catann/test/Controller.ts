@@ -24,9 +24,13 @@ import {
   getTilePosition,
   MAP_DICE_COORDS,
   MAP_PASS_COORDS,
-  waitForTrigger,
 } from "./canvasGeometry";
-import { codex, delay, spliceTestMessages } from "./playwright_test.spec";
+import {
+  codex,
+  delay,
+  isRealMessage,
+  spliceTestMessages,
+} from "./playwright_test.spec";
 
 const loaded = Date.now();
 
@@ -564,3 +568,18 @@ const Controller = (
   })(getCanvas(iframe));
 
 export default Controller;
+
+const waitForTrigger = async (iframe: FrameLocator, trigger: string) =>
+  await expect
+    .poll(
+      async () =>
+        (
+          await iframe
+            .locator("body")
+            .evaluate(() => window.parent.__socketCatannMessages)
+        )
+          .filter((msg) => isRealMessage(msg))
+          .some((msg: { trigger?: string }) => msg?.trigger === trigger),
+      { timeout: 5000 },
+    )
+    .toBe(true);
