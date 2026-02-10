@@ -1555,6 +1555,7 @@ const buyDevelopmentCard = () => {
   if (!gameState.gameLogState) {
     gameState.gameLogState = {};
   }
+
   addGameLogEntry(gameState, {
     text: {
       type: 1,
@@ -1563,7 +1564,7 @@ const buyDevelopmentCard = () => {
     from: playerColor,
   });
 
-  gameState.currentState.allocatedTime = 140;
+  gameState.currentState.allocatedTime = 160;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);
@@ -2260,6 +2261,11 @@ export const applyGameAction = (parsed: {
     if (alreadyEnded) {
       return rval;
     }
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData, []);
+    sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData, []);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);

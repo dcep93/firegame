@@ -8510,7 +8510,6 @@
       }
     }
   },
-  { "trigger": "debug", "data": {} },
   {
     "trigger": "clientData",
     "data": {
@@ -8519,6 +8518,7 @@
       "sequence": 111
     }
   },
+  { "trigger": "debug", "data": {} },
   {
     "trigger": "serverData",
     "data": {

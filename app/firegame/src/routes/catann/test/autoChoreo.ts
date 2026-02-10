@@ -22,6 +22,7 @@ export default async function autoChoreo(
       msg.data.sequence,
       i,
       GAME_ACTION[msg.data.action],
+      msg.data.payload,
     );
     if (msg.data.sequence === stopClientDataSequence) return;
 

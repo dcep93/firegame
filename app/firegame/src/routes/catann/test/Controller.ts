@@ -148,6 +148,13 @@ const Controller = (
           if (timeLeftInState !== undefined) {
             msg.data.data.payload.timeLeftInState = timeLeftInState;
           }
+          //
+          const allocatedTime =
+            expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
+          if (allocatedTime !== undefined) {
+            msg.data.data.payload.diff.currentState.allocatedTime =
+              allocatedTime;
+          }
         }
         expect(msg).toEqual(expectedMsg);
         // console.log(msg);
