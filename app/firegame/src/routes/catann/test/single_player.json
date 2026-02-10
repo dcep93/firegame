@@ -24299,14 +24299,6 @@
   {
     "trigger": "clientData",
     "data": {
-      "action": 6,
-      "payload": true,
-      "sequence": 301
-    }
-  },
-  {
-    "trigger": "clientData",
-    "data": {
       "id": "136",
       "data": {
         "timestamp": 1769651768706

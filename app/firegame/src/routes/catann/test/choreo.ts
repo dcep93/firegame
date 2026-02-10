@@ -62,24 +62,14 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await c.confirmSelectedCards();
   await autoChoreo(c);
   await c.buildSettlement({ col: 4, row: 6 }, true);
-  await autoChoreo(c, 244);
+  await autoChoreo(c, 247);
 
-  await c.fastForward(244);
-  await autoChoreo(c);
+  await c.fastForward(247);
   await c.playDevelopmentCardFromHand();
-  await autoChoreo(c);
-  await c.playNextRobber();
-  await autoChoreo(c);
-  await c.playDevelopmentCardFromHand();
-  await autoChoreo(c);
-  await c.playNextRobber();
-  await autoChoreo(c);
-  await c.playNextRobber();
+  await c.verifyTestMessages();
   await autoChoreo(c, 263);
 
   await c.fastForward(263);
-  await autoChoreo(c);
-  await c.playNextRobber();
   await autoChoreo(c, 283);
 
   // {
@@ -109,21 +99,10 @@ export const singlePlayerChoreo = async (c: ControllerType) => {
   await autoChoreo(c, 290);
 
   await c.fastForward(290);
-  await c.playDevelopmentCardFromHand();
-  await c.verifyTestMessages();
-  await c.playFreeRoad();
-  await c.verifyTestMessages();
-  await c.playFreeRoad();
-  await c.verifyTestMessages();
+  await autoChoreo(c, 296);
 
   await c.fastForward(296);
-  await autoChoreo(c);
-  await c.buildRoad({ col: 4, row: 6 }, { col: 5, row: 7 }, true);
-  await c.verifyTestMessages();
-  await c.passTurn();
-  await c.skipIllegalPass();
-  await c.verifyTestMessages();
-  return;
+  await autoChoreo(c, 303);
 
   await c.fastForward(303);
   await autoChoreo(c);

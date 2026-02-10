@@ -142,7 +142,7 @@ const Controller = (
           }
         }
         expect(msg).toEqual(expectedMsg);
-        console.log(msg);
+        // console.log(msg);
       });
     };
     const confirmSelectedCards = async () => {
@@ -329,13 +329,21 @@ const Controller = (
       const tradeMsg = _expectedMessages!.find(
         (msg) => msg.data.payload?.offeredResources,
       )!;
-      await makeTrade({
-        creator: 1,
-        isBankTrade: true,
-        offeredResources: [4, 4, 4, 4],
-        wantedResources: [1],
-      });
+      await makeTrade(tradeMsg.data.payload);
+
+      // await makeTrade({
+      //   creator: 1,
+      //   isBankTrade: true,
+      //   offeredResources: [4, 4, 4, 4],
+      //   wantedResources: [1],
+      // });
       await fixWeirdTrade();
+    };
+    const buildNextRoad = async () => {
+      const roadMsg = _expectedMessages!.find(
+        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
+      )!;
+      await buildRoadFromPayload(roadMsg.data.payload);
     };
     const fixWeirdTrade = async () => {
       const nextMsg = _expectedMessages![0];
@@ -471,23 +479,15 @@ const Controller = (
       await delay(100);
     };
     const playFreeRoad = async () => {
-      const payload: keyof typeof tileEdgeStates = _expectedMessages!.find(
+      const payload = _expectedMessages!.find(
         (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
       )!.data.payload;
+      await buildRoadFromPayload(payload);
+    };
+    const buildRoadFromPayload = async (
+      payload: keyof typeof tileEdgeStates,
+    ) => {
       const [start, destination] = edgeEndpoints(tileEdgeStates[payload]);
-      const getColRow = ({
-        x,
-        y,
-        z,
-      }: {
-        x: number;
-        y: number;
-        z: CornerDirection;
-      }) => {
-        const col = 5 + 2 * x + y;
-        const row = (z === CornerDirection.North ? 4 : 7) + 2 * y;
-        return { col, row };
-      };
       await buildRoad(getColRow(start), getColRow(destination), true);
     };
     return {
@@ -507,6 +507,7 @@ const Controller = (
       wantToTrade,
       makeTrade,
       makeNextTrade,
+      buildNextRoad,
       fixWeirdTrade,
       rollNextDice,
       passTurn,
@@ -720,3 +721,17 @@ const waitForTrigger = async (iframe: FrameLocator, trigger: string) =>
       { timeout: 5000 },
     )
     .toBe(true);
+
+const getColRow = ({
+  x,
+  y,
+  z,
+}: {
+  x: number;
+  y: number;
+  z: CornerDirection;
+}) => {
+  const col = 5 + 2 * x + y;
+  const row = (z === CornerDirection.North ? 4 : 7) + 2 * y;
+  return { col, row };
+};

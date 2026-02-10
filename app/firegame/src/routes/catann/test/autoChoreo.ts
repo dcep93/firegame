@@ -44,6 +44,10 @@ export default async function autoChoreo(
       await c.wantToTrade();
     } else if (msg.data.action === GAME_ACTION.CreateTrade) {
       await c.makeNextTrade();
+    } else if (msg.data.action === GAME_ACTION.ConfirmBuildRoad) {
+      await c.buildNextRoad();
+    } else if (msg.data.action === GAME_ACTION.SelectedTile) {
+      await c.playNextRobber();
     } else {
       return;
     }
