@@ -156,3 +156,4 @@
 - Early `1p.v2` is currently stalling at `PassedTurn` right after the first `ClickedDice` (5+6): the pass helper times out because the dice hotspot remains clickable (`Controller.ts` line 398), so the immediate blocker is roll-to-pass UI state progression before client action sequence 17.
 - Replacing hard-coded road highlight arrays with game-state-derived edge sets moved the early `1p.v2` blocker forward; current mismatch at server sequence 44 is only `HighlightRoadEdges` ordering for the same edge set (`[39,67,50,49,44,36,54,57]` expected vs sorted order from helper).
 - In `placeRoad`, only emit `ExitInitialPlacement` (type 62) when the action state is actually `InitialPlacementRoadPlacement`; emitting it for standard turn road placements desyncs the 1p.v2 recording right after sequence 52.
+- In 1p.v2 around client sequence 53 (first bank trade), expected server diff includes `currentState.allocatedTime = 70`; omitting that field causes an immediate desync.

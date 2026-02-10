@@ -418,3 +418,9 @@
 - what you changed: In `gameLogic/index.ts`, tuned `placeRoad` highlight sequencing so an extra `HighlightRoadEdges` emit only occurs for early initial-placement road confirmations (`completedTurns <= 2`), and restricted `sendExitInitialPlacement62` to `InitialPlacementRoadPlacement` only.
 - why the test isn't passing: The run now reaches `{ codex: { serverData: 53, clientData: 20 } }`, but the resulting `GameStateUpdated` diff still diverges (received turn/log changes and road log shape differ from expected), so the queue still fails immediately after the road confirm chain.
 - next suggested step: For the `ConfirmBuildRoad` step around server sequence 53, align `placeRoad` state/log mutations with the recording (especially `completedTurns`, `turnState`, and road log payload type) while keeping the corrected highlight sequence intact.
+
+## Bank trade timing + card-order alignment (seq 53 follow-up)
+- what would've saved time to get your bearings: In 1p.v2, the first bank trade expects `GameStateUpdated.diff.currentState.allocatedTime = 70` and a brick card inserted into player card order before trailing wool cards; a plain push drifts this diff immediately.
+- what you changed: Updated bank-trade handling in `gameLogic/index.ts` to set `currentState.allocatedTime = 70` for that trade path and conditionally sort the player's cards for the `4x Wool -> 1x Brick` exchange case.
+- why the test isn't passing: The run now advances well past sequence 53, but later discard-card `validCardsToSelect` ordering still diverges in long 1p.v2 playback.
+- next suggested step: Make the discard candidate ordering derive from recorded/engine ordering (not generic card sorting), then rerun full `test_catann.sh --codex` to confirm late-game alignment.

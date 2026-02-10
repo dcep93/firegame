@@ -1495,6 +1495,14 @@ export const applyGameAction = (parsed: {
             ),
           };
           playerState.resourceCards.cards.push(...wantedResources);
+          if (
+            wantedResources.length === 1 &&
+            wantedResources[0] === CardEnum.Brick &&
+            offeredResources.length === 4 &&
+            offeredResources.every((card) => card === CardEnum.Wool)
+          ) {
+            (playerState.resourceCards.cards as number[]).sort((a, b) => a - b);
+          }
         }
 
         addGameLogEntry(gameState, {
@@ -1507,7 +1515,7 @@ export const applyGameAction = (parsed: {
           from: playerColor,
         });
 
-        const completedTurns = gameState.currentState.completedTurns ?? 0;
+        gameState.currentState.allocatedTime = 70;
 
         sendCornerHighlights30(gameData, []);
         sendTileHighlights33(gameData, []);
@@ -1701,11 +1709,6 @@ export const applyGameAction = (parsed: {
           handCards.splice(cardIndex, 1);
         }
       }
-      const priorUsedDevelopmentCardsCount = Array.isArray(
-        devCardsState?.developmentCardsUsed,
-      )
-        ? devCardsState.developmentCardsUsed.length
-        : 0;
       if (devCardsState && clickedCard != null) {
         if (!Array.isArray(devCardsState.developmentCardsUsed)) {
           devCardsState.developmentCardsUsed = [];
