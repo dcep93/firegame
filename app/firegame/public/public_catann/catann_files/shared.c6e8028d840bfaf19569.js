@@ -4521,16 +4521,14 @@
         const t = i.Ay;
         e.init = async function () {
           ((0, o.i9)((e, t) => u.t(e, t)),
-            await t
-              .use(n.A)
-              .init({
-                lng: a.r.language,
-                fallbackLng: r.F2.defaultLanguage,
-                ns: r.WO.Strings,
-                backend: { loadPath: (e, t) => d[t][e] },
-                defaultNS: r.WO.Strings,
-                interpolation: { skipOnVariables: !1 },
-              }),
+            await t.use(n.A).init({
+              lng: a.r.language,
+              fallbackLng: r.F2.defaultLanguage,
+              ns: r.WO.Strings,
+              backend: { loadPath: (e, t) => d[t][e] },
+              defaultNS: r.WO.Strings,
+              interpolation: { skipOnVariables: !1 },
+            }),
             c._.registerChangeListener((e) => {
               if (null == e) return;
               if (c._.isStale()) return;
@@ -26165,22 +26163,20 @@
       class C {
         setupReplayControls() {
           const e = h(this.replayData.eventHistory);
-          this.uiGameManager.gameStore
-            .getState()
-            .gameReplay.setReplayControls({
-              onPreviousTurn: () => this.previousTurn(),
-              onPreviousAction: () => this.previousAction(),
-              onNextAction: () => this.nextAction(),
-              onNextTurn: () => this.nextTurn(),
-              onChangePerspective: (e) => this.onClickChangePerspective(e),
-              currentPlayerPerspective: this.playerPerspective,
-              onShare: () =>
-                m.x.shareOrCopyLink(this.uiGameManager.gameController, this),
-              numberOfActions: this.replayData.eventHistory.events.length,
-              highlightData: e,
-              onChangeActionIndex: (e) => this.setAction(e, !1),
-              onClickLog: (e) => this.clickedGameLogWithIndex(e),
-            });
+          this.uiGameManager.gameStore.getState().gameReplay.setReplayControls({
+            onPreviousTurn: () => this.previousTurn(),
+            onPreviousAction: () => this.previousAction(),
+            onNextAction: () => this.nextAction(),
+            onNextTurn: () => this.nextTurn(),
+            onChangePerspective: (e) => this.onClickChangePerspective(e),
+            currentPlayerPerspective: this.playerPerspective,
+            onShare: () =>
+              m.x.shareOrCopyLink(this.uiGameManager.gameController, this),
+            numberOfActions: this.replayData.eventHistory.events.length,
+            highlightData: e,
+            onChangeActionIndex: (e) => this.setAction(e, !1),
+            onClickLog: (e) => this.clickedGameLogWithIndex(e),
+          });
         }
         bindKeys() {
           const e = !1;
