@@ -218,7 +218,6 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
     );
     await spliceTestMessages(iframe);
     const c = Controller(page, iframe, expectedMessages);
-    clientDataSequence = 51;
     if (clientDataSequence !== -1) {
       await fastForward(iframe, expectedMessages, c, clientDataSequence);
     }
@@ -242,7 +241,8 @@ test.skip(
 );
 
 test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
-test("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
+
+test("1p.v2", screenshot(choreo("./choreo/1p.v2.json", 97)));
 
 //
 

@@ -157,3 +157,5 @@
 - Replacing hard-coded road highlight arrays with game-state-derived edge sets moved the early `1p.v2` blocker forward; current mismatch at server sequence 44 is only `HighlightRoadEdges` ordering for the same edge set (`[39,67,50,49,44,36,54,57]` expected vs sorted order from helper).
 - In `placeRoad`, only emit `ExitInitialPlacement` (type 62) when the action state is actually `InitialPlacementRoadPlacement`; emitting it for standard turn road placements desyncs the 1p.v2 recording right after sequence 52.
 - In 1p.v2 around client sequence 53 (first bank trade), expected server diff includes `currentState.allocatedTime = 70`; omitting that field causes an immediate desync.
+
+- Sorting `playerStates[playerColor].resourceCards.cards` after 4:1 wool bank trades advances 1p.v2 past the early trade ordering checks (clientData 53 and 85), but later discard prompts still fail on `validCardsToSelect` ordering/content around clientData 97.

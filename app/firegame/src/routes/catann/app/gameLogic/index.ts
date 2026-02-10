@@ -1497,7 +1497,6 @@ export const applyGameAction = (parsed: {
           playerState.resourceCards.cards.push(...wantedResources);
           if (
             wantedResources.length === 1 &&
-            wantedResources[0] === CardEnum.Brick &&
             offeredResources.length === 4 &&
             offeredResources.every((card) => card === CardEnum.Wool)
           ) {

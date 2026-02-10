@@ -424,3 +424,9 @@
 - what you changed: Updated bank-trade handling in `gameLogic/index.ts` to set `currentState.allocatedTime = 70` for that trade path and conditionally sort the player's cards for the `4x Wool -> 1x Brick` exchange case.
 - why the test isn't passing: The run now advances well past sequence 53, but later discard-card `validCardsToSelect` ordering still diverges in long 1p.v2 playback.
 - next suggested step: Make the discard candidate ordering derive from recorded/engine ordering (not generic card sorting), then rerun full `test_catann.sh --codex` to confirm late-game alignment.
+
+## 1p.v2 bank-trade card ordering and next blocker
+- what would've saved time to get your bearings: The first failure looked like a generic resource mismatch, but it was specifically array ordering in `resourceCards.cards` after 4:1 wool bank trades (first at clientData 53, then again at 85).
+- what you changed: Updated the `CreateTrade` bank-trade branch to sort `playerState.resourceCards.cards` whenever the trade is exactly 4 wool for 1 resource, instead of only a single hardcoded target resource.
+- why the test isn't passing: The run now progresses much farther (to clientData 97 / serverData 290) and fails on discard prompt `validCardsToSelect` ordering/content during a 7-roll discard state.
+- next suggested step: In the discard-card flow for 7 rolls, derive `validCardsToSelect` directly from the current player hand in recorded order (not a recomputed/sorted surrogate), then rerun `test_catann.sh --codex`.
