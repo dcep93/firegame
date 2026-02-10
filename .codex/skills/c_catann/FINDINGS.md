@@ -388,3 +388,9 @@
 - what you changed: In `gameLogic/index.ts`, updated `ClickedDevelopmentCard` handling to award largest army when the knight-use threshold is reached, emit the achievement log (`type 66` / `achievementEnum: 1`), set `VictoryPointSource.LargestArmy`, force `timeLeftInState = 0`, and append a post-`setFirebaseData` `31 -> 32 -> 30` highlight chain for knight plays.
 - why the test isn't passing: The run now advances farther (`serverData` 80), but still emits an unexpected `HighlightTiles` clear (`type 33`, sequence 81) before the choreography’s next client action, so the final robber step is still desynced.
 - next suggested step: Narrow the late-knight highlight emission path so no extra type-33 clear is sent after sequence 80, then rerun `test_catann.sh --codex` and re-check the next expected message around `playNextRobber`.
+
+## Late knight tail highlight chain progression (seq 81+)
+- what would've saved time to get your bearings: In this environment, after matching through sequence 80 in the late `ClickedDevelopmentCard` knight branch, the recording continues with additional empty highlight clears (`type 33`, then `type 30`, then another `type 33`) before teardown.
+- what you changed: In `gameLogic/index.ts`, kept `timeLeftInState = 0` for the largest-army knight snapshot and extended the knight post-`setFirebaseData` tail to emit `HighlightTiles` clear followed by another `HighlightCorners` clear.
+- why the test isn't passing: The queue now advances to `{ codex: { clientData: 306, serverData: 82 } }` but still leaves the next expected `serverData` highlight clear (`type 33`, sequence 83) unconsumed.
+- next suggested step: Continue mirroring the recorded post-knight empty highlight sequence (likely alternating 33/30/31/32 clears) or move this tail handling into choreography-driven consumption so `expectedMessages` drains completely.

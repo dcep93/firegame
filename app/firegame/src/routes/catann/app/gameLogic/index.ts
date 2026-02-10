@@ -1998,6 +1998,8 @@ export const applyGameAction = (parsed: {
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
       sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData, []);
+      sendCornerHighlights30(gameData, []);
     }
     return true;
   }
