@@ -298,7 +298,7 @@ export const newRoomMe = (sessions: { selectedColor: string }[]) => {
   };
 };
 
-const colorHelper = Object.values(PlayerColor)
+export const colorHelper = Object.values(PlayerColor)
   .filter((v) => isNaN(v as number))
   .filter((v) => v !== PlayerColor[PlayerColor.None])
   .map((v) => v as string)
@@ -691,12 +691,6 @@ export const startGame = () => {
       payload: [],
     },
   });
-  const selectedColor = firebaseData.ROOM!.data.sessions.find(
-    (s) => s,
-  )!.selectedColor;
-  firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
-    ({ str }) => str === selectedColor,
-  )!.int;
   sendToMainSocket?.(firebaseData.GAME);
 
   sendToMainSocket?.({

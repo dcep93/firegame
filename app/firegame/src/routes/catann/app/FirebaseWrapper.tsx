@@ -5,6 +5,7 @@ import store from "../../../shared/store";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import { GameStateUpdateType } from "./gameLogic/CatannFilesEnums";
 import {
+  colorHelper,
   newGame,
   newRoom,
   newRoomMe,
@@ -41,6 +42,12 @@ function receiveFirebaseDataCatann(catann: any) {
     return;
   }
   if (firebaseData.GAME) {
+    const selectedColor = firebaseData.ROOM!.data.sessions.find(
+      (s) => s.userId === store.me.userId,
+    )!.selectedColor;
+    firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
+      ({ str }) => str === selectedColor,
+    )!.int;
     if (firebaseData.GAME.data.type === GameStateUpdateType.BuildGame) {
       startGame();
       return;

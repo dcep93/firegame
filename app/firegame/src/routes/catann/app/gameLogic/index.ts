@@ -35,7 +35,6 @@ export const NUM_DEV_CARDS = Object.values(DEVELOPMENT_DECK_CARD_COUNTS).reduce(
   0,
 );
 
-const PLAYER_INDEX = 1;
 const BANK_INDEX = 0;
 const MIN_POINTS_PROTECTED_BY_FRIENDLY_ROBBER = 2;
 const LONGEST_ROAD_MIN_LENGTH = 5;
@@ -280,7 +279,7 @@ const addPlayerResourceCards = (
 
 const autoPlaceRobber = (tileIndex: number) => {
   const gameData = firebaseData.GAME!;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const gameState = gameData.data.payload.gameState;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileState = tileHexStates[String(tileIndex)];
@@ -373,7 +372,7 @@ const applyPortOwnership = (
 
 const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const edgeStates = gameState.mapState.tileEdgeStates ?? {};
   const cornerStates = gameState.mapState.tileCornerStates ?? {};
   const serializeCornerKey = (x: number, y: number, z: number) =>
@@ -421,7 +420,7 @@ export const sendCornerHighlights30 = (
   force: number[] | null = null,
 ) => {
   const actionState = gameData.data.payload.gameState.currentState.actionState;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const isClose = (a: any, b: any) => {
     if (a.z === b.z) {
       return a.x === b.x && a.y === b.y;
@@ -680,7 +679,7 @@ const getRobberEligibleTiles = (gameData: any) => {
 const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const isStandardBuild =
     gameState.currentState.actionState === PlayerActionState.PlaceSettlement;
   const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
@@ -880,7 +879,7 @@ const getCornerIndexFromPayload = (gameState: any, payload: unknown) => {
 const placeCity = (cornerIndex: number) => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
   if (!cornerState) {
     return;
@@ -972,7 +971,7 @@ const placeCity = (cornerIndex: number) => {
 const placeRoad = (edgeIndex: number) => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const edgeState = gameState.mapState.tileEdgeStates[String(edgeIndex)];
 
   gameState.mapState.tileEdgeStates[String(edgeIndex)] = {
@@ -1127,7 +1126,7 @@ const placeRoad = (edgeIndex: number) => {
 const rollDice = () => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const overrideDiceState = window.__testSeed;
   const getDiceRoll = () => Math.floor(Math.random() * DICE_ROLL_SIDES) + 1;
   const dice1 =
@@ -1331,6 +1330,7 @@ const rollDice = () => {
 const passTurn = () => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
+  const playerColor = gameData.data.payload.playerColor;
   const completedTurns = gameState.currentState.completedTurns ?? 0;
   const nextCompletedTurns = completedTurns + 1;
 
@@ -1352,7 +1352,7 @@ const passTurn = () => {
   });
 
   const devCardsState: any =
-    gameState.mechanicDevelopmentCardsState?.players?.[PLAYER_INDEX];
+    gameState.mechanicDevelopmentCardsState?.players?.[playerColor];
   if (devCardsState && "developmentCardsBoughtThisTurn" in devCardsState) {
     devCardsState.developmentCardsBoughtThisTurn = null;
     if ("hasUsedDevelopmentCardThisTurn" in devCardsState) {
@@ -1373,7 +1373,7 @@ const passTurn = () => {
 const buyDevelopmentCard = () => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData.data.payload.playerColor;
   const exchangeCards = [CardEnum.Wool, CardEnum.Grain, CardEnum.Ore];
   applyResourceExchangeWithBank(gameState, playerColor, exchangeCards);
 
@@ -1523,7 +1523,7 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GameAction.CreateTrade) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+      const playerColor = gameData.data.payload.playerColor;
       const tradePayload =
         parsed.payload && typeof parsed.payload === "object"
           ? (parsed.payload as {
@@ -1699,7 +1699,7 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GameAction.WantToBuildCity) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+      const playerColor = gameData.data.payload.playerColor;
       const cornerStates = gameState.mapState.tileCornerStates ?? {};
       const highlightCorners = Object.entries(cornerStates)
         .map(([key, value]) => ({
@@ -1755,7 +1755,7 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GameAction.ClickedDevelopmentCard) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
+      const playerColor = gameData.data.payload.playerColor;
       const clickedCard =
         typeof parsed.payload === "number" ? parsed.payload : undefined;
       const devCardsState: any =
@@ -2619,7 +2619,7 @@ const updateLongestRoadAchievement = (playerColor: number) => {
 function getSettlementEligibleTiles(): number[] | null | undefined {
   const gameData = firebaseData.GAME;
   const gameState = gameData?.data?.payload?.gameState;
-  const playerColor = gameData?.data?.payload?.playerColor ?? PLAYER_INDEX;
+  const playerColor = gameData?.data?.payload?.playerColor;
 
   if (!gameState) return null;
 
