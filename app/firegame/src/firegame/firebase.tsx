@@ -6,6 +6,7 @@ import {
   Database,
   push as f_push,
   set as f_set,
+  update as f_update,
   getDatabase,
   limitToLast,
   onValue,
@@ -84,5 +85,9 @@ function set(path: string, obj: BlobType): void {
   f_set(ref(database, path), obj);
 }
 
-const ex = { init, now, latestChild, push, connect, set };
+function update(path: string, obj: BlobType): void {
+  f_update(ref(database, path), obj);
+}
+
+const ex = { init, now, latestChild, push, connect, set, update };
 export default ex;

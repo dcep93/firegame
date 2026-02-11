@@ -2,103 +2,25 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
-import { sendCornerHighlights30 } from "./gameLogic";
-import { GameStateUpdateType, State } from "./gameLogic/CatannFilesEnums";
+import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import {
   newGame,
   newRoom,
   newRoomMe,
   spoofHostRoom,
-  startGame,
 } from "./gameLogic/createNew";
 import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
 
+const SHOULD_MOCK = isTest;
+
 export var firebaseData: {
+  PRESENCE?: Record<string, boolean>;
   GAME?: ReturnType<typeof newGame>;
   ROOM?: ReturnType<typeof newRoom>;
 } = {};
-let hasSentInitialGame = false;
-let lastGameStateSnapshot: string | null = null;
-
-const SHOULD_MOCK = isTest;
-
-const getGameStateSnapshot = (gameData: any) => {
-  try {
-    return JSON.stringify(gameData?.data?.payload?.gameState ?? null);
-  } catch {
-    return null;
-  }
-};
-
-const isObject = (value: any) =>
-  value !== null && typeof value === "object" && !Array.isArray(value);
-
-const deepEqual = (a: any, b: any): boolean => {
-  if (Object.is(a, b)) return true;
-  if (Array.isArray(a) || Array.isArray(b)) {
-    if (!Array.isArray(a) || !Array.isArray(b)) return false;
-    if (a.length !== b.length) return false;
-    return a.every((value, index) => deepEqual(value, b[index]));
-  }
-  if (isObject(a) && isObject(b)) {
-    const keysA = Object.keys(a);
-    const keysB = Object.keys(b);
-    if (keysA.length !== keysB.length) return false;
-    return keysA.every((key) => deepEqual(a[key], b[key]));
-  }
-  return false;
-};
-
-const buildDiff = (previous: any, current: any): any | undefined => {
-  if (deepEqual(previous, current)) return undefined;
-  if (Array.isArray(previous) || Array.isArray(current)) {
-    if (!Array.isArray(previous) || !Array.isArray(current)) return current;
-    return deepEqual(previous, current) ? undefined : current;
-  }
-  if (isObject(previous) && isObject(current)) {
-    const diff: Record<string, any> = {};
-    Object.keys(current).forEach((key) => {
-      const childDiff = buildDiff(previous[key], current[key]);
-      if (childDiff !== undefined) {
-        diff[key] = childDiff;
-      }
-    });
-    return Object.keys(diff).length > 0 ? diff : undefined;
-  }
-  return current;
-};
-
-const buildGameStateUpdated = (gameData: any, previousState?: any) => {
-  const gameState = gameData?.data?.payload?.gameState;
-  if (!gameState) return null;
-  const diff = previousState ? buildDiff(previousState, gameState) : gameState;
-  if (!diff || (isObject(diff) && Object.keys(diff).length === 0)) {
-    return null;
-  }
-  const timeLeftInState =
-    gameData?.data?.payload?.timeLeftInState ??
-    gameState?.currentState?.allocatedTime ??
-    0;
-  return {
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.GameStateUpdated,
-      payload: {
-        diff,
-        timeLeftInState,
-      },
-    },
-  };
-};
-
-const markInitialGameSent = (gameData?: any) => {
-  hasSentInitialGame = true;
-  if (gameData) {
-    lastGameStateSnapshot = getGameStateSnapshot(gameData);
-  }
-};
+let firebaseDataSnapshot = JSON.stringify(firebaseData);
 
 function receiveFirebaseDataCatann(catann: any) {
   if (!catann) {
@@ -110,34 +32,20 @@ function receiveFirebaseDataCatann(catann: any) {
     );
     return;
   }
-  const unserialized = unSerializeFirebase(catann, []);
-  if (JSON.stringify(firebaseData) === JSON.stringify(unserialized)) return;
-  firebaseData = unserialized;
+  const prevFirebaseData = firebaseData;
+  firebaseData = unSerializeFirebase(catann, []);
+  const newSnapshot = JSON.stringify(firebaseData);
+  if (firebaseDataSnapshot === newSnapshot) return;
+  firebaseDataSnapshot = newSnapshot;
   console.log("rendered", firebaseData);
   if (firebaseData.GAME) {
-    const snapshot = getGameStateSnapshot(firebaseData.GAME);
-    if (!hasSentInitialGame) {
-      markInitialGameSent(firebaseData.GAME);
-      startGame();
-      sendToMainSocket?.({
-        id: State.GameStateUpdate.toString(),
-        data: {
-          type: GameStateUpdateType.KarmaState,
-          payload: false,
-        },
-      });
-      sendCornerHighlights30(firebaseData.GAME);
-      return;
-    }
-    if (snapshot === lastGameStateSnapshot) return;
-    const previousState = lastGameStateSnapshot
-      ? JSON.parse(lastGameStateSnapshot)
-      : null;
-    const update = buildGameStateUpdated(firebaseData.GAME, previousState);
+    const update = buildGameStateUpdated(
+      firebaseData.GAME,
+      prevFirebaseData.GAME,
+    );
     if (update) {
       sendToMainSocket?.(update);
     }
-    lastGameStateSnapshot = snapshot;
     return;
   }
   if (
@@ -155,7 +63,7 @@ function receiveFirebaseDataCatann(catann: any) {
 }
 
 export default function FirebaseWrapper() {
-  console.log("connecting firebase wrapper", { hasSentInitialGame });
+  console.log("connecting firebase wrapper");
   useEffect(() => {
     if (SHOULD_MOCK) {
       receiveFirebaseDataCatann(undefined);
@@ -178,16 +86,22 @@ export function setFirebaseData(newData: any, change: any) {
   };
   if (change === TEST_CHANGE_STR) {
     firebaseData = newData;
-    lastGameStateSnapshot = getGameStateSnapshot(firebaseData.GAME);
+    firebaseDataSnapshot = JSON.stringify(firebaseData);
     return;
   }
   if (SHOULD_MOCK) {
     receiveFirebaseDataCatann(catann);
   } else {
-    firebase.set(
-      `${roomPath()}/catann`,
-      !newData ? null : serializeFirebase(catann),
-    );
+    if (!newData) {
+      firebase.set(`${roomPath()}/catann`, null);
+      return;
+    }
+    const serializedCatann = serializeFirebase(catann);
+    const previousSerialized = serializeFirebase(firebaseData);
+    const updates = buildUpdateMap(previousSerialized, serializedCatann);
+    console.trace({ updates, change });
+    if (Object.keys(updates).length === 1) return; // __meta/now will always change
+    firebase.update(`${roomPath()}/catann`, updates);
   }
 }
 
