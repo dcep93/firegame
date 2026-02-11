@@ -35,12 +35,9 @@ export const NUM_DEV_CARDS = Object.values(DEVELOPMENT_DECK_CARD_COUNTS).reduce(
 
 const PLAYER_INDEX = 1;
 const BANK_INDEX = 0;
-const INITIAL_DISCARD_LIMIT = 7;
 const MIN_POINTS_PROTECTED_BY_FRIENDLY_ROBBER = 2;
 const LONGEST_ROAD_MIN_LENGTH = 5;
-const LONGEST_ROAD_MARGIN_TO_STEAL = 1;
 const DICE_ROLL_SIDES = 6;
-const DICE_ROLL_MIN_VALUE = 1;
 const ROBBER_TRIGGER_DICE_TOTAL = 7;
 const GENERIC_PORT_TYPE = 4;
 const ACHIEVEMENT_LONGEST_ROAD = 0;
@@ -59,7 +56,10 @@ const TURN_TIMERS_MS = {
 } as const;
 
 const getVictoryPointsToWin = (gameData: any) =>
-  gameData?.data?.payload?.gameSettings?.victoryPointsToWin ?? 10;
+  gameData.data.payload.gameSettings.victoryPointsToWin;
+
+const getCardDiscardLimit = (gameData: any) =>
+  gameData.data.payload.gameSettings.cardDiscardLimit;
 
 const isDevelopmentCardRobberWindow = (allocatedTime: number | undefined) =>
   allocatedTime === TURN_TIMERS_MS.dicePhase ||
@@ -609,7 +609,7 @@ const getPlayerVictoryPoints = (playerState: any) => {
 
 const getFriendlyRobberBlockedTiles = (gameData: any) => {
   const gameState = gameData.data.payload.gameState;
-  if (!gameData.data.payload.gameSettings?.friendlyRobber) {
+  if (!gameData.data.payload.gameSettings.friendlyRobber) {
     return new Set<number>();
   }
   const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
@@ -1112,14 +1112,15 @@ const rollDice = () => {
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const overrideDiceState = window.__testSeed;
+  const getDiceRoll = () => Math.floor(Math.random() * DICE_ROLL_SIDES) + 1;
   const dice1 =
     Array.isArray(overrideDiceState) && overrideDiceState.length === 2
       ? overrideDiceState[0]
-      : Math.floor(Math.random() * DICE_ROLL_SIDES) + DICE_ROLL_MIN_VALUE;
+      : getDiceRoll();
   const dice2 =
     Array.isArray(overrideDiceState) && overrideDiceState.length === 2
       ? overrideDiceState[1]
-      : Math.floor(Math.random() * DICE_ROLL_SIDES) + DICE_ROLL_MIN_VALUE;
+      : getDiceRoll();
   const diceTotal = dice1 + dice2;
   const shouldTriggerRobber = diceTotal === ROBBER_TRIGGER_DICE_TOTAL;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
@@ -1260,8 +1261,9 @@ const rollDice = () => {
     const playerCards = [
       ...(gameState.playerStates?.[playerColor]?.resourceCards?.cards ?? []),
     ].sort((a, b) => a - b);
+    const cardDiscardLimit = getCardDiscardLimit(gameData);
     const amountToDiscard =
-      playerCards.length > INITIAL_DISCARD_LIMIT
+      playerCards.length > cardDiscardLimit
         ? Math.floor(playerCards.length / 2)
         : 0;
     if (amountToDiscard > 0) {
@@ -1279,7 +1281,7 @@ const rollDice = () => {
             body: {
               key: "strings:game.prompts.youHaveMoreThanXCards",
               options: {
-                count: INITIAL_DISCARD_LIMIT,
+                count: cardDiscardLimit,
                 amountToDiscard,
               },
             },
@@ -2307,7 +2309,7 @@ const updateLongestRoadAchievement = (playerColor: number) => {
 
   if (
     challengerLength < LONGEST_ROAD_MIN_LENGTH ||
-    challengerLength < currentHolderLength + LONGEST_ROAD_MARGIN_TO_STEAL
+    challengerLength <= currentHolderLength
   ) {
     return;
   }
@@ -2326,8 +2328,7 @@ const updateLongestRoadAchievement = (playerColor: number) => {
   if (!challengerState.victoryPointsState) {
     challengerState.victoryPointsState = {};
   }
-  challengerState.victoryPointsState[VictoryPointSource.LongestRoad] =
-    LONGEST_ROAD_MARGIN_TO_STEAL;
+  challengerState.victoryPointsState[VictoryPointSource.LongestRoad] = 1;
   if (gameState.mechanicLongestRoadState?.[playerColor]) {
     gameState.mechanicLongestRoadState[playerColor].hasLongestRoad = true;
   }
