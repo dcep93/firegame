@@ -23,6 +23,12 @@ export var firebaseData: {
 let firebaseDataSnapshot = JSON.stringify(firebaseData);
 
 function receiveFirebaseDataCatann(catann: any) {
+  const prevFirebaseData = firebaseData;
+  firebaseData = unSerializeFirebase(catann, []);
+  const newSnapshot = JSON.stringify(firebaseData);
+  if (firebaseDataSnapshot === newSnapshot) return;
+  firebaseDataSnapshot = newSnapshot;
+  console.log("rendered", firebaseData);
   if (!catann?.ROOM) {
     setFirebaseData(
       {
@@ -32,12 +38,6 @@ function receiveFirebaseDataCatann(catann: any) {
     );
     return;
   }
-  const prevFirebaseData = firebaseData;
-  firebaseData = unSerializeFirebase(catann, []);
-  const newSnapshot = JSON.stringify(firebaseData);
-  if (firebaseDataSnapshot === newSnapshot) return;
-  firebaseDataSnapshot = newSnapshot;
-  console.log("rendered", firebaseData);
   if (firebaseData.GAME) {
     const update = buildGameStateUpdated(
       firebaseData.GAME,
@@ -64,10 +64,10 @@ function receiveFirebaseDataCatann(catann: any) {
 
 var initialized = false;
 export default function FirebaseWrapper() {
-  console.log("connecting firebase wrapper");
   useEffect(() => {
     if (initialized) return;
     initialized = true;
+    console.log("connecting firebase wrapper");
     if (SHOULD_MOCK) {
       receiveFirebaseDataCatann(undefined);
       return;
@@ -87,12 +87,12 @@ export function setFirebaseData(newData: any, change: any) {
     __meta: { change, me: store.me, now: Date.now() },
   };
   const serializedCatann = serializeFirebase(catann);
-  const previousSerialized = serializeFirebase(
-    JSON.parse(firebaseDataSnapshot),
-  );
+  const previousSerialized = !firebaseDataSnapshot
+    ? {}
+    : serializeFirebase(JSON.parse(firebaseDataSnapshot));
   const updates = buildUpdateMap(previousSerialized, serializedCatann);
   if (Object.keys(updates).length === 1) return; // __meta/now will always change
-  console.trace("setting", newData, updates);
+  console.debug("setting", newData, updates);
   if (change === TEST_CHANGE_STR) {
     firebaseData = newData;
     firebaseDataSnapshot = JSON.stringify(firebaseData);

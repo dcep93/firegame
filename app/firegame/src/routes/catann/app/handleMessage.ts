@@ -169,7 +169,7 @@ export default function handleMessage(
         return;
       }
     }
-    console.log("handleMessage", clientData);
+    console.debug("handleMessage", clientData);
     if (clientData._header[1] === ServerActionType.RoomCommand) {
       if (clientData.type === "startGame") {
         sendToMainSocket?.({
