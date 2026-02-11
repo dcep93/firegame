@@ -181,14 +181,14 @@ export function setFirebaseData(newData: any, change: any) {
     lastGameStateSnapshot = getGameStateSnapshot(firebaseData.GAME);
     return;
   }
-  // TODO reduce writes by using update instead of set
-  // also only change diffs
-  SHOULD_MOCK
-    ? receiveFirebaseDataCatann(catann)
-    : firebase.set(
-        `${roomPath()}/catann`,
-        !newData ? null : serializeFirebase(catann),
-      );
+  if (SHOULD_MOCK) {
+    receiveFirebaseDataCatann(catann);
+  } else {
+    firebase.set(
+      `${roomPath()}/catann`,
+      !newData ? null : serializeFirebase(catann),
+    );
+  }
 }
 
 const FirebaseWrapperKey = "__firebase_wrapper__";
