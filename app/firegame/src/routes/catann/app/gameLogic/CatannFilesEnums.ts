@@ -1042,12 +1042,14 @@ export enum ExpansionType {
   CitiesAndKnights56P = 7,
   CitiesAndKnightsSeafarers4P = 8,
   CitiesAndKnightsSeafarers56P = 9,
+  ColonistRush4P = 10,
 }
 
 export enum StoreItemCategory {
   Expansion = 1,
   Map = 2,
   Avatar = 3,
+  Color = 4,
 }
 
 export enum StoreMapItemType {
@@ -1064,6 +1066,17 @@ export enum StoreMapItemType {
   BlackForest = 10,
   Volcano = 11,
   GoldRush = 12,
+}
+
+export enum StoreColorItemType {
+  Gold = 0,
+  Silver = 1,
+  Bronze = 2,
+  Black = 3,
+  Purple = 4,
+  MysticBlue = 5,
+  White = 6,
+  Pink = 7,
 }
 
 export enum StoreAvatarItemType {

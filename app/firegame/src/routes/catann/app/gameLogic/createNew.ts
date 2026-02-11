@@ -18,6 +18,7 @@ import {
   SeafarersScenarioId,
   State,
   StoreAvatarItemType,
+  StoreColorItemType,
   StoreItemCategory,
   StoreMapItemType,
   TileType,
@@ -100,6 +101,10 @@ export const newUserState = () => {
         {
           category: StoreItemCategory.Expansion,
           type: ExpansionType.CitiesAndKnightsSeafarers56P,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.ColonistRush4P,
         },
         { category: StoreItemCategory.Map, type: StoreMapItemType.Earth },
         { category: StoreItemCategory.Map, type: StoreMapItemType.USA },
@@ -212,6 +217,17 @@ export const newUserState = () => {
           category: StoreItemCategory.Avatar,
           type: StoreAvatarItemType.Gifter,
         },
+        { category: StoreItemCategory.Color, type: StoreColorItemType.Gold },
+        { category: StoreItemCategory.Color, type: StoreColorItemType.Silver },
+        { category: StoreItemCategory.Color, type: StoreColorItemType.Bronze },
+        { category: StoreItemCategory.Color, type: StoreColorItemType.Black },
+        { category: StoreItemCategory.Color, type: StoreColorItemType.Purple },
+        {
+          category: StoreItemCategory.Color,
+          type: StoreColorItemType.MysticBlue,
+        },
+        { category: StoreItemCategory.Color, type: StoreColorItemType.White },
+        { category: StoreItemCategory.Color, type: StoreColorItemType.Pink },
       ],
       totalCompletedGameCount: 1,
       ckTotalGameCount: 0,
@@ -260,22 +276,26 @@ export const newRoom = () => {
 };
 
 export const newRoomMe = () => {
+  const availableColors = Object.values(PlayerColor)
+    .filter((v) => isNaN(v as number))
+    .filter((v) => v !== PlayerColor[PlayerColor.None])
+    .map((v) => v as string)
+    .map((v) => v[0].toLowerCase().concat(v.slice(1)));
+  console.log({ availableColors });
   return {
     roomSessionId: store.me.roomId,
     userSessionId: store.me.userId,
     userId: store.me.userId,
     isBot: false,
     isReadyToPlay: true,
-    selectedColor: PlayerColor[PlayerColor.Red].toLowerCase(),
+    selectedColor: availableColors[0],
     username: store.me.userId,
     isMember: false,
     icon: UserIcon.Guest,
     profilePictureUrl: null,
     karmaCompletedGames: 0,
     karmaTotalGames: 0,
-    availableColors: Object.values(PlayerColor)
-      .filter((v) => isNaN(v as number))
-      .map((v) => (v as string).toLowerCase()),
+    availableColors,
     botDifficulty: null,
   };
 };
