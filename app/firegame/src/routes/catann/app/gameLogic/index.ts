@@ -711,7 +711,8 @@ const placeSettlement = (cornerIndex: number) => {
   if (!playerState.victoryPointsState) {
     playerState.victoryPointsState = {} as NumericMap<number>;
   }
-  const victoryPointsState = playerState.victoryPointsState as NumericMap<number>;
+  const victoryPointsState =
+    playerState.victoryPointsState as NumericMap<number>;
   victoryPointsState[VictoryPointSource.Settlement] =
     (victoryPointsState[VictoryPointSource.Settlement] ?? 0) + 1;
 
@@ -911,7 +912,8 @@ const placeCity = (cornerIndex: number) => {
       tileCorner?.owner === playerColor &&
       tileCorner.buildingType === CornerPieceType.Settlement,
   ).length;
-  const victoryPointsState = playerState.victoryPointsState as NumericMap<number>;
+  const victoryPointsState =
+    playerState.victoryPointsState as NumericMap<number>;
   victoryPointsState[VictoryPointSource.Settlement] = settlementCount;
   victoryPointsState[VictoryPointSource.City] =
     (victoryPointsState[VictoryPointSource.City] ?? 0) + 1;
@@ -1411,7 +1413,8 @@ const buyDevelopmentCard = () => {
       const victoryPointsState =
         playerState.victoryPointsState as NumericMap<number>;
       victoryPointsState[VictoryPointSource.DevelopmentCardVictoryPoint] =
-        (victoryPointsState[VictoryPointSource.DevelopmentCardVictoryPoint] ?? 0) + 1;
+        (victoryPointsState[VictoryPointSource.DevelopmentCardVictoryPoint] ??
+          0) + 1;
     }
   }
 
@@ -1537,8 +1540,9 @@ export const applyGameAction = (parsed: {
         : [];
       if (tradePayload?.isBankTrade) {
         const playerState = gameState.playerStates?.[playerColor];
-        const bankResourceCards = gameState.bankState
-          ?.resourceCards as NumericMap<number> | undefined;
+        const bankResourceCards = gameState.bankState?.resourceCards as
+          | NumericMap<number>
+          | undefined;
         if (bankResourceCards) {
           offeredResources.forEach((card) => {
             if (bankResourceCards[card] !== undefined) {
@@ -1557,7 +1561,9 @@ export const applyGameAction = (parsed: {
           playerState.resourceCards = {
             cards: removePlayerCards(existingCards, offeredResources),
           } as any;
-          (playerState.resourceCards.cards as number[]).push(...wantedResources);
+          (playerState.resourceCards.cards as number[]).push(
+            ...wantedResources,
+          );
           if (
             wantedResources.length === 1 &&
             offeredResources.length === 4 &&
@@ -1794,7 +1800,8 @@ export const applyGameAction = (parsed: {
 
       if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
         const largestArmyState = (gameState.mechanicLargestArmyState ??
-          ((gameState as any).mechanicLargestArmyState = {})) as NumericMap<any>;
+          ((gameState as any).mechanicLargestArmyState =
+            {})) as NumericMap<any>;
         if (!largestArmyState[playerColor]) {
           largestArmyState[playerColor] = {} as any;
         }
@@ -1804,7 +1811,8 @@ export const applyGameAction = (parsed: {
           if (!playerState.victoryPointsState) {
             playerState.victoryPointsState = {} as NumericMap<number>;
           }
-          const victoryPointsState = playerState.victoryPointsState as NumericMap<number>;
+          const victoryPointsState =
+            playerState.victoryPointsState as NumericMap<number>;
           victoryPointsState[VictoryPointSource.LargestArmy] = 1;
         }
         addGameLogEntry(gameState, {
@@ -1900,11 +1908,15 @@ export const applyGameAction = (parsed: {
       const playerState = gameState.playerStates?.[currentPlayer];
       if (playerState?.resourceCards?.cards) {
         playerState.resourceCards = {
-          cards: removePlayerCards(playerState.resourceCards.cards as number[], selectedCards),
+          cards: removePlayerCards(
+            playerState.resourceCards.cards as number[],
+            selectedCards,
+          ),
         } as any;
       }
-      const bankResourceCards = gameState.bankState
-        ?.resourceCards as NumericMap<number> | undefined;
+      const bankResourceCards = gameState.bankState?.resourceCards as
+        | NumericMap<number>
+        | undefined;
       if (bankResourceCards) {
         selectedCards.forEach((card) => {
           bankResourceCards[card] = (bankResourceCards[card] ?? 0) + 1;
@@ -2023,7 +2035,8 @@ export const applyGameAction = (parsed: {
           gameState.currentState.actionState ===
             PlayerActionState.Place1MoreRoadBuilding)
       ) {
-        (gameState.currentState as any).pendingRoadBuildingEdgeIndex = edgeIndex;
+        (gameState.currentState as any).pendingRoadBuildingEdgeIndex =
+          edgeIndex;
         return true;
       }
 
@@ -2101,81 +2114,85 @@ export const applyGameAction = (parsed: {
       id: State.GameStateUpdate.toString(),
       data: {
         type: GameStateUpdateType.GameEndState,
-        payload: {
-          endGameState: {
-            diceStats: [2, 3, 4, 4, 6, 10, 8, 5, 4, 5, 1],
-            resourceCardsStats: [
-              1, 2, 4, 4, 5, 1, 1, 3, 4, 4, 5, 2, 2, 5, 3, 4, 4, 5, 3, 3, 4, 4,
-              4, 4, 2, 5, 5, 5, 1, 1, 1, 1, 4, 4, 5, 5, 3, 3, 4, 2, 4, 4, 3, 3,
-              3, 4, 4, 4, 1, 2,
-            ],
-            developmentCardStats: [11, 11, 12, 14, 11],
-            gameDurationInMS: 192729,
-            totalTurnCount: 54,
-            players: {
-              1: {
-                color: 1,
-                rank: 1,
-                victoryPoints: {
-                  0: 3,
-                  1: 1,
-                  2: 1,
-                  3: 1,
-                  4: 1,
-                },
-                winningPlayer: true,
-                title: null,
-              },
-            },
-            resourceStats: {
-              1: {
-                color: 1,
-                rollingIncome: 45,
-                robbingIncome: 0,
-                devCardIncome: 0,
-                tradeIncome: 2,
-                rollingLoss: 4,
-                robbingLoss: 0,
-                devCardLoss: 0,
-                tradeLoss: 8,
-                totalResourceIncome: 47,
-                totalResourceLoss: 12,
-                totalResourceScore: 35,
-                goldIncome: 0,
-              },
-            },
-            activityStats: {
-              1: {
-                color: 1,
-                proposedTrades: 0,
-                successfulTrades: 0,
-                resourcesUsed: 34,
-                resourceIncomeBlocked: 0,
-                devCardsBought: 5,
-                devCardsUsed: 4,
-              },
-            },
-          },
-          isReplayAvailable: true,
-          rankedUserStates: [
-            {
-              color: 1,
-              rankedState: {
-                type: 2,
-                numberOfGamesPlayed: 1,
-                requiredNumberOfGames: 5,
-                defaultEndGameData: {
-                  amount: "-",
-                  highest: false,
-                },
-              },
-            },
-          ],
-        },
+        payload: getGameEndPayload(),
       },
     });
   }
   return rval;
+};
+
+const getGameEndPayload = () => {
+  return {
+    endGameState: {
+      diceStats: [2, 3, 4, 4, 6, 10, 8, 5, 4, 5, 1],
+      resourceCardsStats: [
+        1, 2, 4, 4, 5, 1, 1, 3, 4, 4, 5, 2, 2, 5, 3, 4, 4, 5, 3, 3, 4, 4, 4, 4,
+        2, 5, 5, 5, 1, 1, 1, 1, 4, 4, 5, 5, 3, 3, 4, 2, 4, 4, 3, 3, 3, 4, 4, 4,
+        1, 2,
+      ],
+      developmentCardStats: [11, 11, 12, 14, 11],
+      gameDurationInMS: 192729,
+      totalTurnCount: 54,
+      players: {
+        1: {
+          color: 1,
+          rank: 1,
+          victoryPoints: {
+            0: 3,
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 1,
+          },
+          winningPlayer: true,
+          title: null,
+        },
+      },
+      resourceStats: {
+        1: {
+          color: 1,
+          rollingIncome: 45,
+          robbingIncome: 0,
+          devCardIncome: 0,
+          tradeIncome: 2,
+          rollingLoss: 4,
+          robbingLoss: 0,
+          devCardLoss: 0,
+          tradeLoss: 8,
+          totalResourceIncome: 47,
+          totalResourceLoss: 12,
+          totalResourceScore: 35,
+          goldIncome: 0,
+        },
+      },
+      activityStats: {
+        1: {
+          color: 1,
+          proposedTrades: 0,
+          successfulTrades: 0,
+          resourcesUsed: 34,
+          resourceIncomeBlocked: 0,
+          devCardsBought: 5,
+          devCardsUsed: 4,
+        },
+      },
+    },
+    isReplayAvailable: true,
+    rankedUserStates: [
+      {
+        color: 1,
+        rankedState: {
+          type: 2,
+          numberOfGamesPlayed: 1,
+          requiredNumberOfGames: 5,
+          defaultEndGameData: {
+            amount: "-",
+            highest: false,
+          },
+        },
+      },
+    ],
+  };
 };
 
 const getWinner = () => {
@@ -2294,28 +2311,32 @@ const updateLongestRoadAchievement = (playerColor: number) => {
     }
   });
 
-  const playerStatesByColor = gameState.playerStates as Record<number, any> | undefined;
+  const playerStatesByColor = gameState.playerStates as
+    | Record<number, any>
+    | undefined;
   const currentHolder = playerColors.find(
     (color) =>
-      (playerStatesByColor?.[color]?.victoryPointsState as NumericMap<number> | undefined)?.[
-        VictoryPointSource.LongestRoad
-      ] === 1,
+      (
+        playerStatesByColor?.[color]?.victoryPointsState as
+          | NumericMap<number>
+          | undefined
+      )?.[VictoryPointSource.LongestRoad] === 1,
   );
 
   const currentHolderLength =
     currentHolder == null
       ? 0
-      : (longestRoadState[currentHolder] as any)?.longestRoad ?? 0;
+      : ((longestRoadState[currentHolder] as any)?.longestRoad ?? 0);
   const challengerLength =
     (longestRoadState[playerColor] as any)?.longestRoad ?? 0;
 
   if (currentHolder === playerColor) {
     if (challengerLength < LONGEST_ROAD_MIN_LENGTH) {
-      delete (playerStatesByColor?.[playerColor]?.victoryPointsState as
-        | NumericMap<number>
-        | undefined)?.[
-        VictoryPointSource.LongestRoad
-      ];
+      delete (
+        playerStatesByColor?.[playerColor]?.victoryPointsState as
+          | NumericMap<number>
+          | undefined
+      )?.[VictoryPointSource.LongestRoad];
       delete (longestRoadState[playerColor] as any)?.hasLongestRoad;
     }
     return;
@@ -2329,23 +2350,25 @@ const updateLongestRoadAchievement = (playerColor: number) => {
   }
 
   if (currentHolder != null) {
-    delete (playerStatesByColor?.[currentHolder]?.victoryPointsState as
-      | NumericMap<number>
-      | undefined)?.[
-      VictoryPointSource.LongestRoad
-    ];
+    delete (
+      playerStatesByColor?.[currentHolder]?.victoryPointsState as
+        | NumericMap<number>
+        | undefined
+    )?.[VictoryPointSource.LongestRoad];
     delete (longestRoadState[currentHolder] as any)?.hasLongestRoad;
   }
 
-  const challengerState =
-    (gameState.playerStates as Record<number, any> | undefined)?.[playerColor];
+  const challengerState = (
+    gameState.playerStates as Record<number, any> | undefined
+  )?.[playerColor];
   if (!challengerState) {
     return;
   }
   if (!challengerState.victoryPointsState) {
     challengerState.victoryPointsState = {} as NumericMap<number>;
   }
-  const victoryPointsState = challengerState.victoryPointsState as NumericMap<number>;
+  const victoryPointsState =
+    challengerState.victoryPointsState as NumericMap<number>;
   victoryPointsState[VictoryPointSource.LongestRoad] = 1;
   if (longestRoadState[playerColor]) {
     longestRoadState[playerColor].hasLongestRoad = true;
