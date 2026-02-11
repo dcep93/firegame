@@ -1,4 +1,4 @@
-import { NUM_DEV_CARDS } from ".";
+import { NUM_DEV_CARDS, sendCornerHighlights30 } from ".";
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
 import { FUTURE, sendToMainSocket } from "../handleMessage";
@@ -664,7 +664,7 @@ const newMapState = () => {
   };
 };
 
-export const startGame = (GAME: ReturnType<typeof newGame>) => {
+export const startGame = () => {
   const newFirstGameState = () => {
     const room = firebaseData.ROOM!;
     return {
@@ -694,10 +694,19 @@ export const startGame = (GAME: ReturnType<typeof newGame>) => {
   const selectedColor = firebaseData.ROOM!.data.sessions.find(
     (s) => s,
   )!.selectedColor;
-  GAME!.data.payload.playerColor = colorHelper.find(
+  firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
     ({ str }) => str === selectedColor,
   )!.int;
-  sendToMainSocket?.(GAME);
+  sendToMainSocket?.(firebaseData.GAME);
+
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.KarmaState,
+      payload: false,
+    },
+  });
+  sendCornerHighlights30(firebaseData.GAME);
 };
 
 export const spoofHostRoom = () => {

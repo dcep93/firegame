@@ -3,11 +3,13 @@ import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
+import { GameStateUpdateType } from "./gameLogic/CatannFilesEnums";
 import {
   newGame,
   newRoom,
   newRoomMe,
   spoofHostRoom,
+  startGame,
 } from "./gameLogic/createNew";
 import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
@@ -39,6 +41,10 @@ function receiveFirebaseDataCatann(catann: any) {
     return;
   }
   if (firebaseData.GAME) {
+    if (firebaseData.GAME.data.type === GameStateUpdateType.BuildGame) {
+      startGame();
+      return;
+    }
     const update = buildGameStateUpdated(
       firebaseData.GAME,
       prevFirebaseData.GAME,

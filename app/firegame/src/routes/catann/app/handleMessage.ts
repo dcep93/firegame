@@ -1,6 +1,6 @@
 import store from "../../../shared/store";
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
-import { applyGameAction, sendCornerHighlights30 } from "./gameLogic";
+import { applyGameAction } from "./gameLogic";
 import {
   GameStateUpdateType,
   GeneralAction,
@@ -11,7 +11,7 @@ import {
   SocketRouteType,
   State,
 } from "./gameLogic/CatannFilesEnums";
-import { newGame, spoofHostRoom, startGame } from "./gameLogic/createNew";
+import { newGame, spoofHostRoom } from "./gameLogic/createNew";
 import { packServerData, parseClientData } from "./parseMessagepack";
 
 declare global {
@@ -188,15 +188,6 @@ export default function handleMessage(
           },
           { parsed: clientData },
         );
-        startGame(GAME);
-        sendToMainSocket?.({
-          id: State.GameStateUpdate.toString(),
-          data: {
-            type: GameStateUpdateType.KarmaState,
-            payload: false,
-          },
-        });
-        sendCornerHighlights30(firebaseData.GAME);
         return;
       }
       if (clientData.type.startsWith("set")) {
