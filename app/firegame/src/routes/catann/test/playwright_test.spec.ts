@@ -15,7 +15,7 @@ import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
 import {
-  GAME_ACTION,
+  GameAction,
   GameStateUpdateType,
   State,
 } from "../app/gameLogic/CatannFilesEnums";
@@ -265,11 +265,11 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   // lying enums
   if (
-    msg.data.action === GAME_ACTION.SelectedTile &&
+    msg.data.action === GameAction.SelectedTile &&
     typeof msg.data.payload === "object"
   )
     return false;
-  if (msg.data.action === GAME_ACTION.ClickedDice && msg.data.payload === 3)
+  if (msg.data.action === GameAction.ClickedDice && msg.data.payload === 3)
     return false;
   //
   if (
@@ -305,7 +305,7 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
     return false;
   if (
     msg.trigger === "clientData" &&
-    msg.data.action === GAME_ACTION.SelectedCards &&
+    msg.data.action === GameAction.SelectedCards &&
     msg.data.payload &&
     typeof msg.data.payload === "object" &&
     !Array.isArray(msg.data.payload) &&
@@ -315,8 +315,8 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (
     msg.trigger === "clientData" &&
     [
-      GAME_ACTION.RequestBeginnerHint,
-      GAME_ACTION.SelectedInitialPlacementIndex,
+      GameAction.RequestBeginnerHint,
+      GameAction.SelectedInitialPlacementIndex,
     ].includes(msg.data.action)
   )
     return false;

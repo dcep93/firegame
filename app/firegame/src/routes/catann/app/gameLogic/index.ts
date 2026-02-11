@@ -5,7 +5,7 @@ import {
   CornerDirection,
   CornerPieceType,
   EdgePieceType,
-  GAME_ACTION,
+  GameAction,
   GameLogMessageType,
   GamePhase,
   GameStateUpdateType,
@@ -1466,39 +1466,39 @@ export const applyGameAction = (parsed: {
       return true;
     }
     if (
-      parsed.action === GAME_ACTION.SelectedTile &&
+      parsed.action === GameAction.SelectedTile &&
       typeof parsed.payload === "object"
     )
       return false;
     if (
       ![
-        GAME_ACTION.ConfirmBuildRoad,
-        GAME_ACTION.ConfirmBuildRoadSkippingSelection,
-        GAME_ACTION.ConfirmBuildShip,
-        GAME_ACTION.WantToBuildRoad,
-        GAME_ACTION.ConfirmBuildSettlement,
-        GAME_ACTION.ConfirmBuildSettlementSkippingSelection,
-        GAME_ACTION.WantToBuildSettlement,
-        GAME_ACTION.ConfirmBuildCity,
-        GAME_ACTION.ConfirmBuildCitySkippingSelection,
-        GAME_ACTION.WantToBuildCity,
-        GAME_ACTION.BuyDevelopmentCard,
-        GAME_ACTION.ClickedDice,
-        GAME_ACTION.PreCreateTrade,
-        GAME_ACTION.PassedTurn,
-        GAME_ACTION.SelectedInitialPlacementIndex,
-        GAME_ACTION.SelectedTile,
-        GAME_ACTION.CreateTrade,
-        GAME_ACTION.SelectedCards,
-        GAME_ACTION.SelectedCardsState,
-        GAME_ACTION.PlayDevelopmentCardFromHand,
-        GAME_ACTION.ClickedDevelopmentCard,
-        GAME_ACTION.RequestBeginnerModeLevelEnd,
+        GameAction.ConfirmBuildRoad,
+        GameAction.ConfirmBuildRoadSkippingSelection,
+        GameAction.ConfirmBuildShip,
+        GameAction.WantToBuildRoad,
+        GameAction.ConfirmBuildSettlement,
+        GameAction.ConfirmBuildSettlementSkippingSelection,
+        GameAction.WantToBuildSettlement,
+        GameAction.ConfirmBuildCity,
+        GameAction.ConfirmBuildCitySkippingSelection,
+        GameAction.WantToBuildCity,
+        GameAction.BuyDevelopmentCard,
+        GameAction.ClickedDice,
+        GameAction.PreCreateTrade,
+        GameAction.PassedTurn,
+        GameAction.SelectedInitialPlacementIndex,
+        GameAction.SelectedTile,
+        GameAction.CreateTrade,
+        GameAction.SelectedCards,
+        GameAction.SelectedCardsState,
+        GameAction.PlayDevelopmentCardFromHand,
+        GameAction.ClickedDevelopmentCard,
+        GameAction.RequestBeginnerModeLevelEnd,
       ].includes(parsed.action!)
     ) {
       return false;
     }
-    if (parsed.action === GAME_ACTION.CreateTrade) {
+    if (parsed.action === GameAction.CreateTrade) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
@@ -1588,7 +1588,7 @@ export const applyGameAction = (parsed: {
       );
       return true;
     }
-    if (parsed.action === GAME_ACTION.RequestBeginnerModeLevelEnd) {
+    if (parsed.action === GameAction.RequestBeginnerModeLevelEnd) {
       sendToMainSocket?.({
         id: State.LobbyStateUpdate.toString(),
         data: {
@@ -1630,7 +1630,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.WantToBuildSettlement) {
+    if (parsed.action === GameAction.WantToBuildSettlement) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.PlaceSettlement;
@@ -1647,7 +1647,7 @@ export const applyGameAction = (parsed: {
       );
       return true;
     }
-    if (parsed.action === GAME_ACTION.WantToBuildRoad) {
+    if (parsed.action === GameAction.WantToBuildRoad) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.PlaceRoad;
@@ -1671,7 +1671,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.WantToBuildCity) {
+    if (parsed.action === GameAction.WantToBuildCity) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
@@ -1704,12 +1704,12 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.ClickedDice) {
+    if (parsed.action === GameAction.ClickedDice) {
       rollDice();
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.PlayDevelopmentCardFromHand) {
+    if (parsed.action === GameAction.PlayDevelopmentCardFromHand) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.None;
@@ -1727,7 +1727,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.ClickedDevelopmentCard) {
+    if (parsed.action === GameAction.ClickedDevelopmentCard) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
@@ -1838,7 +1838,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.PreCreateTrade) {
+    if (parsed.action === GameAction.PreCreateTrade) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.None;
@@ -1856,16 +1856,16 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.BuyDevelopmentCard) {
+    if (parsed.action === GameAction.BuyDevelopmentCard) {
       buyDevelopmentCard();
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.SelectedCardsState) {
+    if (parsed.action === GameAction.SelectedCardsState) {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.SelectedCards) {
+    if (parsed.action === GameAction.SelectedCards) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       if (
@@ -1948,7 +1948,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.PassedTurn) {
+    if (parsed.action === GameAction.PassedTurn) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       gameState.currentState.actionState = PlayerActionState.None;
@@ -1956,18 +1956,18 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.SelectedInitialPlacementIndex) {
+    if (parsed.action === GameAction.SelectedInitialPlacementIndex) {
       return true;
     }
 
-    if (parsed.action === GAME_ACTION.SelectedTile) {
+    if (parsed.action === GameAction.SelectedTile) {
       autoPlaceRobber(parsed.payload as number);
       return true;
     }
 
     if (
-      parsed.action === GAME_ACTION.ConfirmBuildSettlement ||
-      parsed.action === GAME_ACTION.ConfirmBuildSettlementSkippingSelection
+      parsed.action === GameAction.ConfirmBuildSettlement ||
+      parsed.action === GameAction.ConfirmBuildSettlementSkippingSelection
     ) {
       const cornerIndex = parsed.payload as number;
 
@@ -1977,8 +1977,8 @@ export const applyGameAction = (parsed: {
     }
 
     if (
-      parsed.action === GAME_ACTION.ConfirmBuildCity ||
-      parsed.action === GAME_ACTION.ConfirmBuildCitySkippingSelection
+      parsed.action === GameAction.ConfirmBuildCity ||
+      parsed.action === GameAction.ConfirmBuildCitySkippingSelection
     ) {
       const cornerIndex = getCornerIndexFromPayload(
         firebaseData.GAME.data.payload.gameState,
@@ -1991,16 +1991,16 @@ export const applyGameAction = (parsed: {
     }
 
     if (
-      parsed.action === GAME_ACTION.ConfirmBuildRoad ||
-      parsed.action === GAME_ACTION.ConfirmBuildRoadSkippingSelection ||
-      parsed.action === GAME_ACTION.ConfirmBuildShip
+      parsed.action === GameAction.ConfirmBuildRoad ||
+      parsed.action === GameAction.ConfirmBuildRoadSkippingSelection ||
+      parsed.action === GameAction.ConfirmBuildShip
     ) {
       const edgeIndex = parsed.payload as number;
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
 
       if (
-        parsed.action !== GAME_ACTION.ConfirmBuildShip &&
+        parsed.action !== GameAction.ConfirmBuildShip &&
         (gameState.currentState.actionState ===
           PlayerActionState.Place2MoreRoadBuilding ||
           gameState.currentState.actionState ===
@@ -2015,7 +2015,7 @@ export const applyGameAction = (parsed: {
           ? gameState.currentState.pendingRoadBuildingEdgeIndex
           : undefined;
       const edgeIndexToPlace =
-        parsed.action === GAME_ACTION.ConfirmBuildShip &&
+        parsed.action === GameAction.ConfirmBuildShip &&
         stagedRoadEdgeIndex != null
           ? stagedRoadEdgeIndex
           : edgeIndex;

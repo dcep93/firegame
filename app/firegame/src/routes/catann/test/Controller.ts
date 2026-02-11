@@ -1,7 +1,7 @@
 import { expect, FrameLocator, Locator, Page, test } from "@playwright/test";
 import {
   CardEnum,
-  GAME_ACTION,
+  GameAction,
   GameLogMessageType,
   GameStateUpdateType,
 } from "../app/gameLogic/CatannFilesEnums";
@@ -278,7 +278,7 @@ const Controller = (
     const playDevelopmentCardFromHand = async () => {
       await verifyTestMessages(false);
       const card = _expectedMessages!.find(
-        (msg) => msg.data.action === GAME_ACTION.ClickedDevelopmentCard,
+        (msg) => msg.data.action === GameAction.ClickedDevelopmentCard,
       )!.data.payload;
       const handDevCard = iframe.locator(
         `div[class*="cardContainer-"][class*="clickable-"][data-card-enum="${card}"]`,
@@ -351,26 +351,26 @@ const Controller = (
     };
     const buildNextRoad = async () => {
       const roadMsg = _expectedMessages!.find(
-        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
+        (msg) => msg.data.action === GameAction.ConfirmBuildRoad,
       )!;
       await buildRoadFromPayload(roadMsg.data.payload);
     };
     const buildNextSettlement = async () => {
       const settlementMsg = _expectedMessages!.find(
-        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildSettlement,
+        (msg) => msg.data.action === GameAction.ConfirmBuildSettlement,
       )!;
       await buildSettlementFromPayload(settlementMsg.data.payload);
     };
     const buildNextCity = async () => {
       const cityMsg = _expectedMessages!.find(
-        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildCity,
+        (msg) => msg.data.action === GameAction.ConfirmBuildCity,
       )!;
       await buildCityFromPayload(cityMsg.data.payload);
     };
     const fixWeirdTrade = async () => {
       const nextMsg = _expectedMessages![0];
       try {
-        expect(nextMsg.data.action).toBe(GAME_ACTION.CreateTrade);
+        expect(nextMsg.data.action).toBe(GameAction.CreateTrade);
       } catch (e) {
         console.log(JSON.stringify(nextMsg, null, 2));
         throw e;
@@ -480,12 +480,12 @@ const Controller = (
     const skipIllegalPass = async () => {
       await verifyTestMessages(false);
       const msg = _expectedMessages!.shift()!;
-      expect(msg.data.action).toBe(GAME_ACTION.PassedTurn);
+      expect(msg.data.action).toBe(GameAction.PassedTurn);
     };
     const playNextRobber = async () => {
       const msg = _expectedMessages![0];
       expect(msg.trigger).toBe("clientData");
-      expect(msg.data.action).toBe(GAME_ACTION.SelectedTile);
+      expect(msg.data.action).toBe(GameAction.SelectedTile);
       const robberOffset = getTilePosition(msg.data.payload);
       await clickCanvas(canvas, robberOffset);
 
@@ -495,7 +495,7 @@ const Controller = (
     const selectNextDiscardCard = async () => {
       const msg = _expectedMessages![0];
       expect(msg.trigger).toBe("clientData");
-      expect(msg.data.action).toBe(GAME_ACTION.SelectedCardsState);
+      expect(msg.data.action).toBe(GameAction.SelectedCardsState);
       const payload = Array.isArray(msg.data.payload) ? msg.data.payload : [];
       const desiredCounts = (payload as number[]).reduce<
         Record<number, number>
@@ -569,7 +569,7 @@ const Controller = (
     };
     const playFreeRoad = async () => {
       const payload = _expectedMessages!.find(
-        (msg) => msg.data.action === GAME_ACTION.ConfirmBuildRoad,
+        (msg) => msg.data.action === GameAction.ConfirmBuildRoad,
       )!.data.payload;
       await buildRoadFromPayload(payload);
     };

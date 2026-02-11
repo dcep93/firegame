@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 
-import { GAME_ACTION } from "../app/gameLogic/CatannFilesEnums";
+import { GameAction } from "../app/gameLogic/CatannFilesEnums";
 import { ControllerType } from "./Controller";
 
 export default async function autoChoreo(
@@ -19,7 +19,7 @@ export default async function autoChoreo(
       throw e;
     }
     console.log("autoChoreo", {
-      [GAME_ACTION[msg.data.action]]: msg.data,
+      [GameAction[msg.data.action]]: msg.data,
       i,
       nextReconnect,
     });
@@ -31,25 +31,25 @@ export default async function autoChoreo(
       nextReconnect = await c.getNextReconnect();
     }
 
-    const handlers: Partial<Record<GAME_ACTION, () => Promise<void>>> = {
-      [GAME_ACTION.PassedTurn]: c.passTurn,
-      [GAME_ACTION.ClickedDice]: c.rollNextDice,
-      [GAME_ACTION.WantToBuildRoad]: c.wantToBuildRoad,
-      [GAME_ACTION.WantToBuildSettlement]: c.wantToBuildSettlement,
-      [GAME_ACTION.WantToBuildCity]: c.wantToBuildCity,
-      [GAME_ACTION.BuyDevelopmentCard]: c.buyDevelopmentCard,
-      [GAME_ACTION.SelectedCardsState]: c.selectNextDiscardCard,
-      [GAME_ACTION.PlayDevelopmentCardFromHand]: c.playDevelopmentCardFromHand,
-      [GAME_ACTION.PreCreateTrade]: c.wantToTrade,
-      [GAME_ACTION.CreateTrade]: c.makeNextTrade,
-      [GAME_ACTION.ConfirmBuildRoad]: c.buildNextRoad,
-      [GAME_ACTION.SelectedTile]: c.playNextRobber,
-      [GAME_ACTION.SelectedCards]: c.confirmSelectedCards,
-      [GAME_ACTION.ConfirmBuildSettlement]: c.buildNextSettlement,
-      [GAME_ACTION.ConfirmBuildCity]: c.buildNextCity,
+    const handlers: Partial<Record<GameAction, () => Promise<void>>> = {
+      [GameAction.PassedTurn]: c.passTurn,
+      [GameAction.ClickedDice]: c.rollNextDice,
+      [GameAction.WantToBuildRoad]: c.wantToBuildRoad,
+      [GameAction.WantToBuildSettlement]: c.wantToBuildSettlement,
+      [GameAction.WantToBuildCity]: c.wantToBuildCity,
+      [GameAction.BuyDevelopmentCard]: c.buyDevelopmentCard,
+      [GameAction.SelectedCardsState]: c.selectNextDiscardCard,
+      [GameAction.PlayDevelopmentCardFromHand]: c.playDevelopmentCardFromHand,
+      [GameAction.PreCreateTrade]: c.wantToTrade,
+      [GameAction.CreateTrade]: c.makeNextTrade,
+      [GameAction.ConfirmBuildRoad]: c.buildNextRoad,
+      [GameAction.SelectedTile]: c.playNextRobber,
+      [GameAction.SelectedCards]: c.confirmSelectedCards,
+      [GameAction.ConfirmBuildSettlement]: c.buildNextSettlement,
+      [GameAction.ConfirmBuildCity]: c.buildNextCity,
     };
 
-    const handler = handlers[msg.data.action as GAME_ACTION];
+    const handler = handlers[msg.data.action as GameAction];
     if (handler) {
       await handler();
     } else {

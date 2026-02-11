@@ -8,7 +8,7 @@ export enum SocketRouteType {
   SocketRouter = 4,
 }
 
-export enum GAME_ACTION {
+export enum GameAction {
   GameChatSubmit = 0,
   SkippedWelcome = 1,
   ClickedDice = 2,
@@ -1263,5 +1263,3 @@ export enum PlatformType {
   MobileUnknown = 7,
   DiscordMobile = 8,
 }
-
-export const CLIENT_TRADE_OFFER_TYPE = 77;
