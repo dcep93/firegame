@@ -1,6 +1,6 @@
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
-import { sendToMainSocket } from "../handleMessage";
+import { FUTURE, sendToMainSocket } from "../handleMessage";
 import {
   CardEnum,
   DiceDistributionType,
@@ -11,15 +11,15 @@ import {
   GameStateUpdateType,
   GameType,
   MapId,
-  PlayerActionState,
   PlatformType,
+  PlayerActionState,
   PlayerColor,
   PortType,
   SeafarersScenarioId,
+  State,
   StoreAvatarItemType,
   StoreItemCategory,
   StoreMapItemType,
-  State,
   TileType,
   TurnTimerType,
   UserIcon,
@@ -61,73 +61,166 @@ export const newUserState = () => {
       membershipPending: false,
       isMuted: false,
       ownedItems: [
-        // Expansions (category 1)
-        { category: StoreItemCategory.Expansion, type: ExpansionType.Seafarers4P }, // Seafarers4P
-        { category: StoreItemCategory.Expansion, type: ExpansionType.CitiesAndKnights4P }, // CitiesAndKnights4P
-        { category: StoreItemCategory.Expansion, type: ExpansionType.TradersAndBarbarians }, // TradersAndBarbarians
-        { category: StoreItemCategory.Expansion, type: ExpansionType.ExplorersAndPirates }, // ExplorersAndPirates
-        { category: StoreItemCategory.Expansion, type: ExpansionType.Classic56P }, // Classic56P
-        { category: StoreItemCategory.Expansion, type: ExpansionType.Classic78P }, // Classic78P
-        { category: StoreItemCategory.Expansion, type: ExpansionType.Seafarers56P }, // Seafarers56P
-        { category: StoreItemCategory.Expansion, type: ExpansionType.CitiesAndKnights56P }, // CitiesAndKnights56P
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.Seafarers4P,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.CitiesAndKnights4P,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.TradersAndBarbarians,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.ExplorersAndPirates,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.Classic56P,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.Classic78P,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.Seafarers56P,
+        },
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.CitiesAndKnights56P,
+        },
         {
           category: StoreItemCategory.Expansion,
           type: ExpansionType.CitiesAndKnightsSeafarers4P,
-        }, // CitiesAndKnightsSeafarers4P
+        },
         {
           category: StoreItemCategory.Expansion,
           type: ExpansionType.CitiesAndKnightsSeafarers56P,
-        }, // CitiesAndKnightsSeafarers56P
-        // Maps (category 2)
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Earth }, // Earth
-        { category: StoreItemCategory.Map, type: StoreMapItemType.USA }, // USA
-        { category: StoreItemCategory.Map, type: StoreMapItemType.UK }, // UK
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Diamond }, // Diamond
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Gear }, // Gear
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Lakes }, // Lakes
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Pond }, // Pond
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Twirl }, // Twirl
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Classic4PRandom }, // Classic4PRandom
-        { category: StoreItemCategory.Map, type: StoreMapItemType.ShuffleBoard }, // ShuffleBoard
-        { category: StoreItemCategory.Map, type: StoreMapItemType.BlackForest }, // BlackForest
-        { category: StoreItemCategory.Map, type: StoreMapItemType.Volcano }, // Volcano
-        { category: StoreItemCategory.Map, type: StoreMapItemType.GoldRush }, // GoldRush
-        // Avatars (category 3)
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.FounderHat }, // FounderHat
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.ColonistHat }, // ColonistHat
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.SettlerHat }, // SettlerHat
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.ChristmasHat }, // ChristmasHat
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Player }, // Player
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.PirateShip }, // PirateShip
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.MedalGold }, // MedalGold
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.MedalSilver }, // MedalSilver
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.MedalBronze }, // MedalBronze
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Elephant }, // Elephant
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Avocado }, // Avocado
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Cactus }, // Cactus
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Crown }, // Crown
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Swords }, // Swords
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Helmet }, // Helmet
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Snorkel }, // Snorkel
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Scarf }, // Scarf
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Tie }, // Tie
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Worker }, // Worker
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Sombrero }, // Sombrero
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Farmer }, // Farmer
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.RobberSanta }, // RobberSanta
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.RobberLunar }, // RobberLunar
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.RobberCupid }, // RobberCupid
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Mummy }, // Mummy
-        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Gifter }, // Gifter
+        },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Earth },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.USA },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.UK },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Diamond },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Gear },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Lakes },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Pond },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Twirl },
+        {
+          category: StoreItemCategory.Map,
+          type: StoreMapItemType.Classic4PRandom,
+        },
+        {
+          category: StoreItemCategory.Map,
+          type: StoreMapItemType.ShuffleBoard,
+        },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.BlackForest },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Volcano },
+        { category: StoreItemCategory.Map, type: StoreMapItemType.GoldRush },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.FounderHat,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.ColonistHat,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.SettlerHat,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.ChristmasHat,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Player,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.PirateShip,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.MedalGold,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.MedalSilver,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.MedalBronze,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Elephant,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Avocado,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Cactus,
+        },
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Crown },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Swords,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Helmet,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Snorkel,
+        },
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Scarf },
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Tie },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Worker,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Sombrero,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Farmer,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.RobberSanta,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.RobberLunar,
+        },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.RobberCupid,
+        },
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Mummy },
+        {
+          category: StoreItemCategory.Avatar,
+          type: StoreAvatarItemType.Gifter,
+        },
       ],
       totalCompletedGameCount: 1,
       ckTotalGameCount: 0,
-      ckNextRerollAt: "2026-01-28T05:55:25.976Z",
+      ckNextRerollAt: FUTURE,
       username: store.me.userId,
       language: null,
       usernameChangeAttemptsLeft: 1,
       forceSubscription: true,
-      expiresAt: "2026-02-27T04:55:25.975Z",
+      expiresAt: FUTURE,
     },
   };
 };
@@ -161,33 +254,35 @@ export const newRoom = () => {
       isTestFreeExpansionsAndMaps: false,
       kickedUserIds: [],
       creationPhase: "settings",
-      sessions: [],
+      sessions: [] as ReturnType<typeof newRoomMe>[],
     },
   };
 };
 
 export const newRoomMe = () => {
   return {
-    roomSessionId: "1141816",
+    roomSessionId: store.me.roomId,
     userSessionId: store.me.userId,
     userId: store.me.userId,
     isBot: false,
     isReadyToPlay: true,
-    selectedColor: "red",
+    selectedColor: PlayerColor[PlayerColor.Red].toLowerCase(),
     username: store.me.userId,
     isMember: false,
     icon: UserIcon.Guest,
     profilePictureUrl: null,
     karmaCompletedGames: 0,
     karmaTotalGames: 0,
-    availableColors: ["red", "blue", "orange", "green"],
+    availableColors: Object.values(PlayerColor)
+      .filter((v) => isNaN(v as number))
+      .map((v) => (v as string).toLowerCase()),
     botDifficulty: null,
   };
 };
 
 export const newGame = () => {
-  const room = firebaseData.ROOM;
-  const sessions = room.data.sessions as any[];
+  const room: ReturnType<typeof newRoom> = firebaseData.ROOM;
+  const sessions = room.data.sessions;
   const mapState = window.__testOverrides?.mapState ?? newMapState();
   return {
     id: State.GameStateUpdate.toString(),
@@ -195,7 +290,17 @@ export const newGame = () => {
       type: GameStateUpdateType.BuildGame,
       payload: {
         playerColor: PlayerColor.Red,
-        playOrder: [PlayerColor.Red],
+        playOrder: sessions
+          .map((s) => ({ v: Math.random(), s }))
+          .sort((a, b) => a.v - b.v)
+          .map(({ s }) => s.selectedColor)
+          .map((selectedColor) =>
+            selectedColor[0].toUpperCase().concat(selectedColor.slice(1)),
+          )
+          .map(
+            (selectedColor) =>
+              PlayerColor[selectedColor as keyof typeof PlayerColor],
+          ),
         gameState: {
           diceState: {
             diceThrown: false,
@@ -280,10 +385,7 @@ export const newGame = () => {
           },
           mechanicDevelopmentCardsState: {
             bankDevelopmentCards: {
-              cards: Array.from(
-                { length: 25 },
-                () => CardEnum.DevelopmentBack,
-              ),
+              cards: Array.from({ length: 25 }, () => CardEnum.DevelopmentBack),
             },
             players: {
               [PlayerColor.Red]: {
