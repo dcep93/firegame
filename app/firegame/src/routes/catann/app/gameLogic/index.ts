@@ -57,45 +57,51 @@ const isDevelopmentCardRobberWindow = (allocatedTime: number | undefined) =>
   allocatedTime === TURN_TIMERS_MS.dicePhase ||
   allocatedTime === TURN_TIMERS_MS.robberAfterRoadBuilding;
 
+const parseFiniteIndex = (value: string | number) => {
+  const parsed =
+    typeof value === "number" ? value : Number.parseInt(String(value), 10);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const toNumericRecordEntries = <T>(record: Record<string, T> | undefined) =>
+  Object.entries(record ?? {})
+    .map(([key, value]) => ({
+      index: parseFiniteIndex(key),
+      value,
+    }))
+    .filter(
+      (
+        entry,
+      ): entry is {
+        index: number;
+        value: T;
+      } => entry.index != null,
+    );
+
 const removePlayerCards = (cards: number[], toRemove: number[]) => {
-  const nextCards = [...cards];
+  if (toRemove.length === 0) {
+    return [...cards];
+  }
+
+  const removeCountByCard = new Map<number, number>();
   toRemove.forEach((card) => {
-    const index = nextCards.indexOf(card);
-    if (index >= 0) {
-      nextCards.splice(index, 1);
-    }
+    removeCountByCard.set(card, (removeCountByCard.get(card) ?? 0) + 1);
   });
-  return nextCards;
+
+  return cards.filter((card) => {
+    const remainingToRemove = removeCountByCard.get(card) ?? 0;
+    if (remainingToRemove <= 0) {
+      return true;
+    }
+    removeCountByCard.set(card, remainingToRemove - 1);
+    return false;
+  });
 };
 
 const buildBaseDevelopmentDeck = () => {
-  const deck: number[] = [];
-  deck.push(
-    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.Knight]).fill(
-      CardEnum.Knight,
-    ),
+  return Object.entries(DEVELOPMENT_DECK_CARD_COUNTS).flatMap(([card, count]) =>
+    Array(count).fill(Number(card)),
   );
-  deck.push(
-    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.VictoryPoint]).fill(
-      CardEnum.VictoryPoint,
-    ),
-  );
-  deck.push(
-    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.Monopoly]).fill(
-      CardEnum.Monopoly,
-    ),
-  );
-  deck.push(
-    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.RoadBuilding]).fill(
-      CardEnum.RoadBuilding,
-    ),
-  );
-  deck.push(
-    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.YearOfPlenty]).fill(
-      CardEnum.YearOfPlenty,
-    ),
-  );
-  return deck;
 };
 
 const collectKnownDevelopmentCards = (devCardsState: any) => {
@@ -110,6 +116,34 @@ const collectKnownDevelopmentCards = (devCardsState: any) => {
     }
   });
   return knownCards;
+};
+
+const applyResourceExchangeWithBank = (
+  gameState: any,
+  playerColor: number,
+  cardsFromPlayer: number[],
+) => {
+  if (cardsFromPlayer.length === 0) {
+    return;
+  }
+
+  if (gameState.bankState?.resourceCards) {
+    cardsFromPlayer.forEach((card) => {
+      if (gameState.bankState?.resourceCards?.[card] !== undefined) {
+        gameState.bankState.resourceCards[card] += 1;
+      }
+    });
+  }
+
+  const playerState = gameState.playerStates?.[playerColor];
+  if (playerState?.resourceCards?.cards) {
+    playerState.resourceCards = {
+      cards: removePlayerCards(
+        playerState.resourceCards.cards,
+        cardsFromPlayer,
+      ),
+    };
+  }
 };
 
 const getRemainingDevelopmentDeck = (devCardsState: any) => {
@@ -192,12 +226,13 @@ const addPlayerResourceCards = (
   distributionType: number,
 ) => {
   if (cards.length === 0) return undefined;
+  const sortedCards = [...cards].sort((a, b) => a - b);
   const bankState = gameState.bankState;
   const playerState = gameState.playerStates[playerColor];
   if (!playerState.resourceCards) {
     playerState.resourceCards = { cards: [] };
   }
-  cards.forEach((card) => {
+  sortedCards.forEach((card) => {
     if (bankState?.resourceCards?.[card] !== undefined) {
       bankState.resourceCards[card] -= 1;
     }
@@ -208,7 +243,7 @@ const addPlayerResourceCards = (
     text: {
       type: 47,
       playerColor,
-      cardsToBroadcast: cards.sort((a, b) => a - b),
+      cardsToBroadcast: sortedCards,
       distributionType,
     },
     from: playerColor,
@@ -340,14 +375,12 @@ const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
     });
   });
 
-  return Object.entries(edgeStates)
-    .map(([key, edgeState]) => ({
-      index: Number.parseInt(key, 10),
-      edgeState: edgeState as any,
+  return toNumericRecordEntries(edgeStates)
+    .map(({ index, value }) => ({
+      index,
+      edgeState: value as any,
     }))
-    .filter(
-      ({ index, edgeState }) => Number.isFinite(index) && Boolean(edgeState),
-    )
+    .filter(({ edgeState }) => Boolean(edgeState))
     .filter(({ edgeState }) => !edgeState.owner)
     .filter(({ edgeState }) => {
       const endpoints = edgeEndpoints(edgeState);
@@ -445,12 +478,10 @@ const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
     PlayerActionState.Place1MoreRoadBuilding,
   ].includes(actionState)
     ? []
-    : Object.keys(edgeStates)
-        .map((key) => Number.parseInt(key, 10))
-        .filter((value) => Number.isFinite(value))
-        .map((index) => ({
+    : toNumericRecordEntries(edgeStates)
+        .map(({ index, value }) => ({
           index,
-          edgeState: edgeStates[String(index)],
+          edgeState: value as any,
         }))
         .filter(({ edgeState }) => Boolean(edgeState))
         .filter(({ edgeState }) => {
@@ -484,9 +515,8 @@ const sendTileHighlights33 = (gameData: any, payload: number[] = []) => {
 
 const sendShipHighlights32 = (gamePath: any) => {
   const shipStates = gamePath.data.payload.gameState.mapState.shipStates ?? {};
-  const shipIndices = Object.keys(shipStates)
-    .map((key) => Number.parseInt(key, 10))
-    .filter((value) => Number.isFinite(value))
+  const shipIndices = toNumericRecordEntries(shipStates)
+    .map(({ index }) => index)
     .filter((index) => {
       const shipState = shipStates[String(index)];
       return shipState && !shipState.owner;
@@ -692,21 +722,7 @@ const placeSettlement = (cornerIndex: number) => {
       CardEnum.Wool,
       CardEnum.Grain,
     ];
-    if (gameState.bankState?.resourceCards) {
-      exchangeCards.forEach((card) => {
-        if (gameState.bankState?.resourceCards?.[card] !== undefined) {
-          gameState.bankState.resourceCards[card] += 1;
-        }
-      });
-    }
-    if (playerState?.resourceCards?.cards) {
-      playerState.resourceCards = {
-        cards: removePlayerCards(
-          playerState.resourceCards.cards,
-          exchangeCards,
-        ),
-      };
-    }
+    applyResourceExchangeWithBank(gameState, playerColor, exchangeCards);
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
@@ -894,18 +910,7 @@ const placeCity = (cornerIndex: number) => {
     CardEnum.Ore,
     CardEnum.Ore,
   ];
-  if (gameState.bankState?.resourceCards) {
-    exchangeCards.forEach((card) => {
-      if (gameState.bankState?.resourceCards?.[card] !== undefined) {
-        gameState.bankState.resourceCards[card] += 1;
-      }
-    });
-  }
-  if (playerState?.resourceCards?.cards) {
-    playerState.resourceCards = {
-      cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
-    };
-  }
+  applyResourceExchangeWithBank(gameState, playerColor, exchangeCards);
 
   gameState.currentState.actionState = PlayerActionState.None;
   gameState.currentState.allocatedTime = TURN_TIMERS_MS.postBuild;
@@ -1022,22 +1027,7 @@ const placeRoad = (edgeIndex: number) => {
       },
       from: playerColor,
     });
-    if (gameState.bankState?.resourceCards) {
-      exchangeCards.forEach((card) => {
-        if (gameState.bankState?.resourceCards?.[card] !== undefined) {
-          gameState.bankState.resourceCards[card] += 1;
-        }
-      });
-    }
-    const playerState = gameState.playerStates?.[playerColor];
-    if (playerState?.resourceCards?.cards) {
-      playerState.resourceCards = {
-        cards: removePlayerCards(
-          playerState.resourceCards.cards,
-          exchangeCards,
-        ),
-      };
-    }
+    applyResourceExchangeWithBank(gameState, playerColor, exchangeCards);
     updateCurrentState(gameData, {
       turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
@@ -1358,21 +1348,7 @@ const buyDevelopmentCard = () => {
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const exchangeCards = [CardEnum.Wool, CardEnum.Grain, CardEnum.Ore];
-
-  if (gameState.bankState?.resourceCards) {
-    exchangeCards.forEach((card) => {
-      if (gameState.bankState?.resourceCards?.[card] !== undefined) {
-        gameState.bankState.resourceCards[card] += 1;
-      }
-    });
-  }
-
-  const playerState = gameState.playerStates?.[playerColor];
-  if (playerState?.resourceCards?.cards) {
-    playerState.resourceCards = {
-      cards: removePlayerCards(playerState.resourceCards.cards, exchangeCards),
-    };
-  }
+  applyResourceExchangeWithBank(gameState, playerColor, exchangeCards);
 
   const devCardsState = gameState.mechanicDevelopmentCardsState;
   const overrideDevCard =
@@ -1428,8 +1404,7 @@ const buyDevelopmentCard = () => {
     from: playerColor,
   });
 
-  gameState.currentState.allocatedTime =
-    TURN_TIMERS_MS.robberAfterRoadBuilding;
+  gameState.currentState.allocatedTime = TURN_TIMERS_MS.robberAfterRoadBuilding;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);
@@ -2198,8 +2173,7 @@ const getWinner = () => {
               [VictoryPointSource.LongestRoad]: 2,
             }[key]!,
         )
-        .reduce((a, b) => a + b, 0) >=
-      getVictoryPointsToWin(firebaseData.GAME),
+        .reduce((a, b) => a + b, 0) >= getVictoryPointsToWin(firebaseData.GAME),
   );
 };
 
