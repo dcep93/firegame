@@ -17,6 +17,46 @@ import {
 } from "./CatannFilesEnums";
 import { addGameLogEntry, edgeEndpoints } from "./utils";
 
+const DEVELOPMENT_DECK_CARD_COUNTS = {
+  [CardEnum.Knight]: 14,
+  [CardEnum.VictoryPoint]: 5,
+  [CardEnum.Monopoly]: 2,
+  [CardEnum.RoadBuilding]: 2,
+  [CardEnum.YearOfPlenty]: 2,
+} as const;
+
+const PLAYER_INDEX = 1;
+const BANK_INDEX = 0;
+const INITIAL_DISCARD_LIMIT = 7;
+const MIN_POINTS_PROTECTED_BY_FRIENDLY_ROBBER = 2;
+const LONGEST_ROAD_MIN_LENGTH = 5;
+const LONGEST_ROAD_MARGIN_TO_STEAL = 1;
+const DICE_ROLL_SIDES = 6;
+const DICE_ROLL_MIN_VALUE = 1;
+const ROBBER_TRIGGER_DICE_TOTAL = 7;
+const GENERIC_PORT_TYPE = 4;
+const ACHIEVEMENT_LONGEST_ROAD = 0;
+const ACHIEVEMENT_LARGEST_ARMY = 1;
+
+const TURN_TIMERS_MS = {
+  dicePhase: 180,
+  postBuild: 140,
+  robberAfterRoadBuilding: 160,
+  turn: 120,
+  settlementInitialRoadPlacement: 45,
+  roadBuildingFollowUp: 8,
+  placeRobber: 40,
+  createTrade: 70,
+  gameEnd: 300,
+} as const;
+
+const getVictoryPointsToWin = (gameData: any) =>
+  gameData?.data?.payload?.gameSettings?.victoryPointsToWin ?? 10;
+
+const isDevelopmentCardRobberWindow = (allocatedTime: number | undefined) =>
+  allocatedTime === TURN_TIMERS_MS.dicePhase ||
+  allocatedTime === TURN_TIMERS_MS.robberAfterRoadBuilding;
+
 const removePlayerCards = (cards: number[], toRemove: number[]) => {
   const nextCards = [...cards];
   toRemove.forEach((card) => {
@@ -30,11 +70,31 @@ const removePlayerCards = (cards: number[], toRemove: number[]) => {
 
 const buildBaseDevelopmentDeck = () => {
   const deck: number[] = [];
-  deck.push(...Array(14).fill(CardEnum.Knight));
-  deck.push(...Array(5).fill(CardEnum.VictoryPoint));
-  deck.push(...Array(2).fill(CardEnum.Monopoly));
-  deck.push(...Array(2).fill(CardEnum.RoadBuilding));
-  deck.push(...Array(2).fill(CardEnum.YearOfPlenty));
+  deck.push(
+    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.Knight]).fill(
+      CardEnum.Knight,
+    ),
+  );
+  deck.push(
+    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.VictoryPoint]).fill(
+      CardEnum.VictoryPoint,
+    ),
+  );
+  deck.push(
+    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.Monopoly]).fill(
+      CardEnum.Monopoly,
+    ),
+  );
+  deck.push(
+    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.RoadBuilding]).fill(
+      CardEnum.RoadBuilding,
+    ),
+  );
+  deck.push(
+    ...Array(DEVELOPMENT_DECK_CARD_COUNTS[CardEnum.YearOfPlenty]).fill(
+      CardEnum.YearOfPlenty,
+    ),
+  );
   return deck;
 };
 
@@ -157,7 +217,7 @@ const addPlayerResourceCards = (
 
 const autoPlaceRobber = (tileIndex: number) => {
   const gameData = firebaseData.GAME;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const gameState = gameData.data.payload.gameState;
   const eligibleTiles = getRobberEligibleTiles(gameData);
   const resolvedTileIndex = eligibleTiles.includes(tileIndex)
@@ -174,7 +234,7 @@ const autoPlaceRobber = (tileIndex: number) => {
 
   const currentAllocatedTime = gameState.currentState.allocatedTime;
   const isDevelopmentCardRobberPlacement =
-    currentAllocatedTime === 180 || currentAllocatedTime === 160;
+    isDevelopmentCardRobberWindow(currentAllocatedTime);
   updateCurrentState(
     gameData,
     isDevelopmentCardRobberPlacement
@@ -185,13 +245,13 @@ const autoPlaceRobber = (tileIndex: number) => {
       : {
           turnState: GamePhase.Turn,
           actionState: PlayerActionState.None,
-          allocatedTime: 120,
+          allocatedTime: TURN_TIMERS_MS.turn,
         },
   );
 
   addGameLogEntry(gameState, {
     text: {
-      type: 11,
+      type: GameLogMessageType.MovedRobber,
       playerColor,
       pieceEnum: MapPieceType.Robber,
       tileInfo: tileState
@@ -207,7 +267,7 @@ const autoPlaceRobber = (tileIndex: number) => {
 
   addGameLogEntry(gameState, {
     text: {
-      type: 74,
+      type: GameLogMessageType.NoPlayerToStealFrom,
     },
     from: playerColor,
   });
@@ -241,7 +301,7 @@ const applyPortOwnership = (
       );
       if (!isAdjacent) return;
       portEdgeStates[key] = { ...portEdgeState, owner: playerColor };
-      if (portEdgeState.type === 4) {
+      if (portEdgeState.type === GENERIC_PORT_TYPE) {
         const ratios =
           gameState.playerStates?.[playerColor]?.bankTradeRatiosState;
         if (ratios) {
@@ -256,7 +316,7 @@ const applyPortOwnership = (
 
 const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const edgeStates = gameState.mapState.tileEdgeStates ?? {};
   const cornerStates = gameState.mapState.tileCornerStates ?? {};
   const serializeCornerKey = (x: number, y: number, z: number) =>
@@ -306,7 +366,7 @@ export const sendCornerHighlights30 = (
   force: number[] | null = null,
 ) => {
   const actionState = gameData.data.payload.gameState.currentState.actionState;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const isClose = (a: any, b: any) => {
     if (a.z === b.z) {
       return a.x === b.x && a.y === b.y;
@@ -535,7 +595,7 @@ const getFriendlyRobberBlockedTiles = (gameData: any) => {
       return;
     }
     const points = getPlayerVictoryPoints(playerState);
-    if (points > 2) {
+    if (points > MIN_POINTS_PROTECTED_BY_FRIENDLY_ROBBER) {
       return;
     }
     getAdjacentTileIndicesForCorner(gameState, cornerState).forEach(
@@ -568,7 +628,7 @@ const getRobberEligibleTiles = (gameData: any) => {
 const placeSettlement = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const isStandardBuild =
     gameState.currentState.actionState === PlayerActionState.PlaceSettlement;
   const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
@@ -586,12 +646,12 @@ const placeSettlement = (cornerIndex: number) => {
 
   if (isStandardBuild) {
     gameState.currentState.actionState = PlayerActionState.None;
-    gameState.currentState.allocatedTime = 140;
+    gameState.currentState.allocatedTime = TURN_TIMERS_MS.postBuild;
     gameState.currentState.startTime = Date.now();
   } else {
     updateCurrentState(gameData, {
       actionState: PlayerActionState.InitialPlacementRoadPlacement,
-      allocatedTime: 45,
+      allocatedTime: TURN_TIMERS_MS.settlementInitialRoadPlacement,
     });
   }
 
@@ -599,13 +659,13 @@ const placeSettlement = (cornerIndex: number) => {
   if (!playerState.victoryPointsState) {
     playerState.victoryPointsState = {};
   }
-  playerState.victoryPointsState["0"] =
-    (playerState.victoryPointsState["0"] ?? 0) + 1;
+  playerState.victoryPointsState[VictoryPointSource.Settlement] =
+    (playerState.victoryPointsState[VictoryPointSource.Settlement] ?? 0) + 1;
 
   if (isStandardBuild) {
     addGameLogEntry(gameState, {
       text: {
-        type: 5,
+        type: GameLogMessageType.BuiltPiece,
         playerColor,
         pieceEnum: MapPieceType.Settlement,
         isVp: true,
@@ -615,7 +675,7 @@ const placeSettlement = (cornerIndex: number) => {
   } else {
     addGameLogEntry(gameState, {
       text: {
-        type: 4,
+        type: GameLogMessageType.PlayerPlacedPiece,
         playerColor,
         pieceEnum: MapPieceType.Settlement,
       },
@@ -654,7 +714,7 @@ const placeSettlement = (cornerIndex: number) => {
         payload: {
           givingPlayer: playerColor,
           givingCards: exchangeCards,
-          receivingPlayer: 0,
+          receivingPlayer: BANK_INDEX,
           receivingCards: [],
         },
       },
@@ -780,7 +840,7 @@ const getCornerIndexFromPayload = (gameState: any, payload: unknown) => {
 const placeCity = (cornerIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
   if (!cornerState) {
     return;
@@ -848,7 +908,7 @@ const placeCity = (cornerIndex: number) => {
   }
 
   gameState.currentState.actionState = PlayerActionState.None;
-  gameState.currentState.allocatedTime = 140;
+  gameState.currentState.allocatedTime = TURN_TIMERS_MS.postBuild;
   gameState.currentState.startTime = Date.now();
 
   sendToMainSocket?.({
@@ -882,7 +942,7 @@ const placeCity = (cornerIndex: number) => {
 const placeRoad = (edgeIndex: number) => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const edgeState = gameState.mapState.tileEdgeStates[String(edgeIndex)];
 
   gameState.mapState.tileEdgeStates[String(edgeIndex)] = {
@@ -924,13 +984,13 @@ const placeRoad = (edgeIndex: number) => {
       updateCurrentState(gameData, {
         completedTurns: completedTurns + 1,
         actionState: PlayerActionState.InitialPlacementPlaceSettlement,
-        allocatedTime: 180,
+        allocatedTime: TURN_TIMERS_MS.dicePhase,
       });
     } else {
       updateCurrentState(gameData, {
         completedTurns: completedTurns + 1,
         actionState: PlayerActionState.None,
-        allocatedTime: 180,
+        allocatedTime: TURN_TIMERS_MS.dicePhase,
         turnState: GamePhase.Dice,
       });
     }
@@ -949,7 +1009,7 @@ const placeRoad = (edgeIndex: number) => {
     updateCurrentState(gameData, {
       turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
-      allocatedTime: 8,
+      allocatedTime: TURN_TIMERS_MS.roadBuildingFollowUp,
     });
     delete gameState.currentState.roadBuildingHighlightStep;
   } else {
@@ -981,7 +1041,7 @@ const placeRoad = (edgeIndex: number) => {
     updateCurrentState(gameData, {
       turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
-      allocatedTime: 8,
+      allocatedTime: TURN_TIMERS_MS.roadBuildingFollowUp,
     });
 
     sendToMainSocket?.({
@@ -991,7 +1051,7 @@ const placeRoad = (edgeIndex: number) => {
         payload: {
           givingPlayer: playerColor,
           givingCards: exchangeCards,
-          receivingPlayer: 0,
+          receivingPlayer: BANK_INDEX,
           receivingCards: [],
         },
       },
@@ -1052,18 +1112,18 @@ const placeRoad = (edgeIndex: number) => {
 const rollDice = () => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const overrideDiceState = window.__testSeed;
   const dice1 =
     Array.isArray(overrideDiceState) && overrideDiceState.length === 2
       ? overrideDiceState[0]
-      : Math.floor(Math.random() * 6) + 1;
+      : Math.floor(Math.random() * DICE_ROLL_SIDES) + DICE_ROLL_MIN_VALUE;
   const dice2 =
     Array.isArray(overrideDiceState) && overrideDiceState.length === 2
       ? overrideDiceState[1]
-      : Math.floor(Math.random() * 6) + 1;
+      : Math.floor(Math.random() * DICE_ROLL_SIDES) + DICE_ROLL_MIN_VALUE;
   const diceTotal = dice1 + dice2;
-  const shouldTriggerRobber = diceTotal === 7;
+  const shouldTriggerRobber = diceTotal === ROBBER_TRIGGER_DICE_TOTAL;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
   const resourcesToGive: {
@@ -1141,18 +1201,18 @@ const rollDice = () => {
   if (shouldTriggerRobber) {
     updateCurrentState(gameData, {
       actionState: PlayerActionState.PlaceRobberOrPirate,
-      allocatedTime: 40,
+      allocatedTime: TURN_TIMERS_MS.placeRobber,
     });
   } else {
     updateCurrentState(gameData, {
       turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
-      allocatedTime: 120,
+      allocatedTime: TURN_TIMERS_MS.turn,
     });
   }
   addGameLogEntry(gameState, {
     text: {
-      type: 10,
+      type: GameLogMessageType.RolledDice,
       playerColor,
       firstDice: dice1,
       secondDice: dice2,
@@ -1175,7 +1235,7 @@ const rollDice = () => {
     if (getFriendlyRobberBlockedTiles(gameData).size > 0)
       addGameLogEntry(gameState, {
         text: {
-          type: 60,
+          type: GameLogMessageType.FriendlyRobberActive,
           all: false,
         },
       });
@@ -1203,7 +1263,9 @@ const rollDice = () => {
       ...(gameState.playerStates?.[playerColor]?.resourceCards?.cards ?? []),
     ].sort((a, b) => a - b);
     const amountToDiscard =
-      playerCards.length > 7 ? Math.floor(playerCards.length / 2) : 0;
+      playerCards.length > INITIAL_DISCARD_LIMIT
+        ? Math.floor(playerCards.length / 2)
+        : 0;
     if (amountToDiscard > 0) {
       gameState.currentState.actionState =
         PlayerActionState.SelectCardsToDiscard;
@@ -1219,7 +1281,7 @@ const rollDice = () => {
             body: {
               key: "strings:game.prompts.youHaveMoreThanXCards",
               options: {
-                count: 7,
+                count: INITIAL_DISCARD_LIMIT,
                 amountToDiscard,
               },
             },
@@ -1268,11 +1330,12 @@ const passTurn = () => {
 
   addGameLogEntry(gameState, {
     text: {
-      type: 44,
+      type: GameLogMessageType.Separator,
     },
   });
 
-  const devCardsState = gameState.mechanicDevelopmentCardsState?.players?.[1];
+  const devCardsState =
+    gameState.mechanicDevelopmentCardsState?.players?.[PLAYER_INDEX];
   if (devCardsState && "developmentCardsBoughtThisTurn" in devCardsState) {
     devCardsState.developmentCardsBoughtThisTurn = null;
     if ("hasUsedDevelopmentCardThisTurn" in devCardsState) {
@@ -1293,7 +1356,7 @@ const passTurn = () => {
 const buyDevelopmentCard = () => {
   const gameData = firebaseData.GAME;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor ?? 1;
+  const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const exchangeCards = [CardEnum.Wool, CardEnum.Grain, CardEnum.Ore];
 
   if (gameState.bankState?.resourceCards) {
@@ -1359,13 +1422,14 @@ const buyDevelopmentCard = () => {
 
   addGameLogEntry(gameState, {
     text: {
-      type: 1,
+      type: GameLogMessageType.BoughtDevelopmentCard,
       playerColor,
     },
     from: playerColor,
   });
 
-  gameState.currentState.allocatedTime = 160;
+  gameState.currentState.allocatedTime =
+    TURN_TIMERS_MS.robberAfterRoadBuilding;
 
   sendCornerHighlights30(gameData, []);
   sendTileHighlights33(gameData, []);
@@ -1394,7 +1458,7 @@ const buyDevelopmentCard = () => {
     data: {
       type: GameStateUpdateType.ExchangeCards,
       payload: {
-        givingPlayer: 0,
+        givingPlayer: BANK_INDEX,
         givingCards: [devCard],
         receivingPlayer: playerColor,
         receivingCards: [],
@@ -1458,7 +1522,7 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GAME_ACTION.CreateTrade) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const playerColor = gameData.data.payload.playerColor ?? 1;
+      const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
       const tradePayload =
         parsed.payload && typeof parsed.payload === "object"
           ? (parsed.payload as {
@@ -1515,7 +1579,7 @@ export const applyGameAction = (parsed: {
           from: playerColor,
         });
 
-        gameState.currentState.allocatedTime = 70;
+        gameState.currentState.allocatedTime = TURN_TIMERS_MS.createTrade;
 
         sendCornerHighlights30(gameData, []);
         sendTileHighlights33(gameData, []);
@@ -1528,7 +1592,7 @@ export const applyGameAction = (parsed: {
             payload: {
               givingPlayer: playerColor,
               givingCards: offeredResources,
-              receivingPlayer: 0,
+              receivingPlayer: BANK_INDEX,
               receivingCards: wantedResources,
             },
           },
@@ -1631,7 +1695,7 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GAME_ACTION.WantToBuildCity) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const playerColor = gameData.data.payload.playerColor ?? 1;
+      const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
       const cornerStates = gameState.mapState.tileCornerStates ?? {};
       const highlightCorners = Object.entries(cornerStates)
         .map(([key, value]) => ({
@@ -1687,7 +1751,7 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GAME_ACTION.ClickedDevelopmentCard) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const playerColor = gameData.data.payload.playerColor ?? 1;
+      const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
       const clickedCard =
         typeof parsed.payload === "number" ? parsed.payload : undefined;
       const devCardsState =
@@ -1747,9 +1811,9 @@ export const applyGameAction = (parsed: {
         }
         addGameLogEntry(gameState, {
           text: {
-            type: 66,
+            type: GameLogMessageType.PlayerReceivedAchievement,
             playerColor,
-            achievementEnum: 1,
+            achievementEnum: ACHIEVEMENT_LARGEST_ARMY,
           },
           from: playerColor,
         });
@@ -1767,7 +1831,7 @@ export const applyGameAction = (parsed: {
           payload: {
             givingPlayer: playerColor,
             givingCards: clickedCard != null ? [clickedCard] : [],
-            receivingPlayer: 0,
+            receivingPlayer: BANK_INDEX,
             receivingCards: [],
           },
         },
@@ -1858,7 +1922,7 @@ export const applyGameAction = (parsed: {
           payload: {
             givingPlayer: currentPlayer,
             givingCards: selectedCards,
-            receivingPlayer: 0,
+            receivingPlayer: BANK_INDEX,
             receivingCards: [],
           },
         },
@@ -2018,7 +2082,7 @@ export const applyGameAction = (parsed: {
     });
     gameState.currentState.turnState = GamePhase.GameEnd;
     gameState.currentState.actionState = PlayerActionState.None;
-    gameState.currentState.allocatedTime = 300;
+    gameState.currentState.allocatedTime = TURN_TIMERS_MS.gameEnd;
     gameData.data.payload.timeLeftInState = 0;
 
     setFirebaseData(
@@ -2134,7 +2198,8 @@ const getWinner = () => {
               [VictoryPointSource.LongestRoad]: 2,
             }[key]!,
         )
-        .reduce((a, b) => a + b, 0) >= 10,
+        .reduce((a, b) => a + b, 0) >=
+      getVictoryPointsToWin(firebaseData.GAME),
   );
 };
 
@@ -2249,7 +2314,7 @@ const updateLongestRoadAchievement = (playerColor: number) => {
     gameState.mechanicLongestRoadState?.[playerColor]?.longestRoad ?? 0;
 
   if (currentHolder === playerColor) {
-    if (challengerLength < 5) {
+    if (challengerLength < LONGEST_ROAD_MIN_LENGTH) {
       delete gameState.playerStates?.[playerColor]?.victoryPointsState?.[
         VictoryPointSource.LongestRoad
       ];
@@ -2258,7 +2323,10 @@ const updateLongestRoadAchievement = (playerColor: number) => {
     return;
   }
 
-  if (challengerLength < 5 || challengerLength < currentHolderLength + 1) {
+  if (
+    challengerLength < LONGEST_ROAD_MIN_LENGTH ||
+    challengerLength < currentHolderLength + LONGEST_ROAD_MARGIN_TO_STEAL
+  ) {
     return;
   }
 
@@ -2276,15 +2344,16 @@ const updateLongestRoadAchievement = (playerColor: number) => {
   if (!challengerState.victoryPointsState) {
     challengerState.victoryPointsState = {};
   }
-  challengerState.victoryPointsState[VictoryPointSource.LongestRoad] = 1;
+  challengerState.victoryPointsState[VictoryPointSource.LongestRoad] =
+    LONGEST_ROAD_MARGIN_TO_STEAL;
   if (gameState.mechanicLongestRoadState?.[playerColor]) {
     gameState.mechanicLongestRoadState[playerColor].hasLongestRoad = true;
   }
   addGameLogEntry(gameState, {
     text: {
-      type: 66,
+      type: GameLogMessageType.PlayerReceivedAchievement,
       playerColor,
-      achievementEnum: 0,
+      achievementEnum: ACHIEVEMENT_LONGEST_ROAD,
     },
     from: playerColor,
   });
@@ -2292,7 +2361,7 @@ const updateLongestRoadAchievement = (playerColor: number) => {
 function getSettlementEligibleTiles(): number[] | null | undefined {
   const gameData = firebaseData.GAME;
   const gameState = gameData?.data?.payload?.gameState;
-  const playerColor = gameData?.data?.payload?.playerColor ?? 1;
+  const playerColor = gameData?.data?.payload?.playerColor ?? PLAYER_INDEX;
 
   if (!gameState) return null;
 
