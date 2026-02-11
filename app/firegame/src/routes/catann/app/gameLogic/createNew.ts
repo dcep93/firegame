@@ -441,7 +441,7 @@ export const newGame = () => {
           minimumKarma: 0,
           eloType: 0,
           modeSetting: GameModeId.Classic4P,
-          extensionSetting: ExpansionType.Seafarers4P,
+          extensionSetting: ExpansionType.None,
           scenarioSetting: SeafarersScenarioId.None,
           mapSetting: MapId.Classic4P,
           diceSetting: DiceDistributionType.Balanced,
