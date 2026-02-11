@@ -279,7 +279,6 @@ const autoPlaceRobber = (tileIndex: number) => {
   const gameData = firebaseData.GAME;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const gameState = gameData.data.payload.gameState;
-  const eligibleTiles = getRobberEligibleTiles(gameData);
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileState = tileHexStates[String(tileIndex)];
 
