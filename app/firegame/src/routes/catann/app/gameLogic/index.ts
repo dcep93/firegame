@@ -1,11 +1,11 @@
 import { firebaseData, setFirebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
 import {
+  AchievementType,
   CardEnum,
   CornerDirection,
   CornerPieceType,
   EdgePieceType,
-  AchievementType,
   GameAction,
   GameLogMessageType,
   GamePhase,
@@ -66,7 +66,7 @@ const isDevelopmentCardRobberWindow = (gameState: any) => {
   const entries = Object.entries(gameLogState)
     .map(([key, entry]) => ({
       index: Number.parseInt(key, 10),
-      entry,
+      entry: entry as any,
     }))
     .filter(({ index }) => Number.isFinite(index))
     .sort((a, b) => b.index - a.index);
