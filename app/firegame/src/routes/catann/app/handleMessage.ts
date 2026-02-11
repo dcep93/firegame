@@ -191,7 +191,7 @@ export default function handleMessage(
       if (clientData.type.startsWith("set")) {
         const capitalKey = clientData.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        firebaseData.ROOM!.data[key] = clientData[key];
+        (firebaseData.ROOM!.data as Record<string, any>)[key] = clientData[key];
         setFirebaseData(firebaseData, { parsed: clientData });
         return sendResponse(spoofHostRoom());
       }

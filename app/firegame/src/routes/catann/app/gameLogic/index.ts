@@ -276,7 +276,7 @@ const addPlayerResourceCards = (
 };
 
 const autoPlaceRobber = (tileIndex: number) => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const gameState = gameData.data.payload.gameState;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
@@ -675,7 +675,7 @@ const getRobberEligibleTiles = (gameData: any) => {
 };
 
 const placeSettlement = (cornerIndex: number) => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const isStandardBuild =
@@ -873,7 +873,7 @@ const getCornerIndexFromPayload = (gameState: any, payload: unknown) => {
 };
 
 const placeCity = (cornerIndex: number) => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
@@ -964,7 +964,7 @@ const placeCity = (cornerIndex: number) => {
 };
 
 const placeRoad = (edgeIndex: number) => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const edgeState = gameState.mapState.tileEdgeStates[String(edgeIndex)];
@@ -1026,7 +1026,7 @@ const placeRoad = (edgeIndex: number) => {
       turnState: GamePhase.Turn,
       allocatedTime: 160,
     });
-    gameState.currentState.roadBuildingHighlightStep = 0;
+    (gameState.currentState as any).roadBuildingHighlightStep = 0;
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
@@ -1035,7 +1035,7 @@ const placeRoad = (edgeIndex: number) => {
       actionState: PlayerActionState.None,
       allocatedTime: TURN_TIMERS_MS.roadBuildingFollowUp,
     });
-    delete gameState.currentState.roadBuildingHighlightStep;
+    delete (gameState.currentState as any).roadBuildingHighlightStep;
   } else {
     addGameLogEntry(gameState, {
       text: {
@@ -1119,7 +1119,7 @@ const placeRoad = (edgeIndex: number) => {
 };
 
 const rollDice = () => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const overrideDiceState = window.__testSeed;
@@ -1323,7 +1323,7 @@ const rollDice = () => {
 };
 
 const passTurn = () => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const completedTurns = gameState.currentState.completedTurns ?? 0;
   const nextCompletedTurns = completedTurns + 1;
@@ -1365,7 +1365,7 @@ const passTurn = () => {
 };
 
 const buyDevelopmentCard = () => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const exchangeCards = [CardEnum.Wool, CardEnum.Grain, CardEnum.Ore];
@@ -2047,7 +2047,7 @@ export const applyGameAction = (parsed: {
   const rval = helper();
   const winner = getWinner();
   if (winner) {
-    const gameData = firebaseData.GAME;
+    const gameData = firebaseData.GAME!;
     const gameState = gameData.data.payload.gameState;
     const alreadyEnded =
       gameState.currentState.turnState === GamePhase.GameEnd &&
@@ -2179,7 +2179,7 @@ export const applyGameAction = (parsed: {
 
 const getWinner = () => {
   const players: Record<string, any> =
-    firebaseData.GAME.data.payload.gameState.playerStates;
+    firebaseData.GAME!.data.payload.gameState.playerStates;
   return Object.values(players).find(
     (p: { victoryPointsState: Record<string, number> }) =>
       Object.entries(p.victoryPointsState)
@@ -2199,7 +2199,7 @@ const getWinner = () => {
 };
 
 const calculateLongestRoad = (playerColor: number) => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const edgeStates = gameState.mapState.tileEdgeStates ?? {};
   const cornerStates = gameState.mapState.tileCornerStates ?? {};
@@ -2271,7 +2271,7 @@ const calculateLongestRoad = (playerColor: number) => {
 };
 
 const updateLongestRoadAchievement = (playerColor: number) => {
-  const gameData = firebaseData.GAME;
+  const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerStates = gameState.playerStates ?? {};
 

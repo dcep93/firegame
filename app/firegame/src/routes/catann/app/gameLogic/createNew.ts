@@ -311,20 +311,21 @@ export const newGame = () => {
   const room: ReturnType<typeof newRoom> = firebaseData.ROOM!;
   const sessions = room.data.sessions;
   const mapState = window.__testOverrides?.mapState ?? newMapState();
+  const playOrder = sessions
+    .map((s) => ({ v: Math.random(), s }))
+    .sort((a, b) => a.v - b.v)
+    .map(({ s }) => s.selectedColor)
+    .map(
+      (selectedColor) =>
+        colorHelper.find(({ str }) => str === selectedColor)!.int,
+    );
   return {
     id: State.GameStateUpdate.toString(),
     data: {
       type: GameStateUpdateType.BuildGame,
       payload: {
         playerColor: PlayerColor.None,
-        playOrder: sessions
-          .map((s) => ({ v: Math.random(), s }))
-          .sort((a, b) => a.v - b.v)
-          .map(({ s }) => s.selectedColor)
-          .map(
-            (selectedColor) =>
-              colorHelper.find(({ str }) => str === selectedColor)!.int,
-          ),
+        playOrder,
         gameState: {
           diceState: {
             diceThrown: false,
@@ -346,7 +347,7 @@ export const newGame = () => {
             completedTurns: 0,
             turnState: GamePhase.InitialPlacement,
             actionState: PlayerActionState.InitialPlacementPlaceSettlement,
-            currentTurnPlayerColor: PlayerColor.Red,
+            currentTurnPlayerColor: playOrder[0],
             startTime: window.__testOverrides?.startTime ?? Date.now(),
             allocatedTime: 120,
           },
@@ -445,7 +446,7 @@ export const newGame = () => {
           userId: window.__testOverrides?.session.userId ?? s.userId,
           username: window.__testOverrides?.session.username ?? s.username,
           databaseIcon: s.icon,
-          selectedColor: PlayerColor.Red,
+          selectedColor: s.selectedColor,
           isBot: false,
           deviceType: PlatformType.Web,
           countryCode: "US",
