@@ -998,9 +998,7 @@ const placeRoad = (edgeIndex: number) => {
     });
   }
 
-  gameData.data.payload.gameState.mechanicLongestRoadState = {
-    1: { longestRoad: calculateLongestRoad(1) },
-  };
+  updateLongestRoadAchievement(playerColor);
 
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
@@ -1330,6 +1328,9 @@ const buyDevelopmentCard = () => {
   }
   if (devCardsState?.players?.[playerColor]?.developmentCards?.cards) {
     devCardsState.players[playerColor].developmentCards.cards.push(devCard);
+    (
+      devCardsState.players[playerColor].developmentCards.cards as number[]
+    ).sort((a, b) => a - b);
   }
   if (devCardsState?.players?.[playerColor]) {
     devCardsState.players[playerColor].developmentCardsBoughtThisTurn = [
@@ -2244,6 +2245,86 @@ const calculateLongestRoad = (playerColor: number) => {
   });
 
   return longestRoad;
+};
+
+const updateLongestRoadAchievement = (playerColor: number) => {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData.data.payload.gameState;
+  const playerStates = gameState.playerStates ?? {};
+
+  if (!gameState.mechanicLongestRoadState) {
+    gameState.mechanicLongestRoadState = {};
+  }
+
+  const playerColors = Object.keys(playerStates)
+    .map((colorKey) => Number.parseInt(colorKey, 10))
+    .filter((color) => Number.isFinite(color));
+
+  playerColors.forEach((color) => {
+    const previousState = gameState.mechanicLongestRoadState?.[color] ?? {};
+    gameState.mechanicLongestRoadState[color] = {
+      ...previousState,
+      longestRoad: calculateLongestRoad(color),
+    };
+    if (gameState.mechanicLongestRoadState[color].hasLongestRoad) {
+      delete gameState.mechanicLongestRoadState[color].hasLongestRoad;
+    }
+  });
+
+  const currentHolder = playerColors.find(
+    (color) =>
+      gameState.playerStates?.[color]?.victoryPointsState?.[
+        VictoryPointSource.LongestRoad
+      ] === 1,
+  );
+
+  const currentHolderLength =
+    currentHolder == null
+      ? 0
+      : (gameState.mechanicLongestRoadState?.[currentHolder]?.longestRoad ?? 0);
+  const challengerLength =
+    gameState.mechanicLongestRoadState?.[playerColor]?.longestRoad ?? 0;
+
+  if (currentHolder === playerColor) {
+    if (challengerLength < 5) {
+      delete gameState.playerStates?.[playerColor]?.victoryPointsState?.[
+        VictoryPointSource.LongestRoad
+      ];
+      delete gameState.mechanicLongestRoadState?.[playerColor]?.hasLongestRoad;
+    }
+    return;
+  }
+
+  if (challengerLength < 5 || challengerLength < currentHolderLength + 1) {
+    return;
+  }
+
+  if (currentHolder != null) {
+    delete gameState.playerStates?.[currentHolder]?.victoryPointsState?.[
+      VictoryPointSource.LongestRoad
+    ];
+    delete gameState.mechanicLongestRoadState?.[currentHolder]?.hasLongestRoad;
+  }
+
+  const challengerState = gameState.playerStates?.[playerColor];
+  if (!challengerState) {
+    return;
+  }
+  if (!challengerState.victoryPointsState) {
+    challengerState.victoryPointsState = {};
+  }
+  challengerState.victoryPointsState[VictoryPointSource.LongestRoad] = 1;
+  if (gameState.mechanicLongestRoadState?.[playerColor]) {
+    gameState.mechanicLongestRoadState[playerColor].hasLongestRoad = true;
+  }
+  addGameLogEntry(gameState, {
+    text: {
+      type: 66,
+      playerColor,
+      achievementEnum: 0,
+    },
+    from: playerColor,
+  });
 };
 function getSettlementEligibleTiles(): number[] | null | undefined {
   const gameData = firebaseData.GAME;
