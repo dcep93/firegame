@@ -27,7 +27,23 @@ const buildUpdatePaths = (
 ) => {
   if (deepEqual(previous, current)) return;
   if (Array.isArray(previous) || Array.isArray(current)) {
-    updates[path] = current;
+    if (!Array.isArray(previous) || !Array.isArray(current)) {
+      updates[path] = current;
+      return;
+    }
+    const maxLen = Math.max(previous.length, current.length);
+    for (let i = 0; i < maxLen; i++) {
+      const childPath = path ? `${path}/${i}` : `${i}`;
+      if (i >= current.length) {
+        updates[childPath] = null;
+        continue;
+      }
+      if (i >= previous.length) {
+        updates[childPath] = current[i];
+        continue;
+      }
+      buildUpdatePaths(previous[i], current[i], childPath, updates);
+    }
     return;
   }
   if (isObject(previous) && isObject(current)) {

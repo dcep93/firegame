@@ -97,9 +97,10 @@ export function setFirebaseData(newData: any, change: any) {
       return;
     }
     const serializedCatann = serializeFirebase(catann);
-    const previousSerialized = serializeFirebase(firebaseData);
+    const previousSerialized = serializeFirebase(
+      JSON.parse(firebaseDataSnapshot),
+    );
     const updates = buildUpdateMap(previousSerialized, serializedCatann);
-    console.trace({ updates, change });
     if (Object.keys(updates).length === 1) return; // __meta/now will always change
     firebase.update(`${roomPath()}/catann`, updates);
   }
