@@ -142,7 +142,9 @@ function receiveFirebaseDataCatann(catann: any) {
       (s: any) => s.userId === store.me.userId,
     )
   ) {
-    firebaseData.ROOM.data.sessions.push(newRoomMe());
+    firebaseData.ROOM.data.sessions.push(
+      newRoomMe(firebaseData.ROOM.data.sessions),
+    );
     setFirebaseData(firebaseData, { newRoomMe: true });
     return;
   }

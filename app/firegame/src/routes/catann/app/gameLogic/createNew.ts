@@ -277,19 +277,16 @@ export const newRoom = () => {
   };
 };
 
-export const newRoomMe = () => {
-  const availableColors = Object.values(PlayerColor)
-    .filter((v) => isNaN(v as number))
-    .filter((v) => v !== PlayerColor[PlayerColor.None])
-    .map((v) => v as string)
-    .map((v) => v[0].toLowerCase().concat(v.slice(1)));
+export const newRoomMe = (sessions: { selectedColor: string }[]) => {
+  const availableColors = colorHelper.map(({ str }) => str);
+  const takenColors = sessions.map(({ selectedColor }) => selectedColor);
   return {
     roomSessionId: store.me.roomId,
     userSessionId: store.me.userId,
     userId: store.me.userId,
     isBot: false,
     isReadyToPlay: true,
-    selectedColor: availableColors[0],
+    selectedColor: availableColors.find((c) => !takenColors.includes(c))!,
     username: store.me.userId,
     isMember: false,
     icon: UserIcon.Guest,
@@ -300,6 +297,15 @@ export const newRoomMe = () => {
     botDifficulty: null,
   };
 };
+
+const colorHelper = Object.values(PlayerColor)
+  .filter((v) => isNaN(v as number))
+  .filter((v) => v !== PlayerColor[PlayerColor.None])
+  .map((v) => v as string)
+  .map((v) => ({
+    int: PlayerColor[v as keyof typeof PlayerColor],
+    str: v[0].toLowerCase().concat(v.slice(1)),
+  }));
 
 export const newGame = () => {
   const room: ReturnType<typeof newRoom> = firebaseData.ROOM;
@@ -315,12 +321,9 @@ export const newGame = () => {
           .map((s) => ({ v: Math.random(), s }))
           .sort((a, b) => a.v - b.v)
           .map(({ s }) => s.selectedColor)
-          .map((selectedColor) =>
-            selectedColor[0].toUpperCase().concat(selectedColor.slice(1)),
-          )
           .map(
             (selectedColor) =>
-              PlayerColor[selectedColor as keyof typeof PlayerColor],
+              colorHelper.find(({ str }) => str === selectedColor)!.int,
           ),
         gameState: {
           diceState: {
