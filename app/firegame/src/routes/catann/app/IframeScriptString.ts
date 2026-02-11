@@ -1,7 +1,37 @@
+import { StoreAvatarItemType, UserIcon } from "./gameLogic/CatannFilesEnums";
 import { getRoomId, newUserState } from "./gameLogic/createNew";
 import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
+
+const storeAvatarToUserIconMap: Record<number, number> = {
+  [StoreAvatarItemType.FounderHat]: UserIcon.IconFounderHat,
+  [StoreAvatarItemType.ColonistHat]: UserIcon.IconColonistHat,
+  [StoreAvatarItemType.SettlerHat]: UserIcon.IconSettlerHat,
+  [StoreAvatarItemType.ChristmasHat]: UserIcon.IconChristmasHat,
+  [StoreAvatarItemType.Player]: UserIcon.User,
+  [StoreAvatarItemType.PirateShip]: UserIcon.IconPirateShip,
+  [StoreAvatarItemType.MedalGold]: UserIcon.IconMedalGold,
+  [StoreAvatarItemType.MedalSilver]: UserIcon.IconMedalSilver,
+  [StoreAvatarItemType.MedalBronze]: UserIcon.IconMedalBronze,
+  [StoreAvatarItemType.Elephant]: UserIcon.IconElephant,
+  [StoreAvatarItemType.Avocado]: UserIcon.IconAvocado,
+  [StoreAvatarItemType.Cactus]: UserIcon.IconCactus,
+  [StoreAvatarItemType.Crown]: UserIcon.IconCrown,
+  [StoreAvatarItemType.Swords]: UserIcon.IconSwords,
+  [StoreAvatarItemType.Helmet]: UserIcon.IconHelmet,
+  [StoreAvatarItemType.Snorkel]: UserIcon.IconSnorkel,
+  [StoreAvatarItemType.Scarf]: UserIcon.IconScarf,
+  [StoreAvatarItemType.Tie]: UserIcon.IconTie,
+  [StoreAvatarItemType.Worker]: UserIcon.IconWorker,
+  [StoreAvatarItemType.Sombrero]: UserIcon.IconSombrero,
+  [StoreAvatarItemType.Farmer]: UserIcon.IconFarmer,
+  [StoreAvatarItemType.RobberSanta]: UserIcon.IconRobberSanta,
+  [StoreAvatarItemType.RobberLunar]: UserIcon.IconRobberLunar,
+  [StoreAvatarItemType.RobberCupid]: UserIcon.IconRobberCupid,
+  [StoreAvatarItemType.Mummy]: UserIcon.IconMummy,
+  [StoreAvatarItemType.Gifter]: UserIcon.IconGifter,
+};
 
 type XhrMeta = {
   method?: string;
@@ -19,11 +49,13 @@ function main({
   isDev,
   future,
   userState,
+  storeAvatarToUserIconMap,
 }: {
   roomId: string;
   isDev: boolean;
   future: string;
   userState: { userState: {} };
+  storeAvatarToUserIconMap: Record<number, number>;
 }) {
   overrideXHR();
   overrideWebsocket();
@@ -80,6 +112,9 @@ function main({
       }
       if (url === "/api/profile-edit/icon") {
         const parsed = JSON.parse(sendArgs[0]);
+        const mappedIcon =
+          parsed?.icon == null ? null : storeAvatarToUserIconMap?.[parsed.icon];
+        if (mappedIcon != null) parsed.icon = mappedIcon;
         userState.userState = {
           ...userState.userState,
           ...parsed,
@@ -399,5 +434,11 @@ function main({
 }
 
 const IframeScriptString = () =>
-  `(${main.toString()})(${JSON.stringify({ roomId: getRoomId(), isDev, future: FUTURE, userState: newUserState() })});`;
+  `(${main.toString()})(${JSON.stringify({
+    roomId: getRoomId(),
+    isDev,
+    future: FUTURE,
+    userState: newUserState(),
+    storeAvatarToUserIconMap,
+  })});`;
 export default IframeScriptString;

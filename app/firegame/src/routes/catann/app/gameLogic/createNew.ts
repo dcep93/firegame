@@ -291,7 +291,7 @@ export const newRoomMe = () => {
     selectedColor: availableColors[0],
     username: store.me.userId,
     isMember: false,
-    icon: UserIcon.Mummy,
+    icon: UserIcon.Admin,
     profilePictureUrl: null,
     karmaCompletedGames: 0,
     karmaTotalGames: 0,
