@@ -5,6 +5,7 @@ import {
   CornerDirection,
   CornerPieceType,
   EdgePieceType,
+  AchievementType,
   GameAction,
   GameLogMessageType,
   GamePhase,
@@ -40,8 +41,6 @@ const LONGEST_ROAD_MIN_LENGTH = 5;
 const DICE_ROLL_SIDES = 6;
 const ROBBER_TRIGGER_DICE_TOTAL = 7;
 const GENERIC_PORT_TYPE = 4;
-const ACHIEVEMENT_LONGEST_ROAD = 0;
-const ACHIEVEMENT_LARGEST_ARMY = 1;
 
 const TURN_TIMERS_MS = {
   dicePhase: 180,
@@ -61,9 +60,27 @@ const getVictoryPointsToWin = (gameData: any) =>
 const getCardDiscardLimit = (gameData: any) =>
   gameData.data.payload.gameSettings.cardDiscardLimit;
 
-const isDevelopmentCardRobberWindow = (allocatedTime: number | undefined) =>
-  allocatedTime === TURN_TIMERS_MS.dicePhase ||
-  allocatedTime === TURN_TIMERS_MS.robberAfterRoadBuilding;
+const isDevelopmentCardRobberWindow = (gameState: any) => {
+  const gameLogState = gameState.gameLogState;
+  if (!gameLogState) return false;
+  const entries = Object.entries(gameLogState)
+    .map(([key, entry]) => ({
+      index: Number.parseInt(key, 10),
+      entry,
+    }))
+    .filter(({ index }) => Number.isFinite(index))
+    .sort((a, b) => b.index - a.index);
+  for (const { entry } of entries) {
+    const logType = entry?.text?.type;
+    if (logType === GameLogMessageType.PlayerPlayedDevelopmentCard) {
+      return entry?.text?.cardEnum === CardEnum.Knight;
+    }
+    if (logType === GameLogMessageType.RolledDice) {
+      return false;
+    }
+  }
+  return false;
+};
 
 const parseFiniteIndex = (value: string | number) => {
   const parsed =
@@ -275,14 +292,12 @@ const autoPlaceRobber = (tileIndex: number) => {
     isActive: true,
   };
 
-  const currentAllocatedTime = gameState.currentState.allocatedTime;
   const isDevelopmentCardRobberPlacement =
-    isDevelopmentCardRobberWindow(currentAllocatedTime);
+    isDevelopmentCardRobberWindow(gameState);
   updateCurrentState(
     gameData,
     isDevelopmentCardRobberPlacement
       ? {
-          turnState: GamePhase.Turn,
           actionState: PlayerActionState.None,
         }
       : {
@@ -1798,7 +1813,7 @@ export const applyGameAction = (parsed: {
           text: {
             type: GameLogMessageType.PlayerReceivedAchievement,
             playerColor,
-            achievementEnum: ACHIEVEMENT_LARGEST_ARMY,
+            achievementEnum: AchievementType.LargestArmy,
           },
           from: playerColor,
         });
@@ -2336,7 +2351,7 @@ const updateLongestRoadAchievement = (playerColor: number) => {
     text: {
       type: GameLogMessageType.PlayerReceivedAchievement,
       playerColor,
-      achievementEnum: ACHIEVEMENT_LONGEST_ROAD,
+      achievementEnum: AchievementType.LongestRoad,
     },
     from: playerColor,
   });
