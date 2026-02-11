@@ -1264,6 +1264,7 @@ export enum UserIcon {
   User = 11,
   Guest = 12,
   Players = 14,
+  Mummy = 24,
 }
 
 export enum PlatformType {

@@ -46,6 +46,7 @@ export const colonistVersion = 2900;
 
 export const newUserState = () => {
   return {
+    csrfToken: "csrfToken",
     userState: {
       accessLevel: UserRole.User,
       colonistCoins: 0,
@@ -291,7 +292,7 @@ export const newRoomMe = () => {
     selectedColor: availableColors[0],
     username: store.me.userId,
     isMember: false,
-    icon: UserIcon.Guest,
+    icon: UserIcon.Mummy,
     profilePictureUrl: null,
     karmaCompletedGames: 0,
     karmaTotalGames: 0,
