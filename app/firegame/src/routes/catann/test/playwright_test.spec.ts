@@ -244,7 +244,7 @@ const createRoom = async (
 ): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
     // page.on("console", (msg) => console.log("test.debug", msg.text()));
-    await page.goto(`${APP_URL}catann#${roomId}`, { waitUntil: "load" });
+    await page.goto(`${APP_URL}catann?test#${roomId}`, { waitUntil: "load" });
     const iframe = page.locator('iframe[title="iframe"]');
     await expect(iframe).toBeVisible({ timeout: 1000 });
     return page.frameLocator('iframe[title="iframe"]');
