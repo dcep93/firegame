@@ -282,7 +282,6 @@ export const newRoomMe = () => {
     .filter((v) => v !== PlayerColor[PlayerColor.None])
     .map((v) => v as string)
     .map((v) => v[0].toLowerCase().concat(v.slice(1)));
-  console.log({ availableColors });
   return {
     roomSessionId: store.me.roomId,
     userSessionId: store.me.userId,
