@@ -28,6 +28,10 @@ const DEVELOPMENT_DECK_CARD_COUNTS = {
   [CardEnum.RoadBuilding]: 2,
   [CardEnum.YearOfPlenty]: 2,
 } as const;
+export const NUM_DEV_CARDS = Object.values(DEVELOPMENT_DECK_CARD_COUNTS).reduce(
+  (a, b) => a + b,
+  0,
+);
 
 const PLAYER_INDEX = 1;
 const BANK_INDEX = 0;

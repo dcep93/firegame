@@ -1,3 +1,4 @@
+import { NUM_DEV_CARDS } from ".";
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
 import { FUTURE, sendToMainSocket } from "../handleMessage";
@@ -405,7 +406,10 @@ export const newGame = () => {
           },
           mechanicDevelopmentCardsState: {
             bankDevelopmentCards: {
-              cards: Array.from({ length: 25 }, () => CardEnum.DevelopmentBack),
+              cards: Array.from(
+                { length: NUM_DEV_CARDS },
+                () => CardEnum.DevelopmentBack,
+              ),
             },
             players: {
               [PlayerColor.Red]: {
