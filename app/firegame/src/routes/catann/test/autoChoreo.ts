@@ -18,14 +18,11 @@ export default async function autoChoreo(
       console.log(JSON.stringify(msg, null, 2));
       throw e;
     }
-    console.log(
-      "autoChoreo",
-      msg.data.sequence,
+    console.log("autoChoreo", {
+      [GAME_ACTION[msg.data.action]]: msg.data,
       i,
-      GAME_ACTION[msg.data.action],
-      msg.data.payload,
       nextReconnect,
-    );
+    });
     if (msg.data.sequence === stopClientDataSequence) return;
 
     if (msg.data.sequence === nextReconnect) {
