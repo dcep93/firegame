@@ -281,7 +281,7 @@ export const newRoomMe = (sessions: { selectedColor: string }[]) => {
   const availableColors = colorHelper.map(({ str }) => str);
   const takenColors = sessions.map(({ selectedColor }) => selectedColor);
   return {
-    roomSessionId: store.me.roomId,
+    roomSessionId: store.me.roomId.toString(),
     userSessionId: store.me.userId,
     userId: store.me.userId,
     isBot: false,
@@ -308,7 +308,7 @@ const colorHelper = Object.values(PlayerColor)
   }));
 
 export const newGame = () => {
-  const room: ReturnType<typeof newRoom> = firebaseData.ROOM;
+  const room: ReturnType<typeof newRoom> = firebaseData.ROOM!;
   const sessions = room.data.sessions;
   const mapState = window.__testOverrides?.mapState ?? newMapState();
   return {
@@ -316,7 +316,7 @@ export const newGame = () => {
     data: {
       type: GameStateUpdateType.BuildGame,
       payload: {
-        playerColor: PlayerColor.Red,
+        playerColor: PlayerColor.None,
         playOrder: sessions
           .map((s) => ({ v: Math.random(), s }))
           .sort((a, b) => a.v - b.v)
@@ -668,7 +668,7 @@ const newMapState = () => {
 
 export const startGame = () => {
   const newFirstGameState = () => {
-    const room = firebaseData.ROOM;
+    const room = firebaseData.ROOM!;
     return {
       id: State.GameStateUpdate.toString(),
       data: {
@@ -693,6 +693,12 @@ export const startGame = () => {
       payload: [],
     },
   });
+  const selectedColor = firebaseData.ROOM!.data.sessions.find(
+    (s) => s,
+  )!.selectedColor;
+  firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
+    ({ str }) => str === selectedColor,
+  )!.int;
   sendToMainSocket?.(firebaseData.GAME);
 };
 
@@ -701,8 +707,8 @@ export const spoofHostRoom = () => {
     firebaseData.GAME ?? {
       ...firebaseData.ROOM,
       data: {
-        ...firebaseData.ROOM.data,
-        sessions: (firebaseData.ROOM.data.sessions.slice() as any[]).sort(
+        ...firebaseData.ROOM!.data,
+        sessions: (firebaseData.ROOM!.data.sessions.slice() as any[]).sort(
           (a, b) => (a.userId === store.me.userId ? -1 : 1),
         ),
       },

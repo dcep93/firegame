@@ -41,9 +41,9 @@ window.addEventListener("message", (event) => {
 
 function handleClientUpdate(clientData: any) {
   Object.assign(
-    firebaseData.ROOM.data.sessions.find(
+    firebaseData.ROOM!.data.sessions.find(
       (s: any) => s.userId === store.me.userId,
-    ),
+    )!,
     clientData,
   );
   setFirebaseData(firebaseData, { handleClientUpdate: clientData });
@@ -191,15 +191,15 @@ export default function handleMessage(
       if (clientData.type.startsWith("set")) {
         const capitalKey = clientData.type.replace(/^set/, "");
         const key = `${capitalKey.charAt(0).toLowerCase()}${capitalKey.slice(1)}`;
-        firebaseData.ROOM.data[key] = clientData[key];
+        firebaseData.ROOM!.data[key] = clientData[key];
         setFirebaseData(firebaseData, { parsed: clientData });
         return sendResponse(spoofHostRoom());
       }
       if (clientData.type === "selectColor") {
-        firebaseData.ROOM.data.sessions.find(
+        firebaseData.ROOM!.data.sessions.find(
           (s: { roomSessionId: string }) =>
             s.roomSessionId === clientData.roomSessionId,
-        ).selectedColor = clientData.color;
+        )!.selectedColor = clientData.color;
         setFirebaseData(firebaseData, { parsed: clientData });
         return sendResponse(spoofHostRoom());
       }

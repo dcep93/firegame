@@ -5,6 +5,7 @@ import store from "../../../shared/store";
 import { sendCornerHighlights30 } from "./gameLogic";
 import { GameStateUpdateType, State } from "./gameLogic/CatannFilesEnums";
 import {
+  newGame,
   newRoom,
   newRoomMe,
   spoofHostRoom,
@@ -13,7 +14,10 @@ import {
 import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
 
-export var firebaseData: any = {};
+export var firebaseData: {
+  GAME?: ReturnType<typeof newGame>;
+  ROOM?: ReturnType<typeof newRoom>;
+} = {};
 let hasSentInitialGame = false;
 let lastGameStateSnapshot: string | null = null;
 
@@ -138,12 +142,12 @@ function receiveFirebaseDataCatann(catann: any) {
     return;
   }
   if (
-    !firebaseData.ROOM.data.sessions.find(
+    !firebaseData.ROOM!.data.sessions.find(
       (s: any) => s.userId === store.me.userId,
     )
   ) {
-    firebaseData.ROOM.data.sessions.push(
-      newRoomMe(firebaseData.ROOM.data.sessions),
+    firebaseData.ROOM!.data.sessions.push(
+      newRoomMe(firebaseData.ROOM!.data.sessions),
     );
     setFirebaseData(firebaseData, { newRoomMe: true });
     return;
