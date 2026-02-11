@@ -311,14 +311,29 @@ export const newGame = () => {
   const room: ReturnType<typeof newRoom> = firebaseData.ROOM!;
   const sessions = room.data.sessions;
   const mapState = window.__testOverrides?.mapState ?? newMapState();
-  const playOrder = sessions
-    .map((s) => ({ v: Math.random(), s }))
-    .sort((a, b) => a.v - b.v)
-    .map(({ s }) => s.selectedColor)
-    .map(
-      (selectedColor) =>
-        colorHelper.find(({ str }) => str === selectedColor)!.int,
+  const colorForSession = (selectedColor: string) =>
+    colorHelper.find(({ str }) => str === selectedColor)!.int;
+  const sessionColorEntries = sessions.map((session) => ({
+    session,
+    color: colorForSession(session.selectedColor),
+  }));
+  const buildByColor = <T,>(
+    build: (
+      color: PlayerColor,
+      session: (typeof sessions)[number],
+    ) => T,
+  ) =>
+    sessionColorEntries.reduce(
+      (acc, { color, session }) => {
+        acc[color] = build(color, session);
+        return acc;
+      },
+      {} as Record<PlayerColor, T>,
     );
+  const playOrder = sessionColorEntries
+    .map(({ color }) => ({ v: Math.random(), color }))
+    .sort((a, b) => a.v - b.v)
+    .map(({ color }) => color);
   return {
     id: State.GameStateUpdate.toString(),
     data: {
@@ -354,31 +369,27 @@ export const newGame = () => {
           tradeState: {
             activeOffers: {},
             closedOffers: {},
-            embargoState: {
-              [PlayerColor.Red]: {
-                activeEmbargosAgainst: [],
-              },
-            },
+            embargoState: buildByColor(() => ({
+              activeEmbargosAgainst: [],
+            })),
           },
-          playerStates: {
-            [PlayerColor.Red]: {
-              color: PlayerColor.Red,
-              victoryPointsState: {},
-              bankTradeRatiosState: {
-                [CardEnum.Lumber]: 4,
-                [CardEnum.Brick]: 4,
-                [CardEnum.Wool]: 4,
-                [CardEnum.Grain]: 4,
-                [CardEnum.Ore]: 4,
-              },
-              resourceCards: {
-                cards: [],
-              },
-              cardDiscardLimit: 7,
-              isConnected: true,
-              isTakingAction: false,
+          playerStates: buildByColor((color) => ({
+            color,
+            victoryPointsState: {},
+            bankTradeRatiosState: {
+              [CardEnum.Lumber]: 4,
+              [CardEnum.Brick]: 4,
+              [CardEnum.Wool]: 4,
+              [CardEnum.Grain]: 4,
+              [CardEnum.Ore]: 4,
             },
-          },
+            resourceCards: {
+              cards: [],
+            },
+            cardDiscardLimit: 7,
+            isConnected: true,
+            isTakingAction: false,
+          })),
           gameLogState: {
             "0": {
               text: {
@@ -393,21 +404,15 @@ export const newGame = () => {
             },
           },
           gameChatState: {},
-          mechanicSettlementState: {
-            [PlayerColor.Red]: {
-              bankSettlementAmount: 5,
-            },
-          },
-          mechanicCityState: {
-            [PlayerColor.Red]: {
-              bankCityAmount: 4,
-            },
-          },
-          mechanicRoadState: {
-            [PlayerColor.Red]: {
-              bankRoadAmount: 15,
-            },
-          },
+          mechanicSettlementState: buildByColor(() => ({
+            bankSettlementAmount: 5,
+          })),
+          mechanicCityState: buildByColor(() => ({
+            bankCityAmount: 4,
+          })),
+          mechanicRoadState: buildByColor(() => ({
+            bankRoadAmount: 15,
+          })),
           mechanicDevelopmentCardsState: {
             bankDevelopmentCards: {
               cards: Array.from(
@@ -415,23 +420,17 @@ export const newGame = () => {
                 () => CardEnum.DevelopmentBack,
               ),
             },
-            players: {
-              [PlayerColor.Red]: {
-                developmentCards: {
-                  cards: [],
-                },
-                developmentCardsUsed: [],
+            players: buildByColor(() => ({
+              developmentCards: {
+                cards: [],
               },
-            },
+              developmentCardsUsed: [],
+            })),
           },
-          mechanicLongestRoadState: {
-            [PlayerColor.Red]: {
-              longestRoad: 0,
-            },
-          },
-          mechanicLargestArmyState: {
-            [PlayerColor.Red]: {},
-          },
+          mechanicLongestRoadState: buildByColor(() => ({
+            longestRoad: 0,
+          })),
+          mechanicLargestArmyState: buildByColor(() => ({})),
           mechanicRobberState: {
             locationTileIndex: Object.entries(mapState.tileHexStates)
               .map(([indexStr, data]) => ({

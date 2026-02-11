@@ -13,6 +13,7 @@ import {
   LobbyState,
   MapPieceType,
   PlayerActionState,
+  PlayerColor,
   State,
   TileType,
   UserIcon,
@@ -2281,7 +2282,7 @@ const updateLongestRoadAchievement = (playerColor: number) => {
 
   const playerColors = Object.keys(playerStates)
     .map((colorKey) => Number.parseInt(colorKey, 10))
-    .filter((color) => Number.isFinite(color));
+    .filter((color) => Number.isFinite(color)) as PlayerColor[];
 
   playerColors.forEach((color) => {
     const previousState = gameState.mechanicLongestRoadState?.[color] ?? {};
@@ -2289,8 +2290,8 @@ const updateLongestRoadAchievement = (playerColor: number) => {
       ...previousState,
       longestRoad: calculateLongestRoad(color),
     };
-    if (gameState.mechanicLongestRoadState[color].hasLongestRoad) {
-      delete gameState.mechanicLongestRoadState[color].hasLongestRoad;
+    if ((gameState.mechanicLongestRoadState[color] as any).hasLongestRoad) {
+      delete (gameState.mechanicLongestRoadState[color] as any).hasLongestRoad;
     }
   });
 
