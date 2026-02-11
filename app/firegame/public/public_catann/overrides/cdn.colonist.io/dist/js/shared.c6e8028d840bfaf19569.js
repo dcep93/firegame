@@ -2371,7 +2371,7 @@
             this.getDetailsId(e.id),
           );
           t.style.display = "none";
-          const s = (0, a.Cr)(t, "game-details-td");
+          const s = (0, a.Cr)(t);
           s.colSpan = 6;
           const n = (0, a.Le)(s, "game-details-grid");
           ((e.setting = i.KN.deserialize(e.setting)),
@@ -3726,7 +3726,7 @@
       s.d(t, {
         $: () => i,
       });
-      const i = 290;
+      const i = 291;
     },
     13048: (e, t, s) => {
       "use strict";
@@ -4767,38 +4767,38 @@
         l = s(41931);
       const d = {
         strings: {
-          af: s.p + "locales/af_strings.995aea163e982373b2aa.json",
-          ar: s.p + "locales/ar_strings.832667677c55b9e52f95.json",
-          ca: s.p + "locales/ca_strings.642e23964e0cecd44d1f.json",
-          cs: s.p + "locales/cs_strings.0b68d1d0b12954a64703.json",
-          da: s.p + "locales/da_strings.5718b91a5285e5414e73.json",
-          de: s.p + "locales/de_strings.f86d4313abba2f34b734.json",
-          el: s.p + "locales/el_strings.055030f7f65e500033b6.json",
+          af: s.p + "locales/af_strings.f026b948f3748747d8b9.json",
+          ar: s.p + "locales/ar_strings.3db20ecc6e0bf31c6880.json",
+          ca: s.p + "locales/ca_strings.894f53c8cf42f49bdbf7.json",
+          cs: s.p + "locales/cs_strings.09dee279797c7261bdb4.json",
+          da: s.p + "locales/da_strings.6d6ea596a994cd1ecccd.json",
+          de: s.p + "locales/de_strings.fe189050114376502eab.json",
+          el: s.p + "locales/el_strings.1b5a51973adb37de0382.json",
           en: s(70925),
-          es: s.p + "locales/es_strings.cfa3e082c39af2994e50.json",
-          fi: s.p + "locales/fi_strings.57ff0e04420aea22b9b3.json",
-          fr: s.p + "locales/fr_strings.e48047d949df49455947.json",
-          he: s.p + "locales/he_strings.1e9f0d07d2ac46a9632f.json",
-          hi: s.p + "locales/hi_strings.97753a69354d7ceb7987.json",
-          hu: s.p + "locales/hu_strings.de613e5a24429b5ac442.json",
-          it: s.p + "locales/it_strings.7da066b0733f6ca535cf.json",
-          ja: s.p + "locales/ja_strings.7d5f2024777ae699cead.json",
-          ko: s.p + "locales/ko_strings.275958a9282c36632898.json",
-          nl: s.p + "locales/nl_strings.9424ced8931accdce34d.json",
-          no: s.p + "locales/no_strings.123b996123aec884b023.json",
-          pl: s.p + "locales/pl_strings.b54fd67f22183e84ca65.json",
-          "pt-BR": s.p + "locales/pt-BR_strings.9b34c825d7df30706057.json",
-          "pt-PT": s.p + "locales/pt-PT_strings.2d2f8bd7155fe938023f.json",
-          ro: s.p + "locales/ro_strings.431f2fd8cb35521f74da.json",
-          ru: s.p + "locales/ru_strings.908985e38bed195dce50.json",
-          sr: s.p + "locales/sr_strings.9c8b6bb0cd0a0a99baa9.json",
-          sv: s.p + "locales/sv_strings.e28f9031eb498ef7952d.json",
-          th: s.p + "locales/th_strings.aef6cad607881875fe77.json",
-          tr: s.p + "locales/tr_strings.91049b12a38be1cbdca4.json",
-          uk: s.p + "locales/uk_strings.99b96cc84156b24dc94b.json",
-          vi: s.p + "locales/vi_strings.e263ec475218a467d3c8.json",
-          "zh-CN": s.p + "locales/zh-CN_strings.daa65f2e19576191aa78.json",
-          "zh-TW": s.p + "locales/zh-TW_strings.1253a618ed8033aa4939.json",
+          es: s.p + "locales/es_strings.700d5da7e514a0bca01b.json",
+          fi: s.p + "locales/fi_strings.5df4462f7dc0eff21701.json",
+          fr: s.p + "locales/fr_strings.f51ed3ed38a68b4f122a.json",
+          he: s.p + "locales/he_strings.1cda6587d646cdd02685.json",
+          hi: s.p + "locales/hi_strings.76a6f64687a84caecb8d.json",
+          hu: s.p + "locales/hu_strings.c4b5734c0a1095598bf7.json",
+          it: s.p + "locales/it_strings.df5ca1d245ae0b6f4207.json",
+          ja: s.p + "locales/ja_strings.8a5ec7a56f126c3a151d.json",
+          ko: s.p + "locales/ko_strings.00f0b6c988c1d723d1e9.json",
+          nl: s.p + "locales/nl_strings.0960ee4687d6a0a15bb8.json",
+          no: s.p + "locales/no_strings.9a14d9370118e43369e9.json",
+          pl: s.p + "locales/pl_strings.7c625ffc701f0bab69bf.json",
+          "pt-BR": s.p + "locales/pt-BR_strings.9c79c7edb044fc2c279f.json",
+          "pt-PT": s.p + "locales/pt-PT_strings.8725bc01e24ee0d872ba.json",
+          ro: s.p + "locales/ro_strings.de247f1f69678a8076d0.json",
+          ru: s.p + "locales/ru_strings.e3e493fa30c020de3133.json",
+          sr: s.p + "locales/sr_strings.14bd1f1fcdb3abcae059.json",
+          sv: s.p + "locales/sv_strings.dbe78586d3eb07412bcc.json",
+          th: s.p + "locales/th_strings.c965676ef949064dbda9.json",
+          tr: s.p + "locales/tr_strings.93882bc0610e858346ab.json",
+          uk: s.p + "locales/uk_strings.bec78469704f7f6e1473.json",
+          vi: s.p + "locales/vi_strings.568197ce8ced3b3baafc.json",
+          "zh-CN": s.p + "locales/zh-CN_strings.e207305d77d5955758df.json",
+          "zh-TW": s.p + "locales/zh-TW_strings.14ad8b80ab1439db79a5.json",
         },
       };
       !(function (e) {
@@ -4937,6 +4937,8 @@
         (r.hideLandscapeForNewPlayers = window.hideLandscapeForNewPlayers),
         (r.shouldDisableStoreOnAndroidMobile =
           window.shouldDisableStoreOnAndroidMobile),
+        (r.shouldDisableIAPForExternalUsersOnMobile =
+          window.shouldDisableIAPForExternalUsersOnMobile),
         (r.discordActivityMobileOrientation =
           window.discordActivityMobileOrientation));
     },
@@ -5935,6 +5937,10 @@
       e.exports =
         s.p + "assets/knight_move_mysticblue.e72657ccfe1bf9cebc5b.svg";
     },
+    21793: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/ab_shuffle.e4ad8f2661e2dc3a94ff.png";
+    },
     22067: (e, t, s) => {
       "use strict";
       s.d(t, {
@@ -6411,10 +6417,13 @@
             "profile_popup_sticky_player_info_icon",
           );
           if (null == e) return;
-          const s = h.Zt.getMembershipProduct(e).lobbyImage,
-            i = (0, n.zO)(t, s, "profile-membership-icon");
-          ((i.style.display = "block"),
-            (i.id = "profile_popup_sticky_player_membership_icon"));
+          const s = h.Zt.getMembershipProduct(e).lobbyImage;
+          (0, n.zO)(
+            t,
+            s,
+            "profile-membership-icon",
+            "profile_popup_sticky_player_membership_icon",
+          );
         }
         setHistory(e) {
           const { gameDatas: t, profileUserId: s } = e;
@@ -7459,13 +7468,13 @@
       function M(e) {
         var t, s, u, h, p;
         const m = x(e),
-          g = e == r.Nw.UnrankedShuffle;
-        if (!m && !g)
-          return {
+          g = e == r.Nw.UnrankedShuffle,
+          b = {
             isEligible: !0,
             createPopup: void 0,
             shouldDisableCardIfNotEligible: !0,
           };
+        if (!m && !g) return b;
         if (
           !(null === (t = o._.userState) || void 0 === t
             ? void 0
@@ -7477,13 +7486,13 @@
             shouldDisableCardIfNotEligible: !0,
           };
         if (g) {
-          var b;
+          var v;
           const e = n.FP.NumberOfGamesToUnlockRanked;
           if (
             !(
-              (null === (b = o._.userState) || void 0 === b
+              (null === (v = o._.userState) || void 0 === v
                 ? void 0
-                : b.totalCompletedGameCount) >= e
+                : v.totalCompletedGameCount) >= e
             )
           ) {
             const t = new i.ShuffleLocked(
@@ -7501,11 +7510,7 @@
             r = null != t && t.totalGameCount < t.freeGamesTotalCount,
             a = !1 === (null == t ? void 0 : t.playedToday);
           return s || r || a
-            ? {
-                isEligible: !0,
-                createPopup: void 0,
-                shouldDisableCardIfNotEligible: !0,
-              }
+            ? b
             : {
                 isEligible: !1,
                 createPopup: () => {
@@ -7515,8 +7520,8 @@
                 shouldDisableCardIfNotEligible: !1,
               };
         }
-        const v = G(e),
-          S = (0, y.kV)(
+        const S = G(e),
+          k = (0, y.kV)(
             null === (s = o._.userState) || void 0 === s ? void 0 : s.items,
             null === (u = o._.userState) || void 0 === u
               ? void 0
@@ -7529,7 +7534,7 @@
               ? void 0
               : p.ckFreeGameUntil,
           );
-        if (v && S)
+        if (S && k)
           return {
             isEligible: !1,
             createPopup: () => {
@@ -7538,18 +7543,12 @@
             },
             shouldDisableCardIfNotEligible: !0,
           };
-        if (!d.z.userEligibleForRanked()) {
-          const e = n.FP.NumberOfGamesToUnlockRanked,
-            t = new i.RankedLocked(o._.userState.totalCompletedGameCount, e);
-          return {
-            isEligible: !1,
-            createPopup: () => D(t),
-            shouldDisableCardIfNotEligible: !0,
-          };
-        }
+        if (d.z.userEligibleForRanked()) return b;
+        const C = n.FP.NumberOfGamesToUnlockRanked,
+          P = new i.RankedLocked(o._.userState.totalCompletedGameCount, C);
         return {
-          isEligible: !0,
-          createPopup: void 0,
+          isEligible: !1,
+          createPopup: () => D(P),
           shouldDisableCardIfNotEligible: !0,
         };
       }
@@ -10986,7 +10985,7 @@
             case i.Qy.Classic56P:
             case i.Qy.Classic78P:
               return {
-                key: "strings:homePage.shuffleQueue.maps.standard",
+                key: "strings:homePage.shuffleQueue.maps.base",
               };
             case i.Qy.Classic4PRandom:
               return {
@@ -11150,110 +11149,7 @@
       function d(e, t) {
         const s = (function (e) {
           const t = r.X.getMapDataForMap(e);
-          if (!t) return;
-          switch (e) {
-            case i.Qy.Classic4P:
-              return o.am.MapClassic4PPreview;
-            case i.Qy.Classic56P:
-              return o.am.MapClassic56PPreview;
-            case i.Qy.Classic78P:
-              return o.am.MapClassic78PPreview;
-            case i.Qy.Classic4PRandom:
-              return o.am.MapRandomBasePreview;
-            case i.Qy.Earth:
-            case i.Qy.EarthSeafarers:
-              return o.am.MapEarthPreview;
-            case i.Qy.USA:
-              return o.am.MapUSAPreview;
-            case i.Qy.UK:
-            case i.Qy.UKSeafarers:
-              return o.am.MapUKPreview;
-            case i.Qy.Diamond:
-              return o.am.MapDiamondPreview;
-            case i.Qy.Gear:
-              return o.am.MapGearPreview;
-            case i.Qy.Lakes:
-              return o.am.MapLakesPreview;
-            case i.Qy.Pond:
-              return o.am.MapPondPreview;
-            case i.Qy.Twirl:
-              return o.am.MapTwirlPreview;
-            case i.Qy.ShuffleBoard:
-              return o.am.MapShuffleBoardPreview;
-            case i.Qy.BlackForest:
-              return o.am.MapBlackForestPreview;
-            case i.Qy.Volcano:
-              return o.am.MapVolcanoPreview;
-            case i.Qy.GoldRush:
-              return o.am.MapGoldRushPreview;
-            case i.Qy.KingOfTheHill:
-              return o.am.MapKingOfTheHillPreview;
-            case i.Qy.Circle:
-              return o.am.MapCirclePreview;
-            case i.Qy.Kite:
-              return o.am.MapKitePreview;
-            case i.Qy.Romania:
-              return o.am.MapRomaniaPreview;
-            case i.Qy.MiniBase:
-              return o.am.MapMiniBasePreview;
-            case i.Qy.Monopoly:
-              return o.am.MapMonopolyPreview;
-            case i.Qy.MountainOfRiches:
-              return o.am.MapMountainOfRichesPreview;
-            case i.Qy.Doggo:
-              return o.am.MapDoggoPreview;
-            case i.Qy.Duel:
-              return o.am.MapDuelPreview;
-            case i.Qy.TradeIslands:
-            case i.Qy.TradeIslandsSeafarers:
-              return o.am.MapTradeIslandsPreview;
-            case i.Qy.Vietnam:
-              return o.am.MapVietnamPreview;
-            case i.Qy.TurningTidesSeafarers:
-            case i.Qy.TurningTidesClassic:
-              return o.am.MapTurningTidesPreview;
-            case i.Qy.TwoIsles:
-              return o.am.MapTwoIslesPreview;
-            case i.Qy.JellyFish:
-              return o.am.MapJellyFishPreview;
-            case i.Qy.Istanbul:
-            case i.Qy.IstanbulSeafarers:
-              return o.am.MapIstanbulPreview;
-            case i.Qy.Europe:
-            case i.Qy.EuropeSeafarers:
-              return o.am.MapEuropePreview;
-            case i.Qy.Stripes:
-              return o.am.MapStripesPreview;
-            case i.Qy.MonopolyIslands:
-            case i.Qy.MonopolyIslandsSeafarers:
-              return o.am.MapMonopolyIslandsPreview;
-            case i.Qy.SS1HeadingForNewShores3P:
-              return o.am.MapSS1HeadingForNewShores3PPreview;
-            case i.Qy.SS1HeadingForNewShores4P:
-              return o.am.MapSS1HeadingForNewShores4PPreview;
-            case i.Qy.SS1HeadingForNewShores56P:
-              return o.am.MapSS1HeadingForNewShores56PPreview;
-            case i.Qy.SS2FourIslands3P:
-              return o.am.MapSS2FourIslands3PPreview;
-            case i.Qy.SS2FourIslands4P:
-              return o.am.MapSS2FourIslands4PPreview;
-            case i.Qy.SS2SixIslands56P:
-              return o.am.MapSS2SixIslands56PPreview;
-            case i.Qy.SS3FogIslands3P:
-              return o.am.MapSS3FogIslands3PPreview;
-            case i.Qy.SS3FogIslands4P:
-              return o.am.MapSS3FogIslands4PPreview;
-            case i.Qy.SS3FogIslands56P:
-              return o.am.MapSS3FogIslands56PPreview;
-            case i.Qy.SS4ThroughTheDesert3P:
-              return o.am.MapSS4ThroughTheDesert3PPreview;
-            case i.Qy.SS4ThroughTheDesert4P:
-              return o.am.MapSS4ThroughTheDesert4PPreview;
-            case i.Qy.SS4ThroughTheDesert56P:
-              return o.am.MapSS4ThroughTheDesert56PPreview;
-            default:
-              return;
-          }
+          return null == t ? void 0 : t.image;
         })(e);
         if (null == s) return;
         const c = (function (e) {
@@ -12600,47 +12496,37 @@
             this.handlePlayButtonClick();
           });
         }
-        static addNewBadgeIfNeeded(e) {
-          var t, s;
-          const i =
-              null === (t = A._.userState) || void 0 === t
+        static addNewBadgeIfNeeded(e, t = !1) {
+          var s, i;
+          const r =
+              null === (s = A._.userState) || void 0 === s
                 ? void 0
-                : t.isLoggedIn,
-            r =
-              null === (s = I.y.shufflePlayerData) || void 0 === s
+                : s.isLoggedIn,
+            o =
+              null === (i = I.y.shufflePlayerData) || void 0 === i
                 ? void 0
-                : s.totalGameCount;
-          if (i && 0 != r) return;
+                : i.totalGameCount;
+          if (r && 0 != o) return;
           if (null != e.querySelector(".badge-red")) return;
-          const o = B.r.isUserOnMobileAppOrWeb,
-            a = (0, n.Le)(e, o ? "badge-red badge-sm" : "badge-red badge-md");
-          (0, n.Wr)(
-            a,
-            {
-              key: "strings:homePage.matchmakingSelect.newBadge",
-            },
-            "",
-          );
+          const a = B.r.isUserOnMobileAppOrWeb,
+            c = (0, n.Le)(e, a ? "badge-red badge-sm" : "badge-red badge-md");
+          (t && c.classList.add("badge"),
+            (0, n.Wr)(
+              c,
+              {
+                key: "strings:homePage.matchmakingSelect.newBadge",
+              },
+              "",
+            ));
         }
         createBotCards() {
-          var e;
-          const t = (0, k.q7)(S._M.BeginnerMode),
-            s = (0, k.q7)(S._M.ColonistRush),
-            i = (0, k.q7)(S._M.Easy),
-            n = (0, k.q7)(S._M.Medium),
-            r = (0, k.q7)(S._M.Hard),
-            u = A._.abTests.BOT_GAME_TAB_CTA;
-          var h;
-          const p =
-              (null !==
-                (h =
-                  null === (e = A._.userState) || void 0 === e
-                    ? void 0
-                    : e.totalCompletedGameCount) && void 0 !== h
-                ? h
-                : 0) >= 10,
-            m = [
-              "COLONIST_RUSH" === u && p
+          const e = (0, k.q7)(S._M.BeginnerMode),
+            t = (0, k.q7)(S._M.ColonistRush),
+            s = (0, k.q7)(S._M.Easy),
+            i = (0, k.q7)(S._M.Medium),
+            n = (0, k.q7)(S._M.Hard),
+            r = [
+              "COLONIST_RUSH" === A._.abTests.BOT_GAME_TAB_CTA_V2
                 ? {
                     icon: a,
                     category: 0,
@@ -12648,8 +12534,8 @@
                       key: "strings:homePage.matchmakingSelect.cards.bots.colonistRush",
                     },
                     time: (0, k.h$)(S._M.ColonistRush),
-                    playerCount: s.playerCount,
-                    botCount: s.botCount,
+                    playerCount: t.playerCount,
+                    botCount: t.botCount,
                     matchType: S._M.ColonistRush,
                   }
                 : {
@@ -12659,8 +12545,8 @@
                       key: "strings:homePage.matchmakingSelect.cards.bots.beginner",
                     },
                     time: (0, k.h$)(S._M.BeginnerMode),
-                    playerCount: t.playerCount,
-                    botCount: t.botCount,
+                    playerCount: e.playerCount,
+                    botCount: e.botCount,
                     matchType: S._M.BeginnerMode,
                   },
               {
@@ -12670,8 +12556,8 @@
                   key: "strings:homePage.matchmakingSelect.cards.bots.easy",
                 },
                 time: (0, k.h$)(S._M.Easy),
-                playerCount: i.playerCount,
-                botCount: i.botCount,
+                playerCount: s.playerCount,
+                botCount: s.botCount,
                 matchType: S._M.Easy,
               },
               {
@@ -12681,8 +12567,8 @@
                   key: "strings:homePage.matchmakingSelect.cards.bots.medium",
                 },
                 time: (0, k.h$)(S._M.Medium),
-                playerCount: n.playerCount,
-                botCount: n.botCount,
+                playerCount: i.playerCount,
+                botCount: i.botCount,
                 matchType: S._M.Medium,
               },
               {
@@ -12692,12 +12578,12 @@
                   key: "strings:homePage.matchmakingSelect.cards.bots.hard",
                 },
                 time: (0, k.h$)(S._M.Hard),
-                playerCount: r.playerCount,
-                botCount: r.botCount,
+                playerCount: n.playerCount,
+                botCount: n.botCount,
                 matchType: S._M.Hard,
               },
             ];
-          for (const e of m) this.generateCard(e);
+          for (const e of r) this.generateCard(e);
         }
         createCasualCards() {
           var e, t;
@@ -13303,7 +13189,8 @@
               this.resetRankedCards();
             }),
             I.y.registerChangeListener(() => {
-              (E.addNewBadgeIfNeeded(this.casualTab), this.updateShuffleCard());
+              (E.addNewBadgeIfNeeded(this.casualTab, !0),
+                this.updateShuffleCard());
             }));
         }
       }
@@ -14193,9 +14080,9 @@
       var K = s(53059);
       const V = s.p + "assets/icon_settings.163a70b3a0e246d006c2.svg",
         q = s.p + "assets/icon_chat.fc7ab020f8054b3ee525.svg",
-        Q = s.p + "assets/icon_log.ab006193243703eee2ff.svg",
-        $ = s.p + "assets/icon_mm_search.e9d439fb90e5019305a4.svg",
-        z = s.p + "assets/icon_lock.05ad30a9974596547b00.svg",
+        $ = s.p + "assets/icon_log.ab006193243703eee2ff.svg",
+        z = s.p + "assets/icon_mm_search.e9d439fb90e5019305a4.svg",
+        Q = s.p + "assets/icon_lock.05ad30a9974596547b00.svg",
         j = s.p + "assets/icon_lock_outlined.29c543e4eadcbe5a52af.svg",
         Y = s.p + "assets/icon_lock_slanted.2345d6d07c54d14c8420.svg";
       var X = s(22466);
@@ -14249,9 +14136,9 @@
       const Ke = s.p + "assets/map_5_6_player_preview.9231bc7c8856796b3d1e.png",
         Ve = s.p + "assets/map_7_8_player_preview.76e8a11424b844cdd7b2.png",
         qe = s.p + "assets/map_ss1_3p_preview.fd7f6a61dd46c906d0b4.png",
-        Qe = s.p + "assets/map_ss1_4p_preview.f653a5d9e5f66cdea95c.png",
-        $e = s.p + "assets/map_ss1_6p_preview.ece955cd7e19ccca2845.png",
-        ze = s.p + "assets/map_ss2_3p_preview.38a5bc6db123ec7b4271.png",
+        $e = s.p + "assets/map_ss1_4p_preview.f653a5d9e5f66cdea95c.png",
+        ze = s.p + "assets/map_ss1_6p_preview.ece955cd7e19ccca2845.png",
+        Qe = s.p + "assets/map_ss2_3p_preview.38a5bc6db123ec7b4271.png",
         je = s.p + "assets/map_ss2_4p_preview.5bdb8f299cc96689771e.png",
         Ye = s.p + "assets/map_ss2_6p_preview.d3a75f9e4250cbf77765.png",
         Xe = s.p + "assets/map_ss3_3p_preview.c99eaafe2a0298ac3412.png",
@@ -14315,9 +14202,9 @@
         Kt = s.p + "assets/store_color_pink.8e06e7c33fafc81c4fed.png",
         Vt = s.p + "assets/store_icon_membership.607ebfe3bbe6fad775cf.svg";
       var qt = s(68282),
-        Qt = s(92626),
-        $t = s(83078);
-      const zt = s.p + "assets/icon_christmas_hat.791d53a00b2331420a49.svg";
+        $t = s(92626),
+        zt = s(83078);
+      const Qt = s.p + "assets/icon_christmas_hat.791d53a00b2331420a49.svg";
       var jt = s(13279),
         Yt = s(59011),
         Xt = s(10200),
@@ -14369,9 +14256,9 @@
         Ks = s(65019),
         Vs = s(16208),
         qs = s(87541),
-        Qs = s(85424),
-        $s = s(50276),
-        zs = s(88429),
+        $s = s(85424),
+        zs = s(50276),
+        Qs = s(88429),
         js = s(98734),
         Ys = s(73697),
         Xs = s(24460),
@@ -14432,9 +14319,9 @@
         Ki = s(61495),
         Vi = s(7325),
         qi = s(16508),
-        Qi = s(2330),
-        $i = s(2928),
-        zi = s(48834),
+        $i = s(2330),
+        zi = s(2928),
+        Qi = s(48834),
         ji = s(48295),
         Yi = s(82969),
         Xi = s(96197),
@@ -14454,7 +14341,7 @@
         hn = s.p + "assets/badge_tournament_s11_first.d9cc9cf4ed06a6623b99.svg",
         pn = s.p + "assets/badge_tournament_4p.dac5e83a3b63cfe4bacb.svg",
         mn = s.p + "assets/banner_member.cfe69c53918ea61fa7fb.png",
-        gn = s.p + "assets/banner_shuffle.83423b8968ca8c59d43f.png";
+        gn = s.p + "assets/banner_shuffle.84b948bdc8e749330727.png";
       var fn = s(21099),
         yn = s(8878),
         bn = s(96396),
@@ -14485,9 +14372,9 @@
         Kn = s(47538),
         Vn = s(6818),
         qn = s(11773),
-        Qn = s(88834),
-        $n = s(32663),
-        zn = s(70248),
+        $n = s(88834),
+        zn = s(32663),
+        Qn = s(70248),
         jn = s(77999),
         Yn = s(14466),
         Xn = s(73461),
@@ -14732,11 +14619,11 @@
             case r.am.Chat:
               return q;
             case r.am.Log:
-              return Q;
-            case r.am.MatchmakingSearch:
               return $;
-            case r.am.Lock:
+            case r.am.MatchmakingSearch:
               return z;
+            case r.am.Lock:
+              return Q;
             case r.am.LockOutlined:
               return j;
             case r.am.LockSlanted:
@@ -14842,11 +14729,11 @@
             case r.am.MapSS1HeadingForNewShores3PPreview:
               return qe;
             case r.am.MapSS1HeadingForNewShores4PPreview:
-              return Qe;
-            case r.am.MapSS1HeadingForNewShores56PPreview:
               return $e;
-            case r.am.MapSS2FourIslands3PPreview:
+            case r.am.MapSS1HeadingForNewShores56PPreview:
               return ze;
+            case r.am.MapSS2FourIslands3PPreview:
+              return Qe;
             case r.am.MapSS2FourIslands4PPreview:
               return je;
             case r.am.MapSS2SixIslands56PPreview:
@@ -14949,11 +14836,11 @@
             case r.am.IconSettlerHat:
               return qt;
             case r.am.IconColonistHat:
-              return Qt;
-            case r.am.IconFounderHat:
               return $t;
-            case r.am.IconChristmasHat:
+            case r.am.IconFounderHat:
               return zt;
+            case r.am.IconChristmasHat:
+              return Qt;
             case r.am.IconRobberSanta:
               return jt;
             case r.am.IconRobberLunar:
@@ -15057,11 +14944,11 @@
             case r.am.CityOrange:
               return qs;
             case r.am.CityBlack:
-              return Qs;
-            case r.am.CitySilver:
               return $s;
-            case r.am.CityGold:
+            case r.am.CitySilver:
               return zs;
+            case r.am.CityGold:
+              return Qs;
             case r.am.CityWhite:
               return js;
             case r.am.CityPurple:
@@ -15167,11 +15054,11 @@
             case r.am.FastForward:
               return qi;
             case r.am.FastForwardToEnd:
-              return Qi;
-            case r.am.X05:
               return $i;
-            case r.am.X1:
+            case r.am.X05:
               return zi;
+            case r.am.X1:
+              return Qi;
             case r.am.X2:
               return ji;
             case r.am.X4:
@@ -15255,10 +15142,10 @@
           [i.DS.Blue]: Ks,
           [i.DS.Orange]: qs,
           [i.DS.Green]: Vs,
-          [i.DS.Black]: Qs,
+          [i.DS.Black]: $s,
           [i.DS.Bronze]: Ct,
-          [i.DS.Silver]: $s,
-          [i.DS.Gold]: zs,
+          [i.DS.Silver]: zs,
+          [i.DS.Gold]: Qs,
           [i.DS.White]: js,
           [i.DS.Purple]: Ys,
           [i.DS.MysticBlue]: Xs,
@@ -15302,9 +15189,9 @@
           [i.DS.Green]: Kn,
           [i.DS.Black]: Vn,
           [i.DS.Bronze]: qn,
-          [i.DS.Silver]: Qn,
-          [i.DS.Gold]: $n,
-          [i.DS.White]: zn,
+          [i.DS.Silver]: $n,
+          [i.DS.Gold]: zn,
+          [i.DS.White]: Qn,
           [i.DS.Purple]: jn,
           [i.DS.MysticBlue]: Yn,
           [i.DS.Pink]: Xn,
@@ -17610,9 +17497,9 @@
           K = "beginnerModeLevel",
           V = "giftMetadataId",
           q = "userState",
-          Q = "language",
-          $ = "lastselectedmatchmakingmode";
-        var z;
+          $ = "language",
+          z = "lastselectedmatchmakingmode";
+        var Q;
         function j() {
           const e = i.eT.Level1,
             t = c.get(K);
@@ -17621,10 +17508,10 @@
         function Y(e) {
           c.set(q, JSON.stringify(e));
         }
-        (((z = e.PowerPreference || (e.PowerPreference = {})).Low =
+        (((Q = e.PowerPreference || (e.PowerPreference = {})).Low =
           "low-power"),
-          (z.Default = "default"),
-          (z.High = "high-performance"),
+          (Q.Default = "default"),
+          (Q.High = "high-performance"),
           (e.setLogRocket = function (e) {
             c.set(m, e);
           }),
@@ -17940,12 +17827,12 @@
           }),
           (e.getLanguage = function () {
             var e;
-            return null !== (e = c.get(Q)) && void 0 !== e
+            return null !== (e = c.get($)) && void 0 !== e
               ? e
               : o.F2.defaultLanguage;
           }),
           (e.setLanguage = function (e) {
-            (c.set(Q, e),
+            (c.set($, e),
               (async function (e) {
                 if ("serviceWorker" in navigator) {
                   var t;
@@ -17984,7 +17871,7 @@
           }),
           (e.setLastSelectedMatchmakingMode = function (e) {
             c.set(
-              $,
+              z,
               JSON.stringify({
                 category: e.category,
                 matchType: e.matchType,
@@ -17992,7 +17879,7 @@
             );
           }),
           (e.getLastSelectedMatchmakingMode = function () {
-            const e = c.get($);
+            const e = c.get(z);
             if (null == e) return null;
             try {
               return JSON.parse(e);
@@ -22143,7 +22030,7 @@
         hK: () => L,
         hd: () => B,
         FK: () => I,
-        qD: () => Q,
+        qD: () => $,
         Jt: () => E,
         bZ: () => M,
         bE: () => U,
@@ -22157,7 +22044,7 @@
         Ke: () => w,
         rf: () => R,
         XP: () => F,
-        yI: () => $,
+        yI: () => z,
         G: () => N,
         NH: () => x,
         SV: () => G,
@@ -22165,7 +22052,7 @@
         yT: () => W,
         Zc: () => ne,
         jU: () => X,
-        b6: () => z,
+        b6: () => Q,
         Ms: () => Z,
         xU: () => oe,
         lt: () => J,
@@ -22728,7 +22615,7 @@
             (this.activeInStore = !1));
         }
       }
-      class Q extends r.k {
+      class $ extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -22741,7 +22628,7 @@
             (this.activeInStore = !1));
         }
       }
-      class $ extends r.k {
+      class z extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Icon),
@@ -22757,7 +22644,7 @@
       r.k;
       r.k;
       r.k;
-      class z extends r.k {
+      class Q extends r.k {
         constructor(...e) {
           (super(...e),
             (this.category = i.n9.Map),
@@ -24059,7 +23946,7 @@
       var q = s(70970);
       alert("__socketCatannMessages");
       window.__socketCatannMessages = [];
-      class Q {
+      class $ {
         isSocketOpen() {
           var e;
           return (
@@ -24147,7 +24034,6 @@
             trigger: "serverData",
             data: JSON.parse(JSON.stringify(t)),
           });
-
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
               "======",
@@ -24186,7 +24072,7 @@
             (this.onClose = i));
         }
       }
-      var $ = (function (e) {
+      var z = (function (e) {
         return (
           (e[(e.RouteToServerType = 2)] = "RouteToServerType"),
           (e[(e.RouteToServerDirect = 3)] = "RouteToServerDirect"),
@@ -24195,9 +24081,9 @@
         );
       })({});
       new TextDecoder();
-      const z = new TextEncoder();
+      const Q = new TextEncoder();
       function j(e, t, s, i) {
-        const n = z.encode(s),
+        const n = Q.encode(s),
           r = new Uint8Array(3 + n.byteLength + i.byteLength),
           o = new DataView(r.buffer);
         return (
@@ -24214,7 +24100,7 @@
       if (837 != s.j) var Z = s(18628);
       class J {
         sendToServer(e, t, s, i = !1) {
-          if (t) this.send($.RouteToServerDirect, e, t, s, i);
+          if (t) this.send(z.RouteToServerDirect, e, t, s, i);
           else
             try {
               const t = new Error("Direct to server message has no recipient");
@@ -24224,14 +24110,14 @@
             }
         }
         sendToServerType(e, t, s, i = !1) {
-          this.send($.RouteToServerType, e, t, s, i);
+          this.send(z.RouteToServerType, e, t, s, i);
         }
         sendNoop() {
-          this.send($.SocketRouter, b.lo.Noop, "", {}, !1);
+          this.send(z.SocketRouter, b.lo.Noop, "", {}, !1);
         }
         sendCloseSocket(e) {
           const t = new Uint8Array([e - 4e3]),
-            s = j($.SocketRouter, b.lo.CloseSocket, "", t);
+            s = j(z.SocketRouter, b.lo.CloseSocket, "", t);
           this.socket.send(s);
         }
         sendPing(e) {
@@ -24241,7 +24127,7 @@
               timestamp: e,
             },
           };
-          this.send($.SocketRouter, b.lo.Echo, "", t, !1);
+          this.send(z.SocketRouter, b.lo.Echo, "", t, !1);
         }
         onSessionEstablished() {
           this.sessionWasEstablished = !0;
@@ -24488,7 +24374,7 @@
             this.registerSocketCloseObserver(() =>
               this.reconnectionController.startReconnecting(),
             ),
-            (this.socket = new Q(
+            (this.socket = new $(
               e,
               () => this.triggerSessionEstablishedObservers(),
               (e, t) => this.handleStateUpdate(e, t),
@@ -25495,7 +25381,7 @@
                   playOrderSelectionActive: t.playOrderSelectionActive,
                   minimumKarma: t.minimumKarma,
                   modeSetting: qe[t.gameMode],
-                  mapSetting: $e[t.map],
+                  mapSetting: ze[t.map],
                   diceSetting: je[t.diceType],
                   victoryPointsToWin: t.victoryPointsToWin,
                   cardDiscardLimit: t.cardDiscardLimit,
@@ -25672,12 +25558,12 @@
         }
         setMap(e) {
           this.protocol.send("setMap", {
-            map: Qe[e],
+            map: $e[e],
           });
         }
         setDiceType(e) {
           this.protocol.send("setDiceType", {
-            diceType: ze[e],
+            diceType: Qe[e],
           });
         }
         setVictoryPointsToWin(e) {
@@ -25794,7 +25680,7 @@
           beginnerModeClassic4P: b.p9.BeginnerModeClassic4P,
           colonistRush: b.p9.ColonistRush4P,
         },
-        Qe = {
+        $e = {
           [b.Qy.Classic4P]: "classic4P",
           [b.Qy.TutorialClassic4P]: "tutorialClassic4P",
           [b.Qy.Classic4PRandom]: "classic4PRandom",
@@ -25859,7 +25745,7 @@
           [b.Qy.CampaignRoadRace]: "campaignRoadRace",
           [b.Qy.CampaignRoadRace2]: "campaignRoadRace2",
         },
-        $e = {
+        ze = {
           classic4P: b.Qy.Classic4P,
           tutorialClassic4P: b.Qy.TutorialClassic4P,
           classic4PRandom: b.Qy.Classic4PRandom,
@@ -25924,7 +25810,7 @@
           campaignRoadRace: b.Qy.CampaignRoadRace,
           campaignRoadRace2: b.Qy.CampaignRoadRace2,
         },
-        ze = {
+        Qe = {
           [b.ZP.Random]: "random",
           [b.ZP.Balanced]: "balanced",
           [b.ZP.StressTestSequence]: "stressTestSequence",
@@ -26468,9 +26354,9 @@
         K = s(51839),
         V = s(99059),
         q = s(88112),
-        Q = s(66730),
-        $ = s(23566),
-        z = s(84317),
+        $ = s(66730),
+        z = s(23566),
+        Q = s(84317),
         j = s(10297),
         Y = s(30762),
         X = s(1176),
@@ -26530,10 +26416,10 @@
           s.p + "assets/knight_level2_active_bronze.39966c740c2f7c365441.svg",
         qe =
           s.p + "assets/knight_level3_active_bronze.1f27fe71a7f7111db136.svg";
-      var Qe = s(11773);
-      const $e =
+      var $e = s(11773);
+      const ze =
           s.p + "assets/knight_level2_inactive_bronze.fdd25be6764e9a2ba506.svg",
-        ze =
+        Qe =
           s.p + "assets/knight_level3_inactive_bronze.f64a490e885c953a8313.svg";
       var je = s(3700);
       const Ye =
@@ -26618,10 +26504,10 @@
       const Vt =
           s.p + "assets/knight_level2_active_pink.e490bdcce900686629a7.svg",
         qt = s.p + "assets/knight_level3_active_pink.152fabe7bf7787e6b4e6.svg";
-      var Qt = s(73461);
-      const $t =
+      var $t = s(73461);
+      const zt =
           s.p + "assets/knight_level2_inactive_pink.cf0e3addcad4cc996b9b.svg",
-        zt =
+        Qt =
           s.p + "assets/knight_level3_inactive_pink.6cab8466546cf52d4ae8.svg",
         jt =
           s.p + "assets/icon_square_framed_politics.ecd63a7de3319a5288e6.svg",
@@ -26836,9 +26722,9 @@
             ":house:": os(Zt.j.settlementsByColor[e], ":house:"),
             ":city:": os(Zt.j.citiesByColor[e], "city"),
             ":city_wall:": os(Zt.j.cityWallsByColor[e], "city wall"),
-            ":metropolis_science:": os(Q, "metropolis_science"),
-            ":metropolis_trade:": os($, "metropolis_trade"),
-            ":metropolis_politics:": os(z, "metropolis_politics"),
+            ":metropolis_science:": os($, "metropolis_science"),
+            ":metropolis_trade:": os(z, "metropolis_trade"),
+            ":metropolis_politics:": os(Q, "metropolis_politics"),
             ":private:": os(j, ""),
             ":public:": os(Y, ""),
             ":mail:": os(X, ""),
@@ -26892,9 +26778,9 @@
             ":knight_active_level1_bronze:": os(Ke, "Knight"),
             ":knight_active_level2_bronze:": os(Ve, "Knight"),
             ":knight_active_level3_bronze:": os(qe, "Knight"),
-            ":knight_inactive_level1_bronze:": os(Qe, "Knight"),
-            ":knight_inactive_level2_bronze:": os($e, "Knight"),
-            ":knight_inactive_level3_bronze:": os(ze, "Knight"),
+            ":knight_inactive_level1_bronze:": os($e, "Knight"),
+            ":knight_inactive_level2_bronze:": os(ze, "Knight"),
+            ":knight_inactive_level3_bronze:": os(Qe, "Knight"),
             ":knight_active_level1_gold:": os(je, "Knight"),
             ":knight_active_level2_gold:": os(Ye, "Knight"),
             ":knight_active_level3_gold:": os(Xe, "Knight"),
@@ -26946,9 +26832,9 @@
             ":knight_active_level1_pink:": os(Kt, "Knight"),
             ":knight_active_level2_pink:": os(Vt, "Knight"),
             ":knight_active_level3_pink:": os(qt, "Knight"),
-            ":knight_inactive_level1_pink:": os(Qt, "Knight"),
-            ":knight_inactive_level2_pink:": os($t, "Knight"),
-            ":knight_inactive_level3_pink:": os(zt, "Knight"),
+            ":knight_inactive_level1_pink:": os($t, "Knight"),
+            ":knight_inactive_level2_pink:": os(zt, "Knight"),
+            ":knight_inactive_level3_pink:": os(Qt, "Knight"),
             ":icon_square_framed_politics:": os(jt, "politics square", 0.8),
             ":icon_square_framed_science:": os(Yt, "science square", 0.8),
             ":icon_square_framed_trade:": os(Xt, "trade square", 0.8),
@@ -27057,6 +26943,10 @@
           return ((t.id = e.id), t);
         }
       }
+    },
+    68106: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/lobby_ad_shuffle.6beaf95e524cebda857a.png";
     },
     68282: (e, t, s) => {
       "use strict";
@@ -27582,7 +27472,7 @@
     },
     70925: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "locales/en_strings.6ddc6ad3ca3d49689923.json";
+      e.exports = s.p + "locales/en_strings.75d3ceb2ef4528611172.json";
     },
     70970: (e, t, s) => {
       "use strict";
@@ -35377,7 +35267,7 @@
             (null != s && (this.myTableRowIndex = s), null == this.stickyRowDiv)
           )
             return;
-          const i = this.stickyRowDiv.clientHeight + 4,
+          const i = this.stickyRowDiv.clientHeight,
             n = t,
             r = t + e,
             o = this.myTableRowIndex * i + i,
@@ -36070,6 +35960,10 @@
           ((this.eventHandlers = new Map()), (this.sendFromClientToServer = e));
         }
       }
+    },
+    94949: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/announcement_shuffle.78003601208a9a4df574.png";
     },
     95078: (e, t, s) => {
       "use strict";
@@ -37536,4 +37430,4 @@
     },
   },
 ]);
-//# sourceMappingURL=shared.c6e8028d840bfaf19569.js.map
+//# sourceMappingURL=shared.1f1897ee3d7b3520616a.js.map
