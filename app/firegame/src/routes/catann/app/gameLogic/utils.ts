@@ -1,5 +1,7 @@
 import { CornerDirection, EdgeDirection } from "./CatannFilesEnums";
 
+export const TEST_CHANGE_STR = "test.Controller.handleReconnect";
+
 export const addGameLogEntry = (gameState: any, entry: any) => {
   const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
     const indices = Object.keys(gameLogState)
@@ -16,8 +18,6 @@ export const addGameLogEntry = (gameState: any, entry: any) => {
   gameState.gameLogState[String(nextIndex)] = entry;
   return nextIndex;
 };
-
-export const TEST_CHANGE_STR = "test.Controller.handleReconnect";
 
 export const tileEdgeStates = {
   "0": {

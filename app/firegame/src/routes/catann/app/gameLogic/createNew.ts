@@ -578,8 +578,6 @@ const newMapState = () => {
         diceNumber: 11,
       },
     },
-    tileCornerStates,
-    tileEdgeStates,
     portEdgeStates: {
       "0": {
         x: 0,
@@ -636,6 +634,8 @@ const newMapState = () => {
         type: PortType.PortOre,
       },
     },
+    tileCornerStates,
+    tileEdgeStates,
   };
 };
 
