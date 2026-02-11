@@ -664,7 +664,7 @@ const newMapState = () => {
   };
 };
 
-export const startGame = () => {
+export const startGame = (GAME: ReturnType<typeof newGame>) => {
   const newFirstGameState = () => {
     const room = firebaseData.ROOM!;
     return {
@@ -694,10 +694,10 @@ export const startGame = () => {
   const selectedColor = firebaseData.ROOM!.data.sessions.find(
     (s) => s,
   )!.selectedColor;
-  firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
+  GAME!.data.payload.playerColor = colorHelper.find(
     ({ str }) => str === selectedColor,
   )!.int;
-  sendToMainSocket?.(firebaseData.GAME);
+  sendToMainSocket?.(GAME);
 };
 
 export const spoofHostRoom = () => {

@@ -179,11 +179,13 @@ export default function handleMessage(
             payload: false,
           },
         });
-        startGame();
+        const GAME =
+          window.__testOverrides?.databaseGame?.aggregated ?? newGame();
+        startGame(GAME);
         setFirebaseData(
           {
             ...firebaseData,
-            GAME: window.__testOverrides?.databaseGame?.aggregated ?? newGame(),
+            GAME,
           },
           { parsed: clientData },
         );
