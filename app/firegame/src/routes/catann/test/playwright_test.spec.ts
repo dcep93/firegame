@@ -1,7 +1,4 @@
 // TODO
-// no magic numbers
-// read everything
-// audit skills
 // 2 player setup, first turns
 // 4 player setup, first turns
 // audit skills
@@ -47,81 +44,6 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
     }
   };
 };
-
-test.skip(
-  "clickable_map",
-  screenshot(async ({ page }: { page: Page }) => {
-    const settlementCoords = { col: 0, row: 5 };
-    const destinationCoords = { col: 1, row: 4 };
-
-    const iframe = await createRoom(page);
-    const startButton = getStartButton(iframe);
-    await startButton.click({ force: true });
-
-    await checkCanvasHandle(iframe);
-
-    const c = Controller(page, iframe, undefined);
-    const canvas = getCanvas(iframe);
-
-    const checkClickable = async (
-      f: (offset: { col: number; row: number }) => boolean,
-    ) => {
-      for (let row = 0; row < 12; row++) {
-        const offset = Math.round(0.5 * Math.abs(row - 5.5));
-        for (let range = 0; range < 6 - offset; range++) {
-          const col = offset + 2 * range;
-          const vertexOffset = getSettlementOffset({
-            col,
-            row,
-          });
-          const shouldBeClickable = f({ col, row });
-          try {
-            await expect
-              .poll(
-                async () =>
-                  await canvasMapAppearsClickable(canvas, vertexOffset),
-                {
-                  timeout: 3000,
-                },
-              )
-              .toBe(shouldBeClickable);
-          } catch (e) {
-            console.log({ shouldBeClickable, col, row, vertexOffset });
-            throw e;
-          }
-        }
-      }
-    };
-
-    await checkClickable((_) => true);
-
-    await spliceTestMessages(iframe);
-    await c.buildSettlement(settlementCoords, false);
-    await spliceTestMessages(iframe);
-    await c.buildRoad(settlementCoords, destinationCoords, false);
-
-    // the road appears clickable, because it has a mouse over
-    // "Road Length: 1"
-    await checkClickable((offset) => offset.col !== 0);
-
-    await spliceTestMessages(iframe);
-    await c.buildSettlement(
-      {
-        row: settlementCoords.row,
-        col: settlementCoords.col + 2,
-      },
-      false,
-    );
-    await spliceTestMessages(iframe);
-    await c.buildRoad(
-      { row: settlementCoords.row, col: settlementCoords.col + 2 },
-      { row: destinationCoords.row, col: destinationCoords.col + 2 },
-      false,
-    );
-
-    await canvasRollDice(canvas);
-  }),
-);
 
 const choreo = (fileName: string, clientDataSequence: number = -1) => {
   return async ({ page }: { page: Page }) => {
@@ -232,13 +154,85 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
 //
 
 test.skip(
-  "starting_settlement",
-  screenshot(choreo("./choreo/starting_settlement.json")),
+  "clickable_map",
+  screenshot(async ({ page }: { page: Page }) => {
+    const settlementCoords = { col: 0, row: 5 };
+    const destinationCoords = { col: 1, row: 4 };
+
+    const iframe = await createRoom(page);
+    const startButton = getStartButton(iframe);
+    await startButton.click({ force: true });
+
+    await checkCanvasHandle(iframe);
+
+    const c = Controller(page, iframe, undefined);
+    const canvas = getCanvas(iframe);
+
+    const checkClickable = async (
+      f: (offset: { col: number; row: number }) => boolean,
+    ) => {
+      for (let row = 0; row < 12; row++) {
+        const offset = Math.round(0.5 * Math.abs(row - 5.5));
+        for (let range = 0; range < 6 - offset; range++) {
+          const col = offset + 2 * range;
+          const vertexOffset = getSettlementOffset({
+            col,
+            row,
+          });
+          const shouldBeClickable = f({ col, row });
+          try {
+            await expect
+              .poll(
+                async () =>
+                  await canvasMapAppearsClickable(canvas, vertexOffset),
+                {
+                  timeout: 3000,
+                },
+              )
+              .toBe(shouldBeClickable);
+          } catch (e) {
+            console.log({ shouldBeClickable, col, row, vertexOffset });
+            throw e;
+          }
+        }
+      }
+    };
+
+    await checkClickable((_) => true);
+
+    await spliceTestMessages(iframe);
+    await c.buildSettlement(settlementCoords, false);
+    await spliceTestMessages(iframe);
+    await c.buildRoad(settlementCoords, destinationCoords, false);
+
+    // the road appears clickable, because it has a mouse over
+    // "Road Length: 1"
+    await checkClickable((offset) => offset.col !== 0);
+
+    await spliceTestMessages(iframe);
+    await c.buildSettlement(
+      {
+        row: settlementCoords.row,
+        col: settlementCoords.col + 2,
+      },
+      false,
+    );
+    await spliceTestMessages(iframe);
+    await c.buildRoad(
+      { row: settlementCoords.row, col: settlementCoords.col + 2 },
+      { row: destinationCoords.row, col: destinationCoords.col + 2 },
+      false,
+    );
+
+    await canvasRollDice(canvas);
+  }),
 );
+
+test.skip("1p.v0", screenshot(choreo("./choreo/1p.v0.json")));
 
 test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
 
-test("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
+test.skip("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
 
 //
 

@@ -1031,7 +1031,6 @@ export enum GiftMembershipType {
 }
 
 export enum ExpansionType {
-  None = -1,
   Seafarers4P = 0,
   CitiesAndKnights4P = 1,
   TradersAndBarbarians = 2,
