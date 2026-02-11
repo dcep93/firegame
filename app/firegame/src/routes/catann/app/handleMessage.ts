@@ -179,6 +179,7 @@ export default function handleMessage(
             payload: false,
           },
         });
+        startGame();
         setFirebaseData(
           {
             ...firebaseData,
@@ -186,7 +187,6 @@ export default function handleMessage(
           },
           { parsed: clientData },
         );
-        startGame();
         sendToMainSocket?.({
           id: State.GameStateUpdate.toString(),
           data: {
