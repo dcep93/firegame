@@ -266,7 +266,7 @@ const addPlayerResourceCards = (
   (playerState.resourceCards.cards as number[]).sort((a, b) => a - b);
   return addGameLogEntry(gameState, {
     text: {
-      type: 47,
+      type: GameLogMessageType.ResourceDistribution,
       playerColor,
       cardsToBroadcast: sortedCards,
       distributionType,
@@ -280,15 +280,12 @@ const autoPlaceRobber = (tileIndex: number) => {
   const playerColor = gameData.data.payload.playerColor ?? PLAYER_INDEX;
   const gameState = gameData.data.payload.gameState;
   const eligibleTiles = getRobberEligibleTiles(gameData);
-  const resolvedTileIndex = eligibleTiles.includes(tileIndex)
-    ? tileIndex
-    : (eligibleTiles[0] ?? tileIndex);
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
-  const tileState = tileHexStates[String(resolvedTileIndex)];
+  const tileState = tileHexStates[String(tileIndex)];
 
   gameState.mechanicRobberState = {
     ...gameState.mechanicRobberState,
-    locationTileIndex: resolvedTileIndex,
+    locationTileIndex: tileIndex,
     isActive: true,
   };
 
@@ -336,7 +333,7 @@ const autoPlaceRobber = (tileIndex: number) => {
     { ...firebaseData, GAME: gameData },
     {
       action: "placeRobber",
-      tileIndex: resolvedTileIndex,
+      tileIndex,
     },
   );
 };
