@@ -1,8 +1,5 @@
 // TODO
-// finish single_player
-// explicitly place robber
 // no magic numbers
-// redo single_player
 // read everything
 // audit skills
 // 2 player setup, first turns
@@ -220,11 +217,10 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
     const c = Controller(page, iframe, expectedMessages);
     if (clientDataSequence !== -1) {
       await fastForward(iframe, expectedMessages, c, clientDataSequence);
-    }
-    await c.clickStartButton();
-    await c.verifyTestMessages();
-    if (clientDataSequence !== -1) {
       await c.fastForward(clientDataSequence);
+    } else {
+      await c.clickStartButton();
+      await c.verifyTestMessages();
     }
     await autoChoreo(c);
     await c.verifyTestMessages(false);
@@ -242,7 +238,7 @@ test.skip(
 
 test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
 
-test("1p.v2", screenshot(choreo("./choreo/1p.v2.json", 155)));
+test("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
 
 //
 
@@ -282,9 +278,20 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
     msg.data.type === undefined
   )
     return false;
-  if (msg.data.id === State.SocketMonitorUpdate.toString()) return false;
-  if (msg.data.id === GameStateUpdateType.FirstGameState) return false;
-  if (msg.data.data?.type === GameStateUpdateType.PlayerReconnected)
+  if (
+    [
+      State.SocketMonitorUpdate.toString(),
+      State.LobbyStateUpdate.toString(),
+      GameStateUpdateType.FirstGameState,
+    ].includes(msg.data.id)
+  )
+    return false;
+  if (
+    [
+      GameStateUpdateType.PlayerReconnected,
+      GameStateUpdateType.GameEndState,
+    ].includes(msg.data.data?.type)
+  )
     return false;
   if (
     msg.trigger === "serverData" &&

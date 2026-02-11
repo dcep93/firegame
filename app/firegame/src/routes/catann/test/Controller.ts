@@ -165,6 +165,7 @@ const Controller = (
       await verifyTestMessages(false);
       const confirmButton = iframe.locator('div[class*="confirmButton-"]');
       await confirmButton.first().click({ force: true });
+      await waitForTrigger(iframe, "clientData");
     };
     const fastForward = async (clientDataSequence: number) => {
       await verifyTestMessages(false);

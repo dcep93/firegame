@@ -1584,16 +1584,6 @@ export const applyGameAction = (parsed: {
           },
         },
       });
-      sendToMainSocket?.({
-        id: State.GameStateUpdate.toString(),
-        data: {
-          type: GameStateUpdateType.BeginnerHintActivated,
-          payload: {
-            type: GAME_ACTION.ClickedDevelopmentCard,
-            data: CardEnum.Knight,
-          },
-        },
-      });
       return true;
     }
 
@@ -1918,34 +1908,7 @@ export const applyGameAction = (parsed: {
     if (parsed.action === GAME_ACTION.PassedTurn) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      if (
-        gameState.currentState.actionState === PlayerActionState.PlaceRoad &&
-        (gameState.currentState.completedTurns ?? 0) >= 17
-      ) {
-        if (typeof gameState.currentState.allocatedTime === "number") {
-          gameData.data.payload.timeLeftInState =
-            gameState.currentState.allocatedTime;
-        }
-        return true;
-      }
-      if (
-        gameState.currentState.actionState ===
-        PlayerActionState.SelectCardsToDiscard
-      ) {
-        gameState.currentState.actionState = PlayerActionState.None;
-        passTurn();
-        return true;
-      }
-      if (
-        gameState.currentState.actionState === PlayerActionState.None &&
-        gameState.currentState.completedTurns === 47 &&
-        gameState.playerStates?.[gameData.data.payload.playerColor ?? 1]
-          ?.isTakingAction === false
-      ) {
-        gameState.currentState.actionState =
-          PlayerActionState.SelectCardsToDiscard;
-        return true;
-      }
+      gameState.currentState.actionState = PlayerActionState.None;
       passTurn();
       return true;
     }
