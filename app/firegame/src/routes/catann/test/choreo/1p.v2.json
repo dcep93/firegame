@@ -74,7 +74,7 @@
       "action": 5,
       "payload": {
         "gameId": "steal8570",
-        "clientVersion": 290
+        "clientVersion": 291
       }
     }
   },
@@ -324,7 +324,7 @@
     "trigger": "clientData",
     "data": {
       "type": "startGame",
-      "clientVersion": 290
+      "clientVersion": 291
     }
   },
   {
@@ -10035,7 +10035,7 @@
             "showCardBadge": true
           }
         },
-        "sequence": 290
+        "sequence": 291
       }
     }
   },
@@ -10076,7 +10076,7 @@
           },
           "timeLeftInState": 20
         },
-        "sequence": 290
+        "sequence": 291
       }
     }
   },
