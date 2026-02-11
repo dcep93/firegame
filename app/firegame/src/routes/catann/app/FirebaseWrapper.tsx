@@ -17,7 +17,9 @@ export var firebaseData: any = {};
 let hasSentInitialGame = false;
 let lastGameStateSnapshot: string | null = null;
 
-const SHOULD_MOCK = true;
+// const isTest = false;
+// console.log({ isTest });
+const SHOULD_MOCK = false;
 
 const getGameStateSnapshot = (gameData: any) => {
   try {
@@ -155,7 +157,7 @@ export default function FirebaseWrapper() {
       return;
     }
     firebase.connect(roomPath(), (liveData) => {
-      console.debug("fetched", { firebaseData, liveData });
+      // console.debug("fetched", { firebaseData, liveData });
       if (!liveData) return;
       receiveFirebaseDataCatann(liveData.catann);
     });

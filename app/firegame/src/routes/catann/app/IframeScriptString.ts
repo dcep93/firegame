@@ -3,6 +3,8 @@ import { getRoomId, newUserState } from "./gameLogic/createNew";
 import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
+// export const isTest = process.env.PLAYWRIGHT_TEST !== undefined;
+export const isTest = false;
 
 const storeAvatarToUserIconMap: Record<number, number> = {
   [StoreAvatarItemType.FounderHat]: UserIcon.IconFounderHat,
