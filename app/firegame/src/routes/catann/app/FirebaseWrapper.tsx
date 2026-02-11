@@ -23,7 +23,7 @@ export var firebaseData: {
 let firebaseDataSnapshot = JSON.stringify(firebaseData);
 
 function receiveFirebaseDataCatann(catann: any) {
-  if (!catann) {
+  if (!catann?.ROOM) {
     setFirebaseData(
       {
         ROOM: newRoom(),
@@ -62,9 +62,12 @@ function receiveFirebaseDataCatann(catann: any) {
   sendToMainSocket?.(spoofHostRoom());
 }
 
+var initialized = false;
 export default function FirebaseWrapper() {
   console.log("connecting firebase wrapper");
   useEffect(() => {
+    if (initialized) return;
+    initialized = true;
     if (SHOULD_MOCK) {
       receiveFirebaseDataCatann(undefined);
       return;
@@ -79,11 +82,17 @@ export default function FirebaseWrapper() {
 }
 
 export function setFirebaseData(newData: any, change: any) {
-  console.log("setting", newData, change);
   const catann = {
     ...newData,
     __meta: { change, me: store.me, now: Date.now() },
   };
+  const serializedCatann = serializeFirebase(catann);
+  const previousSerialized = serializeFirebase(
+    JSON.parse(firebaseDataSnapshot),
+  );
+  const updates = buildUpdateMap(previousSerialized, serializedCatann);
+  if (Object.keys(updates).length === 1) return; // __meta/now will always change
+  console.trace("setting", newData, updates);
   if (change === TEST_CHANGE_STR) {
     firebaseData = newData;
     firebaseDataSnapshot = JSON.stringify(firebaseData);
@@ -96,12 +105,6 @@ export function setFirebaseData(newData: any, change: any) {
       firebase.set(`${roomPath()}/catann`, null);
       return;
     }
-    const serializedCatann = serializeFirebase(catann);
-    const previousSerialized = serializeFirebase(
-      JSON.parse(firebaseDataSnapshot),
-    );
-    const updates = buildUpdateMap(previousSerialized, serializedCatann);
-    if (Object.keys(updates).length === 1) return; // __meta/now will always change
     firebase.update(`${roomPath()}/catann`, updates);
   }
 }
