@@ -2122,76 +2122,310 @@ export const applyGameAction = (parsed: {
 };
 
 const getGameEndPayload = () => {
+  const gameData = firebaseData.GAME;
+  const gameState = gameData?.data?.payload?.gameState;
+  const gameLogState = gameState?.gameLogState;
+  const logEntries = toNumericRecordEntries(gameLogState)
+    .sort((a, b) => a.index - b.index)
+    .map(({ value }) => value);
+
+  const diceStats = Array.from({ length: 11 }, () => 0);
+  const resourceCardsStats: number[] = [];
+  let developmentCardStats: number[] = [];
+
+  const playerStates: Record<string, any> = gameState?.playerStates ?? {};
+  const playerColors = Object.keys(playerStates)
+    .map(parseFiniteIndex)
+    .filter((color): color is number => color != null);
+
+  const createResourceStats = (color: number) => ({
+    color,
+    rollingIncome: 0,
+    robbingIncome: 0,
+    devCardIncome: 0,
+    tradeIncome: 0,
+    rollingLoss: 0,
+    robbingLoss: 0,
+    devCardLoss: 0,
+    tradeLoss: 0,
+    totalResourceIncome: 0,
+    totalResourceLoss: 0,
+    totalResourceScore: 0,
+    goldIncome: 0,
+  });
+
+  const createActivityStats = (color: number) => ({
+    color,
+    proposedTrades: 0,
+    successfulTrades: 0,
+    resourcesUsed: 0,
+    resourceIncomeBlocked: 0,
+    devCardsBought: 0,
+    devCardsUsed: 0,
+  });
+
+  const resourceStats: Record<number, any> = {};
+  const activityStats: Record<number, any> = {};
+  playerColors.forEach((color) => {
+    resourceStats[color] = createResourceStats(color);
+    activityStats[color] = createActivityStats(color);
+  });
+
+  const ensureResourceStats = (color: number) =>
+    resourceStats[color] ?? (resourceStats[color] = createResourceStats(color));
+  const ensureActivityStats = (color: number) =>
+    activityStats[color] ?? (activityStats[color] = createActivityStats(color));
+
+  const addResourcesUsed = (color: number, amount: number) => {
+    if (amount <= 0) return;
+    ensureActivityStats(color).resourcesUsed += amount;
+  };
+
+  const getPieceCost = (pieceEnum: number | undefined) => {
+    switch (pieceEnum) {
+      case MapPieceType.Road:
+        return 2;
+      case MapPieceType.Settlement:
+        return 4;
+      case MapPieceType.City:
+        return 5;
+      case MapPieceType.Ship:
+        return 2;
+      default:
+        return 0;
+    }
+  };
+
+  logEntries.forEach((entry) => {
+    const text: any = entry?.text ?? entry;
+    const type = text?.type;
+    if (type == null) return;
+
+    if (type === GameLogMessageType.RolledDice) {
+      const dice1 = Number(text?.firstDice);
+      const dice2 = Number(text?.secondDice);
+      if (Number.isFinite(dice1) && Number.isFinite(dice2)) {
+        const total = dice1 + dice2;
+        if (total >= 2 && total <= 12) {
+          diceStats[total - 2] += 1;
+        }
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.ResourceDistribution) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      const cards = Array.isArray(text?.cardsToBroadcast)
+        ? text.cardsToBroadcast.filter((card: any) => Number.isFinite(card))
+        : [];
+      if (cards.length > 0) {
+        resourceCardsStats.push(...cards);
+      }
+      if (playerColor != null) {
+        const stats = ensureResourceStats(playerColor);
+        const count = cards.length;
+        const distributionType = text?.distributionType;
+        if (distributionType === 2) {
+          stats.goldIncome += count;
+        } else if (distributionType === 1 || distributionType === 0) {
+          stats.rollingIncome += count;
+        } else {
+          stats.devCardIncome += count;
+        }
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.PlayerTradedWithBank) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      const givenCards = Array.isArray(text?.givenCardEnums)
+        ? text.givenCardEnums.filter((card: any) => Number.isFinite(card))
+        : [];
+      const receivedCards = Array.isArray(text?.receivedCardEnums)
+        ? text.receivedCardEnums.filter((card: any) => Number.isFinite(card))
+        : [];
+      if (receivedCards.length > 0) {
+        resourceCardsStats.push(...receivedCards);
+      }
+      if (playerColor != null) {
+        const stats = ensureResourceStats(playerColor);
+        stats.tradeIncome += receivedCards.length;
+        stats.tradeLoss += givenCards.length;
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.PlayerDiscarded) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      const cardEnums = Array.isArray(text?.cardEnums)
+        ? text.cardEnums.filter((card: any) => Number.isFinite(card))
+        : [];
+      if (playerColor != null && text?.areResourceCards) {
+        ensureResourceStats(playerColor).rollingLoss += cardEnums.length;
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.BoughtDevelopmentCard) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      if (playerColor != null) {
+        ensureActivityStats(playerColor).devCardsBought += 1;
+        addResourcesUsed(playerColor, 3);
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.PlayerPlayedDevelopmentCard) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      if (playerColor != null) {
+        ensureActivityStats(playerColor).devCardsUsed += 1;
+      }
+      if (Number.isFinite(text?.cardEnum)) {
+        developmentCardStats.push(text.cardEnum);
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.BuiltPiece) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      if (playerColor != null) {
+        addResourcesUsed(playerColor, getPieceCost(text?.pieceEnum));
+      }
+    }
+  });
+
+  if (gameState?.mechanicDevelopmentCardsState?.players) {
+    const devCardsFromState: number[] = [];
+    Object.values(gameState.mechanicDevelopmentCardsState.players).forEach(
+      (player: any) => {
+        if (Array.isArray(player?.developmentCards?.cards)) {
+          devCardsFromState.push(...player.developmentCards.cards);
+        }
+        if (Array.isArray(player?.developmentCardsUsed)) {
+          devCardsFromState.push(...player.developmentCardsUsed);
+        }
+      },
+    );
+    if (devCardsFromState.length > 0) {
+      developmentCardStats = devCardsFromState;
+    }
+  }
+
+  if (resourceCardsStats.length === 0 && gameState?.playerStates) {
+    Object.values(gameState.playerStates).forEach((player: any) => {
+      if (Array.isArray(player?.resourceCards?.cards)) {
+        resourceCardsStats.push(...player.resourceCards.cards);
+      }
+    });
+  }
+
+  Object.values(resourceStats).forEach((stats: any) => {
+    stats.totalResourceIncome =
+      stats.rollingIncome +
+      stats.robbingIncome +
+      stats.devCardIncome +
+      stats.tradeIncome +
+      stats.goldIncome;
+    stats.totalResourceLoss =
+      stats.rollingLoss +
+      stats.robbingLoss +
+      stats.devCardLoss +
+      stats.tradeLoss;
+    stats.totalResourceScore =
+      stats.totalResourceIncome - stats.totalResourceLoss;
+  });
+
+  const totalPointsByColor = playerColors.map((color) => {
+    const victoryPointsState =
+      playerStates[color]?.victoryPointsState ?? ({} as NumericMap<number>);
+    const weights: Record<number, number> = {
+      [VictoryPointSource.Settlement]: 1,
+      [VictoryPointSource.City]: 2,
+      [VictoryPointSource.DevelopmentCardVictoryPoint]: 1,
+      [VictoryPointSource.LargestArmy]: 2,
+      [VictoryPointSource.LongestRoad]: 2,
+      [VictoryPointSource.Chits]: 1,
+      [VictoryPointSource.Metropolis]: 2,
+      [VictoryPointSource.DefenderOfColonist]: 1,
+      [VictoryPointSource.ProgressCardVictoryPoint]: 1,
+      [VictoryPointSource.Merchant]: 1,
+    };
+    const total = Object.entries(victoryPointsState)
+      .map(([key, count]) => (weights[Number(key)] ?? 1) * (Number(count) || 0))
+      .reduce((a, b) => a + b, 0);
+    return { color, total };
+  });
+
+  totalPointsByColor.sort((a, b) =>
+    b.total !== a.total ? b.total - a.total : a.color - b.color,
+  );
+  const rankByColor = new Map<number, number>();
+  totalPointsByColor.forEach((entry, index) => {
+    rankByColor.set(entry.color, index + 1);
+  });
+
+  const winner = getWinner();
+  const winningColor =
+    typeof winner?.color === "number" ? winner.color : undefined;
+  const victoryPointsToWin =
+    gameData != null ? getVictoryPointsToWin(gameData) : 0;
+
+  const players = playerColors.reduce(
+    (acc, color) => {
+      const victoryPointsState =
+        playerStates[color]?.victoryPointsState ?? ({} as NumericMap<number>);
+      const totalPoints =
+        totalPointsByColor.find((entry) => entry.color === color)?.total ?? 0;
+      acc[color] = {
+        color,
+        rank: rankByColor.get(color) ?? playerColors.length,
+        victoryPoints: victoryPointsState,
+        winningPlayer:
+          winningColor != null
+            ? color === winningColor
+            : victoryPointsToWin > 0
+              ? totalPoints >= victoryPointsToWin
+              : false,
+        title: null,
+      };
+      return acc;
+    },
+    {} as Record<number, any>,
+  );
+
+  const endTime =
+    typeof (firebaseData as any)?.__meta?.now === "number"
+      ? (firebaseData as any).__meta.now
+      : Date.now();
+  const startTime =
+    typeof gameState?.currentState?.startTime === "number"
+      ? gameState.currentState.startTime
+      : endTime;
+
   return {
     endGameState: {
-      diceStats: [2, 3, 4, 4, 6, 10, 8, 5, 4, 5, 1],
-      resourceCardsStats: [
-        1, 2, 4, 4, 5, 1, 1, 3, 4, 4, 5, 2, 2, 5, 3, 4, 4, 5, 3, 3, 4, 4, 4, 4,
-        2, 5, 5, 5, 1, 1, 1, 1, 4, 4, 5, 5, 3, 3, 4, 2, 4, 4, 3, 3, 3, 4, 4, 4,
-        1, 2,
-      ],
-      developmentCardStats: [11, 11, 12, 14, 11],
-      gameDurationInMS: 192729,
-      totalTurnCount: 54,
-      players: {
-        1: {
-          color: 1,
-          rank: 1,
-          victoryPoints: {
-            0: 3,
-            1: 1,
-            2: 1,
-            3: 1,
-            4: 1,
-          },
-          winningPlayer: true,
-          title: null,
-        },
-      },
-      resourceStats: {
-        1: {
-          color: 1,
-          rollingIncome: 45,
-          robbingIncome: 0,
-          devCardIncome: 0,
-          tradeIncome: 2,
-          rollingLoss: 4,
-          robbingLoss: 0,
-          devCardLoss: 0,
-          tradeLoss: 8,
-          totalResourceIncome: 47,
-          totalResourceLoss: 12,
-          totalResourceScore: 35,
-          goldIncome: 0,
-        },
-      },
-      activityStats: {
-        1: {
-          color: 1,
-          proposedTrades: 0,
-          successfulTrades: 0,
-          resourcesUsed: 34,
-          resourceIncomeBlocked: 0,
-          devCardsBought: 5,
-          devCardsUsed: 4,
-        },
-      },
+      diceStats,
+      resourceCardsStats,
+      developmentCardStats,
+      gameDurationInMS: Math.max(0, endTime - startTime),
+      totalTurnCount: gameState?.currentState?.completedTurns ?? 0,
+      players,
+      resourceStats,
+      activityStats,
     },
-    isReplayAvailable: true,
-    rankedUserStates: [
-      {
-        color: 1,
-        rankedState: {
-          type: 2,
-          numberOfGamesPlayed: 1,
-          requiredNumberOfGames: 5,
-          defaultEndGameData: {
-            amount: "-",
-            highest: false,
-          },
+    isReplayAvailable: logEntries.length > 0,
+    rankedUserStates: playerColors.map((color) => ({
+      color,
+      rankedState: {
+        type: 2,
+        numberOfGamesPlayed: 1,
+        requiredNumberOfGames: 5,
+        defaultEndGameData: {
+          amount: "-",
+          highest: false,
         },
       },
-    ],
+    })),
   };
 };
 

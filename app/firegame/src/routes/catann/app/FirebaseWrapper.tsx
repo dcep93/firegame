@@ -13,7 +13,6 @@ import {
 } from "./gameLogic/createNew";
 import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
-import { isTest } from "./IframeScriptString";
 
 export var firebaseData: {
   GAME?: ReturnType<typeof newGame>;
@@ -22,7 +21,7 @@ export var firebaseData: {
 let hasSentInitialGame = false;
 let lastGameStateSnapshot: string | null = null;
 
-const SHOULD_MOCK = isTest;
+const SHOULD_MOCK = true;
 
 const getGameStateSnapshot = (gameData: any) => {
   try {

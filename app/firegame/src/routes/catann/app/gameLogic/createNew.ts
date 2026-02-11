@@ -317,11 +317,8 @@ export const newGame = () => {
     session,
     color: colorForSession(session.selectedColor),
   }));
-  const buildByColor = <T,>(
-    build: (
-      color: PlayerColor,
-      session: (typeof sessions)[number],
-    ) => T,
+  const buildByColor = <T>(
+    build: (color: PlayerColor, session: (typeof sessions)[number]) => T,
   ) =>
     sessionColorEntries.reduce(
       (acc, { color, session }) => {
@@ -445,7 +442,8 @@ export const newGame = () => {
           userId: window.__testOverrides?.session.userId ?? s.userId,
           username: window.__testOverrides?.session.username ?? s.username,
           databaseIcon: s.icon,
-          selectedColor: s.selectedColor,
+          selectedColor: colorHelper.find(({ str }) => str === s.selectedColor)!
+            .int,
           isBot: false,
           deviceType: PlatformType.Web,
           countryCode: "US",
