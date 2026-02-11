@@ -1043,6 +1043,57 @@ export enum ExpansionType {
   CitiesAndKnightsSeafarers56P = 9,
 }
 
+export enum StoreItemCategory {
+  Expansion = 1,
+  Map = 2,
+  Avatar = 3,
+}
+
+export enum StoreMapItemType {
+  Earth = 0,
+  USA = 1,
+  UK = 2,
+  Diamond = 3,
+  Gear = 4,
+  Lakes = 5,
+  Pond = 6,
+  Twirl = 7,
+  Classic4PRandom = 8,
+  ShuffleBoard = 9,
+  BlackForest = 10,
+  Volcano = 11,
+  GoldRush = 12,
+}
+
+export enum StoreAvatarItemType {
+  FounderHat = 0,
+  ColonistHat = 1,
+  SettlerHat = 2,
+  ChristmasHat = 3,
+  Player = 4,
+  PirateShip = 5,
+  MedalGold = 6,
+  MedalSilver = 7,
+  MedalBronze = 8,
+  Elephant = 9,
+  Avocado = 10,
+  Cactus = 11,
+  Crown = 12,
+  Swords = 13,
+  Helmet = 14,
+  Snorkel = 15,
+  Scarf = 16,
+  Tie = 17,
+  Worker = 18,
+  Sombrero = 19,
+  Farmer = 20,
+  RobberSanta = 21,
+  RobberLunar = 22,
+  RobberCupid = 23,
+  Mummy = 24,
+  Gifter = 25,
+}
+
 export enum GameType {
   Unknown = 0,
   Tutorial = 1,
@@ -1190,6 +1241,15 @@ export enum UserRole {
   User = 1,
   Manager = 4,
   Moderator = 5,
+}
+
+// Profile icon ids used by userState/icon (subset of shared.c6e... module 78311 i.am).
+export enum UserIcon {
+  Admin = 9,
+  Moderator = 10,
+  User = 11,
+  Guest = 12,
+  Players = 14,
 }
 
 export enum PlatformType {

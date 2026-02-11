@@ -1,7 +1,30 @@
 import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
 import { sendToMainSocket } from "../handleMessage";
-import { GameStateUpdateType, State } from "./CatannFilesEnums";
+import {
+  CardEnum,
+  DiceDistributionType,
+  ExpansionType,
+  GameLogMessageType,
+  GameModeId,
+  GamePhase,
+  GameStateUpdateType,
+  GameType,
+  MapId,
+  PlayerActionState,
+  PlatformType,
+  PlayerColor,
+  PortType,
+  SeafarersScenarioId,
+  StoreAvatarItemType,
+  StoreItemCategory,
+  StoreMapItemType,
+  State,
+  TileType,
+  TurnTimerType,
+  UserIcon,
+  UserRole,
+} from "./CatannFilesEnums";
 import { tileCornerStates, tileEdgeStates } from "./utils";
 
 declare global {
@@ -18,15 +41,17 @@ declare global {
   }
 }
 
+export const colonistVersion = 2900;
+
 export const newUserState = () => {
   return {
     userState: {
-      accessLevel: 1,
+      accessLevel: UserRole.User,
       colonistCoins: 0,
-      colonistVersion: 2900,
+      colonistVersion,
       giftedMemberships: [],
-      icon: 12,
-      id: "102003699",
+      icon: UserIcon.Guest,
+      id: store.me.userId,
       interactedWithSite: true,
       isLoggedIn: true,
       hasJoinedColonistDiscordServer: false,
@@ -35,7 +60,66 @@ export const newUserState = () => {
       membershipPaymentMethod: null,
       membershipPending: false,
       isMuted: false,
-      ownedItems: [],
+      ownedItems: [
+        // Expansions (category 1)
+        { category: StoreItemCategory.Expansion, type: ExpansionType.Seafarers4P }, // Seafarers4P
+        { category: StoreItemCategory.Expansion, type: ExpansionType.CitiesAndKnights4P }, // CitiesAndKnights4P
+        { category: StoreItemCategory.Expansion, type: ExpansionType.TradersAndBarbarians }, // TradersAndBarbarians
+        { category: StoreItemCategory.Expansion, type: ExpansionType.ExplorersAndPirates }, // ExplorersAndPirates
+        { category: StoreItemCategory.Expansion, type: ExpansionType.Classic56P }, // Classic56P
+        { category: StoreItemCategory.Expansion, type: ExpansionType.Classic78P }, // Classic78P
+        { category: StoreItemCategory.Expansion, type: ExpansionType.Seafarers56P }, // Seafarers56P
+        { category: StoreItemCategory.Expansion, type: ExpansionType.CitiesAndKnights56P }, // CitiesAndKnights56P
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.CitiesAndKnightsSeafarers4P,
+        }, // CitiesAndKnightsSeafarers4P
+        {
+          category: StoreItemCategory.Expansion,
+          type: ExpansionType.CitiesAndKnightsSeafarers56P,
+        }, // CitiesAndKnightsSeafarers56P
+        // Maps (category 2)
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Earth }, // Earth
+        { category: StoreItemCategory.Map, type: StoreMapItemType.USA }, // USA
+        { category: StoreItemCategory.Map, type: StoreMapItemType.UK }, // UK
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Diamond }, // Diamond
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Gear }, // Gear
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Lakes }, // Lakes
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Pond }, // Pond
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Twirl }, // Twirl
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Classic4PRandom }, // Classic4PRandom
+        { category: StoreItemCategory.Map, type: StoreMapItemType.ShuffleBoard }, // ShuffleBoard
+        { category: StoreItemCategory.Map, type: StoreMapItemType.BlackForest }, // BlackForest
+        { category: StoreItemCategory.Map, type: StoreMapItemType.Volcano }, // Volcano
+        { category: StoreItemCategory.Map, type: StoreMapItemType.GoldRush }, // GoldRush
+        // Avatars (category 3)
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.FounderHat }, // FounderHat
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.ColonistHat }, // ColonistHat
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.SettlerHat }, // SettlerHat
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.ChristmasHat }, // ChristmasHat
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Player }, // Player
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.PirateShip }, // PirateShip
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.MedalGold }, // MedalGold
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.MedalSilver }, // MedalSilver
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.MedalBronze }, // MedalBronze
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Elephant }, // Elephant
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Avocado }, // Avocado
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Cactus }, // Cactus
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Crown }, // Crown
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Swords }, // Swords
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Helmet }, // Helmet
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Snorkel }, // Snorkel
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Scarf }, // Scarf
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Tie }, // Tie
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Worker }, // Worker
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Sombrero }, // Sombrero
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Farmer }, // Farmer
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.RobberSanta }, // RobberSanta
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.RobberLunar }, // RobberLunar
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.RobberCupid }, // RobberCupid
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Mummy }, // Mummy
+        { category: StoreItemCategory.Avatar, type: StoreAvatarItemType.Gifter }, // Gifter
+      ],
       totalCompletedGameCount: 1,
       ckTotalGameCount: 0,
       ckNextRerollAt: "2026-01-28T05:55:25.976Z",
@@ -44,16 +128,6 @@ export const newUserState = () => {
       usernameChangeAttemptsLeft: 1,
       forceSubscription: true,
       expiresAt: "2026-02-27T04:55:25.975Z",
-    },
-    csrfToken:
-      "f15d756694a7f1e46bd03aead75b34bcc4e328679aa35cb9e9d2ea57ba631d12e66ca47eca7005c60047369816fe58dbfca41ca2368e54ba8d4faaa06f01deb6",
-    abTests: {
-      BOT_GAME_TAB_CTA: "DEFAULT",
-      CHAT_TOXICITY_SHOW_MONITORED_WARNING: "DEFAULT",
-      CK_MONETIZATION_DICE_ROLL: "DEFAULT",
-      GIFTING_CHANGE_BEST_VALUE_HINT: "DEFAULT",
-      MOBILE_MY_TURN_NOTIFICATION: "DEFAULT",
-      REFERRAL_PROGRAM: "DEFAULT",
     },
   };
 };
@@ -102,7 +176,7 @@ export const newRoomMe = () => {
     selectedColor: "red",
     username: store.me.userId,
     isMember: false,
-    icon: 12,
+    icon: UserIcon.Guest,
     profilePictureUrl: null,
     karmaCompletedGames: 0,
     karmaTotalGames: 0,
@@ -118,10 +192,10 @@ export const newGame = () => {
   return {
     id: State.GameStateUpdate.toString(),
     data: {
-      type: 4,
+      type: GameStateUpdateType.BuildGame,
       payload: {
-        playerColor: 1,
-        playOrder: [1],
+        playerColor: PlayerColor.Red,
+        playOrder: [PlayerColor.Red],
         gameState: {
           diceState: {
             diceThrown: false,
@@ -131,19 +205,19 @@ export const newGame = () => {
           bankState: {
             hideBankCards: false,
             resourceCards: {
-              "1": 19,
-              "2": 19,
-              "3": 19,
-              "4": 19,
-              "5": 19,
+              [CardEnum.Lumber]: 19,
+              [CardEnum.Brick]: 19,
+              [CardEnum.Wool]: 19,
+              [CardEnum.Grain]: 19,
+              [CardEnum.Ore]: 19,
             },
           },
           mapState,
           currentState: {
             completedTurns: 0,
-            turnState: 0,
-            actionState: 1,
-            currentTurnPlayerColor: 1,
+            turnState: GamePhase.InitialPlacement,
+            actionState: PlayerActionState.InitialPlacementPlaceSettlement,
+            currentTurnPlayerColor: PlayerColor.Red,
             startTime: window.__testOverrides?.startTime ?? Date.now(),
             allocatedTime: 120,
           },
@@ -151,21 +225,21 @@ export const newGame = () => {
             activeOffers: {},
             closedOffers: {},
             embargoState: {
-              "1": {
+              [PlayerColor.Red]: {
                 activeEmbargosAgainst: [],
               },
             },
           },
           playerStates: {
-            "1": {
-              color: 1,
+            [PlayerColor.Red]: {
+              color: PlayerColor.Red,
               victoryPointsState: {},
               bankTradeRatiosState: {
-                "1": 4,
-                "2": 4,
-                "3": 4,
-                "4": 4,
-                "5": 4,
+                [CardEnum.Lumber]: 4,
+                [CardEnum.Brick]: 4,
+                [CardEnum.Wool]: 4,
+                [CardEnum.Grain]: 4,
+                [CardEnum.Ore]: 4,
               },
               resourceCards: {
                 cards: [],
@@ -178,41 +252,41 @@ export const newGame = () => {
           gameLogState: {
             "0": {
               text: {
-                type: 2,
+                type: GameLogMessageType.WelcomeMessage,
                 isDiscord: false,
               },
             },
             "1": {
               text: {
-                type: 44,
+                type: GameLogMessageType.Separator,
               },
             },
           },
           gameChatState: {},
           mechanicSettlementState: {
-            "1": {
+            [PlayerColor.Red]: {
               bankSettlementAmount: 5,
             },
           },
           mechanicCityState: {
-            "1": {
+            [PlayerColor.Red]: {
               bankCityAmount: 4,
             },
           },
           mechanicRoadState: {
-            "1": {
+            [PlayerColor.Red]: {
               bankRoadAmount: 15,
             },
           },
           mechanicDevelopmentCardsState: {
             bankDevelopmentCards: {
-              cards: [
-                10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-                10, 10, 10, 10, 10, 10, 10, 10, 10,
-              ],
+              cards: Array.from(
+                { length: 25 },
+                () => CardEnum.DevelopmentBack,
+              ),
             },
             players: {
-              "1": {
+              [PlayerColor.Red]: {
                 developmentCards: {
                   cards: [],
                 },
@@ -221,12 +295,12 @@ export const newGame = () => {
             },
           },
           mechanicLongestRoadState: {
-            "1": {
+            [PlayerColor.Red]: {
               longestRoad: 0,
             },
           },
           mechanicLargestArmyState: {
-            "1": {},
+            [PlayerColor.Red]: {},
           },
           mechanicRobberState: {
             locationTileIndex: Object.entries(mapState.tileHexStates)
@@ -234,7 +308,7 @@ export const newGame = () => {
                 index: parseInt(indexStr),
                 data: data as any,
               }))
-              .find(({ data }) => data.type === 0)!.index,
+              .find(({ data }) => data.type === TileType.Desert)!.index,
             isActive: true,
           },
         },
@@ -242,9 +316,9 @@ export const newGame = () => {
           userId: window.__testOverrides?.session.userId ?? s.userId,
           username: window.__testOverrides?.session.username ?? s.username,
           databaseIcon: s.icon,
-          selectedColor: 1,
+          selectedColor: PlayerColor.Red,
           isBot: false,
-          deviceType: 1,
+          deviceType: PlatformType.Web,
           countryCode: "US",
           regionUpdated: null,
           membership: null,
@@ -259,21 +333,21 @@ export const newGame = () => {
             window.__testOverrides?.databaseGame.gameSettingId ??
             room.data.roomId,
           channelId: null,
-          gameType: 3,
+          gameType: GameType.CreatedRoomGame,
           privateGame: true,
           playOrderSelectionActive: false,
           minimumKarma: 0,
           eloType: 0,
-          modeSetting: 0,
-          extensionSetting: 0,
-          scenarioSetting: 0,
-          mapSetting: 0,
-          diceSetting: 1,
+          modeSetting: GameModeId.Classic4P,
+          extensionSetting: ExpansionType.Seafarers4P,
+          scenarioSetting: SeafarersScenarioId.None,
+          mapSetting: MapId.Classic4P,
+          diceSetting: DiceDistributionType.Balanced,
           victoryPointsToWin: 10,
           karmaActive: false,
           cardDiscardLimit: 7,
           maxPlayers: 4,
-          gameSpeed: 1,
+          gameSpeed: TurnTimerType.Base60s,
           botSpeed: 0,
           hideBankCards: false,
           friendlyRobber: true,
@@ -290,115 +364,115 @@ const newMapState = () => {
       "0": {
         x: 0,
         y: -2,
-        type: 4,
+        type: TileType.Grain,
         diceNumber: 8,
       },
       "1": {
         x: -1,
         y: -1,
-        type: 5,
+        type: TileType.Ore,
         diceNumber: 10,
       },
       "2": {
         x: -2,
         y: 0,
-        type: 0,
+        type: TileType.Desert,
         diceNumber: 0,
       },
       "3": {
         x: -2,
         y: 1,
-        type: 5,
+        type: TileType.Ore,
         diceNumber: 9,
       },
       "4": {
         x: -2,
         y: 2,
-        type: 1,
+        type: TileType.Lumber,
         diceNumber: 12,
       },
       "5": {
         x: -1,
         y: 2,
-        type: 1,
+        type: TileType.Lumber,
         diceNumber: 11,
       },
       "6": {
         x: 0,
         y: 2,
-        type: 3,
+        type: TileType.Wool,
         diceNumber: 4,
       },
       "7": {
         x: 1,
         y: 1,
-        type: 3,
+        type: TileType.Wool,
         diceNumber: 8,
       },
       "8": {
         x: 2,
         y: 0,
-        type: 4,
+        type: TileType.Grain,
         diceNumber: 5,
       },
       "9": {
         x: 2,
         y: -1,
-        type: 5,
+        type: TileType.Ore,
         diceNumber: 2,
       },
       "10": {
         x: 2,
         y: -2,
-        type: 1,
+        type: TileType.Lumber,
         diceNumber: 6,
       },
       "11": {
         x: 1,
         y: -2,
-        type: 3,
+        type: TileType.Wool,
         diceNumber: 3,
       },
       "12": {
         x: 0,
         y: -1,
-        type: 2,
+        type: TileType.Brick,
         diceNumber: 4,
       },
       "13": {
         x: -1,
         y: 0,
-        type: 3,
+        type: TileType.Wool,
         diceNumber: 5,
       },
       "14": {
         x: -1,
         y: 1,
-        type: 2,
+        type: TileType.Brick,
         diceNumber: 6,
       },
       "15": {
         x: 0,
         y: 1,
-        type: 4,
+        type: TileType.Grain,
         diceNumber: 3,
       },
       "16": {
         x: 1,
         y: 0,
-        type: 1,
+        type: TileType.Lumber,
         diceNumber: 10,
       },
       "17": {
         x: 1,
         y: -1,
-        type: 4,
+        type: TileType.Grain,
         diceNumber: 9,
       },
       "18": {
         x: 0,
         y: 0,
-        type: 2,
+        type: TileType.Brick,
         diceNumber: 11,
       },
     },
@@ -409,55 +483,55 @@ const newMapState = () => {
         x: 0,
         y: -2,
         z: 0,
-        type: 2,
+        type: PortType.PortLumber,
       },
       "1": {
         x: -2,
         y: 2,
         z: 2,
-        type: 1,
+        type: PortType.Port,
       },
       "2": {
         x: -1,
         y: 3,
         z: 0,
-        type: 5,
+        type: PortType.PortGrain,
       },
       "3": {
         x: 3,
         y: 0,
         z: 1,
-        type: 4,
+        type: PortType.PortWool,
       },
       "4": {
         x: -1,
         y: -1,
         z: 1,
-        type: 1,
+        type: PortType.Port,
       },
       "5": {
         x: -2,
         y: 1,
         z: 1,
-        type: 1,
+        type: PortType.Port,
       },
       "6": {
         x: 1,
         y: 2,
         z: 0,
-        type: 3,
+        type: PortType.PortBrick,
       },
       "7": {
         x: 2,
         y: -3,
         z: 2,
-        type: 1,
+        type: PortType.Port,
       },
       "8": {
         x: 3,
         y: -2,
         z: 2,
-        type: 6,
+        type: PortType.PortOre,
       },
     },
   };
@@ -469,7 +543,7 @@ export const startGame = () => {
     return {
       id: State.GameStateUpdate.toString(),
       data: {
-        type: 1,
+        type: GameStateUpdateType.FirstGameState,
         payload: {
           serverId: room.data.roomId,
           databaseGameId: room.data.roomId,

@@ -9,12 +9,16 @@ import {
   GameLogMessageType,
   GamePhase,
   GameStateUpdateType,
+  LobbyState,
   MapPieceType,
   PlayerActionState,
   State,
   TileType,
+  UserIcon,
+  UserRole,
   VictoryPointSource,
 } from "./CatannFilesEnums";
+import { colonistVersion } from "./createNew";
 import { addGameLogEntry, edgeEndpoints } from "./utils";
 
 const DEVELOPMENT_DECK_CARD_COUNTS = {
@@ -1588,13 +1592,13 @@ export const applyGameAction = (parsed: {
       sendToMainSocket?.({
         id: State.LobbyStateUpdate.toString(),
         data: {
-          type: 3,
+          type: LobbyState.UserStateUpdate,
           payload: {
-            accessLevel: 1,
+            accessLevel: UserRole.User,
             colonistCoins: 0,
-            colonistVersion: 2900,
+            colonistVersion,
             giftedMemberships: [],
-            icon: 12,
+            icon: UserIcon.Guest,
             id: "102013561",
             interactedWithSite: true,
             isLoggedIn: false,
