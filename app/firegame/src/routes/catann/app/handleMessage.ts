@@ -181,7 +181,6 @@ export default function handleMessage(
         });
         const GAME =
           window.__testOverrides?.databaseGame?.aggregated ?? newGame();
-        startGame(GAME);
         setFirebaseData(
           {
             ...firebaseData,
@@ -189,6 +188,7 @@ export default function handleMessage(
           },
           { parsed: clientData },
         );
+        startGame(GAME);
         sendToMainSocket?.({
           id: State.GameStateUpdate.toString(),
           data: {
