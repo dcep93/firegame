@@ -1,5 +1,4 @@
 // TODO
-// reconnect to game
 // signal when leave room in lobby/game
 // spectate
 // clear firebase
