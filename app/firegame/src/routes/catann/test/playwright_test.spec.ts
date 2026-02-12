@@ -1,4 +1,5 @@
 // TODO
+// reconnect, spectate, clear firebase
 // 2 player setup, first turns
 // 4 player setup, first turns
 // audit skills
