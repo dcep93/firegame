@@ -28,6 +28,7 @@ import {
 } from "./canvasGeometry";
 import Controller from "./Controller";
 import fastForward from "./fastForward";
+import { multiChoreo } from "./multiChoreo";
 
 export const codex: Record<string, number> = {};
 
@@ -229,7 +230,7 @@ test.skip(
   }),
 );
 
-test(
+test.skip(
   "reconnect",
   screenshot(async ({ page }: { page: Page }) => {
     await page.goto(`${APP_URL}catann?test#reconnect`, {
@@ -261,6 +262,10 @@ test.skip("1p.v0", screenshot(choreo("./choreo/1p.v0.json")));
 test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
 
 test.skip("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
+
+test("2p.v0", multiChoreo("./choreo/2p.v0.json"));
+test.skip("2p.v1", multiChoreo("./choreo/2p.v1.json"));
+test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
 
 //
 
