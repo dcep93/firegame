@@ -1,5 +1,9 @@
 // TODO
-// reconnect, spectate, clear firebase
+// reconnect to game
+// signal when leave room in lobby/game
+// spectate
+// clear firebase
+// timeout/autoplay
 // 2 player setup, first turns
 // 4 player setup, first turns
 // audit skills
