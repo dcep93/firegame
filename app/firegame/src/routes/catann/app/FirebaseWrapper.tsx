@@ -5,7 +5,6 @@ import store from "../../../shared/store";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import {
   colorHelper,
-  getRoomId,
   newGame,
   newRoom,
   newRoomMe,
@@ -16,7 +15,7 @@ import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
 
-const SHOULD_MOCK = isTest;
+const SHOULD_MOCK = true || isTest;
 
 export var firebaseData: {
   PRESENCE?: Record<string, boolean>;
@@ -84,18 +83,18 @@ export default function FirebaseWrapper() {
     initialized = true;
     console.log("connecting firebase wrapper");
     if (SHOULD_MOCK) {
-      if (getRoomId() === "reconnect") {
-        firebaseData = { ROOM: newRoom() };
-        firebaseData.ROOM!.data.sessions.push(
-          newRoomMe(firebaseData.ROOM!.data.sessions),
-        );
-        firebaseData.GAME = newGame();
-        const toReceive = { ...firebaseData, __meta: { change: {} } };
-        firebaseData = {};
-        receiveFirebaseDataCatann(toReceive);
-      } else {
-        receiveFirebaseDataCatann(undefined);
-      }
+      // if (getRoomId() === "reconnect") {
+      firebaseData = { ROOM: newRoom() };
+      firebaseData.ROOM!.data.sessions.push(
+        newRoomMe(firebaseData.ROOM!.data.sessions),
+      );
+      firebaseData.GAME = newGame();
+      const toReceive = { ...firebaseData, __meta: { change: {} } };
+      firebaseData = {};
+      receiveFirebaseDataCatann(toReceive);
+      // } else {
+      //   receiveFirebaseDataCatann(undefined);
+      // }
       return;
     }
     firebase.connect(roomPath(), (liveData) => {

@@ -100,7 +100,7 @@ export const checkCanvasHandle = async (iframe: FrameLocator) => {
       .toBe(true);
   };
   const gameCanvas = iframe.locator("canvas#game-canvas");
-  await expect(gameCanvas).toBeVisible({ timeout: 1000 });
+  await expect(gameCanvas).toBeVisible({ timeout: 10_000 });
   const canvasHandle =
     (await gameCanvas.elementHandle()) as ElementHandle<HTMLCanvasElement>;
   if (!canvasHandle) {

@@ -240,6 +240,7 @@ test(
       waitUntil: "load",
     });
     page.on("pageerror", (msg) => console.log(msg));
+    page.on("console", (msg) => console.log(msg));
     await delay(5000);
 
     const _iframe = page.locator('iframe[title="iframe"]');
