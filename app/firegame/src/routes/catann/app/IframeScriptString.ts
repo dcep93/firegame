@@ -138,6 +138,9 @@ function main({
           JSON.stringify({ success: true, userState: userState.userState }),
         );
       }
+      if (url.startsWith("//cdn.vlitag.com")) {
+        return Promise.resolve();
+      }
       // codex: dont remove this, its for debugging
       const e = `xhr not implemented: ${JSON.stringify(__meta)}`;
       console.error(e);

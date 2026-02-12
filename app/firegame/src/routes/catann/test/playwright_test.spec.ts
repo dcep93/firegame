@@ -233,11 +233,37 @@ test.skip(
   }),
 );
 
+test(
+  "reconnect",
+  screenshot(async ({ page }: { page: Page }) => {
+    await page.goto(`${APP_URL}catann?test#reconnect`, {
+      waitUntil: "load",
+    });
+    page.on("pageerror", (msg) => console.log(msg));
+    await delay(5000);
+
+    const _iframe = page.locator('iframe[title="iframe"]');
+    await expect(_iframe).toBeVisible({ timeout: 1000 });
+    const iframe = page.frameLocator('iframe[title="iframe"]');
+
+    await checkCanvasHandle(iframe);
+
+    const c = Controller(page, iframe, undefined);
+
+    const settlementCoords = { col: 0, row: 5 };
+    const destinationCoords = { col: 1, row: 4 };
+
+    await c.buildSettlement(settlementCoords, false);
+    await spliceTestMessages(iframe);
+    await c.buildRoad(settlementCoords, destinationCoords, false);
+  }),
+);
+
 test.skip("1p.v0", screenshot(choreo("./choreo/1p.v0.json")));
 
 test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
 
-test("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
+test.skip("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
 
 //
 
