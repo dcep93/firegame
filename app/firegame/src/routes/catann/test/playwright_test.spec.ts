@@ -1,8 +1,5 @@
 // TODO
 // signal when leave room in lobby/game
-// spectate
-// clear firebase
-// timeout/autoplay
 // 2 player setup, first turns
 // 4 player setup, first turns
 // audit skills
@@ -10,6 +7,7 @@
 // audit skills
 // skill find bugs
 // expansions
+// timeout/autoplay
 
 import { expect, test, type FrameLocator, type Page } from "@playwright/test";
 import * as fs from "fs";

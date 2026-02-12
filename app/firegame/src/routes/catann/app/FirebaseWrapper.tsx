@@ -36,7 +36,7 @@ function receiveFirebaseDataCatann(catann: any) {
         ({ str }) => str === mySession.selectedColor,
       )!.int;
     } else {
-      // here
+      // TODO spectator
     }
   }
   const newSnapshot = JSON.stringify(firebaseData);
