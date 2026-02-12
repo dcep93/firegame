@@ -1,5 +1,4 @@
 // TODO
-// signal when leave room in lobby/game
 // 2 player setup, first turns
 // 4 player setup, first turns
 // audit skills
