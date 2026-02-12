@@ -28,12 +28,16 @@ let firebaseDataSnapshot = JSON.stringify(firebaseData);
 function receiveFirebaseDataCatann(catann: any) {
   firebaseData = unSerializeFirebase(catann, []);
   if (firebaseData?.GAME) {
-    const selectedColor = firebaseData.ROOM!.data.sessions.find(
+    const mySession = firebaseData.ROOM!.data.sessions.find(
       (s) => s.userId === store.me.userId,
-    )!.selectedColor;
-    firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
-      ({ str }) => str === selectedColor,
-    )!.int;
+    );
+    if (mySession) {
+      firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
+        ({ str }) => str === mySession.selectedColor,
+      )!.int;
+    } else {
+      // here
+    }
   }
   const newSnapshot = JSON.stringify(firebaseData);
   if (firebaseDataSnapshot === newSnapshot) return;
