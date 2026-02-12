@@ -327,16 +327,25 @@ export const newGame = () => {
       },
       {} as Record<PlayerColor, T>,
     );
-  const playOrder = sessionColorEntries
-    .map(({ color }) => ({ v: Math.random(), color }))
-    .sort((a, b) => a.v - b.v)
-    .map(({ color }) => color);
+  const selfSession = sessions.find((session) => session.userId === store.me.userId);
+  const selfColor = selfSession
+    ? colorForSession(selfSession.selectedColor)
+    : PlayerColor.None;
+  const remainingPlayOrder = sessionColorEntries
+    .map(({ color }) => color)
+    .filter((color) => color !== selfColor)
+    .sort((a, b) => a - b);
+  const playOrder =
+    selfColor === PlayerColor.None
+      ? remainingPlayOrder
+      : [selfColor, ...remainingPlayOrder];
   return {
     id: State.GameStateUpdate.toString(),
     data: {
+      sequence: 0,
       type: GameStateUpdateType.BuildGame,
       payload: {
-        playerColor: PlayerColor.None,
+        playerColor: selfColor,
         playOrder,
         gameState: {
           diceState: {

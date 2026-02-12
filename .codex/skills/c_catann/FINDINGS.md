@@ -437,3 +437,9 @@
 - what you changed: Updated `Controller.selectNextDiscardCard` to diff current selected-card counts against the expected payload counts, then either add from inventory or remove from `cardSelectionContainer` by `data-card-enum`.
 - why the test isn't passing: After fixing discard toggling, the run advances deep into `1p.v2` and now fails later on a `GameStateUpdated` diff around client sequence 124 (longest-road/victory-point fields mismatch), outside this discard interaction scope.
 - next suggested step: Investigate the late-road-placement `GameStateUpdated` composition around sequence 375 (longest-road and log/victory-point updates) in `gameLogic/index.ts`.
+
+## Reconnect flow restoration for public_catann (passing reconnect test)
+- what would've saved time to get your bearings: The reconnect test uses `LobbyAction.AccessGameLink` (action 5) and `GameAction.SelectedInitialPlacementIndex` (action 66), so treating those as no-ops leaves the UI in an unclickable state after the first placement.
+- what you changed: Updated `handleMessage` to call `startGame()` when `AccessGameLink` arrives and a game already exists; added reconnect-aware handling for `GameAction.RequestGameState`; and implemented `SelectedInitialPlacementIndex` dispatch so it calls `placeSettlement`/`placeRoad` based on current initial-placement action state.
+- why the test isn't passing: N/A (this fix produced a clean pass for `reconnect`).
+- next suggested step: Keep this reconnect mapping stable and, if regressions appear, verify that `AccessGameLink -> FirstGameState/BuildGame/highlights` and action-66 initial placement transitions are still emitted in order.

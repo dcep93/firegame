@@ -161,3 +161,5 @@
 - Sorting `playerStates[playerColor].resourceCards.cards` after 4:1 wool bank trades advances 1p.v2 past the early trade ordering checks (clientData 53 and 85), but later discard prompts still fail on `validCardsToSelect` ordering/content around clientData 97.
 
 - In discard prompts (`SelectedCardsState`), payload and UI can diverge in both directions; when expected count decreases, click the selected-card chip in `cardSelectionContainer` (by `data-card-enum`) to undo, not the inventory card image.
+- Reconnect test (`#reconnect`) depends on `LobbyAction.AccessGameLink` triggering full game bootstrap when `firebaseData.GAME` already exists; returning room/game payload alone can leave initial placement click targets non-interactive.
+- Initial placement clicks in reconnect can arrive as `GameAction.SelectedInitialPlacementIndex` (action 66); route that action through `placeSettlement` / `placeRoad` based on `currentState.actionState`, not as a no-op.

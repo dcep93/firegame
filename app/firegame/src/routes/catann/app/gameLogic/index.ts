@@ -1481,6 +1481,47 @@ export const applyGameAction = (parsed: {
 }) => {
   const helper = () => {
     if (!firebaseData.GAME) return false;
+    const sendReconnectState = (isReconnectingSession: boolean) => {
+      const roomId = firebaseData.ROOM?.data?.roomId ?? "";
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.FirstGameState,
+          payload: {
+            serverId: roomId,
+            databaseGameId: roomId,
+            gameSettingId: roomId,
+            shouldResetGameClient: true,
+            isReconnectingSession,
+          },
+        },
+      });
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.PlayTurnSound,
+          payload: [],
+        },
+      });
+      sendToMainSocket?.(firebaseData.GAME);
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.KarmaState,
+          payload: false,
+        },
+      });
+      sendCornerHighlights30(firebaseData.GAME);
+    };
+    if (
+      parsed.action === GameAction.SelectedPlayer &&
+      parsed.payload &&
+      typeof parsed.payload === "object" &&
+      "gameId" in parsed.payload
+    ) {
+      sendReconnectState(true);
+      return true;
+    }
     if (
       parsed.action === GameStateUpdateType.ExitInitialPlacement &&
       parsed.payload === false
@@ -1515,6 +1556,7 @@ export const applyGameAction = (parsed: {
         GameAction.SelectedCardsState,
         GameAction.PlayDevelopmentCardFromHand,
         GameAction.ClickedDevelopmentCard,
+        GameAction.RequestGameState,
         GameAction.RequestBeginnerModeLevelEnd,
       ].includes(parsed.action!)
     ) {
@@ -1652,6 +1694,11 @@ export const applyGameAction = (parsed: {
           },
         },
       });
+      return true;
+    }
+
+    if (parsed.action === GameAction.RequestGameState) {
+      sendReconnectState(true);
       return true;
     }
 
@@ -1986,6 +2033,29 @@ export const applyGameAction = (parsed: {
     }
 
     if (parsed.action === GameAction.SelectedInitialPlacementIndex) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
+      const selectedIndex =
+        typeof parsed.payload === "number" ? parsed.payload : undefined;
+      if (selectedIndex == null) {
+        return true;
+      }
+      if (
+        gameState.currentState.actionState ===
+          PlayerActionState.InitialPlacementPlaceSettlement ||
+        gameState.currentState.actionState ===
+          PlayerActionState.InitialPlacementPlaceCity
+      ) {
+        placeSettlement(selectedIndex);
+        return true;
+      }
+      if (
+        gameState.currentState.actionState ===
+        PlayerActionState.InitialPlacementRoadPlacement
+      ) {
+        placeRoad(selectedIndex);
+        return true;
+      }
       return true;
     }
 

@@ -11,7 +11,7 @@ import {
   SocketRouteType,
   State,
 } from "./gameLogic/CatannFilesEnums";
-import { newGame, spoofHostRoom } from "./gameLogic/createNew";
+import { newGame, spoofHostRoom, startGame } from "./gameLogic/createNew";
 import { packServerData, parseClientData } from "./parseMessagepack";
 
 declare global {
@@ -159,6 +159,10 @@ export default function handleMessage(
         return;
       }
       if (clientData.action === LobbyAction.AccessGameLink) {
+        if (firebaseData.GAME) {
+          startGame();
+          return;
+        }
         return sendResponse(spoofHostRoom());
       }
     }
