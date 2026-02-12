@@ -3,7 +3,6 @@ import firebase from "../../../firegame/firebase";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
-import { GameStateUpdateType } from "./gameLogic/CatannFilesEnums";
 import {
   colorHelper,
   newGame,
@@ -50,7 +49,7 @@ function receiveFirebaseDataCatann(catann: any) {
     return;
   }
   if (firebaseData.GAME) {
-    if (firebaseData.GAME.data.type === GameStateUpdateType.BuildGame) {
+    if (catann.__meta.change.startGame) {
       startGame();
       return;
     }

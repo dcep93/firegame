@@ -186,7 +186,7 @@ export default function handleMessage(
             ...firebaseData,
             GAME,
           },
-          { parsed: clientData },
+          { parsed: clientData, startGame: true },
         );
         return;
       }
