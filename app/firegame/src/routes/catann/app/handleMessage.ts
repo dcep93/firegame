@@ -19,8 +19,11 @@ declare global {
     __socketCatannMessages: { trigger: string; data: any }[];
     __getFirebaseData: () => any;
     __setFirebaseData: (data: any, change?: any) => void;
+    store: any;
   }
 }
+
+window.store = store;
 window.__socketCatannMessages = [];
 window.__setFirebaseData = setFirebaseData;
 window.__getFirebaseData = () => firebaseData;

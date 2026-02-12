@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
+import { RemotePersonType } from "../../../firegame/writer/lobby";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
@@ -19,13 +20,15 @@ import { isTest } from "./IframeScriptString";
 const SHOULD_MOCK = isTest;
 
 export var firebaseData: {
-  PRESENCE?: Record<string, boolean>;
   GAME?: ReturnType<typeof newGame>;
   ROOM?: ReturnType<typeof newRoom>;
 } = {};
 let firebaseDataSnapshot = JSON.stringify(firebaseData);
 
-function receiveFirebaseDataCatann(catann: any) {
+function receiveFirebaseDataCatann(
+  catann: any,
+  lobby: Record<string, RemotePersonType> | null = null,
+) {
   firebaseData = unSerializeFirebase(catann, []);
   if (firebaseData?.GAME) {
     const mySession = firebaseData.ROOM!.data.sessions.find(
@@ -37,6 +40,22 @@ function receiveFirebaseDataCatann(catann: any) {
       )!.int;
     } else {
       // TODO spectator
+    }
+  } else if (firebaseData?.ROOM && lobby) {
+    const filter = firebaseData.ROOM.data.sessions.map((s) => ({
+      s,
+      keep: 2500 >= Date.now() - lobby[s.userId]?.timestamp,
+    }));
+    const removals = filter
+      .filter(({ keep }) => !keep)
+      .map(({ s }) => s.username);
+    if (removals.length > 0) {
+      console.log({ removals });
+      firebaseData.ROOM.data.sessions = filter
+        .filter(({ keep }) => keep)
+        .map(({ s }) => s);
+      setFirebaseData(firebaseData, { removals });
+      return;
     }
   }
   const newSnapshot = JSON.stringify(firebaseData);
@@ -105,7 +124,7 @@ export default function FirebaseWrapper() {
     firebase.connect(roomPath(), (liveData) => {
       // console.debug("fetched", { firebaseData, liveData });
       if (!liveData) return;
-      receiveFirebaseDataCatann(liveData.catann);
+      receiveFirebaseDataCatann(liveData.catann, liveData.lobby);
     });
   }, []);
   return <div></div>;
