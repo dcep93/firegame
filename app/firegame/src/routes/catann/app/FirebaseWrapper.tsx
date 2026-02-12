@@ -25,7 +25,6 @@ export var firebaseData: {
 let firebaseDataSnapshot = JSON.stringify(firebaseData);
 
 function receiveFirebaseDataCatann(catann: any) {
-  const prevFirebaseData = firebaseData;
   firebaseData = unSerializeFirebase(catann, []);
   if (firebaseData?.GAME) {
     const selectedColor = firebaseData.ROOM!.data.sessions.find(
@@ -37,6 +36,7 @@ function receiveFirebaseDataCatann(catann: any) {
   }
   const newSnapshot = JSON.stringify(firebaseData);
   if (firebaseDataSnapshot === newSnapshot) return;
+  const prevFirebaseData = JSON.parse(firebaseDataSnapshot ?? null);
   firebaseDataSnapshot = newSnapshot;
   console.log("rendered", firebaseData);
   if (!catann?.ROOM) {
