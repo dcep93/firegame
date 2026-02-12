@@ -55,7 +55,7 @@ function receiveFirebaseDataCatann(catann: any) {
     }
     const update = buildGameStateUpdated(
       firebaseData.GAME,
-      prevFirebaseData.GAME,
+      prevFirebaseData.GAME?.data?.payload?.gameState,
     );
     if (update) {
       sendToMainSocket?.(update);
