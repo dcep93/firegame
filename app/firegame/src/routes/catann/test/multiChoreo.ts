@@ -1,15 +1,20 @@
+import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
 import { isRealMessage } from "./playwright_test.spec";
 
 export const multiChoreo = (fileName: string) => {
-  return async ({ browser }: { browser: any }) => {
+  return async ({ browser }: { browser: Browser }) => {
     const expectedMessages = await getExpectedMessages(fileName);
-    const players = expectedMessages.map((msgs) => ({
-      msgs,
-      page: openNewPage(),
-    }));
+    const context: BrowserContext = await browser.newContext();
+
+    const players = await Promise.all(
+      expectedMessages.map(async (msgs) => ({
+        msgs,
+        page: await context.newPage(),
+      })),
+    );
     // everyone get a browser and enter the room
     // seed
     // host presses start
