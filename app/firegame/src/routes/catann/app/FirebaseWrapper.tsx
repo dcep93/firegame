@@ -18,7 +18,7 @@ import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
 
-const SHOULD_MOCK = true || isTest;
+const SHOULD_MOCK = isTest;
 
 export var firebaseData: {
   GAME?: ReturnType<typeof newGame>;

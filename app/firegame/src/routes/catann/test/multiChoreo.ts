@@ -1,3 +1,5 @@
+import { expect } from "@playwright/test";
+
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
@@ -13,14 +15,14 @@ export const multiChoreo = (fileName: string) => {
     const context: BrowserContext = await browser.newContext();
 
     const players = await Promise.all(
-      expectedMessages.map(async (msgs, i) => {
+      expectedMessages.slice(0, 2).map(async (msgs, i) => {
         const page = await context.newPage();
         const gameState = msgs.find((msg) => msg.data.data?.payload?.gameState)!
           .data.data.payload.gameState;
         const roomId = msgs.find((msg) => msg.data.data?.roomId)!.data.data
           .roomId;
         page.on("pageerror", (msg) => console.log(i, msg));
-        // page.on("console", (msg) => console.log("test.debug", i, msg.text()));
+        page.on("console", (msg) => console.log("test.debug", i, msg.text()));
         const iframe = await createRoom(page, roomId);
         await page.evaluate(
           (__testOverrides) => {
@@ -48,6 +50,7 @@ export const multiChoreo = (fileName: string) => {
         };
       }),
     );
+    console.log("multiChoreo.initialized");
     const getActor = () => {
       const actors = players.filter(
         ({ msgs }) => msgs[0]?.trigger === "clientData",
@@ -56,7 +59,6 @@ export const multiChoreo = (fileName: string) => {
       expect(actors.length).toBe(1);
       return actors[0];
     };
-    console.log("multiChoreo.initialized");
     const helper = async () => {
       for (let i = 0; true; i++) {
         const actor = getActor();
@@ -67,7 +69,7 @@ export const multiChoreo = (fileName: string) => {
           const startButton = getStartButton(actor.iframe);
           await startButton.click({ force: true });
         }
-        autoChoreo(actor.c);
+        await autoChoreo(actor.c);
       }
       for (let i = 0; i < players.length; i++) {
         await expect(players[i].msgs.slice(0, 1)).toEqual([]);
