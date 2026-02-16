@@ -7,6 +7,7 @@ export const listenMock = (cb: any) => {
   bc.onmessage = (ev) => {
     cb(ev.data);
   };
+  cb(undefined);
 };
 
 export const updateMock = (payload: any) => {

@@ -150,6 +150,7 @@ export function setFirebaseData(newData: any, change: any) {
   }
   if (SHOULD_MOCK) {
     updateMock(catann);
+    receiveFirebaseDataCatann(catann);
   } else {
     if (!newData) {
       firebase.set(`${roomPath()}/catann`, null);
