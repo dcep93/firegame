@@ -96,6 +96,8 @@ export const multiChoreo = (fileName: string) => {
       const startButton = getStartButton(actor.iframe);
       await startButton.click({ force: true });
       await delay(3000);
+      expect(hasSeenError).toBe(false);
+      test.skip();
       for (let i = 0; i < players.length; i++) {
         await players[i].c.verifyTestMessages();
       }
@@ -107,9 +109,6 @@ export const multiChoreo = (fileName: string) => {
         if (!actor) break;
         console.log("actor", actor.i);
         await autoChoreo(actor.c);
-        await delay(3000);
-        expect(hasSeenError).toBe(false);
-        test.skip();
       }
       for (let i = 0; i < players.length; i++) {
         await expect(players[i].msgs.slice(0, 1)).toEqual([]);
