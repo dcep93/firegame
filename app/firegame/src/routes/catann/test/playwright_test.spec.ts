@@ -271,7 +271,7 @@ test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
 
 //
 
-const createRoom = async (
+export const createRoom = async (
   page: Page,
   roomId: string = "",
 ): Promise<FrameLocator> => {

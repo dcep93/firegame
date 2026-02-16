@@ -2,19 +2,48 @@ import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
-import { isRealMessage } from "./playwright_test.spec";
+import { checkCanvasHandle, getStartButton } from "./canvasGeometry";
+import { createRoom, delay, isRealMessage } from "./playwright_test.spec";
 
 export const multiChoreo = (fileName: string) => {
-  return async ({ browser }: { browser: Browser }) => {
+  return async ({ browser }: { browser: Browser }, testInfo: any) => {
     const expectedMessages = await getExpectedMessages(fileName);
     const context: BrowserContext = await browser.newContext();
 
     const players = await Promise.all(
-      expectedMessages.map(async (msgs) => ({
-        msgs,
-        page: await context.newPage(),
-      })),
+      expectedMessages.map(async (msgs) => {
+        const page = await context.newPage();
+        const iframe = await createRoom(page);
+        return {
+          msgs,
+          page,
+          iframe,
+        };
+      }),
     );
+    const helper = async () => {
+      const startButton = getStartButton(players[0].iframe);
+      await startButton.click({ force: true });
+
+      await Promise.all(
+        players.map(async ({ iframe }) => await checkCanvasHandle(iframe)),
+      );
+    };
+    try {
+      await helper();
+    } finally {
+      await delay(1000);
+      await Promise.all(
+        players.map(
+          async ({ page }, index) =>
+            await page.screenshot({
+              path: testInfo.outputPath(`screenshot_${index}.png`),
+              fullPage: true,
+            }),
+        ),
+      );
+    }
+
     // everyone get a browser and enter the room
     // seed
     // host presses start
