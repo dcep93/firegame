@@ -15,6 +15,8 @@ export const multiChoreo = (fileName: string) => {
     const players = await Promise.all(
       expectedMessages.map(async (msgs, i) => {
         const page = await context.newPage();
+        page.on("pageerror", (msg) => console.log(i, msg));
+        // page.on("console", (msg) => console.log("test.debug", i, msg.text()));
         const iframe = await createRoom(page);
         const c = Controller(page, iframe, msgs);
         return {
@@ -27,6 +29,7 @@ export const multiChoreo = (fileName: string) => {
       }),
     );
     const helper = async () => {
+      // TODO seed __testOverrides
       const startButton = getStartButton(players[0].iframe);
       await startButton.click({ force: true });
 
@@ -42,6 +45,7 @@ export const multiChoreo = (fileName: string) => {
         );
         if (actors.length === 0) break;
         expect(actors.length).toBe(1);
+        console.log("actor", actors[0].i);
         autoChoreo(actors[0].c);
       }
       for (let i = 0; i < players.length; i++) {

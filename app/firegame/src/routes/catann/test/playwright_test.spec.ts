@@ -49,6 +49,8 @@ const screenshot = (f: ({ page }: { page: Page }) => void) => {
 
 const choreo = (fileName: string, clientDataSequence: number = -1) => {
   return async ({ page }: { page: Page }) => {
+    page.on("pageerror", (msg) => console.log(msg));
+    // page.on("console", (msg) => console.log("test.debug", msg.text()));
     const getExpectedMessages = async (recordingPath: string) => {
       const sortCardsToBroadcast = (value: unknown): void => {
         if (!value || typeof value !== "object") {
@@ -276,8 +278,6 @@ export const createRoom = async (
   roomId: string = "",
 ): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
-    page.on("pageerror", (msg) => console.log(msg));
-    // page.on("console", (msg) => console.log("test.debug", msg.text()));
     await page.goto(`${APP_URL}catann#${roomId}`, {
       waitUntil: "load",
     });
