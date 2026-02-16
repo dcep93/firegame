@@ -363,6 +363,17 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
         },
       },
     },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.GameStateUpdate.toString(),
+        data: {
+          // seems to be sent in a nondeterministic order
+          type: GameStateUpdateType.PlayTurnSound,
+          payload: [],
+        },
+      },
+    },
   ];
   if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
