@@ -17,6 +17,7 @@ import {
   GameAction,
   GameStateUpdateType,
   GeneralAction,
+  OnlineStatus,
   State,
 } from "../app/gameLogic/CatannFilesEnums";
 import autoChoreo from "./autoChoreo";
@@ -297,11 +298,12 @@ export const createRoom = async (
 export const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
   const knownIgnores: (typeof msg)[] = [
+    { trigger: "clientData", data: {} },
     {
       trigger: "clientData",
       data: {
-        action: GeneralAction.GetAllRoomInvitesReceived,
-        payload: {},
+        action: GeneralAction.ChangeOnlineStatus,
+        payload: OnlineStatus.InGame,
       },
     },
     {
@@ -314,24 +316,15 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
     {
       trigger: "clientData",
       data: {
-        action: GeneralAction.ChangeOnlineStatus,
-        payload: 3,
+        action: GeneralAction.GetAllRoomInvitesReceived,
+        payload: {},
       },
     },
-    { trigger: "clientData", data: {} },
     {
-      trigger: "serverData",
+      trigger: "clientData",
       data: {
-        data: {
-          payload: {
-            diff: {
-              currentState: {
-                startTime:
-                  msg.data.data?.payload?.diff?.currentState?.startTime,
-              },
-            },
-          },
-        },
+        action: GeneralAction.GetNotifications,
+        payload: { ["-1"]: msg.data.payload?.["-1"] },
       },
     },
     {
@@ -356,10 +349,18 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
       },
     },
     {
-      trigger: "clientData",
+      trigger: "serverData",
       data: {
-        action: GeneralAction.GetNotifications,
-        payload: { [-1]: 40 },
+        data: {
+          payload: {
+            diff: {
+              currentState: {
+                startTime:
+                  msg.data.data?.payload?.diff?.currentState?.startTime,
+              },
+            },
+          },
+        },
       },
     },
   ];
