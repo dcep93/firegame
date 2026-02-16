@@ -76,8 +76,10 @@ export const multiChoreo = (fileName: string) => {
               msg.data.data.payload?.databaseGameId,
           )!.data.data.payload,
           startTime: payload.gameState.currentState.startTime,
-          session: actor.msgs.find((msg) => msg.data.data?.sessions)!.data.data
-            .sessions[0],
+          sessions: actor.msgs
+            .slice()
+            .reverse()
+            .find((msg) => msg.data.data?.sessions)!.data.data.sessions,
           mapState: payload.gameState.mapState,
         },
       );

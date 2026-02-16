@@ -44,7 +44,7 @@ export default async function fastForward(
       (_, databaseGame) => {
         window.parent.__testOverrides = {
           databaseGame,
-          session: null,
+          sessions: null,
           startTime: -1,
           mapState: null,
         };

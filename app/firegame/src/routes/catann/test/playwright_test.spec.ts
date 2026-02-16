@@ -134,8 +134,8 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
             msg.data.data.payload.databaseGameId,
         )!.data.data.payload,
         startTime: gameState.currentState.startTime,
-        session: expectedSpliced.find((msg) => msg.data.data?.sessions)!.data
-          .data.sessions[0],
+        sessions: expectedSpliced.find((msg) => msg.data.data?.sessions)!.data
+          .data.sessions,
         mapState: gameState.mapState,
       },
     );

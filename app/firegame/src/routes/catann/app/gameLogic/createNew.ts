@@ -34,7 +34,7 @@ declare global {
     __testOverrides:
       | {
           databaseGame: any;
-          session: any;
+          sessions: any;
           startTime: number;
           mapState: any;
         }
@@ -312,7 +312,8 @@ export const colorHelper = Object.values(PlayerColor)
 
 export const newGame = () => {
   const room: ReturnType<typeof newRoom> = firebaseData.ROOM!;
-  const sessions = room.data.sessions;
+  const sessions: typeof room.data.sessions =
+    window.__testOverrides?.sessions ?? room.data.sessions;
   const mapState = window.__testOverrides?.mapState ?? newMapState();
   const colorForSession = (selectedColor: string) =>
     colorHelper.find(({ str }) => str === selectedColor)!.int;
@@ -453,8 +454,8 @@ export const newGame = () => {
           },
         },
         playerUserStates: sessions.map((s) => ({
-          userId: window.__testOverrides?.session.userId ?? s.userId,
-          username: window.__testOverrides?.session.username ?? s.username,
+          userId: s.userId,
+          username: s.username,
           databaseIcon: s.icon,
           selectedColor: colorHelper.find(({ str }) => str === s.selectedColor)!
             .int,
