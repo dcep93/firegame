@@ -47,6 +47,7 @@ export default async function autoChoreo(
       [GameAction.SelectedCards]: c.confirmSelectedCards,
       [GameAction.ConfirmBuildSettlement]: c.buildNextSettlement,
       [GameAction.ConfirmBuildCity]: c.buildNextCity,
+      [GameAction.SelectedInitialPlacementIndex]: c.selectInitialPlacementIndex,
     };
 
     const handler = handlers[msg.data.action as GameAction];

@@ -357,6 +357,12 @@ const Controller = (
       )!;
       await buildRoadFromPayload(roadMsg.data.payload);
     };
+    const selectInitialPlacementIndex = async () => {
+      const settlementMsg = _expectedMessages!.find(
+        (msg) => msg.data.action === GameAction.SelectedInitialPlacementIndex,
+      )!;
+      await buildSettlementFromPayload(settlementMsg.data.payload);
+    };
     const buildNextSettlement = async () => {
       const settlementMsg = _expectedMessages!.find(
         (msg) => msg.data.action === GameAction.ConfirmBuildSettlement,
@@ -610,6 +616,7 @@ const Controller = (
       makeNextTrade,
       buildNextRoad,
       buildNextSettlement,
+      selectInitialPlacementIndex,
       buildNextCity,
       fixWeirdTrade,
       rollNextDice,
