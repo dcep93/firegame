@@ -104,7 +104,7 @@ function receiveFirebaseDataCatann(
 var initialized = false;
 export default function FirebaseWrapper() {
   useEffect(() => {
-    if (initialized || window.location.hash) return;
+    if (initialized) return;
     initialized = true;
     console.log("connecting firebase wrapper");
     if (SHOULD_MOCK) {

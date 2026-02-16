@@ -1491,7 +1491,7 @@ export const applyGameAction = (parsed: {
             serverId: roomId,
             databaseGameId: roomId,
             gameSettingId: roomId,
-            shouldResetGameClient: true,
+            shouldResetGameClient: false,
             isReconnectingSession,
           },
         },
