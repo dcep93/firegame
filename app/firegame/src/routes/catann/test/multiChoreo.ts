@@ -86,11 +86,6 @@ export const multiChoreo = (fileName: string) => {
           mapState: payload.gameState.mapState,
         },
       );
-      const startButton = getStartButton(actor.iframe);
-      await startButton.click({ force: true });
-    };
-    const helper = async () => {
-      await startGame();
       for (let i = 0; i < players.length; i++) {
         const idx = players[i].msgs.findIndex(
           (msg) => msg.data.data?.sequence === 1,
@@ -98,6 +93,15 @@ export const multiChoreo = (fileName: string) => {
         players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
         await spliceTestMessages(players[i].iframe);
       }
+      const startButton = getStartButton(actor.iframe);
+      await startButton.click({ force: true });
+      await delay(3000);
+      for (let i = 0; i < players.length; i++) {
+        await players[i].c.verifyTestMessages();
+      }
+    };
+    const helper = async () => {
+      await startGame();
       for (let i = 0; true; i++) {
         const actor = getActor();
         if (!actor) break;
