@@ -78,20 +78,20 @@ const findUpcomingDevelopmentCard = (
 
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
-  i: number,
+  playerIndex: number,
   page: Page,
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
   ((canvas: Locator) => {
-    codex[i] = {};
+    codex[playerIndex] = {};
     const verifyTestMessages = async (failOnEmpty: boolean = true) => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
       const durationMs = Date.now() - loaded;
       console.log(
         "verifyTestMessages",
-        i,
+        playerIndex,
         (durationMs / 1000).toFixed(2),
         testMessages.length,
         expectedMessages.length,
@@ -107,7 +107,7 @@ const Controller = (
           return true;
         }
       }
-      testMessages.forEach((msg) => {
+      testMessages.forEach((msg, i) => {
         const expectedMsg = expectedMessages.shift()!;
         if (expectedMsg?.trigger === "debug") {
           test.skip();
@@ -116,17 +116,23 @@ const Controller = (
           expect(expectedMsg).toBeDefined();
           expect(msg.trigger).toEqual(expectedMsg.trigger);
         } catch (e) {
-          console.log(JSON.stringify({ msg, expectedMsg }, null, 2));
+          console.log(
+            JSON.stringify(
+              { expectedMsg, msgs: testMessages.slice(i) },
+              null,
+              2,
+            ),
+          );
           throw e;
         }
         if (msg.trigger === "clientData") {
           if (expectedMsg.data.sequence) {
             msg.data.sequence = expectedMsg.data.sequence;
-            codex[i][msg.trigger] = msg.data.sequence;
+            codex[playerIndex][msg.trigger] = msg.data.sequence;
           }
         } else {
           msg.data.data.sequence = expectedMsg.data.data.sequence;
-          codex[i][msg.trigger] = msg.data.data.sequence;
+          codex[playerIndex][msg.trigger] = msg.data.data.sequence;
           //
           const msgStartTime =
             msg.data.data.payload?.diff?.currentState?.startTime;
@@ -361,7 +367,11 @@ const Controller = (
       const settlementMsg = _expectedMessages!.find(
         (msg) => msg.data.action === GameAction.SelectedInitialPlacementIndex,
       )!;
-      await buildSettlementFromPayload(settlementMsg.data.payload);
+      if (settlementMsg.data.payload) {
+        await buildSettlementFromPayload(settlementMsg.data.payload, false);
+      } else {
+        await buildNextSettlement();
+      }
     };
     const buildNextSettlement = async () => {
       const settlementMsg = _expectedMessages!.find(
@@ -589,8 +599,9 @@ const Controller = (
     };
     const buildSettlementFromPayload = async (
       payload: keyof typeof tileCornerStates,
+      shouldVerify: boolean = true,
     ) => {
-      await buildSettlement(getColRow(tileCornerStates[payload]));
+      await buildSettlement(getColRow(tileCornerStates[payload]), shouldVerify);
     };
     const buildCityFromPayload = async (
       payload: keyof typeof tileCornerStates,

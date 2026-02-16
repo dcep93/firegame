@@ -371,12 +371,17 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
           // seems to be sent in a nondeterministic order
           type: GameStateUpdateType.PlayTurnSound,
           payload: [],
+          sequence: msg.data.data?.sequence,
         },
       },
     },
   ];
   if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
+  if (msg.data.data?.type === GameStateUpdateType.PlayTurnSound) {
+    console.log("debug", msg.data.data);
+    return true;
+  }
   if (
     [
       State.SocketMonitorUpdate.toString(),

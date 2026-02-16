@@ -102,6 +102,7 @@ export const multiChoreo = (fileName: string) => {
     };
     const helper = async () => {
       await startGame();
+      console.log("autoChoreo.start");
       for (let i = 0; true; i++) {
         const actor = getActor();
         if (!actor) break;
