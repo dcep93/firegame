@@ -708,10 +708,7 @@ export const startGame = (__testOverrideDatabaseGame: any) => {
     },
   });
   sendToMainSocket?.(newFirstGameState());
-  if (
-    firebaseData.GAME?.data.payload.gameState.currentState
-      .currentTurnPlayerColor === firebaseData.GAME?.data.payload.playerColor
-  )
+  if (isMyTurn())
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
@@ -728,8 +725,12 @@ export const startGame = (__testOverrideDatabaseGame: any) => {
         payload: true,
       },
     });
-  sendCornerHighlights30(firebaseData.GAME);
+  if (isMyTurn()) sendCornerHighlights30(firebaseData.GAME);
 };
+
+export const isMyTurn = () =>
+  firebaseData.GAME?.data.payload.gameState.currentState
+    .currentTurnPlayerColor === firebaseData.GAME?.data.payload.playerColor;
 
 export const spoofHostRoom = () => {
   return (
