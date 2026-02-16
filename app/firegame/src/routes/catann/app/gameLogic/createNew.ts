@@ -244,14 +244,14 @@ export const newUserState = () => {
 };
 
 export const getRoomId = () =>
-  window.location.hash.slice(1) || `roomIdx${store.me.roomId}`;
+  window.parent.location.hash.slice(1) ||
+  window.location.hash.slice(1) ||
+  `roomIdx${store.me.roomId}`;
 
 // @ts-ignore
 window.getRoomId = getRoomId;
 
 export const newRoom = () => {
-  if (!window.location.hash.slice(1))
-    throw new Error(`newRoom ${window.location.href}`);
   return {
     id: State.RoomEvent.toString(),
     data: {

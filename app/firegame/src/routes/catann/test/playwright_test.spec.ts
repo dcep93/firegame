@@ -283,16 +283,6 @@ export const createRoom = async (
     });
     const iframe = page.locator('iframe[title="iframe"]');
     await expect(iframe).toBeVisible({ timeout: 1000 });
-    await delay(1000);
-    console.log(
-      await iframe.evaluate(() => [
-        window.location.href,
-        window.location.hash,
-        // @ts-ignore
-        window.getRoomId(),
-      ]),
-    );
-    throw new Error("");
     return page.frameLocator('iframe[title="iframe"]');
   };
   const iframe = await gotoCatann(page);
