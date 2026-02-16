@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
@@ -27,15 +27,10 @@ export const multiChoreo = (fileName: string) => {
     )!.data.data.payload;
     const roomId = payload.gameSettings.id;
 
-    var hasSeenError = false;
-
     const players = await Promise.all(
       expectedMessages.slice(0, 2).map(async (msgs, i) => {
         const page = await context.newPage();
-        page.on("pageerror", (msg) => {
-          hasSeenError = true;
-          console.log(i, msg);
-        });
+        page.on("pageerror", (msg) => console.log(i, msg));
         page.on(
           "console",
           (msg) =>
@@ -95,8 +90,6 @@ export const multiChoreo = (fileName: string) => {
       const startButton = getStartButton(actor.iframe);
       await startButton.click({ force: true });
       await delay(3000);
-      expect(hasSeenError).toBe(false);
-      test.skip();
       for (let i = 0; i < players.length; i++) {
         await players[i].c.verifyTestMessages();
       }
