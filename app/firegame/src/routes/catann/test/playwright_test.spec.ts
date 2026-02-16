@@ -16,6 +16,7 @@ import { deepEqual } from "../app/gameDataHelper";
 import {
   GameAction,
   GameStateUpdateType,
+  GeneralAction,
   State,
 } from "../app/gameLogic/CatannFilesEnums";
 import autoChoreo from "./autoChoreo";
@@ -295,31 +296,75 @@ export const createRoom = async (
 
 export const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
-  if (
-    deepEqual(msg, {
+  const knownIgnores: (typeof msg)[] = [
+    {
       trigger: "clientData",
       data: {
-        action: 5,
+        action: GeneralAction.GetAllRoomInvitesReceived,
         payload: {},
       },
-    })
-  )
-    return false;
-  // lying enums
-  if (
-    msg.data.action === GameAction.SelectedTile &&
-    typeof msg.data.payload === "object"
-  )
-    return false;
-  if (msg.data.action === GameAction.ClickedDice && msg.data.payload === 3)
-    return false;
+    },
+    {
+      trigger: "clientData",
+      data: {
+        action: GeneralAction.GetAllFriendsOnlineStatus,
+        payload: {},
+      },
+    },
+    {
+      trigger: "clientData",
+      data: {
+        action: GeneralAction.ChangeOnlineStatus,
+        payload: 3,
+      },
+    },
+    { trigger: "clientData", data: {} },
+    {
+      trigger: "serverData",
+      data: {
+        data: {
+          payload: {
+            diff: {
+              currentState: {
+                startTime:
+                  msg.data.data?.payload?.diff?.currentState?.startTime,
+              },
+            },
+          },
+        },
+      },
+    },
+    {
+      trigger: "clientData",
+      data: {
+        id: State.SocketMonitorUpdate.toString(),
+        data: { timestamp: msg.data.data?.timestamp },
+      },
+    },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.SocketMonitorUpdate.toString(),
+        data: { timestamp: msg.data.data?.timestamp, sequence: undefined },
+      },
+    },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.SocketMonitorUpdate.toString(),
+        data: { timestamp: msg.data.data?.timestamp },
+      },
+    },
+    {
+      trigger: "clientData",
+      data: {
+        action: GeneralAction.GetNotifications,
+        payload: { [-1]: 40 },
+      },
+    },
+  ];
+  if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
-  if (
-    msg.trigger === "clientData" &&
-    msg.data.action === undefined &&
-    msg.data.type === undefined
-  )
-    return false;
   if (
     [
       State.SocketMonitorUpdate.toString(),
@@ -327,24 +372,14 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
       GameStateUpdateType.FirstGameState,
     ].includes(msg.data.id)
   )
-    return false;
+    return true;
   if (
     [
       GameStateUpdateType.PlayerReconnected,
       GameStateUpdateType.GameEndState,
     ].includes(msg.data.data?.type)
   )
-    return false;
-  if (
-    msg.trigger === "serverData" &&
-    msg.data.data?.type === 91 &&
-    typeof msg.data.data?.payload?.diff === "object" &&
-    Object.keys(msg.data.data.payload.diff).length === 1 &&
-    typeof msg.data.data?.payload?.diff.currentState === "object" &&
-    Object.keys(msg.data.data.payload.diff.currentState).length === 1 &&
-    msg.data.data.payload.diff.currentState.startTime > 0
-  )
-    return false;
+    return true;
   if (
     msg.trigger === "clientData" &&
     msg.data.action === GameAction.SelectedCards &&
@@ -353,7 +388,7 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
     !Array.isArray(msg.data.payload) &&
     msg.data.payload["-1"] !== undefined
   )
-    return false;
+    return true;
   if (
     msg.trigger === "clientData" &&
     [
@@ -361,7 +396,7 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
       GameAction.SelectedInitialPlacementIndex,
     ].includes(msg.data.action)
   )
-    return false;
+    return true;
   return true;
 };
 
