@@ -324,7 +324,7 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
       trigger: "clientData",
       data: {
         action: GeneralAction.GetNotifications,
-        payload: { ["-1"]: msg.data.payload?.["-1"] },
+        payload: { ["-1"]: msg.data.payload?.["-1"], date: undefined },
       },
     },
     {
