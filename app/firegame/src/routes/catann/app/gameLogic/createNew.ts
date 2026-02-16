@@ -353,7 +353,7 @@ export const newGame = () => {
       sequence: 0,
       type: GameStateUpdateType.BuildGame,
       payload: {
-        playerColor: selfColor,
+        playerColor: PlayerColor.None,
         playOrder,
         gameState: {
           diceState: {
