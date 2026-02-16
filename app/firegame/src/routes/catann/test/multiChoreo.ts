@@ -27,10 +27,15 @@ export const multiChoreo = (fileName: string) => {
     )!.data.data.payload;
     const roomId = payload.gameSettings.id;
 
+    var hasSeenError = false;
+
     const players = await Promise.all(
       expectedMessages.slice(0, 2).map(async (msgs, i) => {
         const page = await context.newPage();
-        page.on("pageerror", (msg) => console.log(i, msg));
+        page.on("pageerror", (msg) => {
+          hasSeenError = true;
+          console.log(i, msg);
+        });
         page.on(
           "console",
           (msg) =>
@@ -99,6 +104,7 @@ export const multiChoreo = (fileName: string) => {
         console.log("actor", actor.i);
         await autoChoreo(actor.c);
         await delay(3000);
+        expect(hasSeenError).toBe(false);
         test.skip();
       }
       for (let i = 0; i < players.length; i++) {
