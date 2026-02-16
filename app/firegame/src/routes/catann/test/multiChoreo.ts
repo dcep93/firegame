@@ -44,7 +44,9 @@ export const multiChoreo = (fileName: string) => {
       }),
     );
     for (let i = 0; i < players.length; i++) {
-      const idx = players[i].msgs.findIndex((msg) => msg.data.sequence === 1);
+      const idx = players[i].msgs.findIndex(
+        (msg) => msg.data.data?.sequence === 1,
+      );
       players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
       await spliceTestMessages(players[i].iframe);
     }
@@ -54,35 +56,42 @@ export const multiChoreo = (fileName: string) => {
         ({ msgs }) => msgs[0]?.trigger === "clientData",
       );
       if (actors.length === 0) return null;
-      expect(actors.length).toBe(1);
+      try {
+        expect(actors.length).toBe(1);
+      } catch (e) {
+        console.log(actors.map((a) => a.msgs[0]));
+        throw e;
+      }
       return actors[0];
     };
+    const startGame = async () => {
+      const actor = getActor()!;
+      console.log("start", actor.i);
+      await actor.page.evaluate(
+        (__testOverrides) => {
+          window.__testOverrides = __testOverrides;
+        },
+        {
+          databaseGame: actor.msgs.find(
+            (msg) =>
+              msg.trigger === "serverData" &&
+              msg.data.data.payload?.databaseGameId,
+          )!.data.data.payload,
+          startTime: payload.gameState.currentState.startTime,
+          session: actor.msgs.find((msg) => msg.data.data?.sessions)!.data.data
+            .sessions[0],
+          mapState: payload.gameState.mapState,
+        },
+      );
+      const startButton = getStartButton(actor.iframe);
+      await startButton.click({ force: true });
+    };
     const helper = async () => {
+      await startGame();
       for (let i = 0; true; i++) {
         const actor = getActor();
         if (!actor) break;
         console.log("actor", actor.i);
-        if (i === 0) {
-          console.log("start", actor.i);
-          await actor.page.evaluate(
-            (__testOverrides) => {
-              window.__testOverrides = __testOverrides;
-            },
-            {
-              databaseGame: actor.msgs.find(
-                (msg) =>
-                  msg.trigger === "serverData" &&
-                  msg.data.data.payload?.databaseGameId,
-              )!.data.data.payload,
-              startTime: payload.gameState.currentState.startTime,
-              session: actor.msgs.find((msg) => msg.data.data?.sessions)!.data
-                .data.sessions[0],
-              mapState: payload.gameState.mapState,
-            },
-          );
-          const startButton = getStartButton(actor.iframe);
-          await startButton.click({ force: true });
-        }
         await autoChoreo(actor.c);
       }
       for (let i = 0; i < players.length; i++) {
