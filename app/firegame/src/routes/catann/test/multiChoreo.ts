@@ -14,32 +14,20 @@ export const multiChoreo = (fileName: string) => {
     const expectedMessages = await getExpectedMessages(fileName);
     const context: BrowserContext = await browser.newContext();
 
+    const starterMsgs = expectedMessages.find((msgs) =>
+      msgs.find((msg) => msg.data.type === "startGame"),
+    )!;
+    const payload = starterMsgs.find(
+      (msg) => msg.data.data?.payload?.gameState,
+    )!.data.data.payload;
+    const roomId = payload.gameSettings.id;
+
     const players = await Promise.all(
       expectedMessages.slice(0, 2).map(async (msgs, i) => {
         const page = await context.newPage();
-        const gameState = msgs.find((msg) => msg.data.data?.payload?.gameState)!
-          .data.data.payload.gameState;
-        const roomId = msgs.find((msg) => msg.data.data?.roomId)!.data.data
-          .roomId;
         page.on("pageerror", (msg) => console.log(i, msg));
         page.on("console", (msg) => console.log("test.debug", i, msg.text()));
         const iframe = await createRoom(page, roomId);
-        await page.evaluate(
-          (__testOverrides) => {
-            window.__testOverrides = __testOverrides;
-          },
-          {
-            databaseGame: msgs.find(
-              (msg) =>
-                msg.trigger === "serverData" &&
-                msg.data.data.payload?.databaseGameId,
-            )!.data.data.payload,
-            startTime: gameState.currentState.startTime,
-            session: msgs.find((msg) => msg.data.data?.sessions)!.data.data
-              .sessions[0],
-            mapState: gameState.mapState,
-          },
-        );
         const c = Controller(page, iframe, msgs);
         return {
           i,
@@ -66,6 +54,22 @@ export const multiChoreo = (fileName: string) => {
         console.log("actor", actor.i);
         if (i === 0) {
           console.log("start", actor.i);
+          await actor.page.evaluate(
+            (__testOverrides) => {
+              window.__testOverrides = __testOverrides;
+            },
+            {
+              databaseGame: starterMsgs.find(
+                (msg) =>
+                  msg.trigger === "serverData" &&
+                  msg.data.data.payload?.databaseGameId,
+              )!.data.data.payload,
+              startTime: payload.gameState.currentState.startTime,
+              session: starterMsgs.find((msg) => msg.data.data?.sessions)!.data
+                .data.sessions[0],
+              mapState: payload.gameState.mapState,
+            },
+          );
           const startButton = getStartButton(actor.iframe);
           await startButton.click({ force: true });
         }
