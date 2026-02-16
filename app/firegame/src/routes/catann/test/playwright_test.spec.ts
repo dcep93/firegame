@@ -261,9 +261,9 @@ test.skip("1p.v0", screenshot(choreo("./choreo/1p.v0.json")));
 
 test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
 
-test("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
+test.skip("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
 
-test.skip("2p.v0", multiChoreo("./choreo/2p.v0.json"));
+test("2p.v0", multiChoreo("./choreo/2p.v0.json"));
 test.skip("2p.v1", multiChoreo("./choreo/2p.v1.json"));
 test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
 
@@ -277,7 +277,7 @@ export const createRoom = async (
 ): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
     page.on("pageerror", (msg) => console.log(msg));
-    page.on("console", (msg) => console.log("test.debug", msg.text()));
+    // page.on("console", (msg) => console.log("test.debug", msg.text()));
     await page.goto(`${APP_URL}catann#${roomId}`, {
       waitUntil: "load",
     });

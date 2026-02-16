@@ -2,7 +2,9 @@ import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
+import autoChoreo from "./autoChoreo";
 import { checkCanvasHandle, getStartButton } from "./canvasGeometry";
+import Controller from "./Controller";
 import { createRoom, delay, isRealMessage } from "./playwright_test.spec";
 
 export const multiChoreo = (fileName: string) => {
@@ -14,10 +16,12 @@ export const multiChoreo = (fileName: string) => {
       expectedMessages.map(async (msgs) => {
         const page = await context.newPage();
         const iframe = await createRoom(page);
+        const c = Controller(page, iframe, msgs);
         return {
           msgs,
           page,
           iframe,
+          c,
         };
       }),
     );
@@ -25,9 +29,28 @@ export const multiChoreo = (fileName: string) => {
       const startButton = getStartButton(players[0].iframe);
       await startButton.click({ force: true });
 
-      await Promise.all(
-        players.map(async ({ iframe }) => await checkCanvasHandle(iframe)),
-      );
+      for (let i = 0; i < players.length; i++) {
+        await checkCanvasHandle(players[i].iframe);
+      }
+      for (let i = 0; i < players.length; i++) {
+        await players[i].c.verifyTestMessages();
+      }
+      while (true) {
+        const actors = players.filter(
+          ({ msgs }) => msgs[0]?.trigger === "clientData",
+        );
+        if (actors.length === 0) break;
+        expect(actors.length).toBe(1);
+        autoChoreo(actors[0].c);
+      }
+      for (let i = 0; i < players.length; i++) {
+        await expect(players[i].msgs.slice(0, 1)).toEqual([]);
+      }
+      for (let i = 0; i < players.length; i++) {
+        await expect(
+          players[i].page.locator('iframe[title="iframe"]'),
+        ).toBeVisible();
+      }
     };
     try {
       await helper();
@@ -44,17 +67,6 @@ export const multiChoreo = (fileName: string) => {
       );
       await delay(1000);
     }
-
-    // everyone get a browser and enter the room
-    // seed
-    // host presses start
-    // await c.verifyTestMessages(false);
-    // while true
-    // assert onePlayerCanAct()
-    // player.act()
-    // await c.verifyTestMessages();
-    // expect(expectedMessages.slice(0, 1)).toEqual([]);
-    // await expect(page.locator('iframe[title="iframe"]')).toBeVisible();
   };
 };
 
