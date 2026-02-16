@@ -163,7 +163,7 @@ export default function handleMessage(
       }
       if (clientData.action === LobbyAction.AccessGameLink) {
         if (firebaseData.GAME) {
-          startGame();
+          startGame({});
           return;
         }
         return sendResponse(spoofHostRoom());
@@ -193,7 +193,10 @@ export default function handleMessage(
             ...firebaseData,
             GAME,
           },
-          { parsed: clientData, startGame: true },
+          {
+            parsed: clientData,
+            startGame: window.__testOverrides?.databaseGame ?? {},
+          },
         );
         return;
       }

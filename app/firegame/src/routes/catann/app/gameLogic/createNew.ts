@@ -678,7 +678,7 @@ const newMapState = () => {
   };
 };
 
-export const startGame = () => {
+export const startGame = (__testOverrideDatabaseGame: any) => {
   const newFirstGameState = () => {
     const room = firebaseData.ROOM!;
     return {
@@ -691,7 +691,7 @@ export const startGame = () => {
           gameSettingId: room.data.roomId,
           shouldResetGameClient: true,
           isReconnectingSession: false,
-          ...window.__testOverrides?.databaseGame,
+          ...__testOverrideDatabaseGame,
         },
       },
     };

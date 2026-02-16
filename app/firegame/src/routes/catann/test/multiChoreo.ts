@@ -64,7 +64,7 @@ export const multiChoreo = (fileName: string) => {
     };
     const startGame = async () => {
       const actor = players[hostId];
-      console.log("start", actor.i);
+      console.log("start", { hostId });
       await actor.page.evaluate(
         (__testOverrides) => {
           window.__testOverrides = __testOverrides;

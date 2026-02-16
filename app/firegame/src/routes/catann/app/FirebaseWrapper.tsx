@@ -75,7 +75,7 @@ function receiveFirebaseDataCatann(
   }
   if (firebaseData.GAME) {
     if (catann.__meta.change.startGame) {
-      startGame();
+      startGame(catann.__meta.change.startGame);
       return;
     }
     const update = buildGameStateUpdated(
