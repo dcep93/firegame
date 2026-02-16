@@ -42,6 +42,7 @@ export const multiChoreo = (fileName: string) => {
             }),
         ),
       );
+      await delay(1000);
     }
 
     // everyone get a browser and enter the room

@@ -3,6 +3,7 @@ import firebase from "../../../firegame/firebase";
 import { RemotePersonType } from "../../../firegame/writer/lobby";
 import { roomPath } from "../../../firegame/writer/utils";
 import store from "../../../shared/store";
+import { listenMock, updateMock } from "./firebaseMock";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import {
   colorHelper,
@@ -117,7 +118,7 @@ export default function FirebaseWrapper() {
         firebaseData = {};
         receiveFirebaseDataCatann(toReceive);
       } else {
-        receiveFirebaseDataCatann(undefined);
+        listenMock(receiveFirebaseDataCatann);
       }
       return;
     }
@@ -148,7 +149,7 @@ export function setFirebaseData(newData: any, change: any) {
     return;
   }
   if (SHOULD_MOCK) {
-    receiveFirebaseDataCatann(catann);
+    updateMock(catann);
   } else {
     if (!newData) {
       firebase.set(`${roomPath()}/catann`, null);
