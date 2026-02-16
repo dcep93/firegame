@@ -708,13 +708,17 @@ export const startGame = (__testOverrideDatabaseGame: any) => {
     },
   });
   sendToMainSocket?.(newFirstGameState());
-  sendToMainSocket?.({
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.PlayTurnSound,
-      payload: [],
-    },
-  });
+  if (
+    firebaseData.GAME?.data.payload.gameState.currentState
+      .currentTurnPlayerColor === firebaseData.GAME?.data.payload.playerColor
+  )
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.PlayTurnSound,
+        payload: [],
+      },
+    });
   sendToMainSocket?.(firebaseData.GAME);
   if (firebaseData.GAME?.data.payload.gameSettings.karmaActive)
     sendToMainSocket?.({
