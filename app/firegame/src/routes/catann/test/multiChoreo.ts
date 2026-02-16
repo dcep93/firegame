@@ -7,17 +7,22 @@ import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
 import autoChoreo from "./autoChoreo";
 import { getStartButton } from "./canvasGeometry";
 import Controller from "./Controller";
-import { createRoom, delay, isRealMessage } from "./playwright_test.spec";
+import {
+  createRoom,
+  delay,
+  isRealMessage,
+  spliceTestMessages,
+} from "./playwright_test.spec";
 
 export const multiChoreo = (fileName: string) => {
   return async ({ browser }: { browser: Browser }, testInfo: any) => {
     const expectedMessages = await getExpectedMessages(fileName);
     const context: BrowserContext = await browser.newContext();
 
-    const starterMsgs = expectedMessages.find((msgs) =>
-      msgs.find((msg) => msg.data.type === "startGame"),
-    )!;
-    const payload = starterMsgs.find(
+    const hostId = expectedMessages
+      .map((msgs, i) => ({ msgs, i }))
+      .find(({ msgs }) => msgs.find((msg) => msg.data.type === "startGame"))!.i;
+    const payload = expectedMessages[hostId].find(
       (msg) => msg.data.data?.payload?.gameState,
     )!.data.data.payload;
     const roomId = payload.gameSettings.id;
@@ -38,6 +43,11 @@ export const multiChoreo = (fileName: string) => {
         };
       }),
     );
+    for (let i = 0; i < players.length; i++) {
+      const idx = players[i].msgs.findIndex((msg) => msg.data.sequence === 1);
+      players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
+      await spliceTestMessages(players[i].iframe);
+    }
     console.log("multiChoreo.initialized");
     const getActor = () => {
       const actors = players.filter(
@@ -59,13 +69,13 @@ export const multiChoreo = (fileName: string) => {
               window.__testOverrides = __testOverrides;
             },
             {
-              databaseGame: starterMsgs.find(
+              databaseGame: actor.msgs.find(
                 (msg) =>
                   msg.trigger === "serverData" &&
                   msg.data.data.payload?.databaseGameId,
               )!.data.data.payload,
               startTime: payload.gameState.currentState.startTime,
-              session: starterMsgs.find((msg) => msg.data.data?.sessions)!.data
+              session: actor.msgs.find((msg) => msg.data.data?.sessions)!.data
                 .data.sessions[0],
               mapState: payload.gameState.mapState,
             },
