@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
 import autoChoreo from "./autoChoreo";
-import { checkCanvasHandle, getStartButton } from "./canvasGeometry";
+import { getStartButton } from "./canvasGeometry";
 import Controller from "./Controller";
 import { createRoom, delay, isRealMessage } from "./playwright_test.spec";
 
@@ -15,9 +15,29 @@ export const multiChoreo = (fileName: string) => {
     const players = await Promise.all(
       expectedMessages.map(async (msgs, i) => {
         const page = await context.newPage();
+        const gameState = msgs.find((msg) => msg.data.data?.payload?.gameState)!
+          .data.data.payload.gameState;
+        const roomId = msgs.find((msg) => msg.data.data?.roomId)!.data.data
+          .roomId;
         page.on("pageerror", (msg) => console.log(i, msg));
         // page.on("console", (msg) => console.log("test.debug", i, msg.text()));
-        const iframe = await createRoom(page);
+        const iframe = await createRoom(page, roomId);
+        await page.evaluate(
+          (__testOverrides) => {
+            window.__testOverrides = __testOverrides;
+          },
+          {
+            databaseGame: msgs.find(
+              (msg) =>
+                msg.trigger === "serverData" &&
+                msg.data.data.payload?.databaseGameId,
+            )!.data.data.payload,
+            startTime: gameState.currentState.startTime,
+            session: msgs.find((msg) => msg.data.data?.sessions)!.data.data
+              .sessions[0],
+            mapState: gameState.mapState,
+          },
+        );
         const c = Controller(page, iframe, msgs);
         return {
           i,
@@ -28,25 +48,26 @@ export const multiChoreo = (fileName: string) => {
         };
       }),
     );
+    const getActor = () => {
+      const actors = players.filter(
+        ({ msgs }) => msgs[0]?.trigger === "clientData",
+      );
+      if (actors.length === 0) return null;
+      expect(actors.length).toBe(1);
+      return actors[0];
+    };
+    console.log("multiChoreo.initialized");
     const helper = async () => {
-      // TODO seed __testOverrides
-      const startButton = getStartButton(players[0].iframe);
-      await startButton.click({ force: true });
-
-      for (let i = 0; i < players.length; i++) {
-        await checkCanvasHandle(players[i].iframe);
-      }
-      for (let i = 0; i < players.length; i++) {
-        await players[i].c.verifyTestMessages();
-      }
-      while (true) {
-        const actors = players.filter(
-          ({ msgs }) => msgs[0]?.trigger === "clientData",
-        );
-        if (actors.length === 0) break;
-        expect(actors.length).toBe(1);
-        console.log("actor", actors[0].i);
-        autoChoreo(actors[0].c);
+      for (let i = 0; true; i++) {
+        const actor = getActor();
+        if (!actor) break;
+        console.log("actor", actor.i);
+        if (i === 0) {
+          console.log("start", actor.i);
+          const startButton = getStartButton(actor.iframe);
+          await startButton.click({ force: true });
+        }
+        autoChoreo(actor.c);
       }
       for (let i = 0; i < players.length; i++) {
         await expect(players[i].msgs.slice(0, 1)).toEqual([]);
