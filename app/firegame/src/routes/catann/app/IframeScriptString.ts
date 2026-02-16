@@ -1,11 +1,13 @@
 import { StoreAvatarItemType, UserIcon } from "./gameLogic/CatannFilesEnums";
-import { getRoomId, newUserState } from "./gameLogic/createNew";
+import {
+  getRoomId,
+  getRoomIdFromHash,
+  newUserState,
+} from "./gameLogic/createNew";
 import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
-export const isTest = new URLSearchParams(window.parent.location.search).has(
-  "test",
-);
+export const isTest = getRoomIdFromHash() !== undefined;
 
 const storeAvatarToUserIconMap: Record<number, number> = {
   [StoreAvatarItemType.FounderHat]: UserIcon.IconFounderHat,

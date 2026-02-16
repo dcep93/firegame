@@ -243,10 +243,11 @@ export const newUserState = () => {
   };
 };
 
+export const getRoomIdFromHash = () =>
+  window.parent.location.hash.slice(1) || window.location.hash.slice(1);
+
 export const getRoomId = () =>
-  window.parent.location.hash.slice(1) ||
-  window.location.hash.slice(1) ||
-  `roomIdx${store.me.roomId}`;
+  getRoomIdFromHash() || `roomIdx${store.me.roomId}`;
 
 export const newRoom = () => {
   return {
