@@ -2033,31 +2033,6 @@ export const applyGameAction = (parsed: {
 
     if (parsed.action === GameAction.SelectedInitialPlacementIndex) {
       return true;
-      // const gameData = firebaseData.GAME;
-      // const gameState = gameData.data.payload.gameState;
-      // const payloadIndex =
-      //   typeof parsed.payload === "number" ? parsed.payload : undefined;
-      // if ((payloadIndex ?? null) !== null) {
-      //   locals.SelectedInitialPlacementIndex = payloadIndex!;
-      // }
-      // const selectedIndex = locals.SelectedInitialPlacementIndex;
-      // if (
-      //   gameState.currentState.actionState ===
-      //     PlayerActionState.InitialPlacementPlaceSettlement ||
-      //   gameState.currentState.actionState ===
-      //     PlayerActionState.InitialPlacementPlaceCity
-      // ) {
-      //   placeSettlement(selectedIndex);
-      //   return true;
-      // }
-      // if (
-      //   gameState.currentState.actionState ===
-      //   PlayerActionState.InitialPlacementRoadPlacement
-      // ) {
-      //   placeRoad(selectedIndex);
-      //   return true;
-      // }
-      // return true;
     }
 
     if (parsed.action === GameAction.SelectedTile) {
@@ -2748,5 +2723,3 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
 
   return eligibleCorners.length > 0 ? eligibleCorners : null;
 }
-
-const locals = { SelectedInitialPlacementIndex: -1 };
