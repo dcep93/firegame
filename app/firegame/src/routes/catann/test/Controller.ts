@@ -78,11 +78,13 @@ const findUpcomingDevelopmentCard = (
 
 export type ControllerType = ReturnType<typeof Controller>;
 const Controller = (
+  i: number,
   page: Page,
   iframe: FrameLocator,
   _expectedMessages: { trigger: string; data: any }[] | undefined,
 ) =>
   ((canvas: Locator) => {
+    codex[i] = {};
     const verifyTestMessages = async (failOnEmpty: boolean = true) => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
@@ -119,11 +121,11 @@ const Controller = (
         if (msg.trigger === "clientData") {
           if (expectedMsg.data.sequence) {
             msg.data.sequence = expectedMsg.data.sequence;
-            codex[msg.trigger] = msg.data.sequence;
+            codex[i][msg.trigger] = msg.data.sequence;
           }
         } else {
           msg.data.data.sequence = expectedMsg.data.data.sequence;
-          codex[msg.trigger] = msg.data.data.sequence;
+          codex[i][msg.trigger] = msg.data.data.sequence;
           //
           const msgStartTime =
             msg.data.data.payload?.diff?.currentState?.startTime;

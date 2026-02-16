@@ -8,6 +8,7 @@ import autoChoreo from "./autoChoreo";
 import { getStartButton } from "./canvasGeometry";
 import Controller from "./Controller";
 import {
+  codex,
   createRoom,
   delay,
   isRealMessage,
@@ -37,7 +38,7 @@ export const multiChoreo = (fileName: string) => {
             msg.text().includes("test.log") && console.log(i, msg.text()),
         );
         const iframe = await createRoom(page, roomId);
-        const c = Controller(page, iframe, msgs);
+        const c = Controller(i, page, iframe, msgs);
         return {
           i,
           msgs,
@@ -115,6 +116,7 @@ export const multiChoreo = (fileName: string) => {
       await helper();
     } finally {
       await delay(1000);
+      console.log({ codex });
       await Promise.all(
         players.map(
           async ({ page }, index) =>

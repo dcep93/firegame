@@ -30,7 +30,7 @@ import Controller from "./Controller";
 import fastForward from "./fastForward";
 import { multiChoreo } from "./multiChoreo";
 
-export const codex: Record<string, number> = {};
+export const codex: Record<number, Record<string, number>> = {};
 
 const screenshot = (f: ({ page }: { page: Page }) => void) => {
   return async ({ page }: { page: Page }, testInfo: any) => {
@@ -140,7 +140,7 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
       },
     );
     await spliceTestMessages(iframe);
-    const c = Controller(page, iframe, expectedMessages);
+    const c = Controller(-1, page, iframe, expectedMessages);
     if (clientDataSequence !== -1) {
       await fastForward(iframe, expectedMessages, c, clientDataSequence);
       await c.fastForward(clientDataSequence);
@@ -169,7 +169,7 @@ test.skip(
 
     await checkCanvasHandle(iframe);
 
-    const c = Controller(page, iframe, undefined);
+    const c = Controller(-1, page, iframe, undefined);
     const canvas = getCanvas(iframe);
 
     const checkClickable = async (
@@ -248,7 +248,7 @@ test.skip(
 
     await checkCanvasHandle(iframe);
 
-    const c = Controller(page, iframe, undefined);
+    const c = Controller(-1, page, iframe, undefined);
 
     const settlementCoords = { col: 0, row: 5 };
     const destinationCoords = { col: 1, row: 4 };

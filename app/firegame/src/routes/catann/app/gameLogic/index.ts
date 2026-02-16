@@ -1486,6 +1486,13 @@ export const applyGameAction = (parsed: {
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {
+          type: GameStateUpdateType.CanResignGame,
+          payload: false,
+        },
+      });
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
           type: GameStateUpdateType.FirstGameState,
           payload: {
             serverId: roomId,
@@ -1504,13 +1511,6 @@ export const applyGameAction = (parsed: {
         },
       });
       sendToMainSocket?.(firebaseData.GAME);
-      sendToMainSocket?.({
-        id: State.GameStateUpdate.toString(),
-        data: {
-          type: GameStateUpdateType.KarmaState,
-          payload: false,
-        },
-      });
       sendCornerHighlights30(firebaseData.GAME);
     };
     if (
