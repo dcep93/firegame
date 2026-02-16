@@ -88,6 +88,15 @@ const Controller = (
     const verifyTestMessages = async (failOnEmpty: boolean = true) => {
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
+      const durationMs = Date.now() - loaded;
+      console.log(
+        "verifyTestMessages",
+        i,
+        (durationMs / 1000).toFixed(2),
+        testMessages.length,
+        expectedMessages.length,
+        { failOnEmpty },
+      );
       try {
         expect(testMessages.length).not.toBe(0);
       } catch (e) {
@@ -98,14 +107,6 @@ const Controller = (
           return true;
         }
       }
-      const durationMs = Date.now() - loaded;
-      console.log(
-        "verifyTestMessages",
-        (durationMs / 1000).toFixed(2),
-        testMessages.length,
-        expectedMessages.length,
-        { failOnEmpty },
-      );
       testMessages.forEach((msg) => {
         const expectedMsg = expectedMessages.shift()!;
         if (expectedMsg?.trigger === "debug") {
