@@ -12,6 +12,7 @@ import { expect, test, type FrameLocator, type Page } from "@playwright/test";
 import * as fs from "fs";
 import * as http from "http";
 import * as path from "path";
+import { deepEqual } from "../app/gameDataHelper";
 import {
   GameAction,
   GameStateUpdateType,
@@ -294,6 +295,16 @@ export const createRoom = async (
 
 export const isRealMessage = (msg: { trigger: string; data: any }) => {
   if (!msg) return false;
+  if (
+    deepEqual(msg, {
+      trigger: "clientData",
+      data: {
+        action: 5,
+        payload: {},
+      },
+    })
+  )
+    return false;
   // lying enums
   if (
     msg.data.action === GameAction.SelectedTile &&
