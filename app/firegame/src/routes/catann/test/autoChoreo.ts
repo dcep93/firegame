@@ -11,7 +11,7 @@ export default async function autoChoreo(
   for (let i = 0; true; i++) {
     await c.verifyTestMessages(i > 0);
     const msg = c._peek();
-    if (!msg) return; // fastForward
+    if (!msg) return -1; // fastForward
     try {
       expect(msg.trigger).not.toBe("serverData");
     } catch (e) {
@@ -23,7 +23,7 @@ export default async function autoChoreo(
       i,
       nextReconnect,
     });
-    if (msg.data.sequence === stopClientDataSequence) return;
+    if (msg.data.sequence === stopClientDataSequence) return i;
 
     if (msg.data.sequence === nextReconnect) {
       console.log("handleReconnect");
@@ -53,7 +53,7 @@ export default async function autoChoreo(
     if (handler) {
       await handler();
     } else {
-      return;
+      return i;
     }
   }
 }

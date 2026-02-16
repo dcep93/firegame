@@ -106,7 +106,8 @@ export const multiChoreo = (fileName: string) => {
         const actor = getActor();
         if (!actor) break;
         console.log("actor", actor.i);
-        await autoChoreo(actor.c);
+        const numActed = await autoChoreo(actor.c);
+        expect(numActed).not.toBe(0);
       }
       for (let i = 0; i < players.length; i++) {
         await expect(players[i].msgs.slice(0, 1)).toEqual([]);
