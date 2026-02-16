@@ -7,12 +7,12 @@ export const listenMock = (_cb: any) => {
   cb = _cb;
   bc = new BroadcastChannel(CHANNEL);
   bc.onmessage = (ev) => {
-    cb(ev.data);
+    // if (ev.data.now === now) cb(ev.data.payload);
   };
   cb(undefined);
 };
 
 export const updateMock = (payload: any) => {
-  //   bc.postMessage(payload);
+  //   bc.postMessage({ now, payload });
   cb(payload);
 };

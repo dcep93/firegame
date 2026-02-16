@@ -32,7 +32,7 @@ class Catann extends React.Component {
         <iframe
           ref={iframeRef}
           title={"iframe"}
-          src={"/"}
+          src={`/${window.location.hash}`}
           onLoad={handleIframeLoad}
           style={{
             width: "100%",

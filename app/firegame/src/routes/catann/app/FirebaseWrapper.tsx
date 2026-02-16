@@ -18,7 +18,7 @@ import { TEST_CHANGE_STR } from "./gameLogic/utils";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
 
-const SHOULD_MOCK = isTest;
+const SHOULD_MOCK = true || isTest;
 
 export var firebaseData: {
   GAME?: ReturnType<typeof newGame>;
@@ -106,7 +106,7 @@ export default function FirebaseWrapper() {
   useEffect(() => {
     if (initialized) return;
     initialized = true;
-    console.log("connecting firebase wrapper");
+    console.log("connecting firebase wrapper", window.location.href);
     if (SHOULD_MOCK) {
       if (getRoomId() === "reconnect") {
         firebaseData = { ROOM: newRoom() };
