@@ -137,6 +137,7 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
         sessions: expectedSpliced.find((msg) => msg.data.data?.sessions)!.data
           .data.sessions,
         mapState: gameState.mapState,
+        playOrder: null,
       },
     );
     await spliceTestMessages(iframe);

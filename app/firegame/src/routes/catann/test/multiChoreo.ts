@@ -81,6 +81,9 @@ export const multiChoreo = (fileName: string) => {
             .reverse()
             .find((msg) => msg.data.data?.sessions)!.data.data.sessions,
           mapState: payload.gameState.mapState,
+          playOrder: actor.msgs.find(
+            (msg) => msg.data.data?.payload?.playOrder,
+          )!.data.data.payload.playOrder,
         },
       );
       for (let i = 0; i < players.length; i++) {

@@ -37,6 +37,7 @@ declare global {
           sessions: any;
           startTime: number;
           mapState: any;
+          playOrder: any;
         }
       | undefined;
     __testSeed: any;
@@ -341,10 +342,11 @@ export const newGame = () => {
     .map(({ color }) => color)
     .filter((color) => color !== selfColor)
     .sort((a, b) => a - b);
-  const playOrder =
-    selfColor === PlayerColor.None
+  const playOrder: typeof remainingPlayOrder =
+    window.__testOverrides?.playOrder ??
+    (selfColor === PlayerColor.None
       ? remainingPlayOrder
-      : [selfColor, ...remainingPlayOrder];
+      : [selfColor, ...remainingPlayOrder]);
   return {
     id: State.GameStateUpdate.toString(),
     data: {

@@ -47,6 +47,7 @@ export default async function fastForward(
           sessions: null,
           startTime: -1,
           mapState: null,
+          playOrder: null,
         };
       },
       { aggregated },
