@@ -104,9 +104,9 @@ function receiveFirebaseDataCatann(
 var initialized = false;
 export default function FirebaseWrapper() {
   useEffect(() => {
-    if (initialized) return;
+    if (initialized || window.location.hash) return;
     initialized = true;
-    console.log("connecting firebase wrapper", window.location.href);
+    console.log("connecting firebase wrapper");
     if (SHOULD_MOCK) {
       if (getRoomId() === "reconnect") {
         firebaseData = { ROOM: newRoom() };

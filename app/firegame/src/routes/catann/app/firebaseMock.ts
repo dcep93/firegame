@@ -6,13 +6,16 @@ var cb: any;
 export const listenMock = (_cb: any) => {
   cb = _cb;
   bc = new BroadcastChannel(CHANNEL);
+  console.log("msg.reg");
   bc.onmessage = (ev) => {
-    // if (ev.data.now === now) cb(ev.data.payload);
+    cb(ev.data);
+    console.log("msg.rec");
   };
   cb(undefined);
 };
 
 export const updateMock = (payload: any) => {
-  //   bc.postMessage({ now, payload });
-  cb(payload);
+  console.log("msg.post");
+  bc.postMessage(payload);
+  //   cb(payload);
 };

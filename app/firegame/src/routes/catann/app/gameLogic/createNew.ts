@@ -248,9 +248,6 @@ export const getRoomId = () =>
   window.location.hash.slice(1) ||
   `roomIdx${store.me.roomId}`;
 
-// @ts-ignore
-window.getRoomId = getRoomId;
-
 export const newRoom = () => {
   return {
     id: State.RoomEvent.toString(),
