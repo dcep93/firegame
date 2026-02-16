@@ -276,6 +276,7 @@ export const createRoom = async (
   roomId: string = "",
 ): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
+    page.on("pageerror", (msg) => console.log(msg));
     // page.on("console", (msg) => console.log("test.debug", msg.text()));
     await page.goto(`${APP_URL}catann?test#${roomId}`, {
       waitUntil: "load",

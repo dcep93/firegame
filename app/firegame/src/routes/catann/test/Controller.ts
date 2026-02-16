@@ -177,7 +177,6 @@ const Controller = (
       }
     };
     const clickStartButton = async () => {
-      page.on("pageerror", (msg) => console.log(msg));
       const startButton = getStartButton(iframe);
       await startButton.click({ force: true });
       await delay(1000);
