@@ -257,11 +257,11 @@ test.skip(
   }),
 );
 
-test("1p.v0", screenshot(choreo("./choreo/1p.v0.json")));
+test.skip("1p.v0", screenshot(choreo("./choreo/1p.v0.json")));
 
 test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
 
-test.skip("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
+test("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
 
 test.skip("2p.v0", multiChoreo("./choreo/2p.v0.json"));
 test.skip("2p.v1", multiChoreo("./choreo/2p.v1.json"));
