@@ -346,7 +346,7 @@
         "type": 1,
         "payload": {
           "gameSettingId": "steal8570",
-          "shouldResetGameClient": false,
+          "shouldResetGameClient": true,
           "databaseGameId": "207062800",
           "serverId": "0A830C",
           "isReconnectingSession": false

@@ -688,7 +688,7 @@ export const startGame = () => {
           serverId: room.data.roomId,
           databaseGameId: room.data.roomId,
           gameSettingId: room.data.roomId,
-          shouldResetGameClient: false,
+          shouldResetGameClient: true,
           isReconnectingSession: false,
           ...window.__testOverrides?.databaseGame,
         },

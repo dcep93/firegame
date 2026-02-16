@@ -1491,7 +1491,7 @@ export const applyGameAction = (parsed: {
             serverId: roomId,
             databaseGameId: roomId,
             gameSettingId: roomId,
-            shouldResetGameClient: false,
+            shouldResetGameClient: true,
             isReconnectingSession,
           },
         },
@@ -1519,8 +1519,7 @@ export const applyGameAction = (parsed: {
       typeof parsed.payload === "object" &&
       "gameId" in parsed.payload
     ) {
-      sendReconnectState(true);
-      return true;
+      return false;
     }
     if (
       parsed.action === GameStateUpdateType.ExitInitialPlacement &&

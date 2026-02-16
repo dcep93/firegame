@@ -443,3 +443,9 @@
 - what you changed: Updated `handleMessage` to call `startGame()` when `AccessGameLink` arrives and a game already exists; added reconnect-aware handling for `GameAction.RequestGameState`; and implemented `SelectedInitialPlacementIndex` dispatch so it calls `placeSettlement`/`placeRoad` based on current initial-placement action state.
 - why the test isn't passing: N/A (this fix produced a clean pass for `reconnect`).
 - next suggested step: Keep this reconnect mapping stable and, if regressions appear, verify that `AccessGameLink -> FirstGameState/BuildGame/highlights` and action-66 initial placement transitions are still emitted in order.
+
+## Early 1p.v2 action-66 mismatch at first placement (current)
+- what would've saved time to get your bearings: The first failing comparison now happens before deeper road/trade logic—`1p.v2` expects client action 15 (`ConfirmBuildSettlement`) after bootstrap, but the UI emits action 66 (`SelectedInitialPlacementIndex`) instead.
+- what you changed: Narrowed the `SelectedPlayer` (`action: 5`) branch in `gameLogic/index.ts` so payloads with `gameId` no longer force immediate `sendReconnectState(true)` handling (return false instead).
+- why the test isn't passing: Even after removing that reconnect shortcut, the client still emits action 66 for the first placement click, so expected client action 15 is never consumed and the queue desyncs at server sequence 7.
+- next suggested step: Determine where to normalize early initial-placement client actions for `1p.v2` (66 vs 15) without breaking reconnect; likely requires adjusting message-shaping/choreography outside the current allowed gameLogic-only scope.
