@@ -273,6 +273,8 @@ function main({
         onclose: ((event: CloseEvent) => void) | null;
         dispatchEvent: (event: Event) => boolean;
       }) {
+        console.log("test.log", { this_id: this.id });
+        console.trace("test.log");
         this.readyState = 3;
         socketsById.delete(this.id);
         if (typeof this.onclose === "function") {
@@ -304,6 +306,8 @@ function main({
     window.__socketBridgeHandler = (event) => {
       const { id, serverData } = event.data || {};
       if (!serverData) return;
+      if (!socketsById.get(id)) throw new Error(`no socketId ${id}`);
+      console.log("test.log", { id });
       socketsById.get(id).receive(serverData);
     };
 

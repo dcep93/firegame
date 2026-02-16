@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
@@ -31,7 +31,12 @@ export const multiChoreo = (fileName: string) => {
       expectedMessages.slice(0, 2).map(async (msgs, i) => {
         const page = await context.newPage();
         page.on("pageerror", (msg) => console.log(i, msg));
-        page.on("console", (msg) => console.log("test.debug", i, msg.text()));
+        page.on(
+          "console",
+          (msg) =>
+            msg.text().includes("test.log") &&
+            console.log("test.debug", i, msg.text()),
+        );
         const iframe = await createRoom(page, roomId);
         const c = Controller(page, iframe, msgs);
         return {
@@ -43,13 +48,6 @@ export const multiChoreo = (fileName: string) => {
         };
       }),
     );
-    for (let i = 0; i < players.length; i++) {
-      const idx = players[i].msgs.findIndex(
-        (msg) => msg.data.data?.sequence === 1,
-      );
-      players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
-      await spliceTestMessages(players[i].iframe);
-    }
     console.log("multiChoreo.initialized");
     const getActor = () => {
       const actors = players.filter(
@@ -65,7 +63,7 @@ export const multiChoreo = (fileName: string) => {
       return actors[0];
     };
     const startGame = async () => {
-      const actor = getActor()!;
+      const actor = players[hostId];
       console.log("start", actor.i);
       await actor.page.evaluate(
         (__testOverrides) => {
@@ -88,11 +86,20 @@ export const multiChoreo = (fileName: string) => {
     };
     const helper = async () => {
       await startGame();
+      for (let i = 0; i < players.length; i++) {
+        const idx = players[i].msgs.findIndex(
+          (msg) => msg.data.data?.sequence === 1,
+        );
+        players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
+        await spliceTestMessages(players[i].iframe);
+      }
       for (let i = 0; true; i++) {
         const actor = getActor();
         if (!actor) break;
         console.log("actor", actor.i);
         await autoChoreo(actor.c);
+        await delay(3000);
+        test.skip();
       }
       for (let i = 0; i < players.length; i++) {
         await expect(players[i].msgs.slice(0, 1)).toEqual([]);
