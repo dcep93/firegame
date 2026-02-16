@@ -146,8 +146,6 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
       await c.clickStartButton();
       await c.verifyTestMessages();
     }
-    await checkCanvasHandle(iframe);
-    return;
     await autoChoreo(c);
     await c.verifyTestMessages(false);
     expect(expectedMessages.slice(0, 1)).toEqual([]);
