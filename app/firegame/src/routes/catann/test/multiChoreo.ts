@@ -13,11 +13,12 @@ export const multiChoreo = (fileName: string) => {
     const context: BrowserContext = await browser.newContext();
 
     const players = await Promise.all(
-      expectedMessages.map(async (msgs) => {
+      expectedMessages.map(async (msgs, i) => {
         const page = await context.newPage();
         const iframe = await createRoom(page);
         const c = Controller(page, iframe, msgs);
         return {
+          i,
           msgs,
           page,
           iframe,
