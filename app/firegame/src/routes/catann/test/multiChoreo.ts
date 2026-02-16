@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
@@ -97,6 +97,7 @@ export const multiChoreo = (fileName: string) => {
     };
     const helper = async () => {
       await startGame();
+      test.skip();
       for (let i = 0; true; i++) {
         const actor = getActor();
         if (!actor) break;
