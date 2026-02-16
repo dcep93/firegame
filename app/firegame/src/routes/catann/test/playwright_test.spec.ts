@@ -377,9 +377,9 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
     {
       trigger: "clientData",
       data: {
+        ...msg.data,
         // unclear why this gets sent on colonist but not in test mode
         action: GameAction.SelectedInitialPlacementIndex,
-        payload: msg.data.payload,
       },
     },
   ];
