@@ -27,11 +27,25 @@ Before committing changes, validate TypeScript by running:
 ```bash
 cd firegame/app/firegame
 yarn lint
+yarn tsc --noEmit
 ```
 
-If `yarn lint` fails (including duplicate key errors), fix the issue and rerun
-it until it passes. Treat this as the authoritative typecheck gate before
-continuing with test runs or commits.
+If either command fails (including duplicate/overwritten property diagnostics
+such as TS2783), fix the issue and rerun until both pass. Treat this as the
+authoritative typecheck gate before continuing with test runs or commits.
+
+## Anti-slop change validation (required)
+
+Before committing any non-trivial Catann change:
+
+1. Stage the intended patch and inspect the full diff.
+2. Identify suspicious additions (extra helpers, hardcoded branches, test-only
+   magic values, broad refactors) and explicitly test whether each is necessary.
+3. Prefer the simplest implementation with the smallest diff that preserves behavior.
+4. Re-run the workflow and compare the resulting `{ codex: ... }` printout to
+   confirm no regression.
+
+If removing a new abstraction/helper yields the same behavior, do not keep it.
 
 ## Timestamp format (NYC time)
 
@@ -76,6 +90,15 @@ firegame/app/firegame/src/routes/catann/app/gameLogic. Do **not** stop after a
 single failing attempt or timeout; keep re-running the test command after each
 fix until you get a clean pass. Once it passes, continue with the screenshot steps.
 Follow AGENTS.md in the same folder as this skill doc. Do **not** introduce global variables, global state, or manipulate the DOM or window objects.
+
+## Game-logic purity guard
+
+When editing `app/gameLogic`, keep logic explicitly game-behavior driven.
+Avoid hardcoded test fixtures, magic IDs, lookup tables for recorded runs, or
+special-case branches that exist only to satisfy a single capture.
+
+If test data is required, consume values that the harness already provides via
+existing override paths rather than encoding constants in game logic.
 
 ## 3) Locate output image (if present)
 
