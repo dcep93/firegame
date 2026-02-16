@@ -273,7 +273,7 @@ function main({
         onclose: ((event: CloseEvent) => void) | null;
         dispatchEvent: (event: Event) => boolean;
       }) {
-        console.trace("test.log", { this_id: this.id });
+        console.log("test.log", { this_id: this.id }, new Error().stack);
         this.readyState = 3;
         socketsById.delete(this.id);
         if (typeof this.onclose === "function") {
