@@ -35,7 +35,9 @@ export const multiChoreo = (fileName: string) => {
           "console",
           (msg) =>
             msg.text().includes("test.log") &&
-            console.log("test.debug", i, msg.text()),
+            (msg.type() === "log"
+              ? console.log("test.debug", i, msg.text())
+              : console.log(i, msg.text(), msg.location())),
         );
         const iframe = await createRoom(page, roomId);
         const c = Controller(page, iframe, msgs);
