@@ -214,7 +214,7 @@ const Controller = (
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
 
-      const msgs = await spliceTestMessages(iframe, false);
+      const msgs = await spliceTestMessages(iframe);
       if (msgs.length === 0) {
         const confirmCityOffset = getConfirmOffset(settlementOffset);
         await clickCanvas(canvas, confirmCityOffset);

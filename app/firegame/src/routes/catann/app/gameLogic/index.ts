@@ -1084,13 +1084,12 @@ const placeRoad = (edgeIndex: number) => {
       sendEdgeHighlights31(gameData);
     }
     sendCornerHighlights30(gameData, []);
-    //
-    sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
 
     if (gameState.currentState.completedTurns === 1) {
+      // TODO
       sendPlayTurnSound59(gameData);
       sendCornerHighlights30(gameData);
     } else if (

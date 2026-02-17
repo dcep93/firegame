@@ -413,21 +413,13 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
   return true;
 };
 
-// TODO no second arg
 export const spliceTestMessages = async (
   iframe: FrameLocator,
-  shouldSplice: boolean = true,
 ): Promise<{ trigger: string; data: any }[]> => {
   return (
     await iframe
       .locator("body")
-      .evaluate(
-        (_, _shouldSplice) =>
-          _shouldSplice
-            ? window.parent.__socketCatannMessages.splice(0)
-            : window.parent.__socketCatannMessages,
-        shouldSplice,
-      )
+      .evaluate(() => window.parent.__socketCatannMessages.splice(0))
   ).filter((msg) => isRealMessage(msg));
 };
 
