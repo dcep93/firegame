@@ -4,6 +4,7 @@ import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
+import { colorHelper } from "../app/gameLogic/utils";
 import autoChoreo from "./autoChoreo";
 import { getStartButton } from "./canvasGeometry";
 import Controller from "./Controller";
@@ -43,7 +44,13 @@ export const multiChoreo = (fileName: string) => {
         const username = payload.playerUserStates.find(
           (s: any) => s.selectedColor === payload.playerColor,
         ).username;
-        const iframe = await createRoom(page, { roomId, username });
+        const iframe = await createRoom(page, {
+          roomId,
+          username,
+          selectedColor: colorHelper.find(
+            ({ int }) => int === payload.playerColor,
+          )!.str,
+        });
         const c = Controller(i, page, iframe, msgs);
         return {
           i,
@@ -117,6 +124,7 @@ export const multiChoreo = (fileName: string) => {
         expect(numActed).not.toBe(0);
       }
       for (let i = 0; i < players.length; i++) {
+        await players[i].c.verifyTestMessages(false);
         await expect(players[i].msgs.slice(0, 1)).toEqual([]);
       }
       for (let i = 0; i < players.length; i++) {

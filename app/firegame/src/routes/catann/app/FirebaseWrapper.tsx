@@ -5,14 +5,13 @@ import { roomPath } from "../../../firegame/writer/utils";
 import { listenMock, updateMock } from "./firebaseMock";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import {
-  colorHelper,
   newGame,
   newRoom,
   newRoomMe,
   spoofHostRoom,
   startGame,
 } from "./gameLogic/createNew";
-import { TEST_CHANGE_STR } from "./gameLogic/utils";
+import { colorHelper, TEST_CHANGE_STR } from "./gameLogic/utils";
 import getMe from "./getMe";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
@@ -32,12 +31,14 @@ function receiveFirebaseDataCatann(
   const helper = () => {
     firebaseData = unSerializeFirebase(catann, []);
     if (firebaseData?.GAME) {
-      const mySession = firebaseData.ROOM!.data.sessions.find(
-        (s) => s.userId === getMe().userId,
-      );
-      if (mySession) {
+      const selectedColor =
+        getMe().selectedColor ??
+        firebaseData.ROOM!.data.sessions.find(
+          (s) => s.userId === getMe().userId,
+        )?.selectedColor;
+      if (selectedColor) {
         firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
-          ({ str }) => str === mySession.selectedColor,
+          ({ str }) => str === selectedColor,
         )!.int;
         // good:
         // 1 test.log.receiveFirebaseDataCatann RolandIce 1 http://127.0.0.1:3000/catann#catan4910.RolandIce
@@ -87,14 +88,14 @@ function receiveFirebaseDataCatann(
     if (firebaseData.GAME) {
       if (catann.__meta.change.startGame) {
         startGame(catann.__meta.change.startGame);
-        return;
-      }
-      const update = buildGameStateUpdated(
-        firebaseData.GAME,
-        prevFirebaseData.GAME?.data?.payload?.gameState,
-      );
-      if (update) {
-        sendToMainSocket?.(update);
+      } else {
+        const update = buildGameStateUpdated(
+          firebaseData.GAME,
+          prevFirebaseData.GAME?.data?.payload?.gameState,
+        );
+        if (update) {
+          sendToMainSocket?.(update, true);
+        }
       }
       return;
     }

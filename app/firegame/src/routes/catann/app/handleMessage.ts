@@ -1,5 +1,5 @@
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
-import { applyGameAction } from "./gameLogic";
+import { applyGameAction, sendCornerHighlights30 } from "./gameLogic";
 import {
   GeneralAction,
   LobbyAction,
@@ -9,7 +9,12 @@ import {
   SocketRouteType,
   State,
 } from "./gameLogic/CatannFilesEnums";
-import { newGame, spoofHostRoom, startGame } from "./gameLogic/createNew";
+import {
+  isMyTurn,
+  newGame,
+  spoofHostRoom,
+  startGame,
+} from "./gameLogic/createNew";
 import { default as getMe, default as store } from "./getMe";
 import { packServerData, parseClientData } from "./parseMessagepack";
 
@@ -57,7 +62,10 @@ export const FUTURE = (() => {
   return future.toISOString();
 })();
 
-export var sendToMainSocket: (serverData: any) => void;
+export var sendToMainSocket: (
+  serverData: any,
+  isGameStateUpdate?: boolean,
+) => void;
 
 var latestSequence = 0;
 
@@ -75,11 +83,14 @@ export default function handleMessage(
         rawClientData,
         sendToMainSocket,
       });
-      sendToMainSocket = (data) => {
+      sendToMainSocket = (data, isGameStateUpdate = false) => {
         if (data.data) {
           data.data.sequence = ++latestSequence;
         }
         sendResponse(data);
+        if (isGameStateUpdate) {
+          if (isMyTurn()) sendCornerHighlights30(firebaseData.GAME);
+        }
       };
       sendResponse({ type: "Connected", userSessionId: getMe().userId });
       sendResponse({ type: "SessionEstablished" });

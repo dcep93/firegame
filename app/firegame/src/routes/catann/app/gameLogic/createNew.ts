@@ -1,4 +1,4 @@
-import { NUM_DEV_CARDS, sendCornerHighlights30 } from ".";
+import { NUM_DEV_CARDS } from ".";
 import { firebaseData } from "../FirebaseWrapper";
 import getMe from "../getMe";
 import { FUTURE, sendToMainSocket } from "../handleMessage";
@@ -27,7 +27,7 @@ import {
   UserIcon,
   UserRole,
 } from "./CatannFilesEnums";
-import { tileCornerStates, tileEdgeStates } from "./utils";
+import { colorHelper, tileCornerStates, tileEdgeStates } from "./utils";
 
 declare global {
   interface Window {
@@ -295,15 +295,6 @@ export const newRoomMe = (sessions: { selectedColor: string }[]) => {
     botDifficulty: null,
   };
 };
-
-export const colorHelper = Object.values(PlayerColor)
-  .filter((v) => isNaN(v as number))
-  .filter((v) => v !== PlayerColor[PlayerColor.None])
-  .map((v) => v as string)
-  .map((v) => ({
-    int: PlayerColor[v as keyof typeof PlayerColor],
-    str: v[0].toLowerCase().concat(v.slice(1)),
-  }));
 
 export const newGame = () => {
   const room: ReturnType<typeof newRoom> = firebaseData.ROOM!;
@@ -719,7 +710,6 @@ export const startGame = (__testOverrideDatabaseGame: any) => {
         payload: true,
       },
     });
-  if (isMyTurn()) sendCornerHighlights30(firebaseData.GAME);
 };
 
 export const isMyTurn = () =>

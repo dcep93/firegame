@@ -125,7 +125,11 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
     )!.data.data.payload.gameState;
     const roomId = expectedSpliced.find((msg) => msg.data.data?.roomId)!.data
       .data.roomId;
-    const iframe = await createRoom(page, { roomId, username: "choreo" });
+    const iframe = await createRoom(page, {
+      roomId,
+      username: "choreo",
+      selectedColor: "",
+    });
     await page.evaluate(
       (__testOverrides) => {
         window.__testOverrides = __testOverrides;
@@ -275,12 +279,20 @@ test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
 
 export const createRoom = async (
   page: Page,
-  { roomId, username }: { roomId?: string; username?: string } = {},
+  params: {
+    roomId: string;
+    username: string;
+    selectedColor: string;
+  } | null = null,
 ): Promise<FrameLocator> => {
+  console.log("createRoom", { params });
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
-    await page.goto(`${APP_URL}catann#${roomId}.${username}`, {
-      waitUntil: "load",
-    });
+    await page.goto(
+      `${APP_URL}catann#${params?.roomId}.${params?.username}.${params?.selectedColor}`,
+      {
+        waitUntil: "load",
+      },
+    );
     const iframe = page.locator('iframe[title="iframe"]');
     await expect(iframe).toBeVisible({ timeout: 1000 });
     return page.frameLocator('iframe[title="iframe"]');

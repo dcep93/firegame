@@ -1,4 +1,8 @@
-import { CornerDirection, EdgeDirection } from "./CatannFilesEnums";
+import {
+  CornerDirection,
+  EdgeDirection,
+  PlayerColor,
+} from "./CatannFilesEnums";
 
 export const TEST_CHANGE_STR = "test.Controller.handleReconnect";
 
@@ -680,3 +684,12 @@ export const edgeEndpoints = (edgeState: {
       return [];
   }
 };
+
+export const colorHelper = Object.values(PlayerColor)
+  .filter((v) => isNaN(v as number))
+  .filter((v) => v !== PlayerColor[PlayerColor.None])
+  .map((v) => v as string)
+  .map((v) => ({
+    int: PlayerColor[v as keyof typeof PlayerColor],
+    str: v[0].toLowerCase().concat(v.slice(1)),
+  }));

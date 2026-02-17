@@ -1,6 +1,6 @@
 import store from "../../../shared/store";
 
-const [roomId, username] = (
+const [roomId, username, selectedColor] = (
   window.parent.location?.hash || window.location.hash
 )
   .slice(1)
@@ -19,6 +19,7 @@ const getMe = () =>
     roomId: roomId || `roomIdx${store.me.roomId}`,
     username: username ?? store.me.userId,
     userId: username ?? store.me.userId,
+    selectedColor,
     isTest: roomId !== "",
   });
 
