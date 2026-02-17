@@ -1090,17 +1090,9 @@ const placeRoad = (edgeIndex: number) => {
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-
-    if (gameState.currentState.completedTurns === 1) {
-      // TODO
-      sendPlayTurnSound59(gameData);
-      sendCornerHighlights30(gameData);
-    } else if (
-      actionStateAtRoadPlacement ===
-      PlayerActionState.InitialPlacementRoadPlacement
-    ) {
-      sendExitInitialPlacement62(gameData);
-    }
+    updateCurrentState(gameData, {
+      currentTurnPlayerColor: getNextTurnPlayerColor(),
+    });
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
@@ -1509,8 +1501,6 @@ export const applyGameAction = (parsed: {
       });
       sendPlayTurnSound59({});
       sendToMainSocket?.(firebaseData.GAME);
-      // TODO check
-      // sendCornerHighlights30(firebaseData.GAME);
     };
     if (
       parsed.action === GameAction.SelectedPlayer &&
