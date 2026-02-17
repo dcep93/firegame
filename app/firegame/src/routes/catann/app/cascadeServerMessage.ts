@@ -13,7 +13,9 @@ const cascadeServerMessage = (
   sendResponse: typeof sendToMainSocket,
 ) => {
   const sendHighlights = () => {
-    console.log("test.log.sendHighlights", isMyTurn());
+    const actionState =
+      firebaseData.GAME!.data.payload.gameState.currentState.actionState;
+    console.log("test.log.sendHighlights", isMyTurn(), actionState);
     if (isMyTurn()) {
       if (
         [
@@ -22,7 +24,7 @@ const cascadeServerMessage = (
           PlayerActionState.PlaceSettlement,
           PlayerActionState.PlaceCity,
           PlayerActionState.PlaceCityWithDiscount,
-        ].includes(data.data.payload.gameState?.currentState.actionState)
+        ].includes(actionState)
       )
         sendCornerHighlights30(firebaseData.GAME);
       if (
@@ -32,7 +34,7 @@ const cascadeServerMessage = (
           PlayerActionState.PlaceRoadForFree,
           PlayerActionState.Place2MoreRoadBuilding,
           PlayerActionState.Place1MoreRoadBuilding,
-        ].includes(data.data.payload.gameState?.currentState.actionState)
+        ].includes(actionState)
       )
         sendEdgeHighlights31(firebaseData.GAME);
     }
@@ -64,7 +66,6 @@ const cascadeServerMessage = (
         },
       });
     }
-    console.log("test.log.buildgame");
     sendHighlights();
   }
 };

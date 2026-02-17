@@ -166,8 +166,13 @@ const Controller = (
               allocatedTime;
           }
         }
-        expect(msg).toEqual(expectedMsg);
-        console.log("matched", playerIndex, i, msg);
+        try {
+          expect(msg).toEqual(expectedMsg);
+        } catch (e) {
+          console.log(JSON.stringify({ msgs: testMessages.slice(i) }, null, 2));
+          throw e;
+        }
+        console.log("matched", playerIndex, i, JSON.stringify(msg, null, 2));
       });
     };
     const confirmSelectedCards = async () => {

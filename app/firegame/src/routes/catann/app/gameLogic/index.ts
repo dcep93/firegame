@@ -780,7 +780,6 @@ const placeSettlement = (cornerIndex: number) => {
     sendShipHighlights32(gameData);
   } else {
     sendCornerHighlights30(gameData);
-    sendEdgeHighlights31(gameData, cornerIndex);
   }
   const resourcesToGive: {
     owner: number;
