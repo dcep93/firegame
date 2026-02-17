@@ -64,6 +64,7 @@ const cascadeServerMessage = (
         },
       });
     }
+    console.log("test.log.buildgame");
     sendHighlights();
   }
 };
