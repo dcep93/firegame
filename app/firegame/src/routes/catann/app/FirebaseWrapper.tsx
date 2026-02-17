@@ -135,7 +135,10 @@ export default function FirebaseWrapper() {
   return <div></div>;
 }
 
-export function setFirebaseData(newData: any, change: any) {
+export function setFirebaseData(
+  newData: typeof firebaseData | null,
+  change: any,
+) {
   const catann = {
     ...newData,
     __meta: { change, me: getMe(), now: Date.now() },
@@ -148,7 +151,7 @@ export function setFirebaseData(newData: any, change: any) {
   if (Object.keys(updates).length === 1) return; // __meta/now will always change
   console.debug("setting", newData, updates);
   if (change === TEST_CHANGE_STR) {
-    firebaseData = newData;
+    firebaseData = newData!;
     firebaseDataSnapshot = JSON.stringify(firebaseData);
     return;
   }

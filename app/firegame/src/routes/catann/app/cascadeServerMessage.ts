@@ -15,7 +15,6 @@ const cascadeServerMessage = (
   const sendHighlights = () => {
     const actionState =
       firebaseData.GAME!.data.payload.gameState.currentState.actionState;
-    console.log("test.log.sendHighlights", isMyTurn(), actionState);
     if (isMyTurn()) {
       if (
         [
@@ -35,14 +34,19 @@ const cascadeServerMessage = (
           PlayerActionState.Place2MoreRoadBuilding,
           PlayerActionState.Place1MoreRoadBuilding,
         ].includes(actionState)
-      )
-        sendEdgeHighlights31(firebaseData.GAME);
+      ) {
+        sendEdgeHighlights31(
+          firebaseData.GAME,
+          firebaseData.__meta.change.cornerIndex,
+        );
+      }
     }
   };
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
     sendHighlights();
     const resourcesToGive = firebaseData.__meta.change.resourcesToGive;
     if (resourcesToGive) {
+      console.log("test.log", { resourcesToGive });
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {

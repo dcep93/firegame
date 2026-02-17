@@ -231,7 +231,6 @@ const drawDevelopmentCard = (devCardsState: any, overrideCard?: number) => {
 
 const getNextTurnPlayerColor = (direction: number = 1) => {
   const payload = firebaseData.GAME!.data.payload;
-  console.log("test.log.getNextTurnPlayerColor", direction);
   const currPlayerIndex = payload.playOrder.indexOf(
     payload.gameState.currentState.currentTurnPlayerColor,
   );
@@ -488,17 +487,14 @@ export const sendCornerHighlights30 = (
   });
 };
 
-export const sendEdgeHighlights31 = (
-  gameData: any,
-  cornerIndex: number = -1,
-) => {
+export const sendEdgeHighlights31 = (gameData: any, cornerIndex?: number) => {
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
 
   const edgeStates = gameData.data.payload.gameState.mapState.tileEdgeStates;
   const cornerStates =
     gameData.data.payload.gameState.mapState.tileCornerStates;
-  const cornerState = cornerStates[cornerIndex];
+  const cornerState = cornerStates[cornerIndex || -1];
   const cornerKey =
     cornerState &&
     serializeCornerKey(cornerState.x, cornerState.y, cornerState.z);
@@ -797,7 +793,7 @@ const placeSettlement = (cornerIndex: number) => {
       gameState,
       cornerState,
     );
-    if (gameState.currentState.completedTurns > 0) {
+    if (gameState.currentState.completedTurns > gameState) {
       adjacentTiles.forEach((tileIndex) => {
         const tileState = tileHexStates[String(tileIndex)];
         if (
