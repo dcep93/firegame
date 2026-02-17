@@ -1,7 +1,7 @@
+import cascadeServerMessage from "./cascadeServerMessage";
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
-import { applyGameAction, sendCornerHighlights30 } from "./gameLogic";
+import { applyGameAction } from "./gameLogic";
 import {
-  GameStateUpdateType,
   GeneralAction,
   LobbyAction,
   LobbyState,
@@ -10,12 +10,7 @@ import {
   SocketRouteType,
   State,
 } from "./gameLogic/CatannFilesEnums";
-import {
-  isMyTurn,
-  newGame,
-  spoofHostRoom,
-  startGame,
-} from "./gameLogic/createNew";
+import { newGame, spoofHostRoom, startGame } from "./gameLogic/createNew";
 import { default as getMe, default as store } from "./getMe";
 import { packServerData, parseClientData } from "./parseMessagepack";
 
@@ -86,27 +81,7 @@ export default function handleMessage(
           data.data.sequence = ++latestSequence;
         }
         sendResponse(data);
-        const isGameStateUpdate = [
-          GameStateUpdateType.BuildGame,
-          GameStateUpdateType.GameStateUpdated,
-        ].includes(data.data.type);
-        if (isGameStateUpdate) {
-          if (
-            data.data.type === GameStateUpdateType.BuildGame &&
-            data.data.payload.gameSettings.karmaActive
-          ) {
-            sendToMainSocket({
-              id: State.GameStateUpdate.toString(),
-              data: {
-                type: GameStateUpdateType.KarmaState,
-                payload: true,
-              },
-            });
-          }
-          if (isMyTurn()) {
-            sendCornerHighlights30(firebaseData.GAME);
-          }
-        }
+        cascadeServerMessage(data);
       };
       sendResponse({ type: "Connected", userSessionId: getMe().userId });
       sendResponse({ type: "SessionEstablished" });
