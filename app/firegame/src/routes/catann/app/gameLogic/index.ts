@@ -1504,13 +1504,7 @@ export const applyGameAction = (parsed: {
           },
         },
       });
-      sendToMainSocket?.({
-        id: State.GameStateUpdate.toString(),
-        data: {
-          type: GameStateUpdateType.PlayTurnSound,
-          payload: [],
-        },
-      });
+      sendPlayTurnSound59({});
       sendToMainSocket?.(firebaseData.GAME);
       sendCornerHighlights30(firebaseData.GAME);
     };

@@ -374,10 +374,6 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
   ];
   if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
-  if (msg.data.data?.type === GameStateUpdateType.PlayTurnSound) {
-    console.log("debug", msg.data.data);
-    return true;
-  }
   if (
     [
       State.SocketMonitorUpdate.toString(),
