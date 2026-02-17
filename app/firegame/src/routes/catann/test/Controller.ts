@@ -167,7 +167,7 @@ const Controller = (
           }
         }
         expect(msg).toEqual(expectedMsg);
-        console.log("matched", i, msg);
+        console.log("matched", playerIndex, i, msg);
       });
     };
     const confirmSelectedCards = async () => {
