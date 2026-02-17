@@ -40,17 +40,6 @@ function receiveFirebaseDataCatann(
         firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
           ({ str }) => str === selectedColor,
         )!.int;
-        // good:
-        // 1 test.log.receiveFirebaseDataCatann RolandIce 1 http://127.0.0.1:3000/catann#catan4910.RolandIce
-        // 0 test.log.receiveFirebaseDataCatann Koppel#0295 2 http://127.0.0.1:3000/catann#catan4910.Koppel#0295
-        // 0 test.log.receiveFirebaseDataCatann Koppel#0295 2 http://127.0.0.1:3000/#catan4910
-        // 1 test.log.receiveFirebaseDataCatann RolandIce 1 http://127.0.0.1:3000/#catan4910
-        console.log(
-          "test.log.receiveFirebaseDataCatann",
-          getMe().userId,
-          firebaseData.GAME!.data.payload.playerColor,
-          window.location.href,
-        );
       } else {
         // TODO spectator
       }
@@ -94,7 +83,7 @@ function receiveFirebaseDataCatann(
           prevFirebaseData.GAME?.data?.payload?.gameState,
         );
         if (update) {
-          sendToMainSocket?.(update, true);
+          sendToMainSocket?.(update);
         }
       }
       return;

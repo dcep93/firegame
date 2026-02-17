@@ -1,6 +1,7 @@
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
 import { applyGameAction, sendCornerHighlights30 } from "./gameLogic";
 import {
+  GameStateUpdateType,
   GeneralAction,
   LobbyAction,
   LobbyState,
@@ -62,10 +63,7 @@ export const FUTURE = (() => {
   return future.toISOString();
 })();
 
-export var sendToMainSocket: (
-  serverData: any,
-  isGameStateUpdate?: boolean,
-) => void;
+export var sendToMainSocket: (serverData: any) => void;
 
 var latestSequence = 0;
 
@@ -83,13 +81,31 @@ export default function handleMessage(
         rawClientData,
         sendToMainSocket,
       });
-      sendToMainSocket = (data, isGameStateUpdate = false) => {
+      sendToMainSocket = (data) => {
         if (data.data) {
           data.data.sequence = ++latestSequence;
         }
         sendResponse(data);
+        const isGameStateUpdate = [
+          GameStateUpdateType.BuildGame,
+          GameStateUpdateType.GameStateUpdated,
+        ].includes(data.data.type);
         if (isGameStateUpdate) {
-          if (isMyTurn()) sendCornerHighlights30(firebaseData.GAME);
+          if (
+            data.data.type === GameStateUpdateType.BuildGame &&
+            data.data.payload.gameSettings.karmaActive
+          ) {
+            sendToMainSocket({
+              id: State.GameStateUpdate.toString(),
+              data: {
+                type: GameStateUpdateType.KarmaState,
+                payload: true,
+              },
+            });
+          }
+          if (isMyTurn()) {
+            sendCornerHighlights30(firebaseData.GAME);
+          }
         }
       };
       sendResponse({ type: "Connected", userSessionId: getMe().userId });

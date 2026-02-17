@@ -702,14 +702,6 @@ export const startGame = (__testOverrideDatabaseGame: any) => {
       },
     });
   sendToMainSocket?.(firebaseData.GAME);
-  if (firebaseData.GAME?.data.payload.gameSettings.karmaActive)
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.KarmaState,
-        payload: true,
-      },
-    });
 };
 
 export const isMyTurn = () =>
