@@ -4,7 +4,7 @@ const [roomId, username] = (
   window.parent.location?.hash || window.location.hash
 )
   .slice(1)
-  .split("/");
+  .split(".");
 var last = "";
 const log = <T>(t: T) => {
   const nextLast = `${t}`;

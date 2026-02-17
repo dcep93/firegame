@@ -278,7 +278,7 @@ export const createRoom = async (
   { roomId, username }: { roomId?: string; username?: string } = {},
 ): Promise<FrameLocator> => {
   const gotoCatann = async (page: Page): Promise<FrameLocator> => {
-    await page.goto(`${APP_URL}catann#${roomId}/${username}`, {
+    await page.goto(`${APP_URL}catann#${roomId}.${username}`, {
       waitUntil: "load",
     });
     const iframe = page.locator('iframe[title="iframe"]');
