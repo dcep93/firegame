@@ -229,7 +229,17 @@ const drawDevelopmentCard = (devCardsState: any, overrideCard?: number) => {
   return selectedCard;
 };
 
-const getNextTurnPlayerColor = (direction: number = 1) => 2;
+const getNextTurnPlayerColor = (direction: number = 1) => {
+  const payload = firebaseData.GAME!.data.payload;
+  console.log("test.log.getNextTurnPlayerColor", direction);
+  const currPlayerIndex = payload.playOrder.indexOf(
+    payload.gameState.currentState.currentTurnPlayerColor,
+  );
+  const nextPlayerIndex =
+    (currPlayerIndex + payload.playOrder.length + direction) %
+    payload.playOrder.length;
+  return payload.playOrder[nextPlayerIndex];
+};
 
 const updateCurrentState = (
   gameData: any,
@@ -772,6 +782,12 @@ const placeSettlement = (cornerIndex: number) => {
     sendCornerHighlights30(gameData);
     sendEdgeHighlights31(gameData, cornerIndex);
   }
+  const resourcesToGive: {
+    owner: number;
+    tileIndex: number;
+    distributionType: number;
+    card: number;
+  }[] = [];
 
   const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
     const gameState = gameData.data.payload.gameState;
@@ -782,12 +798,6 @@ const placeSettlement = (cornerIndex: number) => {
       gameState,
       cornerState,
     );
-    const resourcesToGive: {
-      owner: number;
-      tileIndex: number;
-      distributionType: number;
-      card: number;
-    }[] = [];
     if (gameState.currentState.completedTurns > 0) {
       adjacentTiles.forEach((tileIndex) => {
         const tileState = tileHexStates[String(tileIndex)];
@@ -813,13 +823,6 @@ const placeSettlement = (cornerIndex: number) => {
         0,
       );
     }
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.GivePlayerResourcesFromTile,
-        payload: resourcesToGive,
-      },
-    });
   };
   if (!isStandardBuild) {
     sendResourcesFromTile(gameData, cornerIndex);
@@ -829,6 +832,7 @@ const placeSettlement = (cornerIndex: number) => {
     { ...firebaseData, GAME: gameData },
     {
       action: "placeSettlement",
+      resourcesToGive,
       cornerIndex,
     },
   );
@@ -1011,12 +1015,16 @@ const placeRoad = (edgeIndex: number) => {
         type: GameLogMessageType.Separator,
       },
     });
-    if (completedTurns === 0) {
+    const rounds =
+      (completedTurns + 1) / gameData.data.payload.playOrder.length;
+    if (rounds < 2) {
       updateCurrentState(gameData, {
         completedTurns: completedTurns + 1,
         actionState: PlayerActionState.InitialPlacementPlaceSettlement,
         allocatedTime: TURN_TIMERS_MS.dicePhase,
-        currentTurnPlayerColor: getNextTurnPlayerColor(),
+        currentTurnPlayerColor: getNextTurnPlayerColor(
+          rounds === 1 ? 0 : rounds > 1 ? -1 : 1,
+        ),
       });
     } else {
       updateCurrentState(gameData, {
@@ -1090,9 +1098,6 @@ const placeRoad = (edgeIndex: number) => {
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-    updateCurrentState(gameData, {
-      currentTurnPlayerColor: getNextTurnPlayerColor(),
-    });
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {

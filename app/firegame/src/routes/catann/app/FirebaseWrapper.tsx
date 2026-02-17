@@ -21,6 +21,7 @@ const SHOULD_MOCK = isTest;
 export var firebaseData: {
   GAME?: ReturnType<typeof newGame>;
   ROOM?: ReturnType<typeof newRoom>;
+  __meta?: any;
 } = {};
 let firebaseDataSnapshot = JSON.stringify(firebaseData);
 

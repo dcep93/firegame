@@ -3,6 +3,10 @@ import { expect } from "@playwright/test";
 import { GameAction } from "../app/gameLogic/CatannFilesEnums";
 import { ControllerType } from "./Controller";
 
+// TODO make this the only default?
+export const singleChoreo = (c: ControllerType) =>
+  getHandlers(c)[c._peek().data.action as GameAction]!();
+
 export default async function autoChoreo(
   c: ControllerType,
   stopClientDataSequence: number = -1,
@@ -31,26 +35,7 @@ export default async function autoChoreo(
       nextReconnect = await c.getNextReconnect();
     }
 
-    const handlers: Partial<Record<GameAction, () => Promise<void>>> = {
-      [GameAction.PassedTurn]: c.passTurn,
-      [GameAction.ClickedDice]: c.rollNextDice,
-      [GameAction.WantToBuildRoad]: c.wantToBuildRoad,
-      [GameAction.WantToBuildSettlement]: c.wantToBuildSettlement,
-      [GameAction.WantToBuildCity]: c.wantToBuildCity,
-      [GameAction.BuyDevelopmentCard]: c.buyDevelopmentCard,
-      [GameAction.SelectedCardsState]: c.selectNextDiscardCard,
-      [GameAction.PlayDevelopmentCardFromHand]: c.playDevelopmentCardFromHand,
-      [GameAction.PreCreateTrade]: c.wantToTrade,
-      [GameAction.CreateTrade]: c.makeNextTrade,
-      [GameAction.ConfirmBuildRoad]: c.buildNextRoad,
-      [GameAction.SelectedTile]: c.playNextRobber,
-      [GameAction.SelectedCards]: c.confirmSelectedCards,
-      [GameAction.ConfirmBuildSettlement]: c.buildNextSettlement,
-      [GameAction.ConfirmBuildCity]: c.buildNextCity,
-      [GameAction.SelectedInitialPlacementIndex]: c.selectInitialPlacementIndex,
-    };
-
-    const handler = handlers[msg.data.action as GameAction];
+    const handler = getHandlers(c)[msg.data.action as GameAction];
     if (handler) {
       await handler();
     } else {
@@ -58,3 +43,24 @@ export default async function autoChoreo(
     }
   }
 }
+
+const getHandlers: (
+  c: ControllerType,
+) => Partial<Record<GameAction, () => Promise<void>>> = (c) => ({
+  [GameAction.PassedTurn]: c.passTurn,
+  [GameAction.ClickedDice]: c.rollNextDice,
+  [GameAction.WantToBuildRoad]: c.wantToBuildRoad,
+  [GameAction.WantToBuildSettlement]: c.wantToBuildSettlement,
+  [GameAction.WantToBuildCity]: c.wantToBuildCity,
+  [GameAction.BuyDevelopmentCard]: c.buyDevelopmentCard,
+  [GameAction.SelectedCardsState]: c.selectNextDiscardCard,
+  [GameAction.PlayDevelopmentCardFromHand]: c.playDevelopmentCardFromHand,
+  [GameAction.PreCreateTrade]: c.wantToTrade,
+  [GameAction.CreateTrade]: c.makeNextTrade,
+  [GameAction.ConfirmBuildRoad]: c.buildNextRoad,
+  [GameAction.SelectedTile]: c.playNextRobber,
+  [GameAction.SelectedCards]: c.confirmSelectedCards,
+  [GameAction.ConfirmBuildSettlement]: c.buildNextSettlement,
+  [GameAction.ConfirmBuildCity]: c.buildNextCity,
+  [GameAction.SelectedInitialPlacementIndex]: c.selectInitialPlacementIndex,
+});

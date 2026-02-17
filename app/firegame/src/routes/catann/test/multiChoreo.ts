@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
 import { colorHelper } from "../app/gameLogic/utils";
-import autoChoreo from "./autoChoreo";
+import { singleChoreo } from "./autoChoreo";
 import { getStartButton } from "./canvasGeometry";
 import Controller from "./Controller";
 import {
@@ -120,11 +120,12 @@ export const multiChoreo = (fileName: string) => {
         const actor = getActor();
         if (!actor) break;
         console.log("actor", actor.i);
-        const numActed = await autoChoreo(actor.c);
-        expect(numActed).not.toBe(0);
+        await singleChoreo(actor.c);
+        for (let i = 0; i < players.length; i++) {
+          await players[i].c.verifyTestMessages(false);
+        }
       }
       for (let i = 0; i < players.length; i++) {
-        await players[i].c.verifyTestMessages(false);
         await expect(players[i].msgs.slice(0, 1)).toEqual([]);
       }
       for (let i = 0; i < players.length; i++) {

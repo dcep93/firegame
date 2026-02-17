@@ -80,8 +80,7 @@ export default function handleMessage(
         if (data.data) {
           data.data.sequence = ++latestSequence;
         }
-        sendResponse(data);
-        cascadeServerMessage(data);
+        cascadeServerMessage(data, sendResponse);
       };
       sendResponse({ type: "Connected", userSessionId: getMe().userId });
       sendResponse({ type: "SessionEstablished" });

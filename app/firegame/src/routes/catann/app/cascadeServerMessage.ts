@@ -8,12 +8,26 @@ import {
 import { isMyTurn } from "./gameLogic/createNew";
 import { sendToMainSocket } from "./handleMessage";
 
-const cascadeServerMessage = (data: any) => {
+const cascadeServerMessage = (
+  data: any,
+  sendResponse: typeof sendToMainSocket,
+) => {
   const isGameStateUpdate = [
     GameStateUpdateType.BuildGame,
     GameStateUpdateType.GameStateUpdated,
   ].includes(data.data.type);
   if (isGameStateUpdate) {
+    const resourcesToGive = firebaseData.__meta.change.resourcesToGive;
+    if (resourcesToGive) {
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.GivePlayerResourcesFromTile,
+          payload: resourcesToGive,
+        },
+      });
+    }
+    sendResponse(data);
     if (
       data.data.type === GameStateUpdateType.BuildGame &&
       data.data.payload.gameSettings.karmaActive
@@ -48,6 +62,8 @@ const cascadeServerMessage = (data: any) => {
       )
         sendEdgeHighlights31(firebaseData.GAME);
     }
+  } else {
+    sendResponse(data);
   }
 };
 
