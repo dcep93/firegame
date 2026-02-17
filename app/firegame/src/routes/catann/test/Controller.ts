@@ -195,15 +195,14 @@ const Controller = (
         col: number;
         row: number;
       },
-      shouldVerify: boolean = true,
+      shouldConfirm: boolean = true,
     ) => {
-      if (shouldVerify) await verifyTestMessages(false);
+      await verifyTestMessages(false);
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
       await delay(100);
 
-      const msgs = await spliceTestMessages(iframe, false);
-      if (msgs.length === 0) {
+      if (shouldConfirm) {
         const confirmSettlementOffset = getConfirmOffset(settlementOffset);
         await clickCanvas(canvas, confirmSettlementOffset);
       }
@@ -224,9 +223,9 @@ const Controller = (
     const buildRoad = async (
       settlementCoords: { col: number; row: number },
       destinationCoords: { col: number; row: number },
-      shouldVerify: boolean = true,
+      shouldConfirm: boolean = true,
     ) => {
-      if (shouldVerify) verifyTestMessages(false);
+      verifyTestMessages(false);
       const settlementOffset = getSettlementOffset(settlementCoords);
       const destinationOffset = getSettlementOffset(destinationCoords);
       const roadOffset = {
@@ -235,8 +234,7 @@ const Controller = (
       };
       await clickCanvas(canvas, roadOffset);
 
-      const msgs = await spliceTestMessages(iframe, false);
-      if (msgs.length === 0) {
+      if (shouldConfirm) {
         const confirmRoadOffset = getConfirmOffset(roadOffset);
         await clickCanvas(canvas, confirmRoadOffset);
       }
@@ -364,14 +362,26 @@ const Controller = (
       await buildRoadFromPayload(roadMsg.data.payload);
     };
     const selectInitialPlacementIndex = async () => {
-      const settlementMsg = _expectedMessages!.find(
+      const initialMsg = _expectedMessages!.find(
         (msg) => msg.data.action === GameAction.SelectedInitialPlacementIndex,
       )!;
-      if (settlementMsg.data.payload) {
-        await buildSettlementFromPayload(settlementMsg.data.payload, false);
+      const nextBuild = _expectedMessages!.find(
+        (msg) =>
+          msg.trigger === "clientData" &&
+          msg.data.action !== GameAction.SelectedInitialPlacementIndex,
+      )!;
+      const shouldConfirm = initialMsg.data.payload === nextBuild.data.payload;
+      if (nextBuild.data.action === GameAction.ConfirmBuildRoad) {
+        await buildRoadFromPayload(initialMsg.data.payload, shouldConfirm);
       } else {
-        await buildNextSettlement();
+        await buildSettlementFromPayload(
+          initialMsg.data.payload,
+          shouldConfirm,
+        );
       }
+      console.log(
+        JSON.stringify({ shouldConfirm, initialMsg, nextBuild }, null, 2),
+      );
     };
     const buildNextSettlement = async () => {
       const settlementMsg = _expectedMessages!.find(
@@ -593,15 +603,19 @@ const Controller = (
     };
     const buildRoadFromPayload = async (
       payload: keyof typeof tileEdgeStates,
+      shouldConfirm: boolean = true,
     ) => {
       const [start, destination] = edgeEndpoints(tileEdgeStates[payload]);
-      await buildRoad(getColRow(start), getColRow(destination));
+      await buildRoad(getColRow(start), getColRow(destination), shouldConfirm);
     };
     const buildSettlementFromPayload = async (
       payload: keyof typeof tileCornerStates,
-      shouldVerify: boolean = true,
+      shouldConfirm: boolean = true,
     ) => {
-      await buildSettlement(getColRow(tileCornerStates[payload]), shouldVerify);
+      await buildSettlement(
+        getColRow(tileCornerStates[payload]),
+        shouldConfirm,
+      );
     };
     const buildCityFromPayload = async (
       payload: keyof typeof tileCornerStates,

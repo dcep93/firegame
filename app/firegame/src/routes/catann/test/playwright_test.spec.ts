@@ -209,27 +209,23 @@ test.skip(
     await checkClickable((_) => true);
 
     await spliceTestMessages(iframe);
-    await c.buildSettlement(settlementCoords, false);
+    await c.buildSettlement(settlementCoords);
     await spliceTestMessages(iframe);
-    await c.buildRoad(settlementCoords, destinationCoords, false);
+    await c.buildRoad(settlementCoords, destinationCoords);
 
     // the road appears clickable, because it has a mouse over
     // "Road Length: 1"
     await checkClickable((offset) => offset.col !== 0);
 
     await spliceTestMessages(iframe);
-    await c.buildSettlement(
-      {
-        row: settlementCoords.row,
-        col: settlementCoords.col + 2,
-      },
-      false,
-    );
+    await c.buildSettlement({
+      row: settlementCoords.row,
+      col: settlementCoords.col + 2,
+    });
     await spliceTestMessages(iframe);
     await c.buildRoad(
       { row: settlementCoords.row, col: settlementCoords.col + 2 },
       { row: destinationCoords.row, col: destinationCoords.col + 2 },
-      false,
     );
 
     await canvasRollDice(canvas);
@@ -257,9 +253,9 @@ test.skip(
     const settlementCoords = { col: 0, row: 5 };
     const destinationCoords = { col: 1, row: 4 };
 
-    await c.buildSettlement(settlementCoords, false);
+    await c.buildSettlement(settlementCoords);
     await spliceTestMessages(iframe);
-    await c.buildRoad(settlementCoords, destinationCoords, false);
+    await c.buildRoad(settlementCoords, destinationCoords);
   }),
 );
 
@@ -417,6 +413,7 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
   return true;
 };
 
+// TODO no second arg
 export const spliceTestMessages = async (
   iframe: FrameLocator,
   shouldSplice: boolean = true,
