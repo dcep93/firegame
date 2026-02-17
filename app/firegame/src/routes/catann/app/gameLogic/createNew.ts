@@ -1,6 +1,6 @@
 import { NUM_DEV_CARDS, sendCornerHighlights30 } from ".";
-import store from "../../../../shared/store";
 import { firebaseData } from "../FirebaseWrapper";
+import getMe from "../getMe";
 import { FUTURE, sendToMainSocket } from "../handleMessage";
 import {
   CardEnum,
@@ -47,7 +47,7 @@ declare global {
 export const colonistVersion = 2900;
 
 export const newUserState = () => {
-  console.log("test.log.newUserState", store.me.userId);
+  console.log("test.log.newUserState", getMe().userId);
   return {
     csrfToken: "csrfToken",
     userState: {
@@ -56,7 +56,7 @@ export const newUserState = () => {
       colonistVersion,
       giftedMemberships: [],
       icon: UserIcon.Guest,
-      id: store.me.userId,
+      id: getMe().userId,
       interactedWithSite: true,
       isLoggedIn: true,
       hasJoinedColonistDiscordServer: false,
@@ -236,7 +236,7 @@ export const newUserState = () => {
       totalCompletedGameCount: 1,
       ckTotalGameCount: 0,
       ckNextRerollAt: FUTURE,
-      username: store.me.userId,
+      username: getMe().userId,
       language: null,
       usernameChangeAttemptsLeft: 1,
       forceSubscription: true,
@@ -245,17 +245,11 @@ export const newUserState = () => {
   };
 };
 
-export const getRoomIdFromHash = () =>
-  window.parent.location.hash.slice(1) || window.location.hash.slice(1);
-
-export const getRoomId = () =>
-  getRoomIdFromHash() || `roomIdx${store.me.roomId}`;
-
 export const newRoom = () => {
   return {
     id: State.RoomEvent.toString(),
     data: {
-      roomId: getRoomId(),
+      roomId: getMe().roomId,
       type: "StateUpdated",
       updateSequence: Date.now(),
       private: true,
@@ -286,13 +280,13 @@ export const newRoomMe = (sessions: { selectedColor: string }[]) => {
   const availableColors = colorHelper.map(({ str }) => str);
   const takenColors = sessions.map(({ selectedColor }) => selectedColor);
   return {
-    roomSessionId: store.me.roomId.toString(),
-    userSessionId: store.me.userId,
-    userId: store.me.userId,
+    roomSessionId: getMe().roomId.toString(),
+    userSessionId: getMe().userId,
+    userId: getMe().userId,
     isBot: false,
     isReadyToPlay: true,
     selectedColor: availableColors.find((c) => !takenColors.includes(c))!,
-    username: store.me.userId,
+    username: getMe().userId,
     isMember: false,
     icon: UserIcon.Guest,
     profilePictureUrl: null,
@@ -334,7 +328,7 @@ export const newGame = () => {
       {} as Record<PlayerColor, T>,
     );
   const selfSession = sessions.find(
-    (session) => session.userId === store.me.userId,
+    (session) => session.userId === getMe().userId,
   );
   const selfColor = selfSession
     ? colorForSession(selfSession.selectedColor)
@@ -740,7 +734,7 @@ export const spoofHostRoom = () => {
       data: {
         ...firebaseData.ROOM!.data,
         sessions: (firebaseData.ROOM!.data.sessions.slice() as any[]).sort(
-          (a, b) => (a.userId === store.me.userId ? -1 : 1),
+          (a, b) => (a.userId === getMe().userId ? -1 : 1),
         ),
       },
     }

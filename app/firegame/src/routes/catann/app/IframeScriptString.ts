@@ -1,13 +1,10 @@
 import { StoreAvatarItemType, UserIcon } from "./gameLogic/CatannFilesEnums";
-import {
-  getRoomId,
-  getRoomIdFromHash,
-  newUserState,
-} from "./gameLogic/createNew";
+import { newUserState } from "./gameLogic/createNew";
+import { default as getMe } from "./getMe";
 import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
-export const isTest = getRoomIdFromHash() !== undefined;
+export const isTest = (getMe() as any)?.isTest !== undefined;
 
 const storeAvatarToUserIconMap: Record<number, number> = {
   [StoreAvatarItemType.FounderHat]: UserIcon.IconFounderHat,
@@ -443,7 +440,7 @@ function main({
 
 const IframeScriptString = () =>
   `(${main.toString()})(${JSON.stringify({
-    roomId: getRoomId(),
+    roomId: getMe().roomId,
     isDev,
     future: FUTURE,
     userState: newUserState(),

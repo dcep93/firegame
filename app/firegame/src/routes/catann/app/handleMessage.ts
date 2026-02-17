@@ -1,4 +1,3 @@
-import store from "../../../shared/store";
 import { firebaseData, setFirebaseData } from "./FirebaseWrapper";
 import { applyGameAction } from "./gameLogic";
 import {
@@ -11,6 +10,7 @@ import {
   State,
 } from "./gameLogic/CatannFilesEnums";
 import { newGame, spoofHostRoom, startGame } from "./gameLogic/createNew";
+import { default as getMe, default as store } from "./getMe";
 import { packServerData, parseClientData } from "./parseMessagepack";
 
 declare global {
@@ -44,7 +44,7 @@ window.addEventListener("message", (event) => {
 function handleClientUpdate(clientData: any) {
   Object.assign(
     firebaseData.ROOM!.data.sessions.find(
-      (s: any) => s.userId === store.me.userId,
+      (s: any) => s.userId === getMe().userId,
     )!,
     clientData,
   );
@@ -81,13 +81,13 @@ export default function handleMessage(
         }
         sendResponse(data);
       };
-      sendResponse({ type: "Connected", userSessionId: store.me.userId });
+      sendResponse({ type: "Connected", userSessionId: getMe().userId });
       sendResponse({ type: "SessionEstablished" });
       sendResponse({
         id: State.LobbyStateUpdate.toString(),
         data: {
           type: LobbyState.SessionState,
-          payload: { id: store.me.userId },
+          payload: { id: getMe().userId },
         },
       });
     }

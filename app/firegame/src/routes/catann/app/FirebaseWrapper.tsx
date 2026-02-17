@@ -2,12 +2,10 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { RemotePersonType } from "../../../firegame/writer/lobby";
 import { roomPath } from "../../../firegame/writer/utils";
-import store from "../../../shared/store";
 import { listenMock, updateMock } from "./firebaseMock";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import {
   colorHelper,
-  getRoomId,
   newGame,
   newRoom,
   newRoomMe,
@@ -15,6 +13,7 @@ import {
   startGame,
 } from "./gameLogic/createNew";
 import { TEST_CHANGE_STR } from "./gameLogic/utils";
+import getMe from "./getMe";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
 
@@ -33,7 +32,7 @@ function receiveFirebaseDataCatann(
   firebaseData = unSerializeFirebase(catann, []);
   if (firebaseData?.GAME) {
     const mySession = firebaseData.ROOM!.data.sessions.find(
-      (s) => s.userId === store.me.userId,
+      (s) => s.userId === getMe().userId,
     );
     if (mySession) {
       firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
@@ -41,7 +40,7 @@ function receiveFirebaseDataCatann(
       )!.int;
       console.log(
         "test.log.receiveFirebaseDataCatann",
-        store.me.userId,
+        getMe().userId,
         window.location.href,
       );
     } else {
@@ -94,7 +93,7 @@ function receiveFirebaseDataCatann(
   }
   if (
     !firebaseData.ROOM!.data.sessions.find(
-      (s: any) => s.userId === store.me.userId,
+      (s: any) => s.userId === getMe().userId,
     )
   ) {
     firebaseData.ROOM!.data.sessions.push(
@@ -113,7 +112,7 @@ export default function FirebaseWrapper() {
     initialized = true;
     console.log("connecting firebase wrapper");
     if (SHOULD_MOCK) {
-      if (getRoomId() === "reconnect") {
+      if (`${getMe().roomId}` === "reconnect") {
         firebaseData = { ROOM: newRoom() };
         firebaseData.ROOM!.data.sessions.push(
           newRoomMe(firebaseData.ROOM!.data.sessions),
@@ -139,7 +138,7 @@ export default function FirebaseWrapper() {
 export function setFirebaseData(newData: any, change: any) {
   const catann = {
     ...newData,
-    __meta: { change, me: store.me, now: Date.now() },
+    __meta: { change, me: getMe(), now: Date.now() },
   };
   const serializedCatann = serializeFirebase(catann);
   const previousSerialized = !firebaseDataSnapshot
