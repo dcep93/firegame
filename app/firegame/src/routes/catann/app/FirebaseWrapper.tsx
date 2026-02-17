@@ -39,7 +39,11 @@ function receiveFirebaseDataCatann(
       firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
         ({ str }) => str === mySession.selectedColor,
       )!.int;
-      console.log("test.log.receiveFirebaseDataCatann", store.me.userId);
+      console.log(
+        "test.log.receiveFirebaseDataCatann",
+        store.me.userId,
+        window.location.href,
+      );
     } else {
       // TODO spectator
     }
