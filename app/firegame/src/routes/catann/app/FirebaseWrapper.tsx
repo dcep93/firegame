@@ -26,7 +26,7 @@ export var firebaseData: {
 let firebaseDataSnapshot = JSON.stringify(firebaseData);
 
 function receiveFirebaseDataCatann(
-  catann: any,
+  catann: typeof firebaseData,
   lobby: Record<string, RemotePersonType> | null = null,
 ) {
   const helper = () => {

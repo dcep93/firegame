@@ -5,11 +5,11 @@ import {
   PlayerActionState,
   State,
 } from "./gameLogic/CatannFilesEnums";
-import { isMyTurn } from "./gameLogic/createNew";
+import { isMyTurn, newGame } from "./gameLogic/createNew";
 import { sendToMainSocket } from "./handleMessage";
 
 const cascadeServerMessage = (
-  data: any,
+  data: ReturnType<typeof newGame>,
   sendResponse: typeof sendToMainSocket,
 ) => {
   const sendHighlights = () => {
@@ -46,7 +46,6 @@ const cascadeServerMessage = (
     sendHighlights();
     const resourcesToGive = firebaseData.__meta.change.resourcesToGive;
     if (resourcesToGive) {
-      console.log("test.log", { resourcesToGive });
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {
