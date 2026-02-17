@@ -29,86 +29,89 @@ function receiveFirebaseDataCatann(
   catann: any,
   lobby: Record<string, RemotePersonType> | null = null,
 ) {
-  firebaseData = unSerializeFirebase(catann, []);
-  if (firebaseData?.GAME) {
-    const mySession = firebaseData.ROOM!.data.sessions.find(
-      (s) => s.userId === getMe().userId,
-    );
-    if (mySession) {
-      firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
-        ({ str }) => str === mySession.selectedColor,
-      )!.int;
-      // good:
-      // 1 test.log.receiveFirebaseDataCatann RolandIce 1 http://127.0.0.1:3000/catann#catan4910.RolandIce
-      // 0 test.log.receiveFirebaseDataCatann Koppel#0295 2 http://127.0.0.1:3000/catann#catan4910.Koppel#0295
-      // 0 test.log.receiveFirebaseDataCatann Koppel#0295 2 http://127.0.0.1:3000/#catan4910
-      // 1 test.log.receiveFirebaseDataCatann RolandIce 1 http://127.0.0.1:3000/#catan4910
-      console.log(
-        "test.log.receiveFirebaseDataCatann",
-        getMe().userId,
-        firebaseData.GAME!.data.payload.playerColor,
-        window.location.href,
+  const helper = () => {
+    firebaseData = unSerializeFirebase(catann, []);
+    if (firebaseData?.GAME) {
+      const mySession = firebaseData.ROOM!.data.sessions.find(
+        (s) => s.userId === getMe().userId,
       );
-    } else {
-      // TODO spectator
+      if (mySession) {
+        firebaseData.GAME!.data.payload.playerColor = colorHelper.find(
+          ({ str }) => str === mySession.selectedColor,
+        )!.int;
+        // good:
+        // 1 test.log.receiveFirebaseDataCatann RolandIce 1 http://127.0.0.1:3000/catann#catan4910.RolandIce
+        // 0 test.log.receiveFirebaseDataCatann Koppel#0295 2 http://127.0.0.1:3000/catann#catan4910.Koppel#0295
+        // 0 test.log.receiveFirebaseDataCatann Koppel#0295 2 http://127.0.0.1:3000/#catan4910
+        // 1 test.log.receiveFirebaseDataCatann RolandIce 1 http://127.0.0.1:3000/#catan4910
+        console.log(
+          "test.log.receiveFirebaseDataCatann",
+          getMe().userId,
+          firebaseData.GAME!.data.payload.playerColor,
+          window.location.href,
+        );
+      } else {
+        // TODO spectator
+      }
+    } else if (firebaseData?.ROOM && lobby) {
+      const filter = firebaseData.ROOM.data.sessions.map((s) => ({
+        s,
+        keep: 2500 >= Date.now() - lobby[s.userId]?.timestamp,
+      }));
+      const removals = filter
+        .filter(({ keep }) => !keep)
+        .map(({ s }) => s.username);
+      if (removals.length > 0) {
+        console.log({ removals });
+        firebaseData.ROOM.data.sessions = filter
+          .filter(({ keep }) => keep)
+          .map(({ s }) => s);
+        setFirebaseData(firebaseData, { removals });
+        return;
+      }
     }
-  } else if (firebaseData?.ROOM && lobby) {
-    const filter = firebaseData.ROOM.data.sessions.map((s) => ({
-      s,
-      keep: 2500 >= Date.now() - lobby[s.userId]?.timestamp,
-    }));
-    const removals = filter
-      .filter(({ keep }) => !keep)
-      .map(({ s }) => s.username);
-    if (removals.length > 0) {
-      console.log({ removals });
-      firebaseData.ROOM.data.sessions = filter
-        .filter(({ keep }) => keep)
-        .map(({ s }) => s);
-      setFirebaseData(firebaseData, { removals });
+    const newSnapshot = JSON.stringify(firebaseData);
+    if (firebaseDataSnapshot === newSnapshot) return;
+    const prevFirebaseData = JSON.parse(firebaseDataSnapshot ?? null);
+    firebaseDataSnapshot = newSnapshot;
+    console.log("rendered", firebaseData);
+    if (!catann?.ROOM) {
+      setFirebaseData(
+        {
+          ROOM: newRoom(),
+        },
+        { newRoom: true },
+      );
       return;
     }
-  }
-  const newSnapshot = JSON.stringify(firebaseData);
-  if (firebaseDataSnapshot === newSnapshot) return;
-  const prevFirebaseData = JSON.parse(firebaseDataSnapshot ?? null);
-  firebaseDataSnapshot = newSnapshot;
-  console.log("rendered", firebaseData);
-  if (!catann?.ROOM) {
-    setFirebaseData(
-      {
-        ROOM: newRoom(),
-      },
-      { newRoom: true },
-    );
-    return;
-  }
-  if (firebaseData.GAME) {
-    if (catann.__meta.change.startGame) {
-      startGame(catann.__meta.change.startGame);
+    if (firebaseData.GAME) {
+      if (catann.__meta.change.startGame) {
+        startGame(catann.__meta.change.startGame);
+        return;
+      }
+      const update = buildGameStateUpdated(
+        firebaseData.GAME,
+        prevFirebaseData.GAME?.data?.payload?.gameState,
+      );
+      if (update) {
+        sendToMainSocket?.(update);
+      }
       return;
     }
-    const update = buildGameStateUpdated(
-      firebaseData.GAME,
-      prevFirebaseData.GAME?.data?.payload?.gameState,
-    );
-    if (update) {
-      sendToMainSocket?.(update);
+    if (
+      !firebaseData.ROOM!.data.sessions.find(
+        (s: any) => s.userId === getMe().userId,
+      )
+    ) {
+      firebaseData.ROOM!.data.sessions.push(
+        newRoomMe(firebaseData.ROOM!.data.sessions),
+      );
+      setFirebaseData(firebaseData, { newRoomMe: true });
+      return;
     }
-    return;
-  }
-  if (
-    !firebaseData.ROOM!.data.sessions.find(
-      (s: any) => s.userId === getMe().userId,
-    )
-  ) {
-    firebaseData.ROOM!.data.sessions.push(
-      newRoomMe(firebaseData.ROOM!.data.sessions),
-    );
-    setFirebaseData(firebaseData, { newRoomMe: true });
-    return;
-  }
-  sendToMainSocket?.(spoofHostRoom());
+    sendToMainSocket?.(spoofHostRoom());
+  };
+  helper();
 }
 
 var initialized = false;
