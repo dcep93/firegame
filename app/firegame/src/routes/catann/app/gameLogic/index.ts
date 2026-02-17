@@ -1084,6 +1084,8 @@ const placeRoad = (edgeIndex: number) => {
       sendEdgeHighlights31(gameData);
     }
     sendCornerHighlights30(gameData, []);
+    //
+    sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);

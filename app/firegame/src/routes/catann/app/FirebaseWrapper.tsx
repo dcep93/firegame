@@ -41,6 +41,7 @@ function receiveFirebaseDataCatann(
       console.log(
         "test.log.receiveFirebaseDataCatann",
         getMe().userId,
+        firebaseData.GAME!.data.payload.playerColor,
         window.location.href,
       );
     } else {
