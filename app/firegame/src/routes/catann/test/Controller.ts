@@ -379,9 +379,6 @@ const Controller = (
           shouldConfirm,
         );
       }
-      console.log(
-        JSON.stringify({ shouldConfirm, initialMsg, nextBuild }, null, 2),
-      );
     };
     const buildNextSettlement = async () => {
       const settlementMsg = _expectedMessages!.find(

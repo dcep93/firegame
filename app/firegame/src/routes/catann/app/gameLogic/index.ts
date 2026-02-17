@@ -20,7 +20,7 @@ import {
   UserRole,
   VictoryPointSource,
 } from "./CatannFilesEnums";
-import { colonistVersion } from "./createNew";
+import { colonistVersion, newGame } from "./createNew";
 import { addGameLogEntry, edgeEndpoints } from "./utils";
 
 const DEVELOPMENT_DECK_CARD_COUNTS = {
@@ -229,14 +229,13 @@ const drawDevelopmentCard = (devCardsState: any, overrideCard?: number) => {
   return selectedCard;
 };
 
+const getNextTurnPlayerColor = (direction: number = 1) => 2;
+
 const updateCurrentState = (
   gameData: any,
-  updates: Partial<{
-    actionState: number;
-    completedTurns: number;
-    turnState: number;
-    allocatedTime: number;
-  }>,
+  updates: Partial<
+    ReturnType<typeof newGame>["data"]["payload"]["gameState"]["currentState"]
+  >,
 ) => {
   const gameState = gameData.data.payload.gameState;
   Object.assign(gameState.currentState, updates);
@@ -479,7 +478,10 @@ export const sendCornerHighlights30 = (
   });
 };
 
-const sendEdgeHighlights31 = (gameData: any, cornerIndex: number = -1) => {
+export const sendEdgeHighlights31 = (
+  gameData: any,
+  cornerIndex: number = -1,
+) => {
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
 
@@ -1014,6 +1016,7 @@ const placeRoad = (edgeIndex: number) => {
         completedTurns: completedTurns + 1,
         actionState: PlayerActionState.InitialPlacementPlaceSettlement,
         allocatedTime: TURN_TIMERS_MS.dicePhase,
+        currentTurnPlayerColor: getNextTurnPlayerColor(),
       });
     } else {
       updateCurrentState(gameData, {
@@ -1506,7 +1509,8 @@ export const applyGameAction = (parsed: {
       });
       sendPlayTurnSound59({});
       sendToMainSocket?.(firebaseData.GAME);
-      sendCornerHighlights30(firebaseData.GAME);
+      // TODO check
+      // sendCornerHighlights30(firebaseData.GAME);
     };
     if (
       parsed.action === GameAction.SelectedPlayer &&

@@ -1,6 +1,10 @@
 import { firebaseData } from "./FirebaseWrapper";
-import { sendCornerHighlights30 } from "./gameLogic";
-import { GameStateUpdateType, State } from "./gameLogic/CatannFilesEnums";
+import { sendCornerHighlights30, sendEdgeHighlights31 } from "./gameLogic";
+import {
+  GameStateUpdateType,
+  PlayerActionState,
+  State,
+} from "./gameLogic/CatannFilesEnums";
 import { isMyTurn } from "./gameLogic/createNew";
 import { sendToMainSocket } from "./handleMessage";
 
@@ -23,7 +27,26 @@ const cascadeServerMessage = (data: any) => {
       });
     }
     if (isMyTurn()) {
-      sendCornerHighlights30(firebaseData.GAME);
+      if (
+        [
+          PlayerActionState.InitialPlacementPlaceSettlement,
+          PlayerActionState.InitialPlacementPlaceCity,
+          PlayerActionState.PlaceSettlement,
+          PlayerActionState.PlaceCity,
+          PlayerActionState.PlaceCityWithDiscount,
+        ].includes(data.data.payload.gameState?.currentState.actionState)
+      )
+        sendCornerHighlights30(firebaseData.GAME);
+      if (
+        [
+          PlayerActionState.PlaceRoad,
+          PlayerActionState.InitialPlacementRoadPlacement,
+          PlayerActionState.PlaceRoadForFree,
+          PlayerActionState.Place2MoreRoadBuilding,
+          PlayerActionState.Place1MoreRoadBuilding,
+        ].includes(data.data.payload.gameState?.currentState.actionState)
+      )
+        sendEdgeHighlights31(firebaseData.GAME);
     }
   }
 };
