@@ -47,7 +47,6 @@ declare global {
 export const colonistVersion = 2900;
 
 export const newUserState = () => {
-  console.log("test.log.newUserState", getMe().userId);
   return {
     csrfToken: "csrfToken",
     userState: {

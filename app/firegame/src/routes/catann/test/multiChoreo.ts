@@ -29,18 +29,20 @@ export const multiChoreo = (fileName: string) => {
     const roomId: string = payload.gameSettings.id;
 
     const players = await Promise.all(
-      expectedMessages.slice(0, 2).map(async (msgs, i) => {
+      expectedMessages.map(async (msgs, i) => {
         const page = await context.newPage();
         page.on("pageerror", (msg) => console.log(i, msg));
         page.on("console", (msg) => {
           if (!msg.text().includes("test.log")) return;
           console.log(i, msg.text());
         });
-        const username = msgs.find(
+        const payload = msgs.find(
           (msg) =>
-            msg.trigger === "serverData" &&
-            msg.data.data.payload?.playerUserStates,
-        )!.data.data.payload.playerUserStates[i].username;
+            msg.trigger === "serverData" && msg.data.data.payload?.playerColor,
+        )!.data.data.payload;
+        const username = payload.playerUserStates.find(
+          (s: any) => s.selectedColor === payload.playerColor,
+        ).username;
         const iframe = await createRoom(page, { roomId, username });
         const c = Controller(i, page, iframe, msgs);
         return {
