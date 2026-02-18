@@ -738,13 +738,13 @@ const sendPlayTurnSound59 = (gameData: GameData) => {
 
 export const sendExitInitialPlacement62 = () => {
   return;
-  sendToMainSocket?.({
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.ExitInitialPlacement,
-      payload: {},
-    },
-  });
+  // sendToMainSocket?.({
+  //   id: State.GameStateUpdate.toString(),
+  //   data: {
+  //     type: GameStateUpdateType.ExitInitialPlacement,
+  //     payload: {},
+  //   },
+  // });
 };
 
 export const sendResetTradeStateAtEndOfTurn80 = () => {

@@ -3,7 +3,10 @@ import { expect } from "@playwright/test";
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
-import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
+import {
+  GameAction,
+  GameStateUpdateType,
+} from "../app/gameLogic/CatannFilesEnums";
 import { colorHelper } from "../app/gameLogic/utils";
 import { singleChoreo } from "./autoChoreo";
 import { getStartButton } from "./canvasGeometry";
@@ -41,8 +44,9 @@ export const multiChoreo = (fileName: string) => {
           (msg) =>
             msg.trigger === "serverData" && msg.data.data.payload?.playerColor,
         )!.data.data.payload;
+        const playerColor = payload.playerColor;
         const username = payload.playerUserStates.find(
-          (s: any) => s.selectedColor === payload.playerColor,
+          (s: any) => s.selectedColor === playerColor,
         ).username;
         const iframe = await createRoom(page, {
           roomId,
@@ -58,6 +62,7 @@ export const multiChoreo = (fileName: string) => {
           page,
           iframe,
           c,
+          playerColor,
         };
       }),
     );
@@ -123,6 +128,18 @@ export const multiChoreo = (fileName: string) => {
         await singleChoreo(actor.c);
         for (let i = 0; i < players.length; i++) {
           await players[i].c.verifyTestMessages(false);
+          const msg = players[i].msgs[0];
+          if (
+            msg?.trigger === "serverData" &&
+            msg.data.data?.payload?.type === GameAction.CreateTrade
+          ) {
+            console.log(
+              "test.log.CreateTrade.x",
+              i,
+              players[i].playerColor,
+              JSON.stringify(players[i].msgs.shift()),
+            );
+          }
         }
       }
       await expect(players.map(({ msgs }) => msgs.slice(0, 1))).toEqual(
