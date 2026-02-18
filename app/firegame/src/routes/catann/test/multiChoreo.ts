@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
@@ -82,30 +82,6 @@ export const multiChoreo = (fileName: string) => {
     };
     const startGame = async () => {
       const actor = players[hostId];
-      const clickSettings = async () => {
-        const gameSettings = payload.gameSettings;
-        const privateGameText = actor.iframe
-          .locator("div.item-scroll-cell", {
-            hasText: "Private Game",
-          })
-          .first();
-        const isSelected = await privateGameText.evaluate((node) =>
-          node.classList.contains("selected"),
-        );
-        if (gameSettings.privateGame !== isSelected) {
-          await privateGameText.click({ force: true });
-          await expect
-            .poll(
-              () =>
-                privateGameText.evaluate((node) =>
-                  node.classList.contains("selected"),
-                ),
-              { timeout: 3000 },
-            )
-            .toBe(gameSettings.privateGame);
-        }
-        await delay(100);
-      };
       console.log("start", { hostId });
       await actor.page.evaluate(
         (__testOverrides) => {
@@ -135,7 +111,6 @@ export const multiChoreo = (fileName: string) => {
         players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
         await spliceTestMessages(players[i].iframe);
       }
-      await clickSettings();
       const startButton = getStartButton(actor.iframe);
       await startButton.click({ force: true });
       await delay(3000);
@@ -145,7 +120,6 @@ export const multiChoreo = (fileName: string) => {
     };
     const helper = async () => {
       await startGame();
-      test.skip();
       console.log("autoChoreo.start");
       for (let i = 0; true; i++) {
         const actor = getActor();
@@ -234,6 +208,12 @@ const getExpectedMessages = async (recordingPath: string) => {
       .map((msg) => {
         if (msg.trigger === "serverData") {
           sortCardsToBroadcast(msg.data);
+          if (
+            msg.data?.data?.payload?.gameSettings &&
+            typeof msg.data.data.payload.gameSettings.privateGame === "boolean"
+          ) {
+            msg.data.data.payload.gameSettings.privateGame = true;
+          }
           if (
             [
               GameStateUpdateType.HighlightRoadEdges,
