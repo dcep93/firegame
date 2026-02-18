@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import firebase from "../../../firegame/firebase";
 import { RemotePersonType } from "../../../firegame/writer/lobby";
 import { roomPath } from "../../../firegame/writer/utils";
+import { handleSpectator } from "./cascadeServerMessage";
 import { listenMock, updateMock } from "./firebaseMock";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import {
@@ -84,6 +85,7 @@ function receiveFirebaseDataCatann(
           prevFirebaseData.GAME?.data?.payload?.gameState,
         );
         if (update) {
+          handleSpectator(update.data.payload.diff);
           sendToMainSocket?.(update);
         }
       }

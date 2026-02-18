@@ -57,7 +57,7 @@ const TURN_TIMERS_MS = {
 type NumericMap<T> = Record<number, T>;
 type JsonObject = Record<string, unknown>;
 type GameData = ReturnType<typeof newGame>;
-type GameState = GameData["data"]["payload"]["gameState"];
+export type GameState = GameData["data"]["payload"]["gameState"];
 type GameLogState = Record<string, { text?: JsonObject; from?: number }>;
 type StringMap<T> = Record<string, T>;
 type NumericMapOrStringMap<T> = NumericMap<T> | StringMap<T>;
@@ -721,15 +721,15 @@ const sendPlayTurnSound59 = (gameData: GameData) => {
   });
 };
 
-// const sendExitInitialPlacement62 = (gameData: GameData) => {
-//   sendToMainSocket?.({
-//     id: State.GameStateUpdate.toString(),
-//     data: {
-//       type: GameStateUpdateType.ExitInitialPlacement,
-//       payload: {},
-//     },
-//   });
-// };
+export const sendExitInitialPlacement62 = () => {
+  sendToMainSocket?.({
+    id: State.GameStateUpdate.toString(),
+    data: {
+      type: GameStateUpdateType.ExitInitialPlacement,
+      payload: {},
+    },
+  });
+};
 
 const sendResetTradeStateAtEndOfTurn80 = () => {
   sendToMainSocket?.({
@@ -967,10 +967,7 @@ const placeSettlement = (cornerIndex: number) => {
       gameState,
       cornerState,
     );
-    if (
-      gameState.currentState.completedTurns >=
-      gameData.data.payload.playOrder.length
-    ) {
+    if (getNumRounds() >= 1) {
       adjacentTiles.forEach((tileIndex) => {
         const tileState = tileHexStates[String(tileIndex)];
         if (
@@ -1227,11 +1224,10 @@ const placeRoad = (edgeIndex: number) => {
         type: GameLogMessageType.Separator,
       },
     });
-    const rounds =
-      (completedTurns + 1) / gameData.data.payload.playOrder.length;
+    updateCurrentState(gameData, { completedTurns: completedTurns + 1 });
+    const rounds = getNumRounds();
     if (rounds < 2) {
       updateCurrentState(gameData, {
-        completedTurns: completedTurns + 1,
         actionState: PlayerActionState.InitialPlacementPlaceSettlement,
         allocatedTime: TURN_TIMERS_MS.dicePhase,
         currentTurnPlayerColor: getNextTurnPlayerColor(
@@ -1240,7 +1236,6 @@ const placeRoad = (edgeIndex: number) => {
       });
     } else {
       updateCurrentState(gameData, {
-        completedTurns: completedTurns + 1,
         actionState: PlayerActionState.None,
         allocatedTime: TURN_TIMERS_MS.dicePhase,
         turnState: GamePhase.Dice,
@@ -3006,3 +3001,10 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
 
   return eligibleCorners.length > 0 ? eligibleCorners : null;
 }
+
+export const getNumRounds = () => {
+  const payload = firebaseData.GAME!.data.payload;
+  return (
+    payload.gameState.currentState.completedTurns / payload.playOrder.length
+  );
+};

@@ -1,5 +1,10 @@
 import { firebaseData } from "./FirebaseWrapper";
-import { sendCornerHighlights30, sendEdgeHighlights31 } from "./gameLogic";
+import {
+  GameState,
+  sendCornerHighlights30,
+  sendEdgeHighlights31,
+  sendExitInitialPlacement62,
+} from "./gameLogic";
 import {
   CardEnum,
   GameStateUpdateType,
@@ -18,6 +23,9 @@ const cascadeServerMessage = (
   if (!gameData) return;
 
   const sendHighlights = () => {
+    if (numRounds() === 1) {
+      sendExitInitialPlacement62();
+    }
     const actionState =
       gameData.data.payload.gameState.currentState.actionState;
     if (isMyTurn()) {
@@ -77,14 +85,15 @@ const cascadeServerMessage = (
 
 export default cascadeServerMessage;
 
-export const handleSpectator = (game: ReturnType<typeof newGame>) => {
+export const handleSpectator = (gameState: GameState) => {
   if (!isTest) return;
-  const payload = game.data?.payload;
-  const gameState = payload?.gameState;
+  const myColor = firebaseData.GAME!.data?.payload?.playerColor.toString();
+  console.log("test.log.gameState", gameState, myColor);
   const playerStates = gameState?.playerStates;
   if (!playerStates) return;
-  Object.values(playerStates).forEach((playerState) => {
-    if (playerState.color === payload?.playerColor) return;
+  Object.entries(playerStates).forEach(([playerColor, playerState]) => {
+    console.log("test.log.gameState", JSON.stringify([playerColor, myColor]));
+    if (playerColor === myColor) return;
     const cards = playerState?.resourceCards?.cards;
     if (!Array.isArray(cards)) return;
     playerState.resourceCards = {
