@@ -967,7 +967,10 @@ const placeSettlement = (cornerIndex: number) => {
       gameState,
       cornerState,
     );
-    if (gameState.currentState.completedTurns > 0) {
+    if (
+      gameState.currentState.completedTurns >=
+      gameData.data.payload.playOrder.length
+    ) {
       adjacentTiles.forEach((tileIndex) => {
         const tileState = tileHexStates[String(tileIndex)];
         if (
