@@ -16,9 +16,9 @@ const log = <T>(t: T) => {
 };
 const getMe = () =>
   log({
-    roomId: roomId || `roomIdx${store.me.roomId}`,
-    username: username ?? store.me.userId,
-    userId: username ?? store.me.userId,
+    roomId: roomId || `roomIdx${store.me?.roomId}`,
+    username: username ?? store.me?.userId,
+    userId: username ?? store.me?.userId,
     selectedColor,
     isTest: roomId !== "",
   });
