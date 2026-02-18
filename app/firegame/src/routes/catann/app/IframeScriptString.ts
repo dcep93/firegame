@@ -4,7 +4,7 @@ import { default as getMe } from "./getMe";
 import { FUTURE } from "./handleMessage";
 
 export const isDev = process.env.NODE_ENV === "development";
-export const isTest = (getMe() as any)?.isTest !== undefined;
+export const isTest = getMe()?.isTest !== undefined;
 
 const storeAvatarToUserIconMap: Record<number, number> = {
   [StoreAvatarItemType.FounderHat]: UserIcon.IconFounderHat,

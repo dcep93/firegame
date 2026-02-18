@@ -10,7 +10,12 @@ import {
   SocketRouteType,
   State,
 } from "./gameLogic/CatannFilesEnums";
-import { newGame, spoofHostRoom, startGame } from "./gameLogic/createNew";
+import {
+  newGame,
+  newRoomMe,
+  spoofHostRoom,
+  startGame,
+} from "./gameLogic/createNew";
 import { default as getMe, default as store } from "./getMe";
 import { packServerData, parseClientData } from "./parseMessagepack";
 
@@ -42,11 +47,9 @@ window.addEventListener("message", (event) => {
   });
 });
 
-function handleClientUpdate(clientData: any) {
+function handleClientUpdate(clientData: ReturnType<typeof newRoomMe>) {
   Object.assign(
-    firebaseData.ROOM!.data.sessions.find(
-      (s: any) => s.userId === getMe().userId,
-    )!,
+    firebaseData.ROOM!.data.sessions.find((s) => s.userId === getMe().userId)!,
     clientData,
   );
   setFirebaseData(firebaseData, { handleClientUpdate: clientData });

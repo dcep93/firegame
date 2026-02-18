@@ -696,7 +696,7 @@ const placeSettlement = (cornerIndex: number) => {
     ...cornerState,
     owner: playerColor,
     buildingType: CornerPieceType.Settlement,
-  };
+  } as any;
 
   const settlementState = gameState.mechanicSettlementState?.[playerColor];
   if (settlementState?.bankSettlementAmount > 0) {
@@ -890,7 +890,7 @@ const placeCity = (cornerIndex: number) => {
     ...cornerState,
     owner: playerColor,
     buildingType: CornerPieceType.City,
-  };
+  } as any;
 
   const cityState = gameState.mechanicCityState?.[playerColor];
   if (cityState?.bankCityAmount > 0) {
@@ -979,7 +979,7 @@ const placeRoad = (edgeIndex: number) => {
     ...edgeState,
     owner: playerColor,
     type: EdgePieceType.Road,
-  };
+  } as any;
 
   const roadState = gameState.mechanicRoadState?.[playerColor];
   if (roadState?.bankRoadAmount > 0) {

@@ -1,3 +1,4 @@
+import { firebaseData } from "../FirebaseWrapper";
 import {
   CornerDirection,
   EdgeDirection,
@@ -6,7 +7,12 @@ import {
 
 export const TEST_CHANGE_STR = "test.Controller.handleReconnect";
 
-export const addGameLogEntry = (gameState: any, entry: any) => {
+export const addGameLogEntry = (
+  gameState: NonNullable<
+    (typeof firebaseData)["GAME"]
+  >["data"]["payload"]["gameState"],
+  entry: any,
+) => {
   const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
     const indices = Object.keys(gameLogState)
       .map((key) => Number.parseInt(key, 10))
@@ -15,16 +21,16 @@ export const addGameLogEntry = (gameState: any, entry: any) => {
     const nextIndex = Math.max(...indices) + 1;
     return nextIndex < 2 ? 2 : nextIndex;
   };
-  if (!gameState.gameLogState) {
-    gameState.gameLogState = {};
+  if (!gameState!.gameLogState) {
+    gameState!.gameLogState = {};
   }
-  const nextIndex = getNextGameLogIndex(gameState.gameLogState);
-  gameState.gameLogState[String(nextIndex)] = entry;
+  const nextIndex = getNextGameLogIndex(gameState!.gameLogState);
+  gameState!.gameLogState[String(nextIndex)] = entry;
   return nextIndex;
 };
 
 export const tileEdgeStates = {
-  "0": {
+  ["0" as string]: {
     x: 1,
     y: -3,
     z: 2,
@@ -387,7 +393,7 @@ export const tileEdgeStates = {
 };
 
 export const tileCornerStates = {
-  "0": {
+  ["0" as string]: {
     x: 0,
     y: -2,
     z: 0,

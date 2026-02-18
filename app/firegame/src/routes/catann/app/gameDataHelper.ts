@@ -1,3 +1,4 @@
+import { firebaseData } from "./FirebaseWrapper";
 import { GameStateUpdateType, State } from "./gameLogic/CatannFilesEnums";
 
 export const isObject = (value: any) =>
@@ -94,7 +95,10 @@ const buildDiff = (previous: any, current: any): any | undefined => {
   return current;
 };
 
-export const buildGameStateUpdated = (gameData: any, previousState?: any) => {
+export const buildGameStateUpdated = (
+  gameData: (typeof firebaseData)["GAME"],
+  previousState?: (typeof firebaseData)["GAME"],
+) => {
   const gameState = gameData?.data?.payload?.gameState;
   if (!gameState) return null;
   const diff = previousState ? buildDiff(previousState, gameState) : gameState;

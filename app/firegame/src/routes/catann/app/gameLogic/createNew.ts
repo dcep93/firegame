@@ -300,7 +300,8 @@ export const newGame = () => {
   const room: ReturnType<typeof newRoom> = firebaseData.ROOM!;
   const sessions: typeof room.data.sessions =
     window.__testOverrides?.sessions ?? room.data.sessions;
-  const mapState = window.__testOverrides?.mapState ?? newMapState();
+  const mapState: ReturnType<typeof newMapState> =
+    window.__testOverrides?.mapState ?? newMapState();
   const colorForSession = (selectedColor: string) =>
     colorHelper.find(({ str }) => str === selectedColor)!.int;
   const sessionColorEntries = sessions.map((session) => ({
@@ -401,7 +402,7 @@ export const newGame = () => {
                 type: GameLogMessageType.Separator,
               },
             },
-          },
+          } as { [k: string]: { text: any } },
           gameChatState: {},
           mechanicSettlementState: buildByColor(() => ({
             bankSettlementAmount: 5,
@@ -434,7 +435,7 @@ export const newGame = () => {
             locationTileIndex: Object.entries(mapState.tileHexStates)
               .map(([indexStr, data]) => ({
                 index: parseInt(indexStr),
-                data: data as any,
+                data,
               }))
               .find(({ data }) => data.type === TileType.Desert)!.index,
             isActive: true,
@@ -490,7 +491,7 @@ export const newGame = () => {
 const newMapState = () => {
   return {
     tileHexStates: {
-      "0": {
+      ["0" as string]: {
         x: 0,
         y: -2,
         type: TileType.Grain,
@@ -606,7 +607,7 @@ const newMapState = () => {
       },
     },
     portEdgeStates: {
-      "0": {
+      ["0" as string]: {
         x: 0,
         y: -2,
         z: 0,
@@ -714,9 +715,9 @@ export const spoofHostRoom = () => {
       ...firebaseData.ROOM,
       data: {
         ...firebaseData.ROOM!.data,
-        sessions: (firebaseData.ROOM!.data.sessions.slice() as any[]).sort(
-          (a, b) => (a.userId === getMe().userId ? -1 : 1),
-        ),
+        sessions: firebaseData
+          .ROOM!.data.sessions.slice()
+          .sort((a, b) => (a.userId === getMe().userId ? -1 : 1)),
       },
     }
   );

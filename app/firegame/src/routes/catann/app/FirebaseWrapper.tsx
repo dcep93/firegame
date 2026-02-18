@@ -26,7 +26,7 @@ export var firebaseData: {
 let firebaseDataSnapshot = JSON.stringify(firebaseData);
 
 function receiveFirebaseDataCatann(
-  catann: typeof firebaseData,
+  catann: typeof firebaseData | undefined,
   lobby: Record<string, RemotePersonType> | null = null,
 ) {
   const helper = () => {
@@ -90,9 +90,7 @@ function receiveFirebaseDataCatann(
       return;
     }
     if (
-      !firebaseData.ROOM!.data.sessions.find(
-        (s: any) => s.userId === getMe().userId,
-      )
+      !firebaseData.ROOM!.data.sessions.find((s) => s.userId === getMe().userId)
     ) {
       firebaseData.ROOM!.data.sessions.push(
         newRoomMe(firebaseData.ROOM!.data.sessions),
