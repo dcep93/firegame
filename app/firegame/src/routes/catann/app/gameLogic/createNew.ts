@@ -464,7 +464,7 @@ export const newGame = () => {
             room.data.roomId,
           channelId: null,
           gameType: GameType.CreatedRoomGame,
-          privateGame: false,
+          privateGame: true,
           playOrderSelectionActive: false,
           minimumKarma: 0,
           eloType: 0,
