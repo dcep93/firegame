@@ -1,6 +1,7 @@
 import { firebaseData } from "./FirebaseWrapper";
 import {
   GameState,
+  getNumRounds,
   sendCornerHighlights30,
   sendEdgeHighlights31,
   sendExitInitialPlacement62,
@@ -23,7 +24,7 @@ const cascadeServerMessage = (
   if (!gameData) return;
 
   const sendHighlights = () => {
-    if (numRounds() === 1) {
+    if (getNumRounds() === 2) {
       sendExitInitialPlacement62();
     }
     const actionState =
@@ -88,11 +89,9 @@ export default cascadeServerMessage;
 export const handleSpectator = (gameState: GameState) => {
   if (!isTest) return;
   const myColor = firebaseData.GAME!.data?.payload?.playerColor.toString();
-  console.log("test.log.gameState", gameState, myColor);
   const playerStates = gameState?.playerStates;
   if (!playerStates) return;
   Object.entries(playerStates).forEach(([playerColor, playerState]) => {
-    console.log("test.log.gameState", JSON.stringify([playerColor, myColor]));
     if (playerColor === myColor) return;
     const cards = playerState?.resourceCards?.cards;
     if (!Array.isArray(cards)) return;

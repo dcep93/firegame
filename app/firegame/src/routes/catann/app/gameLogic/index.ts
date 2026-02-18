@@ -722,6 +722,7 @@ const sendPlayTurnSound59 = (gameData: GameData) => {
 };
 
 export const sendExitInitialPlacement62 = () => {
+  return;
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {

@@ -383,6 +383,25 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
         },
       },
     },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.ExitInitialPlacement,
+          payload: {},
+          sequence: msg.data.data?.sequence,
+        },
+      },
+    },
+    {
+      trigger: "clientData",
+      data: {
+        action: GameAction.RequestBeginnerHint,
+        payload: false,
+        sequence: msg.data?.sequence,
+      },
+    },
   ];
   if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
