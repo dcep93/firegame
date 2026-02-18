@@ -355,15 +355,30 @@ const drawDevelopmentCard = (
   return selectedCard;
 };
 
-const getNextTurnPlayerColor = (direction: number = 1) => {
+const goToNextPlayer = (gameData: GameData) => {
+  updateCurrentState(gameData, {
+    completedTurns:
+      gameData.data.payload.gameState.currentState.completedTurns + 1,
+  });
+
   const payload = firebaseData.GAME!.data.payload;
   const currPlayerIndex = payload.playOrder.indexOf(
     payload.gameState.currentState.currentTurnPlayerColor,
   );
+  const rounds = getNumRounds();
+  const direction = [1, 2].includes(rounds)
+    ? 0
+    : rounds > 1 && rounds < 2
+      ? -1
+      : 1;
   const nextPlayerIndex =
     (currPlayerIndex + payload.playOrder.length + direction) %
     payload.playOrder.length;
-  return payload.playOrder[nextPlayerIndex];
+  const currentTurnPlayerColor = payload.playOrder[nextPlayerIndex];
+
+  updateCurrentState(gameData, {
+    currentTurnPlayerColor,
+  });
 };
 
 const updateCurrentState = (
@@ -1199,7 +1214,6 @@ const placeRoad = (edgeIndex: number) => {
     roadState.bankRoadAmount -= 1;
   }
 
-  const completedTurns = gameState.currentState.completedTurns ?? 0;
   const actionStateAtRoadPlacement = gameState.currentState.actionState;
   const roadCurrentState =
     gameState.currentState as GameStateCurrentWithRuntime;
@@ -1225,15 +1239,12 @@ const placeRoad = (edgeIndex: number) => {
         type: GameLogMessageType.Separator,
       },
     });
-    updateCurrentState(gameData, { completedTurns: completedTurns + 1 });
+    goToNextPlayer(gameData);
     const rounds = getNumRounds();
     if (rounds < 2) {
       updateCurrentState(gameData, {
         actionState: PlayerActionState.InitialPlacementPlaceSettlement,
         allocatedTime: TURN_TIMERS_MS.dicePhase,
-        currentTurnPlayerColor: getNextTurnPlayerColor(
-          rounds === 1 ? 0 : rounds > 1 ? -1 : 1,
-        ),
       });
     } else {
       updateCurrentState(gameData, {
@@ -1542,8 +1553,7 @@ const passTurn = () => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor;
-  const completedTurns = gameState.currentState.completedTurns ?? 0;
-  const nextCompletedTurns = completedTurns + 1;
+  goToNextPlayer(gameData);
 
   gameState.diceState = {
     ...gameState.diceState,
@@ -1551,7 +1561,6 @@ const passTurn = () => {
   };
 
   updateCurrentState(gameData, {
-    completedTurns: nextCompletedTurns,
     turnState: GamePhase.Dice,
     actionState: PlayerActionState.None,
   });
