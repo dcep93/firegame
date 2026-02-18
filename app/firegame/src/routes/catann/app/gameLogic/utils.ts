@@ -11,20 +11,17 @@ export const addGameLogEntry = (
   gameState: NonNullable<
     (typeof firebaseData)["GAME"]
   >["data"]["payload"]["gameState"],
-  entry: any,
+  entry: NonNullable<
+    (typeof firebaseData)["GAME"]
+  >["data"]["payload"]["gameState"]["gameLogState"]["string"],
 ) => {
-  const getNextGameLogIndex = (gameLogState: Record<string, any>) => {
-    const indices = Object.keys(gameLogState)
-      .map((key) => Number.parseInt(key, 10))
-      .filter((value) => Number.isFinite(value));
-    if (indices.length === 0) return 2;
-    const nextIndex = Math.max(...indices) + 1;
-    return nextIndex < 2 ? 2 : nextIndex;
-  };
   if (!gameState!.gameLogState) {
     gameState!.gameLogState = {};
   }
-  const nextIndex = getNextGameLogIndex(gameState!.gameLogState);
+  const indices = Object.keys(gameState!.gameLogState)
+    .map((key) => Number.parseInt(key, 10))
+    .filter((value) => Number.isFinite(value));
+  const nextIndex = Math.max(...indices) + 1;
   gameState!.gameLogState[String(nextIndex)] = entry;
   return nextIndex;
 };
