@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
+import { ResourcesToGiveType } from "../app/gameLogic";
 import {
   GameAction,
   GameStateUpdateType,
@@ -222,6 +223,15 @@ const getExpectedMessages = async (recordingPath: string) => {
             ].includes(msg.data.data.type)
           ) {
             (msg.data.data.payload as number[]).sort((a, b) => a - b);
+          }
+          if (
+            [GameStateUpdateType.GivePlayerResourcesFromTile].includes(
+              msg.data.data.type,
+            )
+          ) {
+            (msg.data.data.payload as ResourcesToGiveType).sort(
+              (a, b) => a.tileIndex - b.tileIndex,
+            );
           }
         }
         return msg;

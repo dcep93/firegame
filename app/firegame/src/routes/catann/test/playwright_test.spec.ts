@@ -405,6 +405,16 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
         sequence: msg.data?.sequence,
       },
     },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.GameStateUpdate.toString(),
+        data: {
+          ...msg.data.data,
+          type: GameStateUpdateType.BeginnerHintActivated,
+        },
+      },
+    },
   ];
   if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
