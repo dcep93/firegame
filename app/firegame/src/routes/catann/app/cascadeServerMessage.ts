@@ -1,6 +1,7 @@
 import { firebaseData } from "./FirebaseWrapper";
 import {
   GameState,
+  ResourcesToGiveType,
   sendCornerHighlights30,
   sendEdgeHighlights31,
   sendResetTradeStateAtEndOfTurn80,
@@ -55,13 +56,14 @@ const cascadeServerMessage = (
   };
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
     sendHighlights();
-    const resourcesToGive = firebaseData.__meta.change.resourcesToGive;
+    const resourcesToGive: ResourcesToGiveType =
+      firebaseData.__meta.change.resourcesToGive;
     if (resourcesToGive) {
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {
           type: GameStateUpdateType.GivePlayerResourcesFromTile,
-          payload: resourcesToGive,
+          payload: resourcesToGive.sort((a, b) => a.tileIndex - b.tileIndex),
         },
       });
     }

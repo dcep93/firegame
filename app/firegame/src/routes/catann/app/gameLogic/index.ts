@@ -966,12 +966,7 @@ const placeSettlement = (cornerIndex: number) => {
   } else {
     sendCornerHighlights30(gameData);
   }
-  const resourcesToGive: {
-    owner: number;
-    tileIndex: number;
-    distributionType: number;
-    card: number;
-  }[] = [];
+  const resourcesToGive: ResourcesToGiveType = [];
 
   const sendResourcesFromTile = (gameData: GameData, cornerIndex: number) => {
     const gameState = gameData.data.payload.gameState;
@@ -3011,3 +3006,10 @@ export const getNumRounds = () => {
     payload.gameState.currentState.completedTurns / payload.playOrder.length
   );
 };
+
+export type ResourcesToGiveType = {
+  owner: number;
+  tileIndex: number;
+  distributionType: number;
+  card: number;
+}[];
