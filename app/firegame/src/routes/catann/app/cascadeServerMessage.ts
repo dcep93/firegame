@@ -24,6 +24,7 @@ const cascadeServerMessage = (
 
   const sendHighlights = () => {
     if (firebaseData.__meta?.change.action === "passTurn") {
+      console.log("test.log.passTurn.b");
       sendResetTradeStateAtEndOfTurn80();
     }
     const actionState =

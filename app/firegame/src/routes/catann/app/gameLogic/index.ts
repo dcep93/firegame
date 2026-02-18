@@ -1584,6 +1584,8 @@ const passTurn = () => {
     }
   }
 
+  console.log("test.log.passTurn.a");
+
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {

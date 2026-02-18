@@ -125,9 +125,9 @@ export const multiChoreo = (fileName: string) => {
           await players[i].c.verifyTestMessages(false);
         }
       }
-      for (let i = 0; i < players.length; i++) {
-        await expect(players[i].msgs.slice(0, 1)).toEqual([]);
-      }
+      await expect(players.map(({ msgs }) => msgs.slice(0, 1))).toEqual(
+        players.map(() => []),
+      );
       for (let i = 0; i < players.length; i++) {
         await expect(
           players[i].page.locator('iframe[title="iframe"]'),
