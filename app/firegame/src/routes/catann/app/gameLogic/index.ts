@@ -57,7 +57,6 @@ const TURN_TIMERS_MS = {
 type NumericMap<T> = Record<number, T>;
 type JsonObject = Record<string, unknown>;
 type GameData = ReturnType<typeof newGame>;
-type Game = NonNullable<typeof firebaseData.GAME>;
 type GameState = GameData["data"]["payload"]["gameState"];
 type GameLogState = Record<string, { text?: JsonObject; from?: number }>;
 type StringMap<T> = Record<string, T>;
@@ -722,15 +721,15 @@ const sendPlayTurnSound59 = (gameData: GameData) => {
   });
 };
 
-const sendExitInitialPlacement62 = (gameData: GameData) => {
-  sendToMainSocket?.({
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.ExitInitialPlacement,
-      payload: {},
-    },
-  });
-};
+// const sendExitInitialPlacement62 = (gameData: GameData) => {
+//   sendToMainSocket?.({
+//     id: State.GameStateUpdate.toString(),
+//     data: {
+//       type: GameStateUpdateType.ExitInitialPlacement,
+//       payload: {},
+//     },
+//   });
+// };
 
 const sendResetTradeStateAtEndOfTurn80 = () => {
   sendToMainSocket?.({
@@ -2048,9 +2047,9 @@ export const applyGameAction = (parsed: {
         devCardsState.hasUsedDevelopmentCardThisTurn = true;
       }
 
-      const usedKnightCount = (devCardsState?.developmentCardsUsed ?? []).filter(
-        (card) => card === CardEnum.Knight,
-      ).length;
+      const usedKnightCount = (
+        devCardsState?.developmentCardsUsed ?? []
+      ).filter((card) => card === CardEnum.Knight).length;
 
       addGameLogEntry(gameState, {
         text: {
