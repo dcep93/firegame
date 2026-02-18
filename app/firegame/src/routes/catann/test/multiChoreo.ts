@@ -84,15 +84,26 @@ export const multiChoreo = (fileName: string) => {
       const actor = players[hostId];
       const clickSettings = async () => {
         const gameSettings = payload.gameSettings;
-        if (gameSettings.privateGame) return;
         const privateGameText = actor.iframe
           .locator("div.item-scroll-cell", {
             hasText: "Private Game",
           })
           .first();
-        expect(privateGameText.toHaveClass("selected"));
-        await privateGameText.click({ force: true });
-        expect(privateGameText.notToHaveClass("selected"));
+        const isSelected = await privateGameText.evaluate((node) =>
+          node.classList.contains("selected"),
+        );
+        if (gameSettings.privateGame !== isSelected) {
+          await privateGameText.click({ force: true });
+          await expect
+            .poll(
+              () =>
+                privateGameText.evaluate((node) =>
+                  node.classList.contains("selected"),
+                ),
+              { timeout: 3000 },
+            )
+            .toBe(gameSettings.privateGame);
+        }
         await delay(100);
       };
       console.log("start", { hostId });
