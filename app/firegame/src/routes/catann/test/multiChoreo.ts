@@ -82,6 +82,9 @@ export const multiChoreo = (fileName: string) => {
     };
     const startGame = async () => {
       const actor = players[hostId];
+      const clickSettings = async () => {
+        throw new Error("not implemented");
+      };
       console.log("start", { hostId });
       await actor.page.evaluate(
         (__testOverrides) => {
@@ -111,6 +114,7 @@ export const multiChoreo = (fileName: string) => {
         players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
         await spliceTestMessages(players[i].iframe);
       }
+      await clickSettings();
       const startButton = getStartButton(actor.iframe);
       await startButton.click({ force: true });
       await delay(3000);
