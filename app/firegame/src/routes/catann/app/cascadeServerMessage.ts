@@ -12,9 +12,11 @@ const cascadeServerMessage = (
   data: ReturnType<typeof newGame>,
   sendResponse: typeof sendToMainSocket,
 ) => {
+  const gameData = firebaseData.GAME;
+  if (!gameData) return;
+
   const sendHighlights = () => {
-    const actionState =
-      firebaseData.GAME!.data.payload.gameState.currentState.actionState;
+    const actionState = gameData.data.payload.gameState.currentState.actionState;
     if (isMyTurn()) {
       if (
         [
@@ -25,7 +27,7 @@ const cascadeServerMessage = (
           PlayerActionState.PlaceCityWithDiscount,
         ].includes(actionState)
       )
-        sendCornerHighlights30(firebaseData.GAME);
+        sendCornerHighlights30(gameData);
       if (
         [
           PlayerActionState.PlaceRoad,
@@ -36,8 +38,8 @@ const cascadeServerMessage = (
         ].includes(actionState)
       ) {
         sendEdgeHighlights31(
-          firebaseData.GAME,
-          firebaseData.__meta.change.cornerIndex,
+          gameData,
+          firebaseData.__meta?.change.cornerIndex,
         );
       }
     }

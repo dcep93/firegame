@@ -55,20 +55,107 @@ const TURN_TIMERS_MS = {
 } as const;
 
 type NumericMap<T> = Record<number, T>;
+type JsonObject = Record<string, unknown>;
+type GameData = ReturnType<typeof newGame>;
+type Game = NonNullable<typeof firebaseData.GAME>;
+type GameState = GameData["data"]["payload"]["gameState"];
+type GameLogState = Record<string, { text?: JsonObject; from?: number }>;
+type StringMap<T> = Record<string, T>;
+type NumericMapOrStringMap<T> = NumericMap<T> | StringMap<T>;
+type CoordinateState = { x: number; y: number; z: number };
+type TileCornerState = JsonObject &
+  CoordinateState & {
+    owner?: number;
+    buildingType?: number;
+  };
+type TileEdgeState = JsonObject &
+  CoordinateState & {
+    owner?: number;
+    type?: number;
+    buildingType?: number;
+  };
+type HexTileState = JsonObject & {
+  x?: number;
+  y?: number;
+  type?: number;
+  diceNumber?: number;
+};
+type PlayerState = JsonObject & {
+  owner?: number;
+  victoryPointsState?: NumericMap<number>;
+  resourceCards?: { cards?: number[] };
+  isTakingAction?: boolean;
+  bankSettlementAmount?: number;
+  bankCityAmount?: number;
+  bankRoadAmount?: number;
+  bankTradeRatiosState?: NumericMap<number>;
+};
+type DevelopmentCardPlayerState = JsonObject & {
+  developmentCards?: { cards?: number[] };
+  developmentCardsUsed?: number[];
+  developmentCardsBoughtThisTurn?: number[] | null;
+  hasUsedDevelopmentCardThisTurn?: boolean | null;
+};
+type DevelopmentCardsMechanicState = JsonObject & {
+  players?: StringMap<DevelopmentCardPlayerState>;
+  bankDevelopmentCards?: { cards?: number[] };
+};
+type NumericResourceState = Record<number, number>;
+type EndResourceStats = {
+  color: number;
+  rollingIncome: number;
+  robbingIncome: number;
+  devCardIncome: number;
+  tradeIncome: number;
+  rollingLoss: number;
+  robbingLoss: number;
+  devCardLoss: number;
+  tradeLoss: number;
+  totalResourceIncome: number;
+  totalResourceLoss: number;
+  totalResourceScore: number;
+  goldIncome: number;
+};
+type EndActivityStats = {
+  color: number;
+  proposedTrades: number;
+  successfulTrades: number;
+  resourcesUsed: number;
+  resourceIncomeBlocked: number;
+  devCardsBought: number;
+  devCardsUsed: number;
+};
+type LongestRoadMechanicState = {
+  hasLongestRoad?: boolean;
+  longestRoad: number;
+};
+type LargestArmyMechanicState = { hasLargestArmy?: boolean };
+type FirebaseWithMeta = typeof firebaseData & { __meta?: { now?: number } };
+type GameStateCurrentWithRuntime = GameState["currentState"] & {
+  roadBuildingHighlightStep?: number;
+  pendingRoadBuildingEdgeIndex?: number;
+};
+type GameStateWithLargestArmy = GameState & {
+  mechanicLargestArmyState?: NumericMap<LargestArmyMechanicState>;
+};
+type GameStateWithLongestRoad = GameState & {
+  mechanicLongestRoadState?: NumericMap<LongestRoadMechanicState>;
+};
+type WinnerResult = { color: number };
 
-const getVictoryPointsToWin = (gameData: any) =>
+const getVictoryPointsToWin = (gameData: GameData) =>
   gameData.data.payload.gameSettings.victoryPointsToWin;
 
-const getCardDiscardLimit = (gameData: any) =>
+const getCardDiscardLimit = (gameData: GameData) =>
   gameData.data.payload.gameSettings.cardDiscardLimit;
 
-const isDevelopmentCardRobberWindow = (gameState: any) => {
-  const gameLogState = gameState.gameLogState;
+const isDevelopmentCardRobberWindow = (gameState: GameState) => {
+  const gameLogState = gameState.gameLogState as GameLogState | undefined;
   if (!gameLogState) return false;
   const entries = Object.entries(gameLogState)
     .map(([key, entry]) => ({
       index: Number.parseInt(key, 10),
-      entry: entry as any,
+      entry,
     }))
     .filter(({ index }) => Number.isFinite(index))
     .sort((a, b) => b.index - a.index);
@@ -84,9 +171,13 @@ const isDevelopmentCardRobberWindow = (gameState: any) => {
   return false;
 };
 
-const parseFiniteIndex = (value: string | number) => {
+const parseFiniteIndex = (value: unknown) => {
   const parsed =
-    typeof value === "number" ? value : Number.parseInt(String(value), 10);
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+        ? Number.parseInt(value, 10)
+        : Number.NaN;
   return Number.isFinite(parsed) ? parsed : null;
 };
 
@@ -104,6 +195,13 @@ const toNumericRecordEntries = <T>(record: Record<string, T> | undefined) =>
         value: T;
       } => entry.index != null,
     );
+
+const getByPlayerColor = <T>(
+  record: NumericMapOrStringMap<T> | undefined,
+  playerColor: number,
+) => {
+  return (record as StringMap<T> | undefined)?.[String(playerColor)];
+};
 
 const removePlayerCards = (cards: number[], toRemove: number[]) => {
   if (toRemove.length === 0) {
@@ -131,22 +229,33 @@ const buildBaseDevelopmentDeck = () => {
   );
 };
 
-const collectKnownDevelopmentCards = (devCardsState: any) => {
+const collectKnownDevelopmentCards = (
+  devCardsState: DevelopmentCardsMechanicState | undefined,
+) => {
   const knownCards: number[] = [];
-  const players = devCardsState?.players ?? {};
-  Object.values(players).forEach((player: any) => {
-    if (Array.isArray(player?.developmentCards?.cards)) {
-      knownCards.push(...player.developmentCards.cards);
+  const players =
+    (devCardsState?.players as
+      | StringMap<DevelopmentCardPlayerState>
+      | undefined) ?? {};
+  Object.values(players).forEach((player) => {
+    const playerObj = player as JsonObject;
+    const cards = playerObj.developmentCards as
+      | { cards?: number[] }
+      | undefined;
+    const usedCards = playerObj.developmentCardsUsed as number[] | undefined;
+    const playerCards = cards?.cards;
+    if (Array.isArray(playerCards)) {
+      knownCards.push(...playerCards);
     }
-    if (Array.isArray(player?.developmentCardsUsed)) {
-      knownCards.push(...player.developmentCardsUsed);
+    if (Array.isArray(usedCards)) {
+      knownCards.push(...usedCards);
     }
   });
   return knownCards;
 };
 
 const applyResourceExchangeWithBank = (
-  gameState: any,
+  gameState: GameState,
   playerColor: number,
   cardsFromPlayer: number[],
 ) => {
@@ -155,14 +264,17 @@ const applyResourceExchangeWithBank = (
   }
 
   if (gameState.bankState?.resourceCards) {
+    const bankResourceCards = gameState.bankState.resourceCards as
+      | NumericResourceState
+      | undefined;
     cardsFromPlayer.forEach((card) => {
-      if (gameState.bankState?.resourceCards?.[card] !== undefined) {
-        gameState.bankState.resourceCards[card] += 1;
+      if (bankResourceCards?.[card] !== undefined) {
+        bankResourceCards[card] += 1;
       }
     });
   }
 
-  const playerState = gameState.playerStates?.[playerColor];
+  const playerState = getPlayerStateByColor(gameState, playerColor);
   if (playerState?.resourceCards?.cards) {
     playerState.resourceCards = {
       cards: removePlayerCards(
@@ -173,8 +285,13 @@ const applyResourceExchangeWithBank = (
   }
 };
 
-const getRemainingDevelopmentDeck = (devCardsState: any) => {
+const getRemainingDevelopmentDeck = (
+  devCardsState: DevelopmentCardsMechanicState | undefined,
+) => {
   const deck = buildBaseDevelopmentDeck();
+  if (!devCardsState) {
+    return deck;
+  }
   const usedCards = collectKnownDevelopmentCards(devCardsState);
   usedCards.forEach((card) => {
     const index = deck.indexOf(card);
@@ -189,7 +306,17 @@ const getRemainingDevelopmentDeck = (devCardsState: any) => {
   return deck;
 };
 
-const drawDevelopmentCard = (devCardsState: any, overrideCard?: number) => {
+const getPlayerStateByColor = (gameState: GameState, playerColor: number) => {
+  return getByPlayerColor(
+    gameState.playerStates as StringMap<PlayerState> | undefined,
+    playerColor,
+  ) as PlayerState | undefined;
+};
+
+const drawDevelopmentCard = (
+  devCardsState: DevelopmentCardsMechanicState | undefined,
+  overrideCard?: number,
+) => {
   const bankCards = devCardsState?.bankDevelopmentCards?.cards;
   const bankHasRealCards =
     Array.isArray(bankCards) &&
@@ -241,7 +368,7 @@ const getNextTurnPlayerColor = (direction: number = 1) => {
 };
 
 const updateCurrentState = (
-  gameData: any,
+  gameData: GameData,
   updates: Partial<
     ReturnType<typeof newGame>["data"]["payload"]["gameState"]["currentState"]
   >,
@@ -255,7 +382,7 @@ const updateCurrentState = (
 };
 
 const addPlayerResourceCards = (
-  gameState: any,
+  gameState: GameState,
   playerColor: number,
   cards: number[],
   distributionType: number,
@@ -263,17 +390,25 @@ const addPlayerResourceCards = (
   if (cards.length === 0) return undefined;
   const sortedCards = [...cards].sort((a, b) => a - b);
   const bankState = gameState.bankState;
-  const playerState = gameState.playerStates[playerColor];
+  const playerState = getPlayerStateByColor(gameState, playerColor);
+  if (!playerState) {
+    return;
+  }
   if (!playerState.resourceCards) {
     playerState.resourceCards = { cards: [] };
   }
+  const playerCards = playerState.resourceCards.cards ?? [];
   sortedCards.forEach((card) => {
-    if (bankState?.resourceCards?.[card] !== undefined) {
-      bankState.resourceCards[card] -= 1;
+    const bankResourceCards = bankState?.resourceCards as
+      | NumericResourceState
+      | undefined;
+    if (bankResourceCards?.[card] !== undefined) {
+      bankResourceCards[card] -= 1;
     }
-    playerState.resourceCards.cards.push(card);
+    playerCards.push(card);
   });
-  (playerState.resourceCards.cards as number[]).sort((a, b) => a - b);
+  playerCards.sort((a, b) => a - b);
+  playerState.resourceCards.cards = playerCards;
   return addGameLogEntry(gameState, {
     text: {
       type: GameLogMessageType.ResourceDistribution,
@@ -348,54 +483,63 @@ const autoPlaceRobber = (tileIndex: number) => {
 };
 
 const applyPortOwnership = (
-  gameState: any,
-  cornerState: any,
+  gameState: GameState,
+  cornerState: JsonObject,
   playerColor: number,
 ) => {
-  const portEdgeStates = gameState.mapState?.portEdgeStates;
+  const portEdgeStates = (gameState.mapState?.portEdgeStates ??
+    {}) as StringMap<TileEdgeState>;
   if (!portEdgeStates) return;
-  Object.entries(portEdgeStates).forEach(
-    ([key, portEdgeState]: [string, any]) => {
-      const endpoints = edgeEndpoints(portEdgeState as any);
-      const isAdjacent = endpoints.some(
-        (endpoint) =>
-          endpoint.x === cornerState.x &&
-          endpoint.y === cornerState.y &&
-          endpoint.z === cornerState.z,
-      );
-      if (!isAdjacent) return;
-      portEdgeStates[key] = { ...portEdgeState, owner: playerColor };
-      if (portEdgeState.type === GENERIC_PORT_TYPE) {
-        const ratios =
-          gameState.playerStates?.[playerColor]?.bankTradeRatiosState;
-        if (ratios) {
-          Object.keys(ratios).forEach((ratioKey) => {
-            ratios[ratioKey] = 3;
-          });
-        }
+  Object.entries(portEdgeStates).forEach(([key, portEdgeState]) => {
+    const endpoints = edgeEndpoints(portEdgeState);
+    const isAdjacent = endpoints.some(
+      (endpoint) =>
+        endpoint.x === cornerState.x &&
+        endpoint.y === cornerState.y &&
+        endpoint.z === cornerState.z,
+    );
+    if (!isAdjacent) return;
+    portEdgeStates[key] = {
+      ...portEdgeState,
+      owner: playerColor,
+    } as TileEdgeState;
+    if (portEdgeState.type === GENERIC_PORT_TYPE) {
+      const ratios = getPlayerStateByColor(
+        gameState,
+        playerColor,
+      )?.bankTradeRatiosState;
+      if (ratios) {
+        Object.keys(ratios).forEach((ratioKey) => {
+          const parsedRatioKey = Number.parseInt(ratioKey, 10);
+          if (Number.isFinite(parsedRatioKey)) {
+            ratios[parsedRatioKey] = 3;
+          }
+        });
       }
-    },
-  );
+    }
+  });
 };
 
-const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
+const getBuildableRoadEdgeIndicesFromGameState = (gameData: GameData) => {
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor;
-  const edgeStates = gameState.mapState.tileEdgeStates ?? {};
-  const cornerStates = gameState.mapState.tileCornerStates ?? {};
+  const edgeStates = gameState.mapState
+    .tileEdgeStates as StringMap<TileEdgeState>;
+  const cornerStates = gameState.mapState
+    .tileCornerStates as StringMap<TileCornerState>;
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
 
   const connectedCornerKeys = new Set<string>();
 
-  Object.values(cornerStates).forEach((cornerState: any) => {
+  Object.values(cornerStates).forEach((cornerState: TileCornerState) => {
     if (!cornerState || cornerState.owner !== playerColor) return;
     connectedCornerKeys.add(
       serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
     );
   });
 
-  Object.values(edgeStates).forEach((edgeState: any) => {
+  Object.values(edgeStates).forEach((edgeState) => {
     if (!edgeState || edgeState.owner !== playerColor) return;
     edgeEndpoints(edgeState).forEach((endpoint) => {
       connectedCornerKeys.add(
@@ -407,7 +551,7 @@ const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
   return toNumericRecordEntries(edgeStates)
     .map(({ index, value }) => ({
       index,
-      edgeState: value as any,
+      edgeState: value,
     }))
     .filter(({ edgeState }) => Boolean(edgeState))
     .filter(({ edgeState }) => !edgeState.owner)
@@ -424,12 +568,14 @@ const getBuildableRoadEdgeIndicesFromGameState = (gameData: any) => {
 };
 
 export const sendCornerHighlights30 = (
-  gameData: any,
+  gameData: GameData,
   force: number[] | null = null,
 ) => {
   const actionState = gameData.data.payload.gameState.currentState.actionState;
   const playerColor = gameData.data.payload.playerColor;
-  const isClose = (a: any, b: any) => {
+  const tileCornerStates = gameData.data.payload.gameState.mapState
+    .tileCornerStates as StringMap<TileCornerState>;
+  const isClose = (a: TileCornerState, b: TileCornerState) => {
     if (a.z === b.z) {
       return a.x === b.x && a.y === b.y;
     }
@@ -441,10 +587,10 @@ export const sendCornerHighlights30 = (
       (south.x === north.x + 1 && south.y === north.y - 1)
     );
   };
-  const ownedCorners: any[] = Object.values(
-    gameData.data.payload.gameState.mapState.tileCornerStates,
+  const ownedCorners: TileCornerState[] = Object.values(
+    tileCornerStates,
   ).filter(
-    (cornerState: any) =>
+    (cornerState: TileCornerState) =>
       cornerState.buildingType === CornerPieceType.Settlement,
   );
   const cornerIndices = ![
@@ -455,10 +601,10 @@ export const sendCornerHighlights30 = (
     PlayerActionState.PlaceCityWithDiscount,
   ].includes(actionState)
     ? []
-    : Object.entries(gameData.data.payload.gameState.mapState.tileCornerStates)
+    : Object.entries(tileCornerStates)
         .map(([key, value]) => ({
           key: Number.parseInt(key, 10),
-          value: value as any,
+          value: value as TileCornerState,
         }))
         .filter(({ key }) => Number.isFinite(key))
         .filter(({ value }) => {
@@ -487,14 +633,18 @@ export const sendCornerHighlights30 = (
   });
 };
 
-export const sendEdgeHighlights31 = (gameData: any, cornerIndex?: number) => {
+export const sendEdgeHighlights31 = (
+  gameData: GameData,
+  cornerIndex?: number,
+) => {
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
 
-  const edgeStates = gameData.data.payload.gameState.mapState.tileEdgeStates;
-  const cornerStates =
-    gameData.data.payload.gameState.mapState.tileCornerStates;
-  const cornerState = cornerStates[cornerIndex || -1];
+  const edgeStates = gameData.data.payload.gameState.mapState
+    .tileEdgeStates as StringMap<TileEdgeState>;
+  const cornerStates = gameData.data.payload.gameState.mapState
+    .tileCornerStates as StringMap<TileCornerState>;
+  const cornerState = cornerStates[String(cornerIndex || -1)];
   const cornerKey =
     cornerState &&
     serializeCornerKey(cornerState.x, cornerState.y, cornerState.z);
@@ -510,7 +660,7 @@ export const sendEdgeHighlights31 = (gameData: any, cornerIndex?: number) => {
     : toNumericRecordEntries(edgeStates)
         .map(({ index, value }) => ({
           index,
-          edgeState: value as any,
+          edgeState: value,
         }))
         .filter(({ edgeState }) => Boolean(edgeState))
         .filter(({ edgeState }) => {
@@ -532,7 +682,7 @@ export const sendEdgeHighlights31 = (gameData: any, cornerIndex?: number) => {
   });
 };
 
-const sendTileHighlights33 = (gameData: any, payload: number[] = []) => {
+const sendTileHighlights33 = (gameData: GameData, payload: number[] = []) => {
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
@@ -542,8 +692,10 @@ const sendTileHighlights33 = (gameData: any, payload: number[] = []) => {
   });
 };
 
-const sendShipHighlights32 = (gamePath: any) => {
-  const shipStates = gamePath.data.payload.gameState.mapState.shipStates ?? {};
+const sendShipHighlights32 = (gamePath: GameData) => {
+  const shipStates = ((
+    gamePath.data.payload.gameState.mapState as StringMap<unknown>
+  ).shipStates ?? {}) as StringMap<JsonObject>;
   const shipIndices = toNumericRecordEntries(shipStates)
     .map(({ index }) => index)
     .filter((index) => {
@@ -560,7 +712,7 @@ const sendShipHighlights32 = (gamePath: any) => {
   });
 };
 
-const sendPlayTurnSound59 = (gameData: any) => {
+const sendPlayTurnSound59 = (gameData: GameData) => {
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
@@ -570,7 +722,7 @@ const sendPlayTurnSound59 = (gameData: any) => {
   });
 };
 
-const sendExitInitialPlacement62 = (gameData: any) => {
+const sendExitInitialPlacement62 = (gameData: GameData) => {
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
@@ -590,10 +742,14 @@ const sendResetTradeStateAtEndOfTurn80 = () => {
   });
 };
 
-const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
-  const tileHexStates = gameState.mapState.tileHexStates ?? {};
+const getAdjacentTileIndicesForCorner = (
+  gameState: GameState,
+  cornerState: TileCornerState,
+) => {
+  const tileHexStates = (gameState.mapState.tileHexStates ??
+    {}) as StringMap<HexTileState>;
   const tileIndexByCoord = new Map<string, number>();
-  Object.entries(tileHexStates).forEach(([index, tileState]: any) => {
+  Object.entries(tileHexStates).forEach(([index, tileState]) => {
     tileIndexByCoord.set(`${tileState.x},${tileState.y}`, Number(index));
   });
   const adjacentCoords =
@@ -613,7 +769,9 @@ const getAdjacentTileIndicesForCorner = (gameState: any, cornerState: any) => {
     .filter((tileIndex): tileIndex is number => Number.isFinite(tileIndex));
 };
 
-const getPlayerVictoryPoints = (playerState: any) => {
+const getPlayerVictoryPoints = (playerState?: {
+  victoryPointsState?: Record<string, number>;
+}) => {
   const victoryPointsState = playerState?.victoryPointsState as
     | Record<string, number>
     | undefined;
@@ -628,19 +786,17 @@ const getPlayerVictoryPoints = (playerState: any) => {
   }, 0);
 };
 
-const getFriendlyRobberBlockedTiles = (gameData: any) => {
+const getFriendlyRobberBlockedTiles = (gameData: GameData) => {
   const gameState = gameData.data.payload.gameState;
   if (!gameData.data.payload.gameSettings.friendlyRobber) {
     return new Set<number>();
   }
-  const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
+  const tileCornerStates = gameState.mapState
+    .tileCornerStates as StringMap<TileCornerState>;
   const blockedTiles = new Set<number>();
-  Object.values(tileCornerStates).forEach((cornerState: any) => {
-    const ownerValue = cornerState?.owner;
-    const ownerIndex = Number.isFinite(ownerValue)
-      ? ownerValue
-      : Number.parseInt(ownerValue, 10);
-    if (!Number.isFinite(ownerIndex)) {
+  Object.values(tileCornerStates).forEach((cornerState) => {
+    const ownerIndex = parseFiniteIndex(cornerState?.owner);
+    if (ownerIndex == null) {
       return;
     }
     if (
@@ -649,7 +805,7 @@ const getFriendlyRobberBlockedTiles = (gameData: any) => {
     ) {
       return;
     }
-    const playerState = gameState.playerStates?.[ownerIndex];
+    const playerState = getPlayerStateByColor(gameState, ownerIndex);
     if (!playerState) {
       return;
     }
@@ -666,9 +822,10 @@ const getFriendlyRobberBlockedTiles = (gameData: any) => {
   return blockedTiles;
 };
 
-const getRobberEligibleTiles = (gameData: any) => {
+const getRobberEligibleTiles = (gameData: GameData) => {
   const gameState = gameData.data.payload.gameState;
-  const tileHexStates = gameState.mapState.tileHexStates ?? {};
+  const tileHexStates = (gameState.mapState.tileHexStates ??
+    {}) as StringMap<HexTileState>;
   const candidateTiles = Object.keys(tileHexStates)
     .map((key) => Number.parseInt(key, 10))
     .filter((value) => Number.isFinite(value))
@@ -690,16 +847,30 @@ const placeSettlement = (cornerIndex: number) => {
   const playerColor = gameData.data.payload.playerColor;
   const isStandardBuild =
     gameState.currentState.actionState === PlayerActionState.PlaceSettlement;
-  const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
+  const tileCornerStates = gameState.mapState
+    .tileCornerStates as StringMap<TileCornerState>;
+  const cornerState = tileCornerStates[String(cornerIndex)];
 
-  gameState.mapState.tileCornerStates[String(cornerIndex)] = {
+  tileCornerStates[String(cornerIndex)] = {
     ...cornerState,
     owner: playerColor,
     buildingType: CornerPieceType.Settlement,
-  } as any;
+    x: cornerState?.x,
+    y: cornerState?.y,
+    z: cornerState?.z,
+  } as TileCornerState;
 
-  const settlementState = gameState.mechanicSettlementState?.[playerColor];
-  if (settlementState?.bankSettlementAmount > 0) {
+  const settlementState = getByPlayerColor(
+    gameState.mechanicSettlementState as
+      | StringMap<{ bankSettlementAmount?: number }>
+      | undefined,
+    playerColor,
+  );
+  if (
+    settlementState &&
+    settlementState.bankSettlementAmount != null &&
+    settlementState.bankSettlementAmount > 0
+  ) {
     settlementState.bankSettlementAmount -= 1;
   }
 
@@ -714,7 +885,10 @@ const placeSettlement = (cornerIndex: number) => {
     });
   }
 
-  const playerState = gameState.playerStates[playerColor];
+  const playerState = getPlayerStateByColor(gameState, playerColor);
+  if (!playerState) {
+    return;
+  }
   if (!playerState.victoryPointsState) {
     playerState.victoryPointsState = {} as NumericMap<number>;
   }
@@ -784,16 +958,17 @@ const placeSettlement = (cornerIndex: number) => {
     card: number;
   }[] = [];
 
-  const sendResourcesFromTile = (gameData: any, cornerIndex: number) => {
+  const sendResourcesFromTile = (gameData: GameData, cornerIndex: number) => {
     const gameState = gameData.data.payload.gameState;
     const cornerState =
       gameState.mapState.tileCornerStates[String(cornerIndex)];
-    const tileHexStates = gameState.mapState.tileHexStates ?? {};
+    const tileHexStates = (gameState.mapState.tileHexStates ??
+      {}) as StringMap<HexTileState>;
     const adjacentTiles = getAdjacentTileIndicesForCorner(
       gameState,
       cornerState,
     );
-    if (gameState.currentState.completedTurns > gameState) {
+    if (gameState.currentState.completedTurns > 0) {
       adjacentTiles.forEach((tileIndex) => {
         const tileState = tileHexStates[String(tileIndex)];
         if (
@@ -833,14 +1008,14 @@ const placeSettlement = (cornerIndex: number) => {
   );
 };
 
-const getCornerIndexFromPayload = (gameState: any, payload: unknown) => {
+const getCornerIndexFromPayload = (gameState: GameState, payload: unknown) => {
   if (typeof payload === "number" && Number.isFinite(payload)) {
     return payload;
   }
   if (!payload || typeof payload !== "object") {
     return null;
   }
-  const payloadObj = payload as Record<string, any>;
+  const payloadObj = payload as Record<string, unknown>;
   const numericKeys = ["cornerIndex", "tileCornerIndex", "index"];
   for (const key of numericKeys) {
     const value = payloadObj[key];
@@ -848,12 +1023,17 @@ const getCornerIndexFromPayload = (gameState: any, payload: unknown) => {
       return value;
     }
   }
-  const coordCandidate =
-    payloadObj.cornerState ??
+  const coordCandidate = (payloadObj.cornerState ??
     payloadObj.corner ??
-    (payloadObj.x !== undefined && payloadObj.y !== undefined
-      ? payloadObj
-      : null);
+    (typeof payloadObj.x === "number" &&
+    typeof payloadObj.y === "number" &&
+    typeof payloadObj.z === "number"
+      ? {
+          x: payloadObj.x,
+          y: payloadObj.y,
+          z: payloadObj.z,
+        }
+      : null)) as JsonObject | null;
   if (
     coordCandidate &&
     typeof coordCandidate === "object" &&
@@ -861,8 +1041,9 @@ const getCornerIndexFromPayload = (gameState: any, payload: unknown) => {
     typeof coordCandidate.y === "number" &&
     typeof coordCandidate.z === "number"
   ) {
-    const cornerStates = gameState.mapState?.tileCornerStates ?? {};
-    const match = Object.entries(cornerStates).find(([, cornerState]: any) => {
+    const cornerStates = gameState.mapState
+      ?.tileCornerStates as StringMap<TileCornerState>;
+    const match = Object.entries(cornerStates).find(([, cornerState]) => {
       return (
         cornerState &&
         cornerState.x === coordCandidate.x &&
@@ -881,34 +1062,55 @@ const placeCity = (cornerIndex: number) => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor;
-  const cornerState = gameState.mapState.tileCornerStates[String(cornerIndex)];
+  const tileCornerStates = gameState.mapState
+    .tileCornerStates as StringMap<TileCornerState>;
+  const cornerState = tileCornerStates[String(cornerIndex)];
   if (!cornerState) {
     return;
   }
 
-  gameState.mapState.tileCornerStates[String(cornerIndex)] = {
+  tileCornerStates[String(cornerIndex)] = {
     ...cornerState,
     owner: playerColor,
     buildingType: CornerPieceType.City,
-  } as any;
+  };
 
-  const cityState = gameState.mechanicCityState?.[playerColor];
-  if (cityState?.bankCityAmount > 0) {
+  const cityState = getByPlayerColor(
+    gameState.mechanicCityState as
+      | StringMap<{ bankCityAmount?: number }>
+      | undefined,
+    playerColor,
+  );
+  if (
+    cityState &&
+    cityState.bankCityAmount != null &&
+    cityState.bankCityAmount > 0
+  ) {
     cityState.bankCityAmount -= 1;
   }
-  const settlementState = gameState.mechanicSettlementState?.[playerColor];
-  if (settlementState?.bankSettlementAmount !== undefined) {
+  const settlementState = getByPlayerColor(
+    gameState.mechanicSettlementState as
+      | StringMap<{ bankSettlementAmount?: number }>
+      | undefined,
+    playerColor,
+  );
+  if (
+    settlementState &&
+    settlementState.bankSettlementAmount != null &&
+    settlementState.bankSettlementAmount !== undefined
+  ) {
     settlementState.bankSettlementAmount += 1;
   }
 
-  const playerState = gameState.playerStates[playerColor];
+  const playerState = getPlayerStateByColor(gameState, playerColor);
+  if (!playerState) {
+    return;
+  }
   if (!playerState.victoryPointsState) {
     playerState.victoryPointsState = {} as NumericMap<number>;
   }
-  const settlementCount = Object.values(
-    gameState.mapState.tileCornerStates ?? {},
-  ).filter(
-    (tileCorner: any) =>
+  const settlementCount = Object.values(tileCornerStates).filter(
+    (tileCorner: TileCornerState) =>
       tileCorner?.owner === playerColor &&
       tileCorner.buildingType === CornerPieceType.Settlement,
   ).length;
@@ -973,21 +1175,34 @@ const placeRoad = (edgeIndex: number) => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor;
-  const edgeState = gameState.mapState.tileEdgeStates[String(edgeIndex)];
+  const edgeStates = gameState.mapState
+    .tileEdgeStates as StringMap<TileEdgeState>;
+  const edgeState = edgeStates[String(edgeIndex)];
 
-  gameState.mapState.tileEdgeStates[String(edgeIndex)] = {
+  edgeStates[String(edgeIndex)] = {
     ...edgeState,
     owner: playerColor,
     type: EdgePieceType.Road,
-  } as any;
+  };
 
-  const roadState = gameState.mechanicRoadState?.[playerColor];
-  if (roadState?.bankRoadAmount > 0) {
+  const roadState = getByPlayerColor(
+    gameState.mechanicRoadState as
+      | StringMap<{ bankRoadAmount?: number }>
+      | undefined,
+    playerColor,
+  );
+  if (
+    roadState &&
+    roadState.bankRoadAmount != null &&
+    roadState.bankRoadAmount > 0
+  ) {
     roadState.bankRoadAmount -= 1;
   }
 
   const completedTurns = gameState.currentState.completedTurns ?? 0;
   const actionStateAtRoadPlacement = gameState.currentState.actionState;
+  const roadCurrentState =
+    gameState.currentState as GameStateCurrentWithRuntime;
   const isRoadBuildingPlacement =
     actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding ||
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding;
@@ -1037,7 +1252,7 @@ const placeRoad = (edgeIndex: number) => {
       turnState: GamePhase.Turn,
       allocatedTime: 160,
     });
-    (gameState.currentState as any).roadBuildingHighlightStep = 0;
+    roadCurrentState.roadBuildingHighlightStep = 0;
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
@@ -1046,7 +1261,7 @@ const placeRoad = (edgeIndex: number) => {
       actionState: PlayerActionState.None,
       allocatedTime: TURN_TIMERS_MS.roadBuildingFollowUp,
     });
-    delete (gameState.currentState as any).roadBuildingHighlightStep;
+    delete roadCurrentState.roadBuildingHighlightStep;
   } else {
     addGameLogEntry(gameState, {
       text: {
@@ -1135,8 +1350,10 @@ const rollDice = () => {
       : getDiceRoll();
   const diceTotal = dice1 + dice2;
   const shouldTriggerRobber = diceTotal === ROBBER_TRIGGER_DICE_TOTAL;
-  const tileHexStates = gameState.mapState.tileHexStates ?? {};
-  const tileCornerStates = gameState.mapState.tileCornerStates ?? {};
+  const tileHexStates = (gameState.mapState.tileHexStates ??
+    {}) as StringMap<HexTileState>;
+  const tileCornerStates = (gameState.mapState.tileCornerStates ??
+    {}) as StringMap<TileCornerState>;
   const resourcesToGive: {
     owner: number;
     tileIndex: number;
@@ -1144,10 +1361,10 @@ const rollDice = () => {
     card: number;
   }[] = [];
   const cardsByOwner = new Map<number, number[]>();
-  let blockedTileStateForLog: any | undefined;
+  let blockedTileStateForLog: HexTileState | undefined;
 
   if (!shouldTriggerRobber) {
-    Object.values(tileCornerStates).forEach((cornerState: any) => {
+    Object.values(tileCornerStates).forEach((cornerState) => {
       if (!cornerState?.owner) return;
       if (
         cornerState.buildingType !== CornerPieceType.Settlement &&
@@ -1162,6 +1379,7 @@ const rollDice = () => {
         const tileState = tileHexStates[String(tileIndex)];
         if (!tileState) return;
         if (tileState.diceNumber !== diceTotal) return;
+        if (tileState.type == null) return;
         if (tileIndex === gameState.mechanicRobberState?.locationTileIndex) {
           blockedTileStateForLog = tileState;
         }
@@ -1172,16 +1390,18 @@ const rollDice = () => {
           return;
         const cardCount =
           cornerState.buildingType === CornerPieceType.City ? 2 : 1;
+        const owner = cornerState.owner;
+        if (owner == null) return;
         for (let i = 0; i < cardCount; i += 1) {
           resourcesToGive.push({
-            owner: cornerState.owner,
+            owner,
             tileIndex,
             distributionType: 1,
             card: tileState.type,
           });
-          const ownerCards = cardsByOwner.get(cornerState.owner) ?? [];
+          const ownerCards = cardsByOwner.get(owner) ?? [];
           ownerCards.push(tileState.type);
-          cardsByOwner.set(cornerState.owner, ownerCards);
+          cardsByOwner.set(owner, ownerCards);
         }
       });
     });
@@ -1271,7 +1491,8 @@ const rollDice = () => {
     sendShipHighlights32(gameData);
 
     const playerCards = [
-      ...(gameState.playerStates?.[playerColor]?.resourceCards?.cards ?? []),
+      ...(getPlayerStateByColor(gameState, playerColor)?.resourceCards?.cards ??
+        []),
     ].sort((a, b) => a - b);
     const cardDiscardLimit = getCardDiscardLimit(gameData);
     const amountToDiscard =
@@ -1281,8 +1502,11 @@ const rollDice = () => {
     if (amountToDiscard > 0) {
       gameState.currentState.actionState =
         PlayerActionState.SelectCardsToDiscard;
-      if (gameState.playerStates?.[playerColor]) {
-        gameState.playerStates[playerColor].isTakingAction = true;
+      if (getPlayerStateByColor(gameState, playerColor)) {
+        const activePlayerState = getPlayerStateByColor(gameState, playerColor);
+        if (activePlayerState) {
+          activePlayerState.isTakingAction = true;
+        }
       }
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
@@ -1347,8 +1571,12 @@ const passTurn = () => {
     },
   });
 
-  const devCardsState: any =
-    gameState.mechanicDevelopmentCardsState?.players?.[playerColor];
+  const devCardsState = getByPlayerColor(
+    gameState.mechanicDevelopmentCardsState?.players as
+      | StringMap<DevelopmentCardPlayerState>
+      | undefined,
+    playerColor,
+  );
   if (devCardsState && "developmentCardsBoughtThisTurn" in devCardsState) {
     devCardsState.developmentCardsBoughtThisTurn = null;
     if ("hasUsedDevelopmentCardThisTurn" in devCardsState) {
@@ -1373,7 +1601,13 @@ const buyDevelopmentCard = () => {
   const exchangeCards = [CardEnum.Wool, CardEnum.Grain, CardEnum.Ore];
   applyResourceExchangeWithBank(gameState, playerColor, exchangeCards);
 
-  const devCardsState: any = gameState.mechanicDevelopmentCardsState;
+  const devCardsState = gameState.mechanicDevelopmentCardsState as
+    | DevelopmentCardsMechanicState
+    | undefined;
+  const devPlayerState = getByPlayerColor(
+    devCardsState?.players as StringMap<DevelopmentCardPlayerState> | undefined,
+    playerColor,
+  );
   const overrideDevCard =
     typeof window.__testSeed === "number"
       ? window.__testSeed
@@ -1388,20 +1622,16 @@ const buyDevelopmentCard = () => {
   if (devCard == null) {
     return;
   }
-  if (devCardsState?.players?.[playerColor]?.developmentCards?.cards) {
-    devCardsState.players[playerColor].developmentCards.cards.push(devCard);
-    (
-      devCardsState.players[playerColor].developmentCards.cards as number[]
-    ).sort((a, b) => a - b);
+  if (devPlayerState?.developmentCards?.cards) {
+    devPlayerState.developmentCards.cards.push(devCard);
+    (devPlayerState.developmentCards.cards as number[]).sort((a, b) => a - b);
   }
-  if (devCardsState?.players?.[playerColor]) {
-    devCardsState.players[playerColor].developmentCardsBoughtThisTurn = [
-      devCard,
-    ];
+  if (devPlayerState) {
+    devPlayerState.developmentCardsBoughtThisTurn = [devCard];
   }
 
   if (devCard === CardEnum.VictoryPoint) {
-    const playerState = gameState.playerStates?.[playerColor];
+    const playerState = getPlayerStateByColor(gameState, playerColor);
     if (playerState) {
       if (!playerState.victoryPointsState) {
         playerState.victoryPointsState = {} as NumericMap<number>;
@@ -1415,7 +1645,7 @@ const buyDevelopmentCard = () => {
   }
 
   if (!gameState.gameLogState) {
-    (gameState as any).gameLogState = {};
+    gameState.gameLogState = {};
   }
 
   addGameLogEntry(gameState, {
@@ -1499,8 +1729,11 @@ export const applyGameAction = (parsed: {
           },
         },
       });
-      sendPlayTurnSound59({});
-      sendToMainSocket?.(firebaseData.GAME);
+      sendPlayTurnSound59(firebaseData.GAME!);
+      const reconnectGameState = firebaseData.GAME;
+      if (reconnectGameState) {
+        sendToMainSocket?.(reconnectGameState);
+      }
     };
     if (
       parsed.action === GameAction.SelectedPlayer &&
@@ -1569,7 +1802,7 @@ export const applyGameAction = (parsed: {
         ? (tradePayload?.wantedResources ?? [])
         : [];
       if (tradePayload?.isBankTrade) {
-        const playerState = gameState.playerStates?.[playerColor];
+        const playerState = getPlayerStateByColor(gameState, playerColor);
         const bankResourceCards = gameState.bankState?.resourceCards as
           | NumericMap<number>
           | undefined;
@@ -1590,7 +1823,7 @@ export const applyGameAction = (parsed: {
           const existingCards = playerState.resourceCards.cards as number[];
           playerState.resourceCards = {
             cards: removePlayerCards(existingCards, offeredResources),
-          } as any;
+          };
           (playerState.resourceCards.cards as number[]).push(
             ...wantedResources,
           );
@@ -1735,11 +1968,12 @@ export const applyGameAction = (parsed: {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       const playerColor = gameData.data.payload.playerColor;
-      const cornerStates = gameState.mapState.tileCornerStates ?? {};
+      const cornerStates = gameState.mapState
+        .tileCornerStates as StringMap<TileCornerState>;
       const highlightCorners = Object.entries(cornerStates)
         .map(([key, value]) => ({
           key: Number.parseInt(key, 10),
-          value: value as any,
+          value: value as TileCornerState,
         }))
         .filter(({ key }) => Number.isFinite(key))
         .filter(
@@ -1793,8 +2027,12 @@ export const applyGameAction = (parsed: {
       const playerColor = gameData.data.payload.playerColor;
       const clickedCard =
         typeof parsed.payload === "number" ? parsed.payload : undefined;
-      const devCardsState: any =
-        gameState.mechanicDevelopmentCardsState?.players?.[playerColor];
+      const devCardsState = getByPlayerColor(
+        gameState.mechanicDevelopmentCardsState?.players as
+          | StringMap<DevelopmentCardPlayerState>
+          | undefined,
+        playerColor,
+      );
       const handCards = devCardsState?.developmentCards?.cards;
       if (Array.isArray(handCards) && clickedCard != null) {
         const cardIndex = handCards.indexOf(clickedCard);
@@ -1810,11 +2048,9 @@ export const applyGameAction = (parsed: {
         devCardsState.hasUsedDevelopmentCardThisTurn = true;
       }
 
-      const usedKnightCount = Array.isArray(devCardsState?.developmentCardsUsed)
-        ? devCardsState.developmentCardsUsed.filter(
-            (card: number) => card === CardEnum.Knight,
-          ).length
-        : 0;
+      const usedKnightCount = (devCardsState?.developmentCardsUsed ?? []).filter(
+        (card) => card === CardEnum.Knight,
+      ).length;
 
       addGameLogEntry(gameState, {
         text: {
@@ -1834,14 +2070,20 @@ export const applyGameAction = (parsed: {
       gameState.currentState.startTime = Date.now();
 
       if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
-        const largestArmyState = (gameState.mechanicLargestArmyState ??
-          ((gameState as any).mechanicLargestArmyState =
-            {})) as NumericMap<any>;
+        const gameStateWithLargestArmy = gameState as GameStateWithLargestArmy;
+        const largestArmyState =
+          (gameStateWithLargestArmy.mechanicLargestArmyState ??
+            (() => {
+              const nextState = {} as NumericMap<LargestArmyMechanicState>;
+              gameStateWithLargestArmy.mechanicLargestArmyState =
+                nextState as GameStateWithLargestArmy["mechanicLargestArmyState"];
+              return nextState;
+            })()) as NumericMap<LargestArmyMechanicState>;
         if (!largestArmyState[playerColor]) {
-          largestArmyState[playerColor] = {} as any;
+          largestArmyState[playerColor] = {} as LargestArmyMechanicState;
         }
         largestArmyState[playerColor].hasLargestArmy = true;
-        const playerState = gameState.playerStates?.[playerColor];
+        const playerState = getPlayerStateByColor(gameState, playerColor);
         if (playerState) {
           if (!playerState.victoryPointsState) {
             playerState.victoryPointsState = {} as NumericMap<number>;
@@ -1940,14 +2182,14 @@ export const applyGameAction = (parsed: {
         ? (parsed.payload as number[])
         : [];
       const currentPlayer = gameData.data.payload.playerColor ?? 1;
-      const playerState = gameState.playerStates?.[currentPlayer];
+      const playerState = getPlayerStateByColor(gameState, currentPlayer);
       if (playerState?.resourceCards?.cards) {
         playerState.resourceCards = {
           cards: removePlayerCards(
             playerState.resourceCards.cards as number[],
             selectedCards,
           ),
-        } as any;
+        };
       }
       const bankResourceCards = gameState.bankState?.resourceCards as
         | NumericMap<number>
@@ -1989,8 +2231,14 @@ export const applyGameAction = (parsed: {
 
       gameState.currentState.actionState =
         PlayerActionState.PlaceRobberOrPirate;
-      if (gameState.playerStates?.[currentPlayer]) {
-        gameState.playerStates[currentPlayer].isTakingAction = false;
+      if (getPlayerStateByColor(gameState, currentPlayer)) {
+        const activePlayerState = getPlayerStateByColor(
+          gameState,
+          currentPlayer,
+        );
+        if (activePlayerState) {
+          activePlayerState.isTakingAction = false;
+        }
       }
       addGameLogEntry(gameState, {
         text: {
@@ -2062,6 +2310,8 @@ export const applyGameAction = (parsed: {
       const edgeIndex = parsed.payload as number;
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
+      const roadCurrentState =
+        gameState.currentState as GameStateCurrentWithRuntime;
 
       if (
         parsed.action !== GameAction.ConfirmBuildShip &&
@@ -2070,22 +2320,20 @@ export const applyGameAction = (parsed: {
           gameState.currentState.actionState ===
             PlayerActionState.Place1MoreRoadBuilding)
       ) {
-        (gameState.currentState as any).pendingRoadBuildingEdgeIndex =
-          edgeIndex;
+        roadCurrentState.pendingRoadBuildingEdgeIndex = edgeIndex;
         return true;
       }
 
       const stagedRoadEdgeIndex =
-        typeof (gameState.currentState as any).pendingRoadBuildingEdgeIndex ===
-        "number"
-          ? (gameState.currentState as any).pendingRoadBuildingEdgeIndex
+        typeof roadCurrentState.pendingRoadBuildingEdgeIndex === "number"
+          ? roadCurrentState.pendingRoadBuildingEdgeIndex
           : undefined;
       const edgeIndexToPlace =
         parsed.action === GameAction.ConfirmBuildShip &&
         stagedRoadEdgeIndex != null
           ? stagedRoadEdgeIndex
           : edgeIndex;
-      delete (gameState.currentState as any).pendingRoadBuildingEdgeIndex;
+      delete roadCurrentState.pendingRoadBuildingEdgeIndex;
 
       placeRoad(edgeIndexToPlace);
       return true;
@@ -2168,7 +2416,8 @@ const getGameEndPayload = () => {
   const resourceCardsStats: number[] = [];
   let developmentCardStats: number[] = [];
 
-  const playerStates: Record<string, any> = gameState?.playerStates ?? {};
+  const playerStates = (gameState?.playerStates ??
+    {}) as StringMap<PlayerState>;
   const playerColors = Object.keys(playerStates)
     .map(parseFiniteIndex)
     .filter((color): color is number => color != null);
@@ -2199,8 +2448,8 @@ const getGameEndPayload = () => {
     devCardsUsed: 0,
   });
 
-  const resourceStats: Record<number, any> = {};
-  const activityStats: Record<number, any> = {};
+  const resourceStats: Record<number, EndResourceStats> = {};
+  const activityStats: Record<number, EndActivityStats> = {};
   playerColors.forEach((color) => {
     resourceStats[color] = createResourceStats(color);
     activityStats[color] = createActivityStats(color);
@@ -2232,7 +2481,7 @@ const getGameEndPayload = () => {
   };
 
   logEntries.forEach((entry) => {
-    const text: any = entry?.text ?? entry;
+    const text = (((entry as JsonObject)?.text ?? entry) as JsonObject) ?? {};
     const type = text?.type;
     if (type == null) return;
 
@@ -2251,7 +2500,9 @@ const getGameEndPayload = () => {
     if (type === GameLogMessageType.ResourceDistribution) {
       const playerColor = parseFiniteIndex(text?.playerColor);
       const cards = Array.isArray(text?.cardsToBroadcast)
-        ? text.cardsToBroadcast.filter((card: any) => Number.isFinite(card))
+        ? (text.cardsToBroadcast as number[]).filter((card: number) =>
+            Number.isFinite(card),
+          )
         : [];
       if (cards.length > 0) {
         resourceCardsStats.push(...cards);
@@ -2274,10 +2525,14 @@ const getGameEndPayload = () => {
     if (type === GameLogMessageType.PlayerTradedWithBank) {
       const playerColor = parseFiniteIndex(text?.playerColor);
       const givenCards = Array.isArray(text?.givenCardEnums)
-        ? text.givenCardEnums.filter((card: any) => Number.isFinite(card))
+        ? (text.givenCardEnums as number[]).filter((card: number) =>
+            Number.isFinite(card),
+          )
         : [];
       const receivedCards = Array.isArray(text?.receivedCardEnums)
-        ? text.receivedCardEnums.filter((card: any) => Number.isFinite(card))
+        ? (text.receivedCardEnums as number[]).filter((card: number) =>
+            Number.isFinite(card),
+          )
         : [];
       if (receivedCards.length > 0) {
         resourceCardsStats.push(...receivedCards);
@@ -2293,7 +2548,9 @@ const getGameEndPayload = () => {
     if (type === GameLogMessageType.PlayerDiscarded) {
       const playerColor = parseFiniteIndex(text?.playerColor);
       const cardEnums = Array.isArray(text?.cardEnums)
-        ? text.cardEnums.filter((card: any) => Number.isFinite(card))
+        ? (text.cardEnums as number[]).filter((card: number) =>
+            Number.isFinite(card),
+          )
         : [];
       if (playerColor != null && text?.areResourceCards) {
         ensureResourceStats(playerColor).rollingLoss += cardEnums.length;
@@ -2315,8 +2572,9 @@ const getGameEndPayload = () => {
       if (playerColor != null) {
         ensureActivityStats(playerColor).devCardsUsed += 1;
       }
-      if (Number.isFinite(text?.cardEnum)) {
-        developmentCardStats.push(text.cardEnum);
+      const cardEnum = parseFiniteIndex(text?.cardEnum);
+      if (cardEnum != null) {
+        developmentCardStats.push(cardEnum);
       }
       return;
     }
@@ -2324,7 +2582,10 @@ const getGameEndPayload = () => {
     if (type === GameLogMessageType.BuiltPiece) {
       const playerColor = parseFiniteIndex(text?.playerColor);
       if (playerColor != null) {
-        addResourcesUsed(playerColor, getPieceCost(text?.pieceEnum));
+        const pieceEnum = parseFiniteIndex(text?.pieceEnum);
+        if (pieceEnum != null) {
+          addResourcesUsed(playerColor, getPieceCost(pieceEnum));
+        }
       }
     }
   });
@@ -2332,9 +2593,11 @@ const getGameEndPayload = () => {
   if (gameState?.mechanicDevelopmentCardsState?.players) {
     const devCardsFromState: number[] = [];
     Object.values(gameState.mechanicDevelopmentCardsState.players).forEach(
-      (player: any) => {
-        if (Array.isArray(player?.developmentCards?.cards)) {
-          devCardsFromState.push(...player.developmentCards.cards);
+      (player: DevelopmentCardPlayerState) => {
+        const playerDevelopmentCards = player.developmentCards?.cards;
+        if (Array.isArray(playerDevelopmentCards)) {
+          const cards = playerDevelopmentCards;
+          devCardsFromState.push(...cards);
         }
         if (Array.isArray(player?.developmentCardsUsed)) {
           devCardsFromState.push(...player.developmentCardsUsed);
@@ -2347,14 +2610,18 @@ const getGameEndPayload = () => {
   }
 
   if (resourceCardsStats.length === 0 && gameState?.playerStates) {
-    Object.values(gameState.playerStates).forEach((player: any) => {
-      if (Array.isArray(player?.resourceCards?.cards)) {
-        resourceCardsStats.push(...player.resourceCards.cards);
-      }
-    });
+    Object.values(gameState.playerStates as StringMap<PlayerState>).forEach(
+      (player) => {
+        const playerResourceCards = player.resourceCards?.cards;
+        if (Array.isArray(playerResourceCards)) {
+          const cards = playerResourceCards;
+          resourceCardsStats.push(...cards);
+        }
+      },
+    );
   }
 
-  Object.values(resourceStats).forEach((stats: any) => {
+  Object.values(resourceStats).forEach((stats) => {
     stats.totalResourceIncome =
       stats.rollingIncome +
       stats.robbingIncome +
@@ -2372,7 +2639,8 @@ const getGameEndPayload = () => {
 
   const totalPointsByColor = playerColors.map((color) => {
     const victoryPointsState =
-      playerStates[color]?.victoryPointsState ?? ({} as NumericMap<number>);
+      getByPlayerColor(playerStates, color)?.victoryPointsState ??
+      ({} as NumericMap<number>);
     const weights: Record<number, number> = {
       [VictoryPointSource.Settlement]: 1,
       [VictoryPointSource.City]: 2,
@@ -2408,7 +2676,8 @@ const getGameEndPayload = () => {
   const players = playerColors.reduce(
     (acc, color) => {
       const victoryPointsState =
-        playerStates[color]?.victoryPointsState ?? ({} as NumericMap<number>);
+        getByPlayerColor(playerStates, color)?.victoryPointsState ??
+        ({} as NumericMap<number>);
       const totalPoints =
         totalPointsByColor.find((entry) => entry.color === color)?.total ?? 0;
       acc[color] = {
@@ -2425,12 +2694,21 @@ const getGameEndPayload = () => {
       };
       return acc;
     },
-    {} as Record<number, any>,
+    {} as Record<
+      number,
+      {
+        color: number;
+        rank: number;
+        victoryPoints: NumericMap<number>;
+        winningPlayer: boolean | undefined;
+        title: null;
+      }
+    >,
   );
 
   const endTime =
-    typeof (firebaseData as any)?.__meta?.now === "number"
-      ? (firebaseData as any).__meta.now
+    typeof (firebaseData as FirebaseWithMeta)?.__meta?.now === "number"
+      ? (firebaseData as FirebaseWithMeta).__meta?.now
       : Date.now();
   const startTime =
     typeof gameState?.currentState?.startTime === "number"
@@ -2464,32 +2742,55 @@ const getGameEndPayload = () => {
   };
 };
 
-const getWinner = () => {
-  const players: Record<string, any> =
-    firebaseData.GAME!.data.payload.gameState.playerStates;
-  return Object.values(players).find(
-    (p: { victoryPointsState: Record<string, number> }) =>
-      Object.entries(p.victoryPointsState)
-        .map(
-          ([key, count]) =>
-            count *
-            {
-              [VictoryPointSource.DevelopmentCardVictoryPoint]: 1,
-              [VictoryPointSource.Settlement]: 1,
-              [VictoryPointSource.City]: 2,
-              [VictoryPointSource.LargestArmy]: 2,
-              [VictoryPointSource.LongestRoad]: 2,
-            }[key]!,
-        )
-        .reduce((a, b) => a + b, 0) >= getVictoryPointsToWin(firebaseData.GAME),
-  );
+const getWinner = (): WinnerResult | undefined => {
+  const players = firebaseData.GAME?.data?.payload?.gameState.playerStates as
+    | StringMap<PlayerState>
+    | undefined;
+  if (!players) {
+    return undefined;
+  }
+  const winner = Object.entries(players)
+    .map(([colorKey, playerState]) => {
+      const color = parseFiniteIndex(colorKey);
+      if (color == null || !playerState) {
+        return null;
+      }
+      return { color, playerState };
+    })
+    .filter((entry): entry is { color: number; playerState: PlayerState } =>
+      Boolean(entry),
+    )
+    .find(
+      ({ playerState }) =>
+        Object.entries(playerState.victoryPointsState ?? {})
+          .map(
+            ([key, count]) =>
+              Number(count) *
+              {
+                [VictoryPointSource.DevelopmentCardVictoryPoint]: 1,
+                [VictoryPointSource.Settlement]: 1,
+                [VictoryPointSource.City]: 2,
+                [VictoryPointSource.LargestArmy]: 2,
+                [VictoryPointSource.LongestRoad]: 2,
+              }[Number(key)]!,
+          )
+          .reduce((a, b) => a + b, 0) >=
+        getVictoryPointsToWin(firebaseData.GAME!),
+    );
+  return winner
+    ? {
+        color: winner.color,
+      }
+    : undefined;
 };
 
 const calculateLongestRoad = (playerColor: number) => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const edgeStates = gameState.mapState.tileEdgeStates ?? {};
-  const cornerStates = gameState.mapState.tileCornerStates ?? {};
+  const edgeStates = gameState.mapState
+    .tileEdgeStates as StringMap<TileEdgeState>;
+  const cornerStates = gameState.mapState
+    .tileCornerStates as StringMap<TileCornerState>;
 
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
@@ -2501,41 +2802,36 @@ const calculateLongestRoad = (playerColor: number) => {
     visitedCorners.add(cornerKey);
     let maxLength = length;
 
-    Object.entries(edgeStates).forEach(
-      ([edgeKey, edgeState]: [string, any]) => {
-        if (edgeState.owner !== playerColor || visitedEdges.has(edgeKey))
-          return;
+    Object.entries(edgeStates).forEach(([edgeKey, edgeState]) => {
+      if (edgeState.owner !== playerColor || visitedEdges.has(edgeKey)) return;
 
-        const endpoints = edgeEndpoints(edgeState);
-        const connectedCorner = endpoints.find(
-          (endpoint) =>
-            serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) ===
-            cornerKey,
+      const endpoints = edgeEndpoints(edgeState);
+      const connectedCorner = endpoints.find(
+        (endpoint) =>
+          serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) === cornerKey,
+      );
+
+      if (!connectedCorner) return;
+
+      visitedEdges.add(edgeKey);
+      const otherCorner = endpoints.find(
+        (endpoint) =>
+          serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) !== cornerKey,
+      );
+
+      if (otherCorner) {
+        const otherCornerKey = serializeCornerKey(
+          otherCorner.x,
+          otherCorner.y,
+          otherCorner.z,
         );
-
-        if (connectedCorner) {
-          visitedEdges.add(edgeKey);
-          const otherCorner = endpoints.find(
-            (endpoint) =>
-              serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) !==
-              cornerKey,
-          );
-
-          if (otherCorner) {
-            const otherCornerKey = serializeCornerKey(
-              otherCorner.x,
-              otherCorner.y,
-              otherCorner.z,
-            );
-            if (!visitedCorners.has(otherCornerKey)) {
-              maxLength = Math.max(maxLength, dfs(otherCornerKey, length + 1));
-            }
-          }
-
-          visitedEdges.delete(edgeKey);
+        if (!visitedCorners.has(otherCornerKey)) {
+          maxLength = Math.max(maxLength, dfs(otherCornerKey, length + 1));
         }
-      },
-    );
+      }
+
+      visitedEdges.delete(edgeKey);
+    });
 
     visitedCorners.delete(cornerKey);
     return maxLength;
@@ -2543,7 +2839,7 @@ const calculateLongestRoad = (playerColor: number) => {
 
   let longestRoad = 0;
 
-  Object.values(cornerStates).forEach((cornerState: any) => {
+  Object.values(cornerStates).forEach((cornerState) => {
     if (cornerState.owner === playerColor) {
       const cornerKey = serializeCornerKey(
         cornerState.x,
@@ -2560,12 +2856,20 @@ const calculateLongestRoad = (playerColor: number) => {
 const updateLongestRoadAchievement = (playerColor: number) => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const playerStates = gameState.playerStates ?? {};
+  const playerStates = gameState.playerStates as
+    | StringMap<PlayerState>
+    | undefined;
 
-  const longestRoadState = (gameState.mechanicLongestRoadState ??
-    ((gameState as any).mechanicLongestRoadState = {})) as NumericMap<any>;
+  const gameStateWithLongestRoad = gameState as GameStateWithLongestRoad;
+  const longestRoadState = (gameStateWithLongestRoad.mechanicLongestRoadState ??
+    (() => {
+      const nextState = {} as NumericMap<LongestRoadMechanicState>;
+      gameStateWithLongestRoad.mechanicLongestRoadState =
+        nextState as GameStateWithLongestRoad["mechanicLongestRoadState"];
+      return nextState;
+    })()) as NumericMap<LongestRoadMechanicState>;
 
-  const playerColors = Object.keys(playerStates)
+  const playerColors = Object.keys(playerStates ?? {})
     .map((colorKey) => Number.parseInt(colorKey, 10))
     .filter((color) => Number.isFinite(color)) as PlayerColor[];
 
@@ -2575,38 +2879,30 @@ const updateLongestRoadAchievement = (playerColor: number) => {
       ...previousState,
       longestRoad: calculateLongestRoad(color),
     };
-    if ((longestRoadState[color] as any).hasLongestRoad) {
-      delete (longestRoadState[color] as any).hasLongestRoad;
+    if (longestRoadState[color]?.hasLongestRoad) {
+      delete longestRoadState[color].hasLongestRoad;
     }
   });
 
-  const playerStatesByColor = gameState.playerStates as
-    | Record<number, any>
-    | undefined;
   const currentHolder = playerColors.find(
     (color) =>
-      (
-        playerStatesByColor?.[color]?.victoryPointsState as
-          | NumericMap<number>
-          | undefined
-      )?.[VictoryPointSource.LongestRoad] === 1,
+      getByPlayerColor(playerStates, color)?.victoryPointsState?.[
+        VictoryPointSource.LongestRoad
+      ] === 1,
   );
 
   const currentHolderLength =
     currentHolder == null
       ? 0
-      : ((longestRoadState[currentHolder] as any)?.longestRoad ?? 0);
-  const challengerLength =
-    (longestRoadState[playerColor] as any)?.longestRoad ?? 0;
+      : (longestRoadState[currentHolder]?.longestRoad ?? 0);
+  const challengerLength = longestRoadState[playerColor]?.longestRoad ?? 0;
 
   if (currentHolder === playerColor) {
     if (challengerLength < LONGEST_ROAD_MIN_LENGTH) {
-      delete (
-        playerStatesByColor?.[playerColor]?.victoryPointsState as
-          | NumericMap<number>
-          | undefined
-      )?.[VictoryPointSource.LongestRoad];
-      delete (longestRoadState[playerColor] as any)?.hasLongestRoad;
+      delete getByPlayerColor(playerStates, playerColor)?.victoryPointsState?.[
+        VictoryPointSource.LongestRoad
+      ];
+      delete longestRoadState[playerColor]?.hasLongestRoad;
     }
     return;
   }
@@ -2619,17 +2915,13 @@ const updateLongestRoadAchievement = (playerColor: number) => {
   }
 
   if (currentHolder != null) {
-    delete (
-      playerStatesByColor?.[currentHolder]?.victoryPointsState as
-        | NumericMap<number>
-        | undefined
-    )?.[VictoryPointSource.LongestRoad];
-    delete (longestRoadState[currentHolder] as any)?.hasLongestRoad;
+    delete getByPlayerColor(playerStates, currentHolder)?.victoryPointsState?.[
+      VictoryPointSource.LongestRoad
+    ];
+    delete longestRoadState[currentHolder]?.hasLongestRoad;
   }
 
-  const challengerState = (
-    gameState.playerStates as Record<number, any> | undefined
-  )?.[playerColor];
+  const challengerState = getByPlayerColor(playerStates, playerColor);
   if (!challengerState) {
     return;
   }
@@ -2658,14 +2950,16 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
 
   if (!gameState) return null;
 
-  const cornerStates = gameState.mapState?.tileCornerStates ?? {};
-  const edgeStates = gameState.mapState?.tileEdgeStates ?? {};
+  const cornerStates = (gameState.mapState?.tileCornerStates ??
+    {}) as StringMap<TileCornerState>;
+  const edgeStates = (gameState.mapState?.tileEdgeStates ??
+    {}) as StringMap<TileEdgeState>;
 
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
 
   const ownedCorners = new Set<string>();
-  Object.values(cornerStates).forEach((cornerState: any) => {
+  Object.values(cornerStates).forEach((cornerState) => {
     if (cornerState?.owner === playerColor) {
       ownedCorners.add(
         serializeCornerKey(cornerState.x, cornerState.y, cornerState.z),
@@ -2674,7 +2968,7 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
   });
 
   const eligibleCorners = Object.entries(cornerStates)
-    .map(([key, cornerState]: [string, any]) => ({
+    .map(([key, cornerState]) => ({
       index: Number.parseInt(key, 10),
       cornerState,
     }))
@@ -2685,7 +2979,7 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
       if (cornerState.owner) return false;
 
       // Ensure no adjacent corners are owned
-      const adjacentEdges = Object.values(edgeStates).filter((edgeState: any) =>
+      const adjacentEdges = Object.values(edgeStates).filter((edgeState) =>
         edgeEndpoints(edgeState).some(
           (endpoint) =>
             serializeCornerKey(endpoint.x, endpoint.y, endpoint.z) ===
@@ -2693,7 +2987,7 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
         ),
       );
 
-      const adjacentCorners = adjacentEdges.flatMap((edgeState: any) =>
+      const adjacentCorners = adjacentEdges.flatMap((edgeState) =>
         edgeEndpoints(edgeState).map((endpoint) =>
           serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
         ),
@@ -2704,9 +2998,7 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
       }
 
       // Ensure the corner is adjacent to an owned road
-      return adjacentEdges.some(
-        (edgeState: any) => edgeState.owner === playerColor,
-      );
+      return adjacentEdges.some((edgeState) => edgeState.owner === playerColor);
     })
     .map(({ index }) => index);
 
