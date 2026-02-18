@@ -464,7 +464,7 @@ export const newGame = () => {
             room.data.roomId,
           channelId: null,
           gameType: GameType.CreatedRoomGame,
-          privateGame: true,
+          privateGame: firebaseData.ROOM?.data.private,
           playOrderSelectionActive: false,
           minimumKarma: 0,
           eloType: 0,

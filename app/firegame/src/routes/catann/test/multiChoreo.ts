@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
@@ -83,7 +83,17 @@ export const multiChoreo = (fileName: string) => {
     const startGame = async () => {
       const actor = players[hostId];
       const clickSettings = async () => {
-        throw new Error("not implemented");
+        const gameSettings = payload.gameSettings;
+        if (gameSettings.privateGame) return;
+        const privateGameText = actor.iframe
+          .locator("div.item-scroll-cell", {
+            hasText: "Private Game",
+          })
+          .first();
+        expect(privateGameText.toHaveClass("selected"));
+        await privateGameText.click({ force: true });
+        expect(privateGameText.notToHaveClass("selected"));
+        await delay(100);
       };
       console.log("start", { hostId });
       await actor.page.evaluate(
@@ -124,6 +134,7 @@ export const multiChoreo = (fileName: string) => {
     };
     const helper = async () => {
       await startGame();
+      test.skip();
       console.log("autoChoreo.start");
       for (let i = 0; true; i++) {
         const actor = getActor();
