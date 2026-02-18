@@ -384,7 +384,7 @@ export const newGame = () => {
               [CardEnum.Ore]: 4,
             },
             resourceCards: {
-              cards: [],
+              cards: [] as CardEnum[],
             },
             cardDiscardLimit: 7,
             isConnected: true,

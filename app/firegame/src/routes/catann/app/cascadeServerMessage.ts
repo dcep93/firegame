@@ -1,12 +1,14 @@
 import { firebaseData } from "./FirebaseWrapper";
 import { sendCornerHighlights30, sendEdgeHighlights31 } from "./gameLogic";
 import {
+  CardEnum,
   GameStateUpdateType,
   PlayerActionState,
   State,
 } from "./gameLogic/CatannFilesEnums";
 import { isMyTurn, newGame } from "./gameLogic/createNew";
 import { sendToMainSocket } from "./handleMessage";
+import { isTest } from "./IframeScriptString";
 
 const cascadeServerMessage = (
   data: ReturnType<typeof newGame>,
@@ -16,7 +18,8 @@ const cascadeServerMessage = (
   if (!gameData) return;
 
   const sendHighlights = () => {
-    const actionState = gameData.data.payload.gameState.currentState.actionState;
+    const actionState =
+      gameData.data.payload.gameState.currentState.actionState;
     if (isMyTurn()) {
       if (
         [
@@ -37,10 +40,7 @@ const cascadeServerMessage = (
           PlayerActionState.Place1MoreRoadBuilding,
         ].includes(actionState)
       ) {
-        sendEdgeHighlights31(
-          gameData,
-          firebaseData.__meta?.change.cornerIndex,
-        );
+        sendEdgeHighlights31(gameData, firebaseData.__meta?.change.cornerIndex);
       }
     }
   };
@@ -76,3 +76,19 @@ const cascadeServerMessage = (
 };
 
 export default cascadeServerMessage;
+
+export const handleSpectator = (game: ReturnType<typeof newGame>) => {
+  if (!isTest) return;
+  const payload = game.data?.payload;
+  const gameState = payload?.gameState;
+  const playerStates = gameState?.playerStates;
+  if (!playerStates) return;
+  Object.values(playerStates).forEach((playerState) => {
+    if (playerState.color === payload?.playerColor) return;
+    const cards = playerState?.resourceCards?.cards;
+    if (!Array.isArray(cards)) return;
+    playerState.resourceCards = {
+      cards: cards.map(() => CardEnum.ResourceBack),
+    };
+  });
+};
