@@ -269,8 +269,11 @@ test.skip("1p.v1", screenshot(choreo("./choreo/1p.v1.json")));
 
 test.skip("1p.v2", screenshot(choreo("./choreo/1p.v2.json")));
 
-test("2p.v0", multiChoreo("./choreo/2p.v0.json"));
-test.skip("2p.v1", multiChoreo("./choreo/2p.v1.json"));
+const isRegression = process.env.CATANN_REGRESSION === "1";
+const doIfRegression = isRegression ? test : test.skip;
+const doIfNotRegression = !isRegression ? test : test.skip;
+doIfRegression("2p.v0", multiChoreo("./choreo/2p.v0.json"));
+doIfNotRegression("2p.v1", multiChoreo("./choreo/2p.v1.json"));
 test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
 
 //

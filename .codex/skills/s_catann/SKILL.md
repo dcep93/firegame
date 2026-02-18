@@ -30,6 +30,15 @@ yarn lint
 yarn tsc --noEmit
 ```
 
+Then validate the regression catann suite specifically:
+
+```bash
+cd firegame/app
+CATANN_REGRESSION=1 timeout 300s bash ./test_catann.sh --codex
+```
+
+Regression mode is enabled via `CATANN_REGRESSION=1`; only regression-mode choreos execute when this env var is set.
+
 If either command fails (including duplicate/overwritten property diagnostics
 such as TS2783), fix the issue and rerun until both pass. Treat this as the
 authoritative typecheck gate before continuing with test runs or commits.
