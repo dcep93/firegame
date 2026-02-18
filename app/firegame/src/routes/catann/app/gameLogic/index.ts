@@ -1474,15 +1474,7 @@ const rollDice = () => {
     addPlayerResourceCards(gameState, owner, cards, 1);
   });
 
-  if (!shouldTriggerRobber) {
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.GivePlayerResourcesFromTile,
-        payload: resourcesToGive.sort((a, b) => a.tileIndex - b.tileIndex),
-      },
-    });
-  } else {
+  if (shouldTriggerRobber) {
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
@@ -1541,6 +1533,7 @@ const rollDice = () => {
     {
       action: "rollDice",
       dice: [dice1, dice2],
+      resourcesToGive,
     },
   );
 };
