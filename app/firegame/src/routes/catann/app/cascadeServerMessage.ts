@@ -1,10 +1,9 @@
 import { firebaseData } from "./FirebaseWrapper";
 import {
   GameState,
-  getNumRounds,
   sendCornerHighlights30,
   sendEdgeHighlights31,
-  sendExitInitialPlacement62,
+  sendResetTradeStateAtEndOfTurn80,
 } from "./gameLogic";
 import {
   CardEnum,
@@ -24,8 +23,8 @@ const cascadeServerMessage = (
   if (!gameData) return;
 
   const sendHighlights = () => {
-    if (getNumRounds() === 2) {
-      sendExitInitialPlacement62();
+    if (firebaseData.__meta?.change.action === "passTurn") {
+      sendResetTradeStateAtEndOfTurn80();
     }
     const actionState =
       gameData.data.payload.gameState.currentState.actionState;

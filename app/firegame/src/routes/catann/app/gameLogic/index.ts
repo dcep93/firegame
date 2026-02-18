@@ -747,7 +747,7 @@ export const sendExitInitialPlacement62 = () => {
   });
 };
 
-const sendResetTradeStateAtEndOfTurn80 = () => {
+export const sendResetTradeStateAtEndOfTurn80 = () => {
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
@@ -1583,8 +1583,6 @@ const passTurn = () => {
       devCardsState.hasUsedDevelopmentCardThisTurn = null;
     }
   }
-
-  sendResetTradeStateAtEndOfTurn80();
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
