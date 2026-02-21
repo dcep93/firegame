@@ -430,8 +430,8 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
             },
           },
           type: GameStateUpdateType.GameStateUpdated,
+          sequence: msg.data.data?.sequence,
         },
-        sequence: msg.data.sequence,
       },
     },
   ];
