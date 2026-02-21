@@ -1358,7 +1358,7 @@ const rollDice = () => {
     {}) as StringMap<HexTileState>;
   const tileCornerStates = (gameState.mapState.tileCornerStates ??
     {}) as StringMap<TileCornerState>;
-  const resourcesToGive: {
+  const _resourcesToGive: {
     owner: number;
     tileIndex: number;
     distributionType: number;
@@ -1397,7 +1397,7 @@ const rollDice = () => {
         const owner = cornerState.owner;
         if (owner == null) return;
         for (let i = 0; i < cardCount; i += 1) {
-          resourcesToGive.push({
+          _resourcesToGive.push({
             owner,
             tileIndex,
             distributionType: 1,
@@ -1533,6 +1533,8 @@ const rollDice = () => {
       sendTileHighlights33(gameData, robberHighlightTiles);
     }
   }
+
+  const resourcesToGive = shouldTriggerRobber ? null : _resourcesToGive;
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
