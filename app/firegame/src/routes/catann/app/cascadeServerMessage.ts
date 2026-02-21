@@ -42,7 +42,6 @@ const cascadeServerMessage = (
         sendCornerHighlights30(gameData);
       if (
         [
-          PlayerActionState.PlaceRoad,
           PlayerActionState.InitialPlacementRoadPlacement,
           PlayerActionState.PlaceRoadForFree,
           PlayerActionState.Place2MoreRoadBuilding,

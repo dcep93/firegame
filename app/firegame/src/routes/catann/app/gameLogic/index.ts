@@ -668,7 +668,6 @@ export const sendEdgeHighlights31 = (
     ? getBuildableRoadEdgeIndicesFromGameState(gameData)
     : ![
           PlayerActionState.InitialPlacementRoadPlacement,
-          PlayerActionState.PlaceRoad,
           PlayerActionState.PlaceRoadForFree,
           PlayerActionState.Place2MoreRoadBuilding,
           PlayerActionState.Place1MoreRoadBuilding,
