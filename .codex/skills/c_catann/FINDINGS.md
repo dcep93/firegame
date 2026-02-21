@@ -461,3 +461,9 @@
 - what you changed: Updated `Controller.makeTrade()` to try a selector fallback chain (`div#id`, `[id="..."]`, and the nested `img`) and to attempt a normal click before forcing click.
 - why the test isn't passing: `2p.v1` remains flaky around post-trade synchronization (`waitForTrigger` timeout / extra server diff ordering), so selector robustness alone does not guarantee full test pass.
 - next suggested step: Change trade submit synchronization to consume the next expected message(s) directly (client + optional immediate server diff) instead of a single trigger-type poll.
+
+## 2p.v1 CreateTrade non-bank crash fix (current)
+- what would've saved time to get your bearings: `2p.v1` was failing immediately on `PreCreateTrade -> CreateTrade` with `Error: not implemented 123`, thrown from the non-bank branch in `applyGameAction` for `GameAction.CreateTrade`.
+- what you changed: Implemented the non-bank `CreateTrade` path in `gameLogic/index.ts` to update `tradeState.activeOffers/closedOffers`, add `PlayerWantsToTradeWith` game log entry, and continue via `setFirebaseData` instead of throwing; also added handling for `UpdateTradeResponse` (action 50).
+- why the test isn't passing: After this fix, failure moved away from the throw but current runs are blocked by UI/choreo timing issues (`#room_center_start_button` hidden in `2p.v1` on one run; `2p.v0` initial-placement canvas clickability timeout in regression).
+- next suggested step: Stabilize the multi-player startup/initial-placement choreography (outside this game-logic-only change) and then verify whether deeper trade message sequencing still needs refinement.

@@ -795,12 +795,7 @@ const getPlayerVictoryPoints = (playerState?: {
   if (!victoryPointsState) {
     return 0;
   }
-  return Object.values(victoryPointsState).reduce((total, value) => {
-    if (Number.isFinite(value)) {
-      return total + value;
-    }
-    return total;
-  }, 0);
+  return Object.values(victoryPointsState).reduce((a, b) => a + b, 0);
 };
 
 const getFriendlyRobberBlockedTiles = (gameData: GameData) => {
@@ -1771,6 +1766,7 @@ export const applyGameAction = (parsed: {
         GameAction.SelectedInitialPlacementIndex,
         GameAction.SelectedTile,
         GameAction.CreateTrade,
+        GameAction.UpdateTradeResponse,
         GameAction.SelectedCards,
         GameAction.SelectedCardsState,
         GameAction.PlayDevelopmentCardFromHand,
@@ -1863,7 +1859,45 @@ export const applyGameAction = (parsed: {
           },
         });
       } else {
-        throw new Error("not implemented 123");
+        const randomChars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const tradeId = Array.from(
+          { length: 4 },
+          () => randomChars[Math.floor(Math.random() * randomChars.length)],
+        ).join("");
+        gameState.tradeState.activeOffers[tradeId] = {
+          id: tradeId,
+          creator: playerColor,
+          offeredResources,
+          wantedResources,
+          playerResponses: Object.fromEntries(
+            Object.keys(gameState.playerStates)
+              .filter(
+                (key) =>
+                  key !==
+                  gameState.currentState.currentTurnPlayerColor.toString(),
+              )
+              .map((key) => [key, 0]),
+          ),
+          counterOfferInResponseToTradeId: null,
+          playersCreatingCounterOffer: Object.fromEntries(
+            Object.keys(gameState.playerStates).map((key) => [key, false]),
+          ),
+        };
+        gameState.tradeState.closedOffers[tradeId] = {
+          offeredResources,
+          wantedResources,
+        };
+
+        addGameLogEntry(gameState, {
+          text: {
+            type: GameLogMessageType.PlayerWantsToTradeWith,
+            playerColor,
+            wantedCardEnums: wantedResources,
+            offeredCardEnums: offeredResources,
+          },
+          from: playerColor,
+        });
       }
 
       setFirebaseData(
@@ -1876,6 +1910,40 @@ export const applyGameAction = (parsed: {
       );
       return true;
     }
+    if (parsed.action === GameAction.UpdateTradeResponse) {
+      const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState as JsonObject & {
+        tradeState?: {
+          activeOffers?: Record<
+            string,
+            { playerResponses?: Record<string, number> }
+          >;
+        };
+      };
+      const payload =
+        parsed.payload && typeof parsed.payload === "object"
+          ? (parsed.payload as { id?: string; response?: number })
+          : null;
+      const tradeId = payload?.id;
+      if (tradeId) {
+        const activeOffer = gameState.tradeState?.activeOffers?.[tradeId];
+        if (activeOffer) {
+          const responses = activeOffer.playerResponses ?? {};
+          responses[String(gameData.data.payload.playerColor)] =
+            typeof payload?.response === "number" ? payload.response : 0;
+          activeOffer.playerResponses = responses;
+        }
+      }
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "updateTradeResponse",
+          payload,
+        },
+      );
+      return true;
+    }
+
     if (parsed.action === GameAction.RequestBeginnerModeLevelEnd) {
       sendToMainSocket?.({
         id: State.LobbyStateUpdate.toString(),
