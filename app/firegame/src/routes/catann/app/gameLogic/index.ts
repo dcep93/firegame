@@ -649,7 +649,7 @@ export const sendCornerHighlights30 = (
 
 export const sendEdgeHighlights31 = (
   gameData: GameData,
-  cornerIndex?: number,
+  empty: boolean = true,
 ) => {
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
@@ -658,34 +658,37 @@ export const sendEdgeHighlights31 = (
     .tileEdgeStates as StringMap<TileEdgeState>;
   const cornerStates = gameData.data.payload.gameState.mapState
     .tileCornerStates as StringMap<TileCornerState>;
-  const cornerState = cornerStates[String(cornerIndex || -1)];
+  const cornerState =
+    cornerStates[String(firebaseData.__meta?.change.cornerIndex || -1)];
   const cornerKey =
     cornerState &&
     serializeCornerKey(cornerState.x, cornerState.y, cornerState.z);
   const actionState = gameData.data.payload.gameState.currentState.actionState;
-  const edgeIndices = ![
-    PlayerActionState.InitialPlacementRoadPlacement,
-    PlayerActionState.PlaceRoad,
-    PlayerActionState.PlaceRoadForFree,
-    PlayerActionState.Place2MoreRoadBuilding,
-    PlayerActionState.Place1MoreRoadBuilding,
-  ].includes(actionState)
-    ? []
-    : toNumericRecordEntries(edgeStates)
-        .map(({ index, value }) => ({
-          index,
-          edgeState: value,
-        }))
-        .filter(({ edgeState }) => Boolean(edgeState))
-        .filter(({ edgeState }) => {
-          const endpoints = edgeEndpoints(edgeState);
-          return endpoints.some(
-            (endpoint) =>
-              cornerKey ===
-              serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
-          );
-        })
-        .map(({ index }) => index);
+  const edgeIndices = !empty
+    ? getBuildableRoadEdgeIndicesFromGameState(gameData)
+    : ![
+          PlayerActionState.InitialPlacementRoadPlacement,
+          PlayerActionState.PlaceRoad,
+          PlayerActionState.PlaceRoadForFree,
+          PlayerActionState.Place2MoreRoadBuilding,
+          PlayerActionState.Place1MoreRoadBuilding,
+        ].includes(actionState)
+      ? []
+      : toNumericRecordEntries(edgeStates)
+          .map(({ index, value }) => ({
+            index,
+            edgeState: value,
+          }))
+          .filter(({ edgeState }) => Boolean(edgeState))
+          .filter(({ edgeState }) => {
+            const endpoints = edgeEndpoints(edgeState);
+            return endpoints.some(
+              (endpoint) =>
+                cornerKey ===
+                serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
+            );
+          })
+          .map(({ index }) => index);
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -1319,13 +1322,7 @@ const placeRoad = (edgeIndex: number) => {
     sendTileHighlights33(gameData, []);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.HighlightRoadEdges,
-        payload: [],
-      },
-    });
+    sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
   }
 
@@ -1580,8 +1577,6 @@ const passTurn = () => {
       devCardsState.hasUsedDevelopmentCardThisTurn = null;
     }
   }
-
-  console.log("test.log.passTurn.a");
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
@@ -1945,13 +1940,7 @@ export const applyGameAction = (parsed: {
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
-      sendToMainSocket?.({
-        id: State.GameStateUpdate.toString(),
-        data: {
-          type: GameStateUpdateType.HighlightRoadEdges,
-          payload: getBuildableRoadEdgeIndicesFromGameState(gameData),
-        },
-      });
+      sendEdgeHighlights31(gameData, false);
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
         {
@@ -2117,13 +2106,7 @@ export const applyGameAction = (parsed: {
         },
       });
       if (clickedCard === CardEnum.RoadBuilding) {
-        sendToMainSocket?.({
-          id: State.GameStateUpdate.toString(),
-          data: {
-            type: GameStateUpdateType.HighlightRoadEdges,
-            payload: getBuildableRoadEdgeIndicesFromGameState(gameData),
-          },
-        });
+        sendEdgeHighlights31(gameData, false);
       } else {
         sendCornerHighlights30(gameData, []);
         sendTileHighlights33(gameData, []);

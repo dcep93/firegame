@@ -25,7 +25,6 @@ const cascadeServerMessage = (
 
   const sendHighlights = () => {
     if (firebaseData.__meta?.change.action === "passTurn") {
-      console.log("test.log.passTurn.b");
       sendResetTradeStateAtEndOfTurn80();
     }
     const actionState =
@@ -50,7 +49,7 @@ const cascadeServerMessage = (
           PlayerActionState.Place1MoreRoadBuilding,
         ].includes(actionState)
       ) {
-        sendEdgeHighlights31(gameData, firebaseData.__meta?.change.cornerIndex);
+        sendEdgeHighlights31(gameData);
       }
     }
   };
