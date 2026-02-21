@@ -86,10 +86,13 @@ export const multiChoreo = (
       const actor = players[hostId];
       console.log("start", { hostId });
       if (fastForwardLogKey !== "") {
-        const ffIndex = actor.msgs!.findIndex(
-          (msg) =>
-            msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
-        );
+        const getFFIndex = (playerIndex: number) =>
+          players[playerIndex].msgs!.findIndex(
+            (msg) =>
+              msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
+          ) + 1;
+
+        const ffIndex = getFFIndex(hostId);
         const sliced = actor.msgs
           .slice(0, ffIndex)
           .filter(({ trigger }) => trigger === "serverData")
@@ -117,17 +120,14 @@ export const multiChoreo = (
           },
           { aggregated },
         );
-        for (let i = 0; i < players.length; i++) {
-          const idx = players[i].msgs!.findIndex(
-            (msg) =>
-              msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
-          );
-          players[i].msgs.splice(0, idx);
-          await spliceTestMessages(players[i].iframe);
-        }
         const startButton = getStartButton(actor.iframe);
         await startButton.click({ force: true });
         await delay(3000);
+        for (let i = 0; i < players.length; i++) {
+          const idx = getFFIndex(i);
+          players[i].msgs.splice(0, idx);
+          await spliceTestMessages(players[i].iframe);
+        }
       } else {
         await actor.page.evaluate(
           (__testOverrides) => {
