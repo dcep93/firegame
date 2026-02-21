@@ -2,7 +2,6 @@
 // 2 player game
 // click trade button
 // hidden cards
-// o.offset
 // 4 player setup, first turns
 // audit skills
 // skill find bugs

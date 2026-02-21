@@ -4,7 +4,11 @@ import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 import { ResourcesToGiveType } from "../app/gameLogic";
-import { GameStateUpdateType } from "../app/gameLogic/CatannFilesEnums";
+import {
+  GameStateUpdateType,
+  PlayerColor,
+} from "../app/gameLogic/CatannFilesEnums";
+import { newGame } from "../app/gameLogic/createNew";
 import { colorHelper } from "../app/gameLogic/utils";
 import { singleChoreo } from "./autoChoreo";
 import { getStartButton } from "./canvasGeometry";
@@ -86,28 +90,40 @@ export const multiChoreo = (
       const actor = players[hostId];
       console.log("start", { hostId });
       if (fastForwardLogKey !== "") {
-        const getFFIndex = (playerIndex: number) =>
-          players[playerIndex].msgs!.findIndex(
-            (msg) =>
-              msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
-          ) + 1;
+        const allAggregated = players.map((p) => {
+          const ffIndex =
+            p.msgs!.findIndex(
+              (msg) =>
+                msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
+            ) + 1;
 
-        const ffIndex = getFFIndex(hostId);
-        const sliced = actor.msgs
-          .slice(0, ffIndex)
-          .filter(({ trigger }) => trigger === "serverData")
-          .map(({ data }) => data);
-        const aggregated = sliced.find(
-          (msg) => msg.data.sequence && msg.data.payload.gameState,
-        );
-        sliced
-          .filter(
-            (msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null,
-          )
-          .map((msg) => msg.data.payload.diff)
-          .forEach((diff) =>
-            mergeDiff(aggregated.data.payload.gameState, diff),
+          const spliced = actor.msgs
+            .splice(0, ffIndex)
+            .filter(({ trigger }) => trigger === "serverData")
+            .map(({ data }) => data);
+          const aggregated: ReturnType<typeof newGame> = spliced.find(
+            (msg) => msg.data.sequence && msg.data.payload?.gameState,
           );
+          spliced
+            .filter(
+              (msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null,
+            )
+            .map((msg) => msg.data.payload.diff)
+            .forEach((diff) =>
+              mergeDiff(aggregated.data.payload.gameState, diff),
+            );
+          return aggregated;
+        });
+        const aggregated = allAggregated[hostId];
+        const playerStates = aggregated.data.payload.gameState.playerStates;
+        console.log(119, playerStates);
+        allAggregated.forEach((a) => {
+          const myColor =
+            a.data?.payload?.playerColor.toString() as any as PlayerColor;
+          playerStates[myColor] =
+            a.data.payload.gameState.playerStates[myColor];
+          console.log(132, playerStates);
+        });
         await actor.page.evaluate(
           (databaseGame) => {
             window.parent.__testOverrides = {
@@ -124,8 +140,6 @@ export const multiChoreo = (
         await startButton.click({ force: true });
         await delay(3000);
         for (let i = 0; i < players.length; i++) {
-          const idx = getFFIndex(i);
-          players[i].msgs.splice(0, idx);
           await spliceTestMessages(players[i].iframe);
         }
       } else {
