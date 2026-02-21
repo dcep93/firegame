@@ -1799,6 +1799,7 @@ export const applyGameAction = (parsed: {
       const wantedResources = Array.isArray(tradePayload?.wantedResources)
         ? (tradePayload?.wantedResources ?? [])
         : [];
+      console.log("test.log", tradePayload);
       if (tradePayload?.isBankTrade) {
         const playerState = getPlayerStateByColor(gameState, playerColor);
         const bankResourceCards = gameState.bankState?.resourceCards as
@@ -1815,7 +1816,10 @@ export const applyGameAction = (parsed: {
               bankResourceCards[card] -= 1;
             }
           });
+        } else {
+          throw new Error("not implemented");
         }
+        console.log("test.log", 1822);
 
         if (playerState?.resourceCards?.cards) {
           const existingCards = playerState.resourceCards.cards as number[];

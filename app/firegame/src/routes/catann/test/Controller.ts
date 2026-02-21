@@ -370,9 +370,9 @@ const Controller = (
         break;
       }
       if (!clickedTradeButton) {
-        const actionButtonIds = await iframe.locator('[id^="action-button-"]').evaluateAll((elements) =>
-          elements.map((element) => element.id),
-        );
+        const actionButtonIds = await iframe
+          .locator('[id^="action-button-"]')
+          .evaluateAll((elements) => elements.map((element) => element.id));
         throw new Error(
           `Failed to locate ${tradeButtonId}. Found action buttons: ${JSON.stringify(actionButtonIds)}`,
         );
