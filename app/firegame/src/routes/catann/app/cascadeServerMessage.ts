@@ -54,6 +54,19 @@ const cascadeServerMessage = (
   };
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
     sendHighlights();
+    if (!isMyTurn()) {
+      const exchangeCardsPayload =
+        firebaseData.__meta.change.exchangeCardsPayload;
+      if (exchangeCardsPayload) {
+        sendToMainSocket?.({
+          id: State.GameStateUpdate.toString(),
+          data: {
+            type: GameStateUpdateType.ExchangeCards,
+            payload: exchangeCardsPayload,
+          },
+        });
+      }
+    }
     const resourcesToGive: ResourcesToGiveType =
       firebaseData.__meta.change.resourcesToGive;
     if (resourcesToGive) {

@@ -1218,6 +1218,7 @@ const placeRoad = (edgeIndex: number) => {
     actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding ||
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding;
   const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
+  var exchangeCardsPayload;
 
   if (
     actionStateAtRoadPlacement ===
@@ -1285,16 +1286,18 @@ const placeRoad = (edgeIndex: number) => {
       allocatedTime: TURN_TIMERS_MS.roadBuildingFollowUp,
     });
 
+    exchangeCardsPayload = {
+      givingPlayer: playerColor,
+      givingCards: exchangeCards,
+      receivingPlayer: BANK_INDEX,
+      receivingCards: [],
+    };
+
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
         type: GameStateUpdateType.ExchangeCards,
-        payload: {
-          givingPlayer: playerColor,
-          givingCards: exchangeCards,
-          receivingPlayer: BANK_INDEX,
-          receivingCards: [],
-        },
+        payload: exchangeCardsPayload,
       },
     });
   }
@@ -1330,6 +1333,7 @@ const placeRoad = (edgeIndex: number) => {
     {
       action: "placeRoad",
       edgeIndex,
+      exchangeCardsPayload,
     },
   );
 };
