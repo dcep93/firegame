@@ -1,8 +1,8 @@
 // TODO
-// 2 player setup, first turns
-// 4 player setup, first turns
-// audit skills
 // 2 player game
+// fast forward
+// o.offset
+// 4 player setup, first turns
 // audit skills
 // skill find bugs
 // expansions
