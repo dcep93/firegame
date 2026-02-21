@@ -4,8 +4,13 @@ import { GameAction } from "../app/gameLogic/CatannFilesEnums";
 import { ControllerType } from "./Controller";
 
 // TODO make this the only default?
-export const singleChoreo = (c: ControllerType) =>
-  getHandlers(c)[c._peek().data.action as GameAction]!();
+export const singleChoreo = (c: ControllerType) => {
+  const action = c._peek().data.action as GameAction;
+  console.log("singleChoreo", {
+    [GameAction[action]]: c._peek().data,
+  });
+  return getHandlers(c)[action]!();
+};
 
 export default async function autoChoreo(
   c: ControllerType,

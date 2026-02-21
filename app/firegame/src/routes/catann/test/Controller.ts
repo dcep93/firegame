@@ -375,13 +375,21 @@ const Controller = (
           msg.data.action !== GameAction.SelectedInitialPlacementIndex,
       )!;
       const shouldConfirm = initialMsg.data.payload === nextBuild.data.payload;
-      if (nextBuild.data.action === GameAction.ConfirmBuildRoad) {
-        await buildRoadFromPayload(initialMsg.data.payload, shouldConfirm);
+      const f = async () => {
+        if (nextBuild.data.action === GameAction.ConfirmBuildRoad) {
+          await buildRoadFromPayload(initialMsg.data.payload, shouldConfirm);
+        } else {
+          await buildSettlementFromPayload(
+            initialMsg.data.payload,
+            shouldConfirm,
+          );
+        }
+      };
+      if (shouldConfirm) {
+        await f();
       } else {
-        await buildSettlementFromPayload(
-          initialMsg.data.payload,
-          shouldConfirm,
-        );
+        await f();
+        await f();
       }
     };
     const buildNextSettlement = async () => {
