@@ -346,10 +346,12 @@ const Controller = (
         );
       }
 
-      const bankTradeButton = iframe.locator(
-        'div[id="action-button-trade-bank"]',
+      const tradeButton = iframe.locator(
+        payload.isBankTrade
+          ? 'div[id="action-button-trade-bank"]'
+          : 'div[id="action-button-trade-players"]',
       );
-      await bankTradeButton.first().click({ force: true });
+      await tradeButton.first().click({ force: true });
       await waitForTrigger(iframe, "serverData");
     };
     const makeNextTrade = async () => {
