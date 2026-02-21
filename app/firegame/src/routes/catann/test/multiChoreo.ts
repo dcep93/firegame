@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
@@ -9,6 +9,7 @@ import { colorHelper } from "../app/gameLogic/utils";
 import { singleChoreo } from "./autoChoreo";
 import { getStartButton } from "./canvasGeometry";
 import Controller from "./Controller";
+import { mergeDiff } from "./fastForward";
 import {
   codex,
   createRoom,
@@ -17,7 +18,10 @@ import {
   spliceTestMessages,
 } from "./playwright_test.spec";
 
-export const multiChoreo = (fileName: string) => {
+export const multiChoreo = (
+  fileName: string,
+  fastForwardLogKey: string = "",
+) => {
   return async ({ browser }: { browser: Browser }, testInfo: any) => {
     const expectedMessages = await getExpectedMessages(fileName);
     const context: BrowserContext = await browser.newContext();
@@ -81,27 +85,64 @@ export const multiChoreo = (fileName: string) => {
     const startGame = async () => {
       const actor = players[hostId];
       console.log("start", { hostId });
-      await actor.page.evaluate(
-        (__testOverrides) => {
-          window.__testOverrides = __testOverrides;
-        },
-        {
-          databaseGame: actor.msgs.find(
-            (msg) =>
-              msg.trigger === "serverData" &&
-              msg.data.data.payload?.databaseGameId,
-          )!.data.data.payload,
-          startTime: payload.gameState.currentState.startTime,
-          sessions: actor.msgs
-            .slice()
-            .reverse()
-            .find((msg) => msg.data.data?.sessions)!.data.data.sessions,
-          mapState: payload.gameState.mapState,
-          playOrder: actor.msgs.find(
-            (msg) => msg.data.data?.payload?.playOrder,
-          )!.data.data.payload.playOrder,
-        },
-      );
+      if (fastForwardLogKey !== "") {
+        const spliced = actor.msgs
+          .splice(
+            0,
+            actor.msgs!.findIndex(
+              (msg) =>
+                msg.data.payload?.diff?.gameLogState?.[fastForwardLogKey],
+            ),
+          )
+          .filter(({ trigger }) => trigger === "serverData")
+          .map(({ data }) => data);
+        const aggregated = spliced.find(
+          (msg) => msg.data.sequence && msg.data.payload.gameState,
+        );
+        spliced
+          .filter(
+            (msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null,
+          )
+          .map((msg) => msg.data.payload.diff)
+          .forEach((diff) =>
+            mergeDiff(aggregated.data.payload.gameState, diff),
+          );
+        console.log(JSON.stringify({ aggregated }));
+        await actor.page.evaluate(
+          (databaseGame) => {
+            window.parent.__testOverrides = {
+              databaseGame,
+              sessions: null,
+              startTime: -1,
+              mapState: null,
+              playOrder: null,
+            };
+          },
+          { aggregated },
+        );
+      } else {
+        await actor.page.evaluate(
+          (__testOverrides) => {
+            window.__testOverrides = __testOverrides;
+          },
+          {
+            databaseGame: actor.msgs.find(
+              (msg) =>
+                msg.trigger === "serverData" &&
+                msg.data.data.payload?.databaseGameId,
+            )!.data.data.payload,
+            startTime: payload.gameState.currentState.startTime,
+            sessions: actor.msgs
+              .slice()
+              .reverse()
+              .find((msg) => msg.data.data?.sessions)!.data.data.sessions,
+            mapState: payload.gameState.mapState,
+            playOrder: actor.msgs.find(
+              (msg) => msg.data.data?.payload?.playOrder,
+            )!.data.data.payload.playOrder,
+          },
+        );
+      }
       for (let i = 0; i < players.length; i++) {
         const idx = players[i].msgs.findIndex(
           (msg) => msg.data.data?.sequence === 1,
@@ -115,6 +156,7 @@ export const multiChoreo = (fileName: string) => {
       for (let i = 0; i < players.length; i++) {
         await players[i].c.verifyTestMessages();
       }
+      test.skip();
     };
     const helper = async () => {
       await startGame();

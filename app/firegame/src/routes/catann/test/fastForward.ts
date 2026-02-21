@@ -58,7 +58,7 @@ export default async function fastForward(
   };
 }
 
-const mergeDiff = (
+export const mergeDiff = (
   target: Record<string, any>,
   source: Record<string, any>,
 ) => {
