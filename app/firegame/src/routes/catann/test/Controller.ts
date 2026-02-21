@@ -434,6 +434,7 @@ const Controller = (
     };
     const passTurn = async () => {
       await clickCanvas(canvas, MAP_PASS_COORDS);
+      await waitForTrigger(iframe, "serverData");
 
       // await expect
       //   .poll(() => canvasMapAppearsClickable(canvas, MAP_DICE_COORDS), {

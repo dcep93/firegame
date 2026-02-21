@@ -167,10 +167,12 @@ export function setFirebaseData(
 }
 
 const FirebaseWrapperKey = "__firebase_wrapper__";
-const arrayType = "array";
-const objectType = "object";
+const arrayType = "fb_array";
+const objectType = "fb_object";
+const undefinedType = "fb_undefined";
 
 function serializeFirebase(unserialized: any): any {
+  if (unserialized === undefined) return undefinedType;
   if (Array.isArray(unserialized)) {
     if (unserialized.length === 0) {
       return { [FirebaseWrapperKey]: arrayType };
@@ -194,6 +196,7 @@ function serializeFirebase(unserialized: any): any {
 }
 
 function unSerializeFirebase(serialized: any, path: any[]): any {
+  if (serialized === undefinedType) return undefined;
   if (Array.isArray(serialized)) {
     return serialized.map((s, i) => unSerializeFirebase(s, path.concat(i)));
   }
