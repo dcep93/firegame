@@ -97,7 +97,7 @@ export const multiChoreo = (
                 msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
             ) + 1;
 
-          const spliced = actor.msgs
+          const spliced = p.msgs
             .splice(0, ffIndex)
             .filter(({ trigger }) => trigger === "serverData")
             .map(({ data }) => data);
