@@ -346,12 +346,37 @@ const Controller = (
         );
       }
 
-      const tradeButton = iframe.locator(
-        payload.isBankTrade
-          ? 'div[id="action-button-trade-bank"]'
-          : 'div[id="action-button-trade-players"]',
-      );
-      await tradeButton.first().click({ force: true });
+      const tradeButtonId = payload.isBankTrade
+        ? "action-button-trade-bank"
+        : "action-button-trade-players";
+      const tradeButtonSelectors = [
+        `div[id="${tradeButtonId}"]`,
+        `[id="${tradeButtonId}"]`,
+        `[id="${tradeButtonId}"] img`,
+      ];
+      let clickedTradeButton = false;
+      for (const selector of tradeButtonSelectors) {
+        const tradeButton = iframe.locator(selector);
+        if ((await tradeButton.count()) === 0) {
+          continue;
+        }
+        const candidate = tradeButton.first();
+        try {
+          await candidate.click({ timeout: 1000 });
+        } catch {
+          await candidate.click({ force: true });
+        }
+        clickedTradeButton = true;
+        break;
+      }
+      if (!clickedTradeButton) {
+        const actionButtonIds = await iframe.locator('[id^="action-button-"]').evaluateAll((elements) =>
+          elements.map((element) => element.id),
+        );
+        throw new Error(
+          `Failed to locate ${tradeButtonId}. Found action buttons: ${JSON.stringify(actionButtonIds)}`,
+        );
+      }
       await waitForTrigger(iframe, "serverData");
     };
     const makeNextTrade = async () => {

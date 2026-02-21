@@ -165,3 +165,4 @@
 - Initial placement clicks in reconnect can arrive as `GameAction.SelectedInitialPlacementIndex` (action 66); route that action through `placeSettlement` / `placeRoad` based on `currentState.actionState`, not as a no-op.
 - `1p.v2` now fails very early because the client emits `SelectedInitialPlacementIndex` (action 66) at first placement click while the recording expects `ConfirmBuildSettlement` (action 15); by the time server sequence 7 arrives, expected queue is still waiting for the missing client action.
 - Treating `SelectedPlayer` payloads with `gameId` as an unconditional reconnect bootstrap appears too broad for standard single-player startup and can alter early initial-placement choreography/message shape.
+- In `2p.v1` trade choreography, `action-button-trade-players` may require selector fallback (`div`, generic `[id=...]`, then nested `img`) and a non-force click attempt before fallback `force: true`.

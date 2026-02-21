@@ -2986,7 +2986,7 @@
         r = s(69714),
         o = s(19966),
         a = s(54801),
-        c = s(28255),
+        c = s(46581),
         l = s(15504),
         d = s(41931);
       const u = i.o8.UIGameEventEnums;
@@ -3726,7 +3726,7 @@
       s.d(t, {
         $: () => i,
       });
-      const i = 291;
+      const i = 292;
     },
     13048: (e, t, s) => {
       "use strict";
@@ -6014,10 +6014,6 @@
           i.ro.Rush15s,
           i.ro.Rush20s,
         ];
-    },
-    22179: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/ship_move_silver.1ce3b82434ae7a129892.svg";
     },
     22186: (e, t, s) => {
       "use strict";
@@ -18222,6 +18218,10 @@
         }
       }
     },
+    44560: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/ship_move_silver.1ce3b82434ae7a129892.svg";
+    },
     44612: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/game_spritesheet_3.757a229df29901ada6ca.json";
@@ -23062,6 +23062,11 @@
         c: () => i,
       });
     },
+    64483: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/portrait_new_top_bar_before.604986baceeae9c97f8e.png";
+    },
     64543: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/store_color_black.8ef9699502a6a75599cd.png";
@@ -23944,8 +23949,6 @@
         K = s(4651);
       if (837 != s.j) var V = s(64853);
       var q = s(70970);
-      alert("__socketCatannMessages");
-      window.__socketCatannMessages = [];
       class $ {
         isSocketOpen() {
           var e;
@@ -24030,10 +24033,6 @@
         }
         handleWebSocketMessage(e) {
           const t = V.D4(e.data);
-          window.__socketCatannMessages.push({
-            trigger: "serverData",
-            data: JSON.parse(JSON.stringify(t)),
-          });
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
               "======",
@@ -24139,10 +24138,6 @@
               (this.bufferedOutgoingPrimaryMessage = void 0)));
         }
         send(e, t, s, i, n) {
-          window.__socketCatannMessages.push({
-            trigger: "clientData",
-            data: JSON.parse(JSON.stringify(i)),
-          });
           const r = j(e, t, s, Y.l(i));
           this.sessionWasEstablished
             ? this.socket.send(r)
@@ -24772,7 +24767,7 @@
           }, s);
         }
       }
-      var Ce = s(28255),
+      var Ce = s(46581),
         Pe = s(76092);
       if (837 != s.j) var _e = s(51178);
       if (837 != s.j) var Ae = s(2443);
@@ -26515,7 +26510,7 @@
         Xt = s.p + "assets/icon_square_framed_trade.28d7d5a642a8086def22.svg";
       var Zt = s(34915),
         Jt = s(30506),
-        es = s(28255),
+        es = s(46581),
         ts = s(18514);
       class ss {
         static replaceKeywordsWithImages(e) {
@@ -35833,6 +35828,11 @@
       "use strict";
       e.exports = s.p + "assets/sfx_first_reminder.de262110f332233e6bab.mp3";
     },
+    91766: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/portrait_new_top_bar_after.792a402b26efb49aa0ec.png";
+    },
     91767: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/map_usa_preview.0680565e23a86c6cb450.png";
@@ -37430,4 +37430,4 @@
     },
   },
 ]);
-//# sourceMappingURL=shared.1f1897ee3d7b3520616a.js.map
+//# sourceMappingURL=shared.ae16cefa35210b2578e3.js.map

@@ -116,13 +116,11 @@ export const multiChoreo = (
         });
         const aggregated = allAggregated[hostId];
         const playerStates = aggregated.data.payload.gameState.playerStates;
-        console.log(119, playerStates);
         allAggregated.forEach((a) => {
           const myColor =
             a.data?.payload?.playerColor.toString() as any as PlayerColor;
           playerStates[myColor] =
             a.data.payload.gameState.playerStates[myColor];
-          console.log(132, playerStates);
         });
         await actor.page.evaluate(
           (databaseGame) => {

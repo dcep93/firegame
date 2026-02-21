@@ -455,3 +455,9 @@
 - what you changed: Updated `multiChoreo` startup handling to target the Private Game icon click path and normalized expected replay messages so server payload comparisons accept `privateGame: true`.
 - why the test isn't passing: The strict legacy expectation for `privateGame: false` desyncs against current runtime defaults; replay had to be normalized to continue message verification.
 - next suggested step: Replace the legacy hard expectation with a stable assertion tied to whichever setting is actually mutable in the current lobby build (or refresh the 2p recording against current product behavior).
+
+## 2p.v1 trade submit button fallback
+- what would've saved time to get your bearings: In this branch, `makeTrade()` can locate `action-button-trade-players` but still fail to submit if the first matched node is not the clickable surface; clicking a plain `div` by id is not always sufficient.
+- what you changed: Updated `Controller.makeTrade()` to try a selector fallback chain (`div#id`, `[id="..."]`, and the nested `img`) and to attempt a normal click before forcing click.
+- why the test isn't passing: `2p.v1` remains flaky around post-trade synchronization (`waitForTrigger` timeout / extra server diff ordering), so selector robustness alone does not guarantee full test pass.
+- next suggested step: Change trade submit synchronization to consume the next expected message(s) directly (client + optional immediate server diff) instead of a single trigger-type poll.
