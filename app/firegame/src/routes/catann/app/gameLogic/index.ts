@@ -314,8 +314,9 @@ const getPlayerStateByColor = (gameState: GameState, playerColor: number) => {
 
 const drawDevelopmentCard = (
   devCardsState: DevelopmentCardsMechanicState | undefined,
-  overrideCard?: number,
 ) => {
+  const overrideDevCard = window.__testSeed;
+  window.__testSeed = null;
   const bankCards = devCardsState?.bankDevelopmentCards?.cards;
   const bankHasRealCards =
     Array.isArray(bankCards) &&
@@ -325,10 +326,10 @@ const drawDevelopmentCard = (
     : getRemainingDevelopmentDeck(devCardsState);
 
   let selectedCard: number | undefined;
-  if (typeof overrideCard === "number") {
-    const index = remainingDeck.indexOf(overrideCard);
+  if (typeof overrideDevCard === "number") {
+    const index = remainingDeck.indexOf(overrideDevCard);
     if (index >= 0) {
-      selectedCard = overrideCard;
+      selectedCard = overrideDevCard;
     }
   }
   if (selectedCard == null && remainingDeck.length > 0) {
@@ -1338,6 +1339,7 @@ const rollDice = () => {
   const gameState = gameData.data.payload.gameState;
   const playerColor = gameData.data.payload.playerColor;
   const overrideDiceState = window.__testSeed;
+  window.__testSeed = null;
   const getDiceRoll = () => Math.floor(Math.random() * DICE_ROLL_SIDES) + 1;
   const dice1 =
     Array.isArray(overrideDiceState) && overrideDiceState.length === 2
@@ -1601,17 +1603,7 @@ const buyDevelopmentCard = () => {
     devCardsState?.players as StringMap<DevelopmentCardPlayerState> | undefined,
     playerColor,
   );
-  const overrideDevCard =
-    typeof window.__testSeed === "number"
-      ? window.__testSeed
-      : typeof window.__testSeed === "object" &&
-          window.__testSeed?.developmentCard != null
-        ? window.__testSeed.developmentCard
-        : undefined;
-  if (overrideDevCard != null) {
-    window.__testSeed = null;
-  }
-  const devCard = drawDevelopmentCard(devCardsState, overrideDevCard);
+  const devCard = drawDevelopmentCard(devCardsState);
   if (devCard == null) {
     return;
   }
@@ -1861,10 +1853,13 @@ export const applyGameAction = (parsed: {
       } else {
         const randomChars =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        const tradeId = Array.from(
-          { length: 4 },
-          () => randomChars[Math.floor(Math.random() * randomChars.length)],
-        ).join("");
+        const tradeId =
+          window.__testSeed ??
+          Array.from(
+            { length: 4 },
+            () => randomChars[Math.floor(Math.random() * randomChars.length)],
+          ).join("");
+        window.__testSeed = null;
         gameState.tradeState.activeOffers[tradeId] = {
           id: tradeId,
           creator: playerColor,

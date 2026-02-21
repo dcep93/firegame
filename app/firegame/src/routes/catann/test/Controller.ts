@@ -269,8 +269,8 @@ const Controller = (
         ? findUpcomingDevelopmentCard(_expectedMessages)
         : null;
       if (typeof upcomingDevCard === "number") {
-        await canvas.evaluate((_, devCard) => {
-          window.parent.__testSeed = devCard;
+        await canvas.evaluate((_, __testSeed) => {
+          window.parent.__testSeed = __testSeed;
         }, upcomingDevCard);
       }
       const devCardButton = iframe.locator(
@@ -349,6 +349,17 @@ const Controller = (
       const tradeButtonId = payload.isBankTrade
         ? "action-button-trade-bank"
         : "action-button-trade-players";
+
+      const tradeId = Object.keys(
+        _expectedMessages!.find(
+          (msg) => msg.data?.data?.payload?.diff?.tradeState?.activeOffers,
+        )!.data?.data?.payload?.diff?.tradeState?.activeOffers,
+      )[0];
+
+      await canvas.evaluate((_, __testSeed) => {
+        window.parent.__testSeed = __testSeed;
+      }, tradeId);
+
       await iframe
         .locator(`[id="${tradeButtonId}"]`)
         .first()
