@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 
 import { Browser, BrowserContext } from "@playwright/test";
 import * as fs from "fs";
@@ -86,20 +86,18 @@ export const multiChoreo = (
       const actor = players[hostId];
       console.log("start", { hostId });
       if (fastForwardLogKey !== "") {
-        const spliced = actor.msgs
-          .splice(
-            0,
-            actor.msgs!.findIndex(
-              (msg) =>
-                msg.data.payload?.diff?.gameLogState?.[fastForwardLogKey],
-            ),
-          )
+        const ffIndex = actor.msgs!.findIndex(
+          (msg) =>
+            msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
+        );
+        const sliced = actor.msgs
+          .slice(0, ffIndex)
           .filter(({ trigger }) => trigger === "serverData")
           .map(({ data }) => data);
-        const aggregated = spliced.find(
+        const aggregated = sliced.find(
           (msg) => msg.data.sequence && msg.data.payload.gameState,
         );
-        spliced
+        sliced
           .filter(
             (msg) => msg?.data?.payload?.diff && msg?.data?.sequence != null,
           )
@@ -107,7 +105,6 @@ export const multiChoreo = (
           .forEach((diff) =>
             mergeDiff(aggregated.data.payload.gameState, diff),
           );
-        console.log(JSON.stringify({ aggregated }));
         await actor.page.evaluate(
           (databaseGame) => {
             window.parent.__testOverrides = {
@@ -120,6 +117,17 @@ export const multiChoreo = (
           },
           { aggregated },
         );
+        for (let i = 0; i < players.length; i++) {
+          const idx = players[i].msgs!.findIndex(
+            (msg) =>
+              msg.data.data?.payload?.diff?.gameLogState?.[fastForwardLogKey],
+          );
+          players[i].msgs.splice(0, idx);
+          await spliceTestMessages(players[i].iframe);
+        }
+        const startButton = getStartButton(actor.iframe);
+        await startButton.click({ force: true });
+        await delay(3000);
       } else {
         await actor.page.evaluate(
           (__testOverrides) => {
@@ -142,21 +150,20 @@ export const multiChoreo = (
             )!.data.data.payload.playOrder,
           },
         );
+        for (let i = 0; i < players.length; i++) {
+          const idx = players[i].msgs.findIndex(
+            (msg) => msg.data.data?.sequence === 1,
+          );
+          players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
+          await spliceTestMessages(players[i].iframe);
+        }
+        const startButton = getStartButton(actor.iframe);
+        await startButton.click({ force: true });
+        await delay(3000);
+        for (let i = 0; i < players.length; i++) {
+          await players[i].c.verifyTestMessages();
+        }
       }
-      for (let i = 0; i < players.length; i++) {
-        const idx = players[i].msgs.findIndex(
-          (msg) => msg.data.data?.sequence === 1,
-        );
-        players[i].msgs.splice(0, i === hostId ? idx - 1 : idx);
-        await spliceTestMessages(players[i].iframe);
-      }
-      const startButton = getStartButton(actor.iframe);
-      await startButton.click({ force: true });
-      await delay(3000);
-      for (let i = 0; i < players.length; i++) {
-        await players[i].c.verifyTestMessages();
-      }
-      test.skip();
     };
     const helper = async () => {
       await startGame();
