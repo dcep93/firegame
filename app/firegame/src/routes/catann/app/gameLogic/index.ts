@@ -1364,7 +1364,7 @@ const rollDice = () => {
     distributionType: number;
     card: number;
   }[] = [];
-  const cardsByOwner = new Map<number, number[]>();
+  const cardsByOwner: Record<number, number[]> = {};
   let blockedTileStateForLog: HexTileState | undefined;
 
   if (!shouldTriggerRobber) {
@@ -1403,9 +1403,9 @@ const rollDice = () => {
             distributionType: 1,
             card: tileState.type,
           });
-          const ownerCards = cardsByOwner.get(owner) ?? [];
+          const ownerCards = cardsByOwner[owner] ?? [];
           ownerCards.push(tileState.type);
-          cardsByOwner.set(owner, ownerCards);
+          cardsByOwner[owner] = ownerCards;
         }
       });
     });
@@ -1476,9 +1476,12 @@ const rollDice = () => {
       });
   }
 
-  cardsByOwner.forEach((cards, owner) => {
-    addPlayerResourceCards(gameState, owner, cards, 1);
-  });
+  Object.entries(cardsByOwner)
+    .map(([owner, cards]) => ({ owner: parseInt(owner), cards }))
+    .sort((a, b) => a.owner - b.owner)
+    .forEach(({ cards, owner }) => {
+      addPlayerResourceCards(gameState, owner, cards, 1);
+    });
 
   if (shouldTriggerRobber) {
     sendCornerHighlights30(gameData, []);
@@ -2043,7 +2046,7 @@ export const applyGameAction = (parsed: {
 
       addGameLogEntry(gameState, {
         text: {
-          type: 20,
+          type: GameLogMessageType.PlayerPlayedDevelopmentCard,
           playerColor,
           cardEnum: clickedCard,
         },

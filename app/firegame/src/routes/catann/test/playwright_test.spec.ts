@@ -415,39 +415,33 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
         },
       },
     },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.GameStateUpdate.toString(),
+        data: {
+          payload: {
+            timeLeftInState: msg.data.data?.payload?.timeLeftInState,
+            diff: {
+              currentState: {
+                startTime:
+                  msg.data.data?.payload?.diff?.currentState?.startTime,
+              },
+            },
+          },
+          type: GameStateUpdateType.GameStateUpdated,
+        },
+        sequence: msg.data.sequence,
+      },
+    },
   ];
   if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
   if (
     [
-      State.SocketMonitorUpdate.toString(),
-      State.LobbyStateUpdate.toString(),
-      GameStateUpdateType.FirstGameState,
-    ].includes(msg.data.id)
-  )
-    return true;
-  if (
-    [
       GameStateUpdateType.PlayerReconnected,
       GameStateUpdateType.GameEndState,
     ].includes(msg.data.data?.type)
-  )
-    return true;
-  if (
-    msg.trigger === "clientData" &&
-    msg.data.action === GameAction.SelectedCards &&
-    msg.data.payload &&
-    typeof msg.data.payload === "object" &&
-    !Array.isArray(msg.data.payload) &&
-    msg.data.payload["-1"] !== undefined
-  )
-    return true;
-  if (
-    msg.trigger === "clientData" &&
-    [
-      GameAction.RequestBeginnerHint,
-      GameAction.SelectedInitialPlacementIndex,
-    ].includes(msg.data.action)
   )
     return true;
   return true;
