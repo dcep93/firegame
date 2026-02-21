@@ -1817,7 +1817,7 @@ export const applyGameAction = (parsed: {
             }
           });
         } else {
-          throw new Error("not implemented");
+          throw new Error("not implemented 123");
         }
         console.log("test.log", 1822);
 
