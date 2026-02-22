@@ -14,7 +14,7 @@ const log = <T>(t: T) => {
 };
 const getMe = () =>
   log({
-    roomId: roomId || `roomIdx-${store.me?.roomId}`,
+    roomId: roomId || `roomIdx-1`,
     username: username ?? store.me?.userId,
     userId: username ?? store.me?.userId,
     selectedColor,
