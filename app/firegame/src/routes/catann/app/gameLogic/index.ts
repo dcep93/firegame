@@ -1056,7 +1056,7 @@ const placeSettlement = (cornerIndex: number) => {
       { ...firebaseData, GAME: gameData },
       {
         action: "placeSettlement",
-        exchangeCardsPayload,
+        exchangeCardsPayloads: [exchangeCardsPayload],
       },
     );
   } else {
@@ -1384,7 +1384,7 @@ const placeRoad = (edgeIndex: number) => {
     {
       action: "placeRoad",
       edgeIndex,
-      exchangeCardsPayload,
+      exchangeCardsPayload: [exchangeCardsPayload],
     },
   );
 };
@@ -1713,37 +1713,35 @@ const buyDevelopmentCard = () => {
       payload: [],
     },
   });
-  const exchangeCardsPayload = {
-    givingPlayer: playerColor,
-    givingCards: exchangeCards,
-    receivingPlayer: 0,
-    receivingCards: [],
-  };
-  sendToMainSocket?.({
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.ExchangeCards,
-      payload: exchangeCardsPayload,
+  const exchangeCardsPayloads = [
+    {
+      givingPlayer: playerColor,
+      givingCards: exchangeCards,
+      receivingPlayer: BANK_INDEX,
+      receivingCards: [],
     },
-  });
-  sendToMainSocket?.({
-    id: State.GameStateUpdate.toString(),
-    data: {
-      type: GameStateUpdateType.ExchangeCards,
-      payload: {
-        givingPlayer: BANK_INDEX,
-        givingCards: [devCard],
-        receivingPlayer: playerColor,
-        receivingCards: [],
+    {
+      givingPlayer: BANK_INDEX,
+      givingCards: [devCard],
+      receivingPlayer: playerColor,
+      receivingCards: [],
+    },
+  ];
+  exchangeCardsPayloads.forEach((exchangeCardsPayload) => {
+    sendToMainSocket?.({
+      id: State.GameStateUpdate.toString(),
+      data: {
+        type: GameStateUpdateType.ExchangeCards,
+        payload: exchangeCardsPayload,
       },
-    },
+    });
   });
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {
       action: "buyDevelopmentCard",
-      exchangeCardsPayload,
+      exchangeCardsPayloads,
     },
   );
 };
@@ -2068,7 +2066,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         { ...firebaseData, GAME: gameData },
         {
           action: "ExecuteTrade",
-          exchangeCardsPayload,
+          exchangeCardsPayloads: [exchangeCardsPayload],
         },
       );
       return true;

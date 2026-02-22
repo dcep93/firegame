@@ -55,16 +55,26 @@ const cascadeServerMessage = (
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
     sendHighlights();
     if (!isMyTurn()) {
-      const exchangeCardsPayload =
-        firebaseData.__meta.change.exchangeCardsPayload;
-      if (exchangeCardsPayload) {
-        sendToMainSocket?.({
-          id: State.GameStateUpdate.toString(),
-          data: {
-            type: GameStateUpdateType.ExchangeCards,
-            payload: exchangeCardsPayload,
-          },
-        });
+      const exchangeCardsPayloads =
+        firebaseData.__meta.change.exchangeCardsPayloads;
+      if (exchangeCardsPayloads) {
+        exchangeCardsPayloads.forEach((exchangeCardsPayload: any) =>
+          sendToMainSocket?.({
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type: GameStateUpdateType.ExchangeCards,
+              payload: {
+                ...exchangeCardsPayload,
+                givingCards:
+                  exchangeCardsPayload.givingPlayer === 0
+                    ? exchangeCardsPayload.givingCards.map(
+                        () => CardEnum.DevelopmentBack,
+                      )
+                    : exchangeCardsPayload.givingCards,
+              },
+            },
+          }),
+        );
       }
     }
     if (firebaseData.__meta.change.action === "ExecuteTrade") {
@@ -115,10 +125,8 @@ export const handleSpectator = (gameState: GameState) => {
   if (!playerStates) return;
   Object.entries(playerStates).forEach(([playerColor, playerState]) => {
     if (playerColor === myColor) return;
-    const cards = playerState?.resourceCards?.cards;
-    if (!Array.isArray(cards)) return;
     playerState.resourceCards = {
-      cards: cards.map(() => CardEnum.ResourceBack),
+      cards: playerState?.resourceCards?.cards.map(() => CardEnum.ResourceBack),
     };
   });
 };
