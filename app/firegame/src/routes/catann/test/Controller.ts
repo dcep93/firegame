@@ -392,6 +392,9 @@ const Controller = (
       );
       await btn.first().click({ force: true });
       await waitForTrigger(iframe, "clientData");
+
+      const tradeButton = iframe.locator('div[id="action-button-trade"]');
+      await tradeButton.first().click({ force: true });
     };
     const buildNextRoad = async () => {
       const roadMsg = _expectedMessages!.find(

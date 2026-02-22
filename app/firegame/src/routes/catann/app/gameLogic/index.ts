@@ -643,15 +643,11 @@ export const sendCornerHighlights30 = (
     (cornerState: TileCornerState) =>
       cornerState.buildingType === CornerPieceType.Settlement,
   );
-  const cornerIndices = ![
+  const cornerIndices = [
     PlayerActionState.InitialPlacementPlaceSettlement,
     PlayerActionState.InitialPlacementPlaceCity,
-    PlayerActionState.PlaceSettlement,
-    PlayerActionState.PlaceCity,
-    PlayerActionState.PlaceCityWithDiscount,
   ].includes(actionState)
-    ? []
-    : Object.entries(tileCornerStates)
+    ? Object.entries(tileCornerStates)
         .map(([key, value]) => ({
           key: Number.parseInt(key, 10),
           value: value as TileCornerState,
@@ -672,7 +668,14 @@ export const sendCornerHighlights30 = (
             isClose(ownedCorner, value),
           );
         })
-        .map(({ key }) => key);
+        .map(({ key }) => key)
+    : [
+          PlayerActionState.PlaceSettlement,
+          PlayerActionState.PlaceCity,
+          PlayerActionState.PlaceCityWithDiscount,
+        ].includes(actionState)
+      ? getSettlementEligibleTiles()
+      : [];
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -2055,7 +2058,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
-      sendCornerHighlights30(gameData, getSettlementEligibleTiles());
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
         {
