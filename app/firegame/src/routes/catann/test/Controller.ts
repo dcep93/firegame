@@ -90,8 +90,8 @@ const Controller = (
       const durationMs = Date.now() - loaded;
       console.log(
         "verifyTestMessages",
-        playerIndex,
         (durationMs / 1000).toFixed(2),
+        playerIndex,
         testMessages.length,
         expectedMessages.length,
         { failOnEmpty },

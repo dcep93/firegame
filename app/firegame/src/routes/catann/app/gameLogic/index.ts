@@ -222,6 +222,41 @@ const removePlayerCards = (cards: number[], toRemove: number[]) => {
   });
 };
 
+const applyResourceExchangeWithPlayers = (
+  gameState: GameState,
+  givingPlayer: number,
+  givingCards: number[],
+  receivingPlayer: number,
+  receivingCards: number[],
+) => {
+  if (
+    givingPlayer === receivingPlayer ||
+    (givingCards.length === 0 && receivingCards.length === 0)
+  ) {
+    return;
+  }
+
+  const giverState = getPlayerStateByColor(gameState, givingPlayer);
+  if (giverState?.resourceCards?.cards) {
+    giverState.resourceCards = {
+      cards: [
+        ...removePlayerCards(giverState.resourceCards.cards, givingCards),
+        ...receivingCards,
+      ].sort((a, b) => a - b),
+    };
+  }
+
+  const receiverState = getPlayerStateByColor(gameState, receivingPlayer);
+  if (receiverState?.resourceCards?.cards) {
+    receiverState.resourceCards = {
+      cards: [
+        ...removePlayerCards(receiverState.resourceCards.cards, receivingCards),
+        ...givingCards,
+      ].sort((a, b) => a - b),
+    };
+  }
+};
+
 const buildBaseDevelopmentDeck = () => {
   return Object.entries(DEVELOPMENT_DECK_CARD_COUNTS).flatMap(([card, count]) =>
     Array(count).fill(Number(card)),
@@ -1986,6 +2021,13 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         receivingPlayer: parsed.payload.playerToExecuteTradeWith,
         receivingCards: tradeObj.wantedResources,
       };
+      applyResourceExchangeWithPlayers(
+        gameState,
+        exchangeCardsPayload.givingPlayer,
+        exchangeCardsPayload.givingCards,
+        exchangeCardsPayload.receivingPlayer,
+        exchangeCardsPayload.receivingCards,
+      );
 
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
