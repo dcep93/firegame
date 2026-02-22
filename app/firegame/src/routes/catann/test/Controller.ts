@@ -433,7 +433,7 @@ const Controller = (
       const settlementMsg = _expectedMessages!.find(
         (msg) => msg.data.action === GameAction.ConfirmBuildSettlement,
       )!;
-      await buildSettlementFromPayload(settlementMsg.data.payload);
+      await buildSettlementFromPayload(settlementMsg.data.payload, false);
     };
     const buildNextCity = async () => {
       const cityMsg = _expectedMessages!.find(

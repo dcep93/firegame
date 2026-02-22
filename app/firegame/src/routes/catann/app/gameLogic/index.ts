@@ -970,6 +970,7 @@ const placeSettlement = (cornerIndex: number) => {
   }
 
   applyPortOwnership(gameState, cornerState, playerColor);
+  var exchangeCardsPayload;
 
   if (isStandardBuild) {
     const exchangeCards = [
@@ -979,6 +980,12 @@ const placeSettlement = (cornerIndex: number) => {
       CardEnum.Grain,
     ];
     applyResourceExchangeWithBank(gameState, playerColor, exchangeCards);
+    exchangeCardsPayload = {
+      givingCards: exchangeCards,
+      givingPlayer: playerColor,
+      receivingCards: [],
+      receivingPlayer: 0,
+    };
     sendToMainSocket?.({
       id: State.GameStateUpdate.toString(),
       data: {
@@ -1044,14 +1051,24 @@ const placeSettlement = (cornerIndex: number) => {
     sendResourcesFromTile(gameData, cornerIndex);
   }
 
-  setFirebaseData(
-    { ...firebaseData, GAME: gameData },
-    {
-      action: "placeSettlement",
-      resourcesToGive,
-      cornerIndex,
-    },
-  );
+  if (isStandardBuild) {
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "placeSettlement",
+        exchangeCardsPayload,
+      },
+    );
+  } else {
+    setFirebaseData(
+      { ...firebaseData, GAME: gameData },
+      {
+        action: "placeSettlement",
+        resourcesToGive,
+        cornerIndex,
+      },
+    );
+  }
 };
 
 const getCornerIndexFromPayload = (gameState: GameState, payload: unknown) => {
