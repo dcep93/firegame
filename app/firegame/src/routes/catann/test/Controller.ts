@@ -363,7 +363,7 @@ const Controller = (
       await iframe
         .locator(`[id="${tradeButtonId}"]`)
         .first()
-        .click({ timeout: 1000 });
+        .click({ force: true });
       await waitForTrigger(iframe, "serverData");
     };
     const makeNextTrade = async () => {
@@ -372,6 +372,19 @@ const Controller = (
       )!;
       await makeTrade(tradeMsg.data.payload);
       await fixWeirdTrade();
+    };
+    const updateTradeResponse = async () => {
+      const msg = _expectedMessages!.find(
+        (msg) => msg.data.action === GameAction.UpdateTradeResponse,
+      )!.data.payload;
+
+      expect(msg.response).toBe(0);
+
+      const btn = iframe.locator(
+        `div[class*="tradeButton-"] img[src*="icon_check"]`,
+      );
+      await btn.first().click({ force: true });
+      await waitForTrigger(iframe, "serverData");
     };
     const buildNextRoad = async () => {
       const roadMsg = _expectedMessages!.find(
@@ -665,6 +678,7 @@ const Controller = (
       wantToTrade,
       makeTrade,
       makeNextTrade,
+      updateTradeResponse,
       buildNextRoad,
       buildNextSettlement,
       selectInitialPlacementIndex,

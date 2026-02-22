@@ -1739,36 +1739,6 @@ export const applyGameAction = (parsed: {
       typeof parsed.payload === "object"
     )
       return false;
-    if (
-      ![
-        GameAction.ConfirmBuildRoad,
-        GameAction.ConfirmBuildRoadSkippingSelection,
-        GameAction.ConfirmBuildShip,
-        GameAction.WantToBuildRoad,
-        GameAction.ConfirmBuildSettlement,
-        GameAction.ConfirmBuildSettlementSkippingSelection,
-        GameAction.WantToBuildSettlement,
-        GameAction.ConfirmBuildCity,
-        GameAction.ConfirmBuildCitySkippingSelection,
-        GameAction.WantToBuildCity,
-        GameAction.BuyDevelopmentCard,
-        GameAction.ClickedDice,
-        GameAction.PreCreateTrade,
-        GameAction.PassedTurn,
-        GameAction.SelectedInitialPlacementIndex,
-        GameAction.SelectedTile,
-        GameAction.CreateTrade,
-        GameAction.UpdateTradeResponse,
-        GameAction.SelectedCards,
-        GameAction.SelectedCardsState,
-        GameAction.PlayDevelopmentCardFromHand,
-        GameAction.ClickedDevelopmentCard,
-        GameAction.RequestGameState,
-        GameAction.RequestBeginnerModeLevelEnd,
-      ].includes(parsed.action!)
-    ) {
-      return false;
-    }
     if (parsed.action === GameAction.CreateTrade) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
@@ -1925,7 +1895,7 @@ export const applyGameAction = (parsed: {
         if (activeOffer) {
           const responses = activeOffer.playerResponses ?? {};
           responses[String(gameData.data.payload.playerColor)] =
-            typeof payload?.response === "number" ? payload.response : 0;
+            payload.response + 1;
           activeOffer.playerResponses = responses;
         }
       }
