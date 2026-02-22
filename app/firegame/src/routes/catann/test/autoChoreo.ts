@@ -63,6 +63,7 @@ const getHandlers: (
   [GameAction.PreCreateTrade]: c.wantToTrade,
   [GameAction.CreateTrade]: c.makeNextTrade,
   [GameAction.UpdateTradeResponse]: c.updateTradeResponse,
+  [GameAction.ExecuteTrade]: c.executeTrade,
   [GameAction.ConfirmBuildRoad]: c.buildNextRoad,
   [GameAction.SelectedTile]: c.playNextRobber,
   [GameAction.SelectedCards]: c.confirmSelectedCards,

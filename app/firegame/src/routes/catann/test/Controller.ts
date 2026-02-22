@@ -386,6 +386,13 @@ const Controller = (
       await btn.first().click({ force: true });
       await waitForTrigger(iframe, "clientData");
     };
+    const executeTrade = async () => {
+      const btn = iframe.locator(
+        `div[class*="tradeButton-"] img[src*="icon_check"]`,
+      );
+      await btn.first().click({ force: true });
+      await waitForTrigger(iframe, "clientData");
+    };
     const buildNextRoad = async () => {
       const roadMsg = _expectedMessages!.find(
         (msg) => msg.data.action === GameAction.ConfirmBuildRoad,
@@ -679,6 +686,7 @@ const Controller = (
       makeTrade,
       makeNextTrade,
       updateTradeResponse,
+      executeTrade,
       buildNextRoad,
       buildNextSettlement,
       selectInitialPlacementIndex,
