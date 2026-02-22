@@ -1956,15 +1956,29 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
 
     if (parsed.action === GameAction.ExecuteTrade) {
       const gameData = firebaseData.GAME;
+      const gameState = gameData.data.payload.gameState;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
 
       const tradeObj =
-        gameData.data.payload.gameState.tradeState.activeOffers[
-          parsed.payload.tradeId
-        ];
+        gameState.tradeState.activeOffers[parsed.payload.tradeId];
+      Object.keys(gameState.tradeState.activeOffers).forEach((key) => {
+        gameState.tradeState.activeOffers[key] = null;
+      });
+      gameState.currentState.allocatedTime = TURN_TIMERS_MS.createTrade;
+
+      addGameLogEntry(gameState, {
+        text: {
+          type: GameLogMessageType.PlayerTradedWithPlayer,
+          acceptingPlayerColor: parsed.payload.playerToExecuteTradeWith,
+          givenCardEnums: tradeObj.offeredResources,
+          playerColor: tradeObj.creator,
+          receivedCardEnums: tradeObj.wantedResources,
+        },
+        from: tradeObj.creator,
+      });
 
       const exchangeCardsPayload = {
         givingPlayer: tradeObj.creator,
