@@ -367,7 +367,7 @@ export const newGame = () => {
             allocatedTime: 120,
           },
           tradeState: {
-            activeOffers: {} as Record<string, unknown>,
+            activeOffers: {} as Record<string, any>,
             closedOffers: {} as Record<string, unknown>,
             embargoState: buildByColor(() => ({
               activeEmbargosAgainst: [],

@@ -67,6 +67,15 @@ const cascadeServerMessage = (
         });
       }
     }
+    if (firebaseData.__meta.change.action === "ExecuteTrade") {
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.TradeFinalized,
+          payload: {},
+        },
+      });
+    }
     const resourcesToGive: ResourcesToGiveType =
       firebaseData.__meta.change.resourcesToGive;
     if (resourcesToGive) {

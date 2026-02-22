@@ -1,7 +1,5 @@
 // TODO
 // 2 player game
-// click trade button
-// hidden cards
 // 4 player setup, first turns
 // audit skills
 // skill find bugs

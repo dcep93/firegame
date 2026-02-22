@@ -1686,10 +1686,7 @@ const buyDevelopmentCard = () => {
   );
 };
 
-export const applyGameAction = (parsed: {
-  action?: number;
-  payload?: unknown;
-}) => {
+export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
   const helper = () => {
     if (!firebaseData.GAME) return false;
     const sendReconnectState = (isReconnectingSession: boolean) => {
@@ -1954,6 +1951,43 @@ export const applyGameAction = (parsed: {
 
     if (parsed.action === GameAction.RequestGameState) {
       sendReconnectState(true);
+      return true;
+    }
+
+    if (parsed.action === GameAction.ExecuteTrade) {
+      const gameData = firebaseData.GAME;
+      sendCornerHighlights30(gameData, []);
+      sendTileHighlights33(gameData);
+      sendEdgeHighlights31(gameData);
+      sendShipHighlights32(gameData);
+
+      const tradeObj =
+        gameData.data.payload.gameState.tradeState.activeOffers[
+          parsed.payload.tradeId
+        ];
+
+      const exchangeCardsPayload = {
+        givingPlayer: tradeObj.creator,
+        givingCards: tradeObj.offeredResources,
+        receivingPlayer: parsed.payload.playerToExecuteTradeWith,
+        receivingCards: tradeObj.wantedResources,
+      };
+
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.ExchangeCards,
+          payload: exchangeCardsPayload,
+        },
+      });
+
+      setFirebaseData(
+        { ...firebaseData, GAME: gameData },
+        {
+          action: "ExecuteTrade",
+          exchangeCardsPayload,
+        },
+      );
       return true;
     }
 
@@ -2361,7 +2395,7 @@ export const applyGameAction = (parsed: {
       return true;
     }
 
-    return true;
+    return false;
   };
   const rval = helper();
   const winner = getWinner();
