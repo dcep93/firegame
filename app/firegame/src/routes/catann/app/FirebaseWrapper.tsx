@@ -84,7 +84,7 @@ function receiveFirebaseDataCatann(
           firebaseData.GAME,
           prevFirebaseData.GAME?.data?.payload?.gameState,
         );
-        console.log({ update });
+        console.log("test.log", JSON.stringify({ update }, null, 2));
         if (update) {
           handleSpectator(update.data.payload.diff);
           sendToMainSocket?.(update);

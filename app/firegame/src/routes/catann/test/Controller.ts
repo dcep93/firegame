@@ -384,7 +384,7 @@ const Controller = (
         `div[class*="tradeButton-"] img[src*="icon_check"]`,
       );
       await btn.first().click({ force: true });
-      await waitForTrigger(iframe, "serverData");
+      await waitForTrigger(iframe, "clientData");
     };
     const buildNextRoad = async () => {
       const roadMsg = _expectedMessages!.find(

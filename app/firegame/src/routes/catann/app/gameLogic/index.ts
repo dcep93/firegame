@@ -1894,8 +1894,9 @@ export const applyGameAction = (parsed: {
         const activeOffer = gameState.tradeState?.activeOffers?.[tradeId];
         if (activeOffer) {
           const responses = activeOffer.playerResponses ?? {};
+          if (payload.response !== 0) throw new Error("not implemented");
           responses[String(gameData.data.payload.playerColor)] =
-            payload.response + 1;
+            1 - responses[String(gameData.data.payload.playerColor)];
           activeOffer.playerResponses = responses;
         }
       }
