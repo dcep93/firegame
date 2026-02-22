@@ -1636,6 +1636,11 @@ const passTurn = () => {
     }
   }
 
+  Object.keys(gameData.data.payload.gameState.tradeState.closedOffers).forEach(
+    (key) =>
+      (gameData.data.payload.gameState.tradeState.closedOffers[key] = null),
+  );
+
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {
@@ -1708,16 +1713,17 @@ const buyDevelopmentCard = () => {
       payload: [],
     },
   });
+  const exchangeCardsPayload = {
+    givingPlayer: playerColor,
+    givingCards: exchangeCards,
+    receivingPlayer: 0,
+    receivingCards: [],
+  };
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
       type: GameStateUpdateType.ExchangeCards,
-      payload: {
-        givingPlayer: playerColor,
-        givingCards: exchangeCards,
-        receivingPlayer: 0,
-        receivingCards: [],
-      },
+      payload: exchangeCardsPayload,
     },
   });
   sendToMainSocket?.({
@@ -1737,6 +1743,7 @@ const buyDevelopmentCard = () => {
     { ...firebaseData, GAME: gameData },
     {
       action: "buyDevelopmentCard",
+      exchangeCardsPayload,
     },
   );
 };
