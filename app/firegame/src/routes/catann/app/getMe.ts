@@ -1,8 +1,6 @@
 import store from "../../../shared/store";
 
-const [roomId, username, selectedColor] = (
-  window.parent.location?.hash || window.location.hash
-)
+const [roomId, username, selectedColor] = window.parent.location.hash
   .slice(1)
   .split(".");
 var last = "";
