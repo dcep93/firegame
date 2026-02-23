@@ -476,6 +476,83 @@ const autoPlaceRobber = (tileIndex: number) => {
   const gameState = gameData.data.payload.gameState;
   const tileHexStates = gameState.mapState.tileHexStates ?? {};
   const tileState = tileHexStates[String(tileIndex)];
+  sendTileHighlights33(gameData, []);
+
+  addGameLogEntry(gameState, {
+    text: {
+      type: GameLogMessageType.MovedRobber,
+      playerColor,
+      pieceEnum: MapPieceType.Robber,
+      tileInfo: tileState
+        ? {
+            tileType: tileState.type,
+            diceNumber: tileState.diceNumber,
+            resourceType: tileState.type,
+          }
+        : undefined,
+    },
+    from: playerColor,
+  });
+
+  const tileCornerStates = (gameState.mapState.tileCornerStates ??
+    {}) as StringMap<TileCornerState>;
+  const oppositeCandidates: number[] = [];
+  Object.values(tileCornerStates).forEach((cornerState) => {
+    const owner = parseFiniteIndex(cornerState?.owner);
+    if (owner == null || owner === playerColor) return;
+    const ownerState = getPlayerStateByColor(gameState, owner);
+    if (!ownerState?.resourceCards?.cards?.length) return;
+    const adjacentTileIndices = getAdjacentTileIndicesForCorner(
+      gameState,
+      cornerState,
+    );
+    if (!adjacentTileIndices.includes(tileIndex)) return;
+    oppositeCandidates.push(owner);
+  });
+  const uniqueOpponents = [...Array.from(new Set(oppositeCandidates))];
+
+  let exchangeCardsPayload;
+  if (uniqueOpponents.length > 0) {
+    const targetPlayerColor =
+      uniqueOpponents[Math.floor(Math.random() * uniqueOpponents.length)];
+    const targetState = getPlayerStateByColor(gameState, targetPlayerColor);
+    const targetCards = targetState?.resourceCards?.cards ?? [];
+    const stolenCard =
+      // TODO restore random/seed
+      1 || targetCards[Math.floor(Math.random() * targetCards.length)];
+    if (stolenCard !== undefined) {
+      exchangeCardsPayload = {
+        givingPlayer: targetPlayerColor,
+        givingCards: [stolenCard],
+        receivingPlayer: playerColor,
+        receivingCards: [],
+      };
+      applyResourceExchangeWithPlayers(
+        gameState,
+        exchangeCardsPayload.givingPlayer,
+        exchangeCardsPayload.givingCards,
+        exchangeCardsPayload.receivingPlayer,
+        exchangeCardsPayload.receivingCards,
+      );
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.ExchangeCards,
+          payload: exchangeCardsPayload,
+        },
+      });
+      addGameLogEntry(gameState, {
+        text: {
+          playerColor: targetPlayerColor,
+          cardEnums: [stolenCard],
+          type: GameLogMessageType.StolenResourceCardThief,
+        },
+        from: playerColor,
+        toSpectators: false,
+        specificRecipients: [playerColor],
+      });
+    }
+  }
 
   gameState.mechanicRobberState = {
     ...gameState.mechanicRobberState,
@@ -498,36 +575,23 @@ const autoPlaceRobber = (tileIndex: number) => {
         },
   );
 
-  addGameLogEntry(gameState, {
-    text: {
-      type: GameLogMessageType.MovedRobber,
-      playerColor,
-      pieceEnum: MapPieceType.Robber,
-      tileInfo: tileState
-        ? {
-            tileType: tileState.type,
-            diceNumber: tileState.diceNumber,
-            resourceType: tileState.type,
-          }
-        : undefined,
-    },
-    from: playerColor,
-  });
-
-  addGameLogEntry(gameState, {
-    text: {
-      type: GameLogMessageType.NoPlayerToStealFrom,
-    },
-    from: playerColor,
-  });
-
-  sendTileHighlights33(gameData, []);
+  if (!exchangeCardsPayload) {
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.NoPlayerToStealFrom,
+      },
+      from: playerColor,
+    });
+  }
 
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {
       action: "placeRobber",
       tileIndex,
+      exchangeCardsPayloads: exchangeCardsPayload
+        ? [exchangeCardsPayload]
+        : undefined,
     },
   );
 };

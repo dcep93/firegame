@@ -402,7 +402,14 @@ export const newGame = () => {
                 type: GameLogMessageType.Separator,
               },
             },
-          } as { [k: string]: { text: any; from?: PlayerColor } },
+          } as {
+            [k: string]: {
+              text: any;
+              from?: PlayerColor;
+              toSpectators?: boolean;
+              specificRecipients?: PlayerColor[];
+            };
+          },
           gameChatState: {},
           mechanicSettlementState: buildByColor(() => ({
             bankSettlementAmount: 5,

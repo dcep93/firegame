@@ -191,7 +191,9 @@ export const multiChoreo = (
         console.log("actor", actor.i);
         await singleChoreo(actor.c);
         for (let i = 0; i < players.length; i++) {
-          await players[i].c.verifyTestMessages(false);
+          await players[(actor.i + i) % players.length].c.verifyTestMessages(
+            false,
+          );
         }
       }
       await expect(players.map(({ msgs }) => msgs.slice(0, 1))).toEqual(
