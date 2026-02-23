@@ -133,6 +133,7 @@ export const handleSpectator = (gameState: GameState) => {
     gameState.mechanicDevelopmentCardsState?.players || {},
   ).forEach(([playerColor, playerState]) => {
     if (playerColor === myColor) return;
+    delete playerState.developmentCardsBoughtThisTurn;
     playerState.developmentCards = {
       cards: playerState?.developmentCards?.cards!.map(
         () => CardEnum.DevelopmentBack,

@@ -1641,15 +1641,6 @@ const passTurn = () => {
       (gameData.data.payload.gameState.tradeState.closedOffers[key] = null),
   );
 
-  Object.keys(
-    gameData.data.payload.gameState.mechanicDevelopmentCardsState?.players ||
-      {},
-  ).forEach(
-    (key) =>
-      delete gameData.data.payload.gameState.mechanicDevelopmentCardsState
-        .players[key as any as PlayerColor].developmentCardsBoughtThisTurn,
-  );
-
   setFirebaseData(
     { ...firebaseData, GAME: gameData },
     {
