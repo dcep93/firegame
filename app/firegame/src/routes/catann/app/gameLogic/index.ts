@@ -551,6 +551,16 @@ const autoPlaceRobber = (tileIndex: number) => {
         toSpectators: false,
         specificRecipients: [playerColor],
       });
+      addGameLogEntry(gameState, {
+        text: {
+          playerColor,
+          cardEnums: [stolenCard],
+          type: GameLogMessageType.StolenResourceCardVictim,
+        },
+        from: playerColor,
+        toSpectators: false,
+        specificRecipients: [targetPlayerColor],
+      });
     }
   }
 

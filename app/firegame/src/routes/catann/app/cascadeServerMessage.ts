@@ -140,4 +140,12 @@ export const handleSpectator = (gameState: GameState) => {
       ),
     };
   });
+  Object.entries(gameState.gameLogState).map(([key, entry]) => {
+    if (
+      entry.toSpectators === false &&
+      !entry.specificRecipients?.includes(parseInt(myColor))
+    ) {
+      delete gameState.gameLogState[key];
+    }
+  });
 };
