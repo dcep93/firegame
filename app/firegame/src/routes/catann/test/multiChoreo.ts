@@ -112,6 +112,11 @@ export const multiChoreo = (
             .forEach((diff) =>
               mergeDiff(aggregated.data.payload.gameState, diff),
             );
+          aggregated.data.payload.gameState.tradeState = {
+            ...aggregated.data.payload.gameState.tradeState,
+            activeOffers: {} as Record<string, any>,
+            closedOffers: {} as Record<string, unknown>,
+          };
           return aggregated;
         });
         const aggregated = allAggregated[hostId];
