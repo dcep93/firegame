@@ -6,6 +6,7 @@ import { handleSpectator } from "./cascadeServerMessage";
 import { listenMock, updateMock } from "./firebaseMock";
 import { buildGameStateUpdated, buildUpdateMap } from "./gameDataHelper";
 import {
+  isMyTurn,
   newGame,
   newRoom,
   newRoomMe,
@@ -85,7 +86,8 @@ function receiveFirebaseDataCatann(
           prevFirebaseData.GAME?.data?.payload?.gameState,
         );
         if (update) {
-          console.log("test.log", JSON.stringify({ update }, null, 2));
+          if (isMyTurn())
+            console.log("test.log", JSON.stringify({ update }, null, 2));
           handleSpectator(update.data.payload.diff);
           sendToMainSocket?.(update);
         }
