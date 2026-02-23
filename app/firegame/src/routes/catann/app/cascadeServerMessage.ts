@@ -140,7 +140,7 @@ export const handleSpectator = (gameState: GameState) => {
       ),
     };
   });
-  Object.entries(gameState.gameLogState).map(([key, entry]) => {
+  Object.entries(gameState.gameLogState).forEach(([key, entry]) => {
     if (
       entry.toSpectators === false &&
       !entry.specificRecipients?.includes(parseInt(myColor))
