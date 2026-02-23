@@ -89,7 +89,7 @@ type PlayerState = JsonObject & {
   bankRoadAmount?: number;
   bankTradeRatiosState?: NumericMap<number>;
 };
-type DevelopmentCardPlayerState = JsonObject & {
+export type DevelopmentCardPlayerState = JsonObject & {
   developmentCards?: { cards?: number[] };
   developmentCardsUsed?: number[];
   developmentCardsBoughtThisTurn?: number[] | null;
@@ -1639,6 +1639,15 @@ const passTurn = () => {
   Object.keys(gameData.data.payload.gameState.tradeState.closedOffers).forEach(
     (key) =>
       (gameData.data.payload.gameState.tradeState.closedOffers[key] = null),
+  );
+
+  Object.keys(
+    gameData.data.payload.gameState.mechanicDevelopmentCardsState?.players ||
+      {},
+  ).forEach(
+    (key) =>
+      delete gameData.data.payload.gameState.mechanicDevelopmentCardsState
+        .players[key as any as PlayerColor].developmentCardsBoughtThisTurn,
   );
 
   setFirebaseData(

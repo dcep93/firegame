@@ -129,4 +129,14 @@ export const handleSpectator = (gameState: GameState) => {
       cards: playerState?.resourceCards?.cards.map(() => CardEnum.ResourceBack),
     };
   });
+  Object.entries(
+    gameState.mechanicDevelopmentCardsState?.players || {},
+  ).forEach(([playerColor, playerState]) => {
+    if (playerColor === myColor) return;
+    playerState.developmentCards = {
+      cards: playerState?.developmentCards?.cards!.map(
+        () => CardEnum.DevelopmentBack,
+      ),
+    };
+  });
 };

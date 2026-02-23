@@ -1,4 +1,4 @@
-import { NUM_DEV_CARDS } from ".";
+import { DevelopmentCardPlayerState, NUM_DEV_CARDS } from ".";
 import { firebaseData } from "../FirebaseWrapper";
 import getMe from "../getMe";
 import { FUTURE, sendToMainSocket } from "../handleMessage";
@@ -420,12 +420,15 @@ export const newGame = () => {
                 () => CardEnum.DevelopmentBack,
               ),
             },
-            players: buildByColor(() => ({
-              developmentCards: {
-                cards: [],
-              },
-              developmentCardsUsed: [],
-            })),
+            players: buildByColor(
+              () =>
+                ({
+                  developmentCards: {
+                    cards: [] as CardEnum[],
+                  },
+                  developmentCardsUsed: [] as CardEnum[],
+                }) as DevelopmentCardPlayerState,
+            ),
           },
           mechanicLongestRoadState: buildByColor(() => ({
             longestRoad: 0,
