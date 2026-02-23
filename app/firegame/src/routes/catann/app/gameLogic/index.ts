@@ -1384,7 +1384,7 @@ const placeRoad = (edgeIndex: number) => {
     {
       action: "placeRoad",
       edgeIndex,
-      exchangeCardsPayload: [exchangeCardsPayload],
+      exchangeCardsPayloads: [exchangeCardsPayload],
     },
   );
 };
