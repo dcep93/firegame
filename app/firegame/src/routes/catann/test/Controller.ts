@@ -320,6 +320,10 @@ const Controller = (
       await waitForTrigger(iframe, "serverData");
     };
     const makeTrade = async (payload: any) => {
+      await wantToTrade();
+      await spliceTestMessages(iframe);
+      await wantToTrade();
+      await spliceTestMessages(iframe);
       const resourceCardType: Record<number, string> = {
         1: "lumber",
         2: "brick",

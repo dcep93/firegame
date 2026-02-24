@@ -1899,6 +1899,16 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
       const wantedResources = Array.isArray(tradePayload?.wantedResources)
         ? (tradePayload?.wantedResources ?? [])
         : [];
+      const exchangeCardsPayloads = tradePayload?.isBankTrade
+        ? [
+            {
+              givingPlayer: playerColor,
+              givingCards: offeredResources,
+              receivingPlayer: BANK_INDEX,
+              receivingCards: wantedResources,
+            },
+          ]
+        : null;
       if (tradePayload?.isBankTrade) {
         const playerState = getPlayerStateByColor(gameState, playerColor);
         const bankResourceCards = gameState.bankState?.resourceCards as
@@ -1925,13 +1935,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
           (playerState.resourceCards.cards as number[]).push(
             ...wantedResources,
           );
-          if (
-            wantedResources.length === 1 &&
-            offeredResources.length === 4 &&
-            offeredResources.every((card) => card === CardEnum.Wool)
-          ) {
-            (playerState.resourceCards.cards as number[]).sort((a, b) => a - b);
-          }
+          playerState.resourceCards.cards!.sort((a, b) => a - b);
         }
 
         addGameLogEntry(gameState, {
@@ -2013,6 +2017,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
           action: "createTrade",
           offeredResources,
           wantedResources,
+          exchangeCardsPayloads,
         },
       );
       return true;
