@@ -1902,6 +1902,14 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
           ]
         : null;
       if (tradePayload?.isBankTrade) {
+        Object.keys(
+          firebaseData.GAME.data.payload.gameState.tradeState.activeOffers,
+        ).forEach(
+          (key) =>
+            (firebaseData.GAME!.data.payload.gameState.tradeState.activeOffers[
+              key
+            ] = null),
+        );
         const playerState = getPlayerStateByColor(gameState, playerColor);
         const bankResourceCards = gameState.bankState?.resourceCards as
           | NumericMap<number>

@@ -188,8 +188,7 @@ export const multiChoreo = (
       for (let i = 0; true; i++) {
         const actor = getActor();
         if (!actor) break;
-        console.log("actor", actor.i);
-        await singleChoreo(actor.c);
+        await singleChoreo(actor.i, actor.c);
         for (let i = 0; i < players.length; i++) {
           await players[(actor.i + i) % players.length].c.verifyTestMessages(
             false,
