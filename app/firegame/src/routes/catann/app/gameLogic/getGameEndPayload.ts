@@ -422,7 +422,7 @@ const getGameEndPayload = () => {
     },
     isReplayAvailable: logEntries.length > 0,
     rankedUserStates: playerColors
-      .filter((color) => (meColor == null ? true : color !== meColor))
+      .filter((color) => color !== winner?.color)
       .map((color) => ({
         color,
         rankedState: {
