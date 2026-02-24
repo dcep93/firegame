@@ -239,7 +239,6 @@ const cascadeServerMessage = (
     }
     sendResponse(data);
 
-    console.log("test.log.260", JSON.stringify(data.data.payload));
     if (
       firebaseData.GAME?.data.payload.gameState?.currentState.turnState ===
       GamePhase.GameEnd
