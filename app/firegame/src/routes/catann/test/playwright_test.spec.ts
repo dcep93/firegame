@@ -278,7 +278,6 @@ const doIfNotRegression = !isRegression ? test : test.skip;
 doIfRegression("2p.v0", multiChoreo("./choreo/2p.v0.json"));
 doIfNotRegression("2p.v1", multiChoreo("./choreo/2p.v1.json", "249"));
 test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
-// test("getGameEndPayloadTest", getGameEndPayloadTest("./choreog/2p.v1.json"));
 
 //
 
