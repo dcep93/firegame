@@ -126,8 +126,8 @@ type EndActivityStats = {
   devCardsUsed: number;
 };
 type LongestRoadMechanicState = {
-  hasLongestRoad?: boolean;
-  longestRoad: number;
+  hasLongestRoad?: boolean | null;
+  longestRoad?: number;
 };
 type LargestArmyMechanicState = { hasLargestArmy?: boolean };
 type FirebaseWithMeta = typeof firebaseData & { __meta?: { now?: number } };
@@ -3113,13 +3113,24 @@ const updateLongestRoadAchievement = (playerColor: number) => {
       ? 0
       : (longestRoadState[currentHolder]?.longestRoad ?? 0);
   const challengerLength = longestRoadState[playerColor]?.longestRoad ?? 0;
+  const setNoLongestRoadPoints = (color: number) => {
+    const state = getByPlayerColor(playerStates, color);
+    if (!state) {
+      return;
+    }
+    if (!state.victoryPointsState) {
+      state.victoryPointsState = {} as NumericMap<number>;
+    }
+    state.victoryPointsState[VictoryPointSource.LongestRoad] = 0;
+  };
 
   if (currentHolder === playerColor) {
     if (challengerLength < LONGEST_ROAD_MIN_LENGTH) {
-      delete getByPlayerColor(playerStates, playerColor)?.victoryPointsState?.[
-        VictoryPointSource.LongestRoad
-      ];
-      delete longestRoadState[playerColor]?.hasLongestRoad;
+      setNoLongestRoadPoints(playerColor);
+      if (longestRoadState[playerColor]) {
+        longestRoadState[playerColor].hasLongestRoad = null;
+        delete longestRoadState[playerColor].longestRoad;
+      }
     }
     return;
   }
@@ -3132,10 +3143,11 @@ const updateLongestRoadAchievement = (playerColor: number) => {
   }
 
   if (currentHolder != null) {
-    delete getByPlayerColor(playerStates, currentHolder)?.victoryPointsState?.[
-      VictoryPointSource.LongestRoad
-    ];
-    delete longestRoadState[currentHolder]?.hasLongestRoad;
+    setNoLongestRoadPoints(currentHolder);
+    if (longestRoadState[currentHolder]) {
+      longestRoadState[currentHolder].hasLongestRoad = null;
+      delete longestRoadState[currentHolder].longestRoad;
+    }
   }
 
   const challengerState = getByPlayerColor(playerStates, playerColor);
@@ -3151,14 +3163,26 @@ const updateLongestRoadAchievement = (playerColor: number) => {
   if (longestRoadState[playerColor]) {
     longestRoadState[playerColor].hasLongestRoad = true;
   }
-  addGameLogEntry(gameState, {
-    text: {
-      type: GameLogMessageType.PlayerReceivedAchievement,
-      playerColor,
-      achievementEnum: AchievementType.LongestRoad,
-    },
-    from: playerColor,
-  });
+  if (currentHolder == null) {
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.PlayerReceivedAchievement,
+        playerColor,
+        achievementEnum: AchievementType.LongestRoad,
+      },
+      from: playerColor,
+    });
+  } else {
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.PlayerPassedAchievementTo,
+        playerColorOld: currentHolder,
+        playerColorNew: playerColor,
+        achievementEnum: AchievementType.LongestRoad,
+      },
+      from: playerColor,
+    });
+  }
 };
 function getSettlementEligibleTiles(): number[] | null | undefined {
   const gameData = firebaseData.GAME;
