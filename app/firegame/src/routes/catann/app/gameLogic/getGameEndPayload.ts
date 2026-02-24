@@ -397,12 +397,12 @@ const getGameEndPayload = () => {
   };
   const startTime =
     (typeof window !== "undefined"
-      ? getValidTimestamp(window.__testOverrides?.startTime) ??
+      ? (getValidTimestamp(window.__testOverrides?.startTime) ??
         getValidTimestamp(window.parent?.__testOverrides?.startTime) ??
         getValidTimestamp(
           window.parent?.__testOverrides?.databaseGame?.data?.payload?.gameState
             ?.currentState?.startTime,
-        )
+        ))
       : undefined) ??
     getValidTimestamp(gameState?.currentState?.startTime) ??
     endTime;
@@ -423,17 +423,17 @@ const getGameEndPayload = () => {
     rankedUserStates: playerColors
       .filter((color) => (meColor == null ? true : color !== meColor))
       .map((color) => ({
-      color,
-      rankedState: {
-        type: 2,
-        numberOfGamesPlayed: 1,
-        requiredNumberOfGames: 5,
-        defaultEndGameData: {
-          amount: "-",
-          highest: false,
+        color,
+        rankedState: {
+          type: 2,
+          numberOfGamesPlayed: 1,
+          requiredNumberOfGames: 5,
+          defaultEndGameData: {
+            amount: "-",
+            highest: false,
+          },
         },
-      },
-    })),
+      })),
   };
 };
 export default getGameEndPayload;
