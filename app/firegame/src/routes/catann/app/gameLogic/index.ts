@@ -1,5 +1,6 @@
 import { firebaseData, setFirebaseData } from "../FirebaseWrapper";
-import { sendToMainSocket } from "../handleMessage";
+import getMe from "../getMe";
+import { FUTURE, sendToMainSocket } from "../handleMessage";
 import {
   AchievementType,
   CardEnum,
@@ -2043,7 +2044,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
             colonistVersion,
             giftedMemberships: [],
             icon: UserIcon.Guest,
-            id: "102013561",
+            id: "420",
             interactedWithSite: true,
             isLoggedIn: false,
             hasJoinedColonistDiscordServer: false,
@@ -2061,13 +2062,13 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
             totalCompletedGameCount: 0,
             ckTotalGameCount: 0,
             ckFreeGameUntil: null,
-            ckNextRerollAt: "2026-01-29T01:56:13.287Z",
-            username: "Marlen#8600",
+            ckNextRerollAt: FUTURE,
+            username: getMe().username,
             language: null,
             usernameChangeAttemptsLeft: 1,
             forceSubscription: true,
             vliHash: null,
-            expiresAt: "2026-02-28T00:56:13.287Z",
+            expiresAt: FUTURE,
           },
         },
       });

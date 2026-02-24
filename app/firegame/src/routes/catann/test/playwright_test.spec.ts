@@ -15,6 +15,7 @@ import {
   GameAction,
   GameStateUpdateType,
   GeneralAction,
+  LobbyState,
   OnlineStatus,
   State,
 } from "../app/gameLogic/CatannFilesEnums";
@@ -148,6 +149,7 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
           .data.sessions,
         mapState: gameState.mapState,
         playOrder: null,
+        gameDurationInMS: null,
       },
     );
     await spliceTestMessages(iframe);
@@ -434,6 +436,16 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
           },
           type: GameStateUpdateType.GameStateUpdated,
           sequence: msg.data.data?.sequence,
+        },
+      },
+    },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.LobbyStateUpdate.toString(),
+        data: {
+          type: LobbyState.UserStateUpdate,
+          payload: msg.data?.data?.payload,
         },
       },
     },

@@ -38,6 +38,7 @@ declare global {
           startTime: number;
           mapState: any;
           playOrder: any;
+          gameDurationInMS: any;
         }
       | undefined;
     __testSeed: any;

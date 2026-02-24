@@ -89,6 +89,9 @@ export const multiChoreo = (
     const startGame = async () => {
       const actor = players[hostId];
       console.log("start", { hostId });
+      const gameDurationInMS = actor.msgs.find(
+        (msg) => msg.data?.data?.payload?.endGameState?.gameDurationInMS,
+      )!.data?.data?.payload?.endGameState?.gameDurationInMS;
       if (fastForwardLogKey !== "") {
         const allAggregated = players.map((p) => {
           const ffIndex =
@@ -128,16 +131,17 @@ export const multiChoreo = (
             a.data.payload.gameState.playerStates[myColor];
         });
         await actor.page.evaluate(
-          (databaseGame) => {
+          ({ databaseGame, gameDurationInMS }) => {
             window.parent.__testOverrides = {
               databaseGame,
               sessions: null,
               startTime: -1,
               mapState: null,
               playOrder: null,
+              gameDurationInMS,
             };
           },
-          { aggregated },
+          { databaseGame: { aggregated }, gameDurationInMS },
         );
         const startButton = getStartButton(actor.iframe);
         await startButton.click({ force: true });
@@ -165,6 +169,7 @@ export const multiChoreo = (
             playOrder: actor.msgs.find(
               (msg) => msg.data.data?.payload?.playOrder,
             )!.data.data.payload.playOrder,
+            gameDurationInMS,
           },
         );
         for (let i = 0; i < players.length; i++) {

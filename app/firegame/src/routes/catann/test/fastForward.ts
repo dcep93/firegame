@@ -48,6 +48,7 @@ export default async function fastForward(
           startTime: -1,
           mapState: null,
           playOrder: null,
+          gameDurationInMS: null,
         };
       },
       { aggregated },
