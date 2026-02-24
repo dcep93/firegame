@@ -12,6 +12,7 @@ import {
 } from "./gameLogic";
 import {
   CardEnum,
+  GameLogMessageType,
   GameStateUpdateType,
   PlayerActionState,
   State,
@@ -64,52 +65,65 @@ const cascadeServerMessage = (
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
     sendHighlights();
     if (!isMyTurn()) {
-      if (
-        gameData.data.payload.gameState.currentState.actionState ===
-        PlayerActionState.SelectCardsToDiscard
-      ) {
-        [
-          GameStateUpdateType.HighlightCorners,
-          GameStateUpdateType.HighlightTiles,
-          GameStateUpdateType.HighlightRoadEdges,
-          GameStateUpdateType.HighlightShipEdges,
-        ].forEach((type) =>
-          sendToMainSocket?.({
-            id: State.GameStateUpdate.toString(),
-            data: {
-              type,
-              payload: [],
-            },
-          }),
-        );
-        // sendToMainSocket?.({
-        //   id: State.GameStateUpdate.toString(),
-        //   data: {
-        //     type: GameStateUpdateType.DiscardBroadcast,
-        //     payload: null,
-        //   },
-        // });
+      const latest = Object.entries(
+        gameData.data.payload.gameState.gameLogState,
+      )
+        .map(([key, val]) => ({ key: parseInt(key), val }))
+        .sort((a, b) => b.key - a.key)[0].val;
+      if (latest.text.type === GameLogMessageType.RolledDice) {
+        if (
+          gameData.data.payload.gameState.currentState.actionState ===
+          PlayerActionState.SelectCardsToDiscard
+        ) {
+          [
+            GameStateUpdateType.HighlightCorners,
+            GameStateUpdateType.HighlightTiles,
+            GameStateUpdateType.HighlightRoadEdges,
+            GameStateUpdateType.HighlightShipEdges,
+          ].forEach((type) =>
+            sendToMainSocket?.({
+              id: State.GameStateUpdate.toString(),
+              data: {
+                type,
+                payload: [],
+              },
+            }),
+          );
+          // sendToMainSocket?.({
+          //   id: State.GameStateUpdate.toString(),
+          //   data: {
+          //     type: GameStateUpdateType.DiscardBroadcast,
+          //     payload: null,
+          //   },
+          // });
+        }
       }
       const exchangeCardsPayloads =
         firebaseData.__meta.change.exchangeCardsPayloads;
       if (exchangeCardsPayloads) {
-        exchangeCardsPayloads.forEach((exchangeCardsPayload: any) =>
-          sendToMainSocket?.({
-            id: State.GameStateUpdate.toString(),
-            data: {
-              type: GameStateUpdateType.ExchangeCards,
-              payload: {
-                ...exchangeCardsPayload,
-                givingCards:
-                  exchangeCardsPayload.givingPlayer === 0
-                    ? exchangeCardsPayload.givingCards.map(
-                        () => CardEnum.DevelopmentBack,
-                      )
-                    : exchangeCardsPayload.givingCards,
+        exchangeCardsPayloads
+          .filter(
+            (exchangeCardsPayload: any) =>
+              exchangeCardsPayload.givingPlayer !==
+              gameData.data.payload.playerColor,
+          )
+          .forEach((exchangeCardsPayload: any) =>
+            sendToMainSocket?.({
+              id: State.GameStateUpdate.toString(),
+              data: {
+                type: GameStateUpdateType.ExchangeCards,
+                payload: {
+                  ...exchangeCardsPayload,
+                  givingCards:
+                    exchangeCardsPayload.givingPlayer === 0
+                      ? exchangeCardsPayload.givingCards.map(
+                          () => CardEnum.DevelopmentBack,
+                        )
+                      : exchangeCardsPayload.givingCards,
+                },
               },
-            },
-          }),
-        );
+            }),
+          );
       }
     }
     if (firebaseData.__meta.change.action === "ExecuteTrade") {
@@ -133,56 +147,50 @@ const cascadeServerMessage = (
       });
     }
 
-    if (
-      gameData.data.payload.gameState.currentState.actionState ===
-      PlayerActionState.SelectCardsToDiscard
-    ) {
-      const playerColor = gameData.data.payload.playerColor;
-      const playerCards = [
-        ...(getPlayerStateByColor(gameState, playerColor)?.resourceCards
-          ?.cards ?? []),
-      ].sort((a, b) => a - b);
-      const cardDiscardLimit = getCardDiscardLimit(gameData);
-      const amountToDiscard =
-        playerCards.length > cardDiscardLimit
-          ? Math.floor(playerCards.length / 2)
-          : 0;
-      if (amountToDiscard > 0) {
-        gameState.currentState.actionState =
-          PlayerActionState.SelectCardsToDiscard;
-        if (getPlayerStateByColor(gameState, playerColor)) {
-          const activePlayerState = getPlayerStateByColor(
-            gameState,
-            playerColor,
-          );
-          if (activePlayerState) {
-            activePlayerState.isTakingAction = true;
-          }
-        }
-        sendToMainSocket?.({
-          id: State.GameStateUpdate.toString(),
-          data: {
-            type: GameStateUpdateType.AmountOfCardsToDiscard,
-            payload: {
-              title: { key: "strings:game.prompts.discardCards" },
-              body: {
-                key: "strings:game.prompts.youHaveMoreThanXCards",
-                options: {
-                  count: cardDiscardLimit,
-                  amountToDiscard,
+    const latest = Object.entries(gameData.data.payload.gameState.gameLogState)
+      .map(([key, val]) => ({ key: parseInt(key), val }))
+      .sort((a, b) => b.key - a.key)[0].val;
+    if (latest.text.type === GameLogMessageType.RolledDice) {
+      if (
+        gameData.data.payload.gameState.currentState.actionState ===
+        PlayerActionState.SelectCardsToDiscard
+      ) {
+        const playerColor = gameData.data.payload.playerColor;
+        const playerCards = [
+          ...(getPlayerStateByColor(gameState, playerColor)?.resourceCards
+            ?.cards ?? []),
+        ].sort((a, b) => a - b);
+        const cardDiscardLimit = getCardDiscardLimit(gameData);
+        const amountToDiscard =
+          playerCards.length > cardDiscardLimit
+            ? Math.floor(playerCards.length / 2)
+            : 0;
+        if (amountToDiscard > 0) {
+          sendToMainSocket?.({
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type: GameStateUpdateType.AmountOfCardsToDiscard,
+              payload: {
+                title: { key: "strings:game.prompts.discardCards" },
+                body: {
+                  key: "strings:game.prompts.youHaveMoreThanXCards",
+                  options: {
+                    count: cardDiscardLimit,
+                    amountToDiscard,
+                  },
                 },
+                selectCardFormat: {
+                  amountOfCardsToSelect: amountToDiscard,
+                  validCardsToSelect: playerCards,
+                  allowableActionState: PlayerActionState.SelectCardsToDiscard,
+                  showCardBadge: true,
+                  cancelButtonActive: false,
+                },
+                showCondensedCardInformation: false,
               },
-              selectCardFormat: {
-                amountOfCardsToSelect: amountToDiscard,
-                validCardsToSelect: playerCards,
-                allowableActionState: PlayerActionState.SelectCardsToDiscard,
-                showCardBadge: true,
-                cancelButtonActive: false,
-              },
-              showCondensedCardInformation: false,
             },
-          },
-        });
+          });
+        }
       }
     }
     sendResponse(data);
