@@ -211,15 +211,17 @@ const Controller = (
         await clickCanvas(canvas, confirmSettlementOffset);
       }
     };
-    const buildCity = async (settlementCoords: {
-      col: number;
-      row: number;
-    }) => {
+    const buildCity = async (
+      settlementCoords: {
+        col: number;
+        row: number;
+      },
+      shouldConfirm: boolean = true,
+    ) => {
       const settlementOffset = getSettlementOffset(settlementCoords);
       await clickCanvas(canvas, settlementOffset);
 
-      const msgs = await spliceTestMessages(iframe);
-      if (msgs.length === 0) {
+      if (shouldConfirm) {
         const confirmCityOffset = getConfirmOffset(settlementOffset);
         await clickCanvas(canvas, confirmCityOffset);
       }
@@ -439,7 +441,7 @@ const Controller = (
       const cityMsg = _expectedMessages!.find(
         (msg) => msg.data.action === GameAction.ConfirmBuildCity,
       )!;
-      await buildCityFromPayload(cityMsg.data.payload);
+      await buildCityFromPayload(cityMsg.data.payload, false);
     };
     const fixWeirdTrade = async () => {
       const nextMsg = _expectedMessages![0];
@@ -564,6 +566,20 @@ const Controller = (
       expect(msg.trigger).toBe("clientData");
       expect(msg.data.action).toBe(GameAction.SelectedTile);
       const robberOffset = getTilePosition(msg.data.payload);
+
+      const nextGameLogState = _expectedMessages!.find(
+        (msg) => msg.data?.data?.payload?.diff?.gameLogState,
+      )!.data?.data?.payload?.diff?.gameLogState!;
+      const stolenCard = (
+        Object.values(nextGameLogState).find(
+          (v: any) => v.toSpectators === false,
+        ) as any
+      )?.text.cardEnums[0];
+      if (stolenCard !== undefined)
+        await canvas.evaluate((_, __testSeed) => {
+          window.parent.__testSeed = __testSeed;
+        }, stolenCard);
+
       await clickCanvas(canvas, robberOffset);
 
       const confirmRobberOffset = getConfirmOffset(robberOffset);
@@ -668,8 +684,9 @@ const Controller = (
     };
     const buildCityFromPayload = async (
       payload: keyof typeof tileCornerStates,
+      shouldConfirm: boolean = true,
     ) => {
-      await buildCity(getColRow(tileCornerStates[payload]));
+      await buildCity(getColRow(tileCornerStates[payload]), shouldConfirm);
     };
     return {
       _peek: () => _expectedMessages![0],

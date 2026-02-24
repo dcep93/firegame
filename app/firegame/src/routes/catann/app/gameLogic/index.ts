@@ -518,8 +518,9 @@ const autoPlaceRobber = (tileIndex: number) => {
     const targetState = getPlayerStateByColor(gameState, targetPlayerColor);
     const targetCards = targetState?.resourceCards?.cards ?? [];
     const stolenCard =
-      // TODO restore random/seed
-      1 || targetCards[Math.floor(Math.random() * targetCards.length)];
+      window.__testSeed ??
+      targetCards[Math.floor(Math.random() * targetCards.length)];
+    window.__testSeed = null;
     if (stolenCard !== undefined) {
       exchangeCardsPayload = {
         givingPlayer: targetPlayerColor,
@@ -756,11 +757,6 @@ export const sendCornerHighlights30 = (
           ].includes(actionState)
         ? getCityEligibleTiles()
         : [];
-
-  console.log(
-    "test.log.city.x",
-    JSON.stringify({ force, cornerIndices, x: new Error().stack }),
-  );
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -1291,16 +1287,18 @@ const placeCity = (cornerIndex: number) => {
   gameState.currentState.allocatedTime = TURN_TIMERS_MS.postBuild;
   gameState.currentState.startTime = Date.now();
 
+  const exchangeCardsPayload = {
+    givingPlayer: playerColor,
+    givingCards: exchangeCards,
+    receivingPlayer: 0,
+    receivingCards: [],
+  };
+
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
       type: GameStateUpdateType.ExchangeCards,
-      payload: {
-        givingPlayer: playerColor,
-        givingCards: exchangeCards,
-        receivingPlayer: 0,
-        receivingCards: [],
-      },
+      payload: exchangeCardsPayload,
     },
   });
 
@@ -1315,6 +1313,7 @@ const placeCity = (cornerIndex: number) => {
     {
       action: "placeCity",
       cornerIndex,
+      exchangeCardsPayloads: [exchangeCardsPayload],
     },
   );
 };
@@ -2192,31 +2191,13 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
     }
 
     if (parsed.action === GameAction.WantToBuildCity) {
-      console.log("test.log.city", Date.now());
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const playerColor = gameData.data.payload.playerColor;
-      const cornerStates = gameState.mapState
-        .tileCornerStates as StringMap<TileCornerState>;
-      const highlightCorners = Object.entries(cornerStates)
-        .map(([key, value]) => ({
-          key: Number.parseInt(key, 10),
-          value: value as TileCornerState,
-        }))
-        .filter(({ key }) => Number.isFinite(key))
-        .filter(
-          ({ value }) =>
-            value &&
-            value.owner === playerColor &&
-            value.buildingType === CornerPieceType.Settlement,
-        )
-        .map(({ key }) => key);
       gameState.currentState.actionState = PlayerActionState.PlaceCity;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
-      sendCornerHighlights30(gameData, highlightCorners);
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
         {
@@ -2335,16 +2316,18 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
       sendTileHighlights33(gameData, []);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
+      const exchangeCardsPayload = {
+        givingPlayer: playerColor,
+        givingCards: clickedCard != null ? [clickedCard] : [],
+        receivingPlayer: BANK_INDEX,
+        receivingCards: [],
+      };
+
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {
           type: GameStateUpdateType.ExchangeCards,
-          payload: {
-            givingPlayer: playerColor,
-            givingCards: clickedCard != null ? [clickedCard] : [],
-            receivingPlayer: BANK_INDEX,
-            receivingCards: [],
-          },
+          payload: exchangeCardsPayload,
         },
       });
       if (clickedCard === CardEnum.RoadBuilding) {
@@ -2359,7 +2342,10 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
 
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
-        { ClickedDevelopmentCard: clickedCard },
+        {
+          ClickedDevelopmentCard: clickedCard,
+          exchangeCardsPayloads: [exchangeCardsPayload],
+        },
       );
       return true;
     }
@@ -3228,7 +3214,30 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
 }
 
 const getCityEligibleTiles = (): number[] => {
-  return [];
+  const gameData = firebaseData.GAME;
+  const gameState = gameData?.data?.payload?.gameState;
+  const playerColor = gameData?.data?.payload?.playerColor;
+
+  if (!gameState || playerColor == null) {
+    return [];
+  }
+
+  const cornerStates = (gameState.mapState?.tileCornerStates ??
+    {}) as StringMap<TileCornerState>;
+
+  return Object.entries(cornerStates)
+    .map(([key, value]) => ({
+      index: Number.parseInt(key, 10),
+      cornerState: value as TileCornerState,
+    }))
+    .filter(
+      ({ index, cornerState }) =>
+        Number.isFinite(index) &&
+        cornerState &&
+        cornerState.owner === playerColor &&
+        cornerState.buildingType === CornerPieceType.Settlement,
+    )
+    .map(({ index }) => index);
 };
 
 export const getNumRounds = () => {
