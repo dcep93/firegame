@@ -131,10 +131,6 @@ type LongestRoadMechanicState = {
 };
 type LargestArmyMechanicState = { hasLargestArmy?: boolean };
 type FirebaseWithMeta = typeof firebaseData & { __meta?: { now?: number } };
-type GameStateCurrentWithRuntime = GameState["currentState"] & {
-  roadBuildingHighlightStep?: number;
-  pendingRoadBuildingEdgeIndex?: number;
-};
 type GameStateWithLargestArmy = GameState & {
   mechanicLargestArmyState?: NumericMap<LargestArmyMechanicState>;
 };
@@ -1358,8 +1354,6 @@ const placeRoad = (edgeIndex: number) => {
   }
 
   const actionStateAtRoadPlacement = gameState.currentState.actionState;
-  const roadCurrentState =
-    gameState.currentState as GameStateCurrentWithRuntime;
   const isRoadBuildingPlacement =
     actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding ||
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding;
@@ -1371,18 +1365,19 @@ const placeRoad = (edgeIndex: number) => {
   sendEdgeHighlights31(gameData);
   sendShipHighlights32(gameData);
 
+  addGameLogEntry(gameState, {
+    text: {
+      type: GameLogMessageType.PlayerPlacedPiece,
+      playerColor,
+      pieceEnum: MapPieceType.Road,
+    },
+    from: playerColor,
+  });
+
   if (
     actionStateAtRoadPlacement ===
     PlayerActionState.InitialPlacementRoadPlacement
   ) {
-    addGameLogEntry(gameState, {
-      text: {
-        type: GameLogMessageType.PlayerPlacedPiece,
-        playerColor,
-        pieceEnum: MapPieceType.Road,
-      },
-      from: playerColor,
-    });
     addGameLogEntry(gameState, {
       text: {
         type: GameLogMessageType.Separator,
@@ -1410,7 +1405,6 @@ const placeRoad = (edgeIndex: number) => {
       turnState: GamePhase.Turn,
       allocatedTime: 160,
     });
-    roadCurrentState.roadBuildingHighlightStep = 0;
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
@@ -1419,7 +1413,6 @@ const placeRoad = (edgeIndex: number) => {
       actionState: PlayerActionState.None,
       allocatedTime: TURN_TIMERS_MS.roadBuildingFollowUp,
     });
-    delete roadCurrentState.roadBuildingHighlightStep;
   } else {
     addGameLogEntry(gameState, {
       text: {
@@ -2540,8 +2533,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
       const edgeIndex = parsed.payload as number;
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      const roadCurrentState =
-        gameState.currentState as GameStateCurrentWithRuntime;
+      const roadCurrentState: any = gameState.currentState;
 
       if (
         parsed.action !== GameAction.ConfirmBuildShip &&
