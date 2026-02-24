@@ -20,7 +20,7 @@ import {
   UserRole,
   VictoryPointSource,
 } from "./CatannFilesEnums";
-import { colonistVersion, newGame } from "./createNew";
+import { colonistVersion, isMyTurn, newGame } from "./createNew";
 import { addGameLogEntry, edgeEndpoints } from "./utils";
 
 const DEVELOPMENT_DECK_CARD_COUNTS = {
@@ -2425,18 +2425,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
           payload: null,
         },
       });
-      sendCornerHighlights30(gameData, []);
-      sendTileHighlights33(gameData);
-      sendEdgeHighlights31(gameData);
-      sendShipHighlights32(gameData);
-      sendCornerHighlights30(gameData, []);
-      sendTileHighlights33(gameData);
-      sendEdgeHighlights31(gameData);
-      sendShipHighlights32(gameData);
-      sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
-
-      gameState.currentState.actionState =
-        PlayerActionState.PlaceRobberOrPirate;
       if (getPlayerStateByColor(gameState, currentPlayer)) {
         const activePlayerState = getPlayerStateByColor(
           gameState,
@@ -2444,6 +2432,25 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         );
         if (activePlayerState) {
           activePlayerState.isTakingAction = false;
+        }
+        if (
+          Object.values(gameState.playerStates).find(
+            (p) => p.isTakingAction,
+          ) === undefined
+        ) {
+          if (isMyTurn()) {
+            sendCornerHighlights30(gameData, []);
+            sendTileHighlights33(gameData);
+            sendEdgeHighlights31(gameData);
+            sendShipHighlights32(gameData);
+            sendCornerHighlights30(gameData, []);
+            sendTileHighlights33(gameData);
+            sendEdgeHighlights31(gameData);
+            sendShipHighlights32(gameData);
+            sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
+          }
+          gameState.currentState.actionState =
+            PlayerActionState.PlaceRobberOrPirate;
         }
       }
       addGameLogEntry(gameState, {
