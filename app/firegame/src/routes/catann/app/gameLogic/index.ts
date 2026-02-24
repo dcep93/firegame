@@ -1485,7 +1485,7 @@ const placeRoad = (edgeIndex: number) => {
 const rollDice = () => {
   const gameData = firebaseData.GAME!;
   const gameState = gameData.data.payload.gameState;
-  const playerColor = gameData.data.payload.playerColor;
+  const myPlayerColor = gameData.data.payload.playerColor;
   const overrideDiceState = window.__testSeed;
   window.__testSeed = null;
   const getDiceRoll = () => Math.floor(Math.random() * DICE_ROLL_SIDES) + 1;
@@ -1593,11 +1593,11 @@ const rollDice = () => {
   addGameLogEntry(gameState, {
     text: {
       type: GameLogMessageType.RolledDice,
-      playerColor,
+      playerColor: myPlayerColor,
       firstDice: dice1,
       secondDice: dice2,
     },
-    from: playerColor,
+    from: myPlayerColor,
   });
   if (blockedTileStateForLog) {
     addGameLogEntry(gameState, {
@@ -1634,52 +1634,57 @@ const rollDice = () => {
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
 
-    const playerCards = [
-      ...(getPlayerStateByColor(gameState, playerColor)?.resourceCards?.cards ??
-        []),
-    ].sort((a, b) => a - b);
-    const cardDiscardLimit = getCardDiscardLimit(gameData);
-    const amountToDiscard =
-      playerCards.length > cardDiscardLimit
-        ? Math.floor(playerCards.length / 2)
-        : 0;
-    if (amountToDiscard > 0) {
-      gameState.currentState.actionState =
-        PlayerActionState.SelectCardsToDiscard;
-      if (getPlayerStateByColor(gameState, playerColor)) {
-        const activePlayerState = getPlayerStateByColor(gameState, playerColor);
-        if (activePlayerState) {
-          activePlayerState.isTakingAction = true;
+    gameData.data.payload.playOrder.forEach((playerColor) => {
+      const playerCards = [
+        ...(getPlayerStateByColor(gameState, playerColor)?.resourceCards
+          ?.cards ?? []),
+      ].sort((a, b) => a - b);
+      const cardDiscardLimit = getCardDiscardLimit(gameData);
+      const amountToDiscard =
+        playerCards.length > cardDiscardLimit
+          ? Math.floor(playerCards.length / 2)
+          : 0;
+      if (amountToDiscard > 0) {
+        gameState.currentState.actionState =
+          PlayerActionState.SelectCardsToDiscard;
+        if (getPlayerStateByColor(gameState, playerColor)) {
+          const activePlayerState = getPlayerStateByColor(
+            gameState,
+            playerColor,
+          );
+          if (activePlayerState) {
+            activePlayerState.isTakingAction = true;
+          }
         }
-      }
-      sendToMainSocket?.({
-        id: State.GameStateUpdate.toString(),
-        data: {
-          type: GameStateUpdateType.AmountOfCardsToDiscard,
-          payload: {
-            title: { key: "strings:game.prompts.discardCards" },
-            body: {
-              key: "strings:game.prompts.youHaveMoreThanXCards",
-              options: {
-                count: cardDiscardLimit,
-                amountToDiscard,
+        sendToMainSocket?.({
+          id: State.GameStateUpdate.toString(),
+          data: {
+            type: GameStateUpdateType.AmountOfCardsToDiscard,
+            payload: {
+              title: { key: "strings:game.prompts.discardCards" },
+              body: {
+                key: "strings:game.prompts.youHaveMoreThanXCards",
+                options: {
+                  count: cardDiscardLimit,
+                  amountToDiscard,
+                },
               },
+              selectCardFormat: {
+                amountOfCardsToSelect: amountToDiscard,
+                validCardsToSelect: playerCards,
+                allowableActionState: PlayerActionState.SelectCardsToDiscard,
+                showCardBadge: true,
+                cancelButtonActive: false,
+              },
+              showCondensedCardInformation: false,
             },
-            selectCardFormat: {
-              amountOfCardsToSelect: amountToDiscard,
-              validCardsToSelect: playerCards,
-              allowableActionState: PlayerActionState.SelectCardsToDiscard,
-              showCardBadge: true,
-              cancelButtonActive: false,
-            },
-            showCondensedCardInformation: false,
           },
-        },
-      });
-    } else {
-      const robberHighlightTiles = getRobberEligibleTiles(gameData);
-      sendTileHighlights33(gameData, robberHighlightTiles);
-    }
+        });
+      } else {
+        const robberHighlightTiles = getRobberEligibleTiles(gameData);
+        sendTileHighlights33(gameData, robberHighlightTiles);
+      }
+    });
   }
 
   const resourcesToGive = shouldTriggerRobber ? null : _resourcesToGive;
