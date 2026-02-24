@@ -124,11 +124,10 @@ export const handleSpectator = (gameState: GameState) => {
   Object.entries(gameState?.playerStates || {}).forEach(
     ([playerColor, playerState]) => {
       if (playerColor === myColor) return;
-      playerState.resourceCards = {
-        cards: playerState?.resourceCards?.cards.map(
+      if (playerState?.resourceCards?.cards)
+        playerState.resourceCards.cards = playerState?.resourceCards?.cards.map(
           () => CardEnum.ResourceBack,
-        ),
-      };
+        );
     },
   );
   Object.entries(
