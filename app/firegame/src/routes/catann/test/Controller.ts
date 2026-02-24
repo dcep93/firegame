@@ -155,15 +155,31 @@ const Controller = (
             msg.data.data.payload.timeLeftInState = timeLeftInState;
           }
           // TODO properly set allocatedTime
-          const allocatedTime =
-            expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
-          if (allocatedTime !== undefined) {
-            if (msg.data.data.payload.diff) {
-              if (!msg.data.data.payload.diff?.currentState) {
+          if (
+            msg.data.data.payload?.diff?.currentState?.allocatedTime !==
+            expectedMsg.data.data?.payload?.diff?.currentState?.allocatedTime
+          ) {
+            if (
+              msg.data.data.payload.diff?.currentState?.allocatedTime ===
+              undefined
+            ) {
+              if (!msg.data.data.payload.diff) {
+                msg.data.data.payload.diff = {};
+              }
+              if (!msg.data.data.payload.diff.currentState) {
                 msg.data.data.payload.diff.currentState = {};
               }
               msg.data.data.payload.diff.currentState.allocatedTime =
-                allocatedTime;
+                expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
+            } else {
+              if (!expectedMsg.data.data.payload.diff) {
+                expectedMsg.data.data.payload.diff = {};
+              }
+              if (!expectedMsg.data.data.payload.diff.currentState) {
+                expectedMsg.data.data.payload.diff.currentState = {};
+              }
+              expectedMsg.data.data.payload.diff.currentState.allocatedTime =
+                msg.data.data.payload?.diff?.currentState?.allocatedTime;
             }
           }
         }
