@@ -158,14 +158,13 @@ const Controller = (
           const allocatedTime =
             expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
           if (allocatedTime !== undefined) {
-            if (
-              msg.data.data.payload.diff &&
-              !msg.data.data.payload.diff?.currentState
-            ) {
-              msg.data.data.payload.diff.currentState = {};
+            if (msg.data.data.payload.diff) {
+              if (!msg.data.data.payload.diff?.currentState) {
+                msg.data.data.payload.diff.currentState = {};
+              }
+              msg.data.data.payload.diff.currentState.allocatedTime =
+                allocatedTime;
             }
-            msg.data.data.payload.diff.currentState.allocatedTime =
-              allocatedTime;
           }
         }
         try {

@@ -502,14 +502,14 @@ const autoPlaceRobber = (tileIndex: number) => {
   Object.values(tileCornerStates).forEach((cornerState) => {
     const owner = parseFiniteIndex(cornerState?.owner);
     if (owner == null || owner === playerColor) return;
-    opponents.add(owner);
     const ownerState = getPlayerStateByColor(gameState, owner);
-    if (!ownerState?.resourceCards?.cards?.length) return;
     const adjacentTileIndices = getAdjacentTileIndicesForCorner(
       gameState,
       cornerState,
     );
     if (!adjacentTileIndices.includes(tileIndex)) return;
+    opponents.add(owner);
+    if (!ownerState?.resourceCards?.cards?.length) return;
     oppositeCandidates.push(owner);
   });
   const uniqueOpponents = [...Array.from(new Set(oppositeCandidates))];
@@ -595,8 +595,6 @@ const autoPlaceRobber = (tileIndex: number) => {
   );
 
   if (!exchangeCardsPayload) {
-    console.log("test.log", { uniqueOpponents });
-
     addGameLogEntry(
       gameState,
       opponents.size === 0
@@ -2429,16 +2427,18 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         });
       }
 
+      const exchangeCardsPayload = {
+        givingPlayer: currentPlayer,
+        givingCards: selectedCards,
+        receivingPlayer: BANK_INDEX,
+        receivingCards: [],
+      };
+
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {
           type: GameStateUpdateType.ExchangeCards,
-          payload: {
-            givingPlayer: currentPlayer,
-            givingCards: selectedCards,
-            receivingPlayer: BANK_INDEX,
-            receivingCards: [],
-          },
+          payload: exchangeCardsPayload,
         },
       });
       sendToMainSocket?.({
@@ -2484,6 +2484,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         {
           action: "selectedCards",
           selectedCards,
+          exchangeCardsPayloads: [exchangeCardsPayload],
         },
       );
       return true;

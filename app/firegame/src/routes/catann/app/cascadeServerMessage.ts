@@ -55,6 +55,32 @@ const cascadeServerMessage = (
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
     sendHighlights();
     if (!isMyTurn()) {
+      if (
+        gameData.data.payload.gameState.currentState.actionState ===
+        PlayerActionState.SelectCardsToDiscard
+      ) {
+        [
+          GameStateUpdateType.HighlightCorners,
+          GameStateUpdateType.HighlightTiles,
+          GameStateUpdateType.HighlightRoadEdges,
+          GameStateUpdateType.HighlightShipEdges,
+        ].forEach((type) =>
+          sendToMainSocket?.({
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type,
+              payload: [],
+            },
+          }),
+        );
+        sendToMainSocket?.({
+          id: State.GameStateUpdate.toString(),
+          data: {
+            type: GameStateUpdateType.DiscardBroadcast,
+            payload: null,
+          },
+        });
+      }
       const exchangeCardsPayloads =
         firebaseData.__meta.change.exchangeCardsPayloads;
       if (exchangeCardsPayloads) {
