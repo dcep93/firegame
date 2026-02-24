@@ -86,9 +86,9 @@ function receiveFirebaseDataCatann(
           prevFirebaseData.GAME?.data?.payload?.gameState,
         );
         if (update) {
+          handleSpectator(update.data.payload.diff);
           if (isMyTurn())
             console.log("test.log", JSON.stringify({ update }, null, 2));
-          handleSpectator(update.data.payload.diff);
           sendToMainSocket?.(update);
         }
       }

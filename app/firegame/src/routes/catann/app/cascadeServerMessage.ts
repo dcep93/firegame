@@ -121,25 +121,26 @@ export default cascadeServerMessage;
 export const handleSpectator = (gameState: GameState) => {
   if (!isTest) return;
   const myColor = firebaseData.GAME!.data?.payload?.playerColor.toString();
-  const playerStates = gameState?.playerStates;
-  if (!playerStates) return;
-  Object.entries(playerStates).forEach(([playerColor, playerState]) => {
-    if (playerColor === myColor) return;
-    playerState.resourceCards = {
-      cards: playerState?.resourceCards?.cards.map(() => CardEnum.ResourceBack),
-    };
-  });
+  Object.entries(gameState?.playerStates || {}).forEach(
+    ([playerColor, playerState]) => {
+      if (playerColor === myColor) return;
+      playerState.resourceCards = {
+        cards: playerState?.resourceCards?.cards.map(
+          () => CardEnum.ResourceBack,
+        ),
+      };
+    },
+  );
   Object.entries(
     gameState.mechanicDevelopmentCardsState?.players || {},
   ).forEach(([playerColor, playerState]) => {
     if (playerColor === myColor) return;
     delete playerState.developmentCardsBoughtThisTurn;
-    playerState.developmentCards = {
-      cards: playerState?.developmentCards?.cards!.map(
-        () => CardEnum.DevelopmentBack,
-      ),
-    };
+    if (playerState.developmentCards)
+      playerState.developmentCards.cards =
+        playerState.developmentCards.cards!.map(() => CardEnum.DevelopmentBack);
   });
+
   Object.entries(gameState.gameLogState).forEach(([key, entry]) => {
     if (
       entry.toSpectators === false &&
