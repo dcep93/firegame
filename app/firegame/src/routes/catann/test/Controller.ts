@@ -174,7 +174,7 @@ const Controller = (
           console.log(JSON.stringify({ msgs: testMessages.slice(i) }, null, 2));
           throw e;
         }
-        console.log("matched", playerIndex, i, JSON.stringify(msg, null, 2));
+        console.log("matched", playerIndex, i, JSON.stringify(msg));
       });
     };
     const confirmSelectedCards = async () => {
@@ -308,16 +308,18 @@ const Controller = (
     };
     const wantToTrade = async () => {
       await verifyTestMessages(false);
+      const tradeCreatorProposalContainer = iframe.locator(
+        'div[class*="tradeCreatorProposalContainer-"]',
+      );
       const tradeButton = iframe.locator('div[id="action-button-trade"]');
+      if (await tradeCreatorProposalContainer.isVisible()) {
+        await tradeButton.first().click({ force: true });
+        await delay(100);
+      }
       await tradeButton.first().click({ force: true });
-      await delay(100);
       await waitForTrigger(iframe, "serverData");
     };
     const makeTrade = async (payload: any) => {
-      await verifyTestMessages(false);
-      const tradeButton = iframe.locator('div[id="action-button-trade"]');
-      await tradeButton.first().click({ force: true });
-      await spliceTestMessages(iframe);
       const resourceCardType: Record<number, string> = {
         1: "lumber",
         2: "brick",
@@ -369,10 +371,13 @@ const Controller = (
         window.parent.__testSeed = __testSeed;
       }, tradeId);
 
-      await iframe
-        .locator(`[id="${tradeButtonId}"]`)
-        .first()
-        .click({ force: true });
+      const btn = await iframe.locator(`[id="${tradeButtonId}"]`).first();
+
+      await expect(
+        btn.locator('div[class*="foregroundDisabled-"]'),
+      ).toHaveCount(0, { timeout: 5000 });
+
+      btn.click({ force: true });
       await waitForTrigger(iframe, "serverData");
     };
     const makeNextTrade = async () => {
@@ -401,9 +406,6 @@ const Controller = (
       );
       await btn.first().click({ force: true });
       await waitForTrigger(iframe, "clientData");
-
-      const tradeButton = iframe.locator('div[id="action-button-trade"]');
-      await tradeButton.first().click({ force: true });
     };
     const buildNextRoad = async () => {
       const roadMsg = _expectedMessages!.find(

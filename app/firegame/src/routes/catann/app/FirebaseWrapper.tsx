@@ -87,8 +87,7 @@ function receiveFirebaseDataCatann(
         );
         if (update) {
           handleSpectator(update.data.payload.diff);
-          if (isMyTurn())
-            console.log("test.log", JSON.stringify({ update }, null, 2));
+          if (isMyTurn()) console.log("test.log", JSON.stringify({ update }));
           sendToMainSocket?.(update);
         }
       }
