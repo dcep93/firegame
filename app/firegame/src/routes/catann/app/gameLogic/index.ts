@@ -794,16 +794,15 @@ export const sendEdgeHighlights31 = (gameData: GameData) => {
     cornerState &&
     serializeCornerKey(cornerState.x, cornerState.y, cornerState.z);
   const actionState = gameData.data.payload.gameState.currentState.actionState;
-  const edgeIndices = ![
+  const edgeIndices = [
     PlayerActionState.Place2MoreRoadBuilding,
     PlayerActionState.Place1MoreRoadBuilding,
-    PlayerActionState.InitialPlacementRoadPlacement,
     PlayerActionState.PlaceRoadForFree,
+    PlayerActionState.PlaceRoad,
   ].includes(actionState)
-    ? []
-    : true
-      ? getBuildableRoadEdgeIndicesFromGameState(gameData)
-      : toNumericRecordEntries(edgeStates)
+    ? getBuildableRoadEdgeIndicesFromGameState(gameData)
+    : [PlayerActionState.InitialPlacementRoadPlacement].includes(actionState)
+      ? toNumericRecordEntries(edgeStates)
           .map(({ index, value }) => ({
             index,
             edgeState: value,
@@ -817,7 +816,8 @@ export const sendEdgeHighlights31 = (gameData: GameData) => {
                 serializeCornerKey(endpoint.x, endpoint.y, endpoint.z),
             );
           })
-          .map(({ index }) => index);
+          .map(({ index }) => index)
+      : [];
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -2181,11 +2181,11 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
     if (parsed.action === GameAction.WantToBuildRoad) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
-      gameState.currentState.actionState = PlayerActionState.PlaceRoad;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
+      gameState.currentState.actionState = PlayerActionState.PlaceRoad;
       sendEdgeHighlights31(gameData);
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
