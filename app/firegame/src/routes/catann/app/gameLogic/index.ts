@@ -142,7 +142,7 @@ type WinnerResult = { color: number };
 const getVictoryPointsToWin = (gameData: GameData) =>
   gameData.data.payload.gameSettings.victoryPointsToWin;
 
-const getCardDiscardLimit = (gameData: GameData) =>
+export const getCardDiscardLimit = (gameData: GameData) =>
   gameData.data.payload.gameSettings.cardDiscardLimit;
 
 const isDevelopmentCardRobberWindow = (gameState: GameState) => {
@@ -337,7 +337,10 @@ const getRemainingDevelopmentDeck = (
   return deck;
 };
 
-const getPlayerStateByColor = (gameState: GameState, playerColor: number) => {
+export const getPlayerStateByColor = (
+  gameState: GameState,
+  playerColor: number,
+) => {
   return getByPlayerColor(
     gameState.playerStates as StringMap<PlayerState> | undefined,
     playerColor,
@@ -1659,30 +1662,6 @@ const rollDice = () => {
             activePlayerState.isTakingAction = true;
           }
         }
-        sendToMainSocket?.({
-          id: State.GameStateUpdate.toString(),
-          data: {
-            type: GameStateUpdateType.AmountOfCardsToDiscard,
-            payload: {
-              title: { key: "strings:game.prompts.discardCards" },
-              body: {
-                key: "strings:game.prompts.youHaveMoreThanXCards",
-                options: {
-                  count: cardDiscardLimit,
-                  amountToDiscard,
-                },
-              },
-              selectCardFormat: {
-                amountOfCardsToSelect: amountToDiscard,
-                validCardsToSelect: playerCards,
-                allowableActionState: PlayerActionState.SelectCardsToDiscard,
-                showCardBadge: true,
-                cancelButtonActive: false,
-              },
-              showCondensedCardInformation: false,
-            },
-          },
-        });
       }
     });
   }

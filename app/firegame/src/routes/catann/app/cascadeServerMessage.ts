@@ -1,6 +1,8 @@
 import { firebaseData } from "./FirebaseWrapper";
 import {
   GameState,
+  getCardDiscardLimit,
+  getPlayerStateByColor,
   getRobberEligibleTiles,
   ResourcesToGiveType,
   sendCornerHighlights30,
@@ -24,6 +26,7 @@ const cascadeServerMessage = (
 ) => {
   const gameData = firebaseData.GAME;
   if (!gameData) return;
+  const gameState = gameData.data.payload.gameState;
 
   const sendHighlights = () => {
     if (firebaseData.__meta?.change.action === "passTurn") {
@@ -79,13 +82,13 @@ const cascadeServerMessage = (
             },
           }),
         );
-        sendToMainSocket?.({
-          id: State.GameStateUpdate.toString(),
-          data: {
-            type: GameStateUpdateType.DiscardBroadcast,
-            payload: null,
-          },
-        });
+        // sendToMainSocket?.({
+        //   id: State.GameStateUpdate.toString(),
+        //   data: {
+        //     type: GameStateUpdateType.DiscardBroadcast,
+        //     payload: null,
+        //   },
+        // });
       }
       const exchangeCardsPayloads =
         firebaseData.__meta.change.exchangeCardsPayloads;
@@ -128,6 +131,59 @@ const cascadeServerMessage = (
           payload: resourcesToGive.sort((a, b) => a.tileIndex - b.tileIndex),
         },
       });
+    }
+
+    if (
+      gameData.data.payload.gameState.currentState.actionState ===
+      PlayerActionState.SelectCardsToDiscard
+    ) {
+      const playerColor = gameData.data.payload.playerColor;
+      const playerCards = [
+        ...(getPlayerStateByColor(gameState, playerColor)?.resourceCards
+          ?.cards ?? []),
+      ].sort((a, b) => a - b);
+      const cardDiscardLimit = getCardDiscardLimit(gameData);
+      const amountToDiscard =
+        playerCards.length > cardDiscardLimit
+          ? Math.floor(playerCards.length / 2)
+          : 0;
+      if (amountToDiscard > 0) {
+        gameState.currentState.actionState =
+          PlayerActionState.SelectCardsToDiscard;
+        if (getPlayerStateByColor(gameState, playerColor)) {
+          const activePlayerState = getPlayerStateByColor(
+            gameState,
+            playerColor,
+          );
+          if (activePlayerState) {
+            activePlayerState.isTakingAction = true;
+          }
+        }
+        sendToMainSocket?.({
+          id: State.GameStateUpdate.toString(),
+          data: {
+            type: GameStateUpdateType.AmountOfCardsToDiscard,
+            payload: {
+              title: { key: "strings:game.prompts.discardCards" },
+              body: {
+                key: "strings:game.prompts.youHaveMoreThanXCards",
+                options: {
+                  count: cardDiscardLimit,
+                  amountToDiscard,
+                },
+              },
+              selectCardFormat: {
+                amountOfCardsToSelect: amountToDiscard,
+                validCardsToSelect: playerCards,
+                allowableActionState: PlayerActionState.SelectCardsToDiscard,
+                showCardBadge: true,
+                cancelButtonActive: false,
+              },
+              showCondensedCardInformation: false,
+            },
+          },
+        });
+      }
     }
     sendResponse(data);
   } else {
