@@ -748,13 +748,19 @@ export const sendCornerHighlights30 = (
           );
         })
         .map(({ key }) => key)
-    : [
-          PlayerActionState.PlaceSettlement,
-          PlayerActionState.PlaceCity,
-          PlayerActionState.PlaceCityWithDiscount,
-        ].includes(actionState)
+    : [PlayerActionState.PlaceSettlement].includes(actionState)
       ? getSettlementEligibleTiles()
-      : [];
+      : [
+            PlayerActionState.PlaceCity,
+            PlayerActionState.PlaceCityWithDiscount,
+          ].includes(actionState)
+        ? getCityEligibleTiles()
+        : [];
+
+  console.log(
+    "test.log.city.x",
+    JSON.stringify({ force, cornerIndices, x: new Error().stack }),
+  );
 
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
@@ -2186,6 +2192,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
     }
 
     if (parsed.action === GameAction.WantToBuildCity) {
+      console.log("test.log.city", Date.now());
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
       const playerColor = gameData.data.payload.playerColor;
@@ -3219,6 +3226,10 @@ function getSettlementEligibleTiles(): number[] | null | undefined {
 
   return eligibleCorners.length > 0 ? eligibleCorners : null;
 }
+
+const getCityEligibleTiles = (): number[] => {
+  return [];
+};
 
 export const getNumRounds = () => {
   const payload = firebaseData.GAME!.data.payload;
