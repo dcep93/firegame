@@ -44,8 +44,8 @@ const cascadeServerMessage = (
         [
           PlayerActionState.InitialPlacementRoadPlacement,
           PlayerActionState.PlaceRoadForFree,
-          PlayerActionState.Place2MoreRoadBuilding,
           PlayerActionState.Place1MoreRoadBuilding,
+          PlayerActionState.Place2MoreRoadBuilding,
         ].includes(actionState)
       ) {
         sendEdgeHighlights31(gameData);

@@ -781,10 +781,7 @@ export const sendCornerHighlights30 = (
   });
 };
 
-export const sendEdgeHighlights31 = (
-  gameData: GameData,
-  empty: boolean = true,
-) => {
+export const sendEdgeHighlights31 = (gameData: GameData) => {
   const serializeCornerKey = (x: number, y: number, z: number) =>
     `${x}:${y}:${z}`;
 
@@ -798,15 +795,15 @@ export const sendEdgeHighlights31 = (
     cornerState &&
     serializeCornerKey(cornerState.x, cornerState.y, cornerState.z);
   const actionState = gameData.data.payload.gameState.currentState.actionState;
-  const edgeIndices = !empty
-    ? getBuildableRoadEdgeIndicesFromGameState(gameData)
-    : ![
-          PlayerActionState.InitialPlacementRoadPlacement,
-          PlayerActionState.PlaceRoadForFree,
-          PlayerActionState.Place2MoreRoadBuilding,
-          PlayerActionState.Place1MoreRoadBuilding,
-        ].includes(actionState)
-      ? []
+  const edgeIndices = ![
+    PlayerActionState.Place2MoreRoadBuilding,
+    PlayerActionState.Place1MoreRoadBuilding,
+    PlayerActionState.InitialPlacementRoadPlacement,
+    PlayerActionState.PlaceRoadForFree,
+  ].includes(actionState)
+    ? []
+    : true
+      ? getBuildableRoadEdgeIndicesFromGameState(gameData)
       : toNumericRecordEntries(edgeStates)
           .map(({ index, value }) => ({
             index,
@@ -1369,6 +1366,11 @@ const placeRoad = (edgeIndex: number) => {
   const exchangeCards = [CardEnum.Lumber, CardEnum.Brick];
   var exchangeCardsPayload;
 
+  gameState.currentState.actionState = PlayerActionState.None;
+
+  sendEdgeHighlights31(gameData);
+  sendShipHighlights32(gameData);
+
   if (
     actionStateAtRoadPlacement ===
     PlayerActionState.InitialPlacementRoadPlacement
@@ -1453,8 +1455,6 @@ const placeRoad = (edgeIndex: number) => {
 
   updateLongestRoadAchievement(playerColor);
 
-  sendEdgeHighlights31(gameData);
-  sendShipHighlights32(gameData);
   if (!isRoadBuildingPlacement) {
     if (
       actionStateAtRoadPlacement ===
@@ -1482,7 +1482,9 @@ const placeRoad = (edgeIndex: number) => {
     {
       action: "placeRoad",
       edgeIndex,
-      exchangeCardsPayloads: [exchangeCardsPayload],
+      exchangeCardsPayloads: !exchangeCardsPayload
+        ? null
+        : [exchangeCardsPayload],
     },
   );
 };
@@ -2199,7 +2201,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
       sendShipHighlights32(gameData);
-      sendEdgeHighlights31(gameData, false);
+      sendEdgeHighlights31(gameData);
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
         {
@@ -2288,13 +2290,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         },
         from: playerColor,
       });
-
-      gameState.currentState.actionState =
-        clickedCard === CardEnum.Knight
-          ? PlayerActionState.PlaceRobberOrPirate
-          : clickedCard === CardEnum.RoadBuilding
-            ? PlayerActionState.Place2MoreRoadBuilding
-            : PlayerActionState.None;
       gameState.currentState.startTime = Date.now();
 
       if (clickedCard === CardEnum.Knight && usedKnightCount >= 3) {
@@ -2342,6 +2337,13 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         receivingCards: [],
       };
 
+      gameState.currentState.actionState =
+        clickedCard === CardEnum.Knight
+          ? PlayerActionState.PlaceRobberOrPirate
+          : clickedCard === CardEnum.RoadBuilding
+            ? PlayerActionState.Place2MoreRoadBuilding
+            : PlayerActionState.None;
+
       sendToMainSocket?.({
         id: State.GameStateUpdate.toString(),
         data: {
@@ -2349,9 +2351,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
           payload: exchangeCardsPayload,
         },
       });
-      if (clickedCard === CardEnum.RoadBuilding) {
-        sendEdgeHighlights31(gameData, false);
-      } else {
+      if (clickedCard !== CardEnum.RoadBuilding) {
         sendCornerHighlights30(gameData, []);
         sendTileHighlights33(gameData, []);
         sendEdgeHighlights31(gameData);
