@@ -151,7 +151,7 @@ const Controller = (
           //
           const timeLeftInState =
             expectedMsg.data.data.payload?.timeLeftInState;
-          if (timeLeftInState !== undefined) {
+          if (timeLeftInState !== undefined && msg.data.data.payload) {
             msg.data.data.payload.timeLeftInState = timeLeftInState;
           }
           //

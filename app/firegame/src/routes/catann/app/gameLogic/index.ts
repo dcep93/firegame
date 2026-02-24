@@ -561,6 +561,11 @@ const autoPlaceRobber = (tileIndex: number) => {
         toSpectators: false,
         specificRecipients: [targetPlayerColor],
       });
+      addGameLogEntry(gameState, {
+        text: {},
+        toSpectators: false,
+        specificRecipients: [],
+      });
     }
   }
 
