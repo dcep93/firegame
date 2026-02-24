@@ -126,9 +126,9 @@ const getGameEndPayload = () => {
         const distributionType = text?.distributionType;
         if (distributionType === 2) {
           stats.goldIncome += count;
-        } else if (distributionType === 1 || distributionType === 0) {
+        } else if (distributionType === 1) {
           stats.rollingIncome += count;
-        } else {
+        } else if (distributionType === 3) {
           stats.devCardIncome += count;
         }
       }
@@ -147,6 +147,9 @@ const getGameEndPayload = () => {
             Number.isFinite(card),
           )
         : [];
+      if (receivedCards.length > 0) {
+        resourceCardsStats.push(...receivedCards);
+      }
       if (playerColor != null) {
         const stats = ensureResourceStats(playerColor);
         stats.tradeIncome += receivedCards.length;
@@ -386,13 +389,23 @@ const getGameEndPayload = () => {
       ? (firebaseData as FirebaseWithMeta).__meta?.now
       : Date.now();
   resourceCardsStats.sort((a, b) => a - b);
+  const getValidTimestamp = (value: unknown) => {
+    if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+      return undefined;
+    }
+    return value;
+  };
   const startTime =
-    typeof window !== "undefined" &&
-    typeof window.__testOverrides?.startTime === "number"
-      ? window.__testOverrides.startTime
-      : typeof gameState?.currentState?.startTime === "number"
-        ? gameState.currentState.startTime
-        : endTime;
+    (typeof window !== "undefined"
+      ? getValidTimestamp(window.__testOverrides?.startTime) ??
+        getValidTimestamp(window.parent?.__testOverrides?.startTime) ??
+        getValidTimestamp(
+          window.parent?.__testOverrides?.databaseGame?.data?.payload?.gameState
+            ?.currentState?.startTime,
+        )
+      : undefined) ??
+    getValidTimestamp(gameState?.currentState?.startTime) ??
+    endTime;
   const meColor = parseFiniteIndex(gameData?.data?.payload?.playerColor);
 
   return {
