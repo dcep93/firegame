@@ -18,6 +18,7 @@ import {
   State,
 } from "./gameLogic/CatannFilesEnums";
 import { isMyTurn, newGame } from "./gameLogic/createNew";
+import getMe from "./getMe";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
 
@@ -63,41 +64,7 @@ const cascadeServerMessage = (
     }
   };
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
-    sendHighlights();
-    if (!isMyTurn()) {
-      const latest = Object.entries(
-        gameData.data.payload.gameState.gameLogState,
-      )
-        .map(([key, val]) => ({ key: parseInt(key), val }))
-        .sort((a, b) => b.key - a.key)[0].val;
-      if (latest.text.type === GameLogMessageType.RolledDice) {
-        if (
-          gameData.data.payload.gameState.currentState.actionState ===
-          PlayerActionState.SelectCardsToDiscard
-        ) {
-          [
-            GameStateUpdateType.HighlightCorners,
-            GameStateUpdateType.HighlightTiles,
-            GameStateUpdateType.HighlightRoadEdges,
-            GameStateUpdateType.HighlightShipEdges,
-          ].forEach((type) =>
-            sendToMainSocket?.({
-              id: State.GameStateUpdate.toString(),
-              data: {
-                type,
-                payload: [],
-              },
-            }),
-          );
-          // sendToMainSocket?.({
-          //   id: State.GameStateUpdate.toString(),
-          //   data: {
-          //     type: GameStateUpdateType.DiscardBroadcast,
-          //     payload: null,
-          //   },
-          // });
-        }
-      }
+    if (firebaseData.__meta.me.userId !== getMe().userId) {
       const exchangeCardsPayloads =
         firebaseData.__meta.change.exchangeCardsPayloads;
       if (exchangeCardsPayloads) {
@@ -125,6 +92,80 @@ const cascadeServerMessage = (
             }),
           );
       }
+
+      const latest = Object.entries(
+        gameData.data.payload.gameState.gameLogState,
+      )
+        .map(([key, val]) => ({ key: parseInt(key), val }))
+        .sort((a, b) => b.key - a.key)[0].val;
+      if (
+        latest.text.type === GameLogMessageType.PlayerDiscarded &&
+        gameData.data.payload.gameState.currentState.actionState ===
+          PlayerActionState.PlaceRobberOrPirate
+      ) {
+        [
+          GameStateUpdateType.HighlightCorners,
+          GameStateUpdateType.HighlightTiles,
+          GameStateUpdateType.HighlightRoadEdges,
+          GameStateUpdateType.HighlightShipEdges,
+        ].forEach((type) =>
+          sendToMainSocket?.({
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type,
+              payload: [],
+            },
+          }),
+        );
+        // [
+        //   GameStateUpdateType.HighlightCorners,
+        //   GameStateUpdateType.HighlightTiles,
+        //   GameStateUpdateType.HighlightRoadEdges,
+        //   GameStateUpdateType.HighlightShipEdges,
+        // ].forEach((type) =>
+        //   sendToMainSocket?.({
+        //     id: State.GameStateUpdate.toString(),
+        //     data: {
+        //       type,
+        //       payload: [],
+        //     },
+        //   }),
+        // );
+        // sendToMainSocket?.({
+        //   id: State.GameStateUpdate.toString(),
+        //   data: {
+        //     type: GameStateUpdateType.DiscardBroadcast,
+        //     payload: null,
+        //   },
+        // });
+      }
+      if (
+        latest.text.type === GameLogMessageType.RolledDice &&
+        gameData.data.payload.gameState.currentState.actionState ===
+          PlayerActionState.SelectCardsToDiscard
+      ) {
+        [
+          GameStateUpdateType.HighlightCorners,
+          GameStateUpdateType.HighlightTiles,
+          GameStateUpdateType.HighlightRoadEdges,
+          GameStateUpdateType.HighlightShipEdges,
+        ].forEach((type) =>
+          sendToMainSocket?.({
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type,
+              payload: [],
+            },
+          }),
+        );
+        // sendToMainSocket?.({
+        //   id: State.GameStateUpdate.toString(),
+        //   data: {
+        //     type: GameStateUpdateType.DiscardBroadcast,
+        //     payload: null,
+        //   },
+        // });
+      }
     }
     if (firebaseData.__meta.change.action === "ExecuteTrade") {
       sendToMainSocket?.({
@@ -146,6 +187,7 @@ const cascadeServerMessage = (
         },
       });
     }
+    sendHighlights();
 
     const latest = Object.entries(gameData.data.payload.gameState.gameLogState)
       .map(([key, val]) => ({ key: parseInt(key), val }))

@@ -24525,50 +24525,6 @@
         "data": {
           "type": 30,
           "payload": [],
-          "sequence": 572
-        }
-      }
-    },
-    {
-      "trigger": "serverData",
-      "data": {
-        "id": "130",
-        "data": {
-          "type": 33,
-          "payload": [],
-          "sequence": 573
-        }
-      }
-    },
-    {
-      "trigger": "serverData",
-      "data": {
-        "id": "130",
-        "data": {
-          "type": 31,
-          "payload": [],
-          "sequence": 574
-        }
-      }
-    },
-    {
-      "trigger": "serverData",
-      "data": {
-        "id": "130",
-        "data": {
-          "type": 32,
-          "payload": [],
-          "sequence": 575
-        }
-      }
-    },
-    {
-      "trigger": "serverData",
-      "data": {
-        "id": "130",
-        "data": {
-          "type": 30,
-          "payload": [],
           "sequence": 576
         }
       }
