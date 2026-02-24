@@ -13,11 +13,13 @@ import {
 import {
   CardEnum,
   GameLogMessageType,
+  GamePhase,
   GameStateUpdateType,
   PlayerActionState,
   State,
 } from "./gameLogic/CatannFilesEnums";
 import { isMyTurn, newGame } from "./gameLogic/createNew";
+import getGameEndPayload from "./gameLogic/getGameEndPayload";
 import getMe from "./getMe";
 import { sendToMainSocket } from "./handleMessage";
 import { isTest } from "./IframeScriptString";
@@ -236,6 +238,28 @@ const cascadeServerMessage = (
       }
     }
     sendResponse(data);
+
+    console.log("test.log.260", JSON.stringify(data.data.payload));
+    if (
+      firebaseData.GAME?.data.payload.gameState?.currentState.turnState ===
+      GamePhase.GameEnd
+    ) {
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.CanResignGame,
+          payload: false,
+        },
+      });
+
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.GameEndState,
+          payload: getGameEndPayload(),
+        },
+      });
+    }
   } else {
     // TODO does not need to be separate block
     sendResponse(data);

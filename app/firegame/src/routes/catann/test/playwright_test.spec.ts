@@ -15,6 +15,7 @@ import {
   GameAction,
   GameStateUpdateType,
   GeneralAction,
+  LobbyAction,
   LobbyState,
   OnlineStatus,
   State,
@@ -411,6 +412,12 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
       },
     },
     {
+      trigger: "clientData",
+      data: {
+        payload: LobbyAction.StopWatchingRoomList,
+      },
+    },
+    {
       trigger: "serverData",
       data: {
         id: State.GameStateUpdate.toString(),
@@ -446,6 +453,17 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
         data: {
           type: LobbyState.UserStateUpdate,
           payload: msg.data?.data?.payload,
+        },
+      },
+    },
+    {
+      trigger: "serverData",
+      data: {
+        id: State.LobbyStateUpdate.toString(),
+        data: {
+          type: LobbyState.UserStateUpdate,
+          payload: msg.data?.data?.payload,
+          sequence: msg.data.data?.sequence,
         },
       },
     },

@@ -22,7 +22,6 @@ import {
   VictoryPointSource,
 } from "./CatannFilesEnums";
 import { colonistVersion, isMyTurn, newGame } from "./createNew";
-import getGameEndPayload from "./getGameEndPayload";
 import { addGameLogEntry, edgeEndpoints } from "./utils";
 
 const DEVELOPMENT_DECK_CARD_COUNTS = {
@@ -2581,22 +2580,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         action: "gameEnd",
       },
     );
-
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.CanResignGame,
-        payload: false,
-      },
-    });
-
-    sendToMainSocket?.({
-      id: State.GameStateUpdate.toString(),
-      data: {
-        type: GameStateUpdateType.GameEndState,
-        payload: getGameEndPayload(),
-      },
-    });
   }
   return rval;
 };
