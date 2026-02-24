@@ -147,13 +147,45 @@ const getGameEndPayload = () => {
             Number.isFinite(card),
           )
         : [];
-      if (receivedCards.length > 0) {
-        resourceCardsStats.push(...receivedCards);
-      }
       if (playerColor != null) {
         const stats = ensureResourceStats(playerColor);
         stats.tradeIncome += receivedCards.length;
         stats.tradeLoss += givenCards.length;
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.PlayerWantsToTradeWith) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      if (playerColor != null) {
+        ensureActivityStats(playerColor).proposedTrades += 1;
+      }
+      return;
+    }
+
+    if (type === GameLogMessageType.PlayerTradedWithPlayer) {
+      const playerColor = parseFiniteIndex(text?.playerColor);
+      const acceptingPlayerColor = parseFiniteIndex(text?.acceptingPlayerColor);
+      const givenCards = Array.isArray(text?.givenCardEnums)
+        ? (text.givenCardEnums as number[]).filter((card: number) =>
+            Number.isFinite(card),
+          )
+        : [];
+      const receivedCards = Array.isArray(text?.receivedCardEnums)
+        ? (text.receivedCardEnums as number[]).filter((card: number) =>
+            Number.isFinite(card),
+          )
+        : [];
+      if (playerColor != null) {
+        const stats = ensureResourceStats(playerColor);
+        stats.tradeIncome += receivedCards.length;
+        stats.tradeLoss += givenCards.length;
+        ensureActivityStats(playerColor).successfulTrades += 1;
+      }
+      if (acceptingPlayerColor != null) {
+        const stats = ensureResourceStats(acceptingPlayerColor);
+        stats.tradeIncome += givenCards.length;
+        stats.tradeLoss += receivedCards.length;
       }
       return;
     }
@@ -167,6 +199,36 @@ const getGameEndPayload = () => {
         : [];
       if (playerColor != null && text?.areResourceCards) {
         ensureResourceStats(playerColor).rollingLoss += cardEnums.length;
+      }
+      return;
+    }
+
+    if (
+      type === GameLogMessageType.StolenResourceCardThief ||
+      type === GameLogMessageType.StolenResourceCardVictim
+    ) {
+      const thiefColor = parseFiniteIndex((entry as JsonObject)?.from);
+      const messageColor = parseFiniteIndex(text?.playerColor);
+      const cardEnums = Array.isArray(text?.cardEnums)
+        ? (text.cardEnums as number[]).filter((card: number) =>
+            Number.isFinite(card),
+          )
+        : [];
+      const amount = cardEnums.length;
+      if (amount <= 0 || thiefColor == null) {
+        return;
+      }
+      let victimColor: number | null = messageColor;
+      if (
+        victimColor == null ||
+        victimColor === thiefColor ||
+        !playerColors.includes(victimColor)
+      ) {
+        victimColor = playerColors.find((c) => c !== thiefColor) ?? null;
+      }
+      ensureResourceStats(thiefColor).robbingIncome += amount;
+      if (victimColor != null) {
+        ensureResourceStats(victimColor).robbingLoss += amount;
       }
       return;
     }
@@ -303,7 +365,7 @@ const getGameEndPayload = () => {
             : victoryPointsToWin > 0
               ? totalPoints >= victoryPointsToWin
               : false,
-        title: null,
+        title: winningColor != null && color === winningColor ? 1 : null,
       };
       return acc;
     },
@@ -314,7 +376,7 @@ const getGameEndPayload = () => {
         rank: number;
         victoryPoints: NumericMap<number>;
         winningPlayer: boolean | undefined;
-        title: null;
+        title: number | null;
       }
     >,
   );
@@ -324,9 +386,13 @@ const getGameEndPayload = () => {
       ? (firebaseData as FirebaseWithMeta).__meta?.now
       : Date.now();
   const startTime =
-    typeof gameState?.currentState?.startTime === "number"
-      ? gameState.currentState.startTime
-      : endTime;
+    typeof window !== "undefined" &&
+    typeof window.__testOverrides?.startTime === "number"
+      ? window.__testOverrides.startTime
+      : typeof gameState?.currentState?.startTime === "number"
+        ? gameState.currentState.startTime
+        : endTime;
+  const meColor = parseFiniteIndex(gameData?.data?.payload?.playerColor);
 
   return {
     endGameState: {
@@ -334,13 +400,15 @@ const getGameEndPayload = () => {
       resourceCardsStats,
       developmentCardStats,
       gameDurationInMS: Math.max(0, endTime - startTime),
-      totalTurnCount: gameState?.currentState?.completedTurns ?? 0,
+      totalTurnCount: (gameState?.currentState?.completedTurns ?? 0) + 1,
       players,
       resourceStats,
       activityStats,
     },
     isReplayAvailable: logEntries.length > 0,
-    rankedUserStates: playerColors.map((color) => ({
+    rankedUserStates: playerColors
+      .filter((color) => (meColor == null ? true : color !== meColor))
+      .map((color) => ({
       color,
       rankedState: {
         type: 2,
