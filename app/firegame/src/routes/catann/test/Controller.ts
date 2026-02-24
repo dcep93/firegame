@@ -154,13 +154,16 @@ const Controller = (
           if (timeLeftInState !== undefined && msg.data.data.payload) {
             msg.data.data.payload.timeLeftInState = timeLeftInState;
           }
-          //
+          // TODO properly set allocatedTime
           const allocatedTime =
             expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
-          if (
-            allocatedTime !== undefined &&
-            msg.data.data.payload.diff?.currentState
-          ) {
+          if (allocatedTime !== undefined) {
+            if (
+              msg.data.data.payload.diff &&
+              !msg.data.data.payload.diff?.currentState
+            ) {
+              msg.data.data.payload.diff.currentState = {};
+            }
             msg.data.data.payload.diff.currentState.allocatedTime =
               allocatedTime;
           }
@@ -311,6 +314,10 @@ const Controller = (
       await waitForTrigger(iframe, "serverData");
     };
     const makeTrade = async (payload: any) => {
+      await verifyTestMessages(false);
+      const tradeButton = iframe.locator('div[id="action-button-trade"]');
+      await tradeButton.first().click({ force: true });
+      await spliceTestMessages(iframe);
       const resourceCardType: Record<number, string> = {
         1: "lumber",
         2: "brick",

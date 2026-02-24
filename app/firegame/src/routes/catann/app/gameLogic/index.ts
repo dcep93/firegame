@@ -52,6 +52,7 @@ const TURN_TIMERS_MS = {
   placeRobber: 40,
   createTrade: 70,
   gameEnd: 300,
+  executeTrade: 80,
 } as const;
 
 type NumericMap<T> = Record<number, T>;
@@ -2101,6 +2102,7 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
     if (parsed.action === GameAction.ExecuteTrade) {
       const gameData = firebaseData.GAME;
       const gameState = gameData.data.payload.gameState;
+      gameState.currentState.allocatedTime = TURN_TIMERS_MS.executeTrade;
       sendCornerHighlights30(gameData, []);
       sendTileHighlights33(gameData);
       sendEdgeHighlights31(gameData);
@@ -2111,7 +2113,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
       Object.keys(gameState.tradeState.activeOffers).forEach((key) => {
         gameState.tradeState.activeOffers[key] = null;
       });
-      gameState.currentState.allocatedTime = TURN_TIMERS_MS.createTrade;
 
       addGameLogEntry(gameState, {
         text: {
