@@ -1,10 +1,12 @@
 import { firebaseData } from "./FirebaseWrapper";
 import {
   GameState,
+  getRobberEligibleTiles,
   ResourcesToGiveType,
   sendCornerHighlights30,
   sendEdgeHighlights31,
   sendResetTradeStateAtEndOfTurn80,
+  sendTileHighlights33,
 } from "./gameLogic";
 import {
   CardEnum,
@@ -49,6 +51,10 @@ const cascadeServerMessage = (
         ].includes(actionState)
       ) {
         sendEdgeHighlights31(gameData);
+      }
+      if ([PlayerActionState.PlaceRobberOrPirate].includes(actionState)) {
+        const robberHighlightTiles = getRobberEligibleTiles(gameData);
+        sendTileHighlights33(gameData, robberHighlightTiles);
       }
     }
   };

@@ -825,7 +825,10 @@ export const sendEdgeHighlights31 = (gameData: GameData) => {
   });
 };
 
-const sendTileHighlights33 = (gameData: GameData, payload: number[] = []) => {
+export const sendTileHighlights33 = (
+  gameData: GameData,
+  payload: number[] = [],
+) => {
   sendToMainSocket?.({
     id: State.GameStateUpdate.toString(),
     data: {
@@ -961,7 +964,7 @@ const getFriendlyRobberBlockedTiles = (gameData: GameData) => {
   return blockedTiles;
 };
 
-const getRobberEligibleTiles = (gameData: GameData) => {
+export const getRobberEligibleTiles = (gameData: GameData) => {
   const gameState = gameData.data.payload.gameState;
   const tileHexStates = (gameState.mapState.tileHexStates ??
     {}) as StringMap<HexTileState>;
@@ -1680,9 +1683,6 @@ const rollDice = () => {
             },
           },
         });
-      } else {
-        const robberHighlightTiles = getRobberEligibleTiles(gameData);
-        sendTileHighlights33(gameData, robberHighlightTiles);
       }
     });
   }
