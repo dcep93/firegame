@@ -66,7 +66,12 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
         const entries = Object.entries(value);
         entries.forEach(([key, nestedValue]) => {
           if (
-            ["cards", "cardsToBroadcast", "validCardsToSelect"].includes(key) &&
+            [
+              "cards",
+              "cardsToBroadcast",
+              "resourceCardsStats",
+              "validCardsToSelect",
+            ].includes(key) &&
             Array.isArray(nestedValue) &&
             nestedValue.every((entry) => typeof entry === "number")
           ) {
@@ -88,7 +93,7 @@ const choreo = (fileName: string, clientDataSequence: number = -1) => {
         .filter((msg) => isRealMessage(msg))
         .map((msg) => {
           if (msg.trigger === "serverData") {
-            sortCardsToBroadcast(msg.data);
+            sortCardsToBroadcast(msg);
             if (
               [
                 GameStateUpdateType.HighlightRoadEdges,

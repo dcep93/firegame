@@ -237,7 +237,12 @@ const getExpectedMessages = async (recordingPath: string) => {
     const entries = Object.entries(value);
     entries.forEach(([key, nestedValue]) => {
       if (
-        ["cards", "cardsToBroadcast", "validCardsToSelect"].includes(key) &&
+        [
+          "cards",
+          "cardsToBroadcast",
+          "resourceCardsStats",
+          "validCardsToSelect",
+        ].includes(key) &&
         Array.isArray(nestedValue) &&
         nestedValue.every((entry) => typeof entry === "number")
       ) {

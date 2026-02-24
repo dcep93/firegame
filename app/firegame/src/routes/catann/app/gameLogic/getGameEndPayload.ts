@@ -385,6 +385,7 @@ const getGameEndPayload = () => {
     typeof (firebaseData as FirebaseWithMeta)?.__meta?.now === "number"
       ? (firebaseData as FirebaseWithMeta).__meta?.now
       : Date.now();
+  resourceCardsStats.sort((a, b) => a - b);
   const startTime =
     typeof window !== "undefined" &&
     typeof window.__testOverrides?.startTime === "number"
