@@ -497,10 +497,12 @@ const autoPlaceRobber = (tileIndex: number) => {
 
   const tileCornerStates = (gameState.mapState.tileCornerStates ??
     {}) as StringMap<TileCornerState>;
+  const opponents = new Set<number>();
   const oppositeCandidates: number[] = [];
   Object.values(tileCornerStates).forEach((cornerState) => {
     const owner = parseFiniteIndex(cornerState?.owner);
     if (owner == null || owner === playerColor) return;
+    opponents.add(owner);
     const ownerState = getPlayerStateByColor(gameState, owner);
     if (!ownerState?.resourceCards?.cards?.length) return;
     const adjacentTileIndices = getAdjacentTileIndicesForCorner(
@@ -593,12 +595,25 @@ const autoPlaceRobber = (tileIndex: number) => {
   );
 
   if (!exchangeCardsPayload) {
-    addGameLogEntry(gameState, {
-      text: {
-        type: GameLogMessageType.NoPlayerToStealFrom,
-      },
-      from: playerColor,
-    });
+    console.log("test.log", { uniqueOpponents });
+
+    addGameLogEntry(
+      gameState,
+      opponents.size === 0
+        ? {
+            text: {
+              type: GameLogMessageType.NoPlayerToStealFrom,
+            },
+            from: playerColor,
+          }
+        : {
+            text: {
+              type: GameLogMessageType.CantStealPlayersDontHaveCards,
+              playerCount: opponents.size,
+            },
+            from: playerColor,
+          },
+    );
   }
 
   setFirebaseData(
