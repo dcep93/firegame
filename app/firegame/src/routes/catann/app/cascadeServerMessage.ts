@@ -135,13 +135,14 @@ export const handleSpectator = (gameState: GameState) => {
     gameState.mechanicDevelopmentCardsState?.players || {},
   ).forEach(([playerColor, playerState]) => {
     if (playerColor === myColor) return;
-    delete playerState.developmentCardsBoughtThisTurn;
+    if (playerState.developmentCardsBoughtThisTurn)
+      delete playerState.developmentCardsBoughtThisTurn;
     if (playerState.developmentCards)
       playerState.developmentCards.cards =
         playerState.developmentCards.cards!.map(() => CardEnum.DevelopmentBack);
   });
 
-  Object.entries(gameState.gameLogState).forEach(([key, entry]) => {
+  Object.entries(gameState.gameLogState || {}).forEach(([key, entry]) => {
     if (
       entry.toSpectators === false &&
       !entry.specificRecipients?.includes(parseInt(myColor))
