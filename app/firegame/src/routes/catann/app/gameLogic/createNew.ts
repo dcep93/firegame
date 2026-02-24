@@ -31,6 +31,7 @@ import { colorHelper, tileCornerStates, tileEdgeStates } from "./utils";
 
 declare global {
   interface Window {
+    __testGameDurationInMS: any;
     __testOverrides:
       | {
           databaseGame: any;
@@ -38,7 +39,6 @@ declare global {
           startTime: number;
           mapState: any;
           playOrder: any;
-          gameDurationInMS: any;
         }
       | undefined;
     __testSeed: any;

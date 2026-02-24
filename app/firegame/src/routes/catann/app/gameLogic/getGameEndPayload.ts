@@ -414,8 +414,7 @@ const getGameEndPayload = () => {
       resourceCardsStats,
       developmentCardStats,
       gameDurationInMS:
-        window.__testOverrides?.gameDurationInMS ??
-        Math.max(0, endTime - startTime),
+        window.__testGameDurationInMS ?? Math.max(0, endTime - startTime),
       totalTurnCount: (gameState?.currentState?.completedTurns ?? 0) + 1,
       players,
       resourceStats,

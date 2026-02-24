@@ -89,7 +89,7 @@ export const multiChoreo = (
     const startGame = async () => {
       const actor = players[hostId];
       console.log("start", { hostId });
-      const gameDurationInMS = actor.msgs.find(
+      const __testGameDurationInMS = actor.msgs.find(
         (msg) => msg.data?.data?.payload?.endGameState?.gameDurationInMS,
       )!.data?.data?.payload?.endGameState?.gameDurationInMS;
       if (fastForwardLogKey !== "") {
@@ -131,17 +131,16 @@ export const multiChoreo = (
             a.data.payload.gameState.playerStates[myColor];
         });
         await actor.page.evaluate(
-          ({ databaseGame, gameDurationInMS }) => {
+          (databaseGame) => {
             window.parent.__testOverrides = {
               databaseGame,
               sessions: null,
               startTime: -1,
               mapState: null,
               playOrder: null,
-              gameDurationInMS,
             };
           },
-          { databaseGame: { aggregated }, gameDurationInMS },
+          { aggregated },
         );
         const startButton = getStartButton(actor.iframe);
         await startButton.click({ force: true });
@@ -169,7 +168,6 @@ export const multiChoreo = (
             playOrder: actor.msgs.find(
               (msg) => msg.data.data?.payload?.playOrder,
             )!.data.data.payload.playOrder,
-            gameDurationInMS,
           },
         );
         for (let i = 0; i < players.length; i++) {
@@ -185,6 +183,11 @@ export const multiChoreo = (
         for (let i = 0; i < players.length; i++) {
           await players[i].c.verifyTestMessages();
         }
+      }
+      for (let i = 0; i < players.length; i++) {
+        await players[i].page.evaluate((__testGameDurationInMS) => {
+          window.parent.__testGameDurationInMS = __testGameDurationInMS;
+        }, __testGameDurationInMS);
       }
     };
     const helper = async () => {
