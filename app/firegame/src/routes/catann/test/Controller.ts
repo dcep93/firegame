@@ -189,7 +189,7 @@ const Controller = (
           console.log(JSON.stringify({ msgs: testMessages.slice(i) }, null, 2));
           throw e;
         }
-        console.log("matched", playerIndex, i, JSON.stringify(msg));
+        console.log("\tmatched", playerIndex, i, JSON.stringify(msg));
       });
     };
     const confirmSelectedCards = async () => {
@@ -430,7 +430,7 @@ const Controller = (
       const roadMsg = _expectedMessages!.find(
         (msg) => msg.data.action === GameAction.ConfirmBuildRoad,
       )!;
-      await buildRoadFromPayload(roadMsg.data.payload);
+      await buildRoadFromPayload(roadMsg.data.payload, false);
     };
     const selectInitialPlacementIndex = async () => {
       const initialMsg = _expectedMessages!.find(

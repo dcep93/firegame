@@ -6,7 +6,7 @@ import { ControllerType } from "./Controller";
 // TODO make this the only default?
 export const singleChoreo = (i: number, c: ControllerType) => {
   const action = c._peek().data.action as GameAction;
-  console.log("singleChoreo", i, {
+  console.log("\tsingleChoreo", i, {
     [GameAction[action]]: c._peek().data,
   });
   return getHandlers(c)[action]!();

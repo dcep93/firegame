@@ -1368,17 +1368,17 @@ const placeRoad = (edgeIndex: number) => {
 
   gameState.currentState.actionState = PlayerActionState.None;
 
-  sendEdgeHighlights31(gameData);
-  sendShipHighlights32(gameData);
+  // sendEdgeHighlights31(gameData);
+  // sendShipHighlights32(gameData);
 
-  addGameLogEntry(gameState, {
-    text: {
-      type: GameLogMessageType.PlayerPlacedPiece,
-      playerColor,
-      pieceEnum: MapPieceType.Road,
-    },
-    from: playerColor,
-  });
+  // addGameLogEntry(gameState, {
+  //   text: {
+  //     type: GameLogMessageType.PlayerPlacedPiece,
+  //     playerColor,
+  //     pieceEnum: MapPieceType.Road,
+  //   },
+  //   from: playerColor,
+  // });
 
   if (
     actionStateAtRoadPlacement ===
@@ -1455,12 +1455,8 @@ const placeRoad = (edgeIndex: number) => {
   updateLongestRoadAchievement(playerColor);
 
   if (!isRoadBuildingPlacement) {
-    if (
-      actionStateAtRoadPlacement ===
-      PlayerActionState.InitialPlacementRoadPlacement
-    ) {
-      sendEdgeHighlights31(gameData);
-    }
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);
