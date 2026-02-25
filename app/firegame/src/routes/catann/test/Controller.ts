@@ -371,16 +371,17 @@ const Controller = (
         ? "action-button-trade-bank"
         : "action-button-trade-players";
 
-      const tradeId = Object.keys(
-        _expectedMessages!.find(
-          (msg) => msg.data?.data?.payload?.diff?.tradeState?.activeOffers,
-        )!.data?.data?.payload?.diff?.tradeState?.activeOffers,
-      )[0];
+      if (!payload.isBankTrade) {
+        const tradeId = Object.keys(
+          _expectedMessages!.find(
+            (msg) => msg.data?.data?.payload?.diff?.tradeState?.activeOffers,
+          )!.data?.data?.payload?.diff?.tradeState?.activeOffers,
+        )[0];
 
-      await canvas.evaluate((_, __testSeed) => {
-        window.parent.__testSeed = __testSeed;
-      }, tradeId);
-
+        await canvas.evaluate((_, __testSeed) => {
+          window.parent.__testSeed = __testSeed;
+        }, tradeId);
+      }
       const btn = await iframe.locator(`[id="${tradeButtonId}"]`).first();
 
       await expect(

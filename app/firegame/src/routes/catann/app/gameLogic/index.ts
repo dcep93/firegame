@@ -2022,7 +2022,9 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         const activeOffer = gameState.tradeState?.activeOffers?.[tradeId];
         if (activeOffer) {
           const responses = activeOffer.playerResponses ?? {};
-          if (payload.response !== 0) throw new Error("not implemented");
+          // if (payload.response !== 0) {
+          //   throw new Error(`not implemented ${JSON.stringify(payload)}`);
+          // }
           responses[String(gameData.data.payload.playerColor)] =
             1 - responses[String(gameData.data.payload.playerColor)];
           activeOffer.playerResponses = responses;

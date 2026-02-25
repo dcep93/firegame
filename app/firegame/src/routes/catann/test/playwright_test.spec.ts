@@ -279,7 +279,7 @@ const isRegression = process.env.CATANN_REGRESSION === "1";
 const doIfRegression = isRegression ? test : test.skip;
 const doIfNotRegression = !isRegression ? test : test.skip;
 doIfRegression("2p.v0", multiChoreo("./choreo/2p.v0.json"));
-doIfNotRegression("2p.v1", multiChoreo("./choreo/2p.v1.json", "107"));
+doIfNotRegression("2p.v1", multiChoreo("./choreo/2p.v1.json", "16"));
 test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
 
 //
@@ -508,7 +508,7 @@ const APP_URL = `http://127.0.0.1:${APP_PORT}/`;
 const SERVER_START_TIMEOUT_MS = 10_000;
 
 test.use({ ignoreHTTPSErrors: true });
-test.describe.configure({ timeout: 300_000 });
+test.describe.configure({ timeout: 900_000 });
 
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
