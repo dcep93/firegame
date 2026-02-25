@@ -97,22 +97,23 @@ const cascadeServerMessage = (
       if (
         latest.text.type === GameLogMessageType.PlayerDiscarded &&
         gameData.data.payload.gameState.currentState.actionState ===
-          PlayerActionState.PlaceRobberOrPirate
+          PlayerActionState.PlaceRobberOrPirate &&
+        isMyTurn()
       ) {
-        // [
-        //   GameStateUpdateType.HighlightCorners,
-        //   GameStateUpdateType.HighlightTiles,
-        //   GameStateUpdateType.HighlightRoadEdges,
-        //   GameStateUpdateType.HighlightShipEdges,
-        // ].forEach((type) =>
-        //   sendToMainSocket?.({
-        //     id: State.GameStateUpdate.toString(),
-        //     data: {
-        //       type,
-        //       payload: [],
-        //     },
-        //   }),
-        // );
+        [
+          GameStateUpdateType.HighlightCorners,
+          GameStateUpdateType.HighlightTiles,
+          GameStateUpdateType.HighlightRoadEdges,
+          GameStateUpdateType.HighlightShipEdges,
+        ].forEach((type) =>
+          sendToMainSocket?.({
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type,
+              payload: [],
+            },
+          }),
+        );
         // [
         //   GameStateUpdateType.HighlightCorners,
         //   GameStateUpdateType.HighlightTiles,
