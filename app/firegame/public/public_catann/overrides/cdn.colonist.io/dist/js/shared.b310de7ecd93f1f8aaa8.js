@@ -1,3 +1,15 @@
+// chrome
+// cmd+opt+I (devtools)
+// sources
+// enable local overrides
+// copy/paste
+// refresh
+// verify alert
+// hide console
+// play game
+// console
+// __socketCatannMessages.splice(0).filter(msg => msg.data.id !== "136")
+
 (self.webpackChunkkatan = self.webpackChunkkatan || []).push([
   [804],
   {
@@ -22660,11 +22672,11 @@
           }
         }
         handleWebSocketMessage(e) {
+          const t = V.D4(e.data);
           window.__socketCatannMessages.push({
             trigger: "serverData",
             data: JSON.parse(JSON.stringify(t)),
           });
-          const t = V.D4(e.data);
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
               "======",
