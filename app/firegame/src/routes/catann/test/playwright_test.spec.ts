@@ -326,6 +326,13 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
     {
       trigger: "clientData",
       data: {
+        action: GameAction.SelectedInitialPlacementIndex,
+        sequence: msg.data.sequence,
+      },
+    },
+    {
+      trigger: "clientData",
+      data: {
         action: GeneralAction.GetAllFriendsOnlineStatus,
         payload: {},
       },

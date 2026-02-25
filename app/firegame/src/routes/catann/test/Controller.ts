@@ -403,10 +403,8 @@ const Controller = (
         (msg) => msg.data.action === GameAction.UpdateTradeResponse,
       )!.data.payload;
 
-      expect(msg.response).toBe(0);
-
       const btn = iframe.locator(
-        `div[class*="tradeButton-"] img[src*="icon_check"]`,
+        `div[class*="tradeButton-"] img[src*="icon_${msg.response === 1 ? "x" : "check"}"]`,
       );
       await btn.first().click({ force: true });
       await waitForTrigger(iframe, "clientData");

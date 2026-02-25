@@ -12513,7 +12513,7 @@
         "action": 50,
         "payload": {
           "id": "dePA",
-          "response": 0
+          "response": 1
         },
         "sequence": 56
       }
@@ -13050,7 +13050,7 @@
         "action": 50,
         "payload": {
           "id": "zEiR",
-          "response": 0
+          "response": 1
         },
         "sequence": 57
       }
@@ -13389,7 +13389,7 @@
         "action": 50,
         "payload": {
           "id": "dGWS",
-          "response": 0
+          "response": 1
         },
         "sequence": 58
       }
@@ -15108,7 +15108,7 @@
         "action": 50,
         "payload": {
           "id": "jfgq",
-          "response": 0
+          "response": 1
         },
         "sequence": 66
       }
@@ -16137,7 +16137,7 @@
         "action": 50,
         "payload": {
           "id": "RNeG",
-          "response": 0
+          "response": 1
         },
         "sequence": 69
       }
@@ -31924,7 +31924,7 @@
         "action": 50,
         "payload": {
           "id": "w9M9",
-          "response": 0
+          "response": 1
         },
         "sequence": 27
       }
@@ -32192,7 +32192,7 @@
         "action": 50,
         "payload": {
           "id": "w9M9",
-          "response": 0
+          "response": 1
         },
         "sequence": 29
       }
@@ -47144,7 +47144,7 @@
         "action": 50,
         "payload": {
           "id": "bpfR",
-          "response": 0
+          "response": 1
         },
         "sequence": 107
       }
