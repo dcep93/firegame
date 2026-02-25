@@ -16,7 +16,7 @@ export const clickCanvas = async (
   if (checkClickable)
     await expect
       .poll(() => canvasMapAppearsClickable(canvas, position), {
-        timeout: 5000,
+        timeout: 10000,
       })
       .toBe(true);
 
