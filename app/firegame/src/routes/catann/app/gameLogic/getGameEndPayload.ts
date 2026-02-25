@@ -23,7 +23,9 @@ const getGameEndPayload = () => {
   const gameLogState = gameState?.gameLogState;
   const logEntries = toNumericRecordEntries(gameLogState)
     .sort((a, b) => a.index - b.index)
-    .map(({ value }) => value);
+    .map(({ index, value }) => ({ index, value }));
+
+  const recentRobberyLogIndexByKey = new Map<string, number>();
 
   const diceStats = Array.from({ length: 11 }, () => 0);
   const resourceCardsStats: number[] = [];
@@ -93,7 +95,7 @@ const getGameEndPayload = () => {
     }
   };
 
-  logEntries.forEach((entry) => {
+  logEntries.forEach(({ index, value: entry }) => {
     const text = (((entry as JsonObject)?.text ?? entry) as JsonObject) ?? {};
     const type = text?.type;
     if (type == null) return;
@@ -212,12 +214,18 @@ const getGameEndPayload = () => {
     ) {
       const thiefColor = parseFiniteIndex((entry as JsonObject)?.from);
       const messageColor = parseFiniteIndex(text?.playerColor);
+      const recipientColor = parseFiniteIndex(
+        Array.isArray((entry as JsonObject)?.specificRecipients)
+          ? (entry as JsonObject).specificRecipients?.[0]
+          : undefined,
+      );
       const cardEnums = Array.isArray(text?.cardEnums)
         ? (text.cardEnums as number[]).filter((card: number) =>
             Number.isFinite(card),
           )
         : [];
-      const amount = cardEnums.length;
+      const normalizedCards = [...cardEnums].sort((a, b) => a - b);
+      const amount = normalizedCards.length;
       if (amount <= 0 || thiefColor == null) {
         return;
       }
@@ -229,10 +237,25 @@ const getGameEndPayload = () => {
       ) {
         victimColor = playerColors.find((c) => c !== thiefColor) ?? null;
       }
-      ensureResourceStats(thiefColor).robbingIncome += amount;
-      if (victimColor != null) {
-        ensureResourceStats(victimColor).robbingLoss += amount;
+      if (
+        type === GameLogMessageType.StolenResourceCardVictim &&
+        recipientColor != null &&
+        recipientColor !== thiefColor &&
+        playerColors.includes(recipientColor)
+      ) {
+        victimColor = recipientColor;
       }
+      if (victimColor == null) {
+        return;
+      }
+      const robberyKey = `${thiefColor}|${victimColor}|${amount}|${normalizedCards.join(",")}`;
+      const previousRobberyLogIndex = recentRobberyLogIndexByKey.get(robberyKey);
+      if (previousRobberyLogIndex != null && index - previousRobberyLogIndex <= 2) {
+        return;
+      }
+      recentRobberyLogIndexByKey.set(robberyKey, index);
+      ensureResourceStats(thiefColor).robbingIncome += amount;
+      ensureResourceStats(victimColor).robbingLoss += amount;
       return;
     }
 
