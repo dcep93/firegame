@@ -1353,6 +1353,14 @@ const placeRoad = (edgeIndex: number) => {
   ) {
     addGameLogEntry(gameState, {
       text: {
+        type: GameLogMessageType.PlayerPlacedPiece,
+        playerColor,
+        pieceEnum: MapPieceType.Road,
+      },
+      from: playerColor,
+    });
+    addGameLogEntry(gameState, {
+      text: {
         type: GameLogMessageType.Separator,
       },
     });
@@ -1451,6 +1459,11 @@ const placeRoad = (edgeIndex: number) => {
   if (!isRoadBuildingPlacement) {
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
+    if (
+      actionStateAtRoadPlacement ===
+      PlayerActionState.InitialPlacementRoadPlacement
+    )
+      sendEdgeHighlights31(gameData);
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
     sendEdgeHighlights31(gameData);

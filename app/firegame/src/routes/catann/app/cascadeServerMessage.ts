@@ -173,6 +173,7 @@ const cascadeServerMessage = (
         },
       });
     }
+    sendHighlights();
     const resourcesToGive: ResourcesToGiveType =
       firebaseData.__meta.change.resourcesToGive;
     if (resourcesToGive) {
@@ -184,7 +185,6 @@ const cascadeServerMessage = (
         },
       });
     }
-    sendHighlights();
 
     const latest = Object.entries(gameData.data.payload.gameState.gameLogState)
       .map(([key, val]) => ({ key: parseInt(key), val }))

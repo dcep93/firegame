@@ -279,7 +279,7 @@ const isRegression = process.env.CATANN_REGRESSION === "1";
 const doIfRegression = isRegression ? test : test.skip;
 const doIfNotRegression = !isRegression ? test : test.skip;
 doIfRegression("2p.v0", multiChoreo("./choreo/2p.v0.json"));
-doIfNotRegression("2p.v1", multiChoreo("./choreo/2p.v1.json", "16"));
+doIfNotRegression("2p.v1", multiChoreo("./choreo/2p.v1.json"));
 test.skip("4p.v0", multiChoreo("./choreo/4p.v0.json"));
 
 //
