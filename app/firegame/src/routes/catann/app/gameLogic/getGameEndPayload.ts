@@ -248,8 +248,12 @@ const getGameEndPayload = () => {
         return;
       }
       const robberyKey = `${thiefColor}|${victimColor}|${amount}|${normalizedCards.join(",")}`;
-      const previousRobberyLogIndex = recentRobberyLogIndexByKey.get(robberyKey);
-      if (previousRobberyLogIndex != null && index - previousRobberyLogIndex <= 2) {
+      const previousRobberyLogIndex =
+        recentRobberyLogIndexByKey.get(robberyKey);
+      if (
+        previousRobberyLogIndex != null &&
+        index - previousRobberyLogIndex <= 2
+      ) {
         return;
       }
       recentRobberyLogIndexByKey.set(robberyKey, index);
@@ -428,7 +432,6 @@ const getGameEndPayload = () => {
       : undefined) ??
     getValidTimestamp(gameState?.currentState?.startTime) ??
     endTime;
-  const meColor = parseFiniteIndex(gameData?.data?.payload?.playerColor);
 
   return {
     endGameState: {
