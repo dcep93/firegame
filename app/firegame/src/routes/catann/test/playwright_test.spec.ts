@@ -467,6 +467,17 @@ export const isRealMessage = (msg: { trigger: string; data: any }) => {
         },
       },
     },
+    {
+      trigger: "serverData",
+      data: {
+        id: "130",
+        data: {
+          type: GameStateUpdateType.DiscardBroadcast,
+          payload: null,
+          sequence: msg.data.data?.sequence,
+        },
+      },
+    },
   ];
   if (knownIgnores.some((x) => deepEqual(msg, x))) return false;
   //
