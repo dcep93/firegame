@@ -214,10 +214,9 @@ const getGameEndPayload = () => {
     ) {
       const thiefColor = parseFiniteIndex((entry as JsonObject)?.from);
       const messageColor = parseFiniteIndex(text?.playerColor);
+      const recipientArray = (entry as JsonObject)?.specificRecipients;
       const recipientColor = parseFiniteIndex(
-        Array.isArray((entry as JsonObject)?.specificRecipients)
-          ? (entry as JsonObject).specificRecipients?.[0]
-          : undefined,
+        Array.isArray(recipientArray) ? recipientArray[0] : undefined,
       );
       const cardEnums = Array.isArray(text?.cardEnums)
         ? (text.cardEnums as number[]).filter((card: number) =>

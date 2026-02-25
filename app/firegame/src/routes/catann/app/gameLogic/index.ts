@@ -2303,6 +2303,14 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         receivingCards: [],
       };
 
+      sendToMainSocket?.({
+        id: State.GameStateUpdate.toString(),
+        data: {
+          type: GameStateUpdateType.ExchangeCards,
+          payload: exchangeCardsPayload,
+        },
+      });
+
       if (clickedCard !== CardEnum.RoadBuilding) {
         sendCornerHighlights30(gameData, []);
         sendTileHighlights33(gameData, []);
@@ -2316,14 +2324,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
           : clickedCard === CardEnum.RoadBuilding
             ? PlayerActionState.Place2MoreRoadBuilding
             : PlayerActionState.None;
-
-      sendToMainSocket?.({
-        id: State.GameStateUpdate.toString(),
-        data: {
-          type: GameStateUpdateType.ExchangeCards,
-          payload: exchangeCardsPayload,
-        },
-      });
 
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
