@@ -66,33 +66,27 @@ const cascadeServerMessage = (
     }
   };
   if (data.data.type === GameStateUpdateType.GameStateUpdated) {
+    const exchangeCardsPayloads =
+      firebaseData.__meta.change.exchangeCardsPayloads;
     if (firebaseData.__meta.me.userId !== getMe().userId) {
-      const exchangeCardsPayloads =
-        firebaseData.__meta.change.exchangeCardsPayloads;
       if (exchangeCardsPayloads) {
-        exchangeCardsPayloads
-          .filter(
-            (exchangeCardsPayload: any) =>
-              exchangeCardsPayload.givingPlayer !==
-              gameData.data.payload.playerColor,
-          )
-          .forEach((exchangeCardsPayload: any) =>
-            sendToMainSocket?.({
-              id: State.GameStateUpdate.toString(),
-              data: {
-                type: GameStateUpdateType.ExchangeCards,
-                payload: {
-                  ...exchangeCardsPayload,
-                  givingCards:
-                    exchangeCardsPayload.givingPlayer === 0
-                      ? exchangeCardsPayload.givingCards.map(
-                          () => CardEnum.DevelopmentBack,
-                        )
-                      : exchangeCardsPayload.givingCards,
-                },
+        exchangeCardsPayloads.forEach((exchangeCardsPayload: any) =>
+          sendToMainSocket?.({
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type: GameStateUpdateType.ExchangeCards,
+              payload: {
+                ...exchangeCardsPayload,
+                givingCards:
+                  exchangeCardsPayload.givingPlayer === 0
+                    ? exchangeCardsPayload.givingCards.map(
+                        () => CardEnum.DevelopmentBack,
+                      )
+                    : exchangeCardsPayload.givingCards,
               },
-            }),
-          );
+            },
+          }),
+        );
       }
 
       const latest = Object.entries(
