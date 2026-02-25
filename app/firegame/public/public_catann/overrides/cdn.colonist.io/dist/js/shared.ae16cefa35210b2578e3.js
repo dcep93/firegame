@@ -74,7 +74,7 @@
     655: (e, t, s) => {
       "use strict";
       s.d(t, {
-        m: () => m,
+        m: () => g,
       });
       var i = s(12658),
         n = s(68492),
@@ -85,8 +85,9 @@
         l = s(41207),
         d = s(69508),
         u = s(30506),
-        h = s(70970);
-      class p {
+        h = s(70970),
+        p = s(2658);
+      class m {
         get isSuccess() {
           return (
             r.c.isNumberBetween(this.status, 200, 299) &&
@@ -99,7 +100,7 @@
             (this.json = e.data));
         }
       }
-      class m {
+      class g {
         static async getRequestHandler(e, t, s, n = !0, r) {
           let o = e;
           (t && (o += "/" + t), a.r.isUserOnDiscord && (o = "/.proxy" + o));
@@ -108,19 +109,34 @@
               headers: r,
               params: s,
             },
-            l = new p(await i.A.get(o, c));
-          return (
-            this.storeAuthToken(l),
-            h.F.isChallengeResponse(l.headers)
-              ? (await h.F.obtainPreClearanceCookie(),
-                this.getRequestHandler(e, t, s, n, r))
-              : l.isSuccess
-                ? l
-                : void (n && this.handleResponseError(l))
-          );
+            l = new m(await i.A.get(o, c));
+          if ((this.storeAuthToken(l), h.F.isChallengeResponse(l.headers)))
+            return (
+              await h.F.obtainPreClearanceCookie(),
+              this.getRequestHandler(e, t, s, n, r)
+            );
+          if (h.F.isTokenResponse(l.headers)) {
+            let i;
+            p.D.show({
+              key: "strings:popups.replay.pleaseWait",
+            });
+            try {
+              i = await h.F.getToken();
+            } catch (e) {
+              return void p.D.remove();
+            }
+            const o = {
+                ...r,
+                turnstileToken: i,
+              },
+              a = await this.getRequestHandler(e, t, s, n, o);
+            return (p.D.remove(), a);
+          }
+          if (l.isSuccess) return l;
+          n && this.handleResponseError(l);
         }
         static async postRequestWhenReady(e, t, s, i = "application/json") {
-          for (; !m.csrfToken && !a.r.isUserOnDiscordMobile; )
+          for (; !g.csrfToken && !a.r.isUserOnDiscordMobile; )
             await (0, u.cb)(50);
           return this.postRequestHandler(e, t, s, i);
         }
@@ -129,8 +145,9 @@
           t,
           s,
           n = "application/x-www-form-urlencoded",
+          r,
         ) {
-          if (!m.csrfToken && !a.r.isUserOnDiscordMobile) {
+          if (!g.csrfToken && !a.r.isUserOnDiscordMobile) {
             const e = new l.Ak(
               {
                 key: "strings:popups.errors.general.title",
@@ -142,27 +159,37 @@
             );
             return void o.r.showDefaultErrorPopup(e);
           }
-          const r = {
+          const c = {
             "Content-Type": n,
-            "x-csrf-token": m.csrfToken,
+            "x-csrf-token": g.csrfToken,
+            ...r,
           };
           a.r.isUserOnDiscord && (e = "/.proxy" + e);
-          const c = new p(
+          const u = new m(
             await i.A.post(e, s, {
-              headers: r,
+              headers: c,
               ...this.defaultConfig,
               params: t,
             }),
           );
-          return (
-            this.storeAuthToken(c),
-            h.F.isChallengeResponse(c.headers)
-              ? (await h.F.obtainPreClearanceCookie(),
-                this.postRequestHandler(e, t, s, n))
-              : c.isSuccess
-                ? c
-                : void this.handleResponseError(c)
-          );
+          if ((this.storeAuthToken(u), h.F.isChallengeResponse(u.headers)))
+            return (
+              await h.F.obtainPreClearanceCookie(),
+              this.postRequestHandler(e, t, s, n)
+            );
+          if (h.F.isTokenResponse(u.headers)) {
+            let i;
+            try {
+              i = await h.F.getToken();
+            } catch (e) {
+              return;
+            }
+            return this.postRequestHandler(e, t, s, n, {
+              turnstileToken: i,
+            });
+          }
+          if (u.isSuccess) return u;
+          this.handleResponseError(u);
         }
         static storeAuthToken(e) {
           a.r.isUserOnDiscordMobile &&
@@ -182,7 +209,7 @@
           };
         }
       }
-      ((m.csrfToken = ""),
+      ((g.csrfToken = ""),
         i.A.interceptors.request.use((e) => {
           if (a.r.isUserOnDiscordMobile) {
             const t = c.p.getAuthToken();
@@ -195,7 +222,7 @@
       "use strict";
       e.exports =
         s.p +
-        "assets/card_progress_science_road_building.f4050c2db7388980c0d7.svg";
+        "assets/card_progress_science_road_building.3f972a0989faf60df257.svg";
     },
     881: (e, t, s) => {
       "use strict";
@@ -749,6 +776,13 @@
                   },
                 },
                 image: o.am.Guest,
+              };
+            case r.j.YouAreMuted:
+              return {
+                text: {
+                  key: "strings:popups.notification.youAreMuted.body",
+                },
+                image: o.am.DangerIcon,
               };
           }
         }
@@ -1371,6 +1405,27 @@
         }
       }
     },
+    2658: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        D: () => n,
+      });
+      var i = s(9029);
+      class n {
+        static show(e) {
+          if (null != this.connectionLostBackground) return;
+          const t = (0, i.Le)(document.body, "game-reconnecting-overlay");
+          ((0, i.Le)(t, "loading-spinner"),
+            (0, i.i5)(t, "game-reconnecting-text", e),
+            (this.connectionLostBackground = t));
+        }
+        static remove() {
+          (null != this.connectionLostBackground &&
+            this.connectionLostBackground.remove(),
+            (this.connectionLostBackground = void 0));
+        }
+      }
+    },
     2928: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/icon_05x.8e3569036478c93caba8.svg";
@@ -1451,6 +1506,7 @@
           (e[(e.GeneralAnnouncement = 20)] = "GeneralAnnouncement"),
           (e[(e.YourFriendMustLogInToCountReferral = 21)] =
             "YourFriendMustLogInToCountReferral"),
+          (e[(e.YouAreMuted = 22)] = "YouAreMuted"),
           e
         );
       })({});
@@ -1462,7 +1518,7 @@
       });
       var i = s(69714),
         n = s(75589),
-        r = s(66681);
+        r = s(62602);
       class o {
         static init() {
           r.sZ.controller.registerSessionEstablishedObserver(() => {
@@ -1732,8 +1788,8 @@
         }
       }
       var g = s(18514),
-        f = s(34915),
-        y = s(66681),
+        f = s(34397),
+        y = s(62602),
         b = s(13618),
         v = s(23355),
         S = s(5603);
@@ -2308,7 +2364,7 @@
         Q: () => i,
       });
       var i,
-        n = s(66681),
+        n = s(62602),
         r = s(18587);
       !(function (e) {
         var t, s;
@@ -2911,7 +2967,7 @@
     10524: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_inventor.4d789e3f91a72607d5c6.svg";
+        s.p + "assets/card_progress_science_inventor.975ce928d050685ef4a8.svg";
     },
     10534: (e, t, s) => {
       "use strict";
@@ -2986,8 +3042,8 @@
         r = s(69714),
         o = s(19966),
         a = s(54801),
-        c = s(46581),
-        l = s(15504),
+        c = s(73555),
+        l = s(46258),
         d = s(41931);
       const u = i.o8.UIGameEventEnums;
       class h {
@@ -3726,7 +3782,7 @@
       s.d(t, {
         $: () => i,
       });
-      const i = 292;
+      const i = 293;
     },
     13048: (e, t, s) => {
       "use strict";
@@ -3743,7 +3799,7 @@
     },
     13335: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "assets/game_spritesheet_2.79495cc8f850e10c8598.json";
+      e.exports = s.p + "assets/game_spritesheet_2.950f0762c01d7aadaeb1.json";
     },
     13359: (e, t, s) => {
       "use strict";
@@ -3789,6 +3845,8 @@
             (e.MobileProfile = "mobileprofile"),
             (e.ReferralInvitation = "share"),
             (e.MobileReactivation = "mobilereactivation"),
+            (e.MobileImageSharing = "mobileimagesharing"),
+            (e.ReconnectGame = "reconnectgame"),
             e
           );
         })({});
@@ -3993,7 +4051,8 @@
                 (history.pushState({}, "", n),
                   setTimeout(() => window.location.reload(), 100));
               })(e);
-        window.open(e, t ? "_blank" : "_self");
+        const o = e.startsWith("#") ? `${window.location.origin}/${e}` : e;
+        window.open(o, t ? "_blank" : "_self");
       }
       function k(e) {
         const t = document.createElement("a");
@@ -4056,7 +4115,7 @@
       var i = s(30506),
         n = s(5603),
         r = s(78311),
-        o = s(66681),
+        o = s(62602),
         a = s(74710),
         c = s(84235),
         l = s(83633);
@@ -4348,6 +4407,11 @@
         }
       }
     },
+    15568: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/new_leaderboard_icon_before.e17338f49d6272917c0c.png";
+    },
     15730: (e, t, s) => {
       "use strict";
       e.exports = s.p + "assets/lobby_ad_ranked.cc2328766ae089287e70.png";
@@ -4414,7 +4478,7 @@
         r = s(81888),
         o = s(87220),
         a = s(9029),
-        c = s(66681),
+        c = s(62602),
         l = s(18587);
       class d {
         static async shareOrCopyLink(e, t) {
@@ -4571,7 +4635,7 @@
         yl: () => a,
       });
       var i = s(78311),
-        n = s(34915);
+        n = s(34397);
       const r = 1,
         o = 0.4;
       function a(e, t, s) {
@@ -4767,38 +4831,38 @@
         l = s(41931);
       const d = {
         strings: {
-          af: s.p + "locales/af_strings.f026b948f3748747d8b9.json",
-          ar: s.p + "locales/ar_strings.3db20ecc6e0bf31c6880.json",
-          ca: s.p + "locales/ca_strings.894f53c8cf42f49bdbf7.json",
-          cs: s.p + "locales/cs_strings.09dee279797c7261bdb4.json",
-          da: s.p + "locales/da_strings.6d6ea596a994cd1ecccd.json",
-          de: s.p + "locales/de_strings.fe189050114376502eab.json",
-          el: s.p + "locales/el_strings.1b5a51973adb37de0382.json",
+          af: s.p + "locales/af_strings.05b1c1d8c6f959036767.json",
+          ar: s.p + "locales/ar_strings.f93bc5296603b6db09d3.json",
+          ca: s.p + "locales/ca_strings.1f7e46a5d37c380bf659.json",
+          cs: s.p + "locales/cs_strings.561703c39c58601f50e1.json",
+          da: s.p + "locales/da_strings.670a78542c28b408b977.json",
+          de: s.p + "locales/de_strings.b6c09ea84bbf888d7b56.json",
+          el: s.p + "locales/el_strings.7cebbd68e3549c5e0fbd.json",
           en: s(70925),
-          es: s.p + "locales/es_strings.700d5da7e514a0bca01b.json",
-          fi: s.p + "locales/fi_strings.5df4462f7dc0eff21701.json",
-          fr: s.p + "locales/fr_strings.f51ed3ed38a68b4f122a.json",
-          he: s.p + "locales/he_strings.1cda6587d646cdd02685.json",
-          hi: s.p + "locales/hi_strings.76a6f64687a84caecb8d.json",
-          hu: s.p + "locales/hu_strings.c4b5734c0a1095598bf7.json",
-          it: s.p + "locales/it_strings.df5ca1d245ae0b6f4207.json",
-          ja: s.p + "locales/ja_strings.8a5ec7a56f126c3a151d.json",
-          ko: s.p + "locales/ko_strings.00f0b6c988c1d723d1e9.json",
-          nl: s.p + "locales/nl_strings.0960ee4687d6a0a15bb8.json",
-          no: s.p + "locales/no_strings.9a14d9370118e43369e9.json",
-          pl: s.p + "locales/pl_strings.7c625ffc701f0bab69bf.json",
-          "pt-BR": s.p + "locales/pt-BR_strings.9c79c7edb044fc2c279f.json",
-          "pt-PT": s.p + "locales/pt-PT_strings.8725bc01e24ee0d872ba.json",
-          ro: s.p + "locales/ro_strings.de247f1f69678a8076d0.json",
-          ru: s.p + "locales/ru_strings.e3e493fa30c020de3133.json",
-          sr: s.p + "locales/sr_strings.14bd1f1fcdb3abcae059.json",
-          sv: s.p + "locales/sv_strings.dbe78586d3eb07412bcc.json",
-          th: s.p + "locales/th_strings.c965676ef949064dbda9.json",
-          tr: s.p + "locales/tr_strings.93882bc0610e858346ab.json",
-          uk: s.p + "locales/uk_strings.bec78469704f7f6e1473.json",
-          vi: s.p + "locales/vi_strings.568197ce8ced3b3baafc.json",
-          "zh-CN": s.p + "locales/zh-CN_strings.e207305d77d5955758df.json",
-          "zh-TW": s.p + "locales/zh-TW_strings.14ad8b80ab1439db79a5.json",
+          es: s.p + "locales/es_strings.fdbfc00f11a5e2fea782.json",
+          fi: s.p + "locales/fi_strings.035c35ad56d353ed0124.json",
+          fr: s.p + "locales/fr_strings.fc283ef19ad1a29d0368.json",
+          he: s.p + "locales/he_strings.4523abda4ff487427bed.json",
+          hi: s.p + "locales/hi_strings.d6765e24edbea49c14d2.json",
+          hu: s.p + "locales/hu_strings.d6fdc21d38f2bd8dc85e.json",
+          it: s.p + "locales/it_strings.eeb82dbb02f8a7c80a25.json",
+          ja: s.p + "locales/ja_strings.e2d7e360c9e09a30cfd5.json",
+          ko: s.p + "locales/ko_strings.f85e60550ce8a9459ee0.json",
+          nl: s.p + "locales/nl_strings.f43cb6988f5269b1dfea.json",
+          no: s.p + "locales/no_strings.920af3f647beefe74faa.json",
+          pl: s.p + "locales/pl_strings.6102b66d45c219532509.json",
+          "pt-BR": s.p + "locales/pt-BR_strings.f8077a12bdc8a80aa387.json",
+          "pt-PT": s.p + "locales/pt-PT_strings.c1ea58f401fbfd50e952.json",
+          ro: s.p + "locales/ro_strings.a75e6c9c2658bb3f64cf.json",
+          ru: s.p + "locales/ru_strings.12df9fe34f9c7746752c.json",
+          sr: s.p + "locales/sr_strings.15b2aa035863cc364f89.json",
+          sv: s.p + "locales/sv_strings.7118aed66df3df805ba6.json",
+          th: s.p + "locales/th_strings.4fd7720428e4ae49eade.json",
+          tr: s.p + "locales/tr_strings.bc55377aba11d9fdf0c3.json",
+          uk: s.p + "locales/uk_strings.f50df499835b0fe2e617.json",
+          vi: s.p + "locales/vi_strings.ec14a4d53ca1e0891a01.json",
+          "zh-CN": s.p + "locales/zh-CN_strings.15935e959a3269d0e9e3.json",
+          "zh-TW": s.p + "locales/zh-TW_strings.52976d9c9e89fbd3cd1d.json",
         },
       };
       !(function (e) {
@@ -5332,7 +5396,7 @@
         }
       }
       var y,
-        b = s(66681),
+        b = s(62602),
         v = s(96990);
       !(function (e) {
         var t, s, i;
@@ -5616,6 +5680,11 @@
       e.exports =
         s.p +
         "assets/dang-increase-end-game-size-after.698135138fd62b4d7356.png";
+    },
+    20175: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/new_leaderboard_icon_after.f303ca40723637e77f20.png";
     },
     20230: (e, t, s) => {
       "use strict";
@@ -5936,10 +6005,6 @@
       "use strict";
       e.exports =
         s.p + "assets/knight_move_mysticblue.e72657ccfe1bf9cebc5b.svg";
-    },
-    21793: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/ab_shuffle.e4ad8f2661e2dc3a94ff.png";
     },
     22067: (e, t, s) => {
       "use strict";
@@ -6323,7 +6388,7 @@
         p = s(76389),
         m = s(18587),
         g = s(84445),
-        f = s(66681);
+        f = s(62602);
       class y {
         init(e) {
           (this.setOnClickHandlers(),
@@ -7359,12 +7424,12 @@
       })(i || (i = {}));
       var m = s(74710),
         g = s(95176),
-        f = s(66681),
+        f = s(62602),
         y = s(73022),
         b = s(56961),
         v = s(22194),
         S = s(19966),
-        k = s(34915),
+        k = s(34397),
         C = s(18587),
         P = s(31567),
         _ = s(69714),
@@ -8207,7 +8272,7 @@
         }
       }
       var S = s(84324),
-        k = s(66681),
+        k = s(62602),
         C = s(5603);
       class P {
         showActiveTableBody() {
@@ -9144,7 +9209,7 @@
         Y: () => C,
       });
       var i = s(9029),
-        n = s(66681),
+        n = s(62602),
         r = s(98487),
         o = s(78311);
       class a {
@@ -9865,7 +9930,7 @@
         V: () => c,
       });
       var i = s(95176),
-        n = s(66681),
+        n = s(62602),
         r = s(23288);
       class o extends r.U {
         shouldShowWarning() {
@@ -11344,7 +11409,7 @@
       });
       var i = s(87290),
         n = s(50482),
-        r = s(34915),
+        r = s(34397),
         o = s(9029),
         a = s(95176),
         c = s(18514);
@@ -13202,7 +13267,7 @@
         o = s(95176),
         a = s(9029),
         c = s(44517),
-        l = s(66681);
+        l = s(62602);
       if (!/^(251|517|837)$/.test(s.j)) var d = s(500);
       var u = s(52955);
       class h {
@@ -13441,597 +13506,10 @@
         }
       }
     },
-    34405: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/card_wool.17a6dea8d559949f0ccc.svg";
-    },
-    34463: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/sfx_achievement_ck_progress.a6041ba5935a47b7a5b3.mp3";
-    },
-    34493: (e, t, s) => {
+    34397: (e, t, s) => {
       "use strict";
       s.d(t, {
-        O: () => m,
-      });
-      var i = s(76092),
-        n = s(53015),
-        r = s(78311),
-        o = s(67908),
-        a = s(74710),
-        c = s(51988),
-        l = s(30506),
-        d = s(19966),
-        u = s(9029),
-        h = s(95176),
-        p = s(13618);
-      class m extends h.y {
-        constructor(e, t, s) {
-          const h = c.F.getItemsInCategory(n.n9.Map, !0),
-            m = c.F.getItemsInCategory(n.n9.Expansion, !0),
-            g = h.filter((e) => {
-              switch (e.type) {
-                case n.ai.BlackForest:
-                  return t.mapSetting !== o.Qy.BlackForest;
-                case n.ai.Classic4PRandom:
-                  return t.mapSetting !== o.Qy.Classic4PRandom;
-                case n.ai.Diamond:
-                  return t.mapSetting !== o.Qy.Diamond;
-                case n.ai.Earth:
-                  return t.mapSetting !== o.Qy.Earth;
-                case n.ai.Gear:
-                  return t.mapSetting !== o.Qy.Gear;
-                case n.ai.GoldRush:
-                  return t.mapSetting !== o.Qy.GoldRush;
-                case n.ai.Lakes:
-                  return t.mapSetting !== o.Qy.Lakes;
-                case n.ai.Pond:
-                  return t.mapSetting !== o.Qy.Pond;
-                case n.ai.ShuffleBoard:
-                  return t.mapSetting !== o.Qy.ShuffleBoard;
-                case n.ai.Twirl:
-                  return t.mapSetting !== o.Qy.Twirl;
-                case n.ai.UK:
-                  return t.mapSetting !== o.Qy.UK;
-                case n.ai.USA:
-                  return t.mapSetting !== o.Qy.USA;
-                case n.ai.Volcano:
-                  return t.mapSetting !== o.Qy.Volcano;
-                default:
-                  return !0;
-              }
-            }),
-            f = m.filter((e) => {
-              switch (e.type) {
-                case r.$y.CitiesAndKnights4P:
-                  return t.modeSetting !== o.p9.CitiesAndKnights4P;
-                case r.$y.CitiesAndKnights56P:
-                  return t.modeSetting !== o.p9.CitiesAndKnights56P;
-                case r.$y.CitiesAndKnightsSeafarers4P:
-                  return t.modeSetting !== o.p9.CitiesAndKnightsSeafarers4P;
-                case r.$y.CitiesAndKnightsSeafarers56P:
-                  return t.modeSetting !== o.p9.CitiesAndKnightsSeafarers56P;
-                case r.$y.Classic56P:
-                  return t.modeSetting !== o.p9.Classic56P;
-                case r.$y.Classic78P:
-                  return t.modeSetting !== o.p9.Classic78P;
-                case r.$y.Seafarers4P:
-                  return t.modeSetting !== o.p9.Seafarers4P;
-                case r.$y.Seafarers56P:
-                  return t.modeSetting !== o.p9.Seafarers56P;
-                default:
-                  return !0;
-              }
-            });
-          (super(
-            {
-              key: "strings:homePage.becomeAMember",
-            },
-            {
-              key: "strings:colonistCommon.utils.emptyString",
-            },
-            () => {
-              const e = {
-                type: i.k0.ABTestClickAnalytics,
-                category: i.eX.ABTestClickAnalytics,
-                floatValue: i.Jd.PopupMembershipIncentiveEndgame,
-              };
-              (d.CA.sendAnalyticEvent(e), (0, p.Yf)("/store#membership", !0));
-            },
-            e,
-            !0,
-          ),
-            (this.body.style.flexDirection = "column"));
-          const y = l.n.randomBool();
-          (0, u.RH)(this.body, {
-            key: "strings:colonistCommon.utils.emptyString",
-          });
-          const b = (0, a.dN)(
-            {
-              key: "strings:popups.membershipIncentive.body",
-            },
-            {
-              value: y
-                ? {
-                    key: "strings:popups.membershipIncentive.optionMaps",
-                  }
-                : {
-                    key: "strings:popups.membershipIncentive.optionExpansions",
-                  },
-            },
-          );
-          (0, u.Wr)(this.body, b, "popup-membership-body");
-          const v = (0, u.Le)(
-            this.body,
-            "popup-subscription-in-room-items-wrapper",
-            "",
-          );
-          ((y ? g : f).forEach((e) => {
-            const t = (0, u.Le)(v, "popup-subscription-in-room-item-img", "");
-            ((0, u.zO)(t, e.image), (0, u.Wr)(t, e.name, ""), v.appendChild(t));
-          }),
-            this.changeCheckButtonText({
-              key: "strings:popups.membershipIncentive.visitStore",
-            }),
-            (this.checkButton.id = "store-href"),
-            this.changeXButtonText(s),
-            this.show());
-        }
-      }
-    },
-    34554: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        N: () => r,
-        q: () => o,
-      });
-      var i = s(29249),
-        n = s(78311),
-        r = (function (e) {
-          return (
-            (e[(e.General = 0)] = "General"),
-            (e[(e.Volume = 1)] = "Volume"),
-            e
-          );
-        })({});
-      function o(e) {
-        switch (e) {
-          case i.n.Information:
-            return n.am.InfoIcon;
-          case i.n.Success:
-            return n.am.CheckMark;
-          case i.n.Warning:
-          case i.n.Reconnect:
-            return n.am.Lightning;
-          case i.n.Error:
-          case i.n.SocketError:
-            return n.am.DangerIcon;
-        }
-      }
-    },
-    34617: (e, t, s) => {
-      "use strict";
-      var i;
-      (s.d(t, {
-        v: () => d,
-      }),
-        (function (e) {
-          e.isIStripeCheckoutRequestStatus = function (e) {
-            return "boolean" == typeof e.status && "string" == typeof e.message;
-          };
-          e.PublicProfileDataStickyPlayerInfo = class {
-            constructor() {
-              this.username = "";
-            }
-          };
-          e.PublicProfileDataOverview = class {
-            constructor() {
-              ((this.username = ""),
-                (this.karma = ""),
-                (this.gameData = new t()));
-            }
-          };
-          class t {
-            constructor() {
-              ((this.pointsInLast100Games = 0),
-                (this.totalGames = 0),
-                (this.winPercent = "0"),
-                (this.pointsPerGame = "0"));
-            }
-          }
-          e.PublicProfileGameDataOverview = t;
-          e.UserFriendsData = class {
-            constructor() {
-              ((this.friends = []),
-                (this.friendRequestsSent = []),
-                (this.friendRequestsReceived = []));
-            }
-          };
-          e.FriendRequestReceivedData = class {};
-        })(i || (i = {})));
-      var n = s(78311),
-        r = s(66681),
-        o = s(655),
-        a = s(32398),
-        c = s(95176),
-        l = s(81888);
-      class d {
-        static async addFriendAction(e, t) {
-          const s = {
-              username: e,
-            },
-            i = await o.m.postRequestHandler(
-              a.l.apiUserProfileAddFriend(),
-              void 0,
-              s,
-              "application/json",
-            );
-          if (null == i) return;
-          l._.refresh();
-          const c = i.json.friends.some((t) => t.username == e),
-            u = c
-              ? {
-                  key: "strings:popups.notification.youAreNowFriendsWith",
-                  options: {
-                    username: e,
-                  },
-                }
-              : {
-                  key: "strings:profilePage.friends.friendRequestSent",
-                };
-          (r.OV.showNotification(n.am.Friends, u), t && t(c));
-          for (const e of d.callbackActionOnFriendRequestSent) e();
-        }
-        static async removeFriendAction(e, t) {
-          const s = {
-            username: e,
-          };
-          null !=
-            (await o.m.postRequestHandler(
-              a.l.apiUserProfileRemoveFriend(),
-              void 0,
-              s,
-              "application/json",
-            )) &&
-            (l._.refresh(),
-            r.OV.showNotification(n.am.Friends, {
-              key: "strings:popups.friendRequests.removed",
-              options: {
-                username: e,
-              },
-            }),
-            "function" == typeof t && t());
-        }
-        static showRemoveFriendPopup(e, t) {
-          const s = {
-            key: "strings:profilePage.friends.removeFriend.body",
-            options: {
-              username: e,
-            },
-          };
-          new c.y(
-            {
-              key: "strings:profilePage.friends.removeFriend.title",
-            },
-            s,
-            t,
-            () => {},
-            !0,
-            {
-              checkButtonCustomContent: {
-                key: "strings:profilePage.friends.removeFriend.checkButton",
-              },
-              xButtonCustomContent: {
-                key: "strings:profilePage.friends.removeFriend.xButton",
-              },
-            },
-          ).show();
-        }
-        static async getFriends(e) {
-          if (!(null == e ? void 0 : e.isLoggedIn))
-            return new i.UserFriendsData();
-          const t = await o.m.getRequestHandler(
-            a.l.apiUserProfile.friends(),
-            void 0,
-          );
-          return null == t ? new i.UserFriendsData() : t.json;
-        }
-        static async getFriendRequestsReceived(e) {
-          if (!(null == e ? void 0 : e.isLoggedIn)) return [];
-          const t = await o.m.getRequestHandler(
-            a.l.apiFriendRequestsReceived(),
-            void 0,
-          );
-          return null == t ? [] : t.json;
-        }
-        static async friendRequestResponded(e, t) {
-          const s = {
-              username: e,
-            },
-            i = t
-              ? a.l.apiUserProfileAcceptFriend()
-              : a.l.apiUserProfileRemoveFriend();
-          if (
-            null !=
-            (await o.m.postRequestHandler(i, void 0, s, "application/json"))
-          ) {
-            l._.refresh();
-            for (const s of d.callbackNotificationFriendRequestResponded)
-              await s(e, t);
-          }
-        }
-        static canUseOnlineFriendService() {
-          var e;
-          return !!(null === (e = l._.userState) || void 0 === e
-            ? void 0
-            : e.isLoggedIn);
-        }
-        static setCallbackFriendRequestResponded(e) {
-          d.callbackNotificationFriendRequestResponded.push(e);
-        }
-      }
-      ((d.callbackActionOnFriendRequestSent = []),
-        (d.callbackNotificationFriendRequestResponded = []));
-    },
-    34777: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        $: () => h,
-      });
-      var i = s(9029),
-        n = s(30506),
-        r = s(655),
-        o = s(32398),
-        a = s(18587),
-        c = s(78311);
-      const l = [
-          {
-            slug: "gQYTA2vXZQV9fT2n",
-          },
-        ],
-        d = [
-          {
-            gameId: "191208779",
-            playerColor: 11,
-          },
-          {
-            gameId: "191208784",
-            playerColor: 5,
-          },
-          {
-            gameId: "191208346",
-            playerColor: 3,
-          },
-          {
-            gameId: "191208573",
-            playerColor: 5,
-          },
-        ],
-        u = [
-          {
-            gameId: "191197897",
-            playerColor: 2,
-          },
-          {
-            gameId: "191197330",
-            playerColor: 1,
-          },
-          {
-            gameId: "191196681",
-            playerColor: 4,
-          },
-          {
-            gameId: "191198102",
-            playerColor: 2,
-          },
-          {
-            gameId: "191199121",
-            playerColor: 2,
-          },
-          {
-            gameId: "191196320",
-            playerColor: 5,
-          },
-          {
-            gameId: "191196489",
-            playerColor: 5,
-          },
-          {
-            gameId: "191196952",
-            playerColor: 1,
-          },
-          {
-            gameId: "191197221",
-            playerColor: 11,
-          },
-          {
-            gameId: "191197079",
-            playerColor: 1,
-          },
-          {
-            gameId: "191196444",
-            playerColor: 4,
-          },
-          {
-            gameId: "191197644",
-            playerColor: 1,
-          },
-          {
-            gameId: "191197558",
-            playerColor: 5,
-          },
-          {
-            gameId: "191196948",
-            playerColor: 12,
-          },
-          {
-            gameId: "191196835",
-            playerColor: 6,
-          },
-          {
-            gameId: "191196714",
-            playerColor: 1,
-          },
-        ];
-      class h {
-        static async loadContent() {
-          try {
-            const e = await r.m.getRequestHandler(
-              o.l.apiChampionship25Content(),
-              void 0,
-            );
-            if (null == e) return;
-            const t = e.json;
-            if (null == t) return;
-            Array.isArray(t.partners) && h.renderPartners(t.partners);
-          } catch (e) {
-            return;
-          }
-        }
-        static renderResults() {
-          const e = document.getElementById("championship25-final-grid"),
-            t = document.getElementById("championship25-semifinals-grid"),
-            s = document.getElementById("championship25-quarterfinals-grid");
-          (e && h.renderResultCards(e, l),
-            t && h.renderResultCards(t, d),
-            s && h.renderResultCards(s, u));
-        }
-        static renderResultCards(e, t) {
-          t.forEach((t, s) => {
-            const n = (0, i.Le)(e, "result-card"),
-              r = (0, i.Le)(n, "result-info");
-            (0, i.i5)(r, "result-title", {
-              key: "strings:colonistCommon.utils.#buffer",
-              options: {
-                value: `Table ${s + 1}`,
-              },
-            });
-            const o = h.getReplayUrl(t),
-              a = (0, i.cE)(
-                n,
-                o,
-                {
-                  key: "strings:colonistCommon.utils.emptyString",
-                },
-                "replay-btn",
-                void 0,
-                !0,
-              );
-            (0, i.zO)(a, c.am.ReplayIcon);
-          });
-        }
-        static getReplayUrl(e) {
-          if (a.r.isUserOnDiscord)
-            return "slug" in e
-              ? `/replay/${e.slug}`
-              : `/replay?gameId=${e.gameId}&playerColor=${e.playerColor}`;
-          const t = new URL(window.location.href);
-          return (
-            (t.pathname = a.r.isUserOnMobileAppOrWeb
-              ? "/mobile/replay"
-              : "/replay"),
-            "slug" in e
-              ? (t.pathname += `/${e.slug}`)
-              : (t.searchParams.set("gameId", e.gameId.toString()),
-                t.searchParams.set("playerColor", e.playerColor.toString())),
-            t.href
-          );
-        }
-        static renderPartners(e) {
-          const t = document.getElementById("championship25-partners-title"),
-            s = [],
-            r = document.getElementById("championship25-view-all-partners-btn"),
-            o = document.getElementById("championship25-partners-grid");
-          ((0, i.oB)(t, {
-            key: "strings:colonistCommon.utils.#buffer",
-            options: {
-              value: `Partners (${e.length})`,
-            },
-          }),
-            (0, i.RH)(o, {
-              key: "strings:colonistCommon.utils.emptyString",
-            }));
-          const c = n.lv.shuffle(e);
-          for (const e of c) {
-            const t = (0, i.Le)(o, "partner-item");
-            if (
-              !a.r.isUserOnDiscord &&
-              null != e.imageUrl &&
-              e.imageUrl.length > 0
-            ) {
-              const s = document.createElement("img");
-              ((s.src = e.imageUrl), (s.alt = e.name), t.appendChild(s));
-            }
-            const n = (0, i.Le)(t, "partner-name");
-            ((0, i.oB)(n, {
-              key: "strings:colonistCommon.utils.#buffer",
-              options: {
-                value: e.name,
-              },
-            }),
-              s.push(t));
-          }
-          const l = e.length,
-            d = window.innerWidth <= 991 ? 6 : 14;
-          if (l <= d) r.classList.add("hidden");
-          else {
-            for (let e = d; e < l; e++) s[e].classList.add("hidden");
-            (0, i.G0)(
-              r,
-              () => {
-                for (const e of s) e.classList.remove("hidden");
-                r.classList.add("hidden");
-              },
-              !0,
-            );
-          }
-        }
-        constructor() {
-          (h.renderResults(), h.loadContent());
-        }
-      }
-    },
-    34837: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/icon_gamemode_1v1.f506758eb0812a9acebd.svg";
-    },
-    34865: (e, t, s) => {
-      "use strict";
-      if (
-        (s.d(t, {
-          n: () => n,
-        }),
-        !/^(251|517|837)$/.test(s.j))
-      )
-        var i = s(23288);
-      class n extends (/^(251|517|837)$/.test(s.j) ? null : i.U) {
-        shouldShowWarning() {
-          return (
-            this.roomState.gameSetting.victoryPointsToWin >
-            this.roomState.victoryPointsRecommendedLimit
-          );
-        }
-        getTitle() {
-          return {
-            key: "strings:roomPage.warnings.startGameExceedLimitWarning.title",
-          };
-        }
-        getDescription() {
-          return {
-            key: "strings:roomPage.warnings.startGameExceedLimitWarning.description",
-          };
-        }
-      }
-    },
-    34911: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/city_bronze.fed2c86edb98d55da481.svg";
-    },
-    34915: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        j: () => Gr,
+        j: () => xr,
       });
       var i = s(63778),
         n = s(22194),
@@ -14410,8 +13888,9 @@
         Lr = s.p + "assets/player_bg_purple.a8e5b6b5a7aadb278f99.svg",
         Br = s.p + "assets/player_bg_mysticblue.d566c2c9e62b6173c72f.svg",
         Dr = s.p + "assets/player_bg_pink.da3d420acf9114ecde55.svg",
-        Er = s.p + "assets/landscape_deprecation.1b2bb8b6751e445b5e98.gif";
-      class Gr {
+        Er = s.p + "assets/landscape_deprecation.1b2bb8b6751e445b5e98.gif",
+        Gr = s.p + "assets/icon_leaderboard.d9ca6abd9ad5f0921284.svg";
+      class xr {
         static setVersionNumber(e) {
           this.versionNumber = e;
         }
@@ -15099,10 +14578,12 @@
               return gn;
             case r.am.LandscapeDeprecationWarning:
               return Er;
+            case r.am.Leaderboard:
+              return Gr;
           }
         }
       }
-      ((Gr.roadsByColor = {
+      ((xr.roadsByColor = {
         [i.DS.None]: "",
         [i.DS.Red]: Ss,
         [i.DS.Blue]: ks,
@@ -15117,7 +14598,7 @@
         [i.DS.MysticBlue]: Is,
         [i.DS.Pink]: Ms,
       }),
-        (Gr.settlementsByColor = {
+        (xr.settlementsByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: Ls,
           [i.DS.Blue]: Bs,
@@ -15132,7 +14613,7 @@
           [i.DS.MysticBlue]: Fs,
           [i.DS.Pink]: Hs,
         }),
-        (Gr.citiesByColor = {
+        (xr.citiesByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: Ws,
           [i.DS.Blue]: Ks,
@@ -15147,7 +14628,7 @@
           [i.DS.MysticBlue]: Xs,
           [i.DS.Pink]: Zs,
         }),
-        (Gr.cityWallsByColor = {
+        (xr.cityWallsByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: fn,
           [i.DS.Blue]: yn,
@@ -15162,7 +14643,7 @@
           [i.DS.MysticBlue]: wn,
           [i.DS.Pink]: Rn,
         }),
-        (Gr.shipsByColor = {
+        (xr.shipsByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: Tn,
           [i.DS.Blue]: In,
@@ -15177,7 +14658,7 @@
           [i.DS.MysticBlue]: On,
           [i.DS.Pink]: Nn,
         }),
-        (Gr.knightsInactiveByColor = {
+        (xr.knightsInactiveByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: Fn,
           [i.DS.Blue]: Hn,
@@ -15192,7 +14673,7 @@
           [i.DS.MysticBlue]: Yn,
           [i.DS.Pink]: Xn,
         }),
-        (Gr.knightsActiveByColor = {
+        (xr.knightsActiveByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: Zn,
           [i.DS.Blue]: Jn,
@@ -15207,7 +14688,7 @@
           [i.DS.MysticBlue]: cr,
           [i.DS.Pink]: lr,
         }),
-        (Gr.merchantByColor = {
+        (xr.merchantByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: dr,
           [i.DS.Blue]: ur,
@@ -15222,7 +14703,7 @@
           [i.DS.MysticBlue]: Sr,
           [i.DS.Pink]: kr,
         }),
-        (Gr.playerBackgroundByColor = {
+        (xr.playerBackgroundByColor = {
           [i.DS.None]: "",
           [i.DS.Red]: Cr,
           [i.DS.Blue]: Pr,
@@ -15237,6 +14718,593 @@
           [i.DS.MysticBlue]: Br,
           [i.DS.Pink]: Dr,
         }));
+    },
+    34405: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/card_wool.17a6dea8d559949f0ccc.svg";
+    },
+    34463: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/sfx_achievement_ck_progress.a6041ba5935a47b7a5b3.mp3";
+    },
+    34493: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        O: () => m,
+      });
+      var i = s(76092),
+        n = s(53015),
+        r = s(78311),
+        o = s(67908),
+        a = s(74710),
+        c = s(51988),
+        l = s(30506),
+        d = s(19966),
+        u = s(9029),
+        h = s(95176),
+        p = s(13618);
+      class m extends h.y {
+        constructor(e, t, s) {
+          const h = c.F.getItemsInCategory(n.n9.Map, !0),
+            m = c.F.getItemsInCategory(n.n9.Expansion, !0),
+            g = h.filter((e) => {
+              switch (e.type) {
+                case n.ai.BlackForest:
+                  return t.mapSetting !== o.Qy.BlackForest;
+                case n.ai.Classic4PRandom:
+                  return t.mapSetting !== o.Qy.Classic4PRandom;
+                case n.ai.Diamond:
+                  return t.mapSetting !== o.Qy.Diamond;
+                case n.ai.Earth:
+                  return t.mapSetting !== o.Qy.Earth;
+                case n.ai.Gear:
+                  return t.mapSetting !== o.Qy.Gear;
+                case n.ai.GoldRush:
+                  return t.mapSetting !== o.Qy.GoldRush;
+                case n.ai.Lakes:
+                  return t.mapSetting !== o.Qy.Lakes;
+                case n.ai.Pond:
+                  return t.mapSetting !== o.Qy.Pond;
+                case n.ai.ShuffleBoard:
+                  return t.mapSetting !== o.Qy.ShuffleBoard;
+                case n.ai.Twirl:
+                  return t.mapSetting !== o.Qy.Twirl;
+                case n.ai.UK:
+                  return t.mapSetting !== o.Qy.UK;
+                case n.ai.USA:
+                  return t.mapSetting !== o.Qy.USA;
+                case n.ai.Volcano:
+                  return t.mapSetting !== o.Qy.Volcano;
+                default:
+                  return !0;
+              }
+            }),
+            f = m.filter((e) => {
+              switch (e.type) {
+                case r.$y.CitiesAndKnights4P:
+                  return t.modeSetting !== o.p9.CitiesAndKnights4P;
+                case r.$y.CitiesAndKnights56P:
+                  return t.modeSetting !== o.p9.CitiesAndKnights56P;
+                case r.$y.CitiesAndKnightsSeafarers4P:
+                  return t.modeSetting !== o.p9.CitiesAndKnightsSeafarers4P;
+                case r.$y.CitiesAndKnightsSeafarers56P:
+                  return t.modeSetting !== o.p9.CitiesAndKnightsSeafarers56P;
+                case r.$y.Classic56P:
+                  return t.modeSetting !== o.p9.Classic56P;
+                case r.$y.Classic78P:
+                  return t.modeSetting !== o.p9.Classic78P;
+                case r.$y.Seafarers4P:
+                  return t.modeSetting !== o.p9.Seafarers4P;
+                case r.$y.Seafarers56P:
+                  return t.modeSetting !== o.p9.Seafarers56P;
+                default:
+                  return !0;
+              }
+            });
+          (super(
+            {
+              key: "strings:homePage.becomeAMember",
+            },
+            {
+              key: "strings:colonistCommon.utils.emptyString",
+            },
+            () => {
+              const e = {
+                type: i.k0.ABTestClickAnalytics,
+                category: i.eX.ABTestClickAnalytics,
+                floatValue: i.Jd.PopupMembershipIncentiveEndgame,
+              };
+              (d.CA.sendAnalyticEvent(e), (0, p.Yf)("/store#membership", !0));
+            },
+            e,
+            !0,
+          ),
+            (this.body.style.flexDirection = "column"));
+          const y = l.n.randomBool();
+          (0, u.RH)(this.body, {
+            key: "strings:colonistCommon.utils.emptyString",
+          });
+          const b = (0, a.dN)(
+            {
+              key: "strings:popups.membershipIncentive.body",
+            },
+            {
+              value: y
+                ? {
+                    key: "strings:popups.membershipIncentive.optionMaps",
+                  }
+                : {
+                    key: "strings:popups.membershipIncentive.optionExpansions",
+                  },
+            },
+          );
+          (0, u.Wr)(this.body, b, "popup-membership-body");
+          const v = (0, u.Le)(
+            this.body,
+            "popup-subscription-in-room-items-wrapper",
+            "",
+          );
+          ((y ? g : f).forEach((e) => {
+            const t = (0, u.Le)(v, "popup-subscription-in-room-item-img", "");
+            ((0, u.zO)(t, e.image), (0, u.Wr)(t, e.name, ""), v.appendChild(t));
+          }),
+            this.changeCheckButtonText({
+              key: "strings:popups.membershipIncentive.visitStore",
+            }),
+            (this.checkButton.id = "store-href"),
+            this.changeXButtonText(s),
+            this.show());
+        }
+      }
+    },
+    34554: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        N: () => r,
+        q: () => o,
+      });
+      var i = s(29249),
+        n = s(78311),
+        r = (function (e) {
+          return (
+            (e[(e.General = 0)] = "General"),
+            (e[(e.Volume = 1)] = "Volume"),
+            e
+          );
+        })({});
+      function o(e) {
+        switch (e) {
+          case i.n.Information:
+            return n.am.InfoIcon;
+          case i.n.Success:
+            return n.am.CheckMark;
+          case i.n.Warning:
+          case i.n.Reconnect:
+            return n.am.Lightning;
+          case i.n.Error:
+          case i.n.SocketError:
+            return n.am.DangerIcon;
+        }
+      }
+    },
+    34617: (e, t, s) => {
+      "use strict";
+      var i;
+      (s.d(t, {
+        v: () => d,
+      }),
+        (function (e) {
+          e.isIStripeCheckoutRequestStatus = function (e) {
+            return "boolean" == typeof e.status && "string" == typeof e.message;
+          };
+          e.PublicProfileDataStickyPlayerInfo = class {
+            constructor() {
+              this.username = "";
+            }
+          };
+          e.PublicProfileDataOverview = class {
+            constructor() {
+              ((this.username = ""),
+                (this.karma = ""),
+                (this.gameData = new t()));
+            }
+          };
+          class t {
+            constructor() {
+              ((this.pointsInLast100Games = 0),
+                (this.totalGames = 0),
+                (this.winPercent = "0"),
+                (this.pointsPerGame = "0"));
+            }
+          }
+          e.PublicProfileGameDataOverview = t;
+          e.UserFriendsData = class {
+            constructor() {
+              ((this.friends = []),
+                (this.friendRequestsSent = []),
+                (this.friendRequestsReceived = []));
+            }
+          };
+          e.FriendRequestReceivedData = class {};
+        })(i || (i = {})));
+      var n = s(78311),
+        r = s(62602),
+        o = s(655),
+        a = s(32398),
+        c = s(95176),
+        l = s(81888);
+      class d {
+        static async addFriendAction(e, t) {
+          const s = {
+              username: e,
+            },
+            i = await o.m.postRequestHandler(
+              a.l.apiUserProfileAddFriend(),
+              void 0,
+              s,
+              "application/json",
+            );
+          if (null == i) return;
+          l._.refresh();
+          const c = i.json.friends.some((t) => t.username == e),
+            u = c
+              ? {
+                  key: "strings:popups.notification.youAreNowFriendsWith",
+                  options: {
+                    username: e,
+                  },
+                }
+              : {
+                  key: "strings:profilePage.friends.friendRequestSent",
+                };
+          (r.OV.showNotification(n.am.Friends, u), t && t(c));
+          for (const e of d.callbackActionOnFriendRequestSent) e();
+        }
+        static async removeFriendAction(e, t) {
+          const s = {
+            username: e,
+          };
+          null !=
+            (await o.m.postRequestHandler(
+              a.l.apiUserProfileRemoveFriend(),
+              void 0,
+              s,
+              "application/json",
+            )) &&
+            (l._.refresh(),
+            r.OV.showNotification(n.am.Friends, {
+              key: "strings:popups.friendRequests.removed",
+              options: {
+                username: e,
+              },
+            }),
+            "function" == typeof t && t());
+        }
+        static showRemoveFriendPopup(e, t) {
+          const s = {
+            key: "strings:profilePage.friends.removeFriend.body",
+            options: {
+              username: e,
+            },
+          };
+          new c.y(
+            {
+              key: "strings:profilePage.friends.removeFriend.title",
+            },
+            s,
+            t,
+            () => {},
+            !0,
+            {
+              checkButtonCustomContent: {
+                key: "strings:profilePage.friends.removeFriend.checkButton",
+              },
+              xButtonCustomContent: {
+                key: "strings:profilePage.friends.removeFriend.xButton",
+              },
+            },
+          ).show();
+        }
+        static async getFriends(e) {
+          if (!(null == e ? void 0 : e.isLoggedIn))
+            return new i.UserFriendsData();
+          const t = await o.m.getRequestHandler(
+            a.l.apiUserProfile.friends(),
+            void 0,
+          );
+          return null == t ? new i.UserFriendsData() : t.json;
+        }
+        static async getFriendRequestsReceived(e) {
+          if (!(null == e ? void 0 : e.isLoggedIn)) return [];
+          const t = await o.m.getRequestHandler(
+            a.l.apiFriendRequestsReceived(),
+            void 0,
+          );
+          return null == t ? [] : t.json;
+        }
+        static async friendRequestResponded(e, t) {
+          const s = {
+              username: e,
+            },
+            i = t
+              ? a.l.apiUserProfileAcceptFriend()
+              : a.l.apiUserProfileRemoveFriend();
+          if (
+            null !=
+            (await o.m.postRequestHandler(i, void 0, s, "application/json"))
+          ) {
+            l._.refresh();
+            for (const s of d.callbackNotificationFriendRequestResponded)
+              await s(e, t);
+          }
+        }
+        static canUseOnlineFriendService() {
+          var e;
+          return !!(null === (e = l._.userState) || void 0 === e
+            ? void 0
+            : e.isLoggedIn);
+        }
+        static setCallbackFriendRequestResponded(e) {
+          d.callbackNotificationFriendRequestResponded.push(e);
+        }
+      }
+      ((d.callbackActionOnFriendRequestSent = []),
+        (d.callbackNotificationFriendRequestResponded = []));
+    },
+    34777: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        $: () => h,
+      });
+      var i = s(9029),
+        n = s(30506),
+        r = s(655),
+        o = s(32398),
+        a = s(18587),
+        c = s(78311);
+      const l = [
+          {
+            slug: "gQYTA2vXZQV9fT2n",
+          },
+        ],
+        d = [
+          {
+            gameId: "191208779",
+            playerColor: 11,
+          },
+          {
+            gameId: "191208784",
+            playerColor: 5,
+          },
+          {
+            gameId: "191208346",
+            playerColor: 3,
+          },
+          {
+            gameId: "191208573",
+            playerColor: 5,
+          },
+        ],
+        u = [
+          {
+            gameId: "191197897",
+            playerColor: 2,
+          },
+          {
+            gameId: "191197330",
+            playerColor: 1,
+          },
+          {
+            gameId: "191196681",
+            playerColor: 4,
+          },
+          {
+            gameId: "191198102",
+            playerColor: 2,
+          },
+          {
+            gameId: "191199121",
+            playerColor: 2,
+          },
+          {
+            gameId: "191196320",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196489",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196952",
+            playerColor: 1,
+          },
+          {
+            gameId: "191197221",
+            playerColor: 11,
+          },
+          {
+            gameId: "191197079",
+            playerColor: 1,
+          },
+          {
+            gameId: "191196444",
+            playerColor: 4,
+          },
+          {
+            gameId: "191197644",
+            playerColor: 1,
+          },
+          {
+            gameId: "191197558",
+            playerColor: 5,
+          },
+          {
+            gameId: "191196948",
+            playerColor: 12,
+          },
+          {
+            gameId: "191196835",
+            playerColor: 6,
+          },
+          {
+            gameId: "191196714",
+            playerColor: 1,
+          },
+        ];
+      class h {
+        static async loadContent() {
+          try {
+            const e = await r.m.getRequestHandler(
+              o.l.apiChampionship25Content(),
+              void 0,
+            );
+            if (null == e) return;
+            const t = e.json;
+            if (null == t) return;
+            Array.isArray(t.partners) && h.renderPartners(t.partners);
+          } catch (e) {
+            return;
+          }
+        }
+        static renderResults() {
+          const e = document.getElementById("championship25-final-grid"),
+            t = document.getElementById("championship25-semifinals-grid"),
+            s = document.getElementById("championship25-quarterfinals-grid");
+          (e && h.renderResultCards(e, l),
+            t && h.renderResultCards(t, d),
+            s && h.renderResultCards(s, u));
+        }
+        static renderResultCards(e, t) {
+          t.forEach((t, s) => {
+            const n = (0, i.Le)(e, "result-card"),
+              r = (0, i.Le)(n, "result-info");
+            (0, i.i5)(r, "result-title", {
+              key: "strings:colonistCommon.utils.#buffer",
+              options: {
+                value: `Table ${s + 1}`,
+              },
+            });
+            const o = h.getReplayUrl(t),
+              a = (0, i.cE)(
+                n,
+                o,
+                {
+                  key: "strings:colonistCommon.utils.emptyString",
+                },
+                "replay-btn",
+                void 0,
+                !0,
+              );
+            (0, i.zO)(a, c.am.ReplayIcon);
+          });
+        }
+        static getReplayUrl(e) {
+          if (a.r.isUserOnDiscord)
+            return "slug" in e
+              ? `/replay/${e.slug}`
+              : `/replay?gameId=${e.gameId}&playerColor=${e.playerColor}`;
+          const t = new URL(window.location.href);
+          return (
+            (t.pathname = a.r.isUserOnMobileAppOrWeb
+              ? "/mobile/replay"
+              : "/replay"),
+            "slug" in e
+              ? (t.pathname += `/${e.slug}`)
+              : (t.searchParams.set("gameId", e.gameId.toString()),
+                t.searchParams.set("playerColor", e.playerColor.toString())),
+            t.href
+          );
+        }
+        static renderPartners(e) {
+          const t = document.getElementById("championship25-partners-title"),
+            s = [],
+            r = document.getElementById("championship25-view-all-partners-btn"),
+            o = document.getElementById("championship25-partners-grid");
+          ((0, i.oB)(t, {
+            key: "strings:colonistCommon.utils.#buffer",
+            options: {
+              value: `Partners (${e.length})`,
+            },
+          }),
+            (0, i.RH)(o, {
+              key: "strings:colonistCommon.utils.emptyString",
+            }));
+          const c = n.lv.shuffle(e);
+          for (const e of c) {
+            const t = (0, i.Le)(o, "partner-item");
+            if (
+              !a.r.isUserOnDiscord &&
+              null != e.imageUrl &&
+              e.imageUrl.length > 0
+            ) {
+              const s = document.createElement("img");
+              ((s.src = e.imageUrl), (s.alt = e.name), t.appendChild(s));
+            }
+            const n = (0, i.Le)(t, "partner-name");
+            ((0, i.oB)(n, {
+              key: "strings:colonistCommon.utils.#buffer",
+              options: {
+                value: e.name,
+              },
+            }),
+              s.push(t));
+          }
+          const l = e.length,
+            d = window.innerWidth <= 991 ? 6 : 14;
+          if (l <= d) r.classList.add("hidden");
+          else {
+            for (let e = d; e < l; e++) s[e].classList.add("hidden");
+            (0, i.G0)(
+              r,
+              () => {
+                for (const e of s) e.classList.remove("hidden");
+                r.classList.add("hidden");
+              },
+              !0,
+            );
+          }
+        }
+        constructor() {
+          (h.renderResults(), h.loadContent());
+        }
+      }
+    },
+    34837: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/icon_gamemode_1v1.f506758eb0812a9acebd.svg";
+    },
+    34865: (e, t, s) => {
+      "use strict";
+      if (
+        (s.d(t, {
+          n: () => n,
+        }),
+        !/^(251|517|837)$/.test(s.j))
+      )
+        var i = s(23288);
+      class n extends (/^(251|517|837)$/.test(s.j) ? null : i.U) {
+        shouldShowWarning() {
+          return (
+            this.roomState.gameSetting.victoryPointsToWin >
+            this.roomState.victoryPointsRecommendedLimit
+          );
+        }
+        getTitle() {
+          return {
+            key: "strings:roomPage.warnings.startGameExceedLimitWarning.title",
+          };
+        }
+        getDescription() {
+          return {
+            key: "strings:roomPage.warnings.startGameExceedLimitWarning.description",
+          };
+        }
+      }
+    },
+    34911: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/city_bronze.fed2c86edb98d55da481.svg";
     },
     34997: (e, t, s) => {
       "use strict";
@@ -15898,7 +15966,7 @@
     36919: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_medicine.ebdff649149830a074b5.svg";
+        s.p + "assets/card_progress_science_medicine.2383b5ba0184a11b8a0a.svg";
     },
     37099: (e, t, s) => {
       "use strict";
@@ -16825,7 +16893,7 @@
       }
       var f = s(19733),
         y = s(85801),
-        b = s(66681),
+        b = s(62602),
         v = s(67908);
       const S = 5;
       class k {
@@ -16938,7 +17006,7 @@
         o: () => a,
       });
       var i = s(19733),
-        n = s(66681),
+        n = s(62602),
         r = s(78311),
         o = s(29249);
       function a(e) {
@@ -19388,7 +19456,7 @@
     51853: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_printer.c91504dd7aa6870427fc.svg";
+        s.p + "assets/card_progress_science_printer.bb781a2164021b032e8c.svg";
     },
     51988: (e, t, s) => {
       "use strict";
@@ -19490,7 +19558,7 @@
         r = s(92524),
         o = s(81888),
         a = s(18514),
-        c = s(66681),
+        c = s(62602),
         l = s(32398),
         d = s(655),
         u = s(44517),
@@ -20238,7 +20306,7 @@
         o = s(75589),
         a = s(30506),
         c = s(4508),
-        l = s(66681),
+        l = s(62602),
         d = s(5603);
       class u {
         init() {
@@ -20419,7 +20487,7 @@
     56088: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_engineer.c84ec8897d516fc0b0e6.svg";
+        s.p + "assets/card_progress_science_engineer.74d8a72304f6de0ba9f6.svg";
     },
     56105: (e, t, s) => {
       "use strict";
@@ -20584,7 +20652,7 @@
     58416: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_smith.216b640cb25b4aecf63c.svg";
+        s.p + "assets/card_progress_science_smith.4b4e3536542567a917bf.svg";
     },
     58533: (e, t, s) => {
       "use strict";
@@ -20692,7 +20760,7 @@
     59803: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_mining.aea79b103bffde5b1477.svg";
+        s.p + "assets/card_progress_science_mining.57f4a09fa706b3f62909.svg";
     },
     59991: (e, t, s) => {
       "use strict";
@@ -21945,1457 +22013,15 @@
     62585: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_alchemist.8cd834ee897e2c3d92a5.svg";
+        s.p + "assets/card_progress_science_alchemist.84e49fb459b1e915e039.svg";
     },
-    62640: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/ship_pink_north_west.0450a4a4af7f1f813332.svg";
-    },
-    62681: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/city_wall_mysticblue.d7cc943ea55d20f7c7a8.svg";
-    },
-    62713: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/road_mysticblue.1bd2cb96a192adecf018.svg";
-    },
-    62814: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/mobile_endgame_after.00de318409aa4b18bd71.png";
-    },
-    62945: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/knight_level1_active_silver.69037099b19435065fde.svg";
-    },
-    62948: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/lobby_ad_premium.d2299e81b122908c5a45.png";
-    },
-    63116: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/map_twirl_preview.158112043235b9f5adb5.png";
-    },
-    63406: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/map_mountain_of_riches_preview.29d53c89f50c2f0960fc.png";
-    },
-    63514: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/game_spritesheet_5.8515c72fb3a2676a1b27.json";
-    },
-    63593: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/shuffle_card_before.2a725212aa25a871f32a.png";
-    },
-    63722: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/ribbon_short.b4f83327f0b50cae62bb.svg";
-    },
-    63751: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/room_guests_before.06ce7ee269464ac74f00.png";
-    },
-    63977: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p +
-        "assets/stop-achievements-blocking-after.1b4ae1df9d229ef49a71.png";
-    },
-    64038: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        RU: () => ce,
-        RF: () => S,
-        ac: () => v,
-        W1: () => y,
-        Hl: () => C,
-        Ge: () => _,
-        ef: () => k,
-        fB: () => b,
-        Ph: () => P,
-        __: () => d,
-        bf: () => u,
-        kD: () => h,
-        L$: () => p,
-        r8: () => o,
-        D8: () => a,
-        xm: () => f,
-        $G: () => g,
-        SN: () => c,
-        ZZ: () => l,
-        LK: () => m,
-        Vk: () => le,
-        hK: () => L,
-        hd: () => B,
-        FK: () => I,
-        qD: () => $,
-        Jt: () => E,
-        bZ: () => M,
-        bE: () => U,
-        Gi: () => q,
-        lY: () => D,
-        pk: () => O,
-        p7: () => K,
-        j6: () => T,
-        z3: () => V,
-        lQ: () => A,
-        Ke: () => w,
-        rf: () => R,
-        XP: () => F,
-        yI: () => z,
-        G: () => N,
-        NH: () => x,
-        SV: () => G,
-        YU: () => H,
-        yT: () => W,
-        Zc: () => ne,
-        jU: () => X,
-        b6: () => Q,
-        Ms: () => Z,
-        xU: () => oe,
-        lt: () => J,
-        As: () => ee,
-        dZ: () => se,
-        yl: () => ie,
-        Ry: () => te,
-        dS: () => Y,
-        qW: () => j,
-        Xf: () => re,
-        l2: () => ae,
-        v$: () => de,
-      });
-      var i = s(53015),
-        n = s(78311),
-        r = s(30911);
-      class o extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.Classic56P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.classic56P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.classic56P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemExpansionClassic56P),
-            (this.activeInStore = !0));
-        }
-      }
-      class a extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.Classic78P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.classic78P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.classic78P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemExpansionClassic78P),
-            (this.activeInStore = !0));
-        }
-      }
-      class c extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.Seafarers4P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.seafarers4P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.seafarers4P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemSeafarers4P),
-            (this.activeInStore = !0));
-        }
-      }
-      class l extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.Seafarers56P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.seafarers56P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.seafarers56P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemSeafarers56P),
-            (this.activeInStore = !0));
-        }
-      }
-      class d extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.CitiesAndKnights4P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.citiesAndKnights4P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.citiesAndKnights4P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemCitiesAndKnights4P),
-            (this.activeInStore = !0));
-        }
-      }
-      class u extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.CitiesAndKnights56P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.citiesAndKnights56P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.citiesAndKnights56P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemCitiesAndKnights56P),
-            (this.activeInStore = !0));
-        }
-      }
-      class h extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.CitiesAndKnightsSeafarers4P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights4P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights4P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemCitiesAndKnightsSeafarers4P),
-            (this.activeInStore = !0));
-        }
-      }
-      class p extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.CitiesAndKnightsSeafarers56P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights56P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights56P.description"),
-            (this.price = 2800),
-            (this.image = n.am.StoreItemCitiesAndKnightsSeafarers56P),
-            (this.activeInStore = !0));
-        }
-      }
-      class m extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.TradersAndBarbarians),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.tradersAndBarbarians.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.tradersAndBarbarians.description"),
-            (this.price = 2800),
-            (this.image = n.am.XMark));
-        }
-      }
-      class g extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.ExplorersAndPirates),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.explorersAndPirates.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.explorersAndPirates.description"),
-            (this.price = 2800),
-            (this.image = n.am.XMark));
-        }
-      }
-      class f extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Expansion),
-            (this.type = n.$y.ColonistRush4P),
-            (this.name = {
-              key: "strings:colonistCommon.gameModes.colonistRush.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameModes.colonistRush.description"),
-            (this.price = 2800),
-            (this.image = n.am.GameModeColonistRush),
-            (this.activeInStore = !0));
-        }
-      }
-      class y extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.Gold),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.Gold",
-            }),
-            (this.price = 3e5),
-            (this.image = n.am.StoreColorGold),
-            (this.activeInStore = !1));
-        }
-      }
-      class b extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.Silver),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.Silver",
-            }),
-            (this.price = 3e5),
-            (this.image = n.am.StoreColorSilver),
-            (this.activeInStore = !1));
-        }
-      }
-      class v extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.Bronze),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.Bronze",
-            }),
-            (this.price = 3e5),
-            (this.image = n.am.StoreColorBronze),
-            (this.activeInStore = !1));
-        }
-      }
-      class S extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.Black),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.Black",
-            }),
-            (this.price = 0),
-            (this.image = n.am.StoreColorBlack),
-            (this.activeInStore = !0));
-        }
-      }
-      class k extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.Purple),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.Purple",
-            }),
-            (this.price = 2500),
-            (this.image = n.am.StoreColorPurple),
-            (this.activeInStore = !0));
-        }
-      }
-      class C extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.MysticBlue),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.MysticBlue",
-            }),
-            (this.price = 5e3),
-            (this.image = n.am.StoreColorMysticBlue),
-            (this.activeInStore = !0));
-        }
-      }
-      class P extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.White),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.White",
-            }),
-            (this.price = 1e3),
-            (this.image = n.am.StoreColorWhite),
-            (this.activeInStore = !0));
-        }
-      }
-      class _ extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Color),
-            (this.type = i.WB.Pink),
-            (this.name = {
-              key: "strings:colonistCommon.playerColors.Pink",
-            }),
-            (this.price = 3e5),
-            (this.imagePath = n.am.StoreColorPink),
-            (this.activeInStore = !1));
-        }
-      }
-      class A extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.RobberCupid),
-            (this.name = {
-              key: "strings:storePage.icons.cupidRobber",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconRobberCupid),
-            (this.activeInStore = !0));
-        }
-      }
-      class w extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.RobberLunar),
-            (this.name = {
-              key: "strings:storePage.icons.lunarRobber",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconRobberLunar),
-            (this.activeInStore = !0));
-        }
-      }
-      class R extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.RobberSanta),
-            (this.name = {
-              key: "strings:storePage.icons.santaRobber",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconRobberSanta),
-            (this.activeInStore = !1));
-        }
-      }
-      class T extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.PirateShip),
-            (this.name = {
-              key: "strings:storePage.icons.pirateShip",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconPirateShip),
-            (this.activeInStore = !0));
-        }
-      }
-      class I extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.ChristmasHat),
-            (this.name = {
-              key: "strings:storePage.icons.christmasHat",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconChristmasHat),
-            (this.activeInStore = !0));
-        }
-      }
-      class M extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Elephant),
-            (this.name = {
-              key: "strings:storePage.icons.elephant",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconElephant),
-            (this.activeInStore = !1));
-        }
-      }
-      class L extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Avocado),
-            (this.name = {
-              key: "strings:storePage.icons.avocado",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconAvocado),
-            (this.activeInStore = !0));
-        }
-      }
-      class B extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Cactus),
-            (this.name = {
-              key: "strings:storePage.icons.cactus",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconCactus),
-            (this.activeInStore = !0));
-        }
-      }
-      class D extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Gifter),
-            (this.name = {
-              key: "strings:storePage.icons.gifter",
-            }),
-            (this.text = {
-              key: "strings:storePage.sections.avatar.unlockByGifting",
-            }),
-            (this.image = n.am.IconGifter),
-            (this.activeInStore = !0),
-            (this.bannerText = {
-              key: "strings:storePage.newItem",
-            }),
-            (this.hideOnDiscordMobile = !0));
-        }
-      }
-      class E extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Crown),
-            (this.name = {
-              key: "strings:storePage.icons.crown",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconCrown),
-            (this.activeInStore = !0));
-        }
-      }
-      class G extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Swords),
-            (this.name = {
-              key: "strings:storePage.icons.swords",
-            }),
-            (this.price = 250),
-            (this.image = n.am.IconSwords),
-            (this.activeInStore = !0));
-        }
-      }
-      class x extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Sombrero),
-            (this.name = {
-              key: "strings:storePage.icons.sombrero",
-            }),
-            (this.price = 100),
-            (this.image = n.am.IconSombrero),
-            (this.activeInStore = !0));
-        }
-      }
-      class U extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Farmer),
-            (this.name = {
-              key: "strings:storePage.icons.farmer",
-            }),
-            (this.price = 100),
-            (this.image = n.am.IconFarmer),
-            (this.activeInStore = !0));
-        }
-      }
-      class O extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Helmet),
-            (this.name = {
-              key: "strings:storePage.icons.helmet",
-            }),
-            (this.price = 100),
-            (this.image = n.am.IconHelmet),
-            (this.activeInStore = !0));
-        }
-      }
-      class N extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Snorkel),
-            (this.name = {
-              key: "strings:storePage.icons.snorkel",
-            }),
-            (this.price = 100),
-            (this.image = n.am.IconSnorkel),
-            (this.activeInStore = !0));
-        }
-      }
-      class F extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Scarf),
-            (this.name = {
-              key: "strings:storePage.icons.scarf",
-            }),
-            (this.price = 100),
-            (this.image = n.am.IconScarf),
-            (this.activeInStore = !0));
-        }
-      }
-      class H extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Tie),
-            (this.name = {
-              key: "strings:storePage.icons.tie",
-            }),
-            (this.price = 100),
-            (this.image = n.am.IconTie),
-            (this.activeInStore = !0));
-        }
-      }
-      class W extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Worker),
-            (this.name = {
-              key: "strings:storePage.icons.worker",
-            }),
-            (this.price = 100),
-            (this.image = n.am.IconWorker),
-            (this.activeInStore = !0));
-        }
-      }
-      class K extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Mummy),
-            (this.name = {
-              key: "strings:storePage.icons.mummy",
-            }),
-            (this.price = 400),
-            (this.image = n.am.IconMummy),
-            (this.activeInStore = !1));
-        }
-      }
-      class V extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.Player),
-            (this.name = {
-              key: "strings:storePage.icons.colonist",
-            }),
-            (this.price = 0),
-            (this.image = n.am.User),
-            (this.activeInStore = !0));
-        }
-      }
-      class q extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.FounderHat),
-            (this.name = {
-              key: "strings:storePage.icons.founderHat",
-            }),
-            (this.price = 1e5),
-            (this.image = n.am.IconFounderHat),
-            (this.activeInStore = !1));
-        }
-      }
-      class $ extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.ColonistHat),
-            (this.name = {
-              key: "strings:storePage.icons.colonisthat",
-            }),
-            (this.price = 5e4),
-            (this.image = n.am.IconColonistHat),
-            (this.activeInStore = !1));
-        }
-      }
-      class z extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Icon),
-            (this.type = i.l1.SettlerHat),
-            (this.name = {
-              key: "strings:storePage.icons.settlerHat",
-            }),
-            (this.price = 25e3),
-            (this.image = n.am.IconSettlerHat),
-            (this.activeInStore = !1));
-        }
-      }
-      r.k;
-      r.k;
-      r.k;
-      class Q extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Earth),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.earth.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.earth.description"),
-            (this.price = 500),
-            (this.image = n.am.MapEarthPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class j extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.USA),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.usa.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.usa.description"),
-            (this.price = 500),
-            (this.image = n.am.MapUSAPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class Y extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.UK),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.uk.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.uk.description"),
-            (this.price = 500),
-            (this.image = n.am.MapUKPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class X extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Diamond),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.diamond.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.diamond.description"),
-            (this.price = 500),
-            (this.image = n.am.MapDiamondPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class Z extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Gear),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.gear.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.gear.description"),
-            (this.price = 500),
-            (this.image = n.am.MapGearPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class J extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Lakes),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.lakes.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.lakes.description"),
-            (this.price = 500),
-            (this.image = n.am.MapLakesPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class ee extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Pond),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.pond.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.pond.description"),
-            (this.price = 500),
-            (this.image = n.am.MapPondPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class te extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Twirl),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.twirl.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.twirl.description"),
-            (this.price = 500),
-            (this.image = n.am.MapTwirlPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class se extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Classic4PRandom),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.classic.random4P.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.classic.random4P.description"),
-            (this.price = 500),
-            (this.image = n.am.MapRandomBasePreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class ie extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.ShuffleBoard),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.shuffleBoard.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.shuffleBoard.description"),
-            (this.price = 500),
-            (this.image = n.am.MapShuffleBoardPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class ne extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.BlackForest),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.blackForest.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.blackForest.description"),
-            (this.price = 500),
-            (this.image = n.am.MapBlackForestPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class re extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.Volcano),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.volcano.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.volcano.description"),
-            (this.price = 500),
-            (this.image = n.am.MapVolcanoPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class oe extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Map),
-            (this.type = i.ai.GoldRush),
-            (this.name = {
-              key: "strings:colonistCommon.gameMaps.fun.goldRush.title",
-            }),
-            (this.description =
-              "strings:colonistCommon.gameMaps.fun.goldRush.description"),
-            (this.price = 500),
-            (this.image = n.am.MapGoldRushPreview),
-            (this.activeInStore = !0));
-        }
-      }
-      class ae extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.PresalePack),
-            (this.type = i.h8.SettlerPack),
-            (this.name = {
-              key: "strings:storePage.packs.settler.title",
-            }),
-            (this.description = "strings:storePage.packs.settler.description"),
-            (this.price = 999999999),
-            (this.image = n.am.SettlerPack));
-        }
-      }
-      class ce extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.PresalePack),
-            (this.type = i.h8.ColonistPack),
-            (this.name = {
-              key: "strings:storePage.packs.colonist.title",
-            }),
-            (this.description = "strings:storePage.packs.colonist.description"),
-            (this.price = 999999999),
-            (this.image = n.am.ColonistPack));
-        }
-      }
-      class le extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.PresalePack),
-            (this.type = i.h8.FounderPack),
-            (this.name = {
-              key: "strings:storePage.packs.founder.title",
-            }),
-            (this.description = "strings:storePage.packs.founder.description"),
-            (this.price = 999999999),
-            (this.image = n.am.FounderPack));
-        }
-      }
-      class de extends r.k {
-        constructor(...e) {
-          (super(...e),
-            (this.category = i.n9.Consumable),
-            (this.type = i.nx.UsernameChange),
-            (this.name = {
-              key: "strings:storePage.consumables.usernameChange.title",
-            }),
-            (this.description =
-              "strings:storePage.consumables.usernameChange.description"),
-            (this.price = 1300),
-            (this.image = n.am.Guest));
-        }
-      }
-    },
-    64265: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        AB: () => o,
-        lg: () => r,
-      });
-      var i = s(78311),
-        n = s(92524),
-        r = (function (e) {
-          return (
-            (e[(e.CoinType1 = 0)] = "CoinType1"),
-            (e[(e.CoinType2 = 1)] = "CoinType2"),
-            (e[(e.CoinType3 = 2)] = "CoinType3"),
-            (e[(e.CoinType4 = 3)] = "CoinType4"),
-            (e[(e.CoinType5 = 4)] = "CoinType5"),
-            (e[(e.CoinType6 = 5)] = "CoinType6"),
-            e
-          );
-        })({});
-      class o {
-        getProductName() {
-          return {
-            key: "strings:storePage.coins.title",
-            options: {
-              count: this.getTotalCoinAmount(),
-            },
-          };
-        }
-        getDefaultPrice() {
-          return this.getUSDPriceWithSign();
-        }
-        getTotalCoinAmount() {
-          return this.baseCoinAmount + this.bonusCoinAmount;
-        }
-        getUSDPrice() {
-          return this.price / 100;
-        }
-        getUSDPriceWithSign() {
-          return `$${this.getUSDPrice()}`;
-        }
-        static getAllCoinProducts() {
-          return this.products.values();
-        }
-        static getPurchaseProduct(e) {
-          return this.products.get(e);
-        }
-        static initProducts(e) {
-          (this.products.set(
-            0,
-            new o({
-              type: 0,
-              baseCoinAmount: 650,
-              bonusCoinAmount: 0,
-              price: 499,
-              discordSKUId: e.coin1,
-              mobileIAPSKUId: "coin_id_1",
-              lobbyImage: i.am.CoinStack1,
-              bannerText: void 0,
-              isActive: () => !0,
-            }),
-          ),
-            this.products.set(
-              1,
-              new o({
-                type: 1,
-                baseCoinAmount: 1300,
-                bonusCoinAmount: 80,
-                price: 999,
-                discordSKUId: e.coin2,
-                mobileIAPSKUId: "coin_id_2",
-                lobbyImage: i.am.CoinStack2,
-                bannerText: void 0,
-                isActive: () => !0,
-              }),
-            ),
-            this.products.set(
-              2,
-              new o({
-                type: 2,
-                baseCoinAmount: 2600,
-                bonusCoinAmount: 400,
-                price: 1999,
-                discordSKUId: e.coin3,
-                mobileIAPSKUId: "coin_id_3",
-                lobbyImage: i.am.CoinStack3,
-                bannerText: void 0,
-                isActive: () => !0,
-              }),
-            ),
-            this.products.set(
-              3,
-              new o({
-                type: 3,
-                baseCoinAmount: 4500,
-                bonusCoinAmount: 800,
-                price: 3499,
-                discordSKUId: e.coin4,
-                mobileIAPSKUId: "coin_id_4",
-                lobbyImage: i.am.CoinStack4,
-                bannerText: {
-                  key: "strings:storePage.bestSeller",
-                },
-                isActive: () => !0,
-              }),
-            ),
-            this.products.set(
-              4,
-              new o({
-                type: 4,
-                baseCoinAmount: 6500,
-                bonusCoinAmount: 1300,
-                price: 4999,
-                discordSKUId: e.coin5,
-                mobileIAPSKUId: "coin_id_5",
-                lobbyImage: i.am.CoinStack5,
-                bannerText: void 0,
-                isActive: () => !0,
-              }),
-            ),
-            this.products.set(
-              5,
-              new o({
-                type: 5,
-                baseCoinAmount: 13e3,
-                bonusCoinAmount: 3e3,
-                price: 9999,
-                discordSKUId: e.coin6,
-                mobileIAPSKUId: "coin_id_6",
-                lobbyImage: i.am.CoinStack6,
-                bannerText: {
-                  key: "strings:storePage.bestValue",
-                },
-                isActive: () => !0,
-              }),
-            ));
-        }
-        constructor(e) {
-          ((this.storeProductType = n.l6.Coin),
-            (this.stripeCheckoutType = n.hg.Payment),
-            (this.itemQuantity = 1),
-            Object.assign(this, e));
-        }
-      }
-      o.products = new Map();
-    },
-    64323: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/icon_trophy.bc5c68a7464f0462721d.svg";
-    },
-    64428: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p +
-        "assets/stan-fix-safari-low-resolution-dice-after.c7bd287fec51c35eeec7.jpg";
-    },
-    64458: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/knight_level1_active_blue.e81ed2239a2cae997e58.svg";
-    },
-    64475: (e, t, s) => {
-      "use strict";
-      async function i(e = 0) {
-        await new Promise((t) => setTimeout(t, e));
-      }
-      s.d(t, {
-        c: () => i,
-      });
-    },
-    64483: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/portrait_new_top_bar_before.604986baceeae9c97f8e.png";
-    },
-    64543: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/store_color_black.8ef9699502a6a75599cd.png";
-    },
-    64907: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/city_pink.fd2e1fb7cd38190ba29a.svg";
-    },
-    65015: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        g: () => r,
-      });
-      var i = s(9029),
-        n = s(32332);
-      class r extends n.A {
-        update(e) {
-          (super.update(e),
-            (this.tdMMR.innerText = String(e.skillRating)),
-            this.tdWinRate &&
-              (this.tdWinRate.innerText = `${e.winRate.toFixed(1)}%`),
-            this.tdTotalGamesPlayed &&
-              (this.tdTotalGamesPlayed.innerText = "" + e.totalGamesPlayed));
-        }
-        constructor(e, t, s, n) {
-          super(e, t, s, n);
-          const r = t.myData ? "my_leaderboard_cell" : "leaderboard_cell";
-          ((this.tdMMR = (0, i.Cr)(this.tableRow, r)),
-            (this.tdWinRate = (0, i.Cr)(
-              this.tableRow,
-              `${r} hide_on_narrow_screens`,
-            )),
-            (this.tdTotalGamesPlayed = (0, i.Cr)(
-              this.tableRow,
-              `${r} hide_on_narrow_screens`,
-            )),
-            this.update(t));
-        }
-      }
-    },
-    65019: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/city_blue.43d846e83515f35f51f6.svg";
-    },
-    65187: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/player_status_reject.9efea4f82b41faca8846.svg";
-    },
-    65429: (e, t, s) => {
-      "use strict";
-      s.d(t, {
-        Y: () => h,
-        j: () => u,
-      });
-      var i = s(78311),
-        n = s(38854),
-        r = s(66681),
-        o = s(48755),
-        a = s(29249),
-        c = s(18587),
-        l = s(41931),
-        d = s(9029),
-        u = (function (e) {
-          return (
-            (e[(e.PrivateRoom = 0)] = "PrivateRoom"),
-            (e[(e.HideBankCards = 1)] = "HideBankCards"),
-            (e[(e.FriendlyRobber = 2)] = "FriendlyRobber"),
-            (e[(e.BalancedDice = 3)] = "BalancedDice"),
-            (e[(e.NoTrolls = 4)] = "NoTrolls"),
-            e
-          );
-        })({});
-      class h {
-        load(e, t) {
-          ((this.roomState = e), (this.rulesData = null != t ? t : new Map()));
-          const s = document.getElementById("room_center_rules_info_icon"),
-            i = this.roomState.isTournament;
-          (null != s &&
-            (0, d.G0)(s, () => {
-              new o.L(i);
-            }),
-            null != this.rulesSelector
-              ? this.updateRulesSelector()
-              : this.createRulesSelector());
-        }
-        update(e, t) {
-          const s = this.shouldUpdate(e);
-          ((this.roomState = e),
-            t && (this.rulesData = t),
-            s && this.updateRulesSelector());
-        }
-        updateInteractabilityOfElements(e) {
-          this.rulesSelector.updateInteractabilityOfElements(e);
-        }
-        overrideRuleAvailableState(e, t) {
-          const s = this.rulesData.get(e);
-          null != s && ((s.available = t), this.updateRulesSelector());
-        }
-        overrideRuleSelectedState(e, t) {
-          const s = this.rulesData.get(e);
-          null != s && ((s.selected = t), this.updateRulesSelector());
-        }
-        createRulesSelector() {
-          const e = this.getRulesItemData();
-          this.rulesSelector = new n.M(this.container, e, !1);
-        }
-        updateRulesSelector() {
-          const e = this.getRulesItemData();
-          this.rulesSelector.update(e);
-        }
-        getRulesItemData() {
-          var e, t, s, n, o, a;
-          return [
-            {
-              name: {
-                key: "strings:roomPage.options.privateGame.title",
-              },
-              image: i.am.PrivateGame,
-              available: !0,
-              selected:
-                null !==
-                  (n =
-                    null === (e = this.rulesData.get(0)) || void 0 === e
-                      ? void 0
-                      : e.selected) && void 0 !== n
-                  ? n
-                  : this.roomState.gameSetting.privateGame,
-              canToggle: !0,
-              clickAction: () => this.onClickPrivateGame(),
-              visible: !this.isTournamentRoom(),
-            },
-            {
-              name: {
-                key: "strings:roomPage.options.hideBankCards.title",
-              },
-              image: i.am.HideBankCards,
-              available: !0,
-              selected: this.roomState.gameSetting.hideBankCards,
-              canToggle: !0,
-              clickAction: () => this.onClickHideBankCards(),
-              visible: !0,
-            },
-            {
-              name: {
-                key: "strings:roomPage.options.friendlyRobber.title",
-              },
-              image: i.am.Robber,
-              available: !0,
-              selected: this.roomState.gameSetting.friendlyRobber,
-              canToggle: !0,
-              clickAction: () => this.onClickFriendlyRobber(),
-              visible: !0,
-            },
-            {
-              name: {
-                key: "strings:roomPage.options.dice.titleMobile",
-              },
-              image: i.am.Dice6,
-              available: !0,
-              selected: this.roomState.gameSetting.diceSetting == i.ZP.Balanced,
-              canToggle: !0,
-              clickAction: () => this.onClickBalancedDice(),
-              visible: !0,
-            },
-            {
-              name: {
-                key: "strings:roomPage.options.noTrollsGame.title",
-              },
-              image: i.am.IconNoTroll,
-              available:
-                null !==
-                  (o =
-                    null === (t = this.rulesData.get(4)) || void 0 === t
-                      ? void 0
-                      : t.available) && void 0 !== o
-                  ? o
-                  : !this.isNoTrollsDisabled(),
-              selected:
-                null !==
-                  (a =
-                    null === (s = this.rulesData.get(4)) || void 0 === s
-                      ? void 0
-                      : s.selected) && void 0 !== a
-                  ? a
-                  : this.roomState.isNoTrollsGame(),
-              canToggle: !0,
-              clickAction: () => this.onClickNoTrolls(),
-              infoAction: () => this.sendNoTrollsNotification(),
-              visible: !this.isTournamentRoom(),
-            },
-            {
-              name: {
-                key: "strings:roomPage.orderSelection.title",
-              },
-              image: i.am.ProfileRanked,
-              available: !0,
-              selected: this.roomState.gameSetting.playOrderSelectionActive,
-              canToggle: !0,
-              clickAction: () => r.sZ.roomClient.togglePlayOrderSelection(),
-              visible: this.isTournamentRoom(),
-            },
-          ].filter((e) => e.visible);
-        }
-        onClickPrivateGame() {
-          var e;
-          const t =
-            null === (e = this.rulesData.get(0)) || void 0 === e
-              ? void 0
-              : e.onClick;
-          null == t
-            ? r.sZ.roomClient.setPrivateGame(
-                !this.roomState.gameSetting.privateGame,
-              )
-            : t();
-        }
-        onClickHideBankCards() {
-          r.sZ.roomClient.setHideBankCards(
-            !this.roomState.gameSetting.hideBankCards,
-          );
-        }
-        onClickFriendlyRobber() {
-          const e = this.roomState.gameSetting.friendlyRobber;
-          (r.sZ.roomClient.setFriendlyRobber(!e),
-            l.p.setRoomFriendlyRobberActiveSetting(!e));
-        }
-        onClickBalancedDice() {
-          const e =
-            this.roomState.gameSetting.diceSetting == i.ZP.Balanced
-              ? i.ZP.Random
-              : i.ZP.Balanced;
-          (r.sZ.roomClient.setDiceType(e), l.p.setRoomDiceSetting(e));
-        }
-        onClickNoTrolls() {
-          var e;
-          const t =
-            null === (e = this.rulesData.get(4)) || void 0 === e
-              ? void 0
-              : e.onClick;
-          null == t ? r.sZ.roomClient.toggleNoTrolls() : t();
-        }
-        shouldUpdate(e) {
-          return (
-            this.roomState.hostSession.userId != e.hostSession.userId ||
-            this.roomState.gameSetting.privateGame !=
-              e.gameSetting.privateGame ||
-            this.roomState.gameSetting.hideBankCards !=
-              e.gameSetting.hideBankCards ||
-            this.roomState.gameSetting.friendlyRobber !=
-              e.gameSetting.friendlyRobber ||
-            this.roomState.gameSetting.diceSetting !=
-              e.gameSetting.diceSetting ||
-            this.roomState.isNoTrollsGame() != e.isNoTrollsGame() ||
-            this.roomState.gameSetting.playOrderSelectionActive !=
-              e.gameSetting.playOrderSelectionActive
-          );
-        }
-        isTournamentRoom() {
-          return !c.r.isUserOnMobileAppOrWeb && this.roomState.isTournament;
-        }
-        isNoTrollsDisabled() {
-          return (
-            !this.roomState.isHostSubscribed() ||
-            !!this.roomState.isPrivateGame()
-          );
-        }
-        sendNoTrollsNotification() {
-          var e;
-          const t =
-            null === (e = this.rulesData.get(4)) || void 0 === e
-              ? void 0
-              : e.onInfoClick;
-          if (null != t) return void t();
-          const s = this.roomState.gameSetting.privateGame
-            ? {
-                key: "strings:roomPage.notifications.noTrollsGameDisabledWhenPrivate",
-              }
-            : {
-                key: "strings:roomPage.options.noTrollsGame.becomeAMember",
-              };
-          c.r.isUserOnMobileAppOrWeb
-            ? r.OV.show(s, a.n.Information, void 0, void 0, void 0, void 0, 3e3)
-            : r.OV.showNotification(i.am.Lightning, s);
-        }
-        constructor(e) {
-          this.container = e;
-        }
-      }
-    },
-    65432: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/city_wall_purple.2bbf47ba3b4f4684fb17.svg";
-    },
-    65944: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/card_paper.1c9114c5081c5d5d5511.svg";
-    },
-    65976: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/card_progress_politics_deserter.8559ed0fe5d6e61c399d.svg";
-    },
-    66217: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/sfx_room_get_ready.4645252f794ab5277916.mp3";
-    },
-    66350: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/sfx_dice_roll_1.72357fea36268b4d2746.mp3";
-    },
-    66460: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/trade_counter_offer_before.7c117c013010b939c12c.png";
-    },
-    66516: (e, t, s) => {
-      "use strict";
-      e.exports =
-        s.p + "assets/card_progress_politics_diplomat.a8aebecc914f804e9308.svg";
-    },
-    66589: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/stat_rolling_income.79f84a36f7e7e512db98.svg";
-    },
-    66681: (e, t, s) => {
+    62602: (e, t, s) => {
       "use strict";
       s.d(t, {
         gC: () => ft,
         _$: () => mt,
         OV: () => ht,
+        Bm: () => yt,
         sZ: () => ut,
         i0: () => pt,
         IH: () => dt,
@@ -23650,7 +22276,7 @@
         }
       }
       var C = s(61919),
-        P = s(34915),
+        P = s(34397),
         _ = s(50482),
         A = s(64265),
         w = s(49937),
@@ -24034,11 +22660,11 @@
           }
         }
         handleWebSocketMessage(e) {
-          const t = V.D4(e.data);
           window.__socketCatannMessages.push({
             trigger: "serverData",
             data: JSON.parse(JSON.stringify(t)),
           });
+          const t = V.D4(e.data);
           (i.r.socketDebugActive &&
             (0, v.W)("SocketMessage", [
               "======",
@@ -24162,24 +22788,9 @@
             t(() => this.onSessionEstablished()));
         }
       }
-      var ee = s(29249);
-      class te {
-        static show() {
-          if (null != this.connectionLostBackground) return;
-          const e = (0, x.Le)(document.body, "game-reconnecting-overlay");
-          ((0, x.Le)(e, "loading-spinner"),
-            (0, x.i5)(e, "game-reconnecting-text", {
-              key: "strings:game.gameState.gameLogs.gameDisconnected.reconnecting",
-            }),
-            (this.connectionLostBackground = e));
-        }
-        static remove() {
-          (null != this.connectionLostBackground &&
-            this.connectionLostBackground.remove(),
-            (this.connectionLostBackground = void 0));
-        }
-      }
-      var se = s(85801);
+      var ee = s(29249),
+        te = s(2658),
+        se = s(85801);
       class ie {
         startReconnecting() {
           if (!this.isEnabled) return;
@@ -24196,7 +22807,10 @@
               this.displayReconnectBanner();
             }, e)),
             (this.timeDisconnected = Date.now()),
-            this.hideConnect || te.show(),
+            this.hideConnect ||
+              te.D.show({
+                key: "strings:game.gameState.gameLogs.gameDisconnected.reconnecting",
+              }),
             (this.hideConnect = !1),
             this.reconnect());
         }
@@ -24271,7 +22885,7 @@
             (this.timeDisconnected = void 0));
         }
         removeUI() {
-          (te.remove(), null == ht || ht.removeSocketErrorBanners());
+          (te.D.remove(), null == ht || ht.removeSocketErrorBanners());
         }
         disable() {
           this.isEnabled = !1;
@@ -24777,7 +23391,7 @@
           }, s);
         }
       }
-      var Ce = s(46581),
+      var Ce = s(73555),
         Pe = s(76092);
       if (837 != s.j) var _e = s(51178);
       if (837 != s.j) var Ae = s(2443);
@@ -26142,7 +24756,7 @@
           dt = e;
         }
         initializeUIManagerEvents(e) {
-          gt = e;
+          yt(e);
         }
         static initializeSocket(e, t) {
           ((ut = new nt(e)),
@@ -26154,7 +24768,7 @@
               null == ht || ht.removeSocketErrorBanners();
             }));
         }
-        initializeNotification(e) {
+        static initializeNotification(e) {
           ht = e;
         }
         completeInitialization() {
@@ -26306,6 +24920,1461 @@
             ft.sendPageVisitAnalyticEvent());
         }
       }
+      function yt(e) {
+        gt = e;
+      }
+    },
+    62640: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/ship_pink_north_west.0450a4a4af7f1f813332.svg";
+    },
+    62681: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/city_wall_mysticblue.d7cc943ea55d20f7c7a8.svg";
+    },
+    62713: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/road_mysticblue.1bd2cb96a192adecf018.svg";
+    },
+    62814: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/mobile_endgame_after.00de318409aa4b18bd71.png";
+    },
+    62945: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/knight_level1_active_silver.69037099b19435065fde.svg";
+    },
+    62948: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/lobby_ad_premium.d2299e81b122908c5a45.png";
+    },
+    63116: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/map_twirl_preview.158112043235b9f5adb5.png";
+    },
+    63406: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/map_mountain_of_riches_preview.29d53c89f50c2f0960fc.png";
+    },
+    63514: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/game_spritesheet_5.8515c72fb3a2676a1b27.json";
+    },
+    63593: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/shuffle_card_before.2a725212aa25a871f32a.png";
+    },
+    63722: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/ribbon_short.b4f83327f0b50cae62bb.svg";
+    },
+    63751: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/room_guests_before.06ce7ee269464ac74f00.png";
+    },
+    63977: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/stop-achievements-blocking-after.1b4ae1df9d229ef49a71.png";
+    },
+    64038: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        RU: () => ce,
+        RF: () => S,
+        ac: () => v,
+        W1: () => y,
+        Hl: () => C,
+        Ge: () => _,
+        ef: () => k,
+        fB: () => b,
+        Ph: () => P,
+        __: () => d,
+        bf: () => u,
+        kD: () => h,
+        L$: () => p,
+        r8: () => o,
+        D8: () => a,
+        xm: () => f,
+        $G: () => g,
+        SN: () => c,
+        ZZ: () => l,
+        LK: () => m,
+        Vk: () => le,
+        hK: () => L,
+        hd: () => B,
+        FK: () => I,
+        qD: () => $,
+        Jt: () => E,
+        bZ: () => M,
+        bE: () => U,
+        Gi: () => q,
+        lY: () => D,
+        pk: () => O,
+        p7: () => K,
+        j6: () => T,
+        z3: () => V,
+        lQ: () => A,
+        Ke: () => w,
+        rf: () => R,
+        XP: () => F,
+        yI: () => z,
+        G: () => N,
+        NH: () => x,
+        SV: () => G,
+        YU: () => H,
+        yT: () => W,
+        Zc: () => ne,
+        jU: () => X,
+        b6: () => Q,
+        Ms: () => Z,
+        xU: () => oe,
+        lt: () => J,
+        As: () => ee,
+        dZ: () => se,
+        yl: () => ie,
+        Ry: () => te,
+        dS: () => Y,
+        qW: () => j,
+        Xf: () => re,
+        l2: () => ae,
+        v$: () => de,
+      });
+      var i = s(53015),
+        n = s(78311),
+        r = s(30911);
+      class o extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.Classic56P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.classic56P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.classic56P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemExpansionClassic56P),
+            (this.activeInStore = !0));
+        }
+      }
+      class a extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.Classic78P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.classic78P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.classic78P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemExpansionClassic78P),
+            (this.activeInStore = !0));
+        }
+      }
+      class c extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.Seafarers4P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.seafarers4P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.seafarers4P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemSeafarers4P),
+            (this.activeInStore = !0));
+        }
+      }
+      class l extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.Seafarers56P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.seafarers56P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.seafarers56P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemSeafarers56P),
+            (this.activeInStore = !0));
+        }
+      }
+      class d extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.CitiesAndKnights4P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.citiesAndKnights4P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.citiesAndKnights4P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemCitiesAndKnights4P),
+            (this.activeInStore = !0));
+        }
+      }
+      class u extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.CitiesAndKnights56P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.citiesAndKnights56P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.citiesAndKnights56P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemCitiesAndKnights56P),
+            (this.activeInStore = !0));
+        }
+      }
+      class h extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.CitiesAndKnightsSeafarers4P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights4P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights4P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemCitiesAndKnightsSeafarers4P),
+            (this.activeInStore = !0));
+        }
+      }
+      class p extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.CitiesAndKnightsSeafarers56P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights56P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.seafarersAndCitiesAndKnights56P.description"),
+            (this.price = 2800),
+            (this.image = n.am.StoreItemCitiesAndKnightsSeafarers56P),
+            (this.activeInStore = !0));
+        }
+      }
+      class m extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.TradersAndBarbarians),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.tradersAndBarbarians.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.tradersAndBarbarians.description"),
+            (this.price = 2800),
+            (this.image = n.am.XMark));
+        }
+      }
+      class g extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.ExplorersAndPirates),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.explorersAndPirates.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.explorersAndPirates.description"),
+            (this.price = 2800),
+            (this.image = n.am.XMark));
+        }
+      }
+      class f extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Expansion),
+            (this.type = n.$y.ColonistRush4P),
+            (this.name = {
+              key: "strings:colonistCommon.gameModes.colonistRush.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameModes.colonistRush.description"),
+            (this.price = 2800),
+            (this.image = n.am.GameModeColonistRush),
+            (this.activeInStore = !0));
+        }
+      }
+      class y extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.Gold),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Gold",
+            }),
+            (this.price = 3e5),
+            (this.image = n.am.StoreColorGold),
+            (this.activeInStore = !1));
+        }
+      }
+      class b extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.Silver),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Silver",
+            }),
+            (this.price = 3e5),
+            (this.image = n.am.StoreColorSilver),
+            (this.activeInStore = !1));
+        }
+      }
+      class v extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.Bronze),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Bronze",
+            }),
+            (this.price = 3e5),
+            (this.image = n.am.StoreColorBronze),
+            (this.activeInStore = !1));
+        }
+      }
+      class S extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.Black),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Black",
+            }),
+            (this.price = 0),
+            (this.image = n.am.StoreColorBlack),
+            (this.activeInStore = !0));
+        }
+      }
+      class k extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.Purple),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Purple",
+            }),
+            (this.price = 2500),
+            (this.image = n.am.StoreColorPurple),
+            (this.activeInStore = !0));
+        }
+      }
+      class C extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.MysticBlue),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.MysticBlue",
+            }),
+            (this.price = 5e3),
+            (this.image = n.am.StoreColorMysticBlue),
+            (this.activeInStore = !0));
+        }
+      }
+      class P extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.White),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.White",
+            }),
+            (this.price = 1e3),
+            (this.image = n.am.StoreColorWhite),
+            (this.activeInStore = !0));
+        }
+      }
+      class _ extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Color),
+            (this.type = i.WB.Pink),
+            (this.name = {
+              key: "strings:colonistCommon.playerColors.Pink",
+            }),
+            (this.price = 3e5),
+            (this.imagePath = n.am.StoreColorPink),
+            (this.activeInStore = !1));
+        }
+      }
+      class A extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.RobberCupid),
+            (this.name = {
+              key: "strings:storePage.icons.cupidRobber",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconRobberCupid),
+            (this.activeInStore = !0));
+        }
+      }
+      class w extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.RobberLunar),
+            (this.name = {
+              key: "strings:storePage.icons.lunarRobber",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconRobberLunar),
+            (this.activeInStore = !0));
+        }
+      }
+      class R extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.RobberSanta),
+            (this.name = {
+              key: "strings:storePage.icons.santaRobber",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconRobberSanta),
+            (this.activeInStore = !1));
+        }
+      }
+      class T extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.PirateShip),
+            (this.name = {
+              key: "strings:storePage.icons.pirateShip",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconPirateShip),
+            (this.activeInStore = !0));
+        }
+      }
+      class I extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.ChristmasHat),
+            (this.name = {
+              key: "strings:storePage.icons.christmasHat",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconChristmasHat),
+            (this.activeInStore = !0));
+        }
+      }
+      class M extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Elephant),
+            (this.name = {
+              key: "strings:storePage.icons.elephant",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconElephant),
+            (this.activeInStore = !1));
+        }
+      }
+      class L extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Avocado),
+            (this.name = {
+              key: "strings:storePage.icons.avocado",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconAvocado),
+            (this.activeInStore = !0));
+        }
+      }
+      class B extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Cactus),
+            (this.name = {
+              key: "strings:storePage.icons.cactus",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconCactus),
+            (this.activeInStore = !0));
+        }
+      }
+      class D extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Gifter),
+            (this.name = {
+              key: "strings:storePage.icons.gifter",
+            }),
+            (this.text = {
+              key: "strings:storePage.sections.avatar.unlockByGifting",
+            }),
+            (this.image = n.am.IconGifter),
+            (this.activeInStore = !0),
+            (this.bannerText = {
+              key: "strings:storePage.newItem",
+            }),
+            (this.hideOnDiscordMobile = !0));
+        }
+      }
+      class E extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Crown),
+            (this.name = {
+              key: "strings:storePage.icons.crown",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconCrown),
+            (this.activeInStore = !0));
+        }
+      }
+      class G extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Swords),
+            (this.name = {
+              key: "strings:storePage.icons.swords",
+            }),
+            (this.price = 250),
+            (this.image = n.am.IconSwords),
+            (this.activeInStore = !0));
+        }
+      }
+      class x extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Sombrero),
+            (this.name = {
+              key: "strings:storePage.icons.sombrero",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconSombrero),
+            (this.activeInStore = !0));
+        }
+      }
+      class U extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Farmer),
+            (this.name = {
+              key: "strings:storePage.icons.farmer",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconFarmer),
+            (this.activeInStore = !0));
+        }
+      }
+      class O extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Helmet),
+            (this.name = {
+              key: "strings:storePage.icons.helmet",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconHelmet),
+            (this.activeInStore = !0));
+        }
+      }
+      class N extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Snorkel),
+            (this.name = {
+              key: "strings:storePage.icons.snorkel",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconSnorkel),
+            (this.activeInStore = !0));
+        }
+      }
+      class F extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Scarf),
+            (this.name = {
+              key: "strings:storePage.icons.scarf",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconScarf),
+            (this.activeInStore = !0));
+        }
+      }
+      class H extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Tie),
+            (this.name = {
+              key: "strings:storePage.icons.tie",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconTie),
+            (this.activeInStore = !0));
+        }
+      }
+      class W extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Worker),
+            (this.name = {
+              key: "strings:storePage.icons.worker",
+            }),
+            (this.price = 100),
+            (this.image = n.am.IconWorker),
+            (this.activeInStore = !0));
+        }
+      }
+      class K extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Mummy),
+            (this.name = {
+              key: "strings:storePage.icons.mummy",
+            }),
+            (this.price = 400),
+            (this.image = n.am.IconMummy),
+            (this.activeInStore = !1));
+        }
+      }
+      class V extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.Player),
+            (this.name = {
+              key: "strings:storePage.icons.colonist",
+            }),
+            (this.price = 0),
+            (this.image = n.am.User),
+            (this.activeInStore = !0));
+        }
+      }
+      class q extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.FounderHat),
+            (this.name = {
+              key: "strings:storePage.icons.founderHat",
+            }),
+            (this.price = 1e5),
+            (this.image = n.am.IconFounderHat),
+            (this.activeInStore = !1));
+        }
+      }
+      class $ extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.ColonistHat),
+            (this.name = {
+              key: "strings:storePage.icons.colonisthat",
+            }),
+            (this.price = 5e4),
+            (this.image = n.am.IconColonistHat),
+            (this.activeInStore = !1));
+        }
+      }
+      class z extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Icon),
+            (this.type = i.l1.SettlerHat),
+            (this.name = {
+              key: "strings:storePage.icons.settlerHat",
+            }),
+            (this.price = 25e3),
+            (this.image = n.am.IconSettlerHat),
+            (this.activeInStore = !1));
+        }
+      }
+      r.k;
+      r.k;
+      r.k;
+      class Q extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Earth),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.earth.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.earth.description"),
+            (this.price = 500),
+            (this.image = n.am.MapEarthPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class j extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.USA),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.usa.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.usa.description"),
+            (this.price = 500),
+            (this.image = n.am.MapUSAPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class Y extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.UK),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.uk.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.uk.description"),
+            (this.price = 500),
+            (this.image = n.am.MapUKPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class X extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Diamond),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.diamond.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.diamond.description"),
+            (this.price = 500),
+            (this.image = n.am.MapDiamondPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class Z extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Gear),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.gear.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.gear.description"),
+            (this.price = 500),
+            (this.image = n.am.MapGearPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class J extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Lakes),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.lakes.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.lakes.description"),
+            (this.price = 500),
+            (this.image = n.am.MapLakesPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class ee extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Pond),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.pond.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.pond.description"),
+            (this.price = 500),
+            (this.image = n.am.MapPondPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class te extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Twirl),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.twirl.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.twirl.description"),
+            (this.price = 500),
+            (this.image = n.am.MapTwirlPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class se extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Classic4PRandom),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.classic.random4P.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.classic.random4P.description"),
+            (this.price = 500),
+            (this.image = n.am.MapRandomBasePreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class ie extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.ShuffleBoard),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.shuffleBoard.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.shuffleBoard.description"),
+            (this.price = 500),
+            (this.image = n.am.MapShuffleBoardPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class ne extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.BlackForest),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.blackForest.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.blackForest.description"),
+            (this.price = 500),
+            (this.image = n.am.MapBlackForestPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class re extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.Volcano),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.volcano.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.volcano.description"),
+            (this.price = 500),
+            (this.image = n.am.MapVolcanoPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class oe extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Map),
+            (this.type = i.ai.GoldRush),
+            (this.name = {
+              key: "strings:colonistCommon.gameMaps.fun.goldRush.title",
+            }),
+            (this.description =
+              "strings:colonistCommon.gameMaps.fun.goldRush.description"),
+            (this.price = 500),
+            (this.image = n.am.MapGoldRushPreview),
+            (this.activeInStore = !0));
+        }
+      }
+      class ae extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.PresalePack),
+            (this.type = i.h8.SettlerPack),
+            (this.name = {
+              key: "strings:storePage.packs.settler.title",
+            }),
+            (this.description = "strings:storePage.packs.settler.description"),
+            (this.price = 999999999),
+            (this.image = n.am.SettlerPack));
+        }
+      }
+      class ce extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.PresalePack),
+            (this.type = i.h8.ColonistPack),
+            (this.name = {
+              key: "strings:storePage.packs.colonist.title",
+            }),
+            (this.description = "strings:storePage.packs.colonist.description"),
+            (this.price = 999999999),
+            (this.image = n.am.ColonistPack));
+        }
+      }
+      class le extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.PresalePack),
+            (this.type = i.h8.FounderPack),
+            (this.name = {
+              key: "strings:storePage.packs.founder.title",
+            }),
+            (this.description = "strings:storePage.packs.founder.description"),
+            (this.price = 999999999),
+            (this.image = n.am.FounderPack));
+        }
+      }
+      class de extends r.k {
+        constructor(...e) {
+          (super(...e),
+            (this.category = i.n9.Consumable),
+            (this.type = i.nx.UsernameChange),
+            (this.name = {
+              key: "strings:storePage.consumables.usernameChange.title",
+            }),
+            (this.description =
+              "strings:storePage.consumables.usernameChange.description"),
+            (this.price = 1300),
+            (this.image = n.am.Guest));
+        }
+      }
+    },
+    64265: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        AB: () => o,
+        lg: () => r,
+      });
+      var i = s(78311),
+        n = s(92524),
+        r = (function (e) {
+          return (
+            (e[(e.CoinType1 = 0)] = "CoinType1"),
+            (e[(e.CoinType2 = 1)] = "CoinType2"),
+            (e[(e.CoinType3 = 2)] = "CoinType3"),
+            (e[(e.CoinType4 = 3)] = "CoinType4"),
+            (e[(e.CoinType5 = 4)] = "CoinType5"),
+            (e[(e.CoinType6 = 5)] = "CoinType6"),
+            e
+          );
+        })({});
+      class o {
+        getProductName() {
+          return {
+            key: "strings:storePage.coins.title",
+            options: {
+              count: this.getTotalCoinAmount(),
+            },
+          };
+        }
+        getDefaultPrice() {
+          return this.getUSDPriceWithSign();
+        }
+        getTotalCoinAmount() {
+          return this.baseCoinAmount + this.bonusCoinAmount;
+        }
+        getUSDPrice() {
+          return this.price / 100;
+        }
+        getUSDPriceWithSign() {
+          return `$${this.getUSDPrice()}`;
+        }
+        static getAllCoinProducts() {
+          return this.products.values();
+        }
+        static getPurchaseProduct(e) {
+          return this.products.get(e);
+        }
+        static getPurchaseProductFromMobileSKUId(e) {
+          return Array.from(this.products.values()).find(
+            (t) => t.mobileIAPSKUId === e,
+          );
+        }
+        static initProducts(e) {
+          (this.products.set(
+            0,
+            new o({
+              type: 0,
+              baseCoinAmount: 650,
+              bonusCoinAmount: 0,
+              price: 499,
+              discordSKUId: e.coin1,
+              mobileIAPSKUId: "coin_id_1",
+              lobbyImage: i.am.CoinStack1,
+              bannerText: void 0,
+              isActive: () => !0,
+            }),
+          ),
+            this.products.set(
+              1,
+              new o({
+                type: 1,
+                baseCoinAmount: 1300,
+                bonusCoinAmount: 80,
+                price: 999,
+                discordSKUId: e.coin2,
+                mobileIAPSKUId: "coin_id_2",
+                lobbyImage: i.am.CoinStack2,
+                bannerText: void 0,
+                isActive: () => !0,
+              }),
+            ),
+            this.products.set(
+              2,
+              new o({
+                type: 2,
+                baseCoinAmount: 2600,
+                bonusCoinAmount: 400,
+                price: 1999,
+                discordSKUId: e.coin3,
+                mobileIAPSKUId: "coin_id_3",
+                lobbyImage: i.am.CoinStack3,
+                bannerText: void 0,
+                isActive: () => !0,
+              }),
+            ),
+            this.products.set(
+              3,
+              new o({
+                type: 3,
+                baseCoinAmount: 4500,
+                bonusCoinAmount: 800,
+                price: 3499,
+                discordSKUId: e.coin4,
+                mobileIAPSKUId: "coin_id_4",
+                lobbyImage: i.am.CoinStack4,
+                bannerText: {
+                  key: "strings:storePage.bestSeller",
+                },
+                isActive: () => !0,
+              }),
+            ),
+            this.products.set(
+              4,
+              new o({
+                type: 4,
+                baseCoinAmount: 6500,
+                bonusCoinAmount: 1300,
+                price: 4999,
+                discordSKUId: e.coin5,
+                mobileIAPSKUId: "coin_id_5",
+                lobbyImage: i.am.CoinStack5,
+                bannerText: void 0,
+                isActive: () => !0,
+              }),
+            ),
+            this.products.set(
+              5,
+              new o({
+                type: 5,
+                baseCoinAmount: 13e3,
+                bonusCoinAmount: 3e3,
+                price: 9999,
+                discordSKUId: e.coin6,
+                mobileIAPSKUId: "coin_id_6",
+                lobbyImage: i.am.CoinStack6,
+                bannerText: {
+                  key: "strings:storePage.bestValue",
+                },
+                isActive: () => !0,
+              }),
+            ));
+        }
+        constructor(e) {
+          ((this.storeProductType = n.l6.Coin),
+            (this.stripeCheckoutType = n.hg.Payment),
+            (this.itemQuantity = 1),
+            Object.assign(this, e));
+        }
+      }
+      o.products = new Map();
+    },
+    64323: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/icon_trophy.bc5c68a7464f0462721d.svg";
+    },
+    64428: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p +
+        "assets/stan-fix-safari-low-resolution-dice-after.c7bd287fec51c35eeec7.jpg";
+    },
+    64458: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/knight_level1_active_blue.e81ed2239a2cae997e58.svg";
+    },
+    64475: (e, t, s) => {
+      "use strict";
+      async function i(e = 0) {
+        await new Promise((t) => setTimeout(t, e));
+      }
+      s.d(t, {
+        c: () => i,
+      });
+    },
+    64483: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/portrait_new_top_bar_before.604986baceeae9c97f8e.png";
+    },
+    64543: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/store_color_black.8ef9699502a6a75599cd.png";
+    },
+    64907: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/city_pink.fd2e1fb7cd38190ba29a.svg";
+    },
+    65015: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        g: () => r,
+      });
+      var i = s(9029),
+        n = s(32332);
+      class r extends n.A {
+        update(e) {
+          (super.update(e),
+            (this.tdMMR.innerText = String(e.skillRating)),
+            this.tdWinRate &&
+              (this.tdWinRate.innerText = `${e.winRate.toFixed(1)}%`),
+            this.tdTotalGamesPlayed &&
+              (this.tdTotalGamesPlayed.innerText = "" + e.totalGamesPlayed));
+        }
+        constructor(e, t, s, n) {
+          super(e, t, s, n);
+          const r = t.myData ? "my_leaderboard_cell" : "leaderboard_cell";
+          ((this.tdMMR = (0, i.Cr)(this.tableRow, r)),
+            (this.tdWinRate = (0, i.Cr)(
+              this.tableRow,
+              `${r} hide_on_narrow_screens`,
+            )),
+            (this.tdTotalGamesPlayed = (0, i.Cr)(
+              this.tableRow,
+              `${r} hide_on_narrow_screens`,
+            )),
+            this.update(t));
+        }
+      }
+    },
+    65019: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/city_blue.43d846e83515f35f51f6.svg";
+    },
+    65187: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/player_status_reject.9efea4f82b41faca8846.svg";
+    },
+    65364: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/page_scrolling_after.26600ecdee72e4774547.png";
+    },
+    65429: (e, t, s) => {
+      "use strict";
+      s.d(t, {
+        Y: () => h,
+        j: () => u,
+      });
+      var i = s(78311),
+        n = s(38854),
+        r = s(62602),
+        o = s(48755),
+        a = s(29249),
+        c = s(18587),
+        l = s(41931),
+        d = s(9029),
+        u = (function (e) {
+          return (
+            (e[(e.PrivateRoom = 0)] = "PrivateRoom"),
+            (e[(e.HideBankCards = 1)] = "HideBankCards"),
+            (e[(e.FriendlyRobber = 2)] = "FriendlyRobber"),
+            (e[(e.BalancedDice = 3)] = "BalancedDice"),
+            (e[(e.NoTrolls = 4)] = "NoTrolls"),
+            e
+          );
+        })({});
+      class h {
+        load(e, t) {
+          ((this.roomState = e), (this.rulesData = null != t ? t : new Map()));
+          const s = document.getElementById("room_center_rules_info_icon"),
+            i = this.roomState.isTournament;
+          (null != s &&
+            (0, d.G0)(s, () => {
+              new o.L(i);
+            }),
+            null != this.rulesSelector
+              ? this.updateRulesSelector()
+              : this.createRulesSelector());
+        }
+        update(e, t) {
+          const s = this.shouldUpdate(e);
+          ((this.roomState = e),
+            t && (this.rulesData = t),
+            s && this.updateRulesSelector());
+        }
+        updateInteractabilityOfElements(e) {
+          this.rulesSelector.updateInteractabilityOfElements(e);
+        }
+        overrideRuleAvailableState(e, t) {
+          const s = this.rulesData.get(e);
+          null != s && ((s.available = t), this.updateRulesSelector());
+        }
+        overrideRuleSelectedState(e, t) {
+          const s = this.rulesData.get(e);
+          null != s && ((s.selected = t), this.updateRulesSelector());
+        }
+        createRulesSelector() {
+          const e = this.getRulesItemData();
+          this.rulesSelector = new n.M(this.container, e, !1);
+        }
+        updateRulesSelector() {
+          const e = this.getRulesItemData();
+          this.rulesSelector.update(e);
+        }
+        getRulesItemData() {
+          var e, t, s, n, o, a;
+          return [
+            {
+              name: {
+                key: "strings:roomPage.options.privateGame.title",
+              },
+              image: i.am.PrivateGame,
+              available: !0,
+              selected:
+                null !==
+                  (n =
+                    null === (e = this.rulesData.get(0)) || void 0 === e
+                      ? void 0
+                      : e.selected) && void 0 !== n
+                  ? n
+                  : this.roomState.gameSetting.privateGame,
+              canToggle: !0,
+              clickAction: () => this.onClickPrivateGame(),
+              visible: !this.isTournamentRoom(),
+            },
+            {
+              name: {
+                key: "strings:roomPage.options.hideBankCards.title",
+              },
+              image: i.am.HideBankCards,
+              available: !0,
+              selected: this.roomState.gameSetting.hideBankCards,
+              canToggle: !0,
+              clickAction: () => this.onClickHideBankCards(),
+              visible: !0,
+            },
+            {
+              name: {
+                key: "strings:roomPage.options.friendlyRobber.title",
+              },
+              image: i.am.Robber,
+              available: !0,
+              selected: this.roomState.gameSetting.friendlyRobber,
+              canToggle: !0,
+              clickAction: () => this.onClickFriendlyRobber(),
+              visible: !0,
+            },
+            {
+              name: {
+                key: "strings:roomPage.options.dice.titleMobile",
+              },
+              image: i.am.Dice6,
+              available: !0,
+              selected: this.roomState.gameSetting.diceSetting == i.ZP.Balanced,
+              canToggle: !0,
+              clickAction: () => this.onClickBalancedDice(),
+              visible: !0,
+            },
+            {
+              name: {
+                key: "strings:roomPage.options.noTrollsGame.title",
+              },
+              image: i.am.IconNoTroll,
+              available:
+                null !==
+                  (o =
+                    null === (t = this.rulesData.get(4)) || void 0 === t
+                      ? void 0
+                      : t.available) && void 0 !== o
+                  ? o
+                  : !this.isNoTrollsDisabled(),
+              selected:
+                null !==
+                  (a =
+                    null === (s = this.rulesData.get(4)) || void 0 === s
+                      ? void 0
+                      : s.selected) && void 0 !== a
+                  ? a
+                  : this.roomState.isNoTrollsGame(),
+              canToggle: !0,
+              clickAction: () => this.onClickNoTrolls(),
+              infoAction: () => this.sendNoTrollsNotification(),
+              visible: !this.isTournamentRoom(),
+            },
+            {
+              name: {
+                key: "strings:roomPage.orderSelection.title",
+              },
+              image: i.am.ProfileRanked,
+              available: !0,
+              selected: this.roomState.gameSetting.playOrderSelectionActive,
+              canToggle: !0,
+              clickAction: () => r.sZ.roomClient.togglePlayOrderSelection(),
+              visible: this.isTournamentRoom(),
+            },
+          ].filter((e) => e.visible);
+        }
+        onClickPrivateGame() {
+          var e;
+          const t =
+            null === (e = this.rulesData.get(0)) || void 0 === e
+              ? void 0
+              : e.onClick;
+          null == t
+            ? r.sZ.roomClient.setPrivateGame(
+                !this.roomState.gameSetting.privateGame,
+              )
+            : t();
+        }
+        onClickHideBankCards() {
+          r.sZ.roomClient.setHideBankCards(
+            !this.roomState.gameSetting.hideBankCards,
+          );
+        }
+        onClickFriendlyRobber() {
+          const e = this.roomState.gameSetting.friendlyRobber;
+          (r.sZ.roomClient.setFriendlyRobber(!e),
+            l.p.setRoomFriendlyRobberActiveSetting(!e));
+        }
+        onClickBalancedDice() {
+          const e =
+            this.roomState.gameSetting.diceSetting == i.ZP.Balanced
+              ? i.ZP.Random
+              : i.ZP.Balanced;
+          (r.sZ.roomClient.setDiceType(e), l.p.setRoomDiceSetting(e));
+        }
+        onClickNoTrolls() {
+          var e;
+          const t =
+            null === (e = this.rulesData.get(4)) || void 0 === e
+              ? void 0
+              : e.onClick;
+          null == t ? r.sZ.roomClient.toggleNoTrolls() : t();
+        }
+        shouldUpdate(e) {
+          return (
+            this.roomState.hostSession.userId != e.hostSession.userId ||
+            this.roomState.gameSetting.privateGame !=
+              e.gameSetting.privateGame ||
+            this.roomState.gameSetting.hideBankCards !=
+              e.gameSetting.hideBankCards ||
+            this.roomState.gameSetting.friendlyRobber !=
+              e.gameSetting.friendlyRobber ||
+            this.roomState.gameSetting.diceSetting !=
+              e.gameSetting.diceSetting ||
+            this.roomState.isNoTrollsGame() != e.isNoTrollsGame() ||
+            this.roomState.gameSetting.playOrderSelectionActive !=
+              e.gameSetting.playOrderSelectionActive
+          );
+        }
+        isTournamentRoom() {
+          return !c.r.isUserOnMobileAppOrWeb && this.roomState.isTournament;
+        }
+        isNoTrollsDisabled() {
+          return (
+            !this.roomState.isHostSubscribed() ||
+            !!this.roomState.isPrivateGame()
+          );
+        }
+        sendNoTrollsNotification() {
+          var e;
+          const t =
+            null === (e = this.rulesData.get(4)) || void 0 === e
+              ? void 0
+              : e.onInfoClick;
+          if (null != t) return void t();
+          const s = this.roomState.gameSetting.privateGame
+            ? {
+                key: "strings:roomPage.notifications.noTrollsGameDisabledWhenPrivate",
+              }
+            : {
+                key: "strings:roomPage.options.noTrollsGame.becomeAMember",
+              };
+          c.r.isUserOnMobileAppOrWeb
+            ? r.OV.show(s, a.n.Information, void 0, void 0, void 0, void 0, 3e3)
+            : r.OV.showNotification(i.am.Lightning, s);
+        }
+        constructor(e) {
+          this.container = e;
+        }
+      }
+    },
+    65432: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/city_wall_purple.2bbf47ba3b4f4684fb17.svg";
+    },
+    65944: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/card_paper.42eb7a7b91cc9cf155f3.svg";
+    },
+    65976: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/card_progress_politics_deserter.8559ed0fe5d6e61c399d.svg";
+    },
+    66217: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/sfx_room_get_ready.4645252f794ab5277916.mp3";
+    },
+    66350: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/sfx_dice_roll_1.72357fea36268b4d2746.mp3";
+    },
+    66460: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/trade_counter_offer_before.7c117c013010b939c12c.png";
+    },
+    66516: (e, t, s) => {
+      "use strict";
+      e.exports =
+        s.p + "assets/card_progress_politics_diplomat.a8aebecc914f804e9308.svg";
+    },
+    66589: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/stat_rolling_income.79f84a36f7e7e512db98.svg";
     },
     66730: (e, t, s) => {
       "use strict";
@@ -26316,7 +26385,7 @@
       s.d(t, {
         S: () => ss,
       });
-      var i = s(66681),
+      var i = s(62602),
         n = s(35700),
         r = s(74710),
         o = s(46235),
@@ -26518,9 +26587,9 @@
           s.p + "assets/icon_square_framed_politics.ecd63a7de3319a5288e6.svg",
         Yt = s.p + "assets/icon_square_framed_science.b51de4dedc05486569fb.svg",
         Xt = s.p + "assets/icon_square_framed_trade.28d7d5a642a8086def22.svg";
-      var Zt = s(34915),
+      var Zt = s(34397),
         Jt = s(30506),
-        es = s(46581),
+        es = s(73555),
         ts = s(18514);
       class ss {
         static replaceKeywordsWithImages(e) {
@@ -26893,7 +26962,7 @@
     },
     66966: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "assets/game_spritesheet_1.75775d9c0b20cb21d62e.json";
+      e.exports = s.p + "assets/game_spritesheet_1.b5af9c15651d70f2a891.json";
     },
     66987: (e, t, s) => {
       "use strict";
@@ -26948,10 +27017,6 @@
           return ((t.id = e.id), t);
         }
       }
-    },
-    68106: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/lobby_ad_shuffle.6beaf95e524cebda857a.png";
     },
     68282: (e, t, s) => {
       "use strict";
@@ -27033,7 +27098,7 @@
             (e[(e.Forbidden = 403)] = "Forbidden"),
             (e[(e.NotFound = 404)] = "NotFound"),
             (e[(e.Conflict = 409)] = "Conflict"),
-            (e[(e.TooManyRequests = 428)] = "TooManyRequests"),
+            (e[(e.TooManyRequests = 429)] = "TooManyRequests"),
             (e[(e.InternalServerError = 500)] = "InternalServerError"),
             (e[(e.ServiceUnavailable = 503)] = "ServiceUnavailable"),
             e
@@ -27048,7 +27113,7 @@
       var i = s(19966),
         n = s(78046),
         r = s(76092),
-        o = s(66681),
+        o = s(62602),
         a = s(26658),
         c = s(98487),
         l = s(78311),
@@ -27477,7 +27542,7 @@
     },
     70925: (e, t, s) => {
       "use strict";
-      e.exports = s.p + "locales/en_strings.75d3ceb2ef4528611172.json";
+      e.exports = s.p + "locales/en_strings.1fd6bee788fc1d523817.json";
     },
     70970: (e, t, s) => {
       "use strict";
@@ -27512,6 +27577,9 @@
         }
         static isChallengeResponse(e) {
           return "challenge" == e["cf-mitigated"];
+        }
+        static isTokenResponse(e) {
+          return "token" == e["cf-mitigated"];
         }
         static async obtainPreClearanceCookie() {
           return (
@@ -27590,7 +27658,7 @@
       var i = s(54801),
         n = s(67908),
         r = s(85801),
-        o = s(66681),
+        o = s(62602),
         a = s(72589),
         c = s(76092),
         l = s(87220),
@@ -28979,7 +29047,7 @@
         i: () => c,
       });
       var i = s(98487),
-        n = s(66681),
+        n = s(62602),
         r = s(9029);
       class o {
         setMaxPlayerCount(e, t) {
@@ -29314,7 +29382,7 @@
         a = s(19966),
         c = s(60144),
         l = s(19733),
-        d = s(66681),
+        d = s(62602),
         u = s(18514),
         h = s(74710),
         p = s(81888),
@@ -29411,7 +29479,7 @@
       f.avatarStoreLink = "/store#avatars";
       var y = s(78311),
         b = s(30506),
-        v = s(34915);
+        v = s(34397);
       class S extends i.y {
         static openStoreLink() {
           const e = document.createElement("a");
@@ -29750,6 +29818,7 @@
         sG: () => c,
         tV: () => p,
         x: () => u,
+        yi: () => v,
       });
       var i = s(78311);
       i.hx;
@@ -30145,6 +30214,7 @@
               "MobileStoreReferralProgramReferFriends"),
             (e[(e.ABTestReferralProgramWebMobile = 66)] =
               "ABTestReferralProgramWebMobile"),
+            (e[(e.MobileImageSharing = 67)] = "MobileImageSharing"),
             e
           );
         })({}),
@@ -30281,6 +30351,7 @@
               "MobileProfilePageShuffleBanner"),
             (e[(e.NotificationPanelShuffleClickPlayNow = 80)] =
               "NotificationPanelShuffleClickPlayNow"),
+            (e[(e.EndGameShareMobileButton = 81)] = "EndGameShareMobileButton"),
             e
           );
         })({}),
@@ -30539,6 +30610,13 @@
             (e[(e.GuildStageVoice = 13)] = "GuildStageVoice"),
             (e[(e.GuildDirectory = 14)] = "GuildDirectory"),
             (e[(e.GuildForum = 15)] = "GuildForum"),
+            e
+          );
+        })({}),
+        v = (function (e) {
+          return (
+            (e[(e.GameResultsSharedFromGameEndScreen = 0)] =
+              "GameResultsSharedFromGameEndScreen"),
             e
           );
         })({});
@@ -31387,7 +31465,7 @@
         H: () => m,
       });
       var i = s(9029),
-        n = s(66681),
+        n = s(62602),
         r = s(19733),
         o = s(19966),
         a = s(41931),
@@ -31564,7 +31642,7 @@
       "use strict";
       e.exports =
         s.p +
-        "assets/card_progress_science_irrigation.b23fe6d17a81c586d85f.svg";
+        "assets/card_progress_science_irrigation.8e3b3e037cb13e3c6ccd.svg";
     },
     77885: (e, t, s) => {
       "use strict";
@@ -31618,7 +31696,7 @@
     77950: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_back.2590ba5db92b95ab8bcb.svg";
+        s.p + "assets/card_progress_science_back.679df2124294270a9fdf.svg";
     },
     77954: (e, t, s) => {
       "use strict";
@@ -32050,6 +32128,7 @@
             (e[(e.BotHard = 279)] = "BotHard"),
             (e[(e.GameModeRanked1v1 = 280)] = "GameModeRanked1v1"),
             (e[(e.GameModeRanked4P = 281)] = "GameModeRanked4P"),
+            (e[(e.Leaderboard = 284)] = "Leaderboard"),
             e
           );
         })({}),
@@ -32469,9 +32548,13 @@
           const t = e ? document.getElementById(e) : document,
             s = t.querySelector(".content_singleton_page"),
             n = t.querySelector(".singleton_page_sidebar");
-          (super(s, n),
-            null == s ||
-              s.addEventListener("scroll", () => this.onContentScroll()),
+          var r;
+          const o =
+            null !== (r = s.closest(".web-layout-content")) && void 0 !== r
+              ? r
+              : s;
+          (super(s, n, o),
+            o.addEventListener("scroll", () => this.onContentScroll()),
             (0, i.G0)(n, (e) => this.onSidebarClick(e)));
         }
       }
@@ -32694,7 +32777,7 @@
       });
       var i = s(83633),
         n = s(41931),
-        r = s(66681);
+        r = s(62602);
       class o {
         static initRoomSettingFromLocalStorage(e) {
           const t = o.getLocalStorageDiceSettings();
@@ -33429,7 +33512,7 @@
         })({}),
         B = s(13618),
         D = s(69508),
-        E = s(66681),
+        E = s(62602),
         G = s(19720);
       class x {
         init() {
@@ -34200,7 +34283,7 @@
         }
       }
       var d = s(18587),
-        u = s(66681),
+        u = s(62602),
         h = s(25720),
         p = s(52609);
       class m {
@@ -35093,7 +35176,7 @@
         O: () => a,
       });
       var i = s(78046),
-        n = s(66681),
+        n = s(62602),
         r = s(26658),
         o = s(78311);
       class a {
@@ -35856,6 +35939,10 @@
       e.exports =
         s.p + "assets/stat_successful_trades.30305f42c5c1355df3e0.svg";
     },
+    92437: (e, t, s) => {
+      "use strict";
+      e.exports = s.p + "assets/page_scrolling_before.3855192323f7a365ef4d.png";
+    },
     92469: (e, t, s) => {
       "use strict";
       e.exports =
@@ -35970,10 +36057,6 @@
           ((this.eventHandlers = new Map()), (this.sendFromClientToServer = e));
         }
       }
-    },
-    94949: (e, t, s) => {
-      "use strict";
-      e.exports = s.p + "assets/announcement_shuffle.78003601208a9a4df574.png";
     },
     95078: (e, t, s) => {
       "use strict";
@@ -36495,6 +36578,10 @@
         static isUserOnDiscord() {
           return window.location.hostname.includes("discordsays");
         }
+        static isUserOnFirefox() {
+          const e = navigator.userAgent;
+          return e.includes("Firefox") || e.includes("FxiOS");
+        }
         static isUserOnSafariOrIOS() {
           const e = navigator.userAgent.toLowerCase(),
             t =
@@ -36563,8 +36650,8 @@
         u = s(60883),
         h = s(90676),
         p = s(32581),
-        m = s(34915),
-        g = s(66681),
+        m = s(34397),
+        g = s(62602),
         f = s(5603);
       class y {
         renderUserInfo() {
@@ -37402,7 +37489,7 @@
     98978: (e, t, s) => {
       "use strict";
       e.exports =
-        s.p + "assets/card_progress_science_crane.c3cb07a2eec78d040a13.svg";
+        s.p + "assets/card_progress_science_crane.3b398a2d1bfa8d679dfe.svg";
     },
     99018: (e, t, s) => {
       "use strict";
@@ -37440,4 +37527,4 @@
     },
   },
 ]);
-//# sourceMappingURL=shared.ae16cefa35210b2578e3.js.map
+//# sourceMappingURL=shared.b310de7ecd93f1f8aaa8.js.map
