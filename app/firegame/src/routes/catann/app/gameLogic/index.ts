@@ -2316,7 +2316,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         sendTileHighlights33(gameData, []);
         sendEdgeHighlights31(gameData);
         sendShipHighlights32(gameData);
-        sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
       }
 
       setFirebaseData(

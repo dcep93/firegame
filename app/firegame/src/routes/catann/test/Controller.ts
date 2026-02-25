@@ -169,18 +169,9 @@ const Controller = (
               if (!msg.data.data.payload.diff.currentState) {
                 msg.data.data.payload.diff.currentState = {};
               }
-              msg.data.data.payload.diff.currentState.allocatedTime =
-                expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
-            } else {
-              if (!expectedMsg.data.data.payload.diff) {
-                expectedMsg.data.data.payload.diff = {};
-              }
-              if (!expectedMsg.data.data.payload.diff.currentState) {
-                expectedMsg.data.data.payload.diff.currentState = {};
-              }
-              expectedMsg.data.data.payload.diff.currentState.allocatedTime =
-                msg.data.data.payload?.diff?.currentState?.allocatedTime;
             }
+            msg.data.data.payload.diff.currentState.allocatedTime =
+              expectedMsg.data.data.payload?.diff?.currentState?.allocatedTime;
           }
         }
         try {
