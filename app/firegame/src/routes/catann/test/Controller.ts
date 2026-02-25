@@ -4,6 +4,7 @@ import {
   GameAction,
   GameLogMessageType,
   GameStateUpdateType,
+  State,
 } from "../app/gameLogic/CatannFilesEnums";
 import {
   addGameLogEntry,
@@ -326,10 +327,38 @@ const Controller = (
       await waitForTrigger(iframe, "serverData");
     };
     const makeTrade = async (payload: any) => {
+      await verifyTestMessages(false);
+      const prepend = [
+        {
+          trigger: "clientData",
+          data: {
+            action: GameAction.PreCreateTrade,
+            payload: true,
+            sequence: -1,
+          } as any,
+        },
+      ];
+      [
+        GameStateUpdateType.HighlightCorners,
+        GameStateUpdateType.HighlightTiles,
+        GameStateUpdateType.HighlightRoadEdges,
+        GameStateUpdateType.HighlightShipEdges,
+      ].forEach((type) =>
+        prepend.push({
+          trigger: "serverData",
+          data: {
+            id: State.GameStateUpdate.toString(),
+            data: {
+              type,
+              payload: [],
+            },
+          },
+        }),
+      );
+      _expectedMessages!.unshift(...prepend);
       await wantToTrade();
-      await spliceTestMessages(iframe);
-      await wantToTrade();
-      await spliceTestMessages(iframe);
+      await waitForTrigger(iframe, "clientData");
+      await verifyTestMessages();
       const resourceCardType: Record<number, string> = {
         1: "lumber",
         2: "brick",

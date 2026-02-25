@@ -1970,7 +1970,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
             () => randomChars[Math.floor(Math.random() * randomChars.length)],
           ).join("");
         window.__testSeed = null;
-        console.log("test.log.trade.b", JSON.stringify({ tradePayload }));
 
         gameState.tradeState.activeOffers[tradeId] = {
           id: tradeId,
@@ -2030,10 +2029,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         const activeOffer = gameState.tradeState?.activeOffers?.[tradeId];
         if (activeOffer) {
           const responses = activeOffer.playerResponses ?? {};
-          console.log(
-            "test.log.trade.a",
-            JSON.stringify({ responses, parsed, activeOffer }),
-          );
           responses[String(gameData.data.payload.playerColor)] =
             payload.response!;
           activeOffer.playerResponses = responses;
