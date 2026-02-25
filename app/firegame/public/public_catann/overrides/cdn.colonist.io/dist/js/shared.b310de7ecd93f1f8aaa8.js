@@ -1,15 +1,3 @@
-// chrome
-// cmd+opt+I (devtools)
-// sources
-// enable local overrides
-// copy/paste
-// refresh
-// verify alert
-// hide console
-// play game
-// console
-// __socketCatannMessages.splice(0).filter(msg => msg.data.id !== "136")
-
 (self.webpackChunkkatan = self.webpackChunkkatan || []).push([
   [804],
   {
