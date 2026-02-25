@@ -99,20 +99,20 @@ const cascadeServerMessage = (
         gameData.data.payload.gameState.currentState.actionState ===
           PlayerActionState.PlaceRobberOrPirate
       ) {
-        [
-          GameStateUpdateType.HighlightCorners,
-          GameStateUpdateType.HighlightTiles,
-          GameStateUpdateType.HighlightRoadEdges,
-          GameStateUpdateType.HighlightShipEdges,
-        ].forEach((type) =>
-          sendToMainSocket?.({
-            id: State.GameStateUpdate.toString(),
-            data: {
-              type,
-              payload: [],
-            },
-          }),
-        );
+        // [
+        //   GameStateUpdateType.HighlightCorners,
+        //   GameStateUpdateType.HighlightTiles,
+        //   GameStateUpdateType.HighlightRoadEdges,
+        //   GameStateUpdateType.HighlightShipEdges,
+        // ].forEach((type) =>
+        //   sendToMainSocket?.({
+        //     id: State.GameStateUpdate.toString(),
+        //     data: {
+        //       type,
+        //       payload: [],
+        //     },
+        //   }),
+        // );
         // [
         //   GameStateUpdateType.HighlightCorners,
         //   GameStateUpdateType.HighlightTiles,

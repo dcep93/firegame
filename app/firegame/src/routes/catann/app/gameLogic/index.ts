@@ -1347,18 +1347,6 @@ const placeRoad = (edgeIndex: number) => {
 
   gameState.currentState.actionState = PlayerActionState.None;
 
-  // sendEdgeHighlights31(gameData);
-  // sendShipHighlights32(gameData);
-
-  // addGameLogEntry(gameState, {
-  //   text: {
-  //     type: GameLogMessageType.PlayerPlacedPiece,
-  //     playerColor,
-  //     pieceEnum: MapPieceType.Road,
-  //   },
-  //   from: playerColor,
-  // });
-
   if (
     actionStateAtRoadPlacement ===
     PlayerActionState.InitialPlacementRoadPlacement
@@ -1385,6 +1373,17 @@ const placeRoad = (edgeIndex: number) => {
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place2MoreRoadBuilding
   ) {
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.PlayerPlacedPiece,
+        playerColor,
+        pieceEnum: MapPieceType.Road,
+      },
+      from: playerColor,
+    });
     updateCurrentState(gameData, {
       actionState: PlayerActionState.Place1MoreRoadBuilding,
       turnState: GamePhase.Turn,
@@ -1393,6 +1392,22 @@ const placeRoad = (edgeIndex: number) => {
   } else if (
     actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
   ) {
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendCornerHighlights30(gameData, []);
+    sendTileHighlights33(gameData, []);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    sendEdgeHighlights31(gameData);
+    sendShipHighlights32(gameData);
+    addGameLogEntry(gameState, {
+      text: {
+        type: GameLogMessageType.PlayerPlacedPiece,
+        playerColor,
+        pieceEnum: MapPieceType.Road,
+      },
+      from: playerColor,
+    });
     updateCurrentState(gameData, {
       turnState: GamePhase.Turn,
       actionState: PlayerActionState.None,
@@ -1438,15 +1453,6 @@ const placeRoad = (edgeIndex: number) => {
     sendShipHighlights32(gameData);
     sendCornerHighlights30(gameData, []);
     sendTileHighlights33(gameData);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
-  } else if (
-    actionStateAtRoadPlacement === PlayerActionState.Place1MoreRoadBuilding
-  ) {
-    sendCornerHighlights30(gameData, []);
-    sendTileHighlights33(gameData, []);
-    sendEdgeHighlights31(gameData);
-    sendShipHighlights32(gameData);
     sendEdgeHighlights31(gameData);
     sendShipHighlights32(gameData);
   }
@@ -2297,6 +2303,13 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
         receivingCards: [],
       };
 
+      if (clickedCard !== CardEnum.RoadBuilding) {
+        sendCornerHighlights30(gameData, []);
+        sendTileHighlights33(gameData, []);
+        sendEdgeHighlights31(gameData);
+        sendShipHighlights32(gameData);
+      }
+
       gameState.currentState.actionState =
         clickedCard === CardEnum.Knight
           ? PlayerActionState.PlaceRobberOrPirate
@@ -2311,12 +2324,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
           payload: exchangeCardsPayload,
         },
       });
-      if (clickedCard !== CardEnum.RoadBuilding) {
-        sendCornerHighlights30(gameData, []);
-        sendTileHighlights33(gameData, []);
-        sendEdgeHighlights31(gameData);
-        sendShipHighlights32(gameData);
-      }
 
       setFirebaseData(
         { ...firebaseData, GAME: gameData },
@@ -2429,7 +2436,6 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
             sendTileHighlights33(gameData);
             sendEdgeHighlights31(gameData);
             sendShipHighlights32(gameData);
-            sendTileHighlights33(gameData, getRobberEligibleTiles(gameData));
           }
           gameState.currentState.actionState =
             PlayerActionState.PlaceRobberOrPirate;
