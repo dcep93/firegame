@@ -202,6 +202,7 @@ export const multiChoreo = (
             false,
           );
         }
+        await delay(1000);
       }
       await expect(players.map(({ msgs }) => msgs.slice(0, 1))).toEqual(
         players.map(() => []),

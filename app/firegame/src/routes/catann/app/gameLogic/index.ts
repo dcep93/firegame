@@ -2028,6 +2028,10 @@ export const applyGameAction = (parsed: { action?: number; payload?: any }) => {
       if (tradeId) {
         const activeOffer = gameState.tradeState?.activeOffers?.[tradeId];
         if (activeOffer) {
+          console.log(
+            "test.log.tradeState",
+            JSON.stringify(gameState.tradeState, null, 2),
+          );
           const responses = activeOffer.playerResponses ?? {};
           responses[String(gameData.data.payload.playerColor)] =
             payload.response!;

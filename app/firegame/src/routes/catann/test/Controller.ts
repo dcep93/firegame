@@ -86,7 +86,6 @@ const Controller = (
   ((canvas: Locator) => {
     codex[playerIndex] = {};
     const verifyTestMessages = async (failOnEmpty: boolean = true) => {
-      await delay(1000);
       const expectedMessages = _expectedMessages!;
       const testMessages = await spliceTestMessages(iframe);
       const durationMs = Date.now() - loaded;
