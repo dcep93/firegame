@@ -132,6 +132,7 @@ export default function FirebaseWrapper() {
       }
       return;
     } else {
+      firebase.init();
       firebase.connect(roomPath(), (liveData) => {
         // console.debug("fetched", { firebaseData, liveData });
         if (!liveData) return;

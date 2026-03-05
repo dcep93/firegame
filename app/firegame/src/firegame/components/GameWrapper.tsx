@@ -6,6 +6,7 @@ import writer from "../writer/writer";
 
 import Catann from "../../routes/catann/app/Catann";
 import EclipseCalc from "../../routes/eclipse_calc/app/EclipseCalc";
+import { VERSION } from "../../shared/shared";
 import { getFiregameUserId } from "../writer/utils";
 import LoadingPage from "./LoadingPage";
 import LoginPage from "./LoginPage";
@@ -23,6 +24,12 @@ class GameWrapper extends React.Component<{
     // TODO remove
     if (this.isCatann()) {
       const userId = getFiregameUserId();
+      (store as any).me = {
+        roomId: this.props.roomId,
+        gameName: this.props.gameName,
+        VERSION,
+        userId,
+      };
       if (!store.lobby) {
         // @ts-ignore: initialize mock lobby state for catann
         store.lobby = { [userId]: userId };
