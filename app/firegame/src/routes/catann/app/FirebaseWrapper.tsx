@@ -46,22 +46,23 @@ function receiveFirebaseDataCatann(
       } else {
         // TODO spectator
       }
-    } else if (firebaseData?.ROOM && lobby) {
-      const filter = firebaseData.ROOM.data.sessions.map((s) => ({
-        s,
-        keep: 2500 >= Date.now() - lobby[s.userId]?.timestamp,
-      }));
-      const removals = filter
-        .filter(({ keep }) => !keep)
-        .map(({ s }) => s.username);
-      if (removals.length > 0) {
-        console.log({ removals });
-        firebaseData.ROOM.data.sessions = filter
-          .filter(({ keep }) => keep)
-          .map(({ s }) => s);
-        setFirebaseData(firebaseData, { removals });
-        return;
-      }
+      // TODO removals
+      // } else if (firebaseData?.ROOM && lobby) {
+      //   const filter = firebaseData.ROOM.data.sessions.map((s) => ({
+      //     s,
+      //     keep: 2500 >= Date.now() - lobby[s.userId]?.timestamp,
+      //   }));
+      //   const removals = filter
+      //     .filter(({ keep }) => !keep)
+      //     .map(({ s }) => s.username);
+      //   if (removals.length > 0) {
+      //     console.log({ removals, filter, lobby });
+      //     firebaseData.ROOM.data.sessions = filter
+      //       .filter(({ keep }) => keep)
+      //       .map(({ s }) => s);
+      //     setFirebaseData(firebaseData, { removals });
+      //     return;
+      //   }
     }
     const newSnapshot = JSON.stringify(firebaseData);
     if (firebaseDataSnapshot === newSnapshot) return;
