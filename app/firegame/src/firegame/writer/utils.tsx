@@ -8,7 +8,7 @@ function init(roomId: number, gameName: string, update_: () => void) {
   if (initialized) return;
   initialized = true;
   Firebase.init();
-  const userId = getUserId();
+  const userId = getFiregameUserId();
   const me: MeType = {
     roomId,
     gameName,
@@ -21,7 +21,7 @@ function init(roomId: number, gameName: string, update_: () => void) {
   enterLobby();
 }
 
-function getUserId(): string {
+export function getFiregameUserId(): string {
   if (localStorage.version !== VERSION) {
     localStorage.version = VERSION;
     localStorage.userId = `u_${Math.random().toString(16).substr(2)}`;

@@ -116,7 +116,7 @@ export default function FirebaseWrapper() {
   useEffect(() => {
     if (initialized) return;
     initialized = true;
-    console.log("connecting firebase wrapper");
+    console.log("test.log connecting firebase wrapper", { SHOULD_MOCK });
     if (SHOULD_MOCK) {
       if (`${getMe().roomId}` === "reconnect") {
         firebaseData = { ROOM: newRoom() };
@@ -131,12 +131,13 @@ export default function FirebaseWrapper() {
         listenMock(receiveFirebaseDataCatann);
       }
       return;
+    } else {
+      firebase.connect(roomPath(), (liveData) => {
+        // console.debug("fetched", { firebaseData, liveData });
+        if (!liveData) return;
+        receiveFirebaseDataCatann(liveData.catann, liveData.lobby);
+      });
     }
-    firebase.connect(roomPath(), (liveData) => {
-      // console.debug("fetched", { firebaseData, liveData });
-      if (!liveData) return;
-      receiveFirebaseDataCatann(liveData.catann, liveData.lobby);
-    });
   }, []);
   return <div></div>;
 }

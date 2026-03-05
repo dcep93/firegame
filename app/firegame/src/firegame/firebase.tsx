@@ -48,7 +48,7 @@ function init(): void {
   var app = initializeApp(config);
   database = getDatabase(app);
   const analytics = getAnalytics(app);
-  console.log("firebase", analytics);
+  console.log("firebase.init", analytics);
   onValue(ref(database, ".info/serverTimeOffset"), (snap: ResultType) => {
     offset = snap.val();
   });

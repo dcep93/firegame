@@ -338,6 +338,18 @@ function main({
                 "/public_catann/catann_files",
               )
               .replaceAll(
+                "https://cdn.colonist.io/dist/assets",
+                "/public_catann/catann_files",
+              )
+              .replaceAll(
+                "https://cdn.colonist.io/dist/locales",
+                "/public_catann/catann_files",
+              )
+              .replaceAll(
+                "https://cdn.colonist.io/dist",
+                "/public_catann/catann_files",
+              )
+              .replaceAll(
                 "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=turnstileLoaded",
                 "",
               ),
