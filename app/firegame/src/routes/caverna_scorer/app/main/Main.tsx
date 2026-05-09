@@ -16,22 +16,27 @@ const categories = [
 ];
 
 export default function Main() {
-  const ref = React.useRef<HTMLInputElement>(null);
+  const [playerName, setPlayerName] = React.useState("");
   const [editingValues, setEditingValues] = React.useState<
     Record<string, string>
   >({});
-  const newPlayer = () =>
-    Promise.resolve(ref.current!.value).then((playerName) =>
-      Promise.resolve()
-        .then(
-          () =>
-            (store.gameW.game.scoreSheet = Object.assign(
-              { [playerName]: { [-1]: 0 } },
-              store.gameW.game.scoreSheet
-            ))
-        )
-        .then(() => store.update(`${playerName} joined`))
-    );
+  const newPlayer = () => {
+    const trimmedPlayerName = playerName.trim();
+    if (trimmedPlayerName === "") return Promise.resolve();
+    return Promise.resolve(trimmedPlayerName)
+      .then((playerName) =>
+        Promise.resolve()
+          .then(
+            () =>
+              (store.gameW.game.scoreSheet = Object.assign(
+                { [playerName]: { [-1]: 0 } },
+                store.gameW.game.scoreSheet
+              ))
+          )
+          .then(() => store.update(`${playerName} joined`))
+      )
+      .then(() => setPlayerName(""));
+  };
   const updateScore = (
     playerName: string,
     categoryIndex: number,
@@ -74,8 +79,15 @@ export default function Main() {
                 newPlayer();
               }}
             >
-              <input ref={ref}></input>
-              <input type="submit" value={"+"}></input>
+              <input
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+              ></input>
+              <input
+                type="submit"
+                value={"+"}
+                disabled={playerName.trim() === ""}
+              ></input>
             </form>
           </div>
           {categories.map((c, i) => (
