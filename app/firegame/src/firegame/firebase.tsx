@@ -33,6 +33,7 @@ export function firebaseUndo() {
 }
 
 export function firebaseClear() {
+  init();
   f_set(ref(database, namespace()), {});
 }
 

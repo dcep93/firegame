@@ -1,5 +1,5 @@
 import React from "react";
-import { firebaseClear, firebaseUndo } from "../../../firegame/firebase";
+import { firebaseUndo } from "../../../firegame/firebase";
 import { recorded_sha } from "../../../recorded_sha";
 import styles from "../../../shared/styles.module.css";
 import SharedUtils from "../../shared";
@@ -31,9 +31,6 @@ abstract class SharedSidebar extends React.Component {
           </div>
           {/* @ts-ignore */}
           <SharedLog />
-          <div className={`${styles.bubble} ${styles.sidebarFooter}`}>
-            <button onClick={clearFirebase}>Clear Firebase</button>
-          </div>
         </div>
       </div>
     );
@@ -138,12 +135,6 @@ function becomeHost() {
   }
   store.gameW.info.host = store.me.userId;
   store.update("became the host");
-}
-
-function clearFirebase() {
-  const response = window.confirm("Clear all Firebase data for firegame?");
-  if (!response) return;
-  firebaseClear();
 }
 
 export default SharedSidebar;

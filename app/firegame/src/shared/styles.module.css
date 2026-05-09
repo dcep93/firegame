@@ -71,10 +71,6 @@
   width: 90%;
 }
 
-.sidebarFooter {
-  margin-top: auto;
-}
-
 .main {
   display: flex;
   height: 100vh;
