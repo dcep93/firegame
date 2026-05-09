@@ -1,8 +1,20 @@
 import React from "react";
+import styles from "../../../shared/styles.module.css";
 import Main from "./main/Main";
+import Sidebar from "./sidebar/Sidebar";
+import utils from "./utils/utils";
 
 export default class EclipseCalc extends React.Component {
   render() {
-    return <Main />;
+    return (
+      <div
+        className={[styles.main, utils.isMyTurn() && styles.my_turn].join(" ")}
+      >
+        <Sidebar />
+        <div className={styles.content}>
+          <Main />
+        </div>
+      </div>
+    );
   }
 }
