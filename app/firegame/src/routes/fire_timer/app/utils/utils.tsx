@@ -34,13 +34,7 @@ function getCurrentPlayer(game: GameType = store.gameW.game): PlayerType | null 
   );
 }
 
-function startPlayer(name: string): void {
-  const game = store.gameW.game;
-  if (!game) return;
-  normalizeGame(game);
-  const nextPlayer = game.players.find((player) => player.name === name);
-  if (!nextPlayer) return;
-  const currentTime = now();
+function finishCurrentTurn(game: GameType, currentTime: number): void {
   const currentPlayer = getCurrentPlayer(game);
   if (currentPlayer && game.current_player_start_timestamp > 0) {
     currentPlayer.turns.push({
@@ -51,9 +45,30 @@ function startPlayer(name: string): void {
     });
     recalculatePlayerTotal(currentPlayer);
   }
+}
+
+function startPlayer(name: string): void {
+  const game = store.gameW.game;
+  if (!game) return;
+  normalizeGame(game);
+  const nextPlayer = game.players.find((player) => player.name === name);
+  if (!nextPlayer) return;
+  const currentTime = now();
+  finishCurrentTurn(game, currentTime);
   game.current_player_name = nextPlayer.name;
   game.current_player_start_timestamp = currentTime;
   store.update(`started ${nextPlayer.name}`);
+}
+
+function clearCurrentPlayer(): void {
+  const game = store.gameW.game;
+  if (!game) return;
+  normalizeGame(game);
+  const currentTime = now();
+  finishCurrentTurn(game, currentTime);
+  game.current_player_name = "";
+  game.current_player_start_timestamp = 0;
+  store.update("paused the timer");
 }
 
 function deletePlayer(name: string): void {
@@ -125,6 +140,7 @@ function formatDuration(milliseconds: number): string {
 
 const utils = {
   addPlayer,
+  clearCurrentPlayer,
   deletePlayer,
   formatDuration,
   getCurrentPlayer,

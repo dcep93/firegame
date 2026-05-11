@@ -37,6 +37,13 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
             disabled={this.state.playerName.trim() === ""}
           />
         </form>
+        <button
+          className={styles.noOneButton}
+          disabled={!game.current_player_name}
+          onClick={() => utils.clearCurrentPlayer()}
+        >
+          No one's turn
+        </button>
         <div className={styles.players}>
           {players.map((player) => {
             const isTicking = player.name === game.current_player_name;
