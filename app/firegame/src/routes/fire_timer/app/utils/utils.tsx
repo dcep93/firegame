@@ -8,6 +8,16 @@ function now(): number {
   return Firebase.now();
 }
 
+function normalizeGame(game: GameType): void {
+  game.current_player_name = game.current_player_name || "";
+  game.current_player_start_timestamp =
+    game.current_player_start_timestamp || 0;
+  game.players.forEach((player) => {
+    player.time_used_previously_ms = player.time_used_previously_ms || 0;
+    delete (player as PlayerType & { turn_finished?: number }).turn_finished;
+  });
+}
+
 function getCurrentPlayer(game: GameType = store.gameW.game): PlayerType | null {
   if (!game || !game.current_player_name) return null;
   return (
@@ -19,6 +29,7 @@ function getCurrentPlayer(game: GameType = store.gameW.game): PlayerType | null 
 function startPlayer(name: string): void {
   const game = store.gameW.game;
   if (!game) return;
+  normalizeGame(game);
   const nextPlayer = game.players.find((player) => player.name === name);
   if (!nextPlayer) return;
   const currentTime = now();
@@ -36,6 +47,7 @@ function startPlayer(name: string): void {
 function addPlayer(name: string): void {
   const game = store.gameW.game;
   if (!game) return;
+  normalizeGame(game);
   const trimmed = name.trim();
   if (!trimmed) return;
   if (game.players.some((player) => player.name === trimmed)) {
