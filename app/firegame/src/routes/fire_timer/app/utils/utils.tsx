@@ -9,13 +9,21 @@ function now(): number {
 }
 
 function normalizeGame(game: GameType): void {
+  game.players = game.players || [];
   game.current_player_name = game.current_player_name || "";
   game.current_player_start_timestamp =
     game.current_player_start_timestamp || 0;
   game.players.forEach((player) => {
-    player.time_used_previously_ms = player.time_used_previously_ms || 0;
-    delete (player as PlayerType & { turn_finished?: number }).turn_finished;
+    player.turns = player.turns || [];
+    recalculatePlayerTotal(player);
   });
+}
+
+function recalculatePlayerTotal(player: PlayerType): void {
+  player.time_used_previously_ms = player.turns
+    .filter((turn) => turn.counts_towards_total)
+    .map((turn) => turn.duration_ms)
+    .sum();
 }
 
 function getCurrentPlayer(game: GameType = store.gameW.game): PlayerType | null {
@@ -35,13 +43,45 @@ function startPlayer(name: string): void {
   const currentTime = now();
   const currentPlayer = getCurrentPlayer(game);
   if (currentPlayer && game.current_player_start_timestamp > 0) {
-    currentPlayer.time_used_previously_ms =
-      (currentPlayer.time_used_previously_ms || 0) +
-      currentTime - game.current_player_start_timestamp;
+    currentPlayer.turns.push({
+      start_timestamp: game.current_player_start_timestamp,
+      end_timestamp: currentTime,
+      duration_ms: currentTime - game.current_player_start_timestamp,
+      counts_towards_total: true,
+    });
+    recalculatePlayerTotal(currentPlayer);
   }
   game.current_player_name = nextPlayer.name;
   game.current_player_start_timestamp = currentTime;
   store.update(`started ${nextPlayer.name}`);
+}
+
+function deletePlayer(name: string): void {
+  const game = store.gameW.game;
+  if (!game) return;
+  normalizeGame(game);
+  const playerIndex = game.players.findIndex((player) => player.name === name);
+  if (playerIndex === -1) return;
+  game.players.splice(playerIndex, 1);
+  if (game.current_player_name === name) {
+    game.current_player_name = "";
+    game.current_player_start_timestamp = 0;
+  }
+  store.update(`${name} left`);
+}
+
+function toggleTurn(playerName: string, turnIndex: number): void {
+  const game = store.gameW.game;
+  if (!game) return;
+  normalizeGame(game);
+  const player = game.players.find((player) => player.name === playerName);
+  const turn = player?.turns[turnIndex];
+  if (!player || !turn) return;
+  turn.counts_towards_total = !turn.counts_towards_total;
+  recalculatePlayerTotal(player);
+  store.update(
+    `${turn.counts_towards_total ? "included" : "excluded"} ${playerName}'s turn`,
+  );
 }
 
 function addPlayer(name: string): void {
@@ -57,6 +97,7 @@ function addPlayer(name: string): void {
   game.players.push({
     name: trimmed,
     time_used_previously_ms: 0,
+    turns: [],
   });
   store.update(`${trimmed} joined`);
 }
@@ -84,14 +125,16 @@ function formatDuration(milliseconds: number): string {
 
 const utils = {
   addPlayer,
+  deletePlayer,
   formatDuration,
   getCurrentPlayer,
   isMyTurn,
   newGame: NewGame,
   now,
   startPlayer,
+  toggleTurn,
 };
 
 export default utils;
 export { store };
-export type { GameType, PlayerType } from "./NewGame";
+export type { GameType, PlayerType, TurnType } from "./NewGame";

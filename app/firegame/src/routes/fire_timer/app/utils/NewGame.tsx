@@ -7,6 +7,14 @@ export type GameType = {
 export type PlayerType = {
   name: string;
   time_used_previously_ms: number;
+  turns: TurnType[];
+};
+
+export type TurnType = {
+  start_timestamp: number;
+  end_timestamp: number;
+  duration_ms: number;
+  counts_towards_total: boolean;
 };
 
 function NewGame(): PromiseLike<GameType> {

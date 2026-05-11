@@ -1,6 +1,7 @@
 import React from "react";
 import { firebaseUndo } from "../../../firegame/firebase";
 import { recorded_sha } from "../../../recorded_sha";
+import SharedLog from "../../../shared/components/sidebar/SharedLog";
 import sharedStyles from "../../../shared/styles.module.css";
 import styles from "./index.module.css";
 import Main from "./main/Main";
@@ -12,7 +13,7 @@ class FireTimer extends React.Component {
       <div className={sharedStyles.main}>
         <Sidebar />
         <div className={[sharedStyles.content, styles.content].join(" ")}>
-          {store.gameW.game ? <Main /> : <StartTimer />}
+          {store.gameW.game && <Main />}
         </div>
       </div>
     );
@@ -26,7 +27,9 @@ class Sidebar extends React.Component {
         <div className={sharedStyles.sidebar}>
           <div className={sharedStyles.bubble}>
             <h2 title={recorded_sha}>Fire Timer</h2>
-            <StartButton />
+            <div>
+              <button onClick={this.startNewGame}>New Game</button>
+            </div>
             <div>
               <button
                 onClick={() => firebaseUndo()}
@@ -39,34 +42,17 @@ class Sidebar extends React.Component {
               <a href={".."}>Home</a>
             </h2>
           </div>
+          <SharedLog />
         </div>
       </div>
     );
   }
-}
 
-class StartTimer extends React.Component {
-  render() {
-    return (
-      <div className={styles.empty}>
-        <StartButton />
-      </div>
+  startNewGame = () => {
+    Promise.resolve(utils.newGame()).then((game) =>
+      store.update("started a new game", game),
     );
-  }
-}
-
-function StartButton() {
-  return (
-    <button className={styles.addButton} onClick={startTimer}>
-      Start Timer
-    </button>
-  );
-}
-
-function startTimer() {
-  Promise.resolve(utils.newGame()).then((game) =>
-    store.update("started a new timer", game),
-  );
+  };
 }
 
 export default FireTimer;

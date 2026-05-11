@@ -28,12 +28,6 @@
   font-weight: 800;
 }
 
-.empty {
-  align-items: center;
-  display: flex;
-  min-height: 12em;
-}
-
 .addButton {
   border: 2px solid #202020;
   border-radius: 0.35em;
@@ -51,21 +45,46 @@
 }
 
 .player {
-  align-items: center;
   background: #ffffff;
   border: 2px solid #202020;
   border-radius: 0.45em;
-  cursor: pointer;
   display: grid;
-  gap: 0.35em 1em;
+  gap: 0.5em 1em;
   grid-template-columns: minmax(0, 1fr) auto;
   padding: 1em;
-  text-align: left;
   width: 100%;
 }
 
 .player:hover {
   background: #fdf8dc;
+}
+
+.playerStart {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: grid;
+  gap: 0.35em 1em;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.deletePlayer {
+  align-self: start;
+  background: #ffffff;
+  border: 2px solid #202020;
+  border-radius: 0.35em;
+  cursor: pointer;
+  font-weight: 800;
+  height: 2em;
+  line-height: 1;
+  width: 2em;
+}
+
+.deletePlayer:hover {
+  background: #ffdede;
 }
 
 .ticking {
@@ -101,12 +120,49 @@
   grid-row: 1 / span 2;
 }
 
+.turns {
+  border-top: 1px solid #d2d2d2;
+  display: grid;
+  gap: 0.35em;
+  grid-column: 1 / -1;
+  padding-top: 0.5em;
+}
+
+.turn {
+  align-items: center;
+  display: grid;
+  gap: 0.5em;
+  grid-template-columns: auto auto minmax(0, 1fr);
+}
+
+.turnDuration {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.turnTimestamp {
+  color: #4b4b4b;
+  font-size: 0.9rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.excludedTurn {
+  color: #777777;
+  text-decoration: line-through;
+}
+
+.noTurns {
+  color: #666666;
+  font-style: italic;
+}
+
 @media (max-width: 600px) {
   .content {
     padding: 1em;
   }
 
-  .player {
+  .playerStart {
     grid-template-columns: 1fr;
   }
 
