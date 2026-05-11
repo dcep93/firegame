@@ -98,6 +98,19 @@ function movePlayer(name: string, direction: -1 | 1): void {
   store.update(`moved ${name}`);
 }
 
+function startNextPlayer(): void {
+  const game = store.gameW.game;
+  if (!game) return;
+  normalizeGame(game);
+  if (game.players.length === 0) return;
+  const currentIndex = game.players.findIndex(
+    (player) => player.name === game.current_player_name,
+  );
+  const nextIndex =
+    currentIndex === -1 ? 0 : (currentIndex + 1) % game.players.length;
+  startPlayer(game.players[nextIndex].name);
+}
+
 function deletePlayer(name: string): void {
   const game = store.gameW.game;
   if (!game) return;
@@ -176,6 +189,7 @@ const utils = {
   newGame: NewGame,
   now,
   resetAllToZero,
+  startNextPlayer,
   startPlayer,
   toggleTurn,
 };
