@@ -8,6 +8,12 @@
   width: min(48em, 100%);
 }
 
+.empty {
+  align-items: center;
+  display: flex;
+  min-height: 12em;
+}
+
 .addButton {
   border: 2px solid #202020;
   border-radius: 0.35em;

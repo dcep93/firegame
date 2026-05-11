@@ -19,6 +19,13 @@ class GameWrapper extends React.Component<{
   isCatann() {
     return this.props.component.name === Catann.name;
   }
+  skipsLogin() {
+    return (
+      this.props.component.name === EclipseCalc.name ||
+      this.props.component.name === Catann.name ||
+      this.props.component.name === "FireTimer"
+    );
+  }
   componentDidMount() {
     document.title = this.props.gameName.toLocaleUpperCase();
     // TODO remove
@@ -64,11 +71,7 @@ class GameWrapper extends React.Component<{
         return <LoadingPage />;
       }
       if (!store.lobby[store.me.userId]) {
-        if (this.props.component.name === EclipseCalc.name) {
-          setTimeout(() => writer.setUsername(store.me.roomId.toString()));
-          return null;
-        }
-        if (this.props.component.name === Catann.name) {
+        if (this.skipsLogin()) {
           setTimeout(() => writer.setUsername(store.me.roomId.toString()));
           return null;
         }
