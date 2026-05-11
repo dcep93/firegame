@@ -71,6 +71,19 @@ function clearCurrentPlayer(): void {
   store.update("paused the timer");
 }
 
+function resetAllToZero(): void {
+  const game = store.gameW.game;
+  if (!game) return;
+  normalizeGame(game);
+  game.players.forEach((player) => {
+    player.turns = [];
+    player.time_used_previously_ms = 0;
+  });
+  game.current_player_name = "";
+  game.current_player_start_timestamp = 0;
+  store.update("reset all timers to zero");
+}
+
 function deletePlayer(name: string): void {
   const game = store.gameW.game;
   if (!game) return;
@@ -147,6 +160,7 @@ const utils = {
   isMyTurn,
   newGame: NewGame,
   now,
+  resetAllToZero,
   startPlayer,
   toggleTurn,
 };

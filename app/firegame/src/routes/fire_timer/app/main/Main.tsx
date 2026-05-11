@@ -44,6 +44,13 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
         >
           No one's turn
         </button>
+        <button
+          className={styles.resetButton}
+          disabled={players.length === 0}
+          onClick={() => utils.resetAllToZero()}
+        >
+          Reset all to zero
+        </button>
         <div className={styles.players}>
           {players.map((player) => {
             const isTicking = player.name === game.current_player_name;
