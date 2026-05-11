@@ -2,12 +2,12 @@ import React from "react";
 import styles from "../index.module.css";
 import utils, { store } from "../utils/utils";
 
-class Main extends React.Component<{}, { now: number }> {
+class Main extends React.Component<{}, { now: number; playerName: string }> {
   intervalId?: ReturnType<typeof setInterval>;
 
   constructor(props: {}) {
     super(props);
-    this.state = { now: utils.now() };
+    this.state = { now: utils.now(), playerName: "" };
   }
 
   componentDidMount() {
@@ -22,15 +22,23 @@ class Main extends React.Component<{}, { now: number }> {
 
   render() {
     const game = store.gameW.game;
-    const tickingIndex = utils.getTickingPlayerIndex(game);
     return (
       <div className={styles.timer}>
-        <button className={styles.addButton} onClick={this.addPlayer}>
-          Add Player
-        </button>
+        <form className={styles.addPlayer} onSubmit={this.addPlayer}>
+          <span>name:</span>
+          <input
+            value={this.state.playerName}
+            onChange={(e) => this.setState({ playerName: e.target.value })}
+          />
+          <input
+            type="submit"
+            value="+"
+            disabled={this.state.playerName.trim() === ""}
+          />
+        </form>
         <div className={styles.players}>
-          {game.players.map((player, index) => {
-            const isTicking = index === tickingIndex;
+          {game.players.map((player) => {
+            const isTicking = player.name === game.current_player_name;
             return (
               <button
                 className={[
@@ -38,14 +46,14 @@ class Main extends React.Component<{}, { now: number }> {
                   isTicking ? styles.ticking : "",
                 ].join(" ")}
                 key={player.name}
-                onClick={() => utils.startPlayer(index)}
+                onClick={() => utils.startPlayer(player.name)}
               >
                 <span className={styles.name}>{player.name}</span>
                 <span className={styles.status}>
-                  {isTicking ? "Current turn" : "Last finished"}
+                  {isTicking ? "Current turn" : "Saved time"}
                 </span>
                 <span className={styles.time}>
-                  {this.renderTime(index, tickingIndex)}
+                  {this.renderTime(player.name)}
                 </span>
               </button>
             );
@@ -55,21 +63,29 @@ class Main extends React.Component<{}, { now: number }> {
     );
   }
 
-  addPlayer = () => {
-    const name = window.prompt("Player name");
-    if (name === null) return;
+  addPlayer = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const name = this.state.playerName;
     utils.addPlayer(name);
+    if (
+      store.gameW.game.players.some((player) => player.name === name.trim())
+    ) {
+      this.setState({ playerName: "" });
+    }
   };
 
-  renderTime(index: number, tickingIndex: number): string {
+  renderTime(playerName: string): string {
     const game = store.gameW.game;
-    if (game.players.length === 0) return "00:00";
-    if (index === tickingIndex) {
-      const previous =
-        game.players[(index + game.players.length - 1) % game.players.length];
-      return utils.formatDuration(this.state.now - previous.turn_finished);
+    const player = game.players.find((player) => player.name === playerName);
+    if (!player) return "00:00";
+    let total = player.time_used_previously_ms || 0;
+    if (
+      player.name === game.current_player_name &&
+      game.current_player_start_timestamp > 0
+    ) {
+      total += this.state.now - game.current_player_start_timestamp;
     }
-    return new Date(game.players[index].turn_finished).toLocaleTimeString();
+    return utils.formatDuration(total);
   }
 }
 

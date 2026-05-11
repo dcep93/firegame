@@ -8,6 +8,26 @@
   width: min(48em, 100%);
 }
 
+.addPlayer {
+  align-items: center;
+  background: #ffffff;
+  border: 2px solid #202020;
+  border-radius: 0.45em;
+  display: inline-flex;
+  gap: 0.5em;
+  margin: 0 0 1em;
+  padding: 0.7em;
+}
+
+.addPlayer input {
+  font-size: 1rem;
+}
+
+.addPlayer input[type="submit"] {
+  cursor: pointer;
+  font-weight: 800;
+}
+
 .empty {
   align-items: center;
   display: flex;

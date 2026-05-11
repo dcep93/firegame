@@ -1,6 +1,6 @@
 import Firebase from "../../../../firegame/firebase";
 import store_, { StoreType } from "../../../../shared/store";
-import NewGame, { GameType } from "./NewGame";
+import NewGame, { GameType, PlayerType } from "./NewGame";
 
 const store: StoreType<GameType> = store_;
 
@@ -8,26 +8,29 @@ function now(): number {
   return Firebase.now();
 }
 
-function getTickingPlayerIndex(game: GameType = store.gameW.game): number {
-  if (!game || game.players.length === 0) return -1;
-  let latestIndex = 0;
-  game.players.forEach((player, index) => {
-    if (player.turn_finished > game.players[latestIndex].turn_finished) {
-      latestIndex = index;
-    }
-  });
-  return (latestIndex + 1) % game.players.length;
+function getCurrentPlayer(game: GameType = store.gameW.game): PlayerType | null {
+  if (!game || !game.current_player_name) return null;
+  return (
+    game.players.find((player) => player.name === game.current_player_name) ||
+    null
+  );
 }
 
-function previousPlayerIndex(index: number, game: GameType = store.gameW.game) {
-  return (index + game.players.length - 1) % game.players.length;
-}
-
-function startPlayer(index: number): void {
+function startPlayer(name: string): void {
   const game = store.gameW.game;
-  if (!game || game.players.length === 0) return;
-  game.players[previousPlayerIndex(index, game)].turn_finished = now();
-  store.update(`started ${game.players[index].name}`);
+  if (!game) return;
+  const nextPlayer = game.players.find((player) => player.name === name);
+  if (!nextPlayer) return;
+  const currentTime = now();
+  const currentPlayer = getCurrentPlayer(game);
+  if (currentPlayer && game.current_player_start_timestamp > 0) {
+    currentPlayer.time_used_previously_ms =
+      (currentPlayer.time_used_previously_ms || 0) +
+      currentTime - game.current_player_start_timestamp;
+  }
+  game.current_player_name = nextPlayer.name;
+  game.current_player_start_timestamp = currentTime;
+  store.update(`started ${nextPlayer.name}`);
 }
 
 function addPlayer(name: string): void {
@@ -41,9 +44,9 @@ function addPlayer(name: string): void {
   }
   game.players.push({
     name: trimmed,
-    turn_finished: 0,
+    time_used_previously_ms: 0,
   });
-  startPlayer(game.players.length - 1);
+  store.update(`${trimmed} joined`);
 }
 
 function isMyTurn(): boolean {
@@ -70,7 +73,7 @@ function formatDuration(milliseconds: number): string {
 const utils = {
   addPlayer,
   formatDuration,
-  getTickingPlayerIndex,
+  getCurrentPlayer,
   isMyTurn,
   newGame: NewGame,
   now,
