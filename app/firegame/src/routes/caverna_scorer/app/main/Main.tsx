@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../../../../shared/styles.module.css";
+import css from "../index.module.css";
 import { store } from "../utils/utils";
 
 const categories = [
@@ -20,6 +21,9 @@ export default function Main() {
   const [editingValues, setEditingValues] = React.useState<
     Record<string, string>
   >({});
+  const [focusedCategoryIndex, setFocusedCategoryIndex] = React.useState<
+    number | null
+  >(null);
   const newPlayer = () => {
     const trimmedPlayerName = playerName.trim();
     if (trimmedPlayerName === "") return Promise.resolve();
@@ -91,7 +95,11 @@ export default function Main() {
             </form>
           </div>
           {categories.map((c, i) => (
-            <div key={i} style={{ whiteSpace: "nowrap" }}>
+            <div
+              className={focusedCategoryIndex === i ? css.focusedCategory : ""}
+              key={i}
+              style={{ whiteSpace: "nowrap" }}
+            >
               {c}
             </div>
           ))}
@@ -126,22 +134,25 @@ export default function Main() {
                       const key = inputKey(playerName, i);
                       const value = (e.target as HTMLInputElement).value;
                       setEditingValues((prev) => ({ ...prev, [key]: value }));
-                    }}
-                    onBlur={(e) => {
-                      const key = inputKey(playerName, i);
-                      const value = (e.target as HTMLInputElement).value;
                       Promise.resolve()
                         .then(() => updateScore(playerName, i, value))
                         .then((didUpdate) => {
-                          setEditingValues((prev) => {
-                            const next = { ...prev };
-                            delete next[key];
-                            return next;
-                          });
                           if (didUpdate) {
                             store.update("updated scores");
                           }
                         });
+                    }}
+                    onFocus={() => setFocusedCategoryIndex(i)}
+                    onBlur={() => {
+                      const key = inputKey(playerName, i);
+                      setFocusedCategoryIndex((focused) =>
+                        focused === i ? null : focused
+                      );
+                      setEditingValues((prev) => {
+                        const next = { ...prev };
+                        delete next[key];
+                        return next;
+                      });
                     }}
                   />
                 </div>
