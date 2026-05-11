@@ -52,7 +52,7 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
           Reset all to zero
         </button>
         <div className={styles.players}>
-          {players.map((player) => {
+          {players.map((player, index) => {
             const isTicking = player.name === game.current_player_name;
             return (
               <div
@@ -81,6 +81,22 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
                 >
                   x
                 </button>
+                <div className={styles.orderButtons}>
+                  <button
+                    disabled={index === 0}
+                    onClick={() => utils.movePlayer(player.name, -1)}
+                    title={`Move ${player.name} up`}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    disabled={index === players.length - 1}
+                    onClick={() => utils.movePlayer(player.name, 1)}
+                    title={`Move ${player.name} down`}
+                  >
+                    ↓
+                  </button>
+                </div>
                 {this.renderTurns(player.name, player.turns || [])}
               </div>
             );

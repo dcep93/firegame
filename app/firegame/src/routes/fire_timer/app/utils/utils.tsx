@@ -84,6 +84,20 @@ function resetAllToZero(): void {
   store.update("reset all timers to zero");
 }
 
+function movePlayer(name: string, direction: -1 | 1): void {
+  const game = store.gameW.game;
+  if (!game) return;
+  normalizeGame(game);
+  const index = game.players.findIndex((player) => player.name === name);
+  const nextIndex = index + direction;
+  if (index === -1 || nextIndex < 0 || nextIndex >= game.players.length) return;
+  [game.players[index], game.players[nextIndex]] = [
+    game.players[nextIndex],
+    game.players[index],
+  ];
+  store.update(`moved ${name}`);
+}
+
 function deletePlayer(name: string): void {
   const game = store.gameW.game;
   if (!game) return;
@@ -158,6 +172,7 @@ const utils = {
   formatDuration,
   getCurrentPlayer,
   isMyTurn,
+  movePlayer,
   newGame: NewGame,
   now,
   resetAllToZero,
