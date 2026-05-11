@@ -61,10 +61,10 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
                   isTicking ? styles.ticking : "",
                 ].join(" ")}
                 key={player.name}
+                onClick={() => utils.startPlayer(player.name)}
               >
-                <button
+                <div
                   className={styles.playerStart}
-                  onClick={() => utils.startPlayer(player.name)}
                 >
                   <span className={styles.name}>{player.name}</span>
                   <span className={styles.status}>
@@ -73,10 +73,13 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
                   <span className={styles.time}>
                     {this.renderTime(player.name)}
                   </span>
-                </button>
+                </div>
                 <button
                   className={styles.deletePlayer}
-                  onClick={() => utils.deletePlayer(player.name)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    utils.deletePlayer(player.name);
+                  }}
                   title={`Delete ${player.name}`}
                 >
                   x
@@ -84,14 +87,20 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
                 <div className={styles.orderButtons}>
                   <button
                     disabled={index === 0}
-                    onClick={() => utils.movePlayer(player.name, -1)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      utils.movePlayer(player.name, -1);
+                    }}
                     title={`Move ${player.name} up`}
                   >
                     ↑
                   </button>
                   <button
                     disabled={index === players.length - 1}
-                    onClick={() => utils.movePlayer(player.name, 1)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      utils.movePlayer(player.name, 1);
+                    }}
                     title={`Move ${player.name} down`}
                   >
                     ↓
@@ -148,6 +157,7 @@ class Main extends React.Component<{}, { now: number; playerName: string }> {
                 turn.counts_towards_total ? "" : styles.excludedTurn,
               ].join(" ")}
               key={`${turn.start_timestamp}:${turn.end_timestamp}:${index}`}
+              onClick={(e) => e.stopPropagation()}
             >
               <input
                 type="checkbox"

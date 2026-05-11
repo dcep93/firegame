@@ -85,6 +85,7 @@
   background: #ffffff;
   border: 2px solid #202020;
   border-radius: 0.45em;
+  cursor: pointer;
   display: grid;
   gap: 0.5em 1em;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -99,7 +100,6 @@
 .playerStart {
   background: transparent;
   border: 0;
-  cursor: pointer;
   display: grid;
   gap: 0.35em 1em;
   grid-template-columns: minmax(0, 1fr) auto;
