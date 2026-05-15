@@ -1,0 +1,177 @@
+/* Desktop: default layout */
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr var(--sidebar-width);
+  grid-template-rows: var(--topbar-height) 1fr auto;
+  grid-template-areas:
+    "topbar   topbar"
+    "board    sidebar"
+    "bottom   sidebar";
+  height: 100vh;
+  overflow: hidden;
+  transition: grid-template-columns 0.3s ease, grid-template-rows 0.3s ease;
+}
+
+.game-topbar { grid-area: topbar; }
+.game-board { grid-area: board; overflow: hidden; position: relative; }
+.game-sidebar { grid-area: sidebar; overflow: visible; position: relative; }
+.game-bottom { grid-area: bottom; overflow: visible; position: relative; }
+
+/* ── Collapse toggles ── */
+
+.collapse-toggle {
+  position: absolute;
+  z-index: 10;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.collapse-toggle:hover {
+  background: var(--bg-tertiary, var(--bg-secondary));
+  color: var(--text-primary);
+}
+
+.collapse-toggle--bottom {
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 20px;
+  border-radius: 8px 8px 0 0;
+  border-bottom: none;
+  padding: 0;
+  line-height: 1;
+}
+
+.collapse-toggle--sidebar {
+  top: 50%;
+  left: -20px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 48px;
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ── Bottom content wrapper ── */
+
+.game-bottom__content {
+  height: 100%;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.game-bottom--collapsed .game-bottom__content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Sidebar content wrapper ── */
+
+.game-sidebar__content {
+  height: 100%;
+  overflow-y: auto;
+  transition: opacity 0.2s ease;
+}
+
+.game-sidebar--collapsed .game-sidebar__content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Collapsed bottom: shrink row to thin bar ── */
+
+.game-layout--bottom-collapsed {
+  grid-template-rows: var(--topbar-height) 1fr 8px;
+}
+
+/* ── Collapsed sidebar: shrink column to thin strip ── */
+
+.game-layout--sidebar-collapsed {
+  grid-template-columns: 1fr 8px;
+}
+
+/* ── Both collapsed ── */
+
+.game-layout--bottom-collapsed.game-layout--sidebar-collapsed {
+  grid-template-columns: 1fr 8px;
+  grid-template-rows: var(--topbar-height) 1fr 8px;
+}
+
+/* Tablet landscape */
+@media (max-width: 1279px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--topbar-height) 1fr auto;
+    grid-template-areas:
+      "topbar"
+      "board"
+      "bottom";
+  }
+
+  .game-layout--bottom-collapsed {
+    grid-template-rows: var(--topbar-height) 1fr 8px;
+  }
+
+  .game-layout--sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .game-sidebar {
+    position: fixed;
+    right: 0;
+    top: var(--topbar-height);
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--bg-secondary);
+    transform: translateX(100%);
+    transition: transform var(--transition-normal);
+    z-index: 100;
+  }
+
+  .game-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .collapse-toggle--sidebar {
+    display: none;
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 1023px) {
+  :root {
+    --bottombar-height: 180px;
+    --hex-size: 60px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  :root {
+    --topbar-height: 40px;
+    --bottombar-height: 140px;
+    --hex-size: 48px;
+  }
+
+  .game-layout {
+    grid-template-rows: var(--topbar-height) 1fr auto;
+    grid-template-areas:
+      "topbar"
+      "board"
+      "bottom";
+  }
+
+  .game-layout--bottom-collapsed {
+    grid-template-rows: var(--topbar-height) 1fr 8px;
+  }
+}

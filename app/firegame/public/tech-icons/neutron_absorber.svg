@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Background -->
+  <rect width="120" height="120" rx="8" fill="#1a1a2e"/>
+  <!-- Top banner -->
+  <rect y="0" width="120" height="26" fill="#3a3a4a"/>
+  <rect y="0" width="120" height="8" rx="8" fill="#3a3a4a"/>
+  <text x="60" y="18" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" fill="#ccc" font-weight="bold">NEUTRON ABSORB.</text>
+  <!-- Icon -->
+  
+    <path d="M60 33 L82 42 L82 60 C82 70 60 80 60 80 C60 80 38 70 38 60 L38 42 Z" fill="#8888a0" opacity="0.06" stroke="#8888a0" stroke-width="1.8"/>
+    <circle cx="60" cy="54" r="4.5" fill="#8888a0" opacity="0.8"/>
+    <path d="M60 49.5 L57 42 A10 10 0 0 1 63 42 Z" fill="#8888a0" opacity="0.6"/>
+    <path d="M56.5 56 L48 59 A10 10 0 0 1 53 49 Z" fill="#8888a0" opacity="0.6"/>
+    <path d="M63.5 56 L72 59 A10 10 0 0 0 67 49 Z" fill="#8888a0" opacity="0.6"/>
+    <circle cx="60" cy="54" r="2" fill="#1a1a2e"/>
+  <!-- Max cost circle (bottom-left, big) -->
+  <circle cx="22" cy="104" r="14" fill="#3a3a4a" opacity="0.9"/>
+  <text x="22" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#ccc" font-weight="bold">5</text>
+  
+  <!-- Border -->
+  <rect x="1" y="1" width="118" height="118" rx="7" fill="none" stroke="#5a5a6a" stroke-width="2"/>
+</svg>

@@ -1,0 +1,63 @@
+:root {
+  /* Colors */
+  --bg-primary: #0a0a1a;
+  --bg-secondary: #141428;
+  --bg-tertiary: #1e1e3a;
+  --bg-card: #1a1a2e;
+  --bg-hover: #252548;
+
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6a6a80;
+
+  --accent-blue: #4a9eff;
+  --accent-green: #4aff9e;
+  --accent-red: #ff4a6a;
+  --accent-yellow: #ffcc4a;
+  --accent-orange: #ff8a4a;
+
+  /* Tech category colors (matched to physical game) */
+  --tech-military: #D63384;
+  --tech-grid: #1A7A42;
+  --tech-nano: #B5CC18;
+  --tech-rare: #3a3a4a;
+
+  /* Player colors */
+  --player-red: #e53935;
+  --player-blue: #1e88e5;
+  --player-green: #43a047;
+  --player-yellow: #fdd835;
+  --player-white: #cfd8dc;
+  --player-black: #607d8b;
+
+  /* Resource colors (matched to physical game icons) */
+  --resource-money: #e8a830;
+  --resource-science: #c890b8;
+  --resource-materials: #7a5230;
+  --resource-wild: #6a6a80;
+
+  /* Layout */
+  --sidebar-width: 320px;
+  --topbar-height: 48px;
+  --bottombar-height: 200px;
+  --hex-size: 80px;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Typography */
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-body: system-ui, -apple-system, sans-serif;
+
+  /* Borders */
+  --border-color: #2a2a4a;
+  --border-radius: 6px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+}

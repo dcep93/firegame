@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Background -->
+  <rect width="120" height="120" rx="8" fill="#1a1a2e"/>
+  <!-- Top banner -->
+  <rect y="0" width="120" height="26" fill="#3a3a4a"/>
+  <rect y="0" width="120" height="8" rx="8" fill="#3a3a4a"/>
+  <text x="60" y="18" text-anchor="middle" font-family="Arial,sans-serif" font-size="8.5" fill="#ccc" font-weight="bold">ANTIMATTER SPLIT.</text>
+  <!-- Icon -->
+  
+    <circle cx="60" cy="56" r="5" fill="#8888a0" opacity="0.5"/>
+    <line x1="60" y1="56" x2="37" y2="39" stroke="#8888a0" stroke-width="1.8"/>
+    <polygon points="37,39 41,41 39,44" fill="#8888a0" opacity="0.9"/>
+    <line x1="60" y1="56" x2="83" y2="39" stroke="#8888a0" stroke-width="1.8"/>
+    <polygon points="83,39 79,41 81,44" fill="#8888a0" opacity="0.9"/>
+    <line x1="60" y1="56" x2="37" y2="73" stroke="#8888a0" stroke-width="1.8"/>
+    <polygon points="37,73 41,71 39,68" fill="#8888a0" opacity="0.9"/>
+    <line x1="60" y1="56" x2="83" y2="73" stroke="#8888a0" stroke-width="1.8"/>
+    <polygon points="83,73 79,71 81,68" fill="#8888a0" opacity="0.9"/>
+  <!-- Max cost circle (bottom-left, big) -->
+  <circle cx="22" cy="104" r="14" fill="#3a3a4a" opacity="0.9"/>
+  <text x="22" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#ccc" font-weight="bold">5</text>
+  
+  <!-- Border -->
+  <rect x="1" y="1" width="118" height="118" rx="7" fill="none" stroke="#5a5a6a" stroke-width="2"/>
+</svg>

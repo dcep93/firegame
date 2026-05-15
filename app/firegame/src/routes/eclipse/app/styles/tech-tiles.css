@@ -1,0 +1,498 @@
+/* ─── Tech Tile Card (square self-contained) ─── */
+
+.tech-tile-card {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  cursor: default;
+  transition: transform var(--transition-fast), opacity var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.tech-tile-card:hover {
+  transform: scale(1.04);
+  z-index: 2;
+}
+
+.tech-tile-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  image-rendering: auto;
+  pointer-events: none;
+}
+
+/* ─── Count badge (top-right) ─── */
+
+.tech-tile-card__count {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+  backdrop-filter: blur(4px);
+}
+
+.tech-tile-card__count--depleted {
+  color: var(--accent-red);
+}
+
+/* ─── Cost overlay (bottom-left, only when computed cost differs) ─── */
+
+.tech-tile-card__cost-overlay {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  color: #fff;
+  line-height: 1;
+}
+
+.tech-tile-card__cost-overlay--military { background: rgba(214, 51, 132, 0.9); }
+.tech-tile-card__cost-overlay--grid { background: rgba(26, 122, 66, 0.9); }
+.tech-tile-card__cost-overlay--nano { background: rgba(181, 204, 24, 0.9); color: #1a1a2e; }
+.tech-tile-card__cost-overlay--rare { background: rgba(58, 58, 74, 0.9); }
+
+/* ─── State variants ─── */
+
+.tech-tile-card--clickable {
+  cursor: pointer;
+}
+
+.tech-tile-card--selected {
+  box-shadow: 0 0 0 3px var(--accent-green);
+  transform: scale(1.06);
+  z-index: 2;
+}
+
+.tech-tile-card--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.tech-tile-card--disabled:hover {
+  transform: none;
+}
+
+.tech-tile-card--depleted {
+  opacity: 0.3;
+}
+
+.tech-tile-card--depleted:hover {
+  transform: none;
+}
+
+/* ─── Tooltip ─── */
+
+.tech-tile-card__tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  padding: 8px 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  white-space: normal;
+  min-width: 140px;
+  max-width: 220px;
+  text-align: center;
+}
+
+.tech-tile-card__tooltip-name {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.tech-tile-card__tooltip-cost {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.tech-tile-card__tooltip-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ─── Tech Tray (sidebar) — compact text list ─── */
+
+.tech-tray-cat-label {
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 3px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid;
+}
+
+.tech-tray-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tech-tray-row {
+  padding: 4px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.tech-tray-row:hover {
+  background: var(--bg-hover);
+}
+
+.tech-tray-row--depleted {
+  opacity: 0.4;
+}
+
+.tech-tray-row__main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+
+.tech-tray-row__name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.tech-tray-row__right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tech-tray-row__cost {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.tech-tray-row__cost-max {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.tech-tray-row__cost-min {
+  font-size: 8px;
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.tech-tray-row__count {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.tech-tray-row__count--depleted {
+  color: var(--accent-red);
+}
+
+.tech-tray-row__desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ─── Tech Supply Board Overlay ─── */
+
+.tech-supply-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.15s ease;
+}
+
+.tech-supply-board {
+  width: min(95vw, 1100px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.tech-supply-board__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.tech-supply-board__title {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.tech-supply-board__close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tech-supply-board__close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+/* Category section */
+.tech-supply-category {
+  margin-bottom: var(--spacing-lg);
+}
+
+.tech-supply-category__label {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding-bottom: 6px;
+  margin-bottom: var(--spacing-sm);
+  border-bottom: 1px solid;
+}
+
+.tech-supply-category__label--military {
+  color: var(--tech-military);
+  border-color: var(--tech-military);
+}
+
+.tech-supply-category__label--grid {
+  color: var(--tech-grid);
+  border-color: var(--tech-grid);
+}
+
+.tech-supply-category__label--nano {
+  color: var(--tech-nano);
+  border-color: var(--tech-nano);
+}
+
+.tech-supply-category__label--rare {
+  color: var(--tech-rare);
+  border-color: var(--tech-rare);
+}
+
+/* Supply board: grid of square tiles (rare techs) */
+.tech-supply-category__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+/* Supply board: fixed 8-column track row (non-rare) */
+.tech-supply-track {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
+
+/* Empty/undrawn slot placeholder */
+.tech-supply-track__empty {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  opacity: 0.15;
+  filter: grayscale(0.8);
+  cursor: default;
+  transition: opacity var(--transition-fast);
+}
+
+.tech-supply-track__empty:hover {
+  opacity: 0.3;
+}
+
+.tech-supply-track__empty .tech-tile-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+/* ─── Research panel: grid of square tiles ─── */
+
+.research-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+/* ─── PlayerResearch: visual track board ─── */
+
+.research-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.research-track {
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+}
+
+/* Vertical category label */
+.research-track__label {
+  width: 18px;
+  min-width: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* Slots row */
+.research-track__slots {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Individual slot wrapper */
+.research-track__slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Tile inside a slot */
+.research-track__slot .tech-tile-card {
+  width: 100%;
+}
+
+/* Empty slot */
+.research-track__empty {
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px dashed;
+  opacity: 0.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.research-track__discount {
+  font-size: 10px;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+/* VP milestone badge below slot */
+.research-track__vp {
+  font-size: 7px;
+  font-weight: bold;
+  color: var(--text-muted);
+  opacity: 0.5;
+  margin-top: 1px;
+  line-height: 1;
+}
+
+.research-track__vp--earned {
+  color: var(--accent-yellow);
+  opacity: 1;
+}
+
+/* VP total column on the right */
+.research-track__vp-total {
+  width: 28px;
+  min-width: 28px;
+  border-radius: 4px;
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.research-track__vp-total-value {
+  font-size: 14px;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  color: var(--accent-yellow);
+  line-height: 1;
+}
+
+.research-track__vp-total-star {
+  font-size: 8px;
+  color: var(--accent-yellow);
+  line-height: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

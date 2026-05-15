@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Background -->
+  <rect width="120" height="120" rx="8" fill="#1a1a2e"/>
+  <!-- Top banner -->
+  <rect y="0" width="120" height="26" fill="#1A7A42"/>
+  <rect y="0" width="120" height="8" rx="8" fill="#1A7A42"/>
+  <text x="60" y="18" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#fff" font-weight="bold">GAUSS SHIELD</text>
+  <!-- Icon -->
+  
+    <path d="M60 33 L82 42 L82 58 C82 67 73 74 60 78 C47 74 38 67 38 58 L38 42 Z" fill="none" stroke="#1A7A42" stroke-width="2.2"/>
+    <path d="M60 38 L76 45 L76 58 C76 64 70 70 60 73 C50 70 44 64 44 58 L44 45 Z" fill="#1A7A42" opacity="0.12"/>
+  <!-- Max cost circle (bottom-left, big) -->
+  <circle cx="22" cy="104" r="14" fill="#1A7A42" opacity="0.9"/>
+  <text x="22" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#fff" font-weight="bold">2</text>
+  
+  <!-- Border -->
+  <rect x="1" y="1" width="118" height="118" rx="7" fill="none" stroke="#1A7A42" stroke-width="2"/>
+</svg>

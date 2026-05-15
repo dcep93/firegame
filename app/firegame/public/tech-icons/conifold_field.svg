@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Background -->
+  <rect width="120" height="120" rx="8" fill="#1a1a2e"/>
+  <!-- Top banner -->
+  <rect y="0" width="120" height="26" fill="#3a3a4a"/>
+  <rect y="0" width="120" height="8" rx="8" fill="#3a3a4a"/>
+  <text x="60" y="18" text-anchor="middle" font-family="Arial,sans-serif" font-size="9.5" fill="#ccc" font-weight="bold">CONIFOLD FIELD</text>
+  <!-- Icon -->
+  
+    <path d="M60 33 L82 42 L82 58 C82 67 73 74 60 78 C47 74 38 67 38 58 L38 42 Z" fill="none" stroke="#8888a0" stroke-width="2.2"/>
+    <path d="M60 38 L76 45 L76 58 C76 64 70 70 60 73 C50 70 44 64 44 58 L44 45 Z" fill="#8888a0" opacity="0.1"/>
+    <path d="M60 43 L70 49 L70 58 C70 62 66 66 60 68 C54 66 50 62 50 58 L50 49 Z" fill="#8888a0" opacity="0.12"/>
+    <path d="M60 49 L67 55 L60 62 L53 55 Z" fill="#8888a0" opacity="0.3"/>
+  <!-- Max cost circle (bottom-left, big) -->
+  <circle cx="22" cy="104" r="14" fill="#3a3a4a" opacity="0.9"/>
+  <text x="22" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#ccc" font-weight="bold">5</text>
+  
+  <!-- Border -->
+  <rect x="1" y="1" width="118" height="118" rx="7" fill="none" stroke="#5a5a6a" stroke-width="2"/>
+</svg>

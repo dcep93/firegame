@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Background -->
+  <rect width="120" height="120" rx="8" fill="#1a1a2e"/>
+  <!-- Top banner -->
+  <rect y="0" width="120" height="26" fill="#1A7A42"/>
+  <rect y="0" width="120" height="8" rx="8" fill="#1A7A42"/>
+  <text x="60" y="18" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#fff" font-weight="bold">ADV. ECONOMY</text>
+  <!-- Icon -->
+  
+    <circle cx="60" cy="52" r="16" fill="#e8a830" opacity="0.12"/>
+    <circle cx="60" cy="52" r="16" fill="none" stroke="#e8a830" stroke-width="1.8"/>
+    <circle cx="60" cy="52" r="10" fill="none" stroke="#e8a830" stroke-width="0.8" opacity="0.5"/>
+    <text x="60" y="59" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#e8a830" font-weight="bold">$</text>
+    <polygon points="60,72 65,80 62,80 62,86 58,86 58,80 55,80" fill="#1A7A42" opacity="0.6"/>
+  <!-- Max cost circle (bottom-left, big) -->
+  <circle cx="22" cy="104" r="14" fill="#1A7A42" opacity="0.9"/>
+  <text x="22" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#fff" font-weight="bold">10</text>
+  <!-- Min cost (bottom-right, small) -->
+  <circle cx="100" cy="106" r="10" fill="#1A7A42" opacity="0.55"/>
+  <text x="100" y="111" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#fff" font-weight="bold">6</text>
+  <!-- Border -->
+  <rect x="1" y="1" width="118" height="118" rx="7" fill="none" stroke="#1A7A42" stroke-width="2"/>
+</svg>

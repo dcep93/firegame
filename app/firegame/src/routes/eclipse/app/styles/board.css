@@ -1,0 +1,287 @@
+.hex-board {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.hex-board:active {
+  cursor: grabbing;
+}
+
+.hex-tile {
+  cursor: pointer;
+  transition: filter var(--transition-fast);
+}
+
+.hex-tile:hover {
+  filter: brightness(1.2);
+}
+
+.hex-tile--empty {
+  opacity: 0.2;
+  stroke-dasharray: 8 6;
+}
+
+.hex-tile--highlight {
+  filter: brightness(1.4);
+  animation: pulse-highlight 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-highlight {
+  0%, 100% { filter: brightness(1.4); }
+  50% { filter: brightness(1.8); }
+}
+
+.hex-outline {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1;
+}
+
+.hex-fill {
+  fill: var(--bg-tertiary);
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+
+.hex-fill--galactic-center {
+  fill: rgba(122, 93, 158, 0.12);
+  stroke: #7a5d9e;
+  stroke-width: 2.5;
+}
+
+.hex-fill--guardian {
+  fill: rgba(155, 125, 184, 0.10);
+  stroke: #8b6daa;
+  stroke-width: 2;
+}
+
+.hex-fill--starting {
+  fill: rgba(74, 158, 255, 0.06);
+  stroke: var(--accent-blue);
+  stroke-width: 2;
+}
+
+.hex-fill--owned {
+  stroke-width: 2;
+}
+
+.wormhole-dot {
+  fill: none;
+  stroke: #4de8c2;
+  stroke-width: 1.8;
+  opacity: 0.75;
+}
+
+.wormhole-dot--half {
+  fill: none;
+  stroke: #4de8c2;
+  stroke-width: 1.2;
+  opacity: 0.35;
+}
+
+.ship-token {
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.ship-token:hover {
+  transform: scale(1.2);
+}
+
+.discovery-ring {
+  animation: discovery-pulse 3s ease-in-out infinite;
+}
+
+@keyframes discovery-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.5; }
+}
+
+/* Explore target hexes — pulsing blue dashed */
+.hex-tile--explore-target {
+  fill: rgba(74, 144, 226, 0.08);
+  stroke: var(--accent-blue);
+  stroke-width: 2;
+  stroke-dasharray: 8 4;
+  cursor: pointer;
+  pointer-events: all;
+  animation: pulse-explore 2s ease-in-out infinite;
+}
+
+.hex-tile--explore-target:hover {
+  fill: rgba(74, 144, 226, 0.2);
+  stroke-width: 3;
+}
+
+@keyframes pulse-explore {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Ghost tile preview during explore */
+.hex-tile--ghost {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hex-tile--ghost .hex-fill {
+  stroke: var(--accent-green);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+}
+
+/* Committed ghost: previously placed tile in multi-activation (e.g. Planta) */
+.hex-tile--ghost-committed {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.hex-tile--ghost-committed .hex-fill {
+  stroke: var(--accent-green);
+  stroke-width: 2;
+}
+
+.influence-disc {
+  stroke: #000;
+  stroke-width: 1;
+}
+
+.sector-vp {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: bold;
+  fill: var(--accent-yellow);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Colony ship target hexes — pulsing green dashed */
+.hex-tile--colony-ship-target {
+  fill: rgba(74, 255, 158, 0.06);
+  stroke: var(--accent-green);
+  stroke-width: 2.5;
+  stroke-dasharray: 6 4;
+  pointer-events: none;
+  animation: pulse-colony-ship 2s ease-in-out infinite;
+}
+
+@keyframes pulse-colony-ship {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+/* Build target hexes — pulsing orange dashed */
+.hex-tile--build-target {
+  fill: rgba(255, 165, 0, 0.08);
+  stroke: var(--accent-orange);
+  stroke-width: 2;
+  stroke-dasharray: 8 4;
+  cursor: pointer;
+  pointer-events: all;
+  animation: pulse-build 2s ease-in-out infinite;
+}
+
+.hex-tile--build-target:hover {
+  fill: rgba(255, 165, 0, 0.2);
+  stroke-width: 3;
+}
+
+@keyframes pulse-build {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Move target hexes — pulsing purple dashed */
+.hex-tile--move-target {
+  fill: rgba(168, 85, 247, 0.08);
+  stroke: #a855f7;
+  stroke-width: 2;
+  stroke-dasharray: 8 4;
+  cursor: pointer;
+  pointer-events: all;
+  animation: pulse-move 2s ease-in-out infinite;
+}
+
+.hex-tile--move-target:hover {
+  fill: rgba(168, 85, 247, 0.2);
+  stroke-width: 3;
+}
+
+@keyframes pulse-move {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Influence target hexes — pulsing cyan dashed */
+.hex-tile--influence-target {
+  fill: rgba(56, 189, 248, 0.08);
+  stroke: var(--accent-blue);
+  stroke-width: 2;
+  stroke-dasharray: 8 4;
+  cursor: pointer;
+  pointer-events: all;
+  animation: pulse-influence 2s ease-in-out infinite;
+}
+
+.hex-tile--influence-target:hover {
+  fill: rgba(56, 189, 248, 0.2);
+  stroke-width: 3;
+}
+
+@keyframes pulse-influence {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Claim sector available — pulsing cyan dashed (board-based influence choice) */
+.hex-tile--claim-available {
+  fill: rgba(56, 189, 248, 0.08);
+  stroke: var(--accent-blue);
+  stroke-width: 2;
+  stroke-dasharray: 8 4;
+  cursor: pointer;
+  pointer-events: all;
+  animation: pulse-influence 2s ease-in-out infinite;
+}
+
+.hex-tile--claim-available:hover {
+  fill: rgba(56, 189, 248, 0.2);
+  stroke-width: 3;
+}
+
+/* Claim sector selected — solid cyan fill */
+.hex-tile--claim-selected {
+  fill: rgba(56, 189, 248, 0.25);
+  stroke: var(--accent-blue);
+  stroke-width: 3;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.hex-tile--claim-selected:hover {
+  fill: rgba(56, 189, 248, 0.35);
+}
+
+/* Sector inspect click overlay — transparent, pointer cursor, subtle hover */
+.hex-tile--inspect {
+  fill: transparent;
+  stroke: none;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.hex-tile--inspect:hover {
+  fill: rgba(255, 255, 255, 0.06);
+}
+
+/* Turn notification pill */
+@keyframes turn-notify-in {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-100%); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.turn-notification {
+  animation: turn-notify-in 0.3s ease-out forwards;
+}

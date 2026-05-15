@@ -1,0 +1,72 @@
+import { ShipPartSlotType, ShipType } from '../enums';
+import type { BlueprintDefinition } from '../types/species';
+
+export const DEFAULT_BLUEPRINTS: Readonly<Record<ShipType, BlueprintDefinition>> = Object.freeze({
+  [ShipType.Interceptor]: {
+    shipType: ShipType.Interceptor,
+    slots: [
+      { slotType: ShipPartSlotType.Any, defaultPart: 'nuclear_source' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'nuclear_drive' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'ion_cannon' },
+      { slotType: ShipPartSlotType.Any, defaultPart: null },
+    ],
+    baseInitiative: 3,
+    baseEnergy: 0,
+    baseMovement: 0,
+    baseHullPoints: 0,
+    baseComputer: 0,
+    baseShield: 0,
+  },
+  [ShipType.Cruiser]: {
+    shipType: ShipType.Cruiser,
+    slots: [
+      { slotType: ShipPartSlotType.Any, defaultPart: 'nuclear_source' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'nuclear_drive' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'ion_cannon' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'electron_computer' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'hull' },
+      { slotType: ShipPartSlotType.Any, defaultPart: null },
+    ],
+    baseInitiative: 2,
+    baseEnergy: 0,
+    baseMovement: 0,
+    baseHullPoints: 0,
+    baseComputer: 0,
+    baseShield: 0,
+  },
+  [ShipType.Dreadnought]: {
+    shipType: ShipType.Dreadnought,
+    slots: [
+      { slotType: ShipPartSlotType.Any, defaultPart: 'nuclear_source' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'nuclear_drive' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'ion_cannon' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'ion_cannon' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'electron_computer' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'hull' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'hull' },
+      { slotType: ShipPartSlotType.Any, defaultPart: null },
+    ],
+    baseInitiative: 1,
+    baseEnergy: 0,
+    baseMovement: 0,
+    baseHullPoints: 0,
+    baseComputer: 0,
+    baseShield: 0,
+  },
+  [ShipType.Starbase]: {
+    shipType: ShipType.Starbase,
+    slots: [
+      { slotType: ShipPartSlotType.Any, defaultPart: 'ion_cannon' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'electron_computer' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'hull' },
+      { slotType: ShipPartSlotType.Any, defaultPart: 'hull' },
+      { slotType: ShipPartSlotType.Any, defaultPart: null },
+    ],
+    baseInitiative: 4,
+    baseEnergy: 3,
+    baseMovement: 0,
+    baseHullPoints: 0,
+    baseComputer: 0,
+    baseShield: 0,
+  },
+});

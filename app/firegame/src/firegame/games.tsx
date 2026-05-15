@@ -5,7 +5,8 @@ import bohnanza from "../routes/bohnanza/app/Bohnanza";
 import catann from "../routes/catann/app/Catann";
 import Caverna from "../routes/caverna/app/Caverna";
 import CavernaScorer from "../routes/caverna_scorer/app/CavernaScorer";
-import Eclipse from "../routes/eclipse/app/Eclipse";
+import eclipse from "../routes/eclipse/app/Eclipse";
+import eclipse_old from "../routes/eclipse_old/app/Eclipse";
 import EclipseCalc from "../routes/eclipse_calc/app/EclipseCalc";
 import five from "../routes/five/app/Five";
 import FireTimer from "../routes/fire_timer/app/FireTimer";
@@ -30,7 +31,8 @@ const ex = {
   PowerGrid,
   EclipseCalc,
   CavernaScorer,
-  Eclipse,
+  eclipse,
+  eclipse_old,
   Caverna,
   azul,
   SecretHitler,

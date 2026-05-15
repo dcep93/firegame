@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Background -->
+  <rect width="120" height="120" rx="8" fill="#1a1a2e"/>
+  <!-- Top banner -->
+  <rect y="0" width="120" height="26" fill="#B5CC18"/>
+  <rect y="0" width="120" height="8" rx="8" fill="#B5CC18"/>
+  <text x="60" y="18" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1a1a2e" font-weight="bold">NANOROBOTS</text>
+  <!-- Icon -->
+  
+    <circle cx="60" cy="56" r="14" fill="none" stroke="#B5CC18" stroke-width="2.2"/>
+    <circle cx="60" cy="56" r="7" fill="#B5CC18" opacity="0.2"/>
+    <rect x="57" y="38" width="6" height="7" rx="1" fill="#B5CC18" opacity="0.8"/>
+    <rect x="57" y="67" width="6" height="7" rx="1" fill="#B5CC18" opacity="0.8"/>
+    <rect x="42" y="53" width="7" height="6" rx="1" fill="#B5CC18" opacity="0.8"/>
+    <rect x="71" y="53" width="7" height="6" rx="1" fill="#B5CC18" opacity="0.8"/>
+    <line x1="54" y1="56" x2="66" y2="56" stroke="#B5CC18" stroke-width="1.8"/>
+    <line x1="60" y1="50" x2="60" y2="62" stroke="#B5CC18" stroke-width="1.8"/>
+  <!-- Max cost circle (bottom-left, big) -->
+  <circle cx="22" cy="104" r="14" fill="#B5CC18" opacity="0.9"/>
+  <text x="22" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#1a1a2e" font-weight="bold">2</text>
+  
+  <!-- Border -->
+  <rect x="1" y="1" width="118" height="118" rx="7" fill="none" stroke="#B5CC18" stroke-width="2"/>
+</svg>
