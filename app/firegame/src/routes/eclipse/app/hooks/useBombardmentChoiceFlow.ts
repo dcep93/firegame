@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useGameState } from './useGameState';
 import type { ResourceType } from '@eclipse/shared';
 
@@ -39,8 +39,14 @@ export function useBombardmentChoiceFlow(
 
   const sectorKey = active ? bombardmentData?.sectorKey ?? null : null;
   const totalDamage = active ? bombardmentData?.totalDamage ?? 0 : 0;
-  const populations = active ? bombardmentData?.populations ?? [] : [];
-  const rolls: readonly DieRoll[] = active ? (bombardmentData?.rolls as readonly DieRoll[] ?? []) : [];
+  const populations = useMemo(
+    () => (active ? bombardmentData?.populations ?? [] : []),
+    [active, bombardmentData],
+  );
+  const rolls: readonly DieRoll[] = useMemo(
+    () => (active ? (bombardmentData?.rolls as readonly DieRoll[] ?? []) : []),
+    [active, bombardmentData],
+  );
   const hasOrbitalPop = active ? bombardmentData?.hasOrbitalPop ?? false : false;
   const orbitalTrack = active ? bombardmentData?.orbitalTrack ?? null : null;
 

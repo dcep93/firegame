@@ -291,7 +291,7 @@ export function useExploreFlow(
       setFlow(INITIAL_FLOW);
       clearExplorePeek();
     }
-  }, [flow, maxActivations, advanceStep, submitAction, clearExplorePeek]);
+  }, [flow, isDraco, maxActivations, advanceStep, submitAction, clearExplorePeek]);
 
   const confirmDiscard = useCallback(() => {
     if (!flow.selectedPosition) return;

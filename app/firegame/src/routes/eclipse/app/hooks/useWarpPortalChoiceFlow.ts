@@ -1,5 +1,4 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { SECTORS_BY_ID } from '@eclipse/shared';
 import { useGameState } from './useGameState';
 
 interface WarpPortalChoiceFlowResult {
@@ -21,15 +20,17 @@ export function useWarpPortalChoiceFlow(
     subPhase?.type === 'WARP_PORTAL_CHOICE' &&
     subPhase.playerId === playerId;
 
-  const eligibleKeys: readonly string[] = active
-    ? (subPhase as { eligibleSectors: readonly string[] }).eligibleSectors
-    : [];
+  const eligibleKeys: readonly string[] = useMemo(
+    () => active
+      ? (subPhase as { eligibleSectors: readonly string[] }).eligibleSectors
+      : [],
+    [active, subPhase],
+  );
 
   const eligibleSectors = useMemo(() => {
     if (!filteredState || eligibleKeys.length === 0) return [];
     return eligibleKeys.map(key => {
       const sector = filteredState.board.sectors[key];
-      const def = sector ? SECTORS_BY_ID[sector.sectorId] : null;
       const id = sector?.sectorId ?? key;
       const position = sector?.position ?? { q: 0, r: 0 };
       return { key, label: `Sector ${id}`, position };

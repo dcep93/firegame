@@ -29,7 +29,7 @@ export function rollAttackDice(
 
   // Roll for each active ship in the unit
   const activeShips = unit.ships.filter((s) => !s.isRetreating);
-  for (const _ship of activeShips) {
+  for (let i = 0; i < activeShips.length; i++) {
     const result = rollWeaponDice(current, stats.weapons);
     allRolls.push(...result.rolls);
     current = result.state;

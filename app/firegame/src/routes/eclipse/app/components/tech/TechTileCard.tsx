@@ -11,13 +11,6 @@ export interface TechTileCardProps {
   compact?: boolean;
 }
 
-const CATEGORY_CLASS: Record<string, string> = {
-  military: 'military',
-  grid: 'grid',
-  nano: 'nano',
-  rare: 'rare',
-};
-
 export function TechTileCard({
   techId,
   count,
@@ -30,7 +23,6 @@ export function TechTileCard({
   const def = TECHS_BY_ID[techId];
   if (!def) return null;
 
-  const cat = CATEGORY_CLASS[def.category] ?? 'rare';
   const depleted = count !== undefined && count <= 0;
 
   const classes = [

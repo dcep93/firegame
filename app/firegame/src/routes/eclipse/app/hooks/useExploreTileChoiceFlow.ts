@@ -115,7 +115,7 @@ export function useExploreTileChoiceFlow(
       rotation,
       takeInfluence: takeInfluence && selectedDef && (isDraco || (!selectedDef.hasAncient && !(selectedDef.ancientCount && selectedDef.ancientCount > 0))),
     });
-  }, [selectedTileIndex, rotation, takeInfluence, selectedDef, sendAction]);
+  }, [selectedTileIndex, rotation, takeInfluence, selectedDef, isDraco, sendAction]);
 
   const confirmDiscard = useCallback(() => {
     if (selectedTileIndex === null) return;

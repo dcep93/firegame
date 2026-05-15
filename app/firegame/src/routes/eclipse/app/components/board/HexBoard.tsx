@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from 'react';
 import type { SectorDefinition, FilteredPlacedSector, ShipOnBoard } from '@eclipse/shared';
-import { NpcType, ShipType } from '@eclipse/shared';
+import { NpcType } from '@eclipse/shared';
 import { useGameState } from '../../hooks/useGameState';
 import { useBoardTransform } from '../../hooks/useBoardTransform';
 import { hexToPixel, hexPolygonPoints } from '../../services/hex-layout';

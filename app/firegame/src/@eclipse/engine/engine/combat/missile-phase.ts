@@ -24,7 +24,7 @@ export function rollMissileDice(
 
     // Roll for each ship in the unit
     const allRolls: RollResult[] = [];
-    for (const _ship of unit.ships) {
+    for (let shipIndex = 0; shipIndex < unit.ships.length; shipIndex++) {
       const result = rollWeaponDice(current, stats.missiles);
       allRolls.push(...result.rolls);
       current = result.state;

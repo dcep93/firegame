@@ -1,12 +1,11 @@
 import { useState, useMemo } from 'react';
-import { SPECIES, TECHS_BY_ID, SHIP_PARTS_BY_ID, ShipPartCategory } from '@eclipse/shared';
+import { TECHS_BY_ID, SHIP_PARTS_BY_ID, ShipPartCategory } from '@eclipse/shared';
 import type { FilteredPlayerState, PlayerState, GameEvent } from '@eclipse/shared';
 import { useGameState } from '../../hooks/useGameState';
 import { TechSupplyBoard } from '../tech/TechSupplyBoard';
 import { ResearchBoardOverlay } from '../player-board/PlayerResearch';
 import { BlueprintBoardOverlay } from '../player-board/BlueprintBoardOverlay';
 import { NpcBlueprints } from '../shared/NpcBlueprints';
-import { Modal } from '../shared/Modal';
 import { OpponentDetailModal } from '../overlays/OpponentDetailModal';
 import { formatEvent, getCategoryColor, type PlayerLookup } from '../../utils/format-event';
 import { computeEconomySummary } from '../../utils/compute-economy';
@@ -287,8 +286,6 @@ export function Sidebar({ onExpandBottom }: { onExpandBottom?: () => void } = {}
             : filteredState.opponents[pid];
           if (!data) return null;
           const nickname = players?.find(p => p.playerId === pid)?.nickname ?? pid;
-          const species = SPECIES[data.speciesId as keyof typeof SPECIES];
-          const speciesName = species?.name ?? data.speciesId;
           const isTurn = filteredState.turnOrder[filteredState.currentPlayerIndex] === pid;
           const passPosition = filteredState.passOrder.indexOf(pid) + 1; // 0=not passed, 1+=position
 

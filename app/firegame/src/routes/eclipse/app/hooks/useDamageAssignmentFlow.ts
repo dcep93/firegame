@@ -44,8 +44,14 @@ export function useDamageAssignmentFlow(
   const active = damageData !== null;
 
   const sectorKey = active ? damageData.sectorKey : null;
-  const hits: readonly HitInfo[] = active ? damageData.hits : [];
-  const targetShips: readonly ShipInfo[] = active ? damageData.targetShips : [];
+  const hits: readonly HitInfo[] = useMemo(
+    () => (active ? damageData.hits : []),
+    [active, damageData],
+  );
+  const targetShips: readonly ShipInfo[] = useMemo(
+    () => (active ? damageData.targetShips : []),
+    [active, damageData],
+  );
   const isMissile = active ? damageData.isMissile : false;
 
   const [assignments, setAssignments] = useState<Map<string, number[]>>(new Map());

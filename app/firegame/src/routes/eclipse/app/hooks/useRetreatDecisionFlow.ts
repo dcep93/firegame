@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useGameState } from './useGameState';
 import type { HexCoord } from '@eclipse/shared';
 
@@ -35,8 +35,14 @@ export function useRetreatDecisionFlow(
   const active = retreatData !== null;
 
   const sectorKey = active ? retreatData.sectorKey : null;
-  const validTargets: readonly HexCoord[] = active ? retreatData.validTargets : [];
-  const playerShips: readonly ShipInfo[] = active ? retreatData.playerShips : [];
+  const validTargets: readonly HexCoord[] = useMemo(
+    () => (active ? retreatData.validTargets : []),
+    [active, retreatData],
+  );
+  const playerShips: readonly ShipInfo[] = useMemo(
+    () => (active ? retreatData.playerShips : []),
+    [active, retreatData],
+  );
 
   const [selectedShipIds, setSelectedShipIds] = useState<Set<string>>(new Set());
   const [selectedTarget, setSelectedTarget] = useState<HexCoord | null>(null);

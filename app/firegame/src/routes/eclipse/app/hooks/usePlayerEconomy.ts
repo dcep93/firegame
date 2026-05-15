@@ -121,7 +121,6 @@ export function usePlayerEconomy(player: PlayerState): PlayerEconomy {
 
     // Build influence track slots (always 13 wide, left to right: LOW → HIGH)
     // Offset slots (e.g., Eridani) render as empty — they can acquire more discs later
-    const totalDiscs = player.influenceDiscs.total;
     const standardTrackSlots = 13;
     const totalPlaced = discsPlaced + discOffset; // total empty slots from the left
     const influenceSlots: TrackSlot[] = [];
