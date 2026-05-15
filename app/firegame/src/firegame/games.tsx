@@ -13,6 +13,7 @@ import fox from "../routes/fox/app/Fox";
 import loveletter from "../routes/love_letter/app/LoveLetter";
 import ModernArt from "../routes/modern_art/app/ModernArt";
 import PowerGrid from "../routes/powergrid/app/Powergrid";
+import PuertoRico from "../routes/puerto_rico/app/PuertoRico";
 import Random from "../routes/random/app/Random";
 import SecretHitler from "../routes/secret_hitler/app/SecretHitler";
 import splendor from "../routes/splendor/app/Splendor";
@@ -43,6 +44,7 @@ const ex = {
   five,
   fire_timer: FireTimer,
   ModernArt,
+  puerto_rico: PuertoRico,
   spy,
   takebacktoe,
   timeline,

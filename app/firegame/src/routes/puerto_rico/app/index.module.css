@@ -1,0 +1,93 @@
+.root {
+  width: 100%;
+  min-width: 980px;
+  padding: 12px;
+  box-sizing: border-box;
+  color: #1f2520;
+}
+
+.section {
+  border: 1px solid #1f2520;
+  background: #fffdf7;
+  margin: 8px;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.between {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.tile {
+  min-width: 96px;
+  min-height: 54px;
+  border: 1px solid #1f2520;
+  border-radius: 6px;
+  padding: 8px;
+  background: white;
+  box-sizing: border-box;
+}
+
+.smallTile {
+  min-width: 74px;
+  min-height: 42px;
+  border: 1px solid #1f2520;
+  border-radius: 6px;
+  padding: 6px;
+  background: white;
+  box-sizing: border-box;
+}
+
+.buttonTile {
+  cursor: pointer;
+}
+
+.buttonTile:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.muted {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.tiny {
+  font-size: 0.82em;
+}
+
+.heading {
+  margin: 0 0 8px;
+}
+
+.player {
+  min-width: 310px;
+  flex: 1 1 340px;
+}
+
+.active {
+  outline: 3px solid #b33a3a;
+}
+
+.building {
+  width: 170px;
+}
+
+.danger {
+  color: #9d1f1f;
+  font-weight: 700;
+}
+
+.score {
+  font-weight: 700;
+}
