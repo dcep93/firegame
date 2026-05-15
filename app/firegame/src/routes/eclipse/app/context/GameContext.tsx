@@ -13,6 +13,7 @@ import type {
 } from "@eclipse/shared";
 import store from "../../../../shared/store";
 import type { FiregameEclipseGame } from "../firegame/types";
+import { normalizeFiregameEclipseGame } from "../firegame/normalize";
 import { filterStateForPlayer } from "../firegame/state-filter";
 import {
   getActionsForPlayer,
@@ -98,14 +99,18 @@ export function clearSavedSession(_playerId: string): void {}
 export function clearAllSavedSessions(): void {}
 
 export function GameProvider({ children }: { children: ReactNode }) {
-  const game = store.gameW?.game as FiregameEclipseGame | null | undefined;
+  const rawGame = store.gameW?.game as FiregameEclipseGame | null | undefined;
+  const game = useMemo(
+    () => (rawGame ? normalizeFiregameEclipseGame(rawGame) : rawGame),
+    [rawGame],
+  );
   const [localError, setLocalError] = useState<string | null>(null);
   const [explorePeekResult, setExplorePeekResult] = useState<ExplorePeekResult | null>(null);
   const [rewindMessage, setRewindMessage] = useState<string | null>(null);
 
   const playerId = useMemo(() => {
     if (!game) return store.me?.userId ?? null;
-    if (game.players.some((p) => p.playerId === store.me.userId)) return store.me.userId;
+    if ((game.players ?? []).some((p) => p.playerId === store.me.userId)) return store.me.userId;
     return game.players[0]?.playerId ?? null;
   }, [game]);
 
@@ -167,7 +172,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const sendAction = useCallback(
     (action: unknown) => {
-      const currentGame = store.gameW?.game as FiregameEclipseGame | null | undefined;
+      const rawCurrentGame = store.gameW?.game as FiregameEclipseGame | null | undefined;
+      const currentGame = rawCurrentGame ? normalizeFiregameEclipseGame(rawCurrentGame) : rawCurrentGame;
       if (!currentGame || !playerId) return;
 
       const result = processFiregameAction(currentGame.state, playerId, action as GameAction);
@@ -248,4 +254,3 @@ function describeAction(action: unknown): string {
   }
   return "updated the game";
 }
-

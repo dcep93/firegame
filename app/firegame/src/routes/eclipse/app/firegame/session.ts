@@ -30,6 +30,7 @@ import type { GameState } from "@eclipse/engine";
 import { DEFAULT_ROOM_CONFIG } from "@eclipse/shared";
 import type { LobbyType } from "../../../../shared/store";
 import type { FiregameEclipseGame } from "./types";
+import { normalizeGameState } from "./normalize";
 
 const DEFAULT_SPECIES: SpeciesId[] = [
   SpeciesId.EridaniEmpire,
@@ -108,6 +109,7 @@ export function processFiregameAction(
   playerId: PlayerId,
   action: GameAction,
 ): ActionResult {
+  state = normalizeGameState(state);
   const error = validateAction(state, playerId, action);
   if (error !== null) {
     return { success: false, state, newEvents: [], error };
@@ -148,7 +150,7 @@ export function processFiregameAction(
 }
 
 export function getActionsForPlayer(state: GameState, playerId: PlayerId) {
-  return getLegalActions(state, playerId);
+  return getLegalActions(normalizeGameState(state), playerId);
 }
 
 export function peekExplore(
@@ -160,6 +162,7 @@ export function peekExplore(
     readonly rotation?: number;
   }[],
 ): { sectorId: string } | { error: string } {
+  state = normalizeGameState(state);
   const simStacks = {
     inner: [...state.sectorStacks.inner],
     middle: [...state.sectorStacks.middle],

@@ -11,11 +11,13 @@ import type {
   PlayerId,
   PlayerState,
 } from "@eclipse/engine";
+import { normalizeGameState } from "./normalize";
 
 export function filterStateForPlayer(
   state: GameState,
   playerId: PlayerId,
 ): FilteredGameState {
+  state = normalizeGameState(state);
   const you = state.players[playerId]!;
   const opponents: Record<string, FilteredPlayerState> = {};
 
@@ -31,7 +33,7 @@ export function filterStateForPlayer(
     filteredSubPhase = { ...state.subPhase, drawnTiles: ["hidden", "hidden"] as any };
   }
   if (state.subPhase?.type === "REPUTATION_SELECTION" && state.subPhase.playerId !== playerId) {
-    filteredSubPhase = { ...state.subPhase, drawn: state.subPhase.drawn.map(() => 0) };
+    filteredSubPhase = { ...state.subPhase, drawn: (state.subPhase.drawn ?? []).map(() => 0) };
   }
 
   return {
@@ -92,7 +94,7 @@ function filterPlayerState(player: PlayerState): FilteredPlayerState {
 
 function filterBoard(state: GameState): FilteredBoardState {
   const sectors: Record<string, FilteredPlacedSector> = {};
-  for (const [key, sector] of Object.entries(state.board.sectors)) {
+  for (const [key, sector] of Object.entries(state.board.sectors ?? {})) {
     sectors[key] = filterSector(sector);
   }
   return { sectors, emptyZones: state.board.emptyZones };
@@ -118,15 +120,14 @@ export function filterEvents(
   events: readonly GameEvent[],
   viewingPlayerId: PlayerId,
 ): readonly GameEvent[] {
-  return events.slice(-50).map((event) => {
+  return (events ?? []).slice(-50).map((event) => {
     if (event.type === "REPUTATION_DRAWN" && event.playerId !== viewingPlayerId) {
       return {
         ...event,
-        drawn: event.drawn.map(() => 0),
+        drawn: (event.drawn ?? []).map(() => 0),
         kept: null,
       };
     }
     return event;
   });
 }
-
