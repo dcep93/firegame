@@ -780,23 +780,6 @@
   font-weight: 800;
 }
 
-.colonistShipPanel {
-  display: grid;
-  gap: 4px;
-  margin-top: 12px;
-  border: 1px solid rgba(44, 61, 54, 0.12);
-  border-radius: 8px;
-  background: #f7faf7;
-  padding: 9px;
-  color: #33433b;
-  font-size: 0.82rem;
-}
-
-.colonistShipPanel strong {
-  color: #17201c;
-  font-size: 0.9rem;
-}
-
 .buildingColumns {
   display: grid;
   grid-template-columns: repeat(4, minmax(205px, 1fr));

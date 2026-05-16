@@ -12,6 +12,7 @@ function BankView() {
         <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>Plantations</strong>
           <div className={css.boardStatsLine}>
+            <span>Colonist ship {bank.colonistShip}/{bank.colonistSupply}</span>
             <span>Deck {bank.plantationDeck.length}</span>
             <span>Discard {bank.plantationDiscard.length}</span>
             <span>Quarries {bank.quarrySupply}</span>
@@ -61,11 +62,6 @@ function BankView() {
               <strong>{ship.good ? theme.goods[ship.good] : "Empty"} {ship.count}/{ship.capacity}</strong>
             </div>
           ))}
-          <div className={css.colonistShipPanel}>
-            <strong>Colonist ship</strong>
-            <span>{bank.colonistShip} colonists</span>
-            <span>{bank.colonistSupply} in supply</span>
-          </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>Goods supply</strong>
