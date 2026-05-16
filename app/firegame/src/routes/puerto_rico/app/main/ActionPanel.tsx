@@ -5,12 +5,14 @@ import utils, { store } from "../utils/utils";
 function ActionPanel() {
   const game = store.gameW.game;
   const player = game.players[game.currentPlayer];
+  const isMyTurn = utils.isMyTurn();
   return (
-    <div className={`${css.section} ${utils.isMyTurn() ? css.active : ""}`}>
+    <div className={`${css.section} ${isMyTurn ? css.active : ""}`}>
       <h3 className={css.heading}>{theme.phase[game.phase]}</h3>
-      {!utils.isMyTurn() && <div>Waiting for {player?.userName}</div>}
       {game.phase === "role" && (
-        <div>{game.players[game.rolePicker]?.userName} chooses a role.</div>
+        <div className={css.actionLead}>
+          {utils.isRolePicker() ? "Choose a role." : `${game.players[game.rolePicker]?.userName} is choosing a role.`}
+        </div>
       )}
       {game.phase === "settler" && (
         <div className={css.row}>
@@ -27,7 +29,7 @@ function ActionPanel() {
             <button
               key={`${plantation}-${index}`}
               className={`${css.smallTile} ${css.buttonTile}`}
-              style={{ background: theme.colors[plantation] }}
+              style={{ backgroundColor: theme.colors[plantation] }}
               onClick={() => utils.settlePlantation(index)}
               disabled={!utils.isMyTurn()}
             >

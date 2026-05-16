@@ -7,18 +7,22 @@ function ScoreBoard() {
     <div className={css.section}>
       <h3 className={css.heading}>Final scoring</h3>
       {game.endTriggered && <div className={css.danger}>{game.endTriggered}</div>}
-      {(game.scores || []).map((score, index) => {
-        const player = game.players[score.playerIndex];
-        return (
-          <div key={score.playerIndex} className={`${css.tile} ${css.score}`}>
-            {index + 1}. {player.userName}: {score.total} VP
-            <div className={css.tiny}>
-              Shipped {score.shipped}, buildings {score.buildings}, large buildings{" "}
-              {score.largeBuildings}, tie breaker {score.tieBreaker}
+      <div className={css.scoreTable}>
+        {(game.scores || []).map((score, index) => {
+          const player = game.players[score.playerIndex];
+          return (
+            <div key={score.playerIndex} className={css.scoreRow}>
+              <span className={css.scoreRank}>{index + 1}</span>
+              <strong>{player.userName}</strong>
+              <span>{score.shipped} shipped</span>
+              <span>{score.buildings} buildings</span>
+              <span>{score.largeBuildings} bonus</span>
+              <span>{score.tieBreaker} tie</span>
+              <strong className={css.scoreTotal}>{score.total} VP</strong>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

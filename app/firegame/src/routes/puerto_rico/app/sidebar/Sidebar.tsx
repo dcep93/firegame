@@ -1,6 +1,11 @@
+import { firebaseUndo } from "../../../../firegame/firebase";
+import writer from "../../../../firegame/writer/writer";
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
+import { history } from "../../../../shared/components/sidebar/SharedLog";
+import { GameWrapperType } from "../../../../shared/store";
+import css from "../index.module.css";
 import { theme } from "../theme/base";
-import NewGame, { Params } from "../utils/NewGame";
+import NewGame, { GameType, Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 class Sidebar extends SharedSidebar {
@@ -8,23 +13,123 @@ class Sidebar extends SharedSidebar {
   NewGame = NewGame;
   utils = utils;
   rules = theme.rulesUrl;
+  state = { history };
 
   getParams(): Params {
     return { lobby: store.lobby };
   }
 
-  renderInfo(): JSX.Element | null {
+  render() {
     const game = store.gameW.game;
-    if (!game) return null;
     return (
-      <div>
-        <div>Round {game.round}</div>
-        <div>Governor: {game.players[game.governor]?.userName}</div>
-        <div>VP bank: {game.bank.victoryPoints}</div>
-        <div>Colonists: {game.bank.colonistSupply}</div>
-        {game.endTriggered && <div>Final round: {game.endTriggered}</div>}
-      </div>
+      <aside className={css.sidebarPanel}>
+        {game && (
+          <section className={`${css.sidebarCard} ${css.brandCard}`}>
+            <div className={css.sidebarStatusStack}>
+              <strong className={css.sidebarPhaseName}>{theme.phase[game.phase]}</strong>
+              <strong>{game.players[game.currentPlayer]?.userName}</strong>
+              <span>Round {game.round}</span>
+            </div>
+          </section>
+        )}
+
+        <section className={css.sidebarCard}>
+          <h2>Controls</h2>
+          <div className={css.controlGrid}>
+            <button onClick={this.startNewGame.bind(this)}>New Game</button>
+            <button onClick={() => firebaseUndo()}>Undo</button>
+            <a className={css.sidebarButton} href="..">
+              Home
+            </a>
+            <a className={css.sidebarButton} href={this.rules}>
+              Rules
+            </a>
+          </div>
+          {game?.endTriggered && game.phase !== "game_over" && (
+            <div className={css.sidebarAlert}>{game.endTriggered}</div>
+          )}
+        </section>
+
+        <section className={css.sidebarCard}>
+          <div className={css.sidebarHeadingRow}>
+            <h2>Lobby</h2>
+            <button
+              className={css.inlineSidebarButton}
+              onClick={() => writer.leaveLobby()}
+              disabled={store.isSpectator || !store.lobby[store.me.userId]}
+            >
+              Leave
+            </button>
+          </div>
+          <div className={css.lobbyList}>
+            {Object.entries(store.lobby).map(([userId, userName]) => {
+              const player = game?.players.find((candidate) => candidate.userId === userId);
+              const isCurrent = player?.index === game?.currentPlayer;
+              return (
+                <div key={userId} className={`${css.lobbyRow} ${isCurrent ? css.currentLobbyRow : ""}`}>
+                  <span>{userName}</span>
+                  {player && <span>{player.victoryPoints} VP</span>}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className={`${css.sidebarCard} ${css.logCard}`}>
+          <div className={css.sidebarHeadingRow}>
+            <h2>Log</h2>
+          </div>
+          <div className={css.logList}>
+            {this.state.history.map((wrapper, index) => (
+              <button
+                key={index}
+                className={css.logEntry}
+                onClick={() => this.revert(wrapper)}
+                title="Click to restore this state"
+              >
+                <span className={css.logId}>#{wrapper.info.id}</span>
+                <span className={css.logMessage}>{wrapper.info.message}</span>
+                <span className={css.logMeta}>
+                  {new Date(wrapper.info.timestamp).toLocaleTimeString()}
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+      </aside>
     );
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    this.updateHistory();
+  }
+
+  componentDidUpdate() {
+    super.componentDidUpdate();
+    this.updateHistory();
+  }
+
+  updateHistory() {
+    const newState = store.gameW;
+    if (!newState) return;
+    if (!this.state.history[0] || newState.info.id !== this.state.history[0].info.id) {
+      this.state.history.unshift(JSON.parse(JSON.stringify(newState)));
+      const alertMessage = newState.info.alert;
+      delete newState.info.alert;
+      if (alertMessage) alert(alertMessage);
+      this.setState({});
+    }
+  }
+
+  revert(wrapper: GameWrapperType<GameType>): void {
+    const userId = store.me.userId;
+    if (store.gameW.info.host !== userId) {
+      alert("only the host can revert");
+      return;
+    }
+    const time = new Date(wrapper.info.timestamp).toLocaleTimeString();
+    store.update(`restored to [(${wrapper.info.id}) ${wrapper.info.message} ${time}]`, wrapper.game);
   }
 }
 

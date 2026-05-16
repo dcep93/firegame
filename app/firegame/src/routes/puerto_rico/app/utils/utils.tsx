@@ -57,8 +57,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     game.currentPlayer = game.currentPlayer || 0;
     game.selectedRoles = this.asArray(game.selectedRoles);
     game.actionQueue = this.asArray(game.actionQueue);
-    game.producedGoods = this.normalizeProducedGoods(game.producedGoods);
-    game.scores = game.scores ? this.asArray(game.scores) : game.scores;
+    const producedGoods = this.normalizeProducedGoods(game.producedGoods);
+    if (producedGoods) game.producedGoods = producedGoods;
+    else delete game.producedGoods;
+    if (game.scores) game.scores = this.asArray(game.scores);
+    else delete game.scores;
 
     const count = game.players.length;
     const setup = count === 3 || count === 4 || count === 5 ? SETUP[count] : undefined;

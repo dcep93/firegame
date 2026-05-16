@@ -1,24 +1,385 @@
+.appShell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(184, 203, 190, 0.34), transparent 28%),
+    linear-gradient(135deg, #f3f6f1 0%, #e6ece7 100%);
+}
+
+.myTurnShell {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(220, 162, 115, 0.24), transparent 28%),
+    linear-gradient(135deg, #fbf3ec 0%, #e6ece7 100%);
+}
+
+.gameFrame {
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  min-height: 100vh;
+  overflow: visible;
+  box-sizing: border-box;
+  padding: 14px;
+}
+
+.contentPanel {
+  min-width: 0;
+  overflow: visible;
+  border: 1px solid rgba(27, 42, 35, 0.1);
+  border-radius: 10px;
+  background: rgba(247, 250, 246, 0.76);
+}
+
+.sidebarPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  overflow: auto;
+  border: 1px solid rgba(27, 42, 35, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 10px;
+  box-shadow: 0 18px 42px rgba(22, 33, 28, 0.13);
+  position: sticky;
+  top: 14px;
+  max-height: calc(100vh - 28px);
+}
+
+.sidebarCard {
+  border: 1px solid rgba(27, 42, 35, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 12px;
+  box-shadow: 0 8px 22px rgba(22, 33, 28, 0.07);
+}
+
+.sidebarCard h1,
+.sidebarCard h2 {
+  margin: 0;
+  color: #13221b;
+  letter-spacing: 0;
+}
+
+.sidebarCard h1 {
+  font-size: 1.5rem;
+}
+
+.sidebarCard h2 {
+  margin-bottom: 10px;
+  font-size: 0.98rem;
+}
+
+.brandCard {
+  background: #f9fbf7;
+}
+
+.brandCard .sidebarStatusStack {
+  margin-top: 0;
+}
+
+.sidebarPhaseRow,
+.sidebarHeadingRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.sidebarTitleRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.sidebarPhaseRow {
+  margin-top: 12px;
+  color: #4a5b53;
+  font-size: 0.9rem;
+}
+
+.sidebarStatusStack {
+  display: grid;
+  gap: 5px;
+  margin-top: 12px;
+  color: #4a5b53;
+  font-size: 0.84rem;
+}
+
+.sidebarStatusStack strong {
+  color: #17201c;
+  overflow-wrap: anywhere;
+}
+
+.sidebarPhaseName {
+  border-bottom: 1px solid rgba(36, 55, 47, 0.1);
+  padding-bottom: 5px;
+  color: #6f2f21 !important;
+  font-size: 1.02rem;
+}
+
+.sidebarHeadingRow h2 {
+  margin-bottom: 0;
+}
+
+.sidebarHeadingRow span {
+  border-radius: 999px;
+  background: #edf2ee;
+  padding: 2px 8px;
+  color: #53645c;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.controlGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.sidebarButton,
+.controlGrid button,
+.inlineSidebarButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(33, 51, 43, 0.16);
+  border-radius: 6px;
+  background: #f8faf8;
+  padding: 7px 9px;
+  color: #18241e;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sidebarButton:hover,
+.controlGrid button:not(:disabled):hover,
+.inlineSidebarButton:not(:disabled):hover {
+  border-color: rgba(39, 91, 73, 0.42);
+  background: #ffffff;
+  text-decoration: none;
+}
+
+.controlGrid button:disabled,
+.inlineSidebarButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.inlineSidebarButton {
+  padding: 4px 8px;
+  font-size: 0.76rem;
+}
+
+.lobbyList,
+.logList {
+  display: grid;
+  gap: 6px;
+}
+
+.lobbyRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid rgba(36, 55, 47, 0.1);
+  border-radius: 6px;
+  background: #f7faf7;
+  padding: 7px 8px;
+  color: #2c3d35;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.currentLobbyRow {
+  border-color: rgba(151, 62, 36, 0.35);
+  background: #fbefe9;
+}
+
+.sidebarMetrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.sidebarMetrics div {
+  border: 1px solid rgba(36, 55, 47, 0.1);
+  border-radius: 6px;
+  background: #f7faf7;
+  padding: 7px 8px;
+}
+
+.sidebarMetrics span {
+  display: block;
+  color: #718078;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.sidebarMetrics strong {
+  display: block;
+  margin-top: 3px;
+  color: #17201c;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.sidebarAlert {
+  margin-top: 8px;
+  border: 1px solid rgba(151, 39, 39, 0.2);
+  border-radius: 6px;
+  background: #faeeee;
+  padding: 7px 8px;
+  color: #9d1f1f;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.logCard {
+  min-height: 240px;
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logList {
+  margin-top: 10px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.logEntry {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  align-items: baseline;
+  border: 1px solid rgba(36, 55, 47, 0.1);
+  border-radius: 6px;
+  background: #f9fbf9;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.logEntry:hover {
+  border-color: rgba(39, 91, 73, 0.38);
+  background: #ffffff;
+}
+
+.logId {
+  color: #6f7f77;
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.logMessage {
+  color: #17201c;
+  font-size: 0.82rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.logMeta {
+  grid-column: 2;
+  color: #74827b;
+  font-size: 0.72rem;
+}
+
 .root {
   width: 100%;
-  min-width: 980px;
-  padding: 12px;
+  min-width: 0;
+  padding: 14px;
   box-sizing: border-box;
-  color: #1f2520;
+  color: #17201c;
+  background:
+    linear-gradient(180deg, rgba(247, 250, 246, 0.96), rgba(235, 241, 236, 0.96)),
+    #eef3ed;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .section {
-  border: 1px solid #1f2520;
-  background: #fffdf7;
-  margin: 8px;
-  padding: 10px;
-  border-radius: 6px;
+  border: 1px solid rgba(27, 42, 35, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  margin: 10px 8px;
+  padding: 14px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(22, 33, 28, 0.08);
 }
 
-.row {
+.section button {
+  border: 1px solid rgba(33, 51, 43, 0.18);
+  border-radius: 6px;
+  background: #f8faf8;
+  padding: 6px 10px;
+  color: #18241e;
+  font-weight: 700;
+}
+
+.section button:not(:disabled):hover {
+  border-color: rgba(39, 91, 73, 0.44);
+  background: #ffffff;
+}
+
+.section button:disabled {
+  color: #66736c;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  border-color: rgba(49, 85, 72, 0.2);
+  background: #f9fbf7;
+}
+
+.headerStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+  color: #405149;
+  font-size: 0.92rem;
+}
+
+.statusPill,
+.quarryIndicator,
+.costBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.statusPill {
+  border: 1px solid rgba(117, 54, 39, 0.25);
+  background: #f1ded8;
+  padding: 4px 10px;
+  color: #6f2f21;
+}
+
+.row,
+.compactRow,
+.goodsRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   align-items: flex-start;
+}
+
+.compactRow {
+  gap: 6px;
+}
+
+.goodsRow {
+  margin-top: 10px;
 }
 
 .between {
@@ -28,69 +389,318 @@
   align-items: center;
 }
 
-.tile {
-  min-width: 96px;
-  min-height: 54px;
-  border: 1px solid #1f2520;
+.boardGrid {
+  display: grid;
+  grid-template-columns: minmax(230px, 1.3fr) repeat(3, minmax(160px, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.roleReward,
+.roleLine {
+  color: #33433b;
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.roleLine {
+  margin-top: 5px;
+}
+
+.actionLead {
+  border: 1px solid rgba(44, 61, 54, 0.12);
   border-radius: 6px;
-  padding: 8px;
-  background: white;
+  background: #f7faf7;
+  padding: 8px 10px;
+  color: #33433b;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.tile,
+.smallTile {
+  border: 1px solid rgba(23, 32, 28, 0.16);
+  border-radius: 7px;
+  background: #ffffff;
   box-sizing: border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.tile {
+  min-width: 108px;
+  min-height: 62px;
+  padding: 10px;
 }
 
 .smallTile {
-  min-width: 74px;
-  min-height: 42px;
-  border: 1px solid #1f2520;
-  border-radius: 6px;
-  padding: 6px;
-  background: white;
-  box-sizing: border-box;
+  min-width: 76px;
+  min-height: 44px;
+  padding: 7px 8px;
+  font-size: 0.88rem;
+}
+
+.boardTile {
+  min-width: 0;
+  height: 100%;
+  background: #fbfcfb;
 }
 
 .buttonTile {
   cursor: pointer;
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    filter 120ms ease;
+}
+
+.buttonTile:not(:disabled):hover {
+  transform: translateY(-1px);
+  border-color: rgba(42, 91, 74, 0.45);
+  box-shadow: 0 8px 18px rgba(21, 35, 30, 0.16);
+  filter: saturate(1.02);
 }
 
 .buttonTile:disabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.52;
+  box-shadow: none;
+}
+
+.roleTile:disabled {
+  opacity: 1;
+}
+
+.tileTitle {
+  display: block;
+  color: #17201c;
+  font-size: 0.94rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.muted,
+.subtle {
+  color: #627068;
 }
 
 .muted {
-  color: #666;
   font-size: 0.9em;
 }
 
 .tiny {
   font-size: 0.82em;
+  line-height: 1.35;
 }
 
 .heading {
   margin: 0 0 8px;
+  color: #13221b;
+  letter-spacing: 0;
 }
 
 .player {
-  min-width: 310px;
-  flex: 1 1 340px;
+  min-width: 350px;
+  flex: 1 1 380px;
 }
 
 .active {
-  outline: 3px solid #b33a3a;
+  border-color: rgba(151, 62, 36, 0.45);
+  box-shadow:
+    0 0 0 3px rgba(206, 101, 66, 0.18),
+    0 10px 28px rgba(52, 31, 23, 0.14);
+}
+
+.statStrip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 8px 0 10px;
+}
+
+.statStrip span,
+.resourceLine,
+.supplyLine {
+  border: 1px solid rgba(44, 61, 54, 0.12);
+  border-radius: 6px;
+  background: rgba(245, 248, 245, 0.78);
+  padding: 5px 7px;
+  color: #33433b;
+  font-size: 0.82rem;
+}
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  border-bottom: 1px solid rgba(31, 45, 38, 0.08);
+  padding: 5px 0;
+  font-size: 0.88rem;
+}
+
+.boardStatsLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 8px 0;
+}
+
+.boardStatsLine span {
+  border: 1px solid rgba(44, 61, 54, 0.12);
+  border-radius: 999px;
+  background: #f3f6f2;
+  padding: 3px 7px;
+  color: #405149;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.coloredMetricRow,
+.shipRow {
+  border: 1px solid rgba(23, 32, 28, 0.14);
+  border-radius: 6px;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.58));
+  margin-top: 6px;
+  padding: 6px 8px;
+  color: #162018;
+  font-weight: 800;
+}
+
+.shipRow {
+  background-color: #f2f5f2;
+}
+
+.metricRow:last-child {
+  border-bottom: 0;
+}
+
+.goodTile {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.48));
+  color: #162018;
+  font-weight: 700;
+}
+
+.goodIcon,
+.goodName {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.goodIcon {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  margin-right: 6px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.goodName {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  margin-right: 6px;
+  padding: 2px 7px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.emptyGoods {
+  border: 1px dashed rgba(44, 61, 54, 0.22);
+  border-radius: 6px;
+  padding: 7px 8px;
+  color: #718078;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.tradeSlots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.tradeSlot {
+  border: 1px dashed rgba(44, 61, 54, 0.24);
+  border-radius: 6px;
+  background: #f8faf8;
+  padding: 7px;
+  color: #718078;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.tradeGoodChip {
+  display: block;
+  border: 1px solid rgba(23, 32, 28, 0.16);
+  border-radius: 5px;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.48));
+  padding: 2px 4px;
+  color: #162018;
+}
+
+.filledTradeSlot {
+  border-style: solid;
+  color: #17201c;
+  background: #eef4ee;
+}
+
+.tradeValues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tradeValues span {
+  border-radius: 999px;
+  background: #eef2ee;
+  padding: 2px 6px;
+  color: #405149;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.colonistShipPanel {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  border: 1px solid rgba(44, 61, 54, 0.12);
+  border-radius: 8px;
+  background: #f7faf7;
+  padding: 9px;
+  color: #33433b;
+  font-size: 0.82rem;
+}
+
+.colonistShipPanel strong {
+  color: #17201c;
+  font-size: 0.9rem;
 }
 
 .buildingColumns {
   display: grid;
-  grid-template-columns: repeat(4, minmax(170px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, minmax(205px, 1fr));
+  gap: 12px;
   align-items: start;
 }
 
 .buildingColumn {
-  border: 1px solid #1f2520;
-  border-radius: 6px;
-  background: #f8f2e2;
+  border: 1px solid rgba(23, 32, 28, 0.14);
+  border-radius: 8px;
+  background: #f7f3e8;
   overflow: hidden;
+  box-shadow: 0 6px 18px rgba(31, 45, 38, 0.08);
 }
 
 .buildingColumnHeader {
@@ -98,35 +708,188 @@
   justify-content: space-between;
   gap: 8px;
   align-items: center;
-  border-bottom: 1px solid #1f2520;
-  padding: 8px;
-  background: #efe1bf;
+  border-bottom: 1px solid rgba(23, 32, 28, 0.12);
+  padding: 9px 10px;
+  background: #ede2c9;
 }
 
 .quarryIndicator {
-  border: 1px solid #777;
-  border-radius: 999px;
-  background: #e1e3e5;
-  padding: 2px 7px;
-  white-space: nowrap;
-  font-size: 0.82em;
-  font-weight: 700;
+  border: 1px solid rgba(82, 89, 88, 0.28);
+  background: #dfe5e3;
+  padding: 3px 8px;
+  color: #2e3a36;
+  font-size: 0.78em;
+}
+
+.buildingColumnBody,
+.cityGrid {
+  gap: 8px;
 }
 
 .buildingColumnBody {
   display: grid;
-  gap: 8px;
-  padding: 8px;
+}
+
+.buildingColumnBody {
+  padding: 9px;
+}
+
+.cityGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .building {
   width: 100%;
   text-align: left;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92));
+}
+
+.cityTile {
+  width: 168px;
+  min-width: 168px;
+  min-height: 128px;
+  display: flex;
+  flex-direction: column;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82));
+}
+
+.building:disabled {
+  opacity: 1;
+}
+
+.building .muted {
+  color: #41524a;
+}
+
+.buildingHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.vpBadge {
+  flex: 0 0 auto;
+  border: 1px solid rgba(31, 79, 55, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 3px 7px;
+  color: #1f4f37;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.buildingTextBubble {
+  border: 1px solid rgba(31, 45, 38, 0.12);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 7px 8px;
+  color: #24352d;
+  font-size: 0.82rem;
+  font-weight: 750;
+  line-height: 1.32;
+}
+
+.costBadge {
+  min-width: 28px;
+  height: 28px;
+  border: 1px solid rgba(96, 54, 35, 0.28);
+  background: rgba(255, 255, 255, 0.78);
+  color: #7d321d;
+  font-size: 0.9rem;
 }
 
 .largeCityTile {
-  flex-basis: 210px;
-  min-width: 210px;
+  width: 168px;
+  min-width: 168px;
+}
+
+.cityTile .buildingFooter {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.buildingFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.buildingFooter span,
+.buildingFooter strong {
+  border: 1px solid rgba(44, 61, 54, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  padding: 3px 7px;
+  color: #314038;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.playerList {
+  display: grid;
+  gap: 10px;
+  margin: 0 8px 14px;
+}
+
+.islandTile {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  min-width: 52px;
+}
+
+.colonistLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px;
+  color: #314038;
+  font-size: 0.8rem;
+}
+
+.colonistDots {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.colonistDot {
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgba(44, 61, 54, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.filledColonistDot {
+  background: #34463d;
+}
+
+.stepper {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.stepper button {
+  border: 1px solid rgba(34, 50, 43, 0.18);
+  border-radius: 5px;
+  background: #ffffff;
+  width: 24px;
+  height: 22px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.stepper button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .danger {
@@ -135,5 +898,106 @@
 }
 
 .score {
-  font-weight: 700;
+  border-radius: 999px;
+  background: #e6efe8;
+  padding: 4px 10px;
+  color: #1f4f37;
+  font-weight: 800;
+}
+
+.tile.score {
+  border-radius: 7px;
+  background: #e6efe8;
+  padding: 10px;
+}
+
+.scoreTable {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.scoreRow {
+  display: grid;
+  grid-template-columns: 32px minmax(160px, 1fr) repeat(4, minmax(90px, auto)) 90px;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(44, 61, 54, 0.12);
+  border-radius: 8px;
+  background: #f8fbf8;
+  padding: 10px 12px;
+  color: #33433b;
+}
+
+.scoreRank,
+.scoreTotal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #e6efe8;
+  padding: 4px 8px;
+  color: #1f4f37;
+  font-weight: 900;
+}
+
+@media (max-width: 1180px) {
+  .gameFrame {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .buildingColumns,
+  .boardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .roleGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .gameFrame {
+    display: block;
+    padding: 8px;
+  }
+
+  .sidebarPanel {
+    position: static;
+    max-height: none;
+    margin-bottom: 8px;
+  }
+
+  .contentPanel {
+    border-radius: 8px;
+  }
+
+  .root {
+    padding: 8px 6px;
+  }
+
+  .section {
+    margin: 8px 0;
+    padding: 10px;
+  }
+
+  .buildingColumns,
+  .boardGrid,
+  .roleGrid,
+  .statStrip,
+  .scoreRow {
+    grid-template-columns: 1fr;
+  }
+
+  .scoreRow {
+    justify-items: start;
+  }
+
+  .cityTile,
+  .largeCityTile {
+    width: calc(50% - 4px);
+    min-width: 142px;
+  }
 }
