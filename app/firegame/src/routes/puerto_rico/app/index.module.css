@@ -460,7 +460,7 @@
 
 .boardGrid {
   display: grid;
-  grid-template-columns: minmax(230px, 1.3fr) repeat(3, minmax(160px, 1fr));
+  grid-template-columns: minmax(230px, 1.3fr) repeat(2, minmax(180px, 1fr));
   gap: 10px;
   align-items: stretch;
 }
@@ -757,6 +757,12 @@
   background-image: linear-gradient(rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.48));
   padding: 2px 4px;
   color: #162018;
+}
+
+.cargoSubsection {
+  margin-top: 12px;
+  border-top: 1px solid rgba(31, 45, 38, 0.1);
+  padding-top: 10px;
 }
 
 .filledTradeSlot {

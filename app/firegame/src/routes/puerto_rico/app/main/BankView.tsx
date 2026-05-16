@@ -11,8 +11,8 @@ function BankView() {
       <div className={css.boardGrid}>
         <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>Plantations</strong>
+          <strong className={css.tileTitle}>Colonist ship {bank.colonistShip}/{bank.colonistSupply}</strong>
           <div className={css.boardStatsLine}>
-            <span>Colonist ship {bank.colonistShip}/{bank.colonistSupply}</span>
             <span>Deck {bank.plantationDeck.length}</span>
             <span>Discard {bank.plantationDiscard.length}</span>
             <span>Quarries {bank.quarrySupply}</span>
@@ -30,28 +30,6 @@ function BankView() {
           </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
-          <strong className={css.tileTitle}>Trading house</strong>
-          <div className={css.tradeSlots}>
-            {[0, 1, 2, 3].map((slot) => {
-              const good = bank.tradingHouse[slot];
-              return (
-                <div key={slot} className={`${css.tradeSlot} ${good ? css.filledTradeSlot : ""}`}>
-                  {good ? (
-                    <span
-                      className={css.tradeGoodChip}
-                      style={{ backgroundColor: theme.colors[good] }}
-                    >
-                      {theme.goods[good]}
-                    </span>
-                  ) : (
-                    "Open"
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>Cargo ships</strong>
           {bank.cargoShips.map((ship, index) => (
             <div
@@ -62,6 +40,28 @@ function BankView() {
               <strong>{ship.good ? theme.goods[ship.good] : "Empty"} {ship.count}/{ship.capacity}</strong>
             </div>
           ))}
+          <div className={css.cargoSubsection}>
+            <strong className={css.tileTitle}>Trading house</strong>
+            <div className={css.tradeSlots}>
+              {[0, 1, 2, 3].map((slot) => {
+                const good = bank.tradingHouse[slot];
+                return (
+                  <div key={slot} className={`${css.tradeSlot} ${good ? css.filledTradeSlot : ""}`}>
+                    {good ? (
+                      <span
+                        className={css.tradeGoodChip}
+                        style={{ backgroundColor: theme.colors[good] }}
+                      >
+                        {theme.goods[good]}
+                      </span>
+                    ) : (
+                      "Open"
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>Goods supply</strong>
