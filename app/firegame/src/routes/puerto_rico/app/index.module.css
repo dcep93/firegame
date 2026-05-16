@@ -706,7 +706,7 @@
 }
 
 .goodTile {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.48));
+  background-image: none;
   color: #162018;
   font-weight: 700;
 }
