@@ -137,7 +137,12 @@ class Sidebar extends SharedSidebar {
     const game = store.gameW.game;
     if (!game) return;
     game.themeKey = themeKey;
+    this.maybeSyncParams();
     store.update(theme.messages.changedTheme(theme.gameName));
+  }
+
+  maybeSyncParams(): void {
+    document.title = (this.utils.isMyTurn() ? "(!) " : "") + theme.gameName;
   }
 
   revert(wrapper: GameWrapperType<GameType>): void {
