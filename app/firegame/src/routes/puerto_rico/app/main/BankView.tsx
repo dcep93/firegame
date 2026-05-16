@@ -23,7 +23,7 @@ function BankView() {
                 className={`${css.smallTile} ${css.goodTile}`}
                 style={{ backgroundColor: theme.colors[plantation] }}
               >
-                {theme.plantations[plantation]}
+                <span className={css.goodName}>{theme.plantations[plantation]}</span>
               </div>
             ))}
           </div>

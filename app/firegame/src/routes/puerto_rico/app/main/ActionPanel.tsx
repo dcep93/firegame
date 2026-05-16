@@ -27,20 +27,21 @@ function ActionPanel() {
           {game.bank.plantationRow.map((plantation, index) => (
             <button
               key={`${plantation}-${index}`}
-              className={`${css.smallTile} ${css.buttonTile}`}
+              className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
               style={{ backgroundColor: theme.colors[plantation] }}
               onClick={() => utils.settlePlantation(index)}
               disabled={!utils.isMyTurn()}
             >
-              {theme.plantations[plantation]}
+              <span className={css.goodName}>{theme.plantations[plantation]}</span>
             </button>
           ))}
           <button
-            className={`${css.smallTile} ${css.buttonTile}`}
+            className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
+            style={{ backgroundColor: theme.colors.quarry }}
             onClick={() => utils.settleQuarry()}
             disabled={!utils.isMyTurn() || !utils.canSettleQuarry(player)}
           >
-            Quarry
+            <span className={css.goodName}>Quarry</span>
           </button>
           <button onClick={() => utils.skipAction()} disabled={!utils.isMyTurn()}>
             {theme.controls.pass}
