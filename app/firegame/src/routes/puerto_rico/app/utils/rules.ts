@@ -68,6 +68,40 @@ export const BUILDING_IDS = [
 ] as const;
 export type BuildingId = (typeof BUILDING_IDS)[number];
 
+export const BUILDING_COLUMNS: readonly (readonly BuildingId[])[] = [
+  [
+    "small_indigo_plant",
+    "small_sugar_mill",
+    "small_market",
+    "hacienda",
+    "construction_hut",
+    "small_warehouse",
+  ],
+  [
+    "indigo_plant",
+    "sugar_mill",
+    "hospice",
+    "office",
+    "large_market",
+    "large_warehouse",
+  ],
+  [
+    "tobacco_storage",
+    "coffee_roaster",
+    "factory",
+    "university",
+    "harbor",
+    "wharf",
+  ],
+  ["guild_hall", "residence", "fortress", "customs_house", "city_hall"],
+];
+
+export const BUILDING_QUARRY_CAP = Object.fromEntries(
+  BUILDING_COLUMNS.flatMap((buildingIds, index) =>
+    buildingIds.map((buildingId) => [buildingId, index + 1])
+  )
+) as Record<BuildingId, number>;
+
 export type BuildingRule = {
   id: BuildingId;
   cost: number;

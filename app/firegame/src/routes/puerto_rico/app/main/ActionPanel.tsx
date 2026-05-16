@@ -14,6 +14,15 @@ function ActionPanel() {
       )}
       {game.phase === "settler" && (
         <div className={css.row}>
+          {utils.canUseHacienda(player) && (
+            <button
+              className={`${css.smallTile} ${css.buttonTile}`}
+              onClick={() => utils.takeHaciendaPlantation()}
+              disabled={!utils.isMyTurn()}
+            >
+              Hacienda tile
+            </button>
+          )}
           {game.bank.plantationRow.map((plantation, index) => (
             <button
               key={`${plantation}-${index}`}
@@ -28,7 +37,7 @@ function ActionPanel() {
           <button
             className={`${css.smallTile} ${css.buttonTile}`}
             onClick={() => utils.settleQuarry()}
-            disabled={!utils.isMyTurn() || player?.index !== game.roleOwner}
+            disabled={!utils.isMyTurn() || !utils.canSettleQuarry(player)}
           >
             Quarry
           </button>
@@ -94,11 +103,20 @@ function ActionPanel() {
               Ship {option.amount} {theme.goods[option.good]} on ship {option.shipIndex + 1}
             </button>
           ))}
+          {utils.wharfOptions(player).map((option) => (
+            <button
+              key={`wharf-${option.good}`}
+              onClick={() => utils.useWharf(option.good)}
+              disabled={!utils.isMyTurn()}
+            >
+              Wharf {option.amount} {theme.goods[option.good]}
+            </button>
+          ))}
         </div>
       )}
       {game.phase === "storage" && (
         <div>
-          <div className={css.muted}>Discard down to one good.</div>
+          <div className={css.muted}>Discard until your remaining goods fit your warehouse storage.</div>
           <div className={css.row}>
             {goodsInThemeOrder.map((good) => (
               <button

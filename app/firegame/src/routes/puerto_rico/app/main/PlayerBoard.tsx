@@ -54,7 +54,7 @@ function PlayerBoard(props: { player: PlayerType }) {
           return (
             <div
               key={`${building.id}-${index}`}
-              className={css.tile}
+              className={`${css.tile} ${rule.size === 2 ? css.largeCityTile : ""}`}
               style={{
                 background:
                   rule.kind === "production"
@@ -68,7 +68,10 @@ function PlayerBoard(props: { player: PlayerType }) {
               <div className={css.tiny}>
                 VP {rule.victoryPoints} | Size {rule.size}
               </div>
-              {rule.kind !== "production" && (
+              <div className={`${css.tiny} ${css.muted}`}>
+                {theme.buildingDescriptions[building.id]}
+              </div>
+              {rule.kind !== "production" && !utils.hasImplementedPower(building.id) && (
                 <div className={`${css.tiny} ${css.muted}`}>{theme.disabledPower}</div>
               )}
               <ColonistControls

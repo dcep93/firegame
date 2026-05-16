@@ -12,6 +12,7 @@ import {
   BUILDINGS,
   BuildingId,
   BuildingRule,
+  BUILDING_QUARRY_CAP,
   GOOD_IDS,
   GOODS_SUPPLY,
   GoodId,
@@ -141,6 +142,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return BUILDINGS[id];
   }
 
+  hasImplementedPower(buildingId: BuildingId): boolean {
+    return !!BUILDINGS[buildingId];
+  }
+
+  hasOccupiedBuilding(player: PlayerType, buildingId: BuildingId): boolean {
+    return player.city.some((tile) => tile.id === buildingId && tile.colonists > 0);
+  }
+
   goodSupply(good: GoodId): number {
     return GOODS_SUPPLY[good];
   }
@@ -205,7 +214,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     game.phase = "craftsman_bonus";
     game.producedGoods = {};
     this.turnOrder(game.roleOwner!).forEach((playerIndex) => {
-      game.producedGoods![playerIndex] = this.produceFor(game.players[playerIndex]);
+      const player = game.players[playerIndex];
+      game.producedGoods![playerIndex] = this.produceFor(player);
+      this.payFactoryBonus(player, game.producedGoods![playerIndex]);
     });
     const ownerProduced = game.producedGoods[game.roleOwner!].filter(
       (good) => game.bank.goodsSupply[good] > 0
@@ -250,8 +261,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (phase === "mayor") return player.sanJuan > 0 || this.hasAnyColonists(player);
     if (phase === "builder") return this.buildableBuildings(player).length > 0;
     if (phase === "trader") return this.tradeGoods(player).length > 0;
-    if (phase === "captain") return this.shipOptions(player).length > 0;
-    if (phase === "storage") return this.totalGoods(player) > this.storageLimit(player);
+    if (phase === "captain") return this.hasCaptainAction(player);
+    if (phase === "storage") return !this.canStoreCurrentGoods(player);
     return false;
   }
 
@@ -273,8 +284,41 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return (
       player.island.length < MAX_ISLAND_SPACES &&
       (game.bank.plantationRow.length > 0 ||
-        (playerIndex === game.roleOwner && game.bank.quarrySupply > 0))
+        this.canSettleQuarry(player))
     );
+  }
+
+  canSettleQuarry(player: PlayerType | undefined): boolean {
+    if (!player) return false;
+    const game = store.gameW.game;
+    return (
+      player.island.length < MAX_ISLAND_SPACES &&
+      game.bank.quarrySupply > 0 &&
+      (player.index === game.roleOwner || this.hasOccupiedBuilding(player, "construction_hut"))
+    );
+  }
+
+  canUseHacienda(player: PlayerType | undefined): boolean {
+    if (!player) return false;
+    const game = store.gameW.game;
+    return (
+      game.phase === "settler" &&
+      !player.haciendaUsed &&
+      player.island.length < MAX_ISLAND_SPACES &&
+      this.hasOccupiedBuilding(player, "hacienda") &&
+      (game.bank.plantationDeck.length > 0 || game.bank.plantationDiscard.length > 0)
+    );
+  }
+
+  takeHaciendaPlantation(): void {
+    if (!this.assertMyAction("settler")) return;
+    const player = this.getCurrent();
+    if (!this.canUseHacienda(player)) return alert("hacienda is not available");
+    const good = this.drawPlantation();
+    if (!good) return alert("no face-down plantations remain");
+    player.haciendaUsed = true;
+    player.island.push({ id: good, colonists: 0 });
+    store.update(`${player.userName} used hacienda for ${good}`);
   }
 
   settlePlantation(index: number): void {
@@ -285,7 +329,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const good = game.bank.plantationRow[index];
     if (!good) return alert("that plantation is not available");
     game.bank.plantationRow.splice(index, 1);
-    player.island.push({ id: good, colonists: 0 });
+    this.placeIslandTile(player, good, true);
     this.finishAction(`${player.userName} settled ${good}`);
   }
 
@@ -293,11 +337,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!this.assertMyAction("settler")) return;
     const game = store.gameW.game;
     const player = this.getCurrent();
-    if (player.index !== game.roleOwner) return alert("only the settler may take a quarry");
+    if (!this.canSettleQuarry(player)) return alert("you cannot take a quarry");
     if (player.island.length >= MAX_ISLAND_SPACES) return alert("island is full");
     if (game.bank.quarrySupply <= 0) return alert("no quarries remain");
     game.bank.quarrySupply -= 1;
-    player.island.push({ id: "quarry", colonists: 0 });
+    this.placeIslandTile(player, "quarry", true);
     this.finishAction(`${player.userName} settled a quarry`);
   }
 
@@ -361,8 +405,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (error) return alert(error);
     const cost = this.buildingCost(player, buildingId, player.index === game.roleOwner);
     player.doubloons -= cost;
-    player.city.push({ id: buildingId, colonists: 0 });
+    const building: BuildingTile = { id: buildingId, colonists: 0 };
+    player.city.push(building);
     game.bank.buildingSupply[buildingId] -= 1;
+    if (this.hasOccupiedBuilding(player, "university")) this.takeColonistForTile(building);
     if (this.citySpaces(player) >= MAX_CITY_SPACES) {
       game.endTriggered = `${player.userName} filled all city spaces`;
     }
@@ -388,16 +434,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   buildingCost(player: PlayerType, buildingId: BuildingId, hasBuilderPrivilege: boolean): number {
     const rule = this.building(buildingId);
-    const quarryDiscount = Math.min(this.occupiedQuarries(player), this.quarryCap(rule.cost));
+    const quarryDiscount = Math.min(this.occupiedQuarries(player), this.quarryCap(buildingId));
     const builderDiscount = hasBuilderPrivilege ? 1 : 0;
     return Math.max(0, rule.cost - quarryDiscount - builderDiscount);
   }
 
-  quarryCap(cost: number): number {
-    if (cost <= 2) return 1;
-    if (cost <= 4) return 2;
-    if (cost <= 8) return 3;
-    return 4;
+  quarryCap(buildingId: BuildingId): number {
+    return BUILDING_QUARRY_CAP[buildingId];
   }
 
   chooseCraftsmanBonus(good: GoodId): void {
@@ -428,6 +471,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return produced;
   }
 
+  payFactoryBonus(player: PlayerType, produced: GoodId[]): void {
+    if (!this.hasOccupiedBuilding(player, "factory")) return;
+    const bonusByKindCount = [0, 0, 1, 2, 3, 5];
+    player.doubloons += bonusByKindCount[produced.length] || 0;
+  }
+
   productionCapacity(player: PlayerType, good: GoodId): number {
     const plantations = player.island.filter((tile) => tile.id === good && tile.colonists > 0).length;
     if (good === "corn") return plantations;
@@ -441,8 +490,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   tradeGoods(player: PlayerType): GoodId[] {
     const game = store.gameW.game;
     if (game.bank.tradingHouse.length >= TRADING_HOUSE_SIZE) return [];
+    const hasOffice = this.hasOccupiedBuilding(player, "office");
     return GOOD_IDS.filter(
-      (good) => player.goods[good] > 0 && !game.bank.tradingHouse.includes(good)
+      (good) => player.goods[good] > 0 && (hasOffice || !game.bank.tradingHouse.includes(good))
     );
   }
 
@@ -452,9 +502,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const player = this.getCurrent();
     if (!this.tradeGoods(player).includes(good)) return alert("that good cannot be sold");
     player.goods[good] -= 1;
-    player.doubloons += TRADER_PRICES[good] + (player.index === game.roleOwner ? 1 : 0);
+    player.doubloons +=
+      TRADER_PRICES[good] +
+      (player.index === game.roleOwner ? 1 : 0) +
+      this.marketBonus(player);
     game.bank.tradingHouse.push(good);
     this.finishAction(`${player.userName} sold ${good}`);
+  }
+
+  marketBonus(player: PlayerType): number {
+    return (
+      (this.hasOccupiedBuilding(player, "small_market") ? 1 : 0) +
+      (this.hasOccupiedBuilding(player, "large_market") ? 2 : 0)
+    );
+  }
+
+  hasCaptainAction(player: PlayerType): boolean {
+    return this.shipOptions(player).length > 0 || this.wharfOptions(player).length > 0;
   }
 
   shipOptions(player: PlayerType): { good: GoodId; shipIndex: number; amount: number }[] {
@@ -503,15 +567,41 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     player.goods[good] -= option.amount;
     const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
     player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
-    this.gainVictoryPoints(player, option.amount + bonus);
+    this.gainVictoryPoints(player, option.amount + bonus + this.harborBonus(player));
     this.finishCaptainTurn(`${player.userName} shipped ${option.amount} ${good}`);
+  }
+
+  wharfOptions(player: PlayerType): { good: GoodId; amount: number }[] {
+    if (player.wharfUsed || !this.hasOccupiedBuilding(player, "wharf")) return [];
+    return GOOD_IDS.filter((good) => player.goods[good] > 0).map((good) => ({
+      good,
+      amount: player.goods[good],
+    }));
+  }
+
+  useWharf(good: GoodId): void {
+    if (!this.assertMyAction("captain")) return;
+    const player = this.getCurrent();
+    const option = this.wharfOptions(player).find((candidate) => candidate.good === good);
+    if (!option) return alert("that wharf shipment is not legal");
+    player.goods[good] = 0;
+    player.wharfUsed = true;
+    store.gameW.game.bank.goodsSupply[good] += option.amount;
+    const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
+    player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
+    this.gainVictoryPoints(player, option.amount + bonus + this.harborBonus(player));
+    this.finishCaptainTurn(`${player.userName} used wharf for ${option.amount} ${good}`);
+  }
+
+  harborBonus(player: PlayerType): number {
+    return this.hasOccupiedBuilding(player, "harbor") ? 1 : 0;
   }
 
   finishCaptainTurn(message: string): void {
     const game = store.gameW.game;
     game.actionQueue.shift();
     const order = this.turnOrder(this.playerIndexByIndex(game.currentPlayer + 1));
-    const next = order.find((playerIndex) => this.shipOptions(game.players[playerIndex]).length > 0);
+    const next = order.find((playerIndex) => this.hasCaptainAction(game.players[playerIndex]));
     if (next === undefined) {
       this.startStorage();
     } else {
@@ -540,7 +630,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   finishStorage(): void {
     if (!this.assertMyAction("storage")) return;
     const player = this.getCurrent();
-    if (this.totalGoods(player) > this.storageLimit(player)) return alert("discard down to storage limit");
+    if (!this.canStoreCurrentGoods(player)) return alert("discard goods until your warehouses can store them");
     this.finishAction(`${player.userName} stored goods`);
   }
 
@@ -552,7 +642,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   finishRole(message: string): void {
     const game = store.gameW.game;
-    game.players.forEach((player) => delete player.captainBonusTaken);
+    game.players.forEach((player) => {
+      delete player.captainBonusTaken;
+      delete player.haciendaUsed;
+      delete player.wharfUsed;
+    });
     delete game.activeRole;
     delete game.roleOwner;
     delete game.producedGoods;
@@ -611,6 +705,37 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       }
       game.bank.plantationRow.push(game.bank.plantationDeck.shift()!);
     }
+  }
+
+  drawPlantation(): GoodId | undefined {
+    const game = store.gameW.game;
+    if (game.bank.plantationDeck.length === 0 && game.bank.plantationDiscard.length > 0) {
+      game.bank.plantationDeck = this.shuffle(game.bank.plantationDiscard.splice(0));
+    }
+    return game.bank.plantationDeck.shift();
+  }
+
+  placeIslandTile(player: PlayerType, id: PlantationId, mayUseHospice: boolean): void {
+    const tile = { id, colonists: 0 };
+    player.island.push(tile);
+    if (mayUseHospice && this.hasOccupiedBuilding(player, "hospice")) {
+      this.takeColonistForTile(tile);
+    }
+  }
+
+  takeColonistForTile(tile: BuildingTile | { id: PlantationId; colonists: number }): boolean {
+    const game = store.gameW.game;
+    if (game.bank.colonistSupply > 0) {
+      game.bank.colonistSupply -= 1;
+      tile.colonists += 1;
+      return true;
+    }
+    if (game.bank.colonistShip > 0) {
+      game.bank.colonistShip -= 1;
+      tile.colonists += 1;
+      return true;
+    }
+    return false;
   }
 
   unloadFullShips(): void {
@@ -735,8 +860,15 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return Object.values(player.goods).sum();
   }
 
-  storageLimit(_player: PlayerType): number {
-    return 1;
+  canStoreCurrentGoods(player: PlayerType): boolean {
+    const warehouseKinds =
+      (this.hasOccupiedBuilding(player, "small_warehouse") ? 1 : 0) +
+      (this.hasOccupiedBuilding(player, "large_warehouse") ? 2 : 0);
+    const protectedGoods = Object.values(player.goods)
+      .sort((a, b) => b - a)
+      .slice(0, warehouseKinds)
+      .sum();
+    return this.totalGoods(player) - protectedGoods <= 1;
   }
 
   takeColonists(player: PlayerType, count: number): number {

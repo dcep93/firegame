@@ -62,6 +62,8 @@ export type PlayerType = {
   city: BuildingTile[];
   sanJuan: number;
   captainBonusTaken?: boolean;
+  haciendaUsed?: boolean;
+  wharfUsed?: boolean;
 };
 
 export type ScoreLine = {

@@ -79,8 +79,54 @@
   outline: 3px solid #b33a3a;
 }
 
+.buildingColumns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(170px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.buildingColumn {
+  border: 1px solid #1f2520;
+  border-radius: 6px;
+  background: #f8f2e2;
+  overflow: hidden;
+}
+
+.buildingColumnHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  border-bottom: 1px solid #1f2520;
+  padding: 8px;
+  background: #efe1bf;
+}
+
+.quarryIndicator {
+  border: 1px solid #777;
+  border-radius: 999px;
+  background: #e1e3e5;
+  padding: 2px 7px;
+  white-space: nowrap;
+  font-size: 0.82em;
+  font-weight: 700;
+}
+
+.buildingColumnBody {
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+}
+
 .building {
-  width: 170px;
+  width: 100%;
+  text-align: left;
+}
+
+.largeCityTile {
+  flex-basis: 210px;
+  min-width: 210px;
 }
 
 .danger {
