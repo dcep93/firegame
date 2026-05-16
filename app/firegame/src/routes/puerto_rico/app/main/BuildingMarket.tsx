@@ -9,14 +9,14 @@ function BuildingMarket() {
   const player = game.players[game.currentPlayer];
   return (
     <div className={css.section}>
-      <h3 className={css.heading}>Buildings</h3>
+      <h3 className={css.heading}>{theme.labels.buildings}</h3>
       <div className={css.buildingColumns}>
         {BUILDING_COLUMNS.map((buildingIds, index) => {
           const quarryCap = index + 1;
           return (
             <div key={quarryCap} className={css.buildingColumn}>
               <div className={css.buildingColumnHeader}>
-                <strong>{quarryCap} {quarryCap === 1 ? "quarry" : "quarries"} max</strong>
+                <strong>{quarryCap} {quarryCap === 1 ? theme.labels.quarry : theme.labels.quarriesPlural} {theme.labels.max}</strong>
               </div>
               <div className={css.buildingColumnBody}>
                 {buildingIds.map((buildingId) => {
@@ -42,9 +42,9 @@ function BuildingMarket() {
                         buildingId={buildingId}
                         footer={
                           <>
-                            <span>Cost {rule.cost}</span>
-                            <strong>Supply {game.bank.buildingSupply[buildingId]}</strong>
-                            {rule.size > 1 && <span>Size {rule.size}</span>}
+                            <span>{theme.labels.cost} {rule.cost}</span>
+                            <strong>{theme.labels.supply} {game.bank.buildingSupply[buildingId]}</strong>
+                            {rule.size > 1 && <span>{theme.labels.size} {rule.size}</span>}
                           </>
                         }
                       />

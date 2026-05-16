@@ -33,16 +33,16 @@ function PlayerBoard(props: { player: PlayerType }) {
       <div className={css.between}>
         <h3 className={css.heading}>{player.userName}</h3>
         <div className={css.playerHeaderBadges}>
-          {player.index === game.governor && <span className={css.governorBadge}>Governor</span>}
-          <span className={css.score}>{player.doubloons} doubloons</span>
-          <span className={css.score}>{player.victoryPoints} VP</span>
+          {player.index === game.governor && <span className={css.governorBadge}>{theme.labels.governor}</span>}
+          <span className={css.score}>{player.doubloons} {theme.labels.doubloons}</span>
+          <span className={css.score}>{player.victoryPoints} {theme.labels.vp}</span>
         </div>
       </div>
       <div className={css.boardSubhead}>
-        <h4>Goods</h4>
+        <h4>{theme.labels.goods}</h4>
       </div>
       <div className={css.goodsRow}>
-        {heldGoods.length === 0 && <span className={css.emptyGoods}>No goods</span>}
+        {heldGoods.length === 0 && <span className={css.emptyGoods}>{theme.labels.noGoods}</span>}
         {heldGoods.map(({ good, index }) => (
           <div
             key={`${good}-${index}`}
@@ -54,8 +54,8 @@ function PlayerBoard(props: { player: PlayerType }) {
         ))}
       </div>
       <div className={css.boardSubhead}>
-        <h4>Island {player.island.length}/12</h4>
-        <span className={css.metricBubble}>San Juan {player.sanJuan}</span>
+        <h4>{theme.labels.island} {player.island.length}/12</h4>
+        <span className={css.metricBubble}>{theme.labels.sanJuan} {player.sanJuan}</span>
         {canPlace && (
           <button className={css.inlineActionButton} onClick={() => utils.finishMayor()}>
             {theme.controls.finishPlacement}
@@ -81,7 +81,7 @@ function PlayerBoard(props: { player: PlayerType }) {
         ))}
       </div>
       <div className={css.boardSubhead}>
-        <h4>City {utils.citySpaces(player)}/12</h4>
+        <h4>{theme.labels.city} {utils.citySpaces(player)}/12</h4>
       </div>
       <div className={css.cityGrid}>
         {sortedCity.map(({ building, index }) => {

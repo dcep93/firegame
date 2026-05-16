@@ -91,6 +91,18 @@
   line-height: 1.1;
 }
 
+.themeSelect {
+  width: 100%;
+  border: 1px solid rgba(27, 42, 35, 0.16);
+  border-radius: 7px;
+  background: #f8faf8;
+  padding: 7px 9px;
+  color: #13221b;
+  font: inherit;
+  font-size: 1.02rem;
+  font-weight: 900;
+}
+
 .sidebarPhaseRow,
 .sidebarHeadingRow {
   display: flex;

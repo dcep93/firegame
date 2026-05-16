@@ -7,14 +7,14 @@ function BankView() {
   const bank = store.gameW.game.bank;
   return (
     <div className={css.section}>
-      <h3 className={css.heading}>Board</h3>
+      <h3 className={css.heading}>{theme.labels.board}</h3>
       <div className={css.boardGrid}>
         <div className={`${css.tile} ${css.boardTile}`}>
-          <strong className={css.tileTitle}>Plantations</strong>
+          <strong className={css.tileTitle}>{theme.labels.plantations}</strong>
           <div className={css.boardStatsLine}>
-            <span>Deck {bank.plantationDeck.length}</span>
-            <span>Discard {bank.plantationDiscard.length}</span>
-            <span>Quarries {bank.quarrySupply}</span>
+            <span>{theme.labels.deck} {bank.plantationDeck.length}</span>
+            <span>{theme.labels.discard} {bank.plantationDiscard.length}</span>
+            <span>{theme.labels.quarries} {bank.quarrySupply}</span>
           </div>
           <div className={css.compactRow}>
             {bank.plantationRow.map((plantation, index) => (
@@ -29,18 +29,18 @@ function BankView() {
           </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
-          <strong className={css.tileTitle}>Cargo ships</strong>
+          <strong className={css.tileTitle}>{theme.labels.cargoShips}</strong>
           {bank.cargoShips.map((ship, index) => (
             <div
               key={index}
               className={`${css.metricRow} ${css.shipRow}`}
               style={{ backgroundColor: ship.good ? theme.colors[ship.good] : undefined }}
             >
-              <strong>{ship.good ? theme.goods[ship.good] : "Empty"} {ship.count}/{ship.capacity}</strong>
+              <strong>{ship.good ? theme.goods[ship.good] : theme.labels.empty} {ship.count}/{ship.capacity}</strong>
             </div>
           ))}
           <div className={css.cargoSubsection}>
-            <strong className={css.tileTitle}>Trading house</strong>
+            <strong className={css.tileTitle}>{theme.labels.tradingHouse}</strong>
             <div className={css.tradeSlots}>
               {[0, 1, 2, 3].map((slot) => {
                 const good = bank.tradingHouse[slot];
@@ -54,7 +54,7 @@ function BankView() {
                         {theme.goods[good]}
                       </span>
                     ) : (
-                      "Open"
+                      theme.labels.open
                     )}
                   </div>
                 );
@@ -63,9 +63,9 @@ function BankView() {
           </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
-          <strong className={css.tileTitle}>Colonist ship {bank.colonistShip}/{bank.colonistSupply}</strong>
+          <strong className={css.tileTitle}>{theme.labels.colonistShip} {bank.colonistShip}/{bank.colonistSupply}</strong>
           <div className={css.cardSeparator} />
-          <strong className={css.tileTitle}>Goods supply</strong>
+          <strong className={css.tileTitle}>{theme.labels.goodsSupply}</strong>
           {goodsInThemeOrder.map((good) => (
             <div
               key={good}

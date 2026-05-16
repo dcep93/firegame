@@ -12,7 +12,7 @@ function BuildingCardContent(props: { buildingId: BuildingId; footer: React.Reac
         <div className={`${css.tileTitle} ${css.buildingNameBubble}`}>
           {theme.buildings[props.buildingId]}
         </div>
-        <span className={css.vpBadge}>{rule.victoryPoints} VP</span>
+        <span className={css.vpBadge}>{rule.victoryPoints} {theme.labels.vp}</span>
       </div>
       <div className={css.buildingFooter}>{props.footer}</div>
       <div className={css.buildingTextBubble}>

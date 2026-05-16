@@ -1,4 +1,5 @@
 import { LobbyType } from "../../../../shared/store";
+import { DEFAULT_THEME_KEY, PuertoRicoThemeKey } from "../theme/base";
 import {
   BUILDING_IDS,
   BuildingId,
@@ -77,6 +78,7 @@ export type ScoreLine = {
 
 export type GameType = {
   params: Params;
+  themeKey?: PuertoRicoThemeKey;
   currentPlayer: number;
   players: PlayerType[];
   phase: Phase;
@@ -111,6 +113,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
   const setup = SETUP[count];
   const game: GameType = {
     params,
+    themeKey: DEFAULT_THEME_KEY,
     currentPlayer: 0,
     players: [],
     phase: "role",

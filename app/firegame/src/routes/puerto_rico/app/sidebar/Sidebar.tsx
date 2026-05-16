@@ -4,7 +4,7 @@ import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import { history } from "../../../../shared/components/sidebar/SharedLog";
 import { GameWrapperType } from "../../../../shared/store";
 import css from "../index.module.css";
-import { theme } from "../theme/base";
+import { getThemeKey, PuertoRicoThemeKey, THEME_OPTIONS, theme } from "../theme/base";
 import NewGame, { GameType, Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
@@ -26,24 +26,35 @@ class Sidebar extends SharedSidebar {
         {game && (
           <section className={`${css.sidebarCard} ${css.brandCard}`}>
             <div className={css.sidebarStatusStack}>
-              <h1>Puerto Rico</h1>
+              <select
+                className={css.themeSelect}
+                value={getThemeKey()}
+                onChange={(event) => this.changeTheme(event.target.value as PuertoRicoThemeKey)}
+                aria-label="Theme"
+              >
+                {THEME_OPTIONS.map((option) => (
+                  <option key={option.key} value={option.key}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
               <strong className={css.sidebarPhaseName}>{theme.phase[game.phase]}</strong>
               <strong>{game.players[game.currentPlayer]?.userName}</strong>
-              <span>Round {game.round}</span>
+              <span>{theme.labels.round} {game.round}</span>
             </div>
           </section>
         )}
 
         <section className={css.sidebarCard}>
-          <h2>Controls</h2>
+          <h2>{theme.labels.controls}</h2>
           <div className={css.controlGrid}>
-            <button onClick={this.startNewGame.bind(this)}>New Game</button>
-            <button onClick={() => firebaseUndo()}>Undo</button>
+            <button onClick={this.startNewGame.bind(this)}>{theme.controls.newGame}</button>
+            <button onClick={() => firebaseUndo()}>{theme.labels.undo}</button>
             <a className={css.sidebarButton} href="..">
-              Home
+              {theme.labels.home}
             </a>
             <a className={css.sidebarButton} href={this.rules}>
-              Rules
+              {theme.labels.rules}
             </a>
           </div>
           {game?.endTriggered && game.phase !== "game_over" && (
@@ -53,13 +64,13 @@ class Sidebar extends SharedSidebar {
 
         <section className={css.sidebarCard}>
           <div className={css.sidebarHeadingRow}>
-            <h2>Lobby</h2>
+            <h2>{theme.labels.lobby}</h2>
             <button
               className={css.inlineSidebarButton}
               onClick={() => writer.leaveLobby()}
               disabled={store.isSpectator || !store.lobby[store.me.userId]}
             >
-              Leave
+              {theme.labels.leave}
             </button>
           </div>
           <div className={css.lobbyList}>
@@ -78,7 +89,7 @@ class Sidebar extends SharedSidebar {
 
         <section className={`${css.sidebarCard} ${css.logCard}`}>
           <div className={css.sidebarHeadingRow}>
-            <h2>Log</h2>
+            <h2>{theme.labels.log}</h2>
           </div>
           <div className={css.logList}>
             {this.state.history.map((wrapper, index) => (
@@ -120,6 +131,13 @@ class Sidebar extends SharedSidebar {
       if (alertMessage) alert(alertMessage);
       this.setState({});
     }
+  }
+
+  changeTheme(themeKey: PuertoRicoThemeKey): void {
+    const game = store.gameW.game;
+    if (!game) return;
+    game.themeKey = themeKey;
+    store.update(theme.messages.changedTheme(theme.gameName));
   }
 
   revert(wrapper: GameWrapperType<GameType>): void {

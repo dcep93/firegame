@@ -6,7 +6,7 @@ function RoleRow() {
   const game = store.gameW.game;
   return (
     <div className={css.section}>
-      <h3 className={css.heading}>Roles</h3>
+      <h3 className={css.heading}>{theme.labels.roles}</h3>
       <div className={css.roleGrid}>
         {game.roles.map((role) => (
           <button
@@ -19,7 +19,7 @@ function RoleRow() {
             <div className={css.roleLine}>* {theme.roleRewards[role.id]}</div>
             <div className={css.roleLine}>{theme.roleDescriptions[role.id]}</div>
             <div className={css.roleFooter}>
-              <span className={css.resourceLine}>{role.doubloons} doubloons</span>
+              <span className={css.resourceLine}>{role.doubloons} {theme.labels.doubloons}</span>
               {role.takenBy !== undefined && (
                 <span className={css.roleTakenChip}>{game.players[role.takenBy]?.userName}</span>
               )}

@@ -1,6 +1,176 @@
+import store from "../../../../shared/store";
 import { BuildingId, GOOD_IDS, GoodId, PlantationId, RoleId } from "../utils/rules";
 
-export const theme = {
+type PhaseKey =
+  | "role"
+  | "settler"
+  | "mayor"
+  | "builder"
+  | "craftsman_bonus"
+  | "trader"
+  | "captain"
+  | "storage"
+  | "game_over";
+
+export const THEME_KEYS = [
+  "puerto_rico",
+  "corpo_rico",
+  "porko_rico",
+  "puerto_burrito",
+  "puerto_disco",
+  "puerto_weedo",
+  "dowdle_rico",
+] as const;
+
+export type PuertoRicoThemeKey = (typeof THEME_KEYS)[number];
+
+export const DEFAULT_THEME_KEY: PuertoRicoThemeKey = "puerto_rico";
+
+export const THEME_OPTIONS: { key: PuertoRicoThemeKey; label: string }[] = [
+  { key: "puerto_rico", label: "Puerto Rico" },
+  { key: "corpo_rico", label: "Corpo Rico" },
+  { key: "porko_rico", label: "Porko Rico" },
+  { key: "puerto_burrito", label: "Puerto Burrito" },
+  { key: "puerto_disco", label: "Puerto Disco" },
+  { key: "puerto_weedo", label: "Puerto Weedo" },
+  { key: "dowdle_rico", label: "Dowdle, Rico" },
+];
+
+const colors = {
+  corn: "#f3d66b",
+  indigo: "#6e91c8",
+  sugar: "#f7f4e6",
+  tobacco: "#c18b5a",
+  coffee: "#775042",
+  quarry: "#b8babd",
+  violet: "#d9c3ea",
+  large: "#c9b48d",
+} as Record<GoodId | "quarry" | "violet" | "large", string>;
+
+type Labels = {
+  board: string;
+  plantations: string;
+  deck: string;
+  discard: string;
+  quarries: string;
+  cargoShips: string;
+  tradingHouse: string;
+  colonistShip: string;
+  goodsSupply: string;
+  empty: string;
+  open: string;
+  goods: string;
+  noGoods: string;
+  island: string;
+  city: string;
+  sanJuan: string;
+  governor: string;
+  doubloons: string;
+  roles: string;
+  buildings: string;
+  cost: string;
+  supply: string;
+  size: string;
+  quarry: string;
+  quarriesPlural: string;
+  max: string;
+  controls: string;
+  undo: string;
+  home: string;
+  rules: string;
+  lobby: string;
+  log: string;
+  leave: string;
+  round: string;
+  finalScoring: string;
+  shipped: string;
+  buildingScore: string;
+  bonus: string;
+  tie: string;
+  vp: string;
+};
+
+type Actions = {
+  chooseRole: string;
+  choosingRole: (playerName: string | undefined) => string;
+  haciendaTile: string;
+  mayorHelp: string;
+  buildPrompt: string;
+  storagePrompt: string;
+  take: string;
+  sell: string;
+  ship: string;
+  onShip: string;
+  wharf: string;
+  discard: string;
+};
+
+type Messages = {
+  changedTheme: (themeName: string) => string;
+  choseRole: (playerName: string, roleName: string) => string;
+  prospected: (playerName: string) => string;
+  usedHacienda: (playerName: string, goodName: string) => string;
+  settled: (playerName: string, plantationName: string) => string;
+  settledQuarry: (playerName: string) => string;
+  passed: (playerName: string) => string;
+  recalledColonists: (playerName: string) => string;
+  placedColonist: (playerName: string) => string;
+  movedColonistToSanJuan: (playerName: string) => string;
+  finishedColonists: (playerName: string) => string;
+  built: (playerName: string, buildingName: string) => string;
+  tookExtraGood: (playerName: string, goodName: string) => string;
+  skippedExtraGood: (playerName: string) => string;
+  producedGoods: () => string;
+  sold: (playerName: string, goodName: string) => string;
+  shipped: (playerName: string, amount: number, goodName: string) => string;
+  usedWharf: (playerName: string, amount: number, goodName: string) => string;
+  discarded: (playerName: string, goodName: string) => string;
+  stored: (playerName: string) => string;
+  phaseFinished: (phaseName: string) => string;
+};
+
+type ThemeText = {
+  gameName: string;
+  rulesUrl: string;
+  phase: Record<PhaseKey, string>;
+  roles: Record<RoleId, string>;
+  roleDescriptions: Record<RoleId, string>;
+  roleRewards: Record<RoleId, string>;
+  goods: Record<GoodId, string>;
+  plantations: Record<PlantationId, string>;
+  colors: typeof colors;
+  buildings: Record<BuildingId, string>;
+  buildingDescriptions: Record<BuildingId, string>;
+  disabledPower: string;
+  controls: {
+    newGame: string;
+    pass: string;
+    finishPlacement: string;
+    clearColonists: string;
+    skipBonus: string;
+    finishStorage: string;
+  };
+  labels: Labels;
+  actions: Actions;
+  messages: Messages;
+};
+
+type ThemeOverrides = Partial<Omit<ThemeText, "phase" | "roles" | "roleDescriptions" | "roleRewards" | "goods" | "plantations" | "colors" | "buildings" | "buildingDescriptions" | "controls" | "labels" | "actions" | "messages">> & {
+  phase?: Partial<Record<PhaseKey, string>>;
+  roles?: Partial<Record<RoleId, string>>;
+  roleDescriptions?: Partial<Record<RoleId, string>>;
+  roleRewards?: Partial<Record<RoleId, string>>;
+  goods?: Partial<Record<GoodId, string>>;
+  plantations?: Partial<Record<PlantationId, string>>;
+  buildings?: Partial<Record<BuildingId, string>>;
+  buildingDescriptions?: Partial<Record<BuildingId, string>>;
+  controls?: Partial<ThemeText["controls"]>;
+  labels?: Partial<Labels>;
+  actions?: Partial<Actions>;
+  messages?: Partial<Messages>;
+};
+
+const puertoRico: ThemeText = {
   gameName: "Puerto Rico",
   rulesUrl: "https://www.riograndegames.com/wp-content/uploads/2013/02/Puerto-Rico-Rules.pdf",
   phase: {
@@ -59,16 +229,7 @@ export const theme = {
     coffee: "Coffee",
     quarry: "Quarry",
   } as Record<PlantationId, string>,
-  colors: {
-    corn: "#f3d66b",
-    indigo: "#6e91c8",
-    sugar: "#f7f4e6",
-    tobacco: "#c18b5a",
-    coffee: "#775042",
-    quarry: "#b8babd",
-    violet: "#d9c3ea",
-    large: "#c9b48d",
-  } as Record<GoodId | "quarry" | "violet" | "large", string>,
+  colors,
   buildings: {
     small_indigo_plant: "Small Indigo Plant",
     small_sugar_mill: "Small Sugar Mill",
@@ -128,6 +289,1173 @@ export const theme = {
     skipBonus: "Skip bonus",
     finishStorage: "Finish storage",
   },
+  labels: {
+    board: "Board",
+    plantations: "Plantations",
+    deck: "Deck",
+    discard: "Discard",
+    quarries: "Quarries",
+    cargoShips: "Cargo ships",
+    tradingHouse: "Trading house",
+    colonistShip: "Colonist ship",
+    goodsSupply: "Goods supply",
+    empty: "Empty",
+    open: "Open",
+    goods: "Goods",
+    noGoods: "No goods",
+    island: "Island",
+    city: "City",
+    sanJuan: "San Juan",
+    governor: "Governor",
+    doubloons: "doubloons",
+    roles: "Roles",
+    buildings: "Buildings",
+    cost: "Cost",
+    supply: "Supply",
+    size: "Size",
+    quarry: "quarry",
+    quarriesPlural: "quarries",
+    max: "max",
+    controls: "Controls",
+    undo: "Undo",
+    home: "Home",
+    rules: "Rules",
+    lobby: "Lobby",
+    log: "Log",
+    leave: "Leave",
+    round: "Round",
+    finalScoring: "Final scoring",
+    shipped: "shipped",
+    buildingScore: "buildings",
+    bonus: "bonus",
+    tie: "tie",
+    vp: "VP",
+  },
+  actions: {
+    chooseRole: "Choose a role.",
+    choosingRole: (playerName) => `${playerName} is choosing a role.`,
+    haciendaTile: "Hacienda tile",
+    mayorHelp: "Click worker dots on your island and city to place colonists.",
+    buildPrompt: "Build from the market below or pass.",
+    storagePrompt: "Discard until your remaining goods fit your warehouse storage.",
+    take: "Take",
+    sell: "Sell",
+    ship: "Ship",
+    onShip: "on ship",
+    wharf: "Wharf",
+    discard: "Discard",
+  },
+  messages: {
+    changedTheme: (themeName) => `changed theme to ${themeName}`,
+    choseRole: (playerName, roleName) => `${playerName} chose ${roleName}`,
+    prospected: (playerName) => `${playerName} prospected`,
+    usedHacienda: (playerName, goodName) => `${playerName} used hacienda for ${goodName}`,
+    settled: (playerName, plantationName) => `${playerName} settled ${plantationName}`,
+    settledQuarry: (playerName) => `${playerName} settled a quarry`,
+    passed: (playerName) => `${playerName} passed`,
+    recalledColonists: (playerName) => `${playerName} recalled colonists`,
+    placedColonist: (playerName) => `${playerName} placed a colonist`,
+    movedColonistToSanJuan: (playerName) => `${playerName} moved a colonist to San Juan`,
+    finishedColonists: (playerName) => `${playerName} finished placing colonists`,
+    built: (playerName, buildingName) => `${playerName} built ${buildingName}`,
+    tookExtraGood: (playerName, goodName) => `${playerName} took an extra ${goodName}`,
+    skippedExtraGood: (playerName) => `${playerName} skipped the extra good`,
+    producedGoods: () => "produced goods",
+    sold: (playerName, goodName) => `${playerName} sold ${goodName}`,
+    shipped: (playerName, amount, goodName) => `${playerName} shipped ${amount} ${goodName}`,
+    usedWharf: (playerName, amount, goodName) => `${playerName} used wharf for ${amount} ${goodName}`,
+    discarded: (playerName, goodName) => `${playerName} discarded ${goodName}`,
+    stored: (playerName) => `${playerName} stored goods`,
+    phaseFinished: (phaseName) => `${phaseName} finished`,
+  },
 };
+
+function themed(overrides: ThemeOverrides): ThemeText {
+  return {
+    ...puertoRico,
+    ...overrides,
+    phase: { ...puertoRico.phase, ...overrides.phase },
+    roles: { ...puertoRico.roles, ...overrides.roles },
+    roleDescriptions: { ...puertoRico.roleDescriptions, ...overrides.roleDescriptions },
+    roleRewards: { ...puertoRico.roleRewards, ...overrides.roleRewards },
+    goods: { ...puertoRico.goods, ...overrides.goods },
+    plantations: { ...puertoRico.plantations, ...overrides.plantations },
+    colors,
+    buildings: { ...puertoRico.buildings, ...overrides.buildings },
+    buildingDescriptions: { ...puertoRico.buildingDescriptions, ...overrides.buildingDescriptions },
+    controls: { ...puertoRico.controls, ...overrides.controls },
+    labels: { ...puertoRico.labels, ...overrides.labels },
+    actions: { ...puertoRico.actions, ...overrides.actions },
+    messages: { ...puertoRico.messages, ...overrides.messages },
+  };
+}
+
+function buildingCopy(words: {
+  indigo: string;
+  sugar: string;
+  tobacco: string;
+  coffee: string;
+  indigoSource: string;
+  sugarSource: string;
+  tobaccoSource: string;
+  coffeeSource: string;
+  money: string;
+  settler: string;
+  quarry: string;
+  goods: string;
+  captain: string;
+  staff: string;
+  market: string;
+  building: string;
+  harbor: string;
+  wharf: string;
+  smallProduction: string;
+  largeProduction: string;
+  island: string;
+  shipped: string;
+  civic: string;
+}): Record<BuildingId, string> {
+  return {
+    small_indigo_plant: `Produces up to 1 ${words.indigo} with occupied ${words.indigoSource}.`,
+    small_sugar_mill: `Produces up to 1 ${words.sugar} with occupied ${words.sugarSource}.`,
+    indigo_plant: `Produces up to 3 ${words.indigo} with occupied ${words.indigoSource}.`,
+    sugar_mill: `Produces up to 3 ${words.sugar} with occupied ${words.sugarSource}.`,
+    tobacco_storage: `Produces up to 3 ${words.tobacco} with occupied ${words.tobaccoSource}.`,
+    coffee_roaster: `Produces up to 2 ${words.coffee} with occupied ${words.coffeeSource}.`,
+    small_market: `+1 ${words.money} when selling in the ${words.market} phase.`,
+    hacienda: `May take one hidden ${words.island} before your ${words.settler} action.`,
+    construction_hut: `May take a ${words.quarry} instead of a ${words.island} in ${words.settler}.`,
+    small_warehouse: `Stores all units of 1 ${words.goods} kind after ${words.captain}.`,
+    hospice: `Adds ${words.staff} to a settled ${words.island} or ${words.quarry}.`,
+    office: `May sell ${words.goods} already in the trading house.`,
+    large_market: `+2 ${words.money} when selling in the ${words.market} phase.`,
+    large_warehouse: `Stores all units of 2 ${words.goods} kinds after ${words.captain}.`,
+    factory: `Earns ${words.money} for producing multiple ${words.goods} kinds.`,
+    university: `Adds ${words.staff} to a newly built ${words.building}.`,
+    harbor: `+1 VP each time you load ${words.goods} in ${words.harbor}.`,
+    wharf: `Once per ${words.captain}, ship all ${words.goods} of one kind by ${words.wharf}.`,
+    guild_hall: `End: +1 VP per ${words.smallProduction}, +2 per ${words.largeProduction}.`,
+    residence: `End: +4 to +7 VP for filled ${words.island} spaces.`,
+    fortress: `End: +1 VP for every 3 ${words.staff}.`,
+    customs_house: `End: +1 VP for every 4 ${words.shipped} VP.`,
+    city_hall: `End: +1 VP for each ${words.civic} building, including itself.`,
+  };
+}
+
+export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
+  puerto_rico: puertoRico,
+  corpo_rico: themed({
+    gameName: "Corpo Rico",
+    phase: {
+      role: "Strategy pick",
+      settler: "Expansion",
+      mayor: "Staffing",
+      builder: "Buildout",
+      craftsman_bonus: "Production bonus",
+      trader: "Sales",
+      captain: "Fulfillment",
+      storage: "Inventory",
+      game_over: "Closeout",
+    },
+    roles: {
+      settler: "Expansion Lead",
+      mayor: "HR Lead",
+      builder: "Facilities",
+      craftsman: "Operations",
+      trader: "Sales Lead",
+      captain: "Logistics",
+      prospector_1: "Investor",
+      prospector_2: "Investor",
+    },
+    roleDescriptions: {
+      settler: "Everyone opens a branch site.",
+      mayor: "Everyone assigns staff.",
+      builder: "Everyone may launch one office.",
+      craftsman: "Everyone generates deliverables.",
+      trader: "Everyone may close one sale.",
+      captain: "Everyone ships work for VP.",
+      prospector_1: "No shared action.",
+      prospector_2: "No shared action.",
+    },
+    roleRewards: {
+      settler: "Chooser may take data center.",
+      mayor: "Chooser hires 1 staff first.",
+      builder: "Chooser pays 1 less.",
+      craftsman: "Chooser may take 1 extra asset.",
+      trader: "Chooser earns +1 capital.",
+      captain: "Chooser earns +1 VP once.",
+      prospector_1: "Chooser takes 1 capital.",
+      prospector_2: "Chooser takes 1 capital.",
+    },
+    goods: { corn: "Leads", indigo: "Reports", sugar: "Assets", tobacco: "Contracts", coffee: "Clients" },
+    plantations: {
+      corn: "Leads",
+      indigo: "Reports",
+      sugar: "Assets",
+      tobacco: "Contracts",
+      coffee: "Clients",
+      quarry: "Data Center",
+    },
+    buildings: {
+      small_indigo_plant: "Small Reports Desk",
+      small_sugar_mill: "Small Assets Desk",
+      indigo_plant: "Reports Department",
+      sugar_mill: "Assets Department",
+      tobacco_storage: "Contracts Vault",
+      coffee_roaster: "Client Lounge",
+      small_market: "Small Sales Desk",
+      hacienda: "Satellite Office",
+      construction_hut: "Procurement Desk",
+      small_warehouse: "Small Archive",
+      hospice: "HR Clinic",
+      office: "Legal Office",
+      large_market: "Large Sales Desk",
+      large_warehouse: "Large Archive",
+      factory: "Operations Floor",
+      university: "Training Campus",
+      harbor: "Shipping Desk",
+      wharf: "Private Courier",
+      guild_hall: "Trade Council",
+      residence: "Executive Suite",
+      fortress: "Security Office",
+      customs_house: "Audit Office",
+      city_hall: "Board Room",
+    },
+    buildingDescriptions: {
+      small_indigo_plant: "Produces up to 1 report with staffed report sites.",
+      small_sugar_mill: "Produces up to 1 asset with staffed asset sites.",
+      indigo_plant: "Produces up to 3 reports with staffed report sites.",
+      sugar_mill: "Produces up to 3 assets with staffed asset sites.",
+      tobacco_storage: "Produces up to 3 contracts with staffed contract sites.",
+      coffee_roaster: "Produces up to 2 clients with staffed client sites.",
+      small_market: "+1 capital when closing in sales.",
+      hacienda: "May take one hidden branch before expansion.",
+      construction_hut: "May take a data center instead of a branch.",
+      small_warehouse: "Stores all units of 1 asset kind.",
+      hospice: "Adds staff to a new branch or data center.",
+      office: "May sell an asset already in the deal room.",
+      large_market: "+2 capital when closing in sales.",
+      large_warehouse: "Stores all units of 2 asset kinds.",
+      factory: "Earns capital for producing multiple asset kinds.",
+      university: "Adds staff to a newly launched office.",
+      harbor: "+1 VP each time you fulfill assets.",
+      wharf: "Once per fulfillment, ship all of one asset kind.",
+      guild_hall: "Closeout: +1 VP per small production office, +2 per large.",
+      residence: "Closeout: +4 to +7 VP for filled branch slots.",
+      fortress: "Closeout: +1 VP for every 3 staff.",
+      customs_house: "Closeout: +1 VP for every 4 shipped VP.",
+      city_hall: "Closeout: +1 VP for each corporate office.",
+    },
+    disabledPower: "Power pending in core v1",
+    labels: {
+      board: "Dashboard",
+      plantations: "Branches",
+      deck: "Pipeline",
+      discard: "Archive",
+      quarries: "Data centers",
+      cargoShips: "Fulfillment lanes",
+      tradingHouse: "Deal room",
+      colonistShip: "Hiring pool",
+      goodsSupply: "Asset supply",
+      empty: "Open",
+      open: "Open",
+      goods: "Assets",
+      noGoods: "No assets",
+      island: "Network",
+      city: "Campus",
+      sanJuan: "Bench",
+      governor: "Chair",
+      doubloons: "capital",
+      roles: "Functions",
+      buildings: "Offices",
+      quarry: "data center",
+      quarriesPlural: "data centers",
+      finalScoring: "Final audit",
+      shipped: "fulfilled",
+      buildingScore: "offices",
+    },
+    actions: {
+      chooseRole: "Choose a function.",
+      choosingRole: (playerName) => `${playerName} is choosing a function.`,
+      haciendaTile: "Satellite branch",
+      mayorHelp: "Click staff dots on your network and campus to assign workers.",
+      buildPrompt: "Build from the office market below or pass.",
+      storagePrompt: "Discard until remaining assets fit your archive capacity.",
+      take: "Take",
+      sell: "Sell",
+      ship: "Fulfill",
+      onShip: "on lane",
+      wharf: "Courier",
+      discard: "Discard",
+    },
+    messages: {
+      changedTheme: (themeName) => `changed brand to ${themeName}`,
+      choseRole: (playerName, roleName) => `${playerName} picked ${roleName}`,
+      prospected: (playerName) => `${playerName} secured funding`,
+      usedHacienda: (playerName, goodName) => `${playerName} opened satellite for ${goodName}`,
+      settled: (playerName, plantationName) => `${playerName} opened ${plantationName}`,
+      settledQuarry: (playerName) => `${playerName} opened a data center`,
+      passed: (playerName) => `${playerName} passed`,
+      recalledColonists: (playerName) => `${playerName} recalled staff`,
+      placedColonist: (playerName) => `${playerName} assigned staff`,
+      movedColonistToSanJuan: (playerName) => `${playerName} moved staff to bench`,
+      finishedColonists: (playerName) => `${playerName} finished staffing`,
+      built: (playerName, buildingName) => `${playerName} launched ${buildingName}`,
+      tookExtraGood: (playerName, goodName) => `${playerName} took extra ${goodName}`,
+      skippedExtraGood: (playerName) => `${playerName} skipped the extra asset`,
+      producedGoods: () => "generated deliverables",
+      sold: (playerName, goodName) => `${playerName} sold ${goodName}`,
+      shipped: (playerName, amount, goodName) => `${playerName} fulfilled ${amount} ${goodName}`,
+      usedWharf: (playerName, amount, goodName) => `${playerName} couriered ${amount} ${goodName}`,
+      discarded: (playerName, goodName) => `${playerName} discarded ${goodName}`,
+      stored: (playerName) => `${playerName} archived assets`,
+      phaseFinished: (phaseName) => `${phaseName} finished`,
+    },
+  }),
+  porko_rico: themed({
+    gameName: "Porko Rico",
+    phase: {
+      role: "Chore choice",
+      settler: "Pasture",
+      mayor: "Farmhand",
+      builder: "Barn raising",
+      craftsman_bonus: "Slop bonus",
+      trader: "Market",
+      captain: "Hauling",
+      storage: "Feed bin",
+      game_over: "Fair judging",
+    },
+    roles: {
+      settler: "Pasture Boss",
+      mayor: "Farmhand",
+      builder: "Barn Raiser",
+      craftsman: "Slop Maker",
+      trader: "Market Hog",
+      captain: "Hauler",
+      prospector_1: "Truffle Snout",
+      prospector_2: "Truffle Snout",
+    },
+    roleDescriptions: {
+      settler: "Everyone chooses a pasture tile.",
+      mayor: "Everyone places farmhands.",
+      builder: "Everyone may raise one barn.",
+      craftsman: "Everyone makes feed.",
+      trader: "Everyone may sell one feed.",
+      captain: "Everyone hauls feed for VP.",
+      prospector_1: "No shared chore.",
+      prospector_2: "No shared chore.",
+    },
+    roleRewards: {
+      settler: "Chooser may take a mud pit.",
+      mayor: "Chooser takes 1 farmhand first.",
+      builder: "Chooser pays 1 less.",
+      craftsman: "Chooser may take 1 extra feed.",
+      trader: "Chooser earns +1 coin.",
+      captain: "Chooser earns +1 VP once.",
+      prospector_1: "Chooser takes 1 coin.",
+      prospector_2: "Chooser takes 1 coin.",
+    },
+    goods: { corn: "Corn", indigo: "Mash", sugar: "Apples", tobacco: "Straw", coffee: "Truffles" },
+    plantations: {
+      corn: "Corn",
+      indigo: "Mash",
+      sugar: "Apples",
+      tobacco: "Straw",
+      coffee: "Truffles",
+      quarry: "Mud Pit",
+    },
+    buildings: {
+      small_indigo_plant: "Small Mash Trough",
+      small_sugar_mill: "Small Apple Press",
+      indigo_plant: "Mash Trough",
+      sugar_mill: "Apple Press",
+      tobacco_storage: "Straw Loft",
+      coffee_roaster: "Truffle Shed",
+      small_market: "Small Farm Stand",
+      hacienda: "Back Pasture",
+      construction_hut: "Mud Hut",
+      small_warehouse: "Small Feed Bin",
+      hospice: "Vet Stall",
+      office: "Fence Office",
+      large_market: "Large Farm Stand",
+      large_warehouse: "Large Feed Bin",
+      factory: "Slop Kitchen",
+      university: "Pig School",
+      harbor: "Loading Pen",
+      wharf: "Private Cart",
+      guild_hall: "Farm Council",
+      residence: "Big Sty",
+      fortress: "Boar Fence",
+      customs_house: "Fair Booth",
+      city_hall: "County Barn",
+    },
+    buildingDescriptions: buildingCopy({
+      indigo: "mash",
+      sugar: "apples",
+      tobacco: "straw",
+      coffee: "truffles",
+      indigoSource: "mash pastures",
+      sugarSource: "apple pastures",
+      tobaccoSource: "straw pastures",
+      coffeeSource: "truffle pastures",
+      money: "coins",
+      settler: "pasture",
+      quarry: "mud pit",
+      goods: "feed",
+      captain: "hauling",
+      staff: "a farmhand",
+      market: "market",
+      building: "barn",
+      harbor: "hauling",
+      wharf: "cart",
+      smallProduction: "small feed barn",
+      largeProduction: "large",
+      island: "pasture",
+      shipped: "hauled",
+      civic: "barnyard",
+    }),
+    labels: {
+      board: "Farmyard",
+      plantations: "Pastures",
+      quarries: "Mud pits",
+      cargoShips: "Hauling carts",
+      tradingHouse: "Market pen",
+      colonistShip: "Farmhand cart",
+      goodsSupply: "Feed supply",
+      empty: "Empty",
+      open: "Open",
+      goods: "Feed",
+      noGoods: "No feed",
+      island: "Pasture",
+      city: "Barnyard",
+      sanJuan: "Pen",
+      governor: "Top Hog",
+      doubloons: "coins",
+      roles: "Chores",
+      buildings: "Barns",
+      quarry: "mud pit",
+      quarriesPlural: "mud pits",
+      finalScoring: "Fair judging",
+      shipped: "hauled",
+      buildingScore: "barns",
+    },
+    actions: {
+      chooseRole: "Choose a chore.",
+      choosingRole: (playerName) => `${playerName} is choosing a chore.`,
+      haciendaTile: "Back pasture",
+      mayorHelp: "Click farmhand dots on your pasture and barnyard to place workers.",
+      buildPrompt: "Raise from the barn market below or pass.",
+      storagePrompt: "Discard until remaining feed fits your bins.",
+      take: "Take",
+      sell: "Sell",
+      ship: "Haul",
+      onShip: "on cart",
+      wharf: "Cart",
+      discard: "Discard",
+    },
+    messages: {
+      changedTheme: (themeName) => `changed farm sign to ${themeName}`,
+      choseRole: (playerName, roleName) => `${playerName} chose ${roleName}`,
+      prospected: (playerName) => `${playerName} sniffed truffles`,
+      usedHacienda: (playerName, goodName) => `${playerName} used back pasture for ${goodName}`,
+      settled: (playerName, plantationName) => `${playerName} fenced ${plantationName}`,
+      settledQuarry: (playerName) => `${playerName} claimed a mud pit`,
+      passed: (playerName) => `${playerName} passed`,
+      recalledColonists: (playerName) => `${playerName} recalled farmhands`,
+      placedColonist: (playerName) => `${playerName} placed a farmhand`,
+      movedColonistToSanJuan: (playerName) => `${playerName} moved a farmhand to pen`,
+      finishedColonists: (playerName) => `${playerName} finished chores`,
+      built: (playerName, buildingName) => `${playerName} raised ${buildingName}`,
+      tookExtraGood: (playerName, goodName) => `${playerName} took extra ${goodName}`,
+      skippedExtraGood: (playerName) => `${playerName} skipped extra feed`,
+      producedGoods: () => "made feed",
+      sold: (playerName, goodName) => `${playerName} sold ${goodName}`,
+      shipped: (playerName, amount, goodName) => `${playerName} hauled ${amount} ${goodName}`,
+      usedWharf: (playerName, amount, goodName) => `${playerName} carted ${amount} ${goodName}`,
+      discarded: (playerName, goodName) => `${playerName} discarded ${goodName}`,
+      stored: (playerName) => `${playerName} stored feed`,
+      phaseFinished: (phaseName) => `${phaseName} finished`,
+    },
+  }),
+  puerto_burrito: themed({
+    gameName: "Puerto Burrito",
+    phase: {
+      role: "Station choice",
+      settler: "Prep",
+      mayor: "Staffing",
+      builder: "Buildout",
+      craftsman_bonus: "Prep bonus",
+      trader: "Window",
+      captain: "Service",
+      storage: "Walk-in",
+      game_over: "Last call",
+    },
+    roles: {
+      settler: "Prep Cook",
+      mayor: "Shift Lead",
+      builder: "Truck Builder",
+      craftsman: "Line Cook",
+      trader: "Cashier",
+      captain: "Runner",
+      prospector_1: "Tip Jar",
+      prospector_2: "Tip Jar",
+    },
+    roleDescriptions: {
+      settler: "Everyone chooses a prep tray.",
+      mayor: "Everyone places crew.",
+      builder: "Everyone may install one station.",
+      craftsman: "Everyone preps ingredients.",
+      trader: "Everyone may sell one ingredient.",
+      captain: "Everyone serves orders for VP.",
+      prospector_1: "No shared station.",
+      prospector_2: "No shared station.",
+    },
+    roleRewards: {
+      settler: "Chooser may take a commissary.",
+      mayor: "Chooser takes 1 crew first.",
+      builder: "Chooser pays 1 less.",
+      craftsman: "Chooser may take 1 extra ingredient.",
+      trader: "Chooser earns +1 tip.",
+      captain: "Chooser earns +1 VP once.",
+      prospector_1: "Chooser takes 1 tip.",
+      prospector_2: "Chooser takes 1 tip.",
+    },
+    goods: { corn: "Tortillas", indigo: "Beans", sugar: "Rice", tobacco: "Salsa", coffee: "Carnitas" },
+    plantations: {
+      corn: "Tortillas",
+      indigo: "Beans",
+      sugar: "Rice",
+      tobacco: "Salsa",
+      coffee: "Carnitas",
+      quarry: "Commissary",
+    },
+    buildings: {
+      small_indigo_plant: "Small Bean Pot",
+      small_sugar_mill: "Small Rice Cooker",
+      indigo_plant: "Bean Pot",
+      sugar_mill: "Rice Cooker",
+      tobacco_storage: "Salsa Bar",
+      coffee_roaster: "Carnitas Grill",
+      small_market: "Small Window",
+      hacienda: "Secret Supplier",
+      construction_hut: "Commissary Pass",
+      small_warehouse: "Small Walk-in",
+      hospice: "Staff Meal",
+      office: "Menu Hack",
+      large_market: "Large Window",
+      large_warehouse: "Large Walk-in",
+      factory: "Prep Line",
+      university: "Training Shift",
+      harbor: "Pickup Shelf",
+      wharf: "Catering Van",
+      guild_hall: "Food Court",
+      residence: "Dining Patio",
+      fortress: "Health Desk",
+      customs_house: "Receipt Box",
+      city_hall: "Truck HQ",
+    },
+    buildingDescriptions: buildingCopy({
+      indigo: "beans",
+      sugar: "rice",
+      tobacco: "salsa",
+      coffee: "carnitas",
+      indigoSource: "bean trays",
+      sugarSource: "rice trays",
+      tobaccoSource: "salsa trays",
+      coffeeSource: "carnitas trays",
+      money: "tips",
+      settler: "prep",
+      quarry: "commissary",
+      goods: "ingredient",
+      captain: "service",
+      staff: "crew",
+      market: "window",
+      building: "station",
+      harbor: "service",
+      wharf: "catering van",
+      smallProduction: "small prep station",
+      largeProduction: "large",
+      island: "prep tray",
+      shipped: "served",
+      civic: "truck",
+    }),
+    labels: {
+      board: "Service Board",
+      plantations: "Prep trays",
+      quarries: "Commissaries",
+      cargoShips: "Order rails",
+      tradingHouse: "Service window",
+      colonistShip: "Staff call",
+      goodsSupply: "Ingredient stock",
+      empty: "Open",
+      open: "Open",
+      goods: "Ingredients",
+      noGoods: "No ingredients",
+      island: "Prep",
+      city: "Truck",
+      sanJuan: "Break",
+      governor: "Chef",
+      doubloons: "tips",
+      roles: "Stations",
+      buildings: "Stations",
+      quarry: "commissary",
+      quarriesPlural: "commissaries",
+      finalScoring: "Last call",
+      shipped: "served",
+      buildingScore: "stations",
+    },
+    actions: {
+      chooseRole: "Choose a station.",
+      choosingRole: (playerName) => `${playerName} is choosing a station.`,
+      haciendaTile: "Secret prep tray",
+      mayorHelp: "Click crew dots on your prep and truck to staff stations.",
+      buildPrompt: "Build from the station market below or pass.",
+      storagePrompt: "Discard until remaining ingredients fit your walk-in.",
+      take: "Take",
+      sell: "Sell",
+      ship: "Serve",
+      onShip: "on rail",
+      wharf: "Cater",
+      discard: "Discard",
+    },
+    messages: {
+      changedTheme: (themeName) => `changed menu to ${themeName}`,
+      choseRole: (playerName, roleName) => `${playerName} chose ${roleName}`,
+      prospected: (playerName) => `${playerName} emptied the tip jar`,
+      usedHacienda: (playerName, goodName) => `${playerName} prepped secret ${goodName}`,
+      settled: (playerName, plantationName) => `${playerName} prepped ${plantationName}`,
+      settledQuarry: (playerName) => `${playerName} booked a commissary`,
+      passed: (playerName) => `${playerName} passed`,
+      recalledColonists: (playerName) => `${playerName} recalled crew`,
+      placedColonist: (playerName) => `${playerName} staffed a station`,
+      movedColonistToSanJuan: (playerName) => `${playerName} sent crew on break`,
+      finishedColonists: (playerName) => `${playerName} finished staffing`,
+      built: (playerName, buildingName) => `${playerName} installed ${buildingName}`,
+      tookExtraGood: (playerName, goodName) => `${playerName} took extra ${goodName}`,
+      skippedExtraGood: (playerName) => `${playerName} skipped extra prep`,
+      producedGoods: () => "prepped ingredients",
+      sold: (playerName, goodName) => `${playerName} sold ${goodName}`,
+      shipped: (playerName, amount, goodName) => `${playerName} served ${amount} ${goodName}`,
+      usedWharf: (playerName, amount, goodName) => `${playerName} catered ${amount} ${goodName}`,
+      discarded: (playerName, goodName) => `${playerName} tossed ${goodName}`,
+      stored: (playerName) => `${playerName} stocked ingredients`,
+      phaseFinished: (phaseName) => `${phaseName} finished`,
+    },
+  }),
+  puerto_disco: themed({
+    gameName: "Puerto Disco",
+    phase: {
+      role: "Set choice",
+      settler: "Floor",
+      mayor: "Crowd",
+      builder: "Rigging",
+      craftsman_bonus: "Groove bonus",
+      trader: "Bar",
+      captain: "Encore",
+      storage: "Backstage",
+      game_over: "Last dance",
+    },
+    roles: {
+      settler: "Floor Manager",
+      mayor: "Hype Lead",
+      builder: "Light Tech",
+      craftsman: "DJ",
+      trader: "Bartender",
+      captain: "Promoter",
+      prospector_1: "VIP Guest",
+      prospector_2: "VIP Guest",
+    },
+    roleDescriptions: {
+      settler: "Everyone chooses a dance floor.",
+      mayor: "Everyone places dancers.",
+      builder: "Everyone may open one room.",
+      craftsman: "Everyone makes vibes.",
+      trader: "Everyone may sell one vibe.",
+      captain: "Everyone plays vibes for VP.",
+      prospector_1: "No shared set.",
+      prospector_2: "No shared set.",
+    },
+    roleRewards: {
+      settler: "Chooser may take a mirror ball.",
+      mayor: "Chooser takes 1 dancer first.",
+      builder: "Chooser pays 1 less.",
+      craftsman: "Chooser may take 1 extra vibe.",
+      trader: "Chooser earns +1 cover.",
+      captain: "Chooser earns +1 VP once.",
+      prospector_1: "Chooser takes 1 cover.",
+      prospector_2: "Chooser takes 1 cover.",
+    },
+    goods: { corn: "Beats", indigo: "Bass", sugar: "Glitter", tobacco: "Smoke", coffee: "Spotlights" },
+    plantations: {
+      corn: "Beats",
+      indigo: "Bass",
+      sugar: "Glitter",
+      tobacco: "Smoke",
+      coffee: "Spotlights",
+      quarry: "Mirror Ball",
+    },
+    buildings: {
+      small_indigo_plant: "Small Bass Booth",
+      small_sugar_mill: "Small Glitter Bar",
+      indigo_plant: "Bass Booth",
+      sugar_mill: "Glitter Bar",
+      tobacco_storage: "Smoke Machine",
+      coffee_roaster: "Spotlight Rig",
+      small_market: "Small Cover Desk",
+      hacienda: "Back Door",
+      construction_hut: "Mirror Crew",
+      small_warehouse: "Small Backstage",
+      hospice: "Green Room",
+      office: "Guest List",
+      large_market: "Large Cover Desk",
+      large_warehouse: "Large Backstage",
+      factory: "Remix Booth",
+      university: "Dance School",
+      harbor: "Encore Rail",
+      wharf: "VIP Exit",
+      guild_hall: "Club Council",
+      residence: "Lounge",
+      fortress: "Bouncer Line",
+      customs_house: "Ticket Count",
+      city_hall: "Main Stage",
+    },
+    buildingDescriptions: buildingCopy({
+      indigo: "bass",
+      sugar: "glitter",
+      tobacco: "smoke",
+      coffee: "spotlights",
+      indigoSource: "bass floors",
+      sugarSource: "glitter floors",
+      tobaccoSource: "smoke floors",
+      coffeeSource: "spotlight floors",
+      money: "cover",
+      settler: "floor",
+      quarry: "mirror ball",
+      goods: "vibe",
+      captain: "encore",
+      staff: "a dancer",
+      market: "bar",
+      building: "room",
+      harbor: "encore",
+      wharf: "VIP exit",
+      smallProduction: "small groove room",
+      largeProduction: "large",
+      island: "floor",
+      shipped: "played",
+      civic: "club",
+    }),
+    labels: {
+      board: "Club Board",
+      plantations: "Dance floors",
+      quarries: "Mirror balls",
+      cargoShips: "Encore rails",
+      tradingHouse: "Bar rail",
+      colonistShip: "Guest line",
+      goodsSupply: "Vibe supply",
+      empty: "Open",
+      open: "Open",
+      goods: "Vibes",
+      noGoods: "No vibes",
+      island: "Floor",
+      city: "Club",
+      sanJuan: "Queue",
+      governor: "Headliner",
+      doubloons: "cover",
+      roles: "Sets",
+      buildings: "Rooms",
+      quarry: "mirror ball",
+      quarriesPlural: "mirror balls",
+      finalScoring: "Last dance",
+      shipped: "played",
+      buildingScore: "rooms",
+    },
+    actions: {
+      chooseRole: "Choose a set.",
+      choosingRole: (playerName) => `${playerName} is choosing a set.`,
+      haciendaTile: "Back-door floor",
+      mayorHelp: "Click dancer dots on your floor and club to fill spots.",
+      buildPrompt: "Build from the room market below or pass.",
+      storagePrompt: "Discard until remaining vibes fit backstage.",
+      take: "Take",
+      sell: "Sell",
+      ship: "Play",
+      onShip: "on rail",
+      wharf: "VIP",
+      discard: "Drop",
+    },
+    messages: {
+      changedTheme: (themeName) => `changed the set to ${themeName}`,
+      choseRole: (playerName, roleName) => `${playerName} chose ${roleName}`,
+      prospected: (playerName) => `${playerName} hit the VIP list`,
+      usedHacienda: (playerName, goodName) => `${playerName} opened back door for ${goodName}`,
+      settled: (playerName, plantationName) => `${playerName} lit ${plantationName}`,
+      settledQuarry: (playerName) => `${playerName} hung a mirror ball`,
+      passed: (playerName) => `${playerName} passed`,
+      recalledColonists: (playerName) => `${playerName} cleared dancers`,
+      placedColonist: (playerName) => `${playerName} placed a dancer`,
+      movedColonistToSanJuan: (playerName) => `${playerName} moved a dancer to queue`,
+      finishedColonists: (playerName) => `${playerName} finished the crowd`,
+      built: (playerName, buildingName) => `${playerName} opened ${buildingName}`,
+      tookExtraGood: (playerName, goodName) => `${playerName} took extra ${goodName}`,
+      skippedExtraGood: (playerName) => `${playerName} skipped the extra vibe`,
+      producedGoods: () => "made vibes",
+      sold: (playerName, goodName) => `${playerName} sold ${goodName}`,
+      shipped: (playerName, amount, goodName) => `${playerName} played ${amount} ${goodName}`,
+      usedWharf: (playerName, amount, goodName) => `${playerName} VIP'd ${amount} ${goodName}`,
+      discarded: (playerName, goodName) => `${playerName} dropped ${goodName}`,
+      stored: (playerName) => `${playerName} stashed vibes`,
+      phaseFinished: (phaseName) => `${phaseName} finished`,
+    },
+  }),
+  puerto_weedo: themed({
+    gameName: "Puerto Weedo",
+    phase: {
+      role: "Strain choice",
+      settler: "Garden",
+      mayor: "Crew",
+      builder: "Buildout",
+      craftsman_bonus: "Harvest bonus",
+      trader: "Dispensary",
+      captain: "Delivery",
+      storage: "Curing",
+      game_over: "Final weigh-in",
+    },
+    roles: {
+      settler: "Grower",
+      mayor: "Crew Lead",
+      builder: "Builder",
+      craftsman: "Harvester",
+      trader: "Budtender",
+      captain: "Courier",
+      prospector_1: "Investor",
+      prospector_2: "Investor",
+    },
+    roleDescriptions: {
+      settler: "Everyone chooses a garden tile.",
+      mayor: "Everyone places crew.",
+      builder: "Everyone may build one room.",
+      craftsman: "Everyone harvests product.",
+      trader: "Everyone may sell one product.",
+      captain: "Everyone delivers product for VP.",
+      prospector_1: "No shared shift.",
+      prospector_2: "No shared shift.",
+    },
+    roleRewards: {
+      settler: "Chooser may take a grow light.",
+      mayor: "Chooser takes 1 crew first.",
+      builder: "Chooser pays 1 less.",
+      craftsman: "Chooser may take 1 extra product.",
+      trader: "Chooser earns +1 cash.",
+      captain: "Chooser earns +1 VP once.",
+      prospector_1: "Chooser takes 1 cash.",
+      prospector_2: "Chooser takes 1 cash.",
+    },
+    goods: { corn: "Clones", indigo: "Flower", sugar: "Edibles", tobacco: "Pre-rolls", coffee: "Concentrate" },
+    plantations: {
+      corn: "Clones",
+      indigo: "Flower",
+      sugar: "Edibles",
+      tobacco: "Pre-rolls",
+      coffee: "Concentrate",
+      quarry: "Grow Light",
+    },
+    buildings: {
+      small_indigo_plant: "Small Flower Room",
+      small_sugar_mill: "Small Edible Kitchen",
+      indigo_plant: "Flower Room",
+      sugar_mill: "Edible Kitchen",
+      tobacco_storage: "Pre-roll Table",
+      coffee_roaster: "Extraction Lab",
+      small_market: "Small Counter",
+      hacienda: "Hidden Plot",
+      construction_hut: "Grow Shop",
+      small_warehouse: "Small Cure Room",
+      hospice: "Clone Nursery",
+      office: "Compliance Desk",
+      large_market: "Large Counter",
+      large_warehouse: "Large Cure Room",
+      factory: "Processing Lab",
+      university: "Training Grow",
+      harbor: "Delivery Desk",
+      wharf: "Private Courier",
+      guild_hall: "Growers Guild",
+      residence: "Greenhouse",
+      fortress: "Security Gate",
+      customs_house: "Tax Stamp",
+      city_hall: "Collective Office",
+    },
+    buildingDescriptions: buildingCopy({
+      indigo: "flower",
+      sugar: "edibles",
+      tobacco: "pre-rolls",
+      coffee: "concentrate",
+      indigoSource: "flower gardens",
+      sugarSource: "edible gardens",
+      tobaccoSource: "pre-roll gardens",
+      coffeeSource: "concentrate gardens",
+      money: "cash",
+      settler: "garden",
+      quarry: "grow light",
+      goods: "product",
+      captain: "delivery",
+      staff: "crew",
+      market: "dispensary",
+      building: "room",
+      harbor: "delivery",
+      wharf: "courier",
+      smallProduction: "small grow room",
+      largeProduction: "large",
+      island: "garden",
+      shipped: "delivered",
+      civic: "facility",
+    }),
+    labels: {
+      board: "Grow Board",
+      plantations: "Gardens",
+      quarries: "Grow lights",
+      cargoShips: "Delivery runs",
+      tradingHouse: "Dispensary case",
+      colonistShip: "Crew van",
+      goodsSupply: "Product supply",
+      empty: "Open",
+      open: "Open",
+      goods: "Product",
+      noGoods: "No product",
+      island: "Garden",
+      city: "Facility",
+      sanJuan: "Break room",
+      governor: "Head Grower",
+      doubloons: "cash",
+      roles: "Shifts",
+      buildings: "Rooms",
+      quarry: "grow light",
+      quarriesPlural: "grow lights",
+      finalScoring: "Final weigh-in",
+      shipped: "delivered",
+      buildingScore: "rooms",
+    },
+    actions: {
+      chooseRole: "Choose a shift.",
+      choosingRole: (playerName) => `${playerName} is choosing a shift.`,
+      haciendaTile: "Hidden garden",
+      mayorHelp: "Click crew dots on your garden and facility to staff rooms.",
+      buildPrompt: "Build from the room market below or pass.",
+      storagePrompt: "Discard until remaining product fits your cure rooms.",
+      take: "Take",
+      sell: "Sell",
+      ship: "Deliver",
+      onShip: "on run",
+      wharf: "Courier",
+      discard: "Discard",
+    },
+    messages: {
+      changedTheme: (themeName) => `changed strain board to ${themeName}`,
+      choseRole: (playerName, roleName) => `${playerName} chose ${roleName}`,
+      prospected: (playerName) => `${playerName} found investors`,
+      usedHacienda: (playerName, goodName) => `${playerName} planted hidden ${goodName}`,
+      settled: (playerName, plantationName) => `${playerName} planted ${plantationName}`,
+      settledQuarry: (playerName) => `${playerName} hung a grow light`,
+      passed: (playerName) => `${playerName} passed`,
+      recalledColonists: (playerName) => `${playerName} recalled crew`,
+      placedColonist: (playerName) => `${playerName} staffed a room`,
+      movedColonistToSanJuan: (playerName) => `${playerName} moved crew to break room`,
+      finishedColonists: (playerName) => `${playerName} finished staffing`,
+      built: (playerName, buildingName) => `${playerName} built ${buildingName}`,
+      tookExtraGood: (playerName, goodName) => `${playerName} took extra ${goodName}`,
+      skippedExtraGood: (playerName) => `${playerName} skipped extra harvest`,
+      producedGoods: () => "harvested product",
+      sold: (playerName, goodName) => `${playerName} sold ${goodName}`,
+      shipped: (playerName, amount, goodName) => `${playerName} delivered ${amount} ${goodName}`,
+      usedWharf: (playerName, amount, goodName) => `${playerName} couriered ${amount} ${goodName}`,
+      discarded: (playerName, goodName) => `${playerName} discarded ${goodName}`,
+      stored: (playerName) => `${playerName} cured product`,
+      phaseFinished: (phaseName) => `${phaseName} finished`,
+    },
+  }),
+  dowdle_rico: themed({
+    gameName: "Dowdle, Rico",
+    phase: {
+      role: "Play call",
+      settler: "Recruiting",
+      mayor: "Depth chart",
+      builder: "Facilities",
+      craftsman_bonus: "Drive bonus",
+      trader: "Transfer",
+      captain: "Game day",
+      storage: "Locker room",
+      game_over: "Final whistle",
+    },
+    roles: {
+      settler: "Recruiter",
+      mayor: "Position Coach",
+      builder: "Facilities",
+      craftsman: "Offense",
+      trader: "Agent",
+      captain: "Head Coach",
+      prospector_1: "Booster",
+      prospector_2: "Booster",
+    },
+    roleDescriptions: {
+      settler: "Everyone chooses a play sheet.",
+      mayor: "Everyone places players.",
+      builder: "Everyone may build one facility.",
+      craftsman: "Everyone generates stats.",
+      trader: "Everyone may trade one stat.",
+      captain: "Everyone scores stats for VP.",
+      prospector_1: "No shared play.",
+      prospector_2: "No shared play.",
+    },
+    roleRewards: {
+      settler: "Chooser may take a weight room.",
+      mayor: "Chooser takes 1 player first.",
+      builder: "Chooser pays 1 less.",
+      craftsman: "Chooser may take 1 extra stat.",
+      trader: "Chooser earns +1 booster.",
+      captain: "Chooser earns +1 VP once.",
+      prospector_1: "Chooser takes 1 booster.",
+      prospector_2: "Chooser takes 1 booster.",
+    },
+    goods: { corn: "Yards", indigo: "Blocks", sugar: "Routes", tobacco: "Tackles", coffee: "Touchdowns" },
+    plantations: {
+      corn: "Yards",
+      indigo: "Blocks",
+      sugar: "Routes",
+      tobacco: "Tackles",
+      coffee: "Touchdowns",
+      quarry: "Weight Room",
+    },
+    buildings: {
+      small_indigo_plant: "Small Blocking Sled",
+      small_sugar_mill: "Small Route Tree",
+      indigo_plant: "Blocking Sled",
+      sugar_mill: "Route Tree",
+      tobacco_storage: "Tackle Drill",
+      coffee_roaster: "Red Zone Room",
+      small_market: "Small Booster Table",
+      hacienda: "Recruiting Trip",
+      construction_hut: "Weight Plan",
+      small_warehouse: "Small Locker",
+      hospice: "Training Table",
+      office: "Film Room",
+      large_market: "Large Booster Table",
+      large_warehouse: "Large Locker",
+      factory: "Practice Field",
+      university: "Playbook Class",
+      harbor: "End Zone",
+      wharf: "Hail Mary",
+      guild_hall: "Coaches Guild",
+      residence: "Home Field",
+      fortress: "Goal Line",
+      customs_house: "Stat Booth",
+      city_hall: "Athletic Office",
+    },
+    buildingDescriptions: buildingCopy({
+      indigo: "blocks",
+      sugar: "routes",
+      tobacco: "tackles",
+      coffee: "touchdowns",
+      indigoSource: "blocking sheets",
+      sugarSource: "route sheets",
+      tobaccoSource: "tackle sheets",
+      coffeeSource: "touchdown sheets",
+      money: "boosters",
+      settler: "recruiting",
+      quarry: "weight room",
+      goods: "stat",
+      captain: "game day",
+      staff: "a player",
+      market: "transfer",
+      building: "facility",
+      harbor: "game day",
+      wharf: "Hail Mary",
+      smallProduction: "small drill room",
+      largeProduction: "large",
+      island: "field",
+      shipped: "scored",
+      civic: "program",
+    }),
+    labels: {
+      board: "Scoreboard",
+      plantations: "Play sheets",
+      quarries: "Weight rooms",
+      cargoShips: "Drives",
+      tradingHouse: "Transfer portal",
+      colonistShip: "Bench squad",
+      goodsSupply: "Stat supply",
+      empty: "Open",
+      open: "Open",
+      goods: "Stats",
+      noGoods: "No stats",
+      island: "Field",
+      city: "Program",
+      sanJuan: "Bench",
+      governor: "Captain",
+      doubloons: "boosters",
+      roles: "Play calls",
+      buildings: "Facilities",
+      quarry: "weight room",
+      quarriesPlural: "weight rooms",
+      finalScoring: "Final whistle",
+      shipped: "scored",
+      buildingScore: "facilities",
+    },
+    actions: {
+      chooseRole: "Choose a play.",
+      choosingRole: (playerName) => `${playerName} is calling a play.`,
+      haciendaTile: "Recruiting trip",
+      mayorHelp: "Click player dots on your field and program to set the depth chart.",
+      buildPrompt: "Build from the facility market below or pass.",
+      storagePrompt: "Discard until remaining stats fit your locker room.",
+      take: "Take",
+      sell: "Trade",
+      ship: "Score",
+      onShip: "on drive",
+      wharf: "Hail Mary",
+      discard: "Cut",
+    },
+    messages: {
+      changedTheme: (themeName) => `changed playbook to ${themeName}`,
+      choseRole: (playerName, roleName) => `${playerName} called ${roleName}`,
+      prospected: (playerName) => `${playerName} met boosters`,
+      usedHacienda: (playerName, goodName) => `${playerName} recruited ${goodName}`,
+      settled: (playerName, plantationName) => `${playerName} recruited ${plantationName}`,
+      settledQuarry: (playerName) => `${playerName} opened a weight room`,
+      passed: (playerName) => `${playerName} punted`,
+      recalledColonists: (playerName) => `${playerName} reset the depth chart`,
+      placedColonist: (playerName) => `${playerName} slotted a player`,
+      movedColonistToSanJuan: (playerName) => `${playerName} moved a player to bench`,
+      finishedColonists: (playerName) => `${playerName} set the lineup`,
+      built: (playerName, buildingName) => `${playerName} built ${buildingName}`,
+      tookExtraGood: (playerName, goodName) => `${playerName} took extra ${goodName}`,
+      skippedExtraGood: (playerName) => `${playerName} skipped the extra stat`,
+      producedGoods: () => "ran the offense",
+      sold: (playerName, goodName) => `${playerName} traded ${goodName}`,
+      shipped: (playerName, amount, goodName) => `${playerName} scored ${amount} ${goodName}`,
+      usedWharf: (playerName, amount, goodName) => `${playerName} hit ${amount} ${goodName}`,
+      discarded: (playerName, goodName) => `${playerName} cut ${goodName}`,
+      stored: (playerName) => `${playerName} stored the stats`,
+      phaseFinished: (phaseName) => `${phaseName} finished`,
+    },
+  }),
+};
+
+export function isPuertoRicoThemeKey(value: string | undefined): value is PuertoRicoThemeKey {
+  return THEME_KEYS.includes(value as PuertoRicoThemeKey);
+}
+
+export function getThemeKey(): PuertoRicoThemeKey {
+  const key = store.gameW?.game?.themeKey;
+  return isPuertoRicoThemeKey(key) ? key : DEFAULT_THEME_KEY;
+}
+
+export function getTheme(): ThemeText {
+  return THEMES[getThemeKey()];
+}
+
+export const theme = new Proxy(puertoRico, {
+  get(_target, property: keyof ThemeText) {
+    return getTheme()[property];
+  },
+}) as ThemeText;
 
 export const goodsInThemeOrder = GOOD_IDS;

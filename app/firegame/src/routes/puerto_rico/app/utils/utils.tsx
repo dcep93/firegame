@@ -1,5 +1,6 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
+import { theme } from "../theme/base";
 import NewGame, {
   BuildingTile,
   GameType,
@@ -183,13 +184,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const kind = ROLE_KIND[roleId];
     if (kind === "prospector") {
       player.doubloons += 1;
-      this.finishRole(`${player.userName} prospected`);
+      this.finishRole(theme.messages.prospected(player.userName));
       return;
     }
     if (kind === "mayor") this.startMayor();
     else if (kind === "craftsman") this.startCraftsman();
     else this.startTurnPhase(kind);
-    store.update(`${player.userName} chose ${kind}`);
+    store.update(theme.messages.choseRole(player.userName, theme.roles[roleId]));
   }
 
   startTurnPhase(phase: Exclude<Phase, "role" | "craftsman_bonus" | "game_over">): void {
@@ -227,7 +228,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (ownerProduced.length > 0) {
       game.currentPlayer = game.roleOwner!;
     } else {
-      this.finishRole("produced goods");
+      this.finishRole(theme.messages.producedGoods());
     }
   }
 
@@ -255,7 +256,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (game.phase === "storage") {
       this.unloadFullShips();
     }
-    this.finishRole(`${game.phase} finished`);
+    this.finishRole(theme.messages.phaseFinished(theme.phase[game.phase]));
   }
 
   playerHasAction(playerIndex: number, phase: Phase): boolean {
@@ -321,7 +322,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!good) return alert("no face-down plantations remain");
     player.haciendaUsed = true;
     player.island.push({ id: good, colonists: 0 });
-    store.update(`${player.userName} used hacienda for ${good}`);
+    store.update(theme.messages.usedHacienda(player.userName, theme.plantations[good]));
   }
 
   settlePlantation(index: number): void {
@@ -333,7 +334,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!good) return alert("that plantation is not available");
     game.bank.plantationRow.splice(index, 1);
     this.placeIslandTile(player, good, true);
-    this.finishAction(`${player.userName} settled ${good}`);
+    this.finishAction(theme.messages.settled(player.userName, theme.plantations[good]));
   }
 
   settleQuarry(): void {
@@ -345,14 +346,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (game.bank.quarrySupply <= 0) return alert("no quarries remain");
     game.bank.quarrySupply -= 1;
     this.placeIslandTile(player, "quarry", true);
-    this.finishAction(`${player.userName} settled a quarry`);
+    this.finishAction(theme.messages.settledQuarry(player.userName));
   }
 
   skipAction(): void {
     const game = store.gameW.game;
     if (!this.isMyTurn()) return alert("not your turn");
     if (!["settler", "builder", "trader"].includes(game.phase)) return alert("you must act");
-    this.finishAction(`${this.getCurrent().userName} passed`);
+    this.finishAction(theme.messages.passed(this.getCurrent().userName));
   }
 
   clearColonists(): void {
@@ -366,7 +367,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       player.sanJuan += tile.colonists;
       tile.colonists = 0;
     });
-    store.update(`${player.userName} recalled colonists`);
+    store.update(theme.messages.recalledColonists(player.userName));
   }
 
   assignColonist(target: "island" | "city", index: number): void {
@@ -378,7 +379,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (tile.colonists >= this.tileCapacity(tile)) return alert("that tile is full");
     tile.colonists += 1;
     player.sanJuan -= 1;
-    store.update(`${player.userName} placed a colonist`);
+    store.update(theme.messages.placedColonist(player.userName));
   }
 
   removeColonist(target: "island" | "city", index: number): void {
@@ -388,7 +389,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!tile || tile.colonists <= 0) return;
     tile.colonists -= 1;
     player.sanJuan += 1;
-    store.update(`${player.userName} moved a colonist to San Juan`);
+    store.update(theme.messages.movedColonistToSanJuan(player.userName));
   }
 
   finishMayor(): void {
@@ -397,7 +398,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (player.sanJuan > 0 && this.emptyColonistSpaces(player) > 0) {
       return alert("place all available colonists first");
     }
-    this.finishAction(`${player.userName} finished placing colonists`);
+    this.finishAction(theme.messages.finishedColonists(player.userName));
   }
 
   buildBuilding(buildingId: BuildingId): void {
@@ -415,7 +416,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (this.citySpaces(player) >= MAX_CITY_SPACES) {
       game.endTriggered = `${player.userName} filled all city spaces`;
     }
-    this.finishAction(`${player.userName} built ${buildingId}`);
+    this.finishAction(theme.messages.built(player.userName, theme.buildings[buildingId]));
   }
 
   buildError(player: PlayerType, buildingId: BuildingId): string | null {
@@ -454,12 +455,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (game.bank.goodsSupply[good] <= 0) return alert("that supply is empty");
     this.getCurrent().goods[good] += 1;
     game.bank.goodsSupply[good] -= 1;
-    this.finishRole(`${this.getCurrent().userName} took an extra ${good}`);
+    this.finishRole(theme.messages.tookExtraGood(this.getCurrent().userName, theme.goods[good]));
   }
 
   skipCraftsmanBonus(): void {
     if (!this.assertMyAction("craftsman_bonus")) return;
-    this.finishRole(`${this.getCurrent().userName} skipped the extra good`);
+    this.finishRole(theme.messages.skippedExtraGood(this.getCurrent().userName));
   }
 
   produceFor(player: PlayerType): GoodId[] {
@@ -510,7 +511,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       (player.index === game.roleOwner ? 1 : 0) +
       this.marketBonus(player);
     game.bank.tradingHouse.push(good);
-    this.finishAction(`${player.userName} sold ${good}`);
+    this.finishAction(theme.messages.sold(player.userName, theme.goods[good]));
   }
 
   marketBonus(player: PlayerType): number {
@@ -571,7 +572,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
     player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
     this.gainVictoryPoints(player, option.amount + bonus + this.harborBonus(player));
-    this.finishCaptainTurn(`${player.userName} shipped ${option.amount} ${good}`);
+    this.finishCaptainTurn(theme.messages.shipped(player.userName, option.amount, theme.goods[good]));
   }
 
   wharfOptions(player: PlayerType): { good: GoodId; amount: number }[] {
@@ -593,7 +594,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
     player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
     this.gainVictoryPoints(player, option.amount + bonus + this.harborBonus(player));
-    this.finishCaptainTurn(`${player.userName} used wharf for ${option.amount} ${good}`);
+    this.finishCaptainTurn(theme.messages.usedWharf(player.userName, option.amount, theme.goods[good]));
   }
 
   harborBonus(player: PlayerType): number {
@@ -627,14 +628,14 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (player.goods[good] <= 0) return;
     player.goods[good] -= 1;
     store.gameW.game.bank.goodsSupply[good] += 1;
-    store.update(`${player.userName} discarded ${good}`);
+    store.update(theme.messages.discarded(player.userName, theme.goods[good]));
   }
 
   finishStorage(): void {
     if (!this.assertMyAction("storage")) return;
     const player = this.getCurrent();
     if (!this.canStoreCurrentGoods(player)) return alert("discard goods until your warehouses can store them");
-    this.finishAction(`${player.userName} stored goods`);
+    this.finishAction(theme.messages.stored(player.userName));
   }
 
   finishAction(message: string): void {
@@ -883,8 +884,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   getPhaseLabel(): string {
     const game = store.gameW.game;
-    if (game.phase === "role") return "Choose role";
-    return game.phase.replace("_", " ");
+    return theme.phase[game.phase];
   }
 
   setupForCurrentPlayerCount() {

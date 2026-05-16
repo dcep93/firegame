@@ -10,7 +10,9 @@ function ActionPanel() {
       <h3 className={css.heading}>{theme.phase[game.phase]}</h3>
       {game.phase === "role" && (
         <div className={css.actionLead}>
-          {utils.isRolePicker() ? "Choose a role." : `${game.players[game.rolePicker]?.userName} is choosing a role.`}
+          {utils.isRolePicker()
+            ? theme.actions.chooseRole
+            : theme.actions.choosingRole(game.players[game.rolePicker]?.userName)}
         </div>
       )}
       {game.phase === "settler" && (
@@ -21,7 +23,7 @@ function ActionPanel() {
               onClick={() => utils.takeHaciendaPlantation()}
               disabled={!utils.isMyTurn()}
             >
-              Hacienda tile
+              {theme.actions.haciendaTile}
             </button>
           )}
           {game.bank.plantationRow.map((plantation, index) => (
@@ -41,7 +43,7 @@ function ActionPanel() {
             onClick={() => utils.settleQuarry()}
             disabled={!utils.isMyTurn() || !utils.canSettleQuarry(player)}
           >
-            <span className={css.goodName}>Quarry</span>
+            <span className={css.goodName}>{theme.plantations.quarry}</span>
           </button>
           <button onClick={() => utils.skipAction()} disabled={!utils.isMyTurn()}>
             {theme.controls.pass}
@@ -49,11 +51,11 @@ function ActionPanel() {
         </div>
       )}
       {game.phase === "mayor" && (
-        <div className={css.actionLead}>Click worker dots on your island and city to place colonists.</div>
+        <div className={css.actionLead}>{theme.actions.mayorHelp}</div>
       )}
       {game.phase === "builder" && (
         <div>
-          <div className={css.muted}>Build from the market below or pass.</div>
+          <div className={css.muted}>{theme.actions.buildPrompt}</div>
           <button onClick={() => utils.skipAction()} disabled={!utils.isMyTurn()}>
             {theme.controls.pass}
           </button>
@@ -67,7 +69,7 @@ function ActionPanel() {
               onClick={() => utils.chooseCraftsmanBonus(good)}
               disabled={!utils.isMyTurn() || game.bank.goodsSupply[good] <= 0}
             >
-              Take {theme.goods[good]}
+              {theme.actions.take} {theme.goods[good]}
             </button>
           ))}
           <button onClick={() => utils.skipCraftsmanBonus()} disabled={!utils.isMyTurn()}>
@@ -79,7 +81,7 @@ function ActionPanel() {
         <div className={css.row}>
           {utils.tradeGoods(player).map((good) => (
             <button key={good} onClick={() => utils.sellGood(good)} disabled={!utils.isMyTurn()}>
-              Sell {theme.goods[good]}
+              {theme.actions.sell} {theme.goods[good]}
             </button>
           ))}
           <button onClick={() => utils.skipAction()} disabled={!utils.isMyTurn()}>
@@ -95,7 +97,7 @@ function ActionPanel() {
               onClick={() => utils.shipGood(option.good, option.shipIndex)}
               disabled={!utils.isMyTurn()}
             >
-              Ship {option.amount} {theme.goods[option.good]} on ship {option.shipIndex + 1}
+              {theme.actions.ship} {option.amount} {theme.goods[option.good]} {theme.actions.onShip} {option.shipIndex + 1}
             </button>
           ))}
           {utils.wharfOptions(player).map((option) => (
@@ -104,14 +106,14 @@ function ActionPanel() {
               onClick={() => utils.useWharf(option.good)}
               disabled={!utils.isMyTurn()}
             >
-              Wharf {option.amount} {theme.goods[option.good]}
+              {theme.actions.wharf} {option.amount} {theme.goods[option.good]}
             </button>
           ))}
         </div>
       )}
       {game.phase === "storage" && (
         <div>
-          <div className={css.muted}>Discard until your remaining goods fit your warehouse storage.</div>
+          <div className={css.muted}>{theme.actions.storagePrompt}</div>
           <div className={css.row}>
             {goodsInThemeOrder.map((good) => (
               <button
@@ -119,7 +121,7 @@ function ActionPanel() {
                 onClick={() => utils.discardGood(good)}
                 disabled={!utils.isMyTurn() || player.goods[good] <= 0}
               >
-                Discard {theme.goods[good]}
+                {theme.actions.discard} {theme.goods[good]}
               </button>
             ))}
             <button onClick={() => utils.finishStorage()} disabled={!utils.isMyTurn()}>
