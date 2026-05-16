@@ -11,7 +11,9 @@ function PlayerBoard(props: { player: PlayerType }) {
   const { player } = props;
   const game = store.gameW.game;
   const canPlace = game.phase === "mayor" && game.currentPlayer === player.index && utils.isMyTurn();
-  const heldGoods = goodsInThemeOrder.filter((good) => player.goods[good] > 0);
+  const heldGoods = goodsInThemeOrder.flatMap((good) =>
+    Array.from({ length: player.goods[good] }, (_, index) => ({ good, index }))
+  );
   const sortedIsland = player.island
     .map((tile, index) => ({ tile, index }))
     .sort(
@@ -36,17 +38,19 @@ function PlayerBoard(props: { player: PlayerType }) {
           <span className={css.score}>{player.victoryPoints} VP</span>
         </div>
       </div>
+      <div className={css.boardSubhead}>
+        <h4>Goods</h4>
+      </div>
       <div className={css.goodsRow}>
         {heldGoods.length === 0 && <span className={css.emptyGoods}>No goods</span>}
-        {heldGoods.map((good) => (
-          <div
-            key={good}
-            className={`${css.smallTile} ${css.goodTile} ${css.ownedGoodTile}`}
+        {heldGoods.map(({ good, index }) => (
+          <span
+            key={`${good}-${index}`}
+            className={`${css.goodName} ${css.ownedGoodBubble}`}
             style={{ backgroundColor: theme.colors[good] }}
           >
-            <span className={css.goodName}>{theme.goods[good]}</span>
-            <strong>{player.goods[good]}</strong>
-          </div>
+            {theme.goods[good]}
+          </span>
         ))}
       </div>
       <div className={css.boardSubhead}>
