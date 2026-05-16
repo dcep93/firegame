@@ -844,9 +844,9 @@
 }
 
 .cityGrid {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
+  align-items: stretch;
 }
 
 .building {
@@ -856,12 +856,11 @@
 }
 
 .cityTile {
-  width: 205px;
-  min-width: 205px;
+  width: 100%;
+  min-width: 0;
   min-height: 128px;
   display: flex;
   flex-direction: column;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9));
 }
 
 .building:disabled {
@@ -902,6 +901,8 @@
 .buildingTextBubble {
   width: 100%;
   box-sizing: border-box;
+  align-self: stretch;
+  margin: 0;
   border: 1px solid rgba(31, 45, 38, 0.12);
   border-radius: 7px;
   background: rgba(255, 255, 255, 0.86);
@@ -922,13 +923,8 @@
 }
 
 .largeCityTile {
-  width: 168px;
-  min-width: 168px;
-}
-
-.cityTile .buildingFooter {
-  margin-top: auto;
-  padding-top: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
 .buildingFooter {
@@ -1132,9 +1128,7 @@
     justify-items: start;
   }
 
-  .cityTile,
-  .largeCityTile {
-    width: calc(50% - 4px);
-    min-width: 142px;
+  .cityGrid {
+    grid-template-columns: 1fr;
   }
 }
