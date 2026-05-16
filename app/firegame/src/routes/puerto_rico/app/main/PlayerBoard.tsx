@@ -29,13 +29,11 @@ function PlayerBoard(props: { player: PlayerType }) {
     <div className={`${css.section} ${css.player} ${game.currentPlayer === player.index ? css.active : ""}`}>
       <div className={css.between}>
         <h3 className={css.heading}>{player.userName}</h3>
-        <div className={css.score}>{player.victoryPoints} VP</div>
-      </div>
-      <div className={css.playerStats}>
-        <div><strong>{player.doubloons}</strong><span>Doubloons</span></div>
-        <div><strong>{player.sanJuan}</strong><span>San Juan</span></div>
-        <div><strong>{utils.citySpaces(player)}/12</strong><span>City</span></div>
-        <div><strong>{player.island.length}/12</strong><span>Island</span></div>
+        <div className={css.playerHeaderBadges}>
+          {player.index === game.governor && <span className={css.governorBadge}>Governor</span>}
+          <span className={css.score}>{player.doubloons} doubloons</span>
+          <span className={css.score}>{player.victoryPoints} VP</span>
+        </div>
       </div>
       <div className={css.goodsRow}>
         {heldGoods.length === 0 && <span className={css.emptyGoods}>No goods</span>}
@@ -50,7 +48,10 @@ function PlayerBoard(props: { player: PlayerType }) {
           </div>
         ))}
       </div>
-      <h4>Island</h4>
+      <div className={css.boardSubhead}>
+        <h4>Island {player.island.length}/12</h4>
+        <span className={css.metricBubble}>San Juan {player.sanJuan}</span>
+      </div>
       <div className={css.compactRow}>
         {sortedIsland.map(({ tile, index }) => (
           <div
@@ -69,7 +70,9 @@ function PlayerBoard(props: { player: PlayerType }) {
           </div>
         ))}
       </div>
-      <h4>City</h4>
+      <div className={css.boardSubhead}>
+        <h4>City {utils.citySpaces(player)}/12</h4>
+      </div>
       <div className={css.cityGrid}>
         {sortedCity.map(({ building, index }) => {
           const rule = utils.building(building.id);
@@ -87,21 +90,12 @@ function PlayerBoard(props: { player: PlayerType }) {
               }}
             >
               <div className={css.buildingHeader}>
-                <div className={css.tileTitle}>{theme.buildings[building.id]}</div>
+                <div className={`${css.tileTitle} ${css.buildingNameBubble}`}>
+                  {theme.buildings[building.id]}
+                </div>
                 <span className={css.vpBadge}>{rule.victoryPoints} VP</span>
               </div>
-              <div className={css.buildingTextBubble}>
-                <div>{theme.buildingDescriptions[building.id]}</div>
-                {rule.kind !== "production" && !utils.hasImplementedPower(building.id) && (
-                  <div>{theme.disabledPower}</div>
-                )}
-              </div>
-              {rule.size > 1 && (
-                <div className={css.buildingFooter}>
-                  <span>Size {rule.size}</span>
-                </div>
-              )}
-              <div className={css.workerFooter}>
+              <div className={css.buildingFooter}>
                 <ColonistControls
                   count={building.colonists}
                   capacity={utils.tileCapacity(building)}
@@ -109,6 +103,12 @@ function PlayerBoard(props: { player: PlayerType }) {
                   onAdd={() => utils.assignColonist("city", index)}
                   onRemove={() => utils.removeColonist("city", index)}
                 />
+              </div>
+              <div className={css.buildingTextBubble}>
+                <div>{theme.buildingDescriptions[building.id]}</div>
+                {rule.kind !== "production" && !utils.hasImplementedPower(building.id) && (
+                  <div>{theme.disabledPower}</div>
+                )}
               </div>
             </div>
           );

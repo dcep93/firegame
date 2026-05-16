@@ -9,6 +9,11 @@ import ScoreBoard from "./ScoreBoard";
 
 function Main() {
   const game = store.gameW.game;
+  const myIndex = game.players.findIndex((player) => player.userId === store.me.userId);
+  const players =
+    myIndex >= 0
+      ? [...game.players.slice(myIndex), ...game.players.slice(0, myIndex)]
+      : game.players;
   return (
     <div className={css.root}>
       {game.phase === "game_over" ? <ScoreBoard /> : <ActionPanel />}
@@ -16,7 +21,7 @@ function Main() {
       <BankView />
       <BuildingMarket />
       <div className={css.playerList}>
-        {game.players.map((player) => (
+        {players.map((player) => (
           <PlayerBoard key={player.userId} player={player} />
         ))}
       </div>

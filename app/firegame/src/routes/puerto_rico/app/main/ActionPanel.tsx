@@ -5,9 +5,8 @@ import utils, { store } from "../utils/utils";
 function ActionPanel() {
   const game = store.gameW.game;
   const player = game.players[game.currentPlayer];
-  const isMyTurn = utils.isMyTurn();
   return (
-    <div className={`${css.section} ${isMyTurn ? css.active : ""}`}>
+    <div className={css.section}>
       <h3 className={css.heading}>{theme.phase[game.phase]}</h3>
       {game.phase === "role" && (
         <div className={css.actionLead}>
