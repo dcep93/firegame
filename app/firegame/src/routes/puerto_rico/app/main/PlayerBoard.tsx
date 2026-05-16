@@ -31,20 +31,19 @@ function PlayerBoard(props: { player: PlayerType }) {
         <h3 className={css.heading}>{player.userName}</h3>
         <div className={css.score}>{player.victoryPoints} VP</div>
       </div>
-      <div className={css.statStrip}>
-        <span>{player.doubloons} doubloons</span>
-        <span>San Juan {player.sanJuan}</span>
-        <span>City {utils.citySpaces(player)}/12</span>
-        <span>Island {player.island.length}/12</span>
+      <div className={css.playerStats}>
+        <div><strong>{player.doubloons}</strong><span>Doubloons</span></div>
+        <div><strong>{player.sanJuan}</strong><span>San Juan</span></div>
+        <div><strong>{utils.citySpaces(player)}/12</strong><span>City</span></div>
+        <div><strong>{player.island.length}/12</strong><span>Island</span></div>
       </div>
       <div className={css.goodsRow}>
         {heldGoods.length === 0 && <span className={css.emptyGoods}>No goods</span>}
         {heldGoods.map((good) => (
           <div
             key={good}
-            className={`${css.smallTile} ${css.goodTile}`}
+            className={`${css.smallTile} ${css.goodTile} ${css.ownedGoodTile}`}
             style={{ backgroundColor: theme.colors[good] }}
-            title={`${theme.goods[good]}: ${player.goods[good]}`}
           >
             <span className={css.goodName}>{theme.goods[good]}</span>
             <strong>{player.goods[good]}</strong>
@@ -58,7 +57,6 @@ function PlayerBoard(props: { player: PlayerType }) {
             key={`${tile.id}-${index}`}
             className={`${css.smallTile} ${css.goodTile} ${css.islandTile}`}
             style={{ backgroundColor: theme.colors[tile.id] }}
-            title={theme.plantations[tile.id]}
           >
             <span className={css.goodName}>{theme.plantations[tile.id]}</span>
               <ColonistControls
@@ -78,7 +76,7 @@ function PlayerBoard(props: { player: PlayerType }) {
           return (
             <div
               key={`${building.id}-${index}`}
-              className={`${css.tile} ${css.cityTile} ${rule.size === 2 ? css.largeCityTile : ""}`}
+              className={`${css.tile} ${css.building} ${css.cityTile} ${rule.size === 2 ? css.largeCityTile : ""}`}
               style={{
                 backgroundColor:
                   rule.kind === "production"
@@ -103,13 +101,15 @@ function PlayerBoard(props: { player: PlayerType }) {
                   <span>Size {rule.size}</span>
                 </div>
               )}
-              <ColonistControls
-                count={building.colonists}
-                capacity={utils.tileCapacity(building)}
-                canPlace={canPlace}
-                onAdd={() => utils.assignColonist("city", index)}
-                onRemove={() => utils.removeColonist("city", index)}
-              />
+              <div className={css.workerFooter}>
+                <ColonistControls
+                  count={building.colonists}
+                  capacity={utils.tileCapacity(building)}
+                  canPlace={canPlace}
+                  onAdd={() => utils.assignColonist("city", index)}
+                  onRemove={() => utils.removeColonist("city", index)}
+                />
+              </div>
             </div>
           );
         })}
@@ -127,7 +127,7 @@ function ColonistControls(props: {
 }) {
   return (
     <div className={css.colonistLine}>
-      <span className={css.colonistDots} title={`${props.count}/${props.capacity} colonists`}>
+      <span className={css.colonistDots}>
         {Array.from({ length: props.capacity }).map((_, index) => (
           <span
             key={index}

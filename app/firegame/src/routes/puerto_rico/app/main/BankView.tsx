@@ -29,19 +29,6 @@ function BankView() {
           </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
-          <strong className={css.tileTitle}>Goods supply</strong>
-          {goodsInThemeOrder.map((good) => (
-            <div
-              key={good}
-              className={`${css.metricRow} ${css.coloredMetricRow}`}
-              style={{ backgroundColor: theme.colors[good] }}
-            >
-              <span>{theme.goods[good]}</span>
-              <strong>{bank.goodsSupply[good]}</strong>
-            </div>
-          ))}
-        </div>
-        <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>Trading house</strong>
           <div className={css.tradeSlots}>
             {[0, 1, 2, 3].map((slot) => {
@@ -64,7 +51,7 @@ function BankView() {
           </div>
           <div className={css.tradeValues}>
             {goodsInThemeOrder.map((good) => (
-              <span key={good} title={`${theme.goods[good]} sells for ${TRADER_PRICES[good]}`}>
+              <span key={good}>
                 {theme.goods[good]} {TRADER_PRICES[good]}
               </span>
             ))}
@@ -78,10 +65,7 @@ function BankView() {
               className={`${css.metricRow} ${css.shipRow}`}
               style={{ backgroundColor: ship.good ? theme.colors[ship.good] : undefined }}
             >
-              <span>Ship {index + 1} {ship.count}/{ship.capacity}</span>
-              <strong>
-                {ship.good ? theme.goods[ship.good] : "Empty"}
-              </strong>
+              <strong>{ship.good ? theme.goods[ship.good] : "Empty"} {ship.count}/{ship.capacity}</strong>
             </div>
           ))}
           <div className={css.colonistShipPanel}>
@@ -89,6 +73,19 @@ function BankView() {
             <span>{bank.colonistShip} colonists</span>
             <span>{bank.colonistSupply} in supply</span>
           </div>
+        </div>
+        <div className={`${css.tile} ${css.boardTile}`}>
+          <strong className={css.tileTitle}>Goods supply</strong>
+          {goodsInThemeOrder.map((good) => (
+            <div
+              key={good}
+              className={`${css.metricRow} ${css.coloredMetricRow}`}
+              style={{ backgroundColor: theme.colors[good] }}
+            >
+              <span>{theme.goods[good]}</span>
+              <strong>{bank.goodsSupply[good]}</strong>
+            </div>
+          ))}
         </div>
       </div>
     </div>

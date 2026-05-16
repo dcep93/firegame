@@ -26,6 +26,7 @@ class Sidebar extends SharedSidebar {
         {game && (
           <section className={`${css.sidebarCard} ${css.brandCard}`}>
             <div className={css.sidebarStatusStack}>
+              <h1>Puerto Rico</h1>
               <strong className={css.sidebarPhaseName}>{theme.phase[game.phase]}</strong>
               <strong>{game.players[game.currentPlayer]?.userName}</strong>
               <span>Round {game.round}</span>
@@ -85,7 +86,6 @@ class Sidebar extends SharedSidebar {
                 key={index}
                 className={css.logEntry}
                 onClick={() => this.revert(wrapper)}
-                title="Click to restore this state"
               >
                 <span className={css.logId}>#{wrapper.info.id}</span>
                 <span className={css.logMessage}>{wrapper.info.message}</span>

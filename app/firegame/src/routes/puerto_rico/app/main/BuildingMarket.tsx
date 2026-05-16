@@ -36,7 +36,6 @@ function BuildingMarket() {
                       }}
                       disabled={disabled}
                       onClick={() => utils.buildBuilding(buildingId)}
-                      title={buildError || ""}
                     >
                       <div className={css.buildingHeader}>
                         <strong className={css.tileTitle}>{theme.buildings[buildingId]}</strong>
