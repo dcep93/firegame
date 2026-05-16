@@ -3,6 +3,7 @@ import { goodsInThemeOrder, theme } from "../theme/base";
 import { PlayerType } from "../utils/NewGame";
 import { BUILDING_IDS, PlantationId } from "../utils/rules";
 import utils, { store } from "../utils/utils";
+import BuildingCardContent from "./BuildingCardContent";
 
 const islandOrder: PlantationId[] = [...goodsInThemeOrder, "quarry"];
 
@@ -61,7 +62,7 @@ function PlayerBoard(props: { player: PlayerType }) {
         {sortedIsland.map(({ tile, index }) => (
           <div
             key={`${tile.id}-${index}`}
-            className={`${css.smallTile} ${css.goodTile} ${css.islandTile}`}
+            className={`${css.smallTile} ${css.goodTile}`}
             style={{ backgroundColor: theme.colors[tile.id] }}
           >
             <span className={css.goodName}>{theme.plantations[tile.id]}</span>
@@ -94,27 +95,18 @@ function PlayerBoard(props: { player: PlayerType }) {
                     : theme.colors[rule.kind === "large" ? "large" : "violet"],
               }}
             >
-              <div className={css.buildingHeader}>
-                <div className={`${css.tileTitle} ${css.buildingNameBubble}`}>
-                  {theme.buildings[building.id]}
-                </div>
-                <span className={css.vpBadge}>{rule.victoryPoints} VP</span>
-              </div>
-              <div className={css.buildingFooter}>
-                <ColonistControls
-                  count={building.colonists}
-                  capacity={utils.tileCapacity(building)}
-                  canPlace={canPlace}
-                  onAdd={() => utils.assignColonist("city", index)}
-                  onRemove={() => utils.removeColonist("city", index)}
-                />
-              </div>
-              <div className={css.buildingTextBubble}>
-                <div>{theme.buildingDescriptions[building.id]}</div>
-                {rule.kind !== "production" && !utils.hasImplementedPower(building.id) && (
-                  <div>{theme.disabledPower}</div>
-                )}
-              </div>
+              <BuildingCardContent
+                buildingId={building.id}
+                footer={
+                  <ColonistControls
+                    count={building.colonists}
+                    capacity={utils.tileCapacity(building)}
+                    canPlace={canPlace}
+                    onAdd={() => utils.assignColonist("city", index)}
+                    onRemove={() => utils.removeColonist("city", index)}
+                  />
+                }
+              />
             </div>
           );
         })}

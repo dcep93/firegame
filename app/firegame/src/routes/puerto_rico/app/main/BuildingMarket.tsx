@@ -2,6 +2,7 @@ import css from "../index.module.css";
 import { theme } from "../theme/base";
 import { BUILDING_COLUMNS } from "../utils/rules";
 import utils, { store } from "../utils/utils";
+import BuildingCardContent from "./BuildingCardContent";
 
 function BuildingMarket() {
   const game = store.gameW.game;
@@ -37,23 +38,16 @@ function BuildingMarket() {
                       disabled={disabled}
                       onClick={() => utils.buildBuilding(buildingId)}
                     >
-                      <div className={css.buildingHeader}>
-                        <strong className={`${css.tileTitle} ${css.buildingNameBubble}`}>
-                          {theme.buildings[buildingId]}
-                        </strong>
-                        <span className={css.vpBadge}>{rule.victoryPoints} VP</span>
-                      </div>
-                      <div className={css.buildingFooter}>
-                        <span>Cost {rule.cost}</span>
-                        <strong>Supply {game.bank.buildingSupply[buildingId]}</strong>
-                        {rule.size > 1 && <span>Size {rule.size}</span>}
-                      </div>
-                      <div className={css.buildingTextBubble}>
-                        <div>{theme.buildingDescriptions[buildingId]}</div>
-                        {rule.kind !== "production" && !utils.hasImplementedPower(buildingId) && (
-                          <div>{theme.disabledPower}</div>
-                        )}
-                      </div>
+                      <BuildingCardContent
+                        buildingId={buildingId}
+                        footer={
+                          <>
+                            <span>Cost {rule.cost}</span>
+                            <strong>Supply {game.bank.buildingSupply[buildingId]}</strong>
+                            {rule.size > 1 && <span>Size {rule.size}</span>}
+                          </>
+                        }
+                      />
                     </button>
                   );
                 })}
