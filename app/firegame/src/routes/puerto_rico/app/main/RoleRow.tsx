@@ -18,10 +18,12 @@ function RoleRow() {
             <div className={css.tileTitle}>{theme.roles[role.id]}</div>
             <div className={css.roleLine}>* {theme.roleRewards[role.id]}</div>
             <div className={css.roleLine}>{theme.roleDescriptions[role.id]}</div>
-            <div className={css.resourceLine}>{role.doubloons} doubloons</div>
-            {role.takenBy !== undefined && (
-              <div className={css.muted}>Taken by {game.players[role.takenBy]?.userName}</div>
-            )}
+            <div className={css.roleFooter}>
+              <span className={css.resourceLine}>{role.doubloons} doubloons</span>
+              {role.takenBy !== undefined && (
+                <span className={css.roleTakenChip}>{game.players[role.takenBy]?.userName}</span>
+              )}
+            </div>
           </button>
         ))}
       </div>

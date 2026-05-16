@@ -464,6 +464,29 @@
   margin-top: 5px;
 }
 
+.roleFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 9px;
+}
+
+.roleFooter .resourceLine {
+  margin: 0;
+}
+
+.roleTakenChip {
+  border: 1px solid rgba(117, 54, 39, 0.18);
+  border-radius: 999px;
+  background: #f6e8df;
+  padding: 4px 8px;
+  color: #6f2f21;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
 .actionLead {
   border: 1px solid rgba(44, 61, 54, 0.12);
   border-radius: 6px;
