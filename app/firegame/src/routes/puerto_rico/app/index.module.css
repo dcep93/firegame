@@ -6,9 +6,7 @@
 }
 
 .myTurnShell {
-  background:
-    radial-gradient(circle at 18% 12%, rgba(207, 137, 65, 0.14), transparent 30%),
-    linear-gradient(135deg, #f8f1e7 0%, #e8efe8 100%);
+  background: #f4eadc;
 }
 
 .myTurnShell .contentPanel,
@@ -19,14 +17,6 @@
     0 12px 30px rgba(45, 49, 34, 0.14);
 }
 
-.myTurnShell .sidebarPhaseName {
-  border: 1px solid rgba(178, 111, 49, 0.28);
-  border-radius: 999px;
-  background: #f7e4c8;
-  padding: 4px 9px;
-  color: #6f3b17 !important;
-}
-
 .gameFrame {
   display: grid;
   grid-template-columns: 244px minmax(0, 1fr);
@@ -35,7 +25,7 @@
   min-height: 100vh;
   overflow: visible;
   box-sizing: border-box;
-  padding: 14px;
+  padding: 8px;
 }
 
 .contentPanel {
@@ -51,6 +41,7 @@
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  box-sizing: border-box;
   overflow: auto;
   border: 1px solid rgba(27, 42, 35, 0.14);
   border-radius: 10px;
@@ -58,8 +49,8 @@
   padding: 8px;
   box-shadow: 0 18px 42px rgba(22, 33, 28, 0.13);
   position: sticky;
-  top: 14px;
-  max-height: calc(100vh - 28px);
+  top: 8px;
+  max-height: calc(100vh - 16px);
 }
 
 .sidebarCard {
