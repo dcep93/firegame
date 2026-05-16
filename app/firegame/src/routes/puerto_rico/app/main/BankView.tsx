@@ -10,8 +10,6 @@ function BankView() {
       <h3 className={css.heading}>Board</h3>
       <div className={css.boardGrid}>
         <div className={`${css.tile} ${css.boardTile}`}>
-          <strong className={css.tileTitle}>Colonist ship {bank.colonistShip}/{bank.colonistSupply}</strong>
-          <div className={css.cardSeparator} />
           <strong className={css.tileTitle}>Plantations</strong>
           <div className={css.boardStatsLine}>
             <span>Deck {bank.plantationDeck.length}</span>
@@ -65,6 +63,8 @@ function BankView() {
           </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
+          <strong className={css.tileTitle}>Colonist ship {bank.colonistShip}/{bank.colonistSupply}</strong>
+          <div className={css.cardSeparator} />
           <strong className={css.tileTitle}>Goods supply</strong>
           {goodsInThemeOrder.map((good) => (
             <div
