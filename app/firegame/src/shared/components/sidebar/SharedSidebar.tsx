@@ -1,5 +1,6 @@
 import React from "react";
 import { firebaseUndo } from "../../../firegame/firebase";
+import writer from "../../../firegame/writer/writer";
 import { recorded_sha } from "../../../recorded_sha";
 import styles from "../../../shared/styles.module.css";
 import SharedUtils from "../../shared";
@@ -52,9 +53,20 @@ abstract class SharedSidebar extends React.Component {
         <div>
           <button
             onClick={() => firebaseUndo()}
-            disabled={store.me?.userId !== store.gameW.info.playerId}
+            disabled={
+              process.env.NODE_ENV !== "development" &&
+              store.me?.userId !== store.gameW.info.playerId
+            }
           >
             undo
+          </button>
+        </div>
+        <div>
+          <button
+            onClick={() => writer.leaveLobby()}
+            disabled={store.isSpectator || !store.lobby[store.me.userId]}
+          >
+            leave lobby
           </button>
         </div>
 

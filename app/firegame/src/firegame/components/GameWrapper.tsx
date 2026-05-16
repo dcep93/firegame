@@ -70,7 +70,7 @@ class GameWrapper extends React.Component<{
       if (!store.lobby) {
         return <LoadingPage />;
       }
-      if (!store.lobby[store.me.userId]) {
+      if (!store.lobby[store.me.userId] && !store.isSpectator) {
         if (this.skipsLogin()) {
           setTimeout(() => writer.setUsername(store.me.roomId.toString()));
           return null;

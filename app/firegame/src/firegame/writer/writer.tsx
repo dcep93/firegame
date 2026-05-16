@@ -1,6 +1,6 @@
 import { sendGameState } from "./game";
-import { setUsername } from "./lobby";
+import { leaveLobby, setUsername } from "./lobby";
 import { init } from "./utils";
 
-const ex = { init, setUsername, sendGameState };
+const ex = { init, setUsername, leaveLobby, sendGameState };
 export default ex;

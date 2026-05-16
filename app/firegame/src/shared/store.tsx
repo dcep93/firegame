@@ -6,6 +6,7 @@ export type StoreType<T> = Readonly<{
   me: Readonly<MeType>;
   lobby: Readonly<LobbyType>;
   gameW: Readonly<GameWrapperType<T>>;
+  isSpectator?: boolean;
   update: (message: string, newGame?: T) => void;
 }>;
 

@@ -7,6 +7,7 @@ import { lobbyPath, mePath, update } from "./utils";
 
 const PRESENT_EXPIRE = 3000;
 const HEARTBEAT_INTERVAL = 1000;
+let heartbeatInterval: number | undefined;
 
 export type RemotePersonType = {
   userId: string;
@@ -16,7 +17,14 @@ export type RemotePersonType = {
 };
 
 function heartbeat(): void {
-  setInterval(updateTimestamp, HEARTBEAT_INTERVAL);
+  if (heartbeatInterval !== undefined) return;
+  heartbeatInterval = window.setInterval(updateTimestamp, HEARTBEAT_INTERVAL);
+}
+
+function stopHeartbeat(): void {
+  if (heartbeatInterval === undefined) return;
+  window.clearInterval(heartbeatInterval);
+  heartbeatInterval = undefined;
 }
 
 function updateTimestamp(): void {
@@ -52,6 +60,8 @@ function setLobbyFromRemote(remoteLobby: {
 }
 
 function setUsername(username: string): void {
+  // @ts-ignore read only
+  store.isSpectator = false;
   const userId: string = store.me.userId;
   const now: number = Firebase.now();
   const myUserObj: RemotePersonType = {
@@ -61,6 +71,15 @@ function setUsername(username: string): void {
     signInTime: now,
   };
   Firebase.set(mePath(), myUserObj);
+  heartbeat();
+}
+
+function leaveLobby(): void {
+  // @ts-ignore read only
+  store.isSpectator = true;
+  stopHeartbeat();
+  Firebase.set(mePath(), null);
+  update();
 }
 
 var gameHasStarted: boolean = false;
@@ -75,4 +94,4 @@ function enterLobby() {
   Firebase.connect(lobbyPath(), setLobbyFromRemote);
 }
 
-export { enterLobby, setUsername };
+export { enterLobby, leaveLobby, setUsername };
