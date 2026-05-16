@@ -138,6 +138,7 @@ function ColonistControls(props: {
             key={index}
             type="button"
             className={`${css.colonistDot} ${index < props.count ? css.filledColonistDot : ""}`}
+            aria-label={index < props.count ? "Occupied colonist slot" : "Open colonist slot"}
             onClick={() => {
               if (!props.canPlace) return;
               if (index < props.count) props.onRemove();
