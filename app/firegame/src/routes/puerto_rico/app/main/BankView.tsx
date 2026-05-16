@@ -49,13 +49,6 @@ function BankView() {
               );
             })}
           </div>
-          <div className={css.tradeValues}>
-            {goodsInThemeOrder.map((good) => (
-              <span key={good}>
-                {theme.goods[good]} {TRADER_PRICES[good]}
-              </span>
-            ))}
-          </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>Cargo ships</strong>
@@ -82,7 +75,7 @@ function BankView() {
               className={`${css.metricRow} ${css.coloredMetricRow}`}
               style={{ backgroundColor: theme.colors[good] }}
             >
-              <span>{theme.goods[good]}</span>
+              <span>{theme.goods[good]} (${TRADER_PRICES[good]})</span>
               <strong>{bank.goodsSupply[good]}</strong>
             </div>
           ))}
