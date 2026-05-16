@@ -944,14 +944,6 @@
   font-weight: 800;
 }
 
-.buildingFooter .colonistLine {
-  border: 1px solid rgba(44, 61, 54, 0.12);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.65);
-  margin: 0;
-  padding: 4px 7px;
-}
-
 .playerList {
   display: grid;
   gap: 10px;
