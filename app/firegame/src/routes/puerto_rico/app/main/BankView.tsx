@@ -75,7 +75,7 @@ function BankView() {
               className={`${css.metricRow} ${css.coloredMetricRow}`}
               style={{ backgroundColor: theme.colors[good] }}
             >
-              <span>{theme.goods[good]} (${TRADER_PRICES[good]})</span>
+              <span>(${TRADER_PRICES[good]}) {theme.goods[good]}</span>
               <strong>{bank.goodsSupply[good]}</strong>
             </div>
           ))}
