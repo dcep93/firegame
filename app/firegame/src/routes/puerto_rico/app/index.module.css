@@ -704,30 +704,6 @@
   font-weight: 900;
 }
 
-.ownedGoodTile {
-  display: grid;
-  gap: 4px;
-  min-width: 82px;
-}
-
-.ownedGoodTile .goodName {
-  margin-right: 0;
-}
-
-.ownedGoodTile strong {
-  padding-left: 7px;
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.ownedGoodBubble {
-  border: 1px solid rgba(23, 32, 28, 0.16);
-  background-image: linear-gradient(rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.48));
-  margin-right: 0;
-  padding: 6px 11px;
-  font-size: 0.84rem;
-}
-
 .goodName {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);

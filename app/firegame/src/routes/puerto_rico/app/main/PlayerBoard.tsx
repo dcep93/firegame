@@ -44,13 +44,13 @@ function PlayerBoard(props: { player: PlayerType }) {
       <div className={css.goodsRow}>
         {heldGoods.length === 0 && <span className={css.emptyGoods}>No goods</span>}
         {heldGoods.map(({ good, index }) => (
-          <span
+          <div
             key={`${good}-${index}`}
-            className={`${css.goodName} ${css.ownedGoodBubble}`}
+            className={`${css.smallTile} ${css.goodTile}`}
             style={{ backgroundColor: theme.colors[good] }}
           >
-            {theme.goods[good]}
-          </span>
+            <span className={css.goodName}>{theme.goods[good]}</span>
+          </div>
         ))}
       </div>
       <div className={css.boardSubhead}>
