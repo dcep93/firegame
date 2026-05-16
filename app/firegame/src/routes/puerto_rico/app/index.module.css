@@ -7,24 +7,24 @@
 
 .myTurnShell {
   background:
-    radial-gradient(circle at 18% 12%, rgba(214, 87, 48, 0.18), transparent 30%),
-    linear-gradient(135deg, #fff2e8 0%, #e8efe8 100%);
+    radial-gradient(circle at 18% 12%, rgba(207, 137, 65, 0.14), transparent 30%),
+    linear-gradient(135deg, #f8f1e7 0%, #e8efe8 100%);
 }
 
 .myTurnShell .contentPanel,
 .myTurnShell .sidebarPanel {
-  border-color: rgba(189, 68, 35, 0.62);
+  border-color: rgba(178, 111, 49, 0.42);
   box-shadow:
-    0 0 0 4px rgba(214, 87, 48, 0.18),
-    0 14px 34px rgba(77, 35, 23, 0.16);
+    0 0 0 2px rgba(207, 137, 65, 0.18),
+    0 12px 30px rgba(45, 49, 34, 0.14);
 }
 
 .myTurnShell .sidebarPhaseName {
-  border: 1px solid rgba(189, 68, 35, 0.34);
+  border: 1px solid rgba(178, 111, 49, 0.28);
   border-radius: 999px;
-  background: #d65730;
-  padding: 4px 10px;
-  color: #fffaf6;
+  background: #f7e4c8;
+  padding: 4px 9px;
+  color: #6f3b17 !important;
 }
 
 .gameFrame {
@@ -49,13 +49,13 @@
 .sidebarPanel {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
   overflow: auto;
   border: 1px solid rgba(27, 42, 35, 0.14);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.78);
-  padding: 10px;
+  padding: 8px;
   box-shadow: 0 18px 42px rgba(22, 33, 28, 0.13);
   position: sticky;
   top: 14px;
@@ -66,7 +66,7 @@
   border: 1px solid rgba(27, 42, 35, 0.12);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.92);
-  padding: 12px;
+  padding: 10px;
   box-shadow: 0 8px 22px rgba(22, 33, 28, 0.07);
 }
 
@@ -78,7 +78,7 @@
 }
 
 .sidebarCard h1 {
-  font-size: 1.5rem;
+  font-size: 1.32rem;
 }
 
 .sidebarCard h2 {
@@ -96,7 +96,7 @@
 
 .brandCard h1 {
   margin: 0 0 2px;
-  font-size: 1.18rem;
+  font-size: 1.08rem;
   line-height: 1.1;
 }
 
@@ -123,8 +123,8 @@
 
 .sidebarStatusStack {
   display: grid;
-  gap: 5px;
-  margin-top: 12px;
+  gap: 4px;
+  margin-top: 8px;
   color: #4a5b53;
   font-size: 0.84rem;
 }
@@ -136,9 +136,9 @@
 
 .sidebarPhaseName {
   border-bottom: 1px solid rgba(36, 55, 47, 0.1);
-  padding-bottom: 5px;
+  padding-bottom: 4px;
   color: #6f2f21 !important;
-  font-size: 1.02rem;
+  font-size: 0.98rem;
 }
 
 .sidebarHeadingRow h2 {
@@ -157,7 +157,7 @@
 .controlGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
+  gap: 6px;
 }
 
 .sidebarButton,
@@ -169,7 +169,7 @@
   border: 1px solid rgba(33, 51, 43, 0.16);
   border-radius: 6px;
   background: #f8faf8;
-  padding: 7px 9px;
+  padding: 6px 8px;
   color: #18241e;
   text-decoration: none;
   font-size: 0.86rem;
@@ -210,7 +210,7 @@
   border: 1px solid rgba(36, 55, 47, 0.1);
   border-radius: 6px;
   background: #f7faf7;
-  padding: 7px 8px;
+  padding: 6px 8px;
   color: #2c3d35;
   font-size: 0.86rem;
   font-weight: 700;
@@ -262,14 +262,14 @@
 }
 
 .logCard {
-  min-height: 240px;
-  flex: 1 1 260px;
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
 }
 
 .logList {
-  margin-top: 10px;
+  max-height: 170px;
+  margin-top: 8px;
   overflow: auto;
   padding-right: 2px;
 }
@@ -282,7 +282,7 @@
   border: 1px solid rgba(36, 55, 47, 0.1);
   border-radius: 6px;
   background: #f9fbf9;
-  padding: 8px;
+  padding: 7px;
   text-align: left;
   cursor: pointer;
 }
@@ -633,11 +633,11 @@
 }
 
 .myTurnShell .active {
-  border-color: #bd4423;
-  background: #fff7f0;
+  border-color: rgba(178, 111, 49, 0.54);
+  background: #fffaf3;
   box-shadow:
-    0 0 0 4px rgba(214, 87, 48, 0.28),
-    0 14px 34px rgba(77, 35, 23, 0.18);
+    0 0 0 3px rgba(207, 137, 65, 0.2),
+    0 12px 30px rgba(45, 49, 34, 0.14);
 }
 
 .statStrip {
