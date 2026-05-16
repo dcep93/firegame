@@ -48,14 +48,7 @@ function ActionPanel() {
         </div>
       )}
       {game.phase === "mayor" && (
-        <div className={css.row}>
-          <button onClick={() => utils.clearColonists()} disabled={!utils.isMyTurn()}>
-            {theme.controls.clearColonists}
-          </button>
-          <button onClick={() => utils.finishMayor()} disabled={!utils.isMyTurn()}>
-            {theme.controls.finishPlacement}
-          </button>
-        </div>
+        <div className={css.actionLead}>Click worker dots on your island and city to place colonists.</div>
       )}
       {game.phase === "builder" && (
         <div>

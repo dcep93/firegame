@@ -51,6 +51,11 @@ function PlayerBoard(props: { player: PlayerType }) {
       <div className={css.boardSubhead}>
         <h4>Island {player.island.length}/12</h4>
         <span className={css.metricBubble}>San Juan {player.sanJuan}</span>
+        {canPlace && (
+          <button className={css.inlineActionButton} onClick={() => utils.finishMayor()}>
+            {theme.controls.finishPlacement}
+          </button>
+        )}
       </div>
       <div className={css.compactRow}>
         {sortedIsland.map(({ tile, index }) => (
@@ -129,22 +134,19 @@ function ColonistControls(props: {
     <div className={css.colonistLine}>
       <span className={css.colonistDots}>
         {Array.from({ length: props.capacity }).map((_, index) => (
-          <span
+          <button
             key={index}
+            type="button"
             className={`${css.colonistDot} ${index < props.count ? css.filledColonistDot : ""}`}
+            onClick={() => {
+              if (!props.canPlace) return;
+              if (index < props.count) props.onRemove();
+              else if (index === props.count) props.onAdd();
+            }}
+            disabled={!props.canPlace || index > props.count}
           />
         ))}
       </span>
-      {props.canPlace && (
-        <span className={css.stepper}>
-          <button onClick={props.onAdd} disabled={props.count >= props.capacity}>
-            +
-          </button>
-          <button onClick={props.onRemove} disabled={props.count <= 0}>
-            -
-          </button>
-        </span>
-      )}
     </div>
   );
 }

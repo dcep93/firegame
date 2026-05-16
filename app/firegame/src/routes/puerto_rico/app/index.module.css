@@ -429,6 +429,25 @@
   color: #405149;
 }
 
+.inlineActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(39, 91, 73, 0.22);
+  border-radius: 999px;
+  background: #e8f2eb;
+  padding: 4px 10px;
+  color: #1f4f37;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.inlineActionButton:hover {
+  border-color: rgba(39, 91, 73, 0.42);
+  background: #f5fbf6;
+}
+
 .boardSubhead {
   justify-content: flex-start;
   margin-top: 12px;
@@ -973,33 +992,26 @@
 .colonistDot {
   width: 9px;
   height: 9px;
+  min-width: 9px;
+  min-height: 9px;
   border: 1px solid rgba(44, 61, 54, 0.34);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.42);
+  padding: 0;
+  cursor: default;
+}
+
+button.colonistDot:not(:disabled) {
+  cursor: pointer;
+}
+
+button.colonistDot:not(:disabled):hover {
+  border-color: rgba(39, 91, 73, 0.58);
+  box-shadow: 0 0 0 3px rgba(39, 91, 73, 0.12);
 }
 
 .filledColonistDot {
   background: #34463d;
-}
-
-.stepper {
-  display: inline-flex;
-  gap: 3px;
-}
-
-.stepper button {
-  border: 1px solid rgba(34, 50, 43, 0.18);
-  border-radius: 5px;
-  background: #ffffff;
-  width: 24px;
-  height: 22px;
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.stepper button:disabled {
-  cursor: default;
-  opacity: 0.45;
 }
 
 .danger {
