@@ -131,23 +131,26 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
   }
 
   lobbyRows(game: GameType | null): LobbyRow[] {
-    const rows = playerLobbyEntries(store.lobby).map(([userId, userName]) => ({
-      userId,
-      userName,
-      player: game?.players.find((candidate) => candidate.userId === userId),
-      connected: true,
-    }));
-    const seen = new Set(rows.map((row) => row.userId));
-    (game?.players || []).forEach((player) => {
-      if (seen.has(player.userId)) return;
-      rows.push({
+    const lobbyNames = new Map(playerLobbyEntries(store.lobby));
+    const gameRows = (game?.players || [])
+      .slice()
+      .sort((a, b) => a.index - b.index)
+      .map((player) => ({
         userId: player.userId,
-        userName: player.userName,
+        userName: lobbyNames.get(player.userId) || player.userName,
         player,
-        connected: false,
-      });
-    });
-    return rows;
+        connected: lobbyNames.has(player.userId),
+      }));
+    const gamePlayerIds = new Set(gameRows.map((row) => row.userId));
+    const lobbyOnlyRows = playerLobbyEntries(store.lobby)
+      .filter(([userId]) => !gamePlayerIds.has(userId))
+      .map(([userId, userName]) => ({
+        userId,
+        userName,
+        player: undefined,
+        connected: true,
+      }));
+    return [...gameRows, ...lobbyOnlyRows];
   }
 
   componentDidMount() {

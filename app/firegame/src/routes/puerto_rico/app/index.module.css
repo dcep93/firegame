@@ -238,7 +238,7 @@
 }
 
 .disconnectedLobbyRow {
-  opacity: 0.8;
+  opacity: 0.5;
 }
 
 .sidebarMetrics {
@@ -986,7 +986,7 @@
 
 .building.soldOutBuilding,
 .building.soldOutBuilding:disabled {
-  opacity: 0.8;
+  opacity: 0.5;
 }
 
 .building .muted {
