@@ -379,7 +379,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   assignColonist(target: "island" | "city", index: number): void {
     if (!this.assertMyAction("mayor")) return;
     const player = this.getCurrent();
-    if (player.sanJuan <= 0) return alert("no colonists in San Juan");
+    if (player.sanJuan <= 0) return alert(`${theme.labels.sanJuan} is empty`);
     const tile = target === "island" ? player.island[index] : player.city[index];
     if (!tile) return;
     if (tile.colonists >= this.tileCapacity(tile)) return alert("that tile is full");
@@ -402,7 +402,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!this.assertMyAction("mayor")) return;
     const player = this.getCurrent();
     if (player.sanJuan > 0 && this.emptyColonistSpaces(player) > 0) {
-      return alert("place all available colonists first");
+      return alert(`empty ${theme.labels.sanJuan} first`);
     }
     this.finishAction(theme.messages.finishedColonists(player.userName));
   }
