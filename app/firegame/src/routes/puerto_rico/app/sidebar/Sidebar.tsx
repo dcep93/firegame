@@ -1,5 +1,6 @@
 import { firebaseUndo } from "../../../../firegame/firebase";
 import writer from "../../../../firegame/writer/writer";
+import Player from "../../../../shared/components/sidebar/Player";
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import { history } from "../../../../shared/components/sidebar/SharedLog";
 import { GameWrapperType } from "../../../../shared/store";
@@ -86,7 +87,7 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
               const isCurrent = player?.index === game?.currentPlayer;
               return (
                 <div key={userId} className={`${css.lobbyRow} ${isCurrent ? css.currentLobbyRow : ""}`}>
-                  <span>{player?.userName || userName}</span>
+                  <Player userId={userId} userName={player?.userName || userName} />
                   {player && <span>{player.victoryPoints} VP</span>}
                 </div>
               );
