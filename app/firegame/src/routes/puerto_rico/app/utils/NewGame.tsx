@@ -110,7 +110,7 @@ export type GameType = {
 };
 
 function NewGame(params: Params): PromiseLike<GameType> {
-  const count = playerCount(Object.keys(params.lobby).length);
+  const count = playerCount(playerLobbyEntries(params.lobby).length);
   const setup = SETUP[count];
   const game: GameType = {
     params,
@@ -152,10 +152,11 @@ function buildPlantationDeck(): GoodId[] {
 }
 
 function setPlayers(game: GameType): GameType {
-  const count = playerCount(Object.keys(store.lobby).length);
+  const lobbyEntries = playerLobbyEntries(store.lobby);
+  const count = playerCount(lobbyEntries.length);
   const setup = SETUP[count];
   game.players = utils
-    .shuffle(Object.entries(store.lobby))
+    .shuffle(lobbyEntries)
     .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
     .map(([userId, userName], index) => ({
       userId,
@@ -208,7 +209,7 @@ export function hasIslandSpace(player: PlayerType): boolean {
 }
 
 export function createSampleGame(params: Params): GameType {
-  const lobbyEntries = Object.entries(params.lobby || {});
+  const lobbyEntries = playerLobbyEntries(params.lobby || {});
   const actualCount = lobbyEntries.length;
   const setupCount = actualCount < 3 ? 3 : playerCount(actualCount);
   const setup = SETUP[setupCount];
@@ -259,6 +260,11 @@ export function createSampleGame(params: Params): GameType {
   });
   refillPlantations(game, setupCount);
   return game;
+}
+
+export function playerLobbyEntries(lobby: LobbyType): [string, string][] {
+  const autoName = store.me?.roomId?.toString();
+  return Object.entries(lobby || {}).filter(([, userName]) => userName.trim() !== autoName);
 }
 
 export default NewGame;

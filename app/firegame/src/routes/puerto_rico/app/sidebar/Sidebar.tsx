@@ -5,7 +5,7 @@ import { history } from "../../../../shared/components/sidebar/SharedLog";
 import { GameWrapperType } from "../../../../shared/store";
 import css from "../index.module.css";
 import { getThemeKey, PuertoRicoThemeKey, setPreGameThemeKey, THEME_OPTIONS, theme } from "../theme/base";
-import NewGame, { GameType, Params } from "../utils/NewGame";
+import NewGame, { GameType, Params, playerLobbyEntries } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
 class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
@@ -81,7 +81,7 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
             </button>
           </div>
           <div className={css.lobbyList}>
-            {Object.entries(store.lobby).map(([userId, userName]) => {
+            {playerLobbyEntries(store.lobby).map(([userId, userName]) => {
               const player = game?.players.find((candidate) => candidate.userId === userId);
               const isCurrent = player?.index === game?.currentPlayer;
               return (
