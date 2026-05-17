@@ -6,8 +6,15 @@ import { history } from "../../../../shared/components/sidebar/SharedLog";
 import { GameWrapperType } from "../../../../shared/store";
 import css from "../index.module.css";
 import { getThemeKey, PuertoRicoThemeKey, setPreGameThemeKey, THEME_OPTIONS, theme } from "../theme/base";
-import NewGame, { GameType, Params, playerLobbyEntries } from "../utils/NewGame";
+import NewGame, { GameType, Params, PlayerType, playerLobbyEntries } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
+
+type LobbyRow = {
+  userId: string;
+  userName: string;
+  player?: PlayerType;
+  connected: boolean;
+};
 
 class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
   name = theme.gameName;
@@ -82,11 +89,15 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
             </button>
           </div>
           <div className={css.lobbyList}>
-            {playerLobbyEntries(store.lobby).map(([userId, userName]) => {
-              const player = game?.players.find((candidate) => candidate.userId === userId);
+            {this.lobbyRows(game).map(({ userId, userName, player, connected }) => {
               const isCurrent = player?.index === game?.currentPlayer;
               return (
-                <div key={userId} className={`${css.lobbyRow} ${isCurrent ? css.currentLobbyRow : ""}`}>
+                <div
+                  key={userId}
+                  className={`${css.lobbyRow} ${isCurrent ? css.currentLobbyRow : ""} ${
+                    connected ? "" : css.disconnectedLobbyRow
+                  }`}
+                >
                   <Player userId={userId} userName={player?.userName || userName} />
                   {player && <span>{player.victoryPoints} VP</span>}
                 </div>
@@ -117,6 +128,26 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
         </section>
       </aside>
     );
+  }
+
+  lobbyRows(game: GameType | null): LobbyRow[] {
+    const rows = playerLobbyEntries(store.lobby).map(([userId, userName]) => ({
+      userId,
+      userName,
+      player: game?.players.find((candidate) => candidate.userId === userId),
+      connected: true,
+    }));
+    const seen = new Set(rows.map((row) => row.userId));
+    (game?.players || []).forEach((player) => {
+      if (seen.has(player.userId)) return;
+      rows.push({
+        userId: player.userId,
+        userName: player.userName,
+        player,
+        connected: false,
+      });
+    });
+    return rows;
   }
 
   componentDidMount() {
