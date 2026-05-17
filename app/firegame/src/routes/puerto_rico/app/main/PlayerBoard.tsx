@@ -1,4 +1,5 @@
 import css from "../index.module.css";
+import writer from "../../../../firegame/writer/writer";
 import { goodsInThemeOrder, theme } from "../theme/base";
 import { PlayerType } from "../utils/NewGame";
 import { BUILDING_IDS, PlantationId } from "../utils/rules";
@@ -10,6 +11,7 @@ const islandOrder: PlantationId[] = [...goodsInThemeOrder, "quarry"];
 function PlayerBoard(props: { player: PlayerType }) {
   const { player } = props;
   const game = store.gameW.game;
+  const canRename = player.userId === store.me.userId;
   const canPlace = game.phase === "mayor" && game.currentPlayer === player.index && utils.isMyTurn();
   const heldGoods = goodsInThemeOrder.flatMap((good) =>
     Array.from({ length: player.goods[good] }, (_, index) => ({ good, index }))
@@ -31,7 +33,19 @@ function PlayerBoard(props: { player: PlayerType }) {
   return (
     <div className={`${css.section} ${css.player} ${game.currentPlayer === player.index ? css.active : ""}`}>
       <div className={css.between}>
-        <h3 className={css.heading}>{player.userName}</h3>
+        <h3 className={css.heading}>
+          {canRename ? (
+            <button
+              type="button"
+              className={css.playerNameButton}
+              onClick={() => renameMe(player)}
+            >
+              {player.userName}
+            </button>
+          ) : (
+            player.userName
+          )}
+        </h3>
         <div className={css.playerHeaderBadges}>
           {player.index === game.governor && <span className={css.governorBadge}>{theme.labels.governor}</span>}
           <span className={css.score}>{player.doubloons} {theme.labels.doubloons}</span>
@@ -117,6 +131,20 @@ function PlayerBoard(props: { player: PlayerType }) {
       </div>
     </div>
   );
+}
+
+function renameMe(player: PlayerType): void {
+  const nextName = window.prompt("Enter your name", player.userName)?.trim();
+  if (!nextName || nextName === player.userName) return;
+
+  const previousName = player.userName;
+  player.userName = nextName;
+  // Keep the live lobby name aligned with the game-state name so sidebars and
+  // future new games use the same player label.
+  // @ts-ignore mutating shared runtime store state
+  store.lobby[store.me.userId] = nextName;
+  writer.setUsername(nextName);
+  store.update(`${previousName} changed name to ${nextName}`);
 }
 
 function ColonistControls(props: {

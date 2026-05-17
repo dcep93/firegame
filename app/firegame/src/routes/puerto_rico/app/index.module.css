@@ -623,6 +623,25 @@
   letter-spacing: 0;
 }
 
+.section button.playerNameButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.section button.playerNameButton:not(:disabled):hover {
+  background: transparent;
+  color: #1f5b41;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
 .player {
   min-width: 350px;
   flex: 1 1 380px;

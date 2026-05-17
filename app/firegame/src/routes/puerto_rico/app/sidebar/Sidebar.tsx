@@ -79,7 +79,7 @@ class Sidebar extends SharedSidebar {
               const isCurrent = player?.index === game?.currentPlayer;
               return (
                 <div key={userId} className={`${css.lobbyRow} ${isCurrent ? css.currentLobbyRow : ""}`}>
-                  <span>{userName}</span>
+                  <span>{player?.userName || userName}</span>
                   {player && <span>{player.victoryPoints} VP</span>}
                 </div>
               );
