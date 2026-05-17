@@ -640,6 +640,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const next = order.find((playerIndex) => this.hasCaptainAction(game.players[playerIndex]));
     if (next === undefined) {
       this.startStorage();
+      if (store.gameW.game.phase === "storage") store.update(message);
     } else {
       game.actionQueue = [next];
       game.currentPlayer = next;
