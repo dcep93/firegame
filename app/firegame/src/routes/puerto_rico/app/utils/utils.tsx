@@ -362,9 +362,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return this.isMyTurn() && ["settler", "builder", "trader"].includes(game.phase);
   }
 
+  canManageMayor(player: PlayerType | undefined): boolean {
+    const game = store.gameW.game;
+    return (
+      game.phase === "mayor" &&
+      player?.userId === store.me.userId &&
+      game.actionQueue.includes(player.index)
+    );
+  }
+
   clearColonists(): void {
-    if (!this.assertMyAction("mayor")) return;
-    const player = this.getCurrent();
+    const player = this.getMe();
+    if (!this.assertMyMayorAction(player)) return;
     player.island.forEach((tile) => {
       player.sanJuan += tile.colonists;
       tile.colonists = 0;
@@ -377,8 +386,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   assignColonist(target: "island" | "city", index: number): void {
-    if (!this.assertMyAction("mayor")) return;
-    const player = this.getCurrent();
+    const player = this.getMe();
+    if (!this.assertMyMayorAction(player)) return;
     if (player.sanJuan <= 0) return alert(`${theme.labels.sanJuan} is empty`);
     const tile = target === "island" ? player.island[index] : player.city[index];
     if (!tile) return;
@@ -389,8 +398,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   removeColonist(target: "island" | "city", index: number): void {
-    if (!this.assertMyAction("mayor")) return;
-    const player = this.getCurrent();
+    const player = this.getMe();
+    if (!this.assertMyMayorAction(player)) return;
     const tile = target === "island" ? player.island[index] : player.city[index];
     if (!tile || tile.colonists <= 0) return;
     tile.colonists -= 1;
@@ -399,12 +408,29 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   finishMayor(): void {
-    if (!this.assertMyAction("mayor")) return;
-    const player = this.getCurrent();
+    const player = this.getMe();
+    if (!this.assertMyMayorAction(player)) return;
     if (player.sanJuan > 0 && this.emptyColonistSpaces(player) > 0) {
       return alert(`empty ${theme.labels.sanJuan} first`);
     }
-    this.finishAction(theme.messages.finishedColonists(player.userName));
+    const game = store.gameW.game;
+    const wasCurrent = game.currentPlayer === player.index;
+    game.actionQueue = game.actionQueue.filter((playerIndex) => playerIndex !== player.index);
+    if (wasCurrent) this.advanceToNextAction();
+    store.update(theme.messages.finishedColonists(player.userName));
+  }
+
+  assertMyMayorAction(player: PlayerType): boolean {
+    const game = store.gameW.game;
+    if (game.phase !== "mayor") {
+      alert(`not the ${theme.phase.mayor} phase`);
+      return false;
+    }
+    if (!this.canManageMayor(player)) {
+      alert("you already finished placing");
+      return false;
+    }
+    return true;
   }
 
   buildBuilding(buildingId: BuildingId): void {

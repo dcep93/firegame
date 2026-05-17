@@ -13,7 +13,7 @@ function PlayerBoard(props: { player: PlayerType }) {
   const game = store.gameW.game;
   const canRename = player.userId === store.me.userId;
   const canPass = canRename && utils.canPass();
-  const canPlace = game.phase === "mayor" && game.currentPlayer === player.index && utils.isMyTurn();
+  const canPlace = utils.canManageMayor(player);
   const heldGoods = goodsInThemeOrder.flatMap((good) =>
     Array.from({ length: player.goods[good] }, (_, index) => ({ good, index }))
   );

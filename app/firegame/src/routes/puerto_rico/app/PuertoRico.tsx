@@ -7,8 +7,14 @@ import utils, { store } from "./utils/utils";
 class PuertoRico extends React.Component {
   render() {
     if (store.gameW.game) utils.normalizeGame();
+    const isMyTurn = utils.isMyTurn();
     return (
-      <div className={`${css.appShell} ${utils.isMyTurn() ? css.myTurnShell : ""}`}>
+      <div className={`${css.appShell} ${isMyTurn ? css.myTurnShell : ""}`}>
+        {isMyTurn && store.gameW.game && (
+          <div className={css.turnBanner}>
+            Your turn: {utils.getPhaseLabel()}
+          </div>
+        )}
         <div className={css.gameFrame}>
           <Sidebar />
           <div className={css.contentPanel}>{store.gameW.game && <Main />}</div>

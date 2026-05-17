@@ -6,7 +6,7 @@ function ActionPanel() {
   const game = store.gameW.game;
   const player = game.players[game.currentPlayer];
   return (
-    <div className={css.section}>
+    <div className={`${css.section} ${utils.isMyTurn() ? css.turnActionPanel : ""}`}>
       <h3 className={css.heading}>{theme.phase[game.phase]}</h3>
       {game.phase === "role" && (
         <div className={css.actionLead}>
