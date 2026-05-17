@@ -4,11 +4,11 @@ import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import { history } from "../../../../shared/components/sidebar/SharedLog";
 import { GameWrapperType } from "../../../../shared/store";
 import css from "../index.module.css";
-import { getThemeKey, PuertoRicoThemeKey, THEME_OPTIONS, theme } from "../theme/base";
+import { getThemeKey, PuertoRicoThemeKey, setPreGameThemeKey, THEME_OPTIONS, theme } from "../theme/base";
 import NewGame, { GameType, Params } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
 
-class Sidebar extends SharedSidebar {
+class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
   name = theme.gameName;
   NewGame = NewGame;
   utils = utils;
@@ -16,28 +16,29 @@ class Sidebar extends SharedSidebar {
   state = { history };
 
   getParams(): Params {
-    return { lobby: store.lobby };
+    return { lobby: store.lobby, themeKey: getThemeKey() };
   }
 
   render() {
     const game = store.gameW.game;
     return (
       <aside className={css.sidebarPanel}>
-        {game && (
-          <section className={`${css.sidebarCard} ${css.brandCard}`}>
-            <div className={css.sidebarStatusStack}>
-              <select
-                className={css.themeSelect}
-                value={getThemeKey()}
-                onChange={(event) => this.changeTheme(event.target.value as PuertoRicoThemeKey)}
-                aria-label="Theme"
-              >
-                {THEME_OPTIONS.map((option) => (
-                  <option key={option.key} value={option.key}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+        <section className={`${css.sidebarCard} ${css.brandCard}`}>
+          <div className={css.sidebarStatusStack}>
+            <select
+              className={css.themeSelect}
+              value={getThemeKey()}
+              onChange={(event) => this.changeTheme(event.target.value as PuertoRicoThemeKey)}
+              aria-label="Theme"
+            >
+              {THEME_OPTIONS.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {game && (
+              <>
               <strong className={css.sidebarPhaseName}>{theme.phase[game.phase]}</strong>
               {game.activeRole && (
                 <span className={css.sidebarActiveRole}>
@@ -46,9 +47,10 @@ class Sidebar extends SharedSidebar {
               )}
               <strong>{game.players[game.currentPlayer]?.userName}</strong>
               <span>{theme.labels.round} {game.round}</span>
-            </div>
-          </section>
-        )}
+              </>
+            )}
+          </div>
+        </section>
 
         <section className={css.sidebarCard}>
           <h2>{theme.labels.controls}</h2>
@@ -140,7 +142,12 @@ class Sidebar extends SharedSidebar {
 
   changeTheme(themeKey: PuertoRicoThemeKey): void {
     const game = store.gameW.game;
-    if (!game) return;
+    if (!game) {
+      setPreGameThemeKey(themeKey);
+      this.props.onPreGameThemeChange?.();
+      this.maybeSyncParams();
+      return;
+    }
     game.themeKey = themeKey;
     this.maybeSyncParams();
     store.update(theme.messages.changedTheme(theme.gameName));

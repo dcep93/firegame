@@ -33,6 +33,23 @@ class GameWrapper extends React.Component<{
     return username === this.props.roomId.toString();
   }
 
+  ensureRoomWrapper() {
+    if (store.gameW || !store.me) return;
+    // Let games render their sidebar/lobby before anyone has started a game.
+    // The first real Firebase game update or New Game action will replace this.
+    (store as any).gameW = {
+      info: {
+        id: 0,
+        timestamp: Date.now(),
+        host: store.me.userId,
+        playerId: store.me.userId,
+        playerName: store.lobby?.[store.me.userId] || store.me.userId,
+        message: "opened a room",
+      },
+      game: null,
+    };
+  }
+
   componentDidMount() {
     document.title = this.props.gameName.toLocaleUpperCase();
     // TODO remove
@@ -88,7 +105,7 @@ class GameWrapper extends React.Component<{
         return <LoginPage />;
       }
       if (!store.gameW) {
-        return null;
+        this.ensureRoomWrapper();
       }
     }
     return <this.props.component />;

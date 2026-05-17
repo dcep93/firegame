@@ -1,13 +1,14 @@
 import css from "../index.module.css";
 import { store } from "../utils/utils";
+import { GameType } from "../utils/NewGame";
 import BankView from "./BankView";
 import BuildingMarket from "./BuildingMarket";
 import PlayerBoard from "./PlayerBoard";
 import RoleRow from "./RoleRow";
 import ScoreBoard from "./ScoreBoard";
 
-function Main() {
-  const game = store.gameW.game;
+function Main(props: { game?: GameType; readOnly?: boolean }) {
+  const game = props.game || store.gameW.game;
   const myIndex = game.players.findIndex((player) => player.userId === store.me.userId);
   const players =
     myIndex >= 0
@@ -16,12 +17,12 @@ function Main() {
   return (
     <div className={css.root}>
       {game.phase === "game_over" && <ScoreBoard />}
-      <RoleRow />
-      <BankView />
-      <BuildingMarket />
+      <RoleRow game={game} readOnly={props.readOnly} />
+      <BankView game={game} readOnly={props.readOnly} />
+      <BuildingMarket game={game} readOnly={props.readOnly} />
       <div className={css.playerList}>
         {players.map((player) => (
-          <PlayerBoard key={player.userId} player={player} />
+          <PlayerBoard key={player.userId} game={game} player={player} readOnly={props.readOnly} />
         ))}
       </div>
     </div>

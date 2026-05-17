@@ -31,6 +31,7 @@ export const THEME_KEYS = [
 export type PuertoRicoThemeKey = (typeof THEME_KEYS)[number];
 
 export const DEFAULT_THEME_KEY: PuertoRicoThemeKey = "puerto_rico";
+let preGameThemeKey: PuertoRicoThemeKey = DEFAULT_THEME_KEY;
 
 export const THEME_OPTIONS: { key: PuertoRicoThemeKey; label: string }[] = [
   { key: "puerto_rico", label: "Puerto Rico" },
@@ -2521,7 +2522,11 @@ export function isPuertoRicoThemeKey(value: string | undefined): value is Puerto
 
 export function getThemeKey(): PuertoRicoThemeKey {
   const key = store.gameW?.game?.themeKey;
-  return isPuertoRicoThemeKey(key) ? key : DEFAULT_THEME_KEY;
+  return isPuertoRicoThemeKey(key) ? key : preGameThemeKey;
+}
+
+export function setPreGameThemeKey(themeKey: PuertoRicoThemeKey): void {
+  preGameThemeKey = themeKey;
 }
 
 export function workerText(amount: number): string {

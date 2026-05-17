@@ -8,7 +8,7 @@ import store from "../../store";
 import Player from "./Player";
 import SharedLog from "./SharedLog";
 
-abstract class SharedSidebar extends React.Component {
+abstract class SharedSidebar<P = {}> extends React.Component<P> {
   abstract name: string;
   abstract utils: SharedUtils<any, any>;
 
@@ -123,6 +123,10 @@ abstract class SharedSidebar extends React.Component {
 
 function become(userId: string) {
   if (store.gameW.info.host !== store.me.userId) return;
+  if (!store.gameW.game) {
+    alert("start a new game first");
+    return;
+  }
   const p = store.gameW.game.players;
   for (let index = 0; index < p.length; index++) {
     const uId = p[index].userId;

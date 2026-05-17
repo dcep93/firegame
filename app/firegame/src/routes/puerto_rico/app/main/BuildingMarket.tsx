@@ -1,17 +1,18 @@
 import css from "../index.module.css";
 import { theme } from "../theme/base";
+import { GameType } from "../utils/NewGame";
 import { BUILDING_COLUMNS } from "../utils/rules";
 import utils, { store } from "../utils/utils";
 import BuildingCardContent from "./BuildingCardContent";
 
-function BuildingMarket() {
-  const game = store.gameW.game;
+function BuildingMarket(props: { game?: GameType; readOnly?: boolean }) {
+  const game = props.game || store.gameW.game;
   const player = game.players[game.currentPlayer];
   return (
     <div className={css.section}>
       <div className={css.boardSubhead}>
         <h3 className={css.heading}>{theme.labels.buildings}</h3>
-        {game.phase === "builder" && utils.canPass() && (
+        {!props.readOnly && game.phase === "builder" && utils.canPass() && (
           <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
             {theme.controls.pass}
           </button>
@@ -28,9 +29,9 @@ function BuildingMarket() {
               <div className={css.buildingColumnBody}>
                 {buildingIds.map((buildingId) => {
                   const rule = utils.building(buildingId);
-                  const buildError = player ? utils.buildError(player, buildingId) : null;
+                  const buildError = !props.readOnly && player ? utils.buildError(player, buildingId) : null;
                   const soldOut = game.bank.buildingSupply[buildingId] <= 0;
-                  const canBuild = game.phase === "builder" && utils.isMyTurn() && !buildError;
+                  const canBuild = !props.readOnly && game.phase === "builder" && utils.isMyTurn() && !buildError;
                   const className = `${css.tile} ${canBuild ? css.buttonTile : ""} ${css.building} ${
                     soldOut ? css.soldOutBuilding : ""
                   }`;

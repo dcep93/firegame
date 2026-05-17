@@ -1,16 +1,17 @@
 import css from "../index.module.css";
 import { goodsInThemeOrder, theme } from "../theme/base";
+import { GameType } from "../utils/NewGame";
 import { TRADER_PRICES } from "../utils/rules";
 import utils, { store } from "../utils/utils";
 
-function BankView() {
-  const game = store.gameW.game;
-  const bank = store.gameW.game.bank;
+function BankView(props: { game?: GameType; readOnly?: boolean }) {
+  const game = props.game || store.gameW.game;
+  const bank = game.bank;
   const currentPlayer = game.players[game.currentPlayer];
-  const canSettle = game.phase === "settler" && utils.isMyTurn();
-  const canTradePass = game.phase === "trader" && utils.canPass();
+  const canSettle = !props.readOnly && game.phase === "settler" && utils.isMyTurn();
+  const canTradePass = !props.readOnly && game.phase === "trader" && utils.canPass();
   const shipOptions =
-    game.phase === "captain" && utils.isMyTurn()
+    !props.readOnly && game.phase === "captain" && utils.isMyTurn()
       ? utils.shipOptions(currentPlayer)
       : [];
   const shipOptionsByIndex = new Map<number, typeof shipOptions>();

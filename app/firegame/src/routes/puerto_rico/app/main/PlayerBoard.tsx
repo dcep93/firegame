@@ -1,20 +1,20 @@
 import css from "../index.module.css";
 import writer from "../../../../firegame/writer/writer";
 import { goodsInThemeOrder, theme } from "../theme/base";
-import { PlayerType } from "../utils/NewGame";
+import { GameType, PlayerType } from "../utils/NewGame";
 import { BUILDING_IDS, GoodId, PlantationId } from "../utils/rules";
 import utils, { store } from "../utils/utils";
 import BuildingCardContent from "./BuildingCardContent";
 
 const islandOrder: PlantationId[] = [...goodsInThemeOrder, "quarry"];
 
-function PlayerBoard(props: { player: PlayerType }) {
+function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: boolean }) {
   const { player } = props;
-  const game = store.gameW.game;
-  const canRename = player.userId === store.me.userId;
+  const game = props.game || store.gameW.game;
+  const canRename = !props.readOnly && player.userId === store.me.userId;
   const canPass = canRename && utils.canPass();
-  const canPlace = utils.canManageMayor(player);
-  const canFinishMayor = utils.canFinishMayor(player);
+  const canPlace = !props.readOnly && utils.canManageMayor(player);
+  const canFinishMayor = !props.readOnly && utils.canFinishMayor(player);
   const score = utils.scorePlayer(player);
   const canChooseCraftsmanBonus = canRename && game.phase === "craftsman_bonus" && utils.isMyTurn();
   const canUseWharf = canRename && game.phase === "captain" && utils.isMyTurn();
@@ -48,7 +48,7 @@ function PlayerBoard(props: { player: PlayerType }) {
         a.index - b.index
     );
   return (
-    <div className={`${css.section} ${css.player} ${game.currentPlayer === player.index ? css.active : ""}`}>
+    <div className={`${css.section} ${css.player} ${!props.readOnly && game.currentPlayer === player.index ? css.active : ""}`}>
       <div className={css.between}>
         <h3 className={css.heading}>
           {canRename ? (

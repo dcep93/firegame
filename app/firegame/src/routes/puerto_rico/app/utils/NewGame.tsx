@@ -28,6 +28,7 @@ export type Phase =
 
 export type Params = {
   lobby: LobbyType;
+  themeKey?: PuertoRicoThemeKey;
 };
 
 export type PlantationTile = {
@@ -113,7 +114,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
   const setup = SETUP[count];
   const game: GameType = {
     params,
-    themeKey: DEFAULT_THEME_KEY,
+    themeKey: params.themeKey || DEFAULT_THEME_KEY,
     currentPlayer: 0,
     players: [],
     phase: "role",
@@ -183,10 +184,10 @@ function setStartingPlantations(game: GameType): GameType {
   return game;
 }
 
-function refillPlantations(game: GameType): GameType {
+function refillPlantations(game: GameType, rowPlayerCount = game.players.length): GameType {
   game.bank.plantationRow = [];
   while (
-    game.bank.plantationRow.length < game.players.length + 1 &&
+    game.bank.plantationRow.length < rowPlayerCount + 1 &&
     (game.bank.plantationDeck.length > 0 || game.bank.plantationDiscard.length > 0)
   ) {
     if (game.bank.plantationDeck.length === 0) {
@@ -204,6 +205,60 @@ function removeOne<T>(items: T[], value: T): void {
 
 export function hasIslandSpace(player: PlayerType): boolean {
   return player.island.length < MAX_ISLAND_SPACES;
+}
+
+export function createSampleGame(params: Params): GameType {
+  const lobbyEntries = Object.entries(params.lobby || {});
+  const actualCount = lobbyEntries.length;
+  const setupCount = actualCount < 3 ? 3 : playerCount(actualCount);
+  const setup = SETUP[setupCount];
+  const game: GameType = {
+    params,
+    themeKey: params.themeKey || DEFAULT_THEME_KEY,
+    currentPlayer: 0,
+    players: lobbyEntries.map(([userId, userName], index) => ({
+      userId,
+      userName,
+      index,
+      doubloons: setup.startingDoubloons,
+      victoryPoints: 0,
+      goods: emptyGoods(),
+      island: [],
+      city: [],
+      sanJuan: 0,
+    })),
+    phase: "role",
+    round: 1,
+    governor: 0,
+    rolePicker: 0,
+    selectedRoles: [],
+    actionQueue: [],
+    roles: setup.roles.map((id) => ({ id, doubloons: 0 })),
+    bank: {
+      plantationDeck: GOOD_IDS.flatMap((good) => utils.repeat(good, utils.plantationCount(good))),
+      plantationDiscard: [],
+      plantationRow: [],
+      quarrySupply: QUARRY_COUNT,
+      colonistSupply: setup.colonists - setupCount,
+      colonistShip: setupCount,
+      goodsSupply: emptyGoods(),
+      victoryPoints: setup.victoryPoints,
+      cargoShips: setup.shipSizes.map((capacity) => ({ capacity, count: 0 })),
+      tradingHouse: [],
+      buildingSupply: BUILDING_IDS.reduce(
+        (prev, id) => ({ ...prev, [id]: utils.building(id).supply }),
+        {} as Record<BuildingId, number>
+      ),
+    },
+  };
+  GOOD_IDS.forEach((good) => (game.bank.goodsSupply[good] = utils.goodSupply(good)));
+  setup.startingPlantations.slice(0, game.players.length).forEach((good, index) => {
+    const player = game.players[index];
+    player.island.push({ id: good, colonists: 0 });
+    removeOne(game.bank.plantationDeck, good);
+  });
+  refillPlantations(game, setupCount);
+  return game;
 }
 
 export default NewGame;
