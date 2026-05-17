@@ -45,7 +45,7 @@ function ActionPanel() {
           >
             <span className={css.goodName}>{theme.plantations.quarry}</span>
           </button>
-          <button onClick={() => utils.skipAction()} disabled={!utils.isMyTurn()}>
+          <button onClick={() => utils.skipAction()} disabled={!utils.canPass()}>
             {theme.controls.pass}
           </button>
         </div>
@@ -56,7 +56,7 @@ function ActionPanel() {
       {game.phase === "builder" && (
         <div>
           <div className={css.muted}>{theme.actions.buildPrompt}</div>
-          <button onClick={() => utils.skipAction()} disabled={!utils.isMyTurn()}>
+          <button onClick={() => utils.skipAction()} disabled={!utils.canPass()}>
             {theme.controls.pass}
           </button>
         </div>
@@ -84,7 +84,7 @@ function ActionPanel() {
               {theme.actions.sell} {theme.goods[good]}
             </button>
           ))}
-          <button onClick={() => utils.skipAction()} disabled={!utils.isMyTurn()}>
+          <button onClick={() => utils.skipAction()} disabled={!utils.canPass()}>
             {theme.controls.pass}
           </button>
         </div>

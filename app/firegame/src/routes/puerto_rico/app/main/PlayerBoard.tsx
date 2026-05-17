@@ -12,6 +12,7 @@ function PlayerBoard(props: { player: PlayerType }) {
   const { player } = props;
   const game = store.gameW.game;
   const canRename = player.userId === store.me.userId;
+  const canPass = canRename && utils.canPass();
   const canPlace = game.phase === "mayor" && game.currentPlayer === player.index && utils.isMyTurn();
   const heldGoods = goodsInThemeOrder.flatMap((good) =>
     Array.from({ length: player.goods[good] }, (_, index) => ({ good, index }))
@@ -50,6 +51,11 @@ function PlayerBoard(props: { player: PlayerType }) {
           {player.index === game.governor && <span className={css.governorBadge}>{theme.labels.governor}</span>}
           <span className={css.score}>{player.doubloons} {theme.labels.doubloons}</span>
           <span className={css.score}>{player.victoryPoints} {theme.labels.vp}</span>
+          {canPass && (
+            <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
+              {theme.controls.pass}
+            </button>
+          )}
         </div>
       </div>
       <div className={css.boardSubhead}>

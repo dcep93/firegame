@@ -350,10 +350,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   skipAction(): void {
-    const game = store.gameW.game;
-    if (!this.isMyTurn()) return alert("not your turn");
-    if (!["settler", "builder", "trader"].includes(game.phase)) return alert("you must act");
+    if (!this.canPass()) {
+      if (!this.isMyTurn()) return alert("not your turn");
+      return alert("you must act");
+    }
     this.finishAction(theme.messages.passed(this.getCurrent().userName));
+  }
+
+  canPass(): boolean {
+    const game = store.gameW.game;
+    return this.isMyTurn() && ["settler", "builder", "trader"].includes(game.phase);
   }
 
   clearColonists(): void {
