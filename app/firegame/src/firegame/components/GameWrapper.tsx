@@ -26,6 +26,13 @@ class GameWrapper extends React.Component<{
       this.props.component.name === "FireTimer"
     );
   }
+
+  hasAutoUsername() {
+    const username = store.lobby?.[store.me.userId]?.trim();
+    if (!username) return false;
+    return username === this.props.roomId.toString();
+  }
+
   componentDidMount() {
     document.title = this.props.gameName.toLocaleUpperCase();
     // TODO remove
@@ -75,6 +82,9 @@ class GameWrapper extends React.Component<{
           setTimeout(() => writer.setUsername(store.me.roomId.toString()));
           return null;
         }
+        return <LoginPage />;
+      }
+      if (!this.skipsLogin() && this.hasAutoUsername() && !store.isSpectator) {
         return <LoginPage />;
       }
       if (!store.gameW) {

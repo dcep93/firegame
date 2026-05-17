@@ -25,7 +25,12 @@ class LoginPage extends React.Component {
 
   setUsername(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
-    const username: string = this.inputRef.current!.value;
+    const username: string = this.inputRef.current!.value.trim();
+    if (!username || username === store.me.roomId.toString()) {
+      this.inputRef.current!.value = "";
+      this.inputRef.current?.focus();
+      return;
+    }
     writer.setUsername(username);
   }
 }
