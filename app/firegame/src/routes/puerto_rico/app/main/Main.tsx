@@ -1,6 +1,5 @@
 import css from "../index.module.css";
 import { store } from "../utils/utils";
-import ActionPanel from "./ActionPanel";
 import BankView from "./BankView";
 import BuildingMarket from "./BuildingMarket";
 import PlayerBoard from "./PlayerBoard";
@@ -16,7 +15,7 @@ function Main() {
       : game.players;
   return (
     <div className={css.root}>
-      {game.phase === "game_over" ? <ScoreBoard /> : <ActionPanel />}
+      {game.phase === "game_over" && <ScoreBoard />}
       <RoleRow />
       <BankView />
       <BuildingMarket />

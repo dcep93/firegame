@@ -2,7 +2,7 @@ import css from "../index.module.css";
 import writer from "../../../../firegame/writer/writer";
 import { goodsInThemeOrder, theme } from "../theme/base";
 import { PlayerType } from "../utils/NewGame";
-import { BUILDING_IDS, PlantationId } from "../utils/rules";
+import { BUILDING_IDS, GoodId, PlantationId } from "../utils/rules";
 import utils, { store } from "../utils/utils";
 import BuildingCardContent from "./BuildingCardContent";
 
@@ -14,6 +14,17 @@ function PlayerBoard(props: { player: PlayerType }) {
   const canRename = player.userId === store.me.userId;
   const canPass = canRename && utils.canPass();
   const canPlace = utils.canManageMayor(player);
+  const canChooseCraftsmanBonus = canRename && game.phase === "craftsman_bonus" && utils.isMyTurn();
+  const canUseWharf = canRename && game.phase === "captain" && utils.isMyTurn();
+  const canStore = canRename && game.phase === "storage" && utils.isMyTurn();
+  const craftsmanBonusGoods = canChooseCraftsmanBonus
+    ? game.producedGoods?.[game.roleOwner || 0] || []
+    : [];
+  const wharfOptions = canUseWharf ? utils.wharfOptions(player) : [];
+  const tradeGoods =
+    canRename && game.phase === "trader" && utils.isMyTurn()
+      ? utils.tradeGoods(player)
+      : [];
   const heldGoods = goodsInThemeOrder.flatMap((good) =>
     Array.from({ length: player.goods[good] }, (_, index) => ({ good, index }))
   );
@@ -56,6 +67,16 @@ function PlayerBoard(props: { player: PlayerType }) {
               {theme.controls.pass}
             </button>
           )}
+          {canChooseCraftsmanBonus && (
+            <button className={css.inlineActionButton} onClick={() => utils.skipCraftsmanBonus()}>
+              {theme.controls.skipBonus}
+            </button>
+          )}
+          {canStore && (
+            <button className={css.inlineActionButton} onClick={() => utils.finishStorage()}>
+              {theme.controls.finishStorage}
+            </button>
+          )}
         </div>
       </div>
       <div className={css.boardSubhead}>
@@ -63,14 +84,44 @@ function PlayerBoard(props: { player: PlayerType }) {
       </div>
       <div className={css.goodsRow}>
         {heldGoods.length === 0 && <span className={css.emptyGoods}>{theme.labels.noGoods}</span>}
-        {heldGoods.map(({ good, index }) => (
-          <div
-            key={`${good}-${index}`}
-            className={`${css.smallTile} ${css.goodTile}`}
-            style={{ backgroundColor: theme.colors[good] }}
-          >
-            <span className={css.goodName}>{theme.goods[good]}</span>
-          </div>
+        {heldGoods.map(({ good, index }) => {
+          const canTrade = tradeGoods.includes(good);
+          const canDiscard = canStore && player.goods[good] > 0;
+          const className = `${css.smallTile} ${css.goodTile} ${canTrade || canDiscard ? css.playerGoodActionTile : ""}`;
+          const style = { backgroundColor: theme.colors[good] };
+          const content = <span className={css.goodName}>{theme.goods[good]}</span>;
+          return canTrade || canDiscard ? (
+            <button
+              key={`${good}-${index}`}
+              type="button"
+              className={className}
+              style={style}
+              onClick={() => (canTrade ? utils.sellGood(good) : utils.discardGood(good))}
+            >
+              {content}
+            </button>
+          ) : (
+            <div key={`${good}-${index}`} className={className} style={style}>
+              {content}
+            </div>
+          );
+        })}
+        {craftsmanBonusGoods.map((good) => (
+          <PlayerGoodAction
+            key={`bonus-${good}`}
+            good={good}
+            label={`${theme.actions.take} ${theme.goods[good]}`}
+            disabled={game.bank.goodsSupply[good] <= 0}
+            onClick={() => utils.chooseCraftsmanBonus(good)}
+          />
+        ))}
+        {wharfOptions.map((option) => (
+          <PlayerGoodAction
+            key={`wharf-${option.good}`}
+            good={option.good}
+            label={`${theme.actions.wharf} ${option.amount} ${theme.goods[option.good]}`}
+            onClick={() => utils.useWharf(option.good)}
+          />
         ))}
       </div>
       <div className={css.boardSubhead}>
@@ -136,6 +187,25 @@ function PlayerBoard(props: { player: PlayerType }) {
         })}
       </div>
     </div>
+  );
+}
+
+function PlayerGoodAction(props: {
+  good: GoodId;
+  label: string;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={`${css.smallTile} ${css.goodTile} ${css.playerGoodActionTile}`}
+      style={{ backgroundColor: theme.colors[props.good] }}
+      disabled={props.disabled}
+      onClick={props.onClick}
+    >
+      <span className={css.goodName}>{props.label}</span>
+    </button>
   );
 }
 

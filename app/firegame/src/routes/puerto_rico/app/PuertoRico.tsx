@@ -10,11 +10,6 @@ class PuertoRico extends React.Component {
     const isMyTurn = utils.isMyTurn();
     return (
       <div className={`${css.appShell} ${isMyTurn ? css.myTurnShell : ""}`}>
-        {isMyTurn && store.gameW.game && (
-          <div className={css.turnBanner}>
-            Your turn: {utils.getPhaseLabel()}
-          </div>
-        )}
         <div className={css.gameFrame}>
           <Sidebar />
           <div className={css.contentPanel}>{store.gameW.game && <Main />}</div>

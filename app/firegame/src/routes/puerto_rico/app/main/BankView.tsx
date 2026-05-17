@@ -1,10 +1,25 @@
 import css from "../index.module.css";
 import { goodsInThemeOrder, theme } from "../theme/base";
 import { TRADER_PRICES } from "../utils/rules";
-import { store } from "../utils/utils";
+import utils, { store } from "../utils/utils";
 
 function BankView() {
+  const game = store.gameW.game;
   const bank = store.gameW.game.bank;
+  const currentPlayer = game.players[game.currentPlayer];
+  const canSettle = game.phase === "settler" && utils.isMyTurn();
+  const canTradePass = game.phase === "trader" && utils.canPass();
+  const shipOptions =
+    game.phase === "captain" && utils.isMyTurn()
+      ? utils.shipOptions(currentPlayer)
+      : [];
+  const shipOptionsByIndex = new Map<number, typeof shipOptions>();
+  shipOptions.forEach((option) => {
+    shipOptionsByIndex.set(option.shipIndex, [
+      ...(shipOptionsByIndex.get(option.shipIndex) || []),
+      option,
+    ]);
+  });
   return (
     <div className={css.section}>
       <h3 className={css.heading}>{theme.labels.board}</h3>
@@ -17,30 +32,85 @@ function BankView() {
             <span>{theme.labels.quarries} {bank.quarrySupply}</span>
           </div>
           <div className={css.compactRow}>
-            {bank.plantationRow.map((plantation, index) => (
-              <div
-                key={`${plantation}-${index}`}
-                className={`${css.smallTile} ${css.goodTile}`}
-                style={{ backgroundColor: theme.colors[plantation] }}
+            {canSettle && utils.canUseHacienda(currentPlayer) && (
+              <button
+                className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
+                onClick={() => utils.takeHaciendaPlantation()}
               >
-                <span className={css.goodName}>{theme.plantations[plantation]}</span>
-              </div>
-            ))}
+                <span className={css.goodName}>{theme.actions.haciendaTile}</span>
+              </button>
+            )}
+            {bank.plantationRow.map((plantation, index) =>
+              canSettle ? (
+                <button
+                  key={`${plantation}-${index}`}
+                  className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
+                  style={{ backgroundColor: theme.colors[plantation] }}
+                  onClick={() => utils.settlePlantation(index)}
+                >
+                  <span className={css.goodName}>{theme.plantations[plantation]}</span>
+                </button>
+              ) : (
+                <div
+                  key={`${plantation}-${index}`}
+                  className={`${css.smallTile} ${css.goodTile}`}
+                  style={{ backgroundColor: theme.colors[plantation] }}
+                >
+                  <span className={css.goodName}>{theme.plantations[plantation]}</span>
+                </div>
+              )
+            )}
+            {canSettle && (
+              <button
+                className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
+                style={{ backgroundColor: theme.colors.quarry }}
+                onClick={() => utils.settleQuarry()}
+                disabled={!utils.canSettleQuarry(currentPlayer)}
+              >
+                <span className={css.goodName}>{theme.plantations.quarry}</span>
+              </button>
+            )}
+            {canSettle && (
+              <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
+                {theme.controls.pass}
+              </button>
+            )}
           </div>
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>{theme.labels.cargoShips}</strong>
-          {bank.cargoShips.map((ship, index) => (
-            <div
-              key={index}
-              className={`${css.metricRow} ${css.shipRow}`}
-              style={{ backgroundColor: ship.good ? theme.colors[ship.good] : undefined }}
-            >
-              <strong>{ship.good ? theme.goods[ship.good] : theme.labels.empty} {ship.count}/{ship.capacity}</strong>
-            </div>
-          ))}
+          {bank.cargoShips.map((ship, index) => {
+            const options = shipOptionsByIndex.get(index) || [];
+            return (
+              <div
+                key={index}
+                className={`${css.metricRow} ${css.shipRow} ${options.length > 0 ? css.selectableShipRow : ""}`}
+                style={{ backgroundColor: ship.good ? theme.colors[ship.good] : undefined }}
+              >
+                <strong>{ship.good ? theme.goods[ship.good] : theme.labels.empty} {ship.count}/{ship.capacity}</strong>
+                {options.length > 0 && (
+                  <div className={css.shipActions}>
+                    {options.map((option) => (
+                      <button
+                        key={`${option.good}-${option.shipIndex}`}
+                        className={css.shipActionButton}
+                        onClick={() => utils.shipGood(option.good, option.shipIndex)}
+                      >
+                        {theme.actions.ship} {option.amount} {theme.goods[option.good]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <div className={css.cargoSubsection}>
             <strong className={css.tileTitle}>{theme.labels.tradingHouse}</strong>
+            {canTradePass && (
+              <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
+                {theme.controls.pass}
+              </button>
+            )}
             <div className={css.tradeSlots}>
               {[0, 1, 2, 3].map((slot) => {
                 const good = bank.tradingHouse[slot];

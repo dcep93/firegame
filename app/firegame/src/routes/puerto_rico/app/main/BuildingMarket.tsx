@@ -9,7 +9,14 @@ function BuildingMarket() {
   const player = game.players[game.currentPlayer];
   return (
     <div className={css.section}>
-      <h3 className={css.heading}>{theme.labels.buildings}</h3>
+      <div className={css.boardSubhead}>
+        <h3 className={css.heading}>{theme.labels.buildings}</h3>
+        {game.phase === "builder" && utils.canPass() && (
+          <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
+            {theme.controls.pass}
+          </button>
+        )}
+      </div>
       <div className={css.buildingColumns}>
         {BUILDING_COLUMNS.map((buildingIds, index) => {
           const quarryCap = index + 1;
