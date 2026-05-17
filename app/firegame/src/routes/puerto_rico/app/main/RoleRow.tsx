@@ -8,13 +8,10 @@ function RoleRow() {
     <div className={css.section}>
       <h3 className={css.heading}>{theme.labels.roles}</h3>
       <div className={css.roleGrid}>
-        {game.roles.map((role) => (
-          <button
-            key={role.id}
-            className={`${css.tile} ${css.buttonTile} ${css.roleTile}`}
-            disabled={game.phase !== "role" || role.takenBy !== undefined || !utils.isRolePicker()}
-            onClick={() => utils.chooseRole(role.id)}
-          >
+        {game.roles.map((role) => {
+          const canChoose = game.phase === "role" && role.takenBy === undefined && utils.isRolePicker();
+          const content = (
+            <>
             <div className={css.tileTitle}>{theme.roles[role.id]}</div>
             <div className={css.roleLine}>* {theme.roleRewards[role.id]}</div>
             <div className={css.roleLine}>{theme.roleDescriptions[role.id]}</div>
@@ -24,8 +21,22 @@ function RoleRow() {
                 <span className={css.roleTakenChip}>{game.players[role.takenBy]?.userName}</span>
               )}
             </div>
-          </button>
-        ))}
+            </>
+          );
+          return canChoose ? (
+            <button
+              key={role.id}
+              className={`${css.tile} ${css.buttonTile} ${css.roleTile}`}
+              onClick={() => utils.chooseRole(role.id)}
+            >
+              {content}
+            </button>
+          ) : (
+            <div key={role.id} className={`${css.tile} ${css.roleTile}`}>
+              {content}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import SharedUtils from "../../../../shared/shared";
 import store_, { StoreType } from "../../../../shared/store";
-import { theme } from "../theme/base";
+import { theme, workerText } from "../theme/base";
 import NewGame, {
   BuildingTile,
   GameType,
@@ -174,6 +174,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!role || role.takenBy !== undefined) return alert("that role is not available");
 
     const player = game.players[game.rolePicker];
+    const roleMoney = role.doubloons;
     player.doubloons += role.doubloons;
     role.doubloons = 0;
     role.takenBy = player.index;
@@ -184,13 +185,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const kind = ROLE_KIND[roleId];
     if (kind === "prospector") {
       player.doubloons += 1;
-      this.finishRole(theme.messages.prospected(player.userName));
+      this.finishRole(theme.messages.prospected(player.userName, roleMoney + 1, theme.labels.doubloons));
       return;
     }
-    if (kind === "mayor") this.startMayor();
-    else if (kind === "craftsman") this.startCraftsman();
+    const rewards = roleMoney > 0 ? [`${roleMoney} ${theme.labels.doubloons}`] : [];
+    if (kind === "mayor") {
+      const workersTaken = this.startMayor();
+      if (workersTaken > 0) rewards.push(workerText(workersTaken));
+    } else if (kind === "craftsman") this.startCraftsman();
     else this.startTurnPhase(kind);
-    store.update(theme.messages.choseRole(player.userName, theme.roles[roleId]));
+    store.update(theme.messages.choseRole(player.userName, theme.roles[roleId], this.rewardText(rewards)));
   }
 
   startTurnPhase(phase: Exclude<Phase, "role" | "craftsman_bonus" | "game_over">): void {
@@ -200,9 +204,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.advanceToNextAction();
   }
 
-  startMayor(): void {
+  startMayor(): number {
     const game = store.gameW.game;
     const owner = game.players[game.roleOwner!];
+    const beforeSanJuan = owner.sanJuan;
     this.takeColonists(owner, 1);
     let index = game.roleOwner!;
     while (game.bank.colonistShip > 0) {
@@ -211,6 +216,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       index = this.playerIndexByIndex(index + 1, game);
     }
     this.startTurnPhase("mayor");
+    return owner.sanJuan - beforeSanJuan;
   }
 
   startCraftsman(): void {
@@ -228,7 +234,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (ownerProduced.length > 0) {
       game.currentPlayer = game.roleOwner!;
     } else {
-      this.finishRole(theme.messages.producedGoods());
+      this.finishRole(theme.messages.producedGoods(this.totalProducedKinds()));
     }
   }
 
@@ -236,6 +242,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return this.count(store.gameW.game.players.length).map((i) =>
       this.playerIndexByIndex(start + i)
     );
+  }
+
+  rewardText(rewards: string[]): string {
+    if (rewards.length === 0) return "";
+    if (rewards.length === 1) return ` and took ${rewards[0]}`;
+    return ` and took ${rewards.slice(0, -1).join(", ")} and ${rewards[rewards.length - 1]}`;
   }
 
   advanceToNextAction(): void {
@@ -371,18 +383,26 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
 
+  canFinishMayor(player: PlayerType | undefined): boolean {
+    if (!player || !this.canManageMayor(player)) return false;
+    return player.sanJuan === 0 || this.emptyColonistSpaces(player) === 0;
+  }
+
   clearColonists(): void {
     const player = this.getMe();
     if (!this.assertMyMayorAction(player)) return;
+    let recalled = 0;
     player.island.forEach((tile) => {
+      recalled += tile.colonists;
       player.sanJuan += tile.colonists;
       tile.colonists = 0;
     });
     player.city.forEach((tile) => {
+      recalled += tile.colonists;
       player.sanJuan += tile.colonists;
       tile.colonists = 0;
     });
-    store.update(theme.messages.recalledColonists(player.userName));
+    store.update(theme.messages.recalledColonists(player.userName, recalled));
   }
 
   assignColonist(target: "island" | "city", index: number): void {
@@ -394,7 +414,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (tile.colonists >= this.tileCapacity(tile)) return alert("that tile is full");
     tile.colonists += 1;
     player.sanJuan -= 1;
-    store.update(theme.messages.placedColonist(player.userName));
+    store.update(theme.messages.placedColonist(player.userName, 1));
   }
 
   removeColonist(target: "island" | "city", index: number): void {
@@ -404,20 +424,20 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (!tile || tile.colonists <= 0) return;
     tile.colonists -= 1;
     player.sanJuan += 1;
-    store.update(theme.messages.movedColonistToSanJuan(player.userName));
+    store.update(theme.messages.movedColonistToSanJuan(player.userName, 1));
   }
 
   finishMayor(): void {
     const player = this.getMe();
     if (!this.assertMyMayorAction(player)) return;
-    if (player.sanJuan > 0 && this.emptyColonistSpaces(player) > 0) {
-      return alert(`empty ${theme.labels.sanJuan} first`);
-    }
+    if (!this.canFinishMayor(player)) return alert(`empty ${theme.labels.sanJuan} first`);
     const game = store.gameW.game;
     const wasCurrent = game.currentPlayer === player.index;
+    const placed = this.placedColonists(player);
+    const remaining = player.sanJuan;
     game.actionQueue = game.actionQueue.filter((playerIndex) => playerIndex !== player.index);
     if (wasCurrent) this.advanceToNextAction();
-    store.update(theme.messages.finishedColonists(player.userName));
+    store.update(theme.messages.finishedColonists(player.userName, placed, remaining));
   }
 
   assertMyMayorAction(player: PlayerType): boolean {
@@ -448,7 +468,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (this.citySpaces(player) >= MAX_CITY_SPACES) {
       game.endTriggered = `${player.userName} filled all city spaces`;
     }
-    this.finishAction(theme.messages.built(player.userName, theme.buildings[buildingId]));
+    this.finishAction(theme.messages.built(player.userName, theme.buildings[buildingId], cost, theme.labels.doubloons));
   }
 
   buildError(player: PlayerType, buildingId: BuildingId): string | null {
@@ -487,12 +507,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (game.bank.goodsSupply[good] <= 0) return alert("that supply is empty");
     this.getCurrent().goods[good] += 1;
     game.bank.goodsSupply[good] -= 1;
-    this.finishRole(theme.messages.tookExtraGood(this.getCurrent().userName, theme.goods[good]));
+    this.finishRole(theme.messages.tookExtraGood(this.getCurrent().userName, theme.goods[good], 1, this.totalProducedKinds()));
   }
 
   skipCraftsmanBonus(): void {
     if (!this.assertMyAction("craftsman_bonus")) return;
-    this.finishRole(theme.messages.skippedExtraGood(this.getCurrent().userName));
+    this.finishRole(theme.messages.skippedExtraGood(this.getCurrent().userName, this.totalProducedKinds()));
   }
 
   produceFor(player: PlayerType): GoodId[] {
@@ -538,12 +558,13 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const player = this.getCurrent();
     if (!this.tradeGoods(player).includes(good)) return alert("that good cannot be sold");
     player.goods[good] -= 1;
-    player.doubloons +=
+    const price =
       TRADER_PRICES[good] +
       (player.index === game.roleOwner ? 1 : 0) +
       this.marketBonus(player);
+    player.doubloons += price;
     game.bank.tradingHouse.push(good);
-    this.finishAction(theme.messages.sold(player.userName, theme.goods[good]));
+    this.finishAction(theme.messages.sold(player.userName, theme.goods[good], price, theme.labels.doubloons));
   }
 
   marketBonus(player: PlayerType): number {
@@ -603,8 +624,41 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     player.goods[good] -= option.amount;
     const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
     player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
-    this.gainVictoryPoints(player, option.amount + bonus + this.harborBonus(player));
-    this.finishCaptainTurn(theme.messages.shipped(player.userName, option.amount, theme.goods[good]));
+    const points = option.amount + bonus + this.harborBonus(player);
+    this.gainVictoryPoints(player, points);
+    this.finishCaptainTurn(theme.messages.shipped(player.userName, option.amount, theme.goods[good], points));
+  }
+
+  shipGoodFromBoard(good: GoodId): void {
+    if (!this.assertMyAction("captain")) return;
+    const player = this.getCurrent();
+    const options = this.shipOptions(player).filter((option) => option.good === good);
+    if (options.length === 0) return alert("that shipment is not legal");
+    const option = options.length === 1 ? options[0] : this.chooseShipOption(good, options);
+    if (!option) return;
+    this.shipGood(good, option.shipIndex);
+  }
+
+  chooseShipOption(
+    good: GoodId,
+    options: { good: GoodId; shipIndex: number; amount: number }[]
+  ): { good: GoodId; shipIndex: number; amount: number } | undefined {
+    const game = store.gameW.game;
+    const lines = options.map((option, index) => {
+      const ship = game.bank.cargoShips[option.shipIndex];
+      const cargo = ship.good ? theme.goods[ship.good] : theme.labels.empty;
+      return `${index + 1}: ${theme.labels.cargoShips} ${option.shipIndex + 1} (${cargo} ${ship.count}/${ship.capacity})`;
+    });
+    const choice = window.prompt(
+      `${theme.actions.ship} ${theme.goods[good]} ${theme.actions.onShip}:\n${lines.join("\n")}`
+    );
+    if (choice === null) return undefined;
+    const index = parseInt(choice, 10) - 1;
+    if (!Number.isInteger(index) || !options[index]) {
+      alert("choose one of the numbered options");
+      return undefined;
+    }
+    return options[index];
   }
 
   wharfOptions(player: PlayerType): { good: GoodId; amount: number }[] {
@@ -625,8 +679,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.gameW.game.bank.goodsSupply[good] += option.amount;
     const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
     player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
-    this.gainVictoryPoints(player, option.amount + bonus + this.harborBonus(player));
-    this.finishCaptainTurn(theme.messages.usedWharf(player.userName, option.amount, theme.goods[good]));
+    const points = option.amount + bonus + this.harborBonus(player);
+    this.gainVictoryPoints(player, points);
+    this.finishCaptainTurn(theme.messages.usedWharf(player.userName, option.amount, theme.goods[good], points));
   }
 
   harborBonus(player: PlayerType): number {
@@ -661,14 +716,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (player.goods[good] <= 0) return;
     player.goods[good] -= 1;
     store.gameW.game.bank.goodsSupply[good] += 1;
-    store.update(theme.messages.discarded(player.userName, theme.goods[good]));
+    const message = theme.messages.discarded(player.userName, theme.goods[good], 1, this.totalGoods(player));
+    if (this.canStoreCurrentGoods(player)) this.finishAction(message);
+    else store.update(message);
   }
 
   finishStorage(): void {
     if (!this.assertMyAction("storage")) return;
     const player = this.getCurrent();
     if (!this.canStoreCurrentGoods(player)) return alert("discard goods until your warehouses can store them");
-    this.finishAction(theme.messages.stored(player.userName));
+    this.finishAction(theme.messages.stored(player.userName, this.totalGoods(player)));
   }
 
   finishAction(message: string): void {
@@ -805,21 +862,23 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const game = store.gameW.game;
     game.phase = "game_over";
     game.scores = game.players
-      .map((player): ScoreLine => {
-        const buildings = player.city.map((tile) => this.building(tile.id).victoryPoints).sum();
-        const largeBuildings = this.largeBuildingBonus(player);
-        const tieBreaker = player.doubloons + Object.values(player.goods).sum();
-        return {
-          playerIndex: player.index,
-          shipped: player.victoryPoints,
-          buildings,
-          largeBuildings,
-          tieBreaker,
-          total: player.victoryPoints + buildings + largeBuildings,
-        };
-      })
+      .map((player) => this.scorePlayer(player))
       .sort((a, b) => b.total - a.total || b.tieBreaker - a.tieBreaker);
     game.currentPlayer = game.scores[0].playerIndex;
+  }
+
+  scorePlayer(player: PlayerType): ScoreLine {
+    const buildings = player.city.map((tile) => this.building(tile.id).victoryPoints).sum();
+    const largeBuildings = this.largeBuildingBonus(player);
+    const tieBreaker = player.doubloons + Object.values(player.goods).sum();
+    return {
+      playerIndex: player.index,
+      shipped: player.victoryPoints,
+      buildings,
+      largeBuildings,
+      tieBreaker,
+      total: player.victoryPoints + buildings + largeBuildings,
+    };
   }
 
   largeBuildingBonus(player: PlayerType): number {
@@ -895,6 +954,19 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   totalGoods(player: PlayerType): number {
     return Object.values(player.goods).sum();
+  }
+
+  placedColonists(player: PlayerType): number {
+    return (
+      player.island.map((tile) => tile.colonists).sum() +
+      player.city.map((tile) => tile.colonists).sum()
+    );
+  }
+
+  totalProducedKinds(): number {
+    return Object.values(store.gameW.game.producedGoods || {})
+      .map((produced) => produced.length)
+      .sum();
   }
 
   canStoreCurrentGoods(player: PlayerType): boolean {

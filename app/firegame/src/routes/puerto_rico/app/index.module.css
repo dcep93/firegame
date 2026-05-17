@@ -7,16 +7,16 @@
 
 .myTurnShell {
   background:
-    linear-gradient(90deg, rgba(188, 69, 38, 0.18), transparent 22%, transparent 78%, rgba(188, 69, 38, 0.18)),
-    #f4eadc;
+    radial-gradient(circle at 18% 12%, rgba(255, 250, 243, 0.18), transparent 30%),
+    linear-gradient(135deg, #6f2f21 0%, #6f2f21 72%, #5a271d 100%);
 }
 
 .myTurnShell .contentPanel,
 .myTurnShell .sidebarPanel {
-  border-color: rgba(188, 69, 38, 0.58);
+  border-color: rgba(255, 235, 218, 0.62);
   box-shadow:
-    0 0 0 3px rgba(214, 89, 48, 0.22),
-    0 12px 30px rgba(45, 49, 34, 0.18);
+    0 0 0 3px rgba(255, 235, 218, 0.18),
+    0 14px 34px rgba(22, 9, 6, 0.26);
 }
 
 .gameFrame {
@@ -144,6 +144,17 @@
   padding-bottom: 4px;
   color: #6f2f21 !important;
   font-size: 0.98rem;
+}
+
+.sidebarActiveRole {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: baseline;
+}
+
+.sidebarActiveRole strong {
+  color: #6f2f21;
 }
 
 .sidebarHeadingRow h2 {
@@ -452,6 +463,30 @@
   border-color: rgba(44, 61, 54, 0.12);
   background: #f3f6f2;
   color: #405149;
+}
+
+.section button.metricBubble {
+  padding: 4px 9px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.finishMayorBubble {
+  cursor: pointer;
+  border-color: rgba(39, 91, 73, 0.34);
+  background: #e3f2e7;
+  color: #1f5b41;
+}
+
+.finishMayorBubble:hover {
+  border-color: rgba(39, 91, 73, 0.52);
+  background: #f4fff6;
+}
+
+.pendingMayorBubble {
+  opacity: 0.72;
 }
 
 .inlineActionButton {
@@ -943,6 +978,11 @@
 
 .building:disabled {
   opacity: 1;
+}
+
+.building.soldOutBuilding,
+.building.soldOutBuilding:disabled {
+  opacity: 0.8;
 }
 
 .building .muted {

@@ -48,6 +48,22 @@ export const THEME_OPTIONS: { key: PuertoRicoThemeKey; label: string }[] = [
   { key: "los_santos_rico", label: "Los Santos Rico" },
 ];
 
+const WORKER_LABELS: Record<PuertoRicoThemeKey, { singular: string; plural: string }> = {
+  puerto_rico: { singular: "colonist", plural: "colonists" },
+  corpo_rico: { singular: "staff", plural: "staff" },
+  porko_rico: { singular: "farmhand", plural: "farmhands" },
+  puerto_burrito: { singular: "crew", plural: "crew" },
+  puerto_disco: { singular: "dancer", plural: "dancers" },
+  puerto_weedo: { singular: "crew", plural: "crew" },
+  dowdle_rico: { singular: "player", plural: "players" },
+  gymbro_rico: { singular: "gym bro", plural: "gym bros" },
+  puerto_rifto: { singular: "champion", plural: "champions" },
+  puerto_sicko: { singular: "staff", plural: "staff" },
+  puerto_yugioh: { singular: "duelist", plural: "duelists" },
+  puerto_rato: { singular: "rat", plural: "rats" },
+  los_santos_rico: { singular: "muscle", plural: "muscle" },
+};
+
 const colors = {
   corn: "#f3d66b",
   indigo: "#6e91c8",
@@ -119,25 +135,25 @@ type Actions = {
 
 type Messages = {
   changedTheme: (themeName: string) => string;
-  choseRole: (playerName: string, roleName: string) => string;
-  prospected: (playerName: string) => string;
+  choseRole: (playerName: string, roleName: string, rewardText?: string) => string;
+  prospected: (playerName: string, amount?: number, moneyName?: string) => string;
   usedHacienda: (playerName: string, goodName: string) => string;
   settled: (playerName: string, plantationName: string) => string;
   settledQuarry: (playerName: string) => string;
   passed: (playerName: string) => string;
-  recalledColonists: (playerName: string) => string;
-  placedColonist: (playerName: string) => string;
-  movedColonistToSanJuan: (playerName: string) => string;
-  finishedColonists: (playerName: string) => string;
-  built: (playerName: string, buildingName: string) => string;
-  tookExtraGood: (playerName: string, goodName: string) => string;
-  skippedExtraGood: (playerName: string) => string;
-  producedGoods: () => string;
-  sold: (playerName: string, goodName: string) => string;
-  shipped: (playerName: string, amount: number, goodName: string) => string;
-  usedWharf: (playerName: string, amount: number, goodName: string) => string;
-  discarded: (playerName: string, goodName: string) => string;
-  stored: (playerName: string) => string;
+  recalledColonists: (playerName: string, amount?: number) => string;
+  placedColonist: (playerName: string, amount?: number) => string;
+  movedColonistToSanJuan: (playerName: string, amount?: number) => string;
+  finishedColonists: (playerName: string, placedAmount?: number, remainingAmount?: number) => string;
+  built: (playerName: string, buildingName: string, cost?: number, moneyName?: string) => string;
+  tookExtraGood: (playerName: string, goodName: string, amount?: number, producedKinds?: number) => string;
+  skippedExtraGood: (playerName: string, producedKinds?: number) => string;
+  producedGoods: (producedKinds?: number) => string;
+  sold: (playerName: string, goodName: string, price?: number, moneyName?: string) => string;
+  shipped: (playerName: string, amount: number, goodName: string, points?: number) => string;
+  usedWharf: (playerName: string, amount: number, goodName: string, points?: number) => string;
+  discarded: (playerName: string, goodName: string, amount?: number, remainingAmount?: number) => string;
+  stored: (playerName: string, amount?: number) => string;
   phaseFinished: (phaseName: string) => string;
 };
 
@@ -182,7 +198,7 @@ type ThemeOverrides = Partial<Omit<ThemeText, "phase" | "roles" | "roleDescripti
   messages?: Partial<Messages>;
 };
 
-const puertoRico: ThemeText = {
+const puertoRicoRaw: ThemeText = {
   gameName: "Puerto Rico",
   rulesUrl: "https://www.riograndegames.com/wp-content/uploads/2013/02/Puerto-Rico-Rules.pdf",
   phase: {
@@ -221,7 +237,7 @@ const puertoRico: ThemeText = {
     mayor: "Chooser takes 1 colonist first.",
     builder: "Chooser pays 1 less.",
     craftsman: "Chooser may take 1 extra good.",
-    trader: "Chooser earns +1 doubloon.",
+    trader: "Chooser earns +1 doubloon when selling.",
     captain: "Chooser earns +1 VP once.",
     prospector_1: "Chooser takes 1 doubloon.",
     prospector_2: "Chooser takes 1 doubloon.",
@@ -382,23 +398,81 @@ const puertoRico: ThemeText = {
   },
 };
 
+const puertoRico = withExplicitMessages(puertoRicoRaw);
+
 function themed(overrides: ThemeOverrides): ThemeText {
-  return {
-    ...puertoRico,
+  return withExplicitMessages({
+    ...puertoRicoRaw,
     ...overrides,
-    phase: { ...puertoRico.phase, ...overrides.phase },
-    roles: { ...puertoRico.roles, ...overrides.roles },
-    roleDescriptions: { ...puertoRico.roleDescriptions, ...overrides.roleDescriptions },
-    roleRewards: { ...puertoRico.roleRewards, ...overrides.roleRewards },
-    goods: { ...puertoRico.goods, ...overrides.goods },
-    plantations: { ...puertoRico.plantations, ...overrides.plantations },
+    phase: { ...puertoRicoRaw.phase, ...overrides.phase },
+    roles: { ...puertoRicoRaw.roles, ...overrides.roles },
+    roleDescriptions: { ...puertoRicoRaw.roleDescriptions, ...overrides.roleDescriptions },
+    roleRewards: { ...puertoRicoRaw.roleRewards, ...overrides.roleRewards },
+    goods: { ...puertoRicoRaw.goods, ...overrides.goods },
+    plantations: { ...puertoRicoRaw.plantations, ...overrides.plantations },
     colors,
-    buildings: { ...puertoRico.buildings, ...overrides.buildings },
-    buildingDescriptions: { ...puertoRico.buildingDescriptions, ...overrides.buildingDescriptions },
-    controls: { ...puertoRico.controls, ...overrides.controls },
-    labels: { ...puertoRico.labels, ...overrides.labels },
-    actions: { ...puertoRico.actions, ...overrides.actions },
-    messages: { ...puertoRico.messages, ...overrides.messages },
+    buildings: { ...puertoRicoRaw.buildings, ...overrides.buildings },
+    buildingDescriptions: { ...puertoRicoRaw.buildingDescriptions, ...overrides.buildingDescriptions },
+    controls: { ...puertoRicoRaw.controls, ...overrides.controls },
+    labels: { ...puertoRicoRaw.labels, ...overrides.labels },
+    actions: { ...puertoRicoRaw.actions, ...overrides.actions },
+    messages: { ...puertoRicoRaw.messages, ...overrides.messages },
+  });
+}
+
+function withExplicitMessages(themeText: ThemeText): ThemeText {
+  const messages = themeText.messages;
+  const append = (message: string, detail: string | undefined) =>
+    detail ? `${message} ${detail}` : message;
+  const moneyText = (amount?: number, moneyName?: string) =>
+    amount === undefined || moneyName === undefined ? undefined : `${amount} ${moneyName}`;
+  const producedText = (producedKinds?: number) =>
+    producedKinds === undefined ? undefined : `(${producedKinds} produced kind${producedKinds === 1 ? "" : "s"})`;
+  return {
+    ...themeText,
+    messages: {
+      ...messages,
+      choseRole: (playerName, roleName, rewardText) =>
+        `${messages.choseRole(playerName, roleName)}${rewardText || ""}`,
+      prospected: (playerName, amount, moneyName) =>
+        append(messages.prospected(playerName), moneyText(amount, moneyName) && `for ${moneyText(amount, moneyName)}`),
+      recalledColonists: (playerName, amount) =>
+        append(messages.recalledColonists(playerName), amount === undefined ? undefined : `(${workerText(amount)})`),
+      placedColonist: (playerName, amount) =>
+        append(messages.placedColonist(playerName), amount === undefined ? undefined : `(${workerText(amount)})`),
+      movedColonistToSanJuan: (playerName, amount) =>
+        append(messages.movedColonistToSanJuan(playerName), amount === undefined ? undefined : `(${workerText(amount)})`),
+      finishedColonists: (playerName, placedAmount, remainingAmount) =>
+        append(
+          messages.finishedColonists(playerName),
+          placedAmount === undefined || remainingAmount === undefined
+            ? undefined
+            : `(${workerText(placedAmount)} placed, ${workerText(remainingAmount)} left)`
+        ),
+      built: (playerName, buildingName, cost, moneyName) =>
+        append(messages.built(playerName, buildingName), moneyText(cost, moneyName) && `for ${moneyText(cost, moneyName)}`),
+      tookExtraGood: (playerName, goodName, amount, producedKinds) =>
+        append(messages.tookExtraGood(playerName, goodName), `${amount === undefined ? "" : `(${amount} extra)`}${producedText(producedKinds) ? ` ${producedText(producedKinds)}` : ""}`.trim() || undefined),
+      skippedExtraGood: (playerName, producedKinds) =>
+        append(messages.skippedExtraGood(playerName), producedText(producedKinds)),
+      producedGoods: (producedKinds) =>
+        append(messages.producedGoods(), producedText(producedKinds)),
+      sold: (playerName, goodName, price, moneyName) =>
+        append(messages.sold(playerName, goodName), moneyText(price, moneyName) && `for ${moneyText(price, moneyName)}`),
+      shipped: (playerName, amount, goodName, points) =>
+        append(messages.shipped(playerName, amount, goodName), points === undefined ? undefined : `for ${points} VP`),
+      usedWharf: (playerName, amount, goodName, points) =>
+        append(messages.usedWharf(playerName, amount, goodName), points === undefined ? undefined : `for ${points} VP`),
+      discarded: (playerName, goodName, amount, remainingAmount) =>
+        append(
+          messages.discarded(playerName, goodName),
+          amount === undefined || remainingAmount === undefined
+            ? undefined
+            : `(${amount} discarded, ${remainingAmount} left)`
+        ),
+      stored: (playerName, amount) =>
+        append(messages.stored(playerName), amount === undefined ? undefined : `(${amount} kept)`),
+    },
   };
 }
 
@@ -494,7 +568,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser hires 1 staff first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra dose.",
-      trader: "Chooser earns +1 stock.",
+      trader: "Chooser earns +1 stock when closing.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 stock.",
       prospector_2: "Chooser takes 1 stock.",
@@ -662,7 +736,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 farmhand first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra feed.",
-      trader: "Chooser earns +1 coin.",
+      trader: "Chooser earns +1 coin when selling.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 coin.",
       prospector_2: "Chooser takes 1 coin.",
@@ -827,7 +901,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 crew first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra filling.",
-      trader: "Chooser earns +1 tip.",
+      trader: "Chooser earns +1 tip when selling.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 tip.",
       prospector_2: "Chooser takes 1 tip.",
@@ -992,7 +1066,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 dancer first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may tune 1 extra instrument.",
-      trader: "Chooser earns +1 cover.",
+      trader: "Chooser earns +1 cover when selling.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 cover.",
       prospector_2: "Chooser takes 1 cover.",
@@ -1157,7 +1231,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 crew first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra product.",
-      trader: "Chooser earns +1 cash.",
+      trader: "Chooser earns +1 cash when selling.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 cash.",
       prospector_2: "Chooser takes 1 cash.",
@@ -1322,7 +1396,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 player first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra stat.",
-      trader: "Chooser earns +1 booster.",
+      trader: "Chooser earns +1 booster when trading.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 booster.",
       prospector_2: "Chooser takes 1 booster.",
@@ -1487,7 +1561,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 gym bro first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may train 1 extra muscle.",
-      trader: "Chooser earns +1 protein.",
+      trader: "Chooser earns +1 protein when selling.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 protein.",
       prospector_2: "Chooser takes 1 protein.",
@@ -1652,7 +1726,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 champion first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra role.",
-      trader: "Chooser earns +1 gold.",
+      trader: "Chooser earns +1 gold when trading.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 gold.",
       prospector_2: "Chooser takes 1 gold.",
@@ -1817,7 +1891,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 staff first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra chart.",
-      trader: "Chooser earns +1 copay.",
+      trader: "Chooser earns +1 copay when billing.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 copay.",
       prospector_2: "Chooser takes 1 copay.",
@@ -1982,7 +2056,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 duelist first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may draw 1 extra summon.",
-      trader: "Chooser earns +1 star.",
+      trader: "Chooser earns +1 star when trading.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 star.",
       prospector_2: "Chooser takes 1 star.",
@@ -2147,7 +2221,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 rat first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra hoard item.",
-      trader: "Chooser earns +1 coin.",
+      trader: "Chooser earns +1 coin when fencing.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 coin.",
       prospector_2: "Chooser takes 1 coin.",
@@ -2312,7 +2386,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 muscle first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra score.",
-      trader: "Chooser earns +1 cash.",
+      trader: "Chooser earns +1 cash when fencing.",
       captain: "Chooser earns +1 VP once.",
       prospector_1: "Chooser takes 1 cash.",
       prospector_2: "Chooser takes 1 cash.",
@@ -2448,6 +2522,11 @@ export function isPuertoRicoThemeKey(value: string | undefined): value is Puerto
 export function getThemeKey(): PuertoRicoThemeKey {
   const key = store.gameW?.game?.themeKey;
   return isPuertoRicoThemeKey(key) ? key : DEFAULT_THEME_KEY;
+}
+
+export function workerText(amount: number): string {
+  const labels = WORKER_LABELS[getThemeKey()];
+  return `${amount} ${amount === 1 ? labels.singular : labels.plural}`;
 }
 
 export function getTheme(): ThemeText {

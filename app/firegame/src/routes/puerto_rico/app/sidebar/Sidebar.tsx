@@ -39,6 +39,11 @@ class Sidebar extends SharedSidebar {
                 ))}
               </select>
               <strong className={css.sidebarPhaseName}>{theme.phase[game.phase]}</strong>
+              {game.activeRole && (
+                <span className={css.sidebarActiveRole}>
+                  {theme.labels.roles}: <strong>{theme.roles[game.activeRole]}</strong>
+                </span>
+              )}
               <strong>{game.players[game.currentPlayer]?.userName}</strong>
               <span>{theme.labels.round} {game.round}</span>
             </div>

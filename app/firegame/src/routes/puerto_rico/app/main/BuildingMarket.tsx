@@ -29,33 +29,44 @@ function BuildingMarket() {
                 {buildingIds.map((buildingId) => {
                   const rule = utils.building(buildingId);
                   const buildError = player ? utils.buildError(player, buildingId) : null;
-                  const disabled = game.phase !== "builder" || !utils.isMyTurn() || !!buildError;
-                  return (
+                  const soldOut = game.bank.buildingSupply[buildingId] <= 0;
+                  const canBuild = game.phase === "builder" && utils.isMyTurn() && !buildError;
+                  const className = `${css.tile} ${canBuild ? css.buttonTile : ""} ${css.building} ${
+                    soldOut ? css.soldOutBuilding : ""
+                  }`;
+                  const style = {
+                    backgroundColor:
+                      rule.kind === "production"
+                        ? rule.good
+                          ? theme.colors[rule.good]
+                          : "white"
+                        : theme.colors[rule.kind === "large" ? "large" : "violet"],
+                  };
+                  const content = (
+                    <BuildingCardContent
+                      buildingId={buildingId}
+                      footer={
+                        <>
+                          <span>{theme.labels.cost} {rule.cost}</span>
+                          <strong>{theme.labels.supply} {game.bank.buildingSupply[buildingId]}</strong>
+                          {rule.size > 1 && <span>{theme.labels.size} {rule.size}</span>}
+                        </>
+                      }
+                    />
+                  );
+                  return canBuild ? (
                     <button
                       key={buildingId}
-                      className={`${css.tile} ${css.buttonTile} ${css.building}`}
-                      style={{
-                        backgroundColor:
-                          rule.kind === "production"
-                            ? rule.good
-                              ? theme.colors[rule.good]
-                              : "white"
-                            : theme.colors[rule.kind === "large" ? "large" : "violet"],
-                      }}
-                      disabled={disabled}
+                      className={className}
+                      style={style}
                       onClick={() => utils.buildBuilding(buildingId)}
                     >
-                      <BuildingCardContent
-                        buildingId={buildingId}
-                        footer={
-                          <>
-                            <span>{theme.labels.cost} {rule.cost}</span>
-                            <strong>{theme.labels.supply} {game.bank.buildingSupply[buildingId]}</strong>
-                            {rule.size > 1 && <span>{theme.labels.size} {rule.size}</span>}
-                          </>
-                        }
-                      />
+                      {content}
                     </button>
+                  ) : (
+                    <div key={buildingId} className={className} style={style}>
+                      {content}
+                    </div>
                   );
                 })}
               </div>

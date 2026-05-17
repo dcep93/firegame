@@ -14,6 +14,8 @@ function PlayerBoard(props: { player: PlayerType }) {
   const canRename = player.userId === store.me.userId;
   const canPass = canRename && utils.canPass();
   const canPlace = utils.canManageMayor(player);
+  const canFinishMayor = utils.canFinishMayor(player);
+  const score = utils.scorePlayer(player);
   const canChooseCraftsmanBonus = canRename && game.phase === "craftsman_bonus" && utils.isMyTurn();
   const canUseWharf = canRename && game.phase === "captain" && utils.isMyTurn();
   const canStore = canRename && game.phase === "storage" && utils.isMyTurn();
@@ -21,6 +23,9 @@ function PlayerBoard(props: { player: PlayerType }) {
     ? game.producedGoods?.[game.roleOwner || 0] || []
     : [];
   const wharfOptions = canUseWharf ? utils.wharfOptions(player) : [];
+  const shipGoods = canUseWharf
+    ? Array.from(new Set(utils.shipOptions(player).map((option) => option.good)))
+    : [];
   const tradeGoods =
     canRename && game.phase === "trader" && utils.isMyTurn()
       ? utils.tradeGoods(player)
@@ -62,6 +67,7 @@ function PlayerBoard(props: { player: PlayerType }) {
           {player.index === game.governor && <span className={css.governorBadge}>{theme.labels.governor}</span>}
           <span className={css.score}>{player.doubloons} {theme.labels.doubloons}</span>
           <span className={css.score}>{player.victoryPoints} {theme.labels.vp}</span>
+          <span className={css.score}>{score.total} {theme.labels.vp} total</span>
           {canPass && (
             <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
               {theme.controls.pass}
@@ -86,17 +92,22 @@ function PlayerBoard(props: { player: PlayerType }) {
         {heldGoods.length === 0 && <span className={css.emptyGoods}>{theme.labels.noGoods}</span>}
         {heldGoods.map(({ good, index }) => {
           const canTrade = tradeGoods.includes(good);
+          const canShip = shipGoods.includes(good);
           const canDiscard = canStore && player.goods[good] > 0;
-          const className = `${css.smallTile} ${css.goodTile} ${canTrade || canDiscard ? css.playerGoodActionTile : ""}`;
+          const className = `${css.smallTile} ${css.goodTile} ${canTrade || canShip || canDiscard ? css.playerGoodActionTile : ""}`;
           const style = { backgroundColor: theme.colors[good] };
           const content = <span className={css.goodName}>{theme.goods[good]}</span>;
-          return canTrade || canDiscard ? (
+          return canTrade || canShip || canDiscard ? (
             <button
               key={`${good}-${index}`}
               type="button"
               className={className}
               style={style}
-              onClick={() => (canTrade ? utils.sellGood(good) : utils.discardGood(good))}
+              onClick={() => {
+                if (canTrade) utils.sellGood(good);
+                else if (canShip) utils.shipGoodFromBoard(good);
+                else utils.discardGood(good);
+              }}
             >
               {content}
             </button>
@@ -126,11 +137,14 @@ function PlayerBoard(props: { player: PlayerType }) {
       </div>
       <div className={css.boardSubhead}>
         <h4>{theme.labels.island} {player.island.length}/12</h4>
-        <span className={css.metricBubble}>{theme.labels.sanJuan} {player.sanJuan}</span>
-        {canPlace && (
-          <button className={css.inlineActionButton} onClick={() => utils.finishMayor()}>
-            {theme.controls.finishPlacement}
+        {canFinishMayor ? (
+          <button className={`${css.metricBubble} ${css.finishMayorBubble}`} onClick={() => utils.finishMayor()}>
+            {theme.labels.sanJuan} {player.sanJuan}
           </button>
+        ) : (
+          <span className={`${css.metricBubble} ${canPlace ? css.pendingMayorBubble : ""}`}>
+            {theme.labels.sanJuan} {player.sanJuan}
+          </span>
         )}
       </div>
       <div className={css.compactRow}>
