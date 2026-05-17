@@ -51,7 +51,7 @@ export const THEME_OPTIONS: { key: PuertoRicoThemeKey; label: string }[] = [
 const colors = {
   corn: "#f3d66b",
   indigo: "#6e91c8",
-  sugar: "#f7f4e6",
+  sugar: "#d9edf2",
   tobacco: "#c18b5a",
   coffee: "#775042",
   quarry: "#b8babd",
