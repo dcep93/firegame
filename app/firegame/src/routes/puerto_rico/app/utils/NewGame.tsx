@@ -80,6 +80,8 @@ export type ScoreLine = {
 export type GameType = {
   params: Params;
   themeKey?: PuertoRicoThemeKey;
+  playerTimers: Record<string, number>;
+  turnStartedAt: number;
   currentPlayer: number;
   players: PlayerType[];
   phase: Phase;
@@ -115,6 +117,8 @@ function NewGame(params: Params): PromiseLike<GameType> {
   const game: GameType = {
     params,
     themeKey: params.themeKey || DEFAULT_THEME_KEY,
+    playerTimers: {},
+    turnStartedAt: Date.now(),
     currentPlayer: 0,
     players: [],
     phase: "role",
@@ -169,6 +173,7 @@ function setPlayers(game: GameType): GameType {
       city: [],
       sanJuan: 0,
     }));
+  game.playerTimers = Object.fromEntries(game.players.map((player) => [player.userId, 0]));
   game.currentPlayer = 0;
   game.governor = 0;
   game.rolePicker = 0;
@@ -216,6 +221,8 @@ export function createSampleGame(params: Params): GameType {
   const game: GameType = {
     params,
     themeKey: params.themeKey || DEFAULT_THEME_KEY,
+    playerTimers: {},
+    turnStartedAt: Date.now(),
     currentPlayer: 0,
     players: lobbyEntries.map(([userId, userName], index) => ({
       userId,
@@ -252,6 +259,7 @@ export function createSampleGame(params: Params): GameType {
       ),
     },
   };
+  game.playerTimers = Object.fromEntries(game.players.map((player) => [player.userId, 0]));
   GOOD_IDS.forEach((good) => (game.bank.goodsSupply[good] = utils.goodSupply(good)));
   setup.startingPlantations.slice(0, game.players.length).forEach((good, index) => {
     const player = game.players[index];

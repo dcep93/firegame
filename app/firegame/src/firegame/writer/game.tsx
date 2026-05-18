@@ -5,6 +5,11 @@ import { gamePath, update } from "./utils";
 const GAME_EXPIRE_TIME = 2 * 60 * 60 * 1000;
 
 type RecordType<T> = { [updateKey: string]: GameWrapperType<T> };
+type TimedGame = {
+  playerTimers?: Record<string, number>;
+  turnStartedAt?: number;
+  players?: { userId: string }[];
+};
 
 function enterGame(): void {
   Firebase.latestChild(gamePath(), receiveGameUpdate);
@@ -12,11 +17,13 @@ function enterGame(): void {
 
 function sendGameState<T>(message: string, game: T, isNewGame?: boolean): void {
   const lastInfo = store.gameW.info;
+  const now = Firebase.now();
+  updatePlayerTimers(game, now, !!isNewGame);
   const gameWrapper: GameWrapperType<T> = {
     game,
     info: {
       id: lastInfo.id + 1,
-      timestamp: Firebase.now(),
+      timestamp: now,
       host: lastInfo.host,
       playerId: store.me.userId,
       playerName: store.lobby[store.me.userId] || store.me.userId,
@@ -28,6 +35,24 @@ function sendGameState<T>(message: string, game: T, isNewGame?: boolean): void {
   if (lastInfo.alert) gameWrapper.info.alert = lastInfo.alert;
   if (isNewGame) gameWrapper.info.isNewGame = isNewGame;
   sendGameStateHelper(gameWrapper);
+}
+
+function updatePlayerTimers<T>(game: T, now: number, isNewGame: boolean): void {
+  if (!game || typeof game !== "object") return;
+  const timedGame = game as TimedGame;
+  if (!timedGame.playerTimers) return;
+  if (isNewGame) {
+    timedGame.turnStartedAt = now;
+    return;
+  }
+
+  const startedAt = timedGame.turnStartedAt;
+  const elapsed = typeof startedAt === "number" ? Math.max(0, now - startedAt) : 0;
+  const isGamePlayer = timedGame.players?.some((player) => player.userId === store.me.userId);
+  if (isGamePlayer) {
+    timedGame.playerTimers[store.me.userId] = (timedGame.playerTimers[store.me.userId] || 0) + elapsed;
+  }
+  timedGame.turnStartedAt = now;
 }
 
 function sendGameStateHelper<T>(gameWrapper: GameWrapperType<T>): void {

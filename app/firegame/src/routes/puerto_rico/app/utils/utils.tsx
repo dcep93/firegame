@@ -56,6 +56,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     game.governor = game.governor || 0;
     game.rolePicker = game.rolePicker || 0;
     game.currentPlayer = game.currentPlayer || 0;
+    game.playerTimers = game.playerTimers || {};
+    game.players.forEach((player) => {
+      game.playerTimers[player.userId] = game.playerTimers[player.userId] || 0;
+    });
+    game.turnStartedAt = game.turnStartedAt || store.gameW.info.timestamp || Date.now();
     game.selectedRoles = this.asArray(game.selectedRoles);
     game.actionQueue = this.asArray(game.actionQueue);
     const producedGoods = this.normalizeProducedGoods(game.producedGoods);

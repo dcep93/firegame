@@ -8,16 +8,16 @@ class Player extends React.Component<
   { timesLength: number }
 > {
   render() {
-    if (
-      !store.gameW.game?.players.find(
-        (p: { userId: string }) => p.userId === this.props.userId
-      )
-    )
+    if (!getGamePlayer(this.props.userId))
       return <>{this.props.userName}</>;
 
-    const timeStrings = getTimes(this.props.userId)
-      .filter((obj) => obj.id !== -1)
-      .map((obj) => `${Math.floor(obj.duration)}s [${obj.id}]`);
+    const storedTime = getStoredTime(this.props.userId);
+    const timeStrings =
+      storedTime === null
+        ? getTimes(this.props.userId)
+            .filter((obj) => obj.id !== -1)
+            .map((obj) => `${Math.floor(obj.duration)}s [${obj.id}]`)
+        : [`${Math.floor(storedTime / 1000)}s stored in game state`];
     if (timeStrings.length === 0) timeStrings.push("-");
 
     return (
@@ -33,6 +33,23 @@ class Player extends React.Component<
       </span>
     );
   }
+}
+
+function getGamePlayer(userId: string) {
+  return store.gameW.game?.players?.find(
+    (p: { userId: string }) => p.userId === userId
+  );
+}
+
+function getStoredTime(userId: string): number | null {
+  const game = store.gameW.game;
+  if (!game?.playerTimers) return null;
+  let total = game.playerTimers[userId] || 0;
+  const current = game.players?.[game.currentPlayer]?.userId;
+  if (current === userId && game.phase !== "game_over" && typeof game.turnStartedAt === "number") {
+    total += Math.max(0, Firebase.now() - game.turnStartedAt);
+  }
+  return total;
 }
 
 function getTimes(userId: string) {
@@ -72,9 +89,11 @@ class PlayerTimer extends React.Component<{
   }
 
   render() {
-    const times = getTimes(this.props.userId);
-    // this.props.update(times.length);
-    const totalTime = Math.floor(times.map((obj) => obj.duration).sum());
+    const storedTime = getStoredTime(this.props.userId);
+    const totalTime =
+      storedTime === null
+        ? Math.floor(getTimes(this.props.userId).map((obj) => obj.duration).sum())
+        : Math.floor(storedTime / 1000);
     const seconds = totalTime % 60;
     const minutes = (totalTime - seconds) / 60;
     return (
