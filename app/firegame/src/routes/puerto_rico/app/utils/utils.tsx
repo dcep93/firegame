@@ -202,11 +202,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.update(theme.messages.choseRole(player.userName, theme.roles[roleId], this.rewardText(rewards)));
   }
 
-  startTurnPhase(phase: Exclude<Phase, "role" | "craftsman_bonus" | "game_over">): void {
+  startTurnPhase(phase: Exclude<Phase, "role" | "craftsman_bonus" | "game_over">): string[] {
     const game = store.gameW.game;
     game.phase = phase;
     game.actionQueue = this.turnOrder(game.roleOwner!);
-    this.advanceToNextAction();
+    return this.advanceToNextAction();
   }
 
   startMayor(): number {
@@ -255,25 +255,38 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return ` and took ${rewards.slice(0, -1).join(", ")} and ${rewards[rewards.length - 1]}`;
   }
 
-  advanceToNextAction(): void {
+  advanceToNextAction(autoMessages: string[] = []): string[] {
     const game = store.gameW.game;
     while (game.actionQueue.length > 0) {
       const next = game.actionQueue[0];
       game.currentPlayer = next;
-      if (this.playerHasAction(next, game.phase)) return;
+      if (this.playerHasAction(next, game.phase)) {
+        if (game.phase === "storage") {
+          let autoMessage = this.autoDiscardForcedStorageGood(game.players[next]);
+          while (autoMessage) {
+            autoMessages.push(autoMessage);
+            autoMessage = this.autoDiscardForcedStorageGood(game.players[next]);
+          }
+          if (!this.playerHasAction(next, game.phase)) {
+            game.actionQueue.shift();
+            continue;
+          }
+        }
+        return autoMessages;
+      }
       game.actionQueue.shift();
     }
     if (game.phase === "trader" && game.bank.tradingHouse.length === TRADING_HOUSE_SIZE) {
       this.emptyTradingHouse();
     }
     if (game.phase === "captain") {
-      this.startStorage();
-      return;
+      return this.startStorage(autoMessages);
     }
     if (game.phase === "storage") {
       this.unloadFullShips();
     }
-    this.finishRole(theme.messages.phaseFinished(theme.phase[game.phase]));
+    this.finishRole(theme.messages.phaseFinished(theme.phase[game.phase]), autoMessages);
+    return autoMessages;
   }
 
   playerHasAction(playerIndex: number, phase: Phase): boolean {
@@ -699,8 +712,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const order = this.turnOrder(this.playerIndexByIndex(game.currentPlayer + 1));
     const next = order.find((playerIndex) => this.hasCaptainAction(game.players[playerIndex]));
     if (next === undefined) {
-      this.startStorage();
-      if (store.gameW.game.phase === "storage") store.update(message);
+      const autoMessages = this.startStorage();
+      if (store.gameW.game.phase === "storage") store.update(this.withAutoMessages(message, autoMessages));
     } else {
       game.actionQueue = [next];
       game.currentPlayer = next;
@@ -708,22 +721,40 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     }
   }
 
-  startStorage(): void {
+  startStorage(autoMessages: string[] = []): string[] {
     const game = store.gameW.game;
     game.phase = "storage";
     game.actionQueue = this.turnOrder(game.roleOwner!);
-    this.advanceToNextAction();
+    return this.advanceToNextAction(autoMessages);
   }
 
   discardGood(good: GoodId): void {
     if (!this.assertMyAction("storage")) return;
-    const player = this.getCurrent();
-    if (player.goods[good] <= 0) return;
+    this.discardGoodForPlayer(this.getCurrent(), good);
+  }
+
+  discardGoodForPlayer(player: PlayerType, good: GoodId, shouldUpdate = true): string | null {
+    if (player.goods[good] <= 0) return null;
     player.goods[good] -= 1;
     store.gameW.game.bank.goodsSupply[good] += 1;
     const message = theme.messages.discarded(player.userName, theme.goods[good], 1, this.totalGoods(player));
-    if (this.canStoreCurrentGoods(player)) this.finishAction(message);
-    else store.update(message);
+    if (shouldUpdate) {
+      if (this.canStoreCurrentGoods(player)) this.finishAction(message);
+      else store.update(message);
+    }
+    return message;
+  }
+
+  autoDiscardForcedStorageGood(player: PlayerType): string | null {
+    const overflow = this.storageOverflow(player);
+    if (overflow <= 0) return null;
+    const forcedGoods = GOOD_IDS.filter((good) => {
+      if (player.goods[good] <= 0) return false;
+      const copy = { ...player, goods: { ...player.goods, [good]: player.goods[good] - 1 } };
+      return this.storageOverflow(copy) < overflow;
+    });
+    if (forcedGoods.length !== 1) return null;
+    return this.discardGoodForPlayer(player, forcedGoods[0], false);
   }
 
   finishStorage(): void {
@@ -735,11 +766,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   finishAction(message: string): void {
     store.gameW.game.actionQueue.shift();
-    this.advanceToNextAction();
-    store.update(message);
+    const autoMessages = this.advanceToNextAction();
+    store.update(this.withAutoMessages(message, autoMessages));
   }
 
-  finishRole(message: string): void {
+  finishRole(message: string, autoMessages: string[] = []): void {
     const game = store.gameW.game;
     game.players.forEach((player) => {
       delete player.captainBonusTaken;
@@ -758,7 +789,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       game.rolePicker = this.playerIndexByIndex(game.governor + game.selectedRoles.length);
       game.currentPlayer = game.rolePicker;
     }
-    store.update(message);
+    store.update(this.withAutoMessages(message, autoMessages));
+  }
+
+  withAutoMessages(message: string, autoMessages: string[]): string {
+    if (autoMessages.length === 0) return message;
+    return [message, ...autoMessages].join("; ");
   }
 
   finishRound(): void {
@@ -975,6 +1011,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   canStoreCurrentGoods(player: PlayerType): boolean {
+    return this.storageOverflow(player) <= 0;
+  }
+
+  storageOverflow(player: PlayerType): number {
     const warehouseKinds =
       (this.hasOccupiedBuilding(player, "small_warehouse") ? 1 : 0) +
       (this.hasOccupiedBuilding(player, "large_warehouse") ? 2 : 0);
@@ -982,7 +1022,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       .sort((a, b) => b - a)
       .slice(0, warehouseKinds)
       .sum();
-    return this.totalGoods(player) - protectedGoods <= 1;
+    return this.totalGoods(player) - protectedGoods - 1;
   }
 
   takeColonists(player: PlayerType, count: number): number {

@@ -67,11 +67,12 @@ function CraftsmanBonusButton(props: { good: GoodId }) {
   return (
     <button
       type="button"
-      className={css.inlineActionButton}
+      className={`${css.smallTile} ${css.goodTile} ${css.playerGoodActionTile}`}
+      style={{ backgroundColor: theme.colors[props.good] }}
       disabled={store.gameW.game.bank.goodsSupply[props.good] <= 0}
       onClick={() => utils.chooseCraftsmanBonus(props.good)}
     >
-      {theme.actions.take} {theme.goods[props.good]}
+      <span className={css.goodName}>{theme.actions.take} {theme.goods[props.good]}</span>
     </button>
   );
 }

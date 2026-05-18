@@ -98,11 +98,15 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
           </div>
           <div className={css.lobbyList}>
             {this.lobbyRows(game).map(({ userId, userName, player, connected }) => {
-              const isCurrent = player?.index === game?.currentPlayer;
+              const isActing =
+                player &&
+                (game?.phase === "mayor"
+                  ? game.actionQueue.includes(player.index)
+                  : player.index === game?.currentPlayer);
               return (
                 <div
                   key={userId}
-                  className={`${css.lobbyRow} ${isCurrent ? css.currentLobbyRow : ""} ${
+                  className={`${css.lobbyRow} ${isActing ? css.currentLobbyRow : ""} ${
                     connected ? "" : css.disconnectedLobbyRow
                   }`}
                 >

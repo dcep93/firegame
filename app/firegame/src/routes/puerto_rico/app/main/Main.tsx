@@ -19,12 +19,12 @@ function Main(props: { game?: GameType; readOnly?: boolean }) {
       {game.phase === "game_over" && <ScoreBoard />}
       <RoleRow game={game} readOnly={props.readOnly} />
       <BankView game={game} readOnly={props.readOnly} />
-      <BuildingMarket game={game} readOnly={props.readOnly} />
       <div className={css.playerList}>
         {players.map((player) => (
           <PlayerBoard key={player.userId} game={game} player={player} readOnly={props.readOnly} />
         ))}
       </div>
+      <BuildingMarket game={game} readOnly={props.readOnly} />
     </div>
   );
 }
