@@ -59,8 +59,8 @@ function now(): number {
   return offset + Date.now();
 }
 
-function latestChild(path: string, callback: (value: BlobType) => void): void {
-  onValue(
+function latestChild(path: string, callback: (value: BlobType) => void): () => void {
+  return onValue(
     query(ref(database, path), limitToLast(1)),
     (snapshot: ResultType) => {
       var val = snapshot.val();
@@ -75,8 +75,8 @@ function push(path: string, obj: BlobType): void {
   f_push(ref(database, path), obj).then((pushed) => pushed.key!);
 }
 
-function connect(path: string, callback: (value: BlobType) => void): void {
-  onValue(ref(database, path), (snapshot: ResultType) => {
+function connect(path: string, callback: (value: BlobType) => void): () => void {
+  return onValue(ref(database, path), (snapshot: ResultType) => {
     var val = snapshot.val();
     callback(val);
   });
