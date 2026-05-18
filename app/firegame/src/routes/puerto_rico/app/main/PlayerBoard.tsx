@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import css from "../index.module.css";
 import writer from "../../../../firegame/writer/writer";
 import { goodsInThemeOrder, theme } from "../theme/base";
@@ -9,7 +10,8 @@ import BuildingCardContent from "./BuildingCardContent";
 const islandOrder: PlantationId[] = [...goodsInThemeOrder, "quarry"];
 
 function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: boolean }) {
-  const { player } = props;
+  useMayorDraftVersion();
+  const player = props.readOnly ? props.player : utils.getMayorPlayer(props.player);
   const game = props.game || store.gameW.game;
   const canRename = !props.readOnly && player.userId === store.me.userId;
   const canPass = canRename && utils.canPass();
@@ -202,6 +204,12 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
       </div>
     </div>
   );
+}
+
+function useMayorDraftVersion(): number {
+  const [version, setVersion] = useState(0);
+  useEffect(() => utils.subscribeMayorDraft(() => setVersion((value) => value + 1)), []);
+  return version;
 }
 
 function PlayerGoodAction(props: {

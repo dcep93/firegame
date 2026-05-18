@@ -30,8 +30,11 @@ import {
 } from "./rules";
 
 const store: StoreType<GameType> = store_;
+const MAYOR_DRAFT_EVENT = "puerto-rico-mayor-draft";
 
 class Utils extends SharedUtils<GameType, PlayerType> {
+  mayorDrafts: Record<string, PlayerType> = {};
+
   normalizeGame(game: GameType = store.gameW.game): GameType {
     if (!game) return game;
     game.players = this.asArray(game.players).map((player, index) => {
@@ -412,6 +415,32 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
   }
 
+  getMayorPlayer(player: PlayerType): PlayerType {
+    if (!this.canManageMayor(player)) return player;
+    return this.mayorDrafts[player.userId] || player;
+  }
+
+  subscribeMayorDraft(callback: () => void): () => void {
+    window.addEventListener(MAYOR_DRAFT_EVENT, callback);
+    return () => window.removeEventListener(MAYOR_DRAFT_EVENT, callback);
+  }
+
+  notifyMayorDraft(): void {
+    window.dispatchEvent(new Event(MAYOR_DRAFT_EVENT));
+  }
+
+  ensureMayorDraft(player: PlayerType): PlayerType {
+    if (!this.mayorDrafts[player.userId]) {
+      this.mayorDrafts[player.userId] = this.copy(player);
+    }
+    return this.mayorDrafts[player.userId];
+  }
+
+  clearMayorDraft(player: PlayerType): void {
+    delete this.mayorDrafts[player.userId];
+    this.notifyMayorDraft();
+  }
+
   canFinishMayor(player: PlayerType | undefined): boolean {
     if (!player || !this.canManageMayor(player)) return false;
     return player.sanJuan === 0 || this.emptyColonistSpaces(player) === 0;
@@ -435,37 +464,44 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   assignColonist(target: "island" | "city", index: number): void {
-    const player = this.getMe();
-    if (!this.assertMyMayorAction(player)) return;
+    const basePlayer = this.getMe();
+    if (!this.assertMyMayorAction(basePlayer)) return;
+    const player = this.ensureMayorDraft(basePlayer);
     if (player.sanJuan <= 0) return alert(`${theme.labels.sanJuan} is empty`);
     const tile = target === "island" ? player.island[index] : player.city[index];
     if (!tile) return;
     if (tile.colonists >= this.tileCapacity(tile)) return alert("that tile is full");
     tile.colonists += 1;
     player.sanJuan -= 1;
-    store.update(theme.messages.placedColonist(player.userName, 1));
+    this.notifyMayorDraft();
   }
 
   removeColonist(target: "island" | "city", index: number): void {
-    const player = this.getMe();
-    if (!this.assertMyMayorAction(player)) return;
+    const basePlayer = this.getMe();
+    if (!this.assertMyMayorAction(basePlayer)) return;
+    const player = this.ensureMayorDraft(basePlayer);
     const tile = target === "island" ? player.island[index] : player.city[index];
     if (!tile || tile.colonists <= 0) return;
     tile.colonists -= 1;
     player.sanJuan += 1;
-    store.update(theme.messages.movedColonistToSanJuan(player.userName, 1));
+    this.notifyMayorDraft();
   }
 
   finishMayor(): void {
     const player = this.getMe();
     if (!this.assertMyMayorAction(player)) return;
-    if (!this.canFinishMayor(player)) return alert(`empty ${theme.labels.sanJuan} first`);
+    const draft = this.getMayorPlayer(player);
+    if (!this.canFinishMayor(draft)) return alert(`empty ${theme.labels.sanJuan} first`);
     const game = store.gameW.game;
     const wasCurrent = game.currentPlayer === player.index;
+    player.sanJuan = draft.sanJuan;
+    player.island = draft.island;
+    player.city = draft.city;
     const placed = this.placedColonists(player);
     const remaining = player.sanJuan;
     game.actionQueue = game.actionQueue.filter((playerIndex) => playerIndex !== player.index);
     if (wasCurrent) this.advanceToNextAction();
+    this.clearMayorDraft(player);
     store.update(theme.messages.finishedColonists(player.userName, placed, remaining));
   }
 
