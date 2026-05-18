@@ -261,6 +261,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       const next = game.actionQueue[0];
       game.currentPlayer = next;
       if (this.playerHasAction(next, game.phase)) {
+        if (game.phase === "captain") {
+          let autoMessage = this.autoTakeForcedCaptainAction(game.players[next]);
+          while (autoMessage) {
+            autoMessages.push(autoMessage);
+            autoMessage = this.autoTakeForcedCaptainAction(game.players[next]);
+          }
+          if (!this.playerHasAction(next, game.phase)) {
+            game.actionQueue.shift();
+            continue;
+          }
+        }
         if (game.phase === "storage") {
           let autoMessage = this.autoDiscardForcedStorageGood(game.players[next]);
           while (autoMessage) {
@@ -636,15 +647,22 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       (candidate) => candidate.good === good && candidate.shipIndex === shipIndex
     );
     if (!option) return alert("that shipment is not legal");
-    const ship = store.gameW.game.bank.cargoShips[shipIndex];
-    ship.good = good;
+    this.finishCaptainTurn(this.shipGoodForPlayer(player, option));
+  }
+
+  shipGoodForPlayer(
+    player: PlayerType,
+    option: { good: GoodId; shipIndex: number; amount: number }
+  ): string {
+    const ship = store.gameW.game.bank.cargoShips[option.shipIndex];
+    ship.good = option.good;
     ship.count += option.amount;
-    player.goods[good] -= option.amount;
+    player.goods[option.good] -= option.amount;
     const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
     player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
     const points = option.amount + bonus + this.harborBonus(player);
     this.gainVictoryPoints(player, points);
-    this.finishCaptainTurn(theme.messages.shipped(player.userName, option.amount, theme.goods[good], points));
+    return theme.messages.shipped(player.userName, option.amount, theme.goods[option.good], points);
   }
 
   shipGoodFromBoard(good: GoodId): void {
@@ -692,14 +710,35 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const player = this.getCurrent();
     const option = this.wharfOptions(player).find((candidate) => candidate.good === good);
     if (!option) return alert("that wharf shipment is not legal");
-    player.goods[good] = 0;
+    this.finishCaptainTurn(this.useWharfForPlayer(player, option));
+  }
+
+  useWharfForPlayer(player: PlayerType, option: { good: GoodId; amount: number }): string {
+    player.goods[option.good] = 0;
     player.wharfUsed = true;
-    store.gameW.game.bank.goodsSupply[good] += option.amount;
+    store.gameW.game.bank.goodsSupply[option.good] += option.amount;
     const bonus = player.index === store.gameW.game.roleOwner && !player.captainBonusTaken ? 1 : 0;
     player.captainBonusTaken = player.captainBonusTaken || bonus > 0;
     const points = option.amount + bonus + this.harborBonus(player);
     this.gainVictoryPoints(player, points);
-    this.finishCaptainTurn(theme.messages.usedWharf(player.userName, option.amount, theme.goods[good], points));
+    return theme.messages.usedWharf(player.userName, option.amount, theme.goods[option.good], points);
+  }
+
+  autoTakeForcedCaptainAction(player: PlayerType): string | null {
+    const shipActions = this.shipOptions(player).map((option) => ({
+      kind: "ship" as const,
+      option,
+    }));
+    const wharfActions = this.wharfOptions(player).map((option) => ({
+      kind: "wharf" as const,
+      option,
+    }));
+    const actions = [...shipActions, ...wharfActions];
+    if (actions.length !== 1) return null;
+    const action = actions[0];
+    return action.kind === "ship"
+      ? this.shipGoodForPlayer(player, action.option)
+      : this.useWharfForPlayer(player, action.option);
   }
 
   harborBonus(player: PlayerType): number {
@@ -717,7 +756,8 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     } else {
       game.actionQueue = [next];
       game.currentPlayer = next;
-      store.update(message);
+      const autoMessages = this.advanceToNextAction();
+      store.update(this.withAutoMessages(message, autoMessages));
     }
   }
 
