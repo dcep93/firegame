@@ -6,6 +6,7 @@ import writer from "../writer/writer";
 
 import Catann from "../../routes/catann/app/Catann";
 import EclipseCalc from "../../routes/eclipse_calc/app/EclipseCalc";
+import FireTimer from "../../routes/fire_timer/app/FireTimer";
 import { VERSION } from "../../shared/shared";
 import { getFiregameUserId } from "../writer/utils";
 import LoadingPage from "./LoadingPage";
@@ -17,13 +18,13 @@ class GameWrapper extends React.Component<{
   roomId: number;
 }> {
   isCatann() {
-    return this.props.component.name === Catann.name;
+    return this.props.component === Catann;
   }
   skipsLogin() {
     return (
-      this.props.component.name === EclipseCalc.name ||
-      this.props.component.name === Catann.name ||
-      this.props.component.name === "FireTimer"
+      this.props.component === EclipseCalc ||
+      this.props.component === Catann ||
+      this.props.component === FireTimer
     );
   }
 
