@@ -1,8 +1,19 @@
 import css from "../index.module.css";
 import { theme } from "../theme/base";
 import { GameType } from "../utils/NewGame";
-import { GoodId, ROLE_KIND } from "../utils/rules";
+import { GoodId, RoleId, ROLE_KIND } from "../utils/rules";
 import utils, { store } from "../utils/utils";
+
+const roleIconText: Record<RoleId, string> = {
+  settler: "SET",
+  mayor: "MAY",
+  builder: "BLD",
+  craftsman: "CRF",
+  trader: "TRD",
+  captain: "CAP",
+  prospector_1: "P1",
+  prospector_2: "P2",
+};
 
 function RoleRow(props: { game?: GameType; readOnly?: boolean }) {
   const game = props.game || store.gameW.game;
@@ -19,6 +30,7 @@ function RoleRow(props: { game?: GameType; readOnly?: boolean }) {
           const canChoose = !props.readOnly && game.phase === "role" && role.takenBy === undefined && utils.isRolePicker();
           const content = (
             <>
+            <RoleIcon roleId={role.id} />
             <div className={css.tileTitle}>{theme.roles[role.id]}</div>
             <div className={css.roleLine}>* {theme.roleRewards[role.id]}</div>
             <div className={css.roleLine}>{theme.roleDescriptions[role.id]}</div>
@@ -60,6 +72,16 @@ function RoleRow(props: { game?: GameType; readOnly?: boolean }) {
         })}
       </div>
     </div>
+  );
+}
+
+function RoleIcon(props: { roleId: RoleId }) {
+  const kind = ROLE_KIND[props.roleId];
+  return (
+    <span className={`${css.roleIcon} ${css[`roleIcon_${kind}`]}`} aria-hidden="true">
+      <span className={css.roleIconGlyph} />
+      <span className={css.roleIconText}>{roleIconText[props.roleId]}</span>
+    </span>
   );
 }
 
