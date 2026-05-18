@@ -570,6 +570,13 @@
   font-weight: 900;
 }
 
+.roleActionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+
 .actionLead {
   border: 1px solid rgba(44, 61, 54, 0.12);
   border-radius: 6px;
