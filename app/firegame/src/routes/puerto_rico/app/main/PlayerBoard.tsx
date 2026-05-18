@@ -65,14 +65,14 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
         </h3>
         <div className={css.playerHeaderBadges}>
           {player.index === game.governor && <span className={css.governorBadge}>{theme.labels.governor}</span>}
-          <span className={css.score}>{player.doubloons} {theme.labels.doubloons}</span>
-          <span className={css.score}>{player.victoryPoints} {theme.labels.vp}</span>
-          <span className={css.score}>{score.total} {theme.labels.vp} total</span>
           {canPass && (
             <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
               {theme.controls.pass}
             </button>
           )}
+          <span className={css.score}>{player.doubloons} {theme.labels.doubloons}</span>
+          <span className={css.score}>{player.victoryPoints} {theme.labels.vp}</span>
+          <span className={css.score}>{score.total} {theme.labels.vp} total</span>
           {canChooseCraftsmanBonus && (
             <button className={css.inlineActionButton} onClick={() => utils.skipCraftsmanBonus()}>
               {theme.controls.skipBonus}

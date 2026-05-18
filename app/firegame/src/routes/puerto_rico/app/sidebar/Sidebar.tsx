@@ -61,15 +61,23 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
         </section>
 
         <section className={css.sidebarCard}>
-          <h2>{theme.labels.controls}</h2>
+          <div className={css.sidebarHeadingRow}>
+            <h2>{theme.labels.controls}</h2>
+            <a className={css.inlineSidebarButton} href={this.rules}>
+              {theme.labels.rules}
+            </a>
+          </div>
           <div className={css.controlGrid}>
             <button onClick={this.startNewGame.bind(this)}>{theme.controls.newGame}</button>
+            <button
+              onClick={() => utils.skipAction()}
+              disabled={!game || !utils.canPass()}
+            >
+              {theme.controls.pass}
+            </button>
             <button onClick={() => firebaseUndo()}>{theme.labels.undo}</button>
             <a className={css.sidebarButton} href="..">
               {theme.labels.home}
-            </a>
-            <a className={css.sidebarButton} href={this.rules}>
-              {theme.labels.rules}
             </a>
           </div>
           {game?.endTriggered && game.phase !== "game_over" && (
