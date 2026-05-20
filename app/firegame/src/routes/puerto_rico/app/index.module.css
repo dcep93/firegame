@@ -225,7 +225,7 @@
 .lobbyRow {
   display: grid;
   grid-template-columns: max-content max-content max-content minmax(0, 1fr);
-  gap: 4px;
+  gap: 5px;
   align-items: center;
   border: 1px solid rgba(36, 55, 47, 0.1);
   border-radius: 5px;
@@ -266,8 +266,15 @@ button.lobbyRow {
 }
 
 .lobbyTime,
-.lobbyMoney,
-.lobbyVp {
+.lobbyMetric {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18px;
+  border: 1px solid rgba(36, 55, 47, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 1px 5px;
   white-space: nowrap;
 }
 

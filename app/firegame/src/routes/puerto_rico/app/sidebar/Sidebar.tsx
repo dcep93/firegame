@@ -111,8 +111,8 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
                       <span className={css.lobbyTime}>
                         <PlayerTimer userId={userId} />
                       </span>
-                      <span className={css.lobbyMoney}>${player.doubloons}</span>
-                      <span className={css.lobbyVp}>{utils.scorePlayer(player).total} {theme.labels.vp}</span>
+                      <span className={css.lobbyMetric}>${player.doubloons}</span>
+                      <span className={css.lobbyMetric}>{utils.scorePlayer(player).total} {theme.labels.vp}</span>
                       <span className={css.lobbyPlayerName}>{player.userName || userName}</span>
                     </>
                   ) : (
