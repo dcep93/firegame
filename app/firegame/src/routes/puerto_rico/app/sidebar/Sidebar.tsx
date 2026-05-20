@@ -186,7 +186,7 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
 
   scrollToPlayer(player: PlayerType): void {
     const element = document.getElementById(playerBoardElementId(player.userId));
-    element?.scrollIntoView({ behavior: "smooth", block: "start" });
+    element?.scrollIntoView({ block: "start" });
   }
 
   componentDidMount() {
