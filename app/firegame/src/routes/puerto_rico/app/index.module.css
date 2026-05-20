@@ -218,17 +218,23 @@
   gap: 6px;
 }
 
+.lobbyList {
+  max-height: 132px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
 .lobbyRow {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 32px 32px 42px minmax(0, 1fr);
+  gap: 5px;
   align-items: center;
   border: 1px solid rgba(36, 55, 47, 0.1);
   border-radius: 6px;
   background: #f7faf7;
-  padding: 6px 8px;
+  padding: 4px 6px;
   color: #2c3d35;
-  font-size: 0.86rem;
+  font-size: 0.72rem;
   font-weight: 700;
 }
 
@@ -255,6 +261,19 @@ button.lobbyRow {
 
 .disconnectedLobbyRow {
   opacity: 0.5;
+}
+
+.lobbyTime,
+.lobbyMoney,
+.lobbyVp {
+  white-space: nowrap;
+}
+
+.lobbyPlayerName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebarMetrics {

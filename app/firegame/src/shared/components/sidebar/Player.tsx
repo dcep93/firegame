@@ -75,9 +75,9 @@ function getTimes(userId: string) {
   return times;
 }
 
-class PlayerTimer extends React.Component<{
+export class PlayerTimer extends React.Component<{
   userId: string;
-  update: (timesLength: number) => void;
+  update?: (timesLength: number) => void;
 }> {
   interval: number = -1;
   componentDidMount() {

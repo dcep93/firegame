@@ -76,8 +76,8 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
             </button>
           )}
           <span className={css.score}>{player.doubloons} {theme.labels.doubloons}</span>
-          <span className={css.score}>{player.victoryPoints} {theme.labels.vp}</span>
-          <span className={css.score}>{score.total} {theme.labels.vp} total</span>
+          <span className={css.score}>{player.victoryPoints} {theme.labels.vp} chips</span>
+          <span className={css.score}>{score.total} {theme.labels.vp}</span>
           {canChooseCraftsmanBonus && (
             <button className={css.inlineActionButton} onClick={() => utils.skipCraftsmanBonus()}>
               {theme.controls.skipBonus}

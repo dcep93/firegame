@@ -1,6 +1,6 @@
 import { firebaseUndo } from "../../../../firegame/firebase";
 import writer from "../../../../firegame/writer/writer";
-import Player from "../../../../shared/components/sidebar/Player";
+import { PlayerTimer } from "../../../../shared/components/sidebar/Player";
 import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import { history } from "../../../../shared/components/sidebar/SharedLog";
 import { GameWrapperType } from "../../../../shared/store";
@@ -106,8 +106,18 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
                   : player.index === game?.currentPlayer);
               const content = (
                 <>
-                  <Player userId={userId} userName={player?.userName || userName} />
-                  {player && <span>{utils.scorePlayer(player).total} {theme.labels.vp}</span>}
+                  {player ? (
+                    <>
+                      <span className={css.lobbyTime}>
+                        <PlayerTimer userId={userId} />
+                      </span>
+                      <span className={css.lobbyMoney}>${player.doubloons}</span>
+                      <span className={css.lobbyVp}>{utils.scorePlayer(player).total} {theme.labels.vp}</span>
+                      <span className={css.lobbyPlayerName}>{player.userName || userName}</span>
+                    </>
+                  ) : (
+                    <span className={css.lobbyPlayerName}>{userName}</span>
+                  )}
                 </>
               );
               const className = `${css.lobbyRow} ${player ? css.clickableLobbyRow : ""} ${
@@ -163,9 +173,11 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
 
   lobbyRows(game: GameType | null): LobbyRow[] {
     const lobbyNames = new Map(playerLobbyEntries(store.lobby));
+    const players = game?.players || [];
+    const firstPlayer = game?.governor ?? 0;
     const gameRows = (game?.players || [])
       .slice()
-      .sort((a, b) => a.index - b.index)
+      .sort((a, b) => playerOrder(a, firstPlayer, players.length) - playerOrder(b, firstPlayer, players.length))
       .map((player) => ({
         userId: player.userId,
         userName: lobbyNames.get(player.userId) || player.userName,
@@ -237,6 +249,11 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
     const time = new Date(wrapper.info.timestamp).toLocaleTimeString();
     store.update(`restored to [(${wrapper.info.id}) ${wrapper.info.message} ${time}]`, wrapper.game);
   }
+}
+
+function playerOrder(player: PlayerType, firstPlayer: number, playerCount: number): number {
+  if (playerCount <= 0) return player.index;
+  return (player.index - firstPlayer + playerCount) % playerCount;
 }
 
 export default Sidebar;
