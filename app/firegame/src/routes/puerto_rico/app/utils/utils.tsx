@@ -265,13 +265,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       game.currentPlayer = next;
       if (this.playerHasAction(next, game.phase)) {
         if (game.phase === "captain") {
-          let autoMessage = this.autoTakeForcedCaptainAction(game.players[next]);
-          while (autoMessage) {
+          const autoMessage = this.autoTakeForcedCaptainAction(game.players[next]);
+          if (autoMessage) {
             autoMessages.push(autoMessage);
-            autoMessage = this.autoTakeForcedCaptainAction(game.players[next]);
-          }
-          if (!this.playerHasAction(next, game.phase)) {
-            game.actionQueue.shift();
+            this.rotateCaptainQueue();
             continue;
           }
         }
@@ -783,18 +780,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
 
   finishCaptainTurn(message: string): void {
     const game = store.gameW.game;
-    game.actionQueue.shift();
-    const order = this.turnOrder(this.playerIndexByIndex(game.currentPlayer + 1));
-    const next = order.find((playerIndex) => this.hasCaptainAction(game.players[playerIndex]));
-    if (next === undefined) {
-      const autoMessages = this.startStorage();
-      if (store.gameW.game.phase === "storage") store.update(this.withAutoMessages(message, autoMessages));
-    } else {
-      game.actionQueue = [next];
-      game.currentPlayer = next;
-      const autoMessages = this.advanceToNextAction();
+    this.rotateCaptainQueue();
+    const autoMessages = this.advanceToNextAction();
+    if (game.phase === "captain" || game.phase === "storage") {
       store.update(this.withAutoMessages(message, autoMessages));
     }
+  }
+
+  rotateCaptainQueue(): void {
+    const game = store.gameW.game;
+    const current = game.actionQueue.shift();
+    if (current !== undefined) game.actionQueue.push(current);
   }
 
   startStorage(autoMessages: string[] = []): string[] {

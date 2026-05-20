@@ -880,7 +880,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
     roles: {
       settler: "Prep Cook",
       mayor: "Shift Lead",
-      builder: "Truck Builder",
+      builder: "Contractor",
       craftsman: "Line Cook",
       trader: "Cashier",
       captain: "Runner",
