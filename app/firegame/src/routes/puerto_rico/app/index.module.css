@@ -220,6 +220,7 @@
 
 .lobbyList {
   gap: 3px;
+  width: 100%;
 }
 
 .lobbyRow {
@@ -227,6 +228,8 @@
   grid-template-columns: max-content max-content max-content minmax(0, 1fr);
   gap: 5px;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
   border: 1px solid rgba(36, 55, 47, 0.1);
   border-radius: 5px;
   background: #f7faf7;
@@ -238,7 +241,6 @@
 }
 
 button.lobbyRow {
-  width: 100%;
   font-family: inherit;
   font-size: 0.77rem;
   font-weight: 700;

@@ -3,7 +3,7 @@ import css from "../index.module.css";
 import writer from "../../../../firegame/writer/writer";
 import { goodsInThemeOrder, theme } from "../theme/base";
 import { GameType, PlayerType } from "../utils/NewGame";
-import { BUILDING_IDS, GoodId, PlantationId } from "../utils/rules";
+import { BUILDING_IDS, GoodId, MAX_ISLAND_SPACES, PlantationId } from "../utils/rules";
 import utils, { store } from "../utils/utils";
 import BuildingCardContent from "./BuildingCardContent";
 
@@ -18,6 +18,7 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
   const canPlace = !props.readOnly && utils.canManageMayor(player);
   const canFinishMayor = !props.readOnly && utils.canFinishMayor(player);
   const score = utils.scorePlayer(player);
+  const totalColonists = utils.totalColonists(player);
   const canChooseCraftsmanBonus = canRename && game.phase === "craftsman_bonus" && utils.isMyTurn();
   const canUseWharf = canRename && game.phase === "captain" && utils.isMyTurn();
   const canStore = canRename && game.phase === "storage" && utils.isMyTurn();
@@ -141,14 +142,14 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
         ))}
       </div>
       <div className={css.boardSubhead}>
-        <h4>{theme.labels.island} {player.island.length}/12</h4>
+        <h4>{theme.labels.island} {player.island.length} / {MAX_ISLAND_SPACES}</h4>
         {canFinishMayor ? (
           <button className={`${css.metricBubble} ${css.finishMayorBubble}`} onClick={() => utils.finishMayor()}>
-            {theme.labels.sanJuan} {player.sanJuan}
+            {theme.labels.sanJuan} {player.sanJuan} / {totalColonists}
           </button>
         ) : (
           <span className={`${css.metricBubble} ${canPlace ? css.pendingMayorBubble : ""}`}>
-            {theme.labels.sanJuan} {player.sanJuan}
+            {theme.labels.sanJuan} {player.sanJuan} / {totalColonists}
           </span>
         )}
       </div>
