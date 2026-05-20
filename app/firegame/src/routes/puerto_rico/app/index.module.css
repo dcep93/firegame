@@ -157,6 +157,29 @@
   color: #6f2f21;
 }
 
+.sidebarPlayerButton {
+  align-self: flex-start;
+  border: 1px solid rgba(36, 55, 47, 0.16);
+  border-radius: 999px;
+  background: #f7faf7;
+  padding: 3px 9px;
+  color: #13221b;
+  font: inherit;
+  font-weight: 900;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebarPlayerButton:hover {
+  border-color: rgba(39, 91, 73, 0.38);
+  background: #ffffff;
+}
+
+.autoPlayerButton {
+  border-color: rgba(50, 96, 148, 0.42);
+  background: #eaf4ff;
+}
+
 .sidebarHeadingRow h2 {
   margin-bottom: 0;
 }
@@ -263,6 +286,15 @@ button.lobbyRow {
   background: #fbefe9;
 }
 
+.stationPickerLobbyRow {
+  box-shadow: inset 3px 0 0 rgba(50, 96, 148, 0.72);
+}
+
+.autoLobbyRow {
+  outline: 2px solid rgba(50, 96, 148, 0.26);
+  outline-offset: -2px;
+}
+
 .disconnectedLobbyRow {
   opacity: 0.5;
 }
@@ -362,6 +394,26 @@ button.lobbyRow {
 .logEntry:hover {
   border-color: rgba(39, 91, 73, 0.38);
   background: #ffffff;
+}
+
+.logDepthOne {
+  border-color: rgba(50, 96, 148, 0.3);
+  background: #eef6ff;
+}
+
+.logDepthTwo {
+  border-color: rgba(151, 62, 36, 0.24);
+  background: #fff4ef;
+}
+
+.logDepthOne:hover {
+  border-color: rgba(50, 96, 148, 0.46);
+  background: #f7fbff;
+}
+
+.logDepthTwo:hover {
+  border-color: rgba(151, 62, 36, 0.38);
+  background: #fffaf7;
 }
 
 .logId {
@@ -922,6 +974,40 @@ button.lobbyRow {
   letter-spacing: 0;
 }
 
+.section button.collapsibleHeading {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #13221b;
+  font: inherit;
+  font-size: 1.08rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.section button.collapsibleHeading::before {
+  content: "▾";
+  display: inline-block;
+  width: 1em;
+  color: #60726a;
+}
+
+.section button.collapsibleHeading[aria-expanded="false"]::before {
+  content: "▸";
+}
+
+.section button.collapsibleHeading:not(:disabled):hover {
+  background: transparent;
+  color: #1f5b41;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
 .section button.playerNameButton {
   border: 0;
   background: transparent;
@@ -934,6 +1020,25 @@ button.lobbyRow {
 }
 
 .section button.playerNameButton:not(:disabled):hover {
+  background: transparent;
+  color: #1f5b41;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.section button.subheadLinkButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.section button.subheadLinkButton:not(:disabled):hover {
   background: transparent;
   color: #1f5b41;
   text-decoration: underline;

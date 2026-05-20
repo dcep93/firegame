@@ -6,6 +6,7 @@ import { GameType, PlayerType } from "../utils/NewGame";
 import { BUILDING_IDS, GoodId, MAX_ISLAND_SPACES, PlantationId } from "../utils/rules";
 import utils, { store } from "../utils/utils";
 import BuildingCardContent from "./BuildingCardContent";
+import { buildingMarketElementId } from "./BuildingMarket";
 
 const islandOrder: PlantationId[] = [...goodsInThemeOrder, "quarry"];
 
@@ -172,7 +173,15 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
         ))}
       </div>
       <div className={css.boardSubhead}>
-        <h4>{theme.labels.city} {utils.citySpaces(player)}/12</h4>
+        <h4>
+          <button
+            type="button"
+            className={css.subheadLinkButton}
+            onClick={() => scrollToBuildingMarket()}
+          >
+            {theme.labels.city} {utils.citySpaces(player)} / 12
+          </button>
+        </h4>
       </div>
       <div className={css.cityGrid}>
         {sortedCity.map(({ building, index }) => {
@@ -212,6 +221,10 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
 
 export function playerBoardElementId(userId: string): string {
   return `puerto-rico-player-${encodeURIComponent(userId)}`;
+}
+
+function scrollToBuildingMarket(): void {
+  document.getElementById(buildingMarketElementId)?.scrollIntoView({ block: "start" });
 }
 
 function useMayorDraftVersion(): number {

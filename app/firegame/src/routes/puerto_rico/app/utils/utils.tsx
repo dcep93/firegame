@@ -59,6 +59,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     game.governor = game.governor || 0;
     game.rolePicker = game.rolePicker || 0;
     game.currentPlayer = game.currentPlayer || 0;
+    game.autoPlayerIds = game.autoPlayerIds || {};
     game.playerTimers = game.playerTimers || {};
     game.players.forEach((player) => {
       game.playerTimers[player.userId] = game.playerTimers[player.userId] || 0;
@@ -176,10 +177,18 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   chooseRole(roleId: RoleId): void {
-    const game = store.gameW.game;
     if (!this.isRolePicker()) return alert("not your role choice");
+    const message = this.chooseRoleForCurrent(roleId, true);
+    if (message) store.update(message);
+  }
+
+  chooseRoleForCurrent(roleId: RoleId, shouldUpdateFinishedRole: boolean): string {
+    const game = store.gameW.game;
     const role = game.roles.find((r) => r.id === roleId);
-    if (!role || role.takenBy !== undefined) return alert("that role is not available");
+    if (!role || role.takenBy !== undefined) {
+      if (shouldUpdateFinishedRole) alert("that role is not available");
+      return "";
+    }
 
     const player = game.players[game.rolePicker];
     const roleMoney = role.doubloons;
@@ -193,26 +202,33 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     const kind = ROLE_KIND[roleId];
     if (kind === "prospector") {
       player.doubloons += 1;
-      this.finishRole(theme.messages.prospected(player.userName, roleMoney + 1, theme.labels.doubloons));
-      return;
+      const message = theme.messages.prospected(player.userName, roleMoney + 1, theme.labels.doubloons);
+      this.finishRole(message, [], shouldUpdateFinishedRole);
+      return message;
     }
     const rewards = roleMoney > 0 ? [`${roleMoney} ${theme.labels.doubloons}`] : [];
+    let autoMessages: string[] = [];
     if (kind === "mayor") {
-      const workersTaken = this.startMayor();
+      const workersTaken = this.startMayor(autoMessages, shouldUpdateFinishedRole);
       if (workersTaken > 0) rewards.push(workerText(workersTaken));
-    } else if (kind === "craftsman") this.startCraftsman();
-    else this.startTurnPhase(kind);
-    store.update(theme.messages.choseRole(player.userName, theme.roles[roleId], this.rewardText(rewards)));
+    } else if (kind === "craftsman") autoMessages = this.startCraftsman(autoMessages, shouldUpdateFinishedRole);
+    else autoMessages = this.startTurnPhase(kind, autoMessages, shouldUpdateFinishedRole);
+    const message = theme.messages.choseRole(player.userName, theme.roles[roleId], this.rewardText(rewards));
+    return this.withAutoMessages(message, autoMessages);
   }
 
-  startTurnPhase(phase: Exclude<Phase, "role" | "craftsman_bonus" | "game_over">): string[] {
+  startTurnPhase(
+    phase: Exclude<Phase, "role" | "craftsman_bonus" | "game_over">,
+    autoMessages: string[] = [],
+    shouldUpdateFinishedRole = true
+  ): string[] {
     const game = store.gameW.game;
     game.phase = phase;
     game.actionQueue = this.turnOrder(game.roleOwner!);
-    return this.advanceToNextAction();
+    return this.advanceToNextAction(autoMessages, shouldUpdateFinishedRole);
   }
 
-  startMayor(): number {
+  startMayor(autoMessages: string[] = [], shouldUpdateFinishedRole = true): number {
     const game = store.gameW.game;
     const owner = game.players[game.roleOwner!];
     const beforeSanJuan = owner.sanJuan;
@@ -223,11 +239,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       game.bank.colonistShip -= 1;
       index = this.playerIndexByIndex(index + 1, game);
     }
-    this.startTurnPhase("mayor");
+    this.startTurnPhase("mayor", autoMessages, shouldUpdateFinishedRole);
     return owner.sanJuan - beforeSanJuan;
   }
 
-  startCraftsman(): void {
+  startCraftsman(autoMessages: string[] = [], shouldUpdateFinishedRole = true): string[] {
     const game = store.gameW.game;
     game.phase = "craftsman_bonus";
     game.producedGoods = {};
@@ -241,8 +257,10 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     );
     if (ownerProduced.length > 0) {
       game.currentPlayer = game.roleOwner!;
+      return this.advanceAutoCurrent(autoMessages, shouldUpdateFinishedRole);
     } else {
-      this.finishRole(theme.messages.producedGoods(this.totalProducedKinds()));
+      this.finishRole(theme.messages.producedGoods(this.totalProducedKinds()), autoMessages, shouldUpdateFinishedRole);
+      return autoMessages;
     }
   }
 
@@ -264,6 +282,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       const next = game.actionQueue[0];
       game.currentPlayer = next;
       if (this.playerHasAction(next, game.phase)) {
+        if (this.isAutoPlayer(next)) {
+          const autoMessage = this.autoPlayQueuedAction(game.players[next], [], shouldUpdateFinishedRole);
+          if (autoMessage) autoMessages.push(this.fastForwardMessage(theme.phase[game.phase], autoMessage));
+          continue;
+        }
         if (game.phase === "captain") {
           const autoMessage = this.autoTakeForcedCaptainAction(game.players[next]);
           if (autoMessage) {
@@ -314,6 +337,111 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (phase === "captain") return this.hasCaptainAction(player);
     if (phase === "storage") return !this.canStoreCurrentGoods(player);
     return false;
+  }
+
+  markAutoPlayer(playerIndex: number): void {
+    const game = store.gameW.game;
+    const player = game.players[playerIndex];
+    if (!player) return;
+    game.autoPlayerIds = game.autoPlayerIds || {};
+    game.autoPlayerIds[player.userId] = true;
+    const autoMessages = this.advanceAutoCurrent([], false);
+    store.update(this.withAutoMessages(`${player.userName} marked for auto-play`, autoMessages));
+  }
+
+  isAutoPlayer(playerIndex: number): boolean {
+    const game = store.gameW.game;
+    const player = game.players[playerIndex];
+    return !!player && !!game.autoPlayerIds?.[player.userId];
+  }
+
+  advanceAutoCurrent(autoMessages: string[] = [], shouldUpdateFinishedRole = true): string[] {
+    const game = store.gameW.game;
+    let guard = 0;
+    while (guard++ < 200 && game.phase !== "game_over" && this.isAutoPlayer(game.currentPlayer)) {
+      if (game.phase === "role") {
+        const role = game.roles.find((candidate) => candidate.takenBy === undefined);
+        if (!role) return autoMessages;
+        autoMessages.push(this.fastForwardMessage(theme.phase.role, this.chooseRoleForCurrent(role.id, shouldUpdateFinishedRole)));
+        continue;
+      }
+      if (game.phase === "craftsman_bonus") {
+        autoMessages.push(this.fastForwardMessage(theme.phase.craftsman_bonus, this.autoChooseCraftsmanBonus(shouldUpdateFinishedRole)));
+        continue;
+      }
+      if (game.actionQueue[0] !== game.currentPlayer) return autoMessages;
+      return this.advanceToNextAction(autoMessages, shouldUpdateFinishedRole);
+    }
+    return autoMessages;
+  }
+
+  autoPlayQueuedAction(player: PlayerType, autoMessages: string[], shouldUpdateFinishedRole: boolean): string {
+    const game = store.gameW.game;
+    if (["settler", "builder", "trader"].includes(game.phase)) {
+      return this.finishAction(theme.messages.passed(player.userName), false, autoMessages);
+    }
+    if (game.phase === "mayor") return this.autoFinishMayor(player, autoMessages, shouldUpdateFinishedRole);
+    if (game.phase === "captain") return this.autoShipCaptain(player, autoMessages, shouldUpdateFinishedRole);
+    if (game.phase === "storage") return this.autoStoreGoods(player, autoMessages);
+    return "";
+  }
+
+  autoChooseCraftsmanBonus(shouldUpdateFinishedRole: boolean): string {
+    const game = store.gameW.game;
+    const player = game.players[game.currentPlayer];
+    const good = (game.producedGoods?.[game.roleOwner || 0] || []).find(
+      (candidate) => game.bank.goodsSupply[candidate] > 0
+    );
+    if (!good) {
+      const message = theme.messages.skippedExtraGood(player.userName, this.totalProducedKinds());
+      this.finishRole(message, [], shouldUpdateFinishedRole);
+      return message;
+    }
+    player.goods[good] += 1;
+    game.bank.goodsSupply[good] -= 1;
+    const message = theme.messages.tookExtraGood(player.userName, theme.goods[good], 1, this.totalProducedKinds());
+    this.finishRole(message, [], shouldUpdateFinishedRole);
+    return message;
+  }
+
+  autoFinishMayor(player: PlayerType, autoMessages: string[], shouldUpdateFinishedRole: boolean): string {
+    while (player.sanJuan > 0 && this.emptyColonistSpaces(player) > 0) {
+      const tile = [...player.island, ...player.city].find((candidate) => candidate.colonists < this.tileCapacity(candidate));
+      if (!tile) break;
+      tile.colonists += 1;
+      player.sanJuan -= 1;
+    }
+    const placed = this.placedColonists(player);
+    const remaining = player.sanJuan;
+    store.gameW.game.actionQueue.shift();
+    this.advanceToNextAction(autoMessages, shouldUpdateFinishedRole);
+    return theme.messages.finishedColonists(player.userName, placed, remaining);
+  }
+
+  autoShipCaptain(player: PlayerType, autoMessages: string[], shouldUpdateFinishedRole: boolean): string {
+    const shipOption = this.shipOptions(player)[0];
+    const message = shipOption
+      ? this.shipGoodForPlayer(player, shipOption)
+      : this.useWharfForPlayer(player, this.wharfOptions(player)[0]);
+    this.rotateCaptainQueue();
+    this.advanceToNextAction(autoMessages, shouldUpdateFinishedRole);
+    return message;
+  }
+
+  autoStoreGoods(player: PlayerType, autoMessages: string[]): string {
+    const discarded: string[] = [];
+    while (!this.canStoreCurrentGoods(player)) {
+      const good = GOOD_IDS.find((candidate) => player.goods[candidate] > 0);
+      if (!good) break;
+      const message = this.discardGoodForPlayer(player, good, false);
+      if (message) discarded.push(message);
+    }
+    if (this.canStoreCurrentGoods(player)) {
+      store.gameW.game.actionQueue.shift();
+      this.advanceToNextAction(autoMessages, false);
+      discarded.push(theme.messages.stored(player.userName, this.totalGoods(player)));
+    }
+    return discarded.join("; ");
   }
 
   assertMyAction(phase: Phase): boolean {
@@ -838,10 +966,12 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     this.finishAction(theme.messages.stored(player.userName, this.totalGoods(player)));
   }
 
-  finishAction(message: string): void {
+  finishAction(message: string, shouldUpdate = true, autoMessages: string[] = []): string {
     store.gameW.game.actionQueue.shift();
-    const autoMessages = this.advanceToNextAction();
-    store.update(this.withAutoMessages(message, autoMessages));
+    const generatedMessages = this.advanceToNextAction(autoMessages, shouldUpdate);
+    const fullMessage = this.withAutoMessages(message, generatedMessages);
+    if (shouldUpdate) store.update(fullMessage);
+    return fullMessage;
   }
 
   finishRole(message: string, autoMessages: string[] = [], shouldUpdate = true): void {
@@ -863,6 +993,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       game.rolePicker = this.playerIndexByIndex(game.governor + game.selectedRoles.length);
       game.currentPlayer = game.rolePicker;
     }
+    this.advanceAutoCurrent(autoMessages, false);
     if (shouldUpdate) store.update(this.withAutoMessages(message, autoMessages));
   }
 

@@ -54,7 +54,15 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
                   {theme.labels.roles}: <strong>{theme.roles[game.activeRole]}</strong>
                 </span>
               )}
-              <strong>{game.players[game.currentPlayer]?.userName}</strong>
+              <button
+                type="button"
+                className={`${css.sidebarPlayerButton} ${
+                  game.autoPlayerIds?.[game.players[game.currentPlayer]?.userId] ? css.autoPlayerButton : ""
+                }`}
+                onClick={() => utils.markAutoPlayer(game.currentPlayer)}
+              >
+                {game.players[game.currentPlayer]?.userName}
+              </button>
               <span>{theme.labels.round} {game.round}</span>
               </>
             )}
@@ -104,6 +112,8 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
                 (game?.phase === "mayor"
                   ? game.actionQueue.includes(player.index)
                   : player.index === game?.currentPlayer);
+              const isStationPicker = player && game?.phase === "role" && player.index === game.rolePicker;
+              const isAutoPlayer = player && !!game?.autoPlayerIds?.[player.userId];
               const content = (
                 <>
                   {player ? (
@@ -122,6 +132,10 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
               );
               const className = `${css.lobbyRow} ${player ? css.clickableLobbyRow : ""} ${
                 isActing ? css.currentLobbyRow : ""
+              } ${
+                isStationPicker ? css.stationPickerLobbyRow : ""
+              } ${
+                isAutoPlayer ? css.autoLobbyRow : ""
               } ${connected ? "" : css.disconnectedLobbyRow}`;
               if (player) {
                 return (
@@ -152,19 +166,24 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
             <h2>{theme.labels.log}</h2>
           </div>
           <div className={css.logList}>
-            {this.state.history.map((wrapper, index) => (
-              <button
-                key={index}
-                className={css.logEntry}
-                onClick={() => this.revert(wrapper)}
-              >
-                <span className={css.logId}>#{wrapper.info.id}</span>
-                <span className={css.logMessage}>{wrapper.info.message}</span>
-                <span className={css.logMeta}>
-                  {new Date(wrapper.info.timestamp).toLocaleTimeString()}
-                </span>
-              </button>
-            ))}
+            {this.state.history.map((wrapper, index) => {
+              const depth = this.logDepth(wrapper, index);
+              return (
+                <button
+                  key={index}
+                  className={`${css.logEntry} ${depth === 1 ? css.logDepthOne : ""} ${
+                    depth === 2 ? css.logDepthTwo : ""
+                  }`}
+                  onClick={() => this.revert(wrapper)}
+                >
+                  <span className={css.logId}>#{wrapper.info.id}</span>
+                  <span className={css.logMessage}>{wrapper.info.message}</span>
+                  <span className={css.logMeta}>
+                    {new Date(wrapper.info.timestamp).toLocaleTimeString()}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </section>
       </aside>
@@ -199,6 +218,13 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
   scrollToPlayer(player: PlayerType): void {
     const element = document.getElementById(playerBoardElementId(player.userId));
     element?.scrollIntoView({ block: "start" });
+  }
+
+  logDepth(wrapper: GameWrapperType<GameType>, index: number): 0 | 1 | 2 {
+    const previous = this.state.history[index + 1] as GameWrapperType<GameType> | undefined;
+    if (previous?.game?.phase === "role" && !!wrapper.game?.activeRole) return 1;
+    if (wrapper.game?.activeRole || previous?.game?.activeRole) return 2;
+    return 0;
   }
 
   componentDidMount() {

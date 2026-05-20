@@ -80,6 +80,7 @@ export type ScoreLine = {
 export type GameType = {
   params: Params;
   themeKey?: PuertoRicoThemeKey;
+  autoPlayerIds?: Record<string, boolean>;
   playerTimers: Record<string, number>;
   turnStartedAt: number;
   currentPlayer: number;
@@ -117,6 +118,7 @@ function NewGame(params: Params): PromiseLike<GameType> {
   const game: GameType = {
     params,
     themeKey: params.themeKey || DEFAULT_THEME_KEY,
+    autoPlayerIds: {},
     playerTimers: {},
     turnStartedAt: Date.now(),
     currentPlayer: 0,
@@ -221,6 +223,7 @@ export function createSampleGame(params: Params): GameType {
   const game: GameType = {
     params,
     themeKey: params.themeKey || DEFAULT_THEME_KEY,
+    autoPlayerIds: {},
     playerTimers: {},
     turnStartedAt: Date.now(),
     currentPlayer: 0,

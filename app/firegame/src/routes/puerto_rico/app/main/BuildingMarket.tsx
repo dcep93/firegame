@@ -1,3 +1,4 @@
+import { useState } from "react";
 import css from "../index.module.css";
 import { theme } from "../theme/base";
 import { GameType } from "../utils/NewGame";
@@ -6,19 +7,27 @@ import utils, { store } from "../utils/utils";
 import BuildingCardContent from "./BuildingCardContent";
 
 function BuildingMarket(props: { game?: GameType; readOnly?: boolean }) {
+  const [isOpen, setIsOpen] = useState(true);
   const game = props.game || store.gameW.game;
   const player = game.players[game.currentPlayer];
   return (
-    <div className={css.section}>
+    <div id={buildingMarketElementId} className={css.section}>
       <div className={css.boardSubhead}>
-        <h3 className={css.heading}>{theme.labels.buildings}</h3>
+        <button
+          type="button"
+          className={css.collapsibleHeading}
+          onClick={() => setIsOpen((value) => !value)}
+          aria-expanded={isOpen}
+        >
+          {theme.labels.buildings}
+        </button>
         {!props.readOnly && game.phase === "builder" && utils.canPass() && (
           <button className={css.inlineActionButton} onClick={() => utils.skipAction()}>
             {theme.controls.pass}
           </button>
         )}
       </div>
-      <div className={css.buildingColumns}>
+      {isOpen && <div className={css.buildingColumns}>
         {BUILDING_COLUMNS.map((buildingIds, index) => {
           const quarryCap = index + 1;
           return (
@@ -74,9 +83,11 @@ function BuildingMarket(props: { game?: GameType; readOnly?: boolean }) {
             </div>
           );
         })}
-      </div>
+      </div>}
     </div>
   );
 }
+
+export const buildingMarketElementId = "puerto-rico-building-market";
 
 export default BuildingMarket;
