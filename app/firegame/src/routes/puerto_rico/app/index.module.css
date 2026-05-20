@@ -232,6 +232,22 @@
   font-weight: 700;
 }
 
+button.lobbyRow {
+  width: 100%;
+  font: inherit;
+  text-align: left;
+}
+
+.clickableLobbyRow {
+  cursor: pointer;
+}
+
+.clickableLobbyRow:hover,
+.clickableLobbyRow:focus-visible {
+  border-color: rgba(36, 55, 47, 0.28);
+  background: #eef6f0;
+}
+
 .currentLobbyRow {
   border-color: rgba(151, 62, 36, 0.35);
   background: #fbefe9;
@@ -896,6 +912,7 @@
 .player {
   min-width: 350px;
   flex: 1 1 380px;
+  scroll-margin-block-start: 12px;
 }
 
 .active {

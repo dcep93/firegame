@@ -5,6 +5,7 @@ import SharedSidebar from "../../../../shared/components/sidebar/SharedSidebar";
 import { history } from "../../../../shared/components/sidebar/SharedLog";
 import { GameWrapperType } from "../../../../shared/store";
 import css from "../index.module.css";
+import { playerBoardElementId } from "../main/PlayerBoard";
 import { getThemeKey, PuertoRicoThemeKey, setPreGameThemeKey, THEME_OPTIONS, theme } from "../theme/base";
 import NewGame, { GameType, Params, PlayerType, playerLobbyEntries } from "../utils/NewGame";
 import utils, { store } from "../utils/utils";
@@ -103,15 +104,33 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
                 (game?.phase === "mayor"
                   ? game.actionQueue.includes(player.index)
                   : player.index === game?.currentPlayer);
+              const content = (
+                <>
+                  <Player userId={userId} userName={player?.userName || userName} />
+                  {player && <span>{utils.scorePlayer(player).total} {theme.labels.vp}</span>}
+                </>
+              );
+              const className = `${css.lobbyRow} ${player ? css.clickableLobbyRow : ""} ${
+                isActing ? css.currentLobbyRow : ""
+              } ${connected ? "" : css.disconnectedLobbyRow}`;
+              if (player) {
+                return (
+                  <button
+                    key={userId}
+                    type="button"
+                    className={className}
+                    onClick={() => this.scrollToPlayer(player)}
+                  >
+                    {content}
+                  </button>
+                );
+              }
               return (
                 <div
                   key={userId}
-                  className={`${css.lobbyRow} ${isActing ? css.currentLobbyRow : ""} ${
-                    connected ? "" : css.disconnectedLobbyRow
-                  }`}
+                  className={className}
                 >
-                  <Player userId={userId} userName={player?.userName || userName} />
-                  {player && <span>{player.victoryPoints} VP</span>}
+                  {content}
                 </div>
               );
             })}
@@ -163,6 +182,11 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
         connected: true,
       }));
     return [...gameRows, ...lobbyOnlyRows];
+  }
+
+  scrollToPlayer(player: PlayerType): void {
+    const element = document.getElementById(playerBoardElementId(player.userId));
+    element?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   componentDidMount() {

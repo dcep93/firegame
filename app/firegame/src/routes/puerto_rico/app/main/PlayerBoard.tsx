@@ -50,7 +50,10 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
         a.index - b.index
     );
   return (
-    <div className={`${css.section} ${css.player} ${!props.readOnly && game.currentPlayer === player.index ? css.active : ""}`}>
+    <div
+      id={playerBoardElementId(player.userId)}
+      className={`${css.section} ${css.player} ${!props.readOnly && game.currentPlayer === player.index ? css.active : ""}`}
+    >
       <div className={css.between}>
         <h3 className={css.heading}>
           {canRename ? (
@@ -204,6 +207,10 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
       </div>
     </div>
   );
+}
+
+export function playerBoardElementId(userId: string): string {
+  return `puerto-rico-player-${encodeURIComponent(userId)}`;
 }
 
 function useMayorDraftVersion(): number {
