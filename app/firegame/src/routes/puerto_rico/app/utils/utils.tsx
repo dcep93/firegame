@@ -258,7 +258,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     return ` and took ${rewards.slice(0, -1).join(", ")} and ${rewards[rewards.length - 1]}`;
   }
 
-  advanceToNextAction(autoMessages: string[] = []): string[] {
+  advanceToNextAction(autoMessages: string[] = [], shouldUpdateFinishedRole = true): string[] {
     const game = store.gameW.game;
     while (game.actionQueue.length > 0) {
       const next = game.actionQueue[0];
@@ -267,7 +267,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (game.phase === "captain") {
           const autoMessage = this.autoTakeForcedCaptainAction(game.players[next]);
           if (autoMessage) {
-            autoMessages.push(autoMessage);
+            autoMessages.push(this.fastForwardMessage(theme.phase.captain, autoMessage));
             this.rotateCaptainQueue();
             continue;
           }
@@ -275,7 +275,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
         if (game.phase === "storage") {
           let autoMessage = this.autoDiscardForcedStorageGood(game.players[next]);
           while (autoMessage) {
-            autoMessages.push(autoMessage);
+            autoMessages.push(this.fastForwardMessage(theme.phase.storage, autoMessage));
             autoMessage = this.autoDiscardForcedStorageGood(game.players[next]);
           }
           if (!this.playerHasAction(next, game.phase)) {
@@ -291,12 +291,17 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       this.emptyTradingHouse();
     }
     if (game.phase === "captain") {
-      return this.startStorage(autoMessages);
+      autoMessages.push(this.fastForwardMessage(theme.phase.captain, theme.messages.phaseFinished(theme.phase.captain)));
+      return this.startStorage(autoMessages, shouldUpdateFinishedRole);
     }
     if (game.phase === "storage") {
       this.unloadFullShips();
     }
-    this.finishRole(theme.messages.phaseFinished(theme.phase[game.phase]), autoMessages);
+    const phaseFinishedMessage = theme.messages.phaseFinished(theme.phase[game.phase]);
+    if (!shouldUpdateFinishedRole) {
+      autoMessages.push(this.fastForwardMessage(theme.phase[game.phase], phaseFinishedMessage));
+    }
+    this.finishRole(phaseFinishedMessage, autoMessages, shouldUpdateFinishedRole);
     return autoMessages;
   }
 
@@ -779,12 +784,9 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   }
 
   finishCaptainTurn(message: string): void {
-    const game = store.gameW.game;
     this.rotateCaptainQueue();
-    const autoMessages = this.advanceToNextAction();
-    if (game.phase === "captain" || game.phase === "storage") {
-      store.update(this.withAutoMessages(message, autoMessages));
-    }
+    const autoMessages = this.advanceToNextAction([], false);
+    store.update(this.withAutoMessages(message, autoMessages));
   }
 
   rotateCaptainQueue(): void {
@@ -793,11 +795,11 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     if (current !== undefined) game.actionQueue.push(current);
   }
 
-  startStorage(autoMessages: string[] = []): string[] {
+  startStorage(autoMessages: string[] = [], shouldUpdateFinishedRole = true): string[] {
     const game = store.gameW.game;
     game.phase = "storage";
     game.actionQueue = this.turnOrder(game.roleOwner!);
-    return this.advanceToNextAction(autoMessages);
+    return this.advanceToNextAction(autoMessages, shouldUpdateFinishedRole);
   }
 
   discardGood(good: GoodId): void {
@@ -842,7 +844,7 @@ class Utils extends SharedUtils<GameType, PlayerType> {
     store.update(this.withAutoMessages(message, autoMessages));
   }
 
-  finishRole(message: string, autoMessages: string[] = []): void {
+  finishRole(message: string, autoMessages: string[] = [], shouldUpdate = true): void {
     const game = store.gameW.game;
     game.players.forEach((player) => {
       delete player.captainBonusTaken;
@@ -861,12 +863,16 @@ class Utils extends SharedUtils<GameType, PlayerType> {
       game.rolePicker = this.playerIndexByIndex(game.governor + game.selectedRoles.length);
       game.currentPlayer = game.rolePicker;
     }
-    store.update(this.withAutoMessages(message, autoMessages));
+    if (shouldUpdate) store.update(this.withAutoMessages(message, autoMessages));
   }
 
   withAutoMessages(message: string, autoMessages: string[]): string {
     if (autoMessages.length === 0) return message;
     return [message, ...autoMessages].join("; ");
+  }
+
+  fastForwardMessage(phaseName: string, message: string): string {
+    return `fast-forwarded ${phaseName}: ${message}`;
   }
 
   finishRound(): void {
