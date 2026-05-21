@@ -13,7 +13,8 @@ class PuertoRico extends React.Component<{}, { sampleVersion: number }> {
     const realGame = store.gameW.game;
     if (realGame) utils.normalizeGame();
     const game = realGame || createSampleGame({ lobby: store.lobby, themeKey: getThemeKey() });
-    const isMyTurn = realGame && utils.isMyTurn();
+    const isLobbySample = !realGame && !store.isSpectator && !!store.lobby[store.me.userId];
+    const isMyTurn = realGame ? utils.isMyTurn() : isLobbySample;
     return (
       <div className={`${css.appShell} ${isMyTurn ? css.myTurnShell : ""}`}>
         <div className={css.gameFrame}>
