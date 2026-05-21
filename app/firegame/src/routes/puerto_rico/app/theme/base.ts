@@ -1705,7 +1705,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
     roles: {
       settler: "Azir",
       mayor: "Jarvan IV",
-      builder: "Heimerdinger",
+      builder: "Sylas",
       craftsman: "Zyra",
       trader: "Twisted Fate",
       captain: "Gangplank",
