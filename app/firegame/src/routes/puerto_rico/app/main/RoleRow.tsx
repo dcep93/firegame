@@ -5,14 +5,14 @@ import { GoodId, RoleId, ROLE_KIND } from "../utils/rules";
 import utils, { store } from "../utils/utils";
 
 const roleIconText: Record<RoleId, string> = {
-  settler: "SET",
-  mayor: "MAY",
-  builder: "BLD",
-  craftsman: "CRF",
-  trader: "TRD",
-  captain: "CAP",
-  prospector_1: "P1",
-  prospector_2: "P2",
+  settler: "Settler",
+  mayor: "Mayor",
+  builder: "Builder",
+  craftsman: "Craftsman",
+  trader: "Trader",
+  captain: "Captain",
+  prospector_1: "Prospector",
+  prospector_2: "Prospector",
 };
 
 function RoleRow(props: { game?: GameType; readOnly?: boolean }) {
@@ -30,11 +30,11 @@ function RoleRow(props: { game?: GameType; readOnly?: boolean }) {
           const canChoose = !props.readOnly && game.phase === "role" && role.takenBy === undefined && utils.isRolePicker();
           const content = (
             <>
-            <RoleIcon roleId={role.id} />
             <div className={css.tileTitle}>{theme.roles[role.id]}</div>
             <div className={css.roleLine}>* {theme.roleRewards[role.id]}</div>
             <div className={css.roleLine}>{theme.roleDescriptions[role.id]}</div>
             <div className={css.roleFooter}>
+              <RoleIcon roleId={role.id} />
               <span className={css.resourceLine}>{role.doubloons} {theme.labels.doubloons}</span>
               {role.takenBy !== undefined && (
                 <span className={css.roleTakenChip}>{game.players[role.takenBy]?.userName}</span>

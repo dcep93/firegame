@@ -851,12 +851,41 @@ button.lobbyRow {
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-top: 9px;
+}
+
+.roleFooter .roleIcon {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  min-height: 24px;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.roleFooter .roleIcon::before,
+.roleFooter .roleIcon::after,
+.roleFooter .roleIconGlyph {
+  display: none;
+}
+
+.roleFooter .roleIconText {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 0.68rem;
+  line-height: 1.1;
 }
 
 .roleFooter .resourceLine {
   margin: 0;
+  margin-left: auto;
 }
 
 .roleTakenChip {
