@@ -113,6 +113,7 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
                   ? game.actionQueue.includes(player.index)
                   : player.index === game?.currentPlayer);
               const isStationPicker = player && game?.phase === "role" && player.index === game.rolePicker;
+              const isRoleOwner = player && game?.phase !== "role" && player.index === game?.roleOwner;
               const isAutoPlayer = player && !!game?.autoPlayerIds?.[player.userId];
               const content = (
                 <>
@@ -134,6 +135,8 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
                 isActing ? css.currentLobbyRow : ""
               } ${
                 isStationPicker ? css.stationPickerLobbyRow : ""
+              } ${
+                isRoleOwner ? css.roleOwnerLobbyRow : ""
               } ${
                 isAutoPlayer ? css.autoLobbyRow : ""
               } ${connected ? "" : css.disconnectedLobbyRow}`;
