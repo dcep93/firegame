@@ -3,7 +3,7 @@ import { newUserState } from "./gameLogic/createNew";
 import { default as getMe } from "./getMe";
 import { FUTURE } from "./handleMessage";
 
-export const isDev = process.env.NODE_ENV === "development";
+export const isDev = import.meta.env.DEV;
 export const isTest = getMe()?.isTest;
 
 const storeAvatarToUserIconMap: Record<number, number> = {

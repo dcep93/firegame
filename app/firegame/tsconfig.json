@@ -17,6 +17,14 @@
     "module": "esnext",
     "moduleResolution": "node",
     "baseUrl": "src",
+    "paths": {
+      "@data/*": [
+        "@eclipse/engine/data/*"
+      ],
+      "@eclipse/*": [
+        "@eclipse/*"
+      ]
+    },
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,

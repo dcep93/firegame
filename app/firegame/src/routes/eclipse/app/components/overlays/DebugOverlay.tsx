@@ -7,7 +7,7 @@ import { useGameState } from '../../hooks/useGameState';
  */
 export function DebugOverlay() {
   const [visible, setVisible] = useState(false);
-  const isDev = process.env.NODE_ENV !== 'production';
+  const isDev = import.meta.env.DEV;
 
   const toggle = useCallback(() => setVisible(v => !v), []);
 

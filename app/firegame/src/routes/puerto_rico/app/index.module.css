@@ -21,7 +21,7 @@
 
 .myTurnShell .contentPanel {
   border-color: #6f2f21;
-  background: #6f2f21;
+  background: linear-gradient(160deg, rgba(123, 48, 31, 0.32) 0%, rgba(86, 33, 21, 0.44) 100%);
   box-shadow: 0 14px 34px rgba(22, 9, 6, 0.26);
 }
 

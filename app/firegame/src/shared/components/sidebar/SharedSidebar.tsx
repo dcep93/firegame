@@ -54,7 +54,7 @@ abstract class SharedSidebar<P = {}> extends React.Component<P> {
           <button
             onClick={() => firebaseUndo()}
             disabled={
-              process.env.NODE_ENV !== "development" &&
+              !import.meta.env.DEV &&
               store.me?.userId !== store.gameW.info.playerId
             }
           >

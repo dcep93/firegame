@@ -45,7 +45,8 @@ function mePath(userId?: string): string {
 function namespace(): string {
   return (
     "firegame/" +
-    (process.env.REACT_APP_NAMESPACE ||
+    (import.meta.env.REACT_APP_NAMESPACE ||
+      import.meta.env.VITE_NAMESPACE ||
       window.location.hostname.replace("www.", "").split(".")[0])
   );
 }
