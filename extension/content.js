@@ -577,7 +577,7 @@
   const notesPanelId = "tfmars420-board-notes";
   const notesCssId = "tfmars420-board-notes-css";
   const contentScriptVersion = "v0.1.1";
-  const runtimeConfigUrl = "https://aworldofstruggle.web.app/tfmars420/config.json";
+  const runtimeConfigUrl = "https://aworldofstruggle.web.app/extension/config.json";
   let lastRenderKey = "";
   let clickInFlight = false;
   let notesSaveTimeout = null;
@@ -1119,17 +1119,6 @@
       resize: both;
       width: 100%;
     }
-    #${notesPanelId}.tfmars420-board-notes-fixed {
-      max-height: calc(100vh - 32px);
-      position: fixed;
-      right: 16px;
-      top: 16px;
-      z-index: 2147483647;
-    }
-    #${notesPanelId}.tfmars420-board-notes-fixed textarea {
-      max-height: calc(100vh - 96px);
-      min-height: min(420px, calc(100vh - 96px));
-    }
     #${notesPanelId}.tfmars420-board-notes-hidden textarea {
       display: none;
     }
@@ -1261,6 +1250,7 @@
     upsertCss(notesCssId, notesCss());
     const anchor = getBoardNotesAnchor();
     if (!anchor) {
+      document.getElementById(notesPanelId)?.remove();
       return;
     }
     const { block, gameBoard } = anchor;
@@ -1321,16 +1311,8 @@
       block.appendChild(panel);
     }
 
-    const boardRect = gameBoard.getBoundingClientRect();
-    const shouldUseFixedPanel = boardRect.top > window.innerHeight || boardRect.bottom < 0;
-    panel.classList.toggle("tfmars420-board-notes-fixed", shouldUseFixedPanel);
-    if (shouldUseFixedPanel) {
-      panel.style.left = "";
-      panel.style.top = "";
-    } else {
-      panel.style.left = `${gameBoard.offsetLeft + gameBoard.offsetWidth + 12}px`;
-      panel.style.top = `${gameBoard.offsetTop + 28}px`;
-    }
+    panel.style.left = `${gameBoard.offsetLeft + gameBoard.offsetWidth + 12}px`;
+    panel.style.top = `${gameBoard.offsetTop + 28}px`;
 
     const textarea = panel.querySelector(".tfmars420-board-notes-text");
     if (textarea && notesLastStorageKey !== storageKey) {

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
+import ExtensionInstall from "./components/ExtensionInstall";
 import GameWrapper from "./components/GameWrapper";
 import Home from "./components/Home";
 import games from "./games";
@@ -9,6 +10,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/extension" element={<ExtensionInstall />} />
         {getRoutes()}
       </Routes>
     </BrowserRouter>

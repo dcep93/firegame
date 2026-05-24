@@ -4,3 +4,50 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
+
+.extensionInstall {
+  width: min(720px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 56px 0;
+  color: #1f2328;
+}
+
+.extensionInstall h1 {
+  margin: 0 0 24px;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.extensionInstall ol {
+  margin: 0;
+  padding-left: 24px;
+}
+
+.extensionInstall li {
+  margin: 12px 0;
+  line-height: 1.5;
+}
+
+.extensionInstall code {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #eef1f4;
+}
+
+.extensionInstall button {
+  min-height: 32px;
+  margin-left: 6px;
+  padding: 5px 10px;
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  background: #fff;
+  color: #1f2328;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.extensionBackLink {
+  display: inline-block;
+  margin-bottom: 24px;
+}

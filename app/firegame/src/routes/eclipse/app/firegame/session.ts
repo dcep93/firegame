@@ -29,7 +29,7 @@ import type {
 import type { GameState } from "@eclipse/engine";
 import { DEFAULT_ROOM_CONFIG } from "@eclipse/shared";
 import type { LobbyType } from "../../../../shared/store";
-import type { FiregameEclipseGame } from "./types";
+import type { FiregameEclipseGame, FiregameEclipseSetupGame } from "./types";
 import { normalizeGameState } from "./normalize";
 
 const DEFAULT_SPECIES: SpeciesId[] = [
@@ -50,33 +50,116 @@ export type ActionResult = {
   winner?: string;
 };
 
-export function createFiregameEclipseGame(
+export function createFiregameEclipseSetupGame(
   lobby: LobbyType,
   hostUserId: string,
-): FiregameEclipseGame {
-  const entries = Object.entries(lobby).slice(0, 6);
-  if (entries.length < 2) {
-    throw new Error("Eclipse needs at least 2 players.");
-  }
-
-  const players: RoomPlayer[] = entries.map(([userId, nickname], index) => ({
-    playerId: userId,
-    nickname,
-    speciesId: DEFAULT_SPECIES[index % DEFAULT_SPECIES.length],
-    connected: true,
-    isHost: userId === hostUserId,
-  }));
-
+): FiregameEclipseSetupGame {
+  const players = createRoomPlayers(lobby, hostUserId);
   const config: RoomConfig = {
     ...DEFAULT_ROOM_CONFIG,
     playerCount: players.length,
     rewindMode: "DISABLED",
   };
 
+  return {
+    status: "setup",
+    players,
+    config,
+    version: 1,
+    hostUserId,
+    error: null,
+  };
+}
+
+export function syncFiregameEclipseSetupGame(
+  setup: FiregameEclipseSetupGame,
+  lobby: LobbyType,
+): FiregameEclipseSetupGame {
+  const previous = new Map(
+    setup.players.map((player) => [player.playerId, player] as const),
+  );
+  const seenSpecies = new Set<SpeciesId>();
+  const players = createRoomPlayers(lobby, setup.hostUserId).map((player) => {
+    const previousPlayer = previous.get(player.playerId);
+    const speciesId = previousPlayer?.speciesId ?? null;
+    if (!speciesId || seenSpecies.has(speciesId)) return player;
+    seenSpecies.add(speciesId);
+    return { ...player, speciesId };
+  });
+
+  return {
+    ...setup,
+    players,
+    config: {
+      ...setup.config,
+      playerCount: players.length,
+    },
+  };
+}
+
+export function selectFiregameEclipseSpecies(
+  setup: FiregameEclipseSetupGame,
+  lobby: LobbyType,
+  playerId: string,
+  speciesId: SpeciesId,
+): FiregameEclipseSetupGame {
+  const synced = syncFiregameEclipseSetupGame(setup, lobby);
+  if (!synced.players.some((player) => player.playerId === playerId)) {
+    throw new Error("Join the Firegame lobby before choosing a species.");
+  }
+  if (
+    synced.players.some(
+      (player) => player.playerId !== playerId && player.speciesId === speciesId,
+    )
+  ) {
+    throw new Error("Species already taken.");
+  }
+
+  return {
+    ...synced,
+    players: synced.players.map((player) =>
+      player.playerId === playerId ? { ...player, speciesId } : player,
+    ),
+    version: synced.version + 1,
+    error: null,
+  };
+}
+
+export function createFiregameEclipseGame(
+  lobby: LobbyType,
+  hostUserId: string,
+  setup?: FiregameEclipseSetupGame,
+): FiregameEclipseGame {
+  const players = setup
+    ? syncFiregameEclipseSetupGame(setup, lobby).players
+    : createRoomPlayers(lobby, hostUserId).map((player, index) => ({
+      ...player,
+      speciesId: DEFAULT_SPECIES[index % DEFAULT_SPECIES.length],
+    }));
+
+  if (players.length < 2) {
+    throw new Error("Eclipse needs at least 2 players.");
+  }
+  if (players.length > 6) {
+    throw new Error("Eclipse supports at most 6 players.");
+  }
+  if (players.some((player) => !player.speciesId)) {
+    throw new Error("Every player must choose a species before starting.");
+  }
+  const speciesIds = players.map((player) => player.speciesId!);
+  if (new Set(speciesIds).size !== speciesIds.length) {
+    throw new Error("Each player needs a unique species.");
+  }
+
+  const config: RoomConfig = {
+    ...(setup?.config ?? DEFAULT_ROOM_CONFIG),
+    playerCount: players.length,
+    rewindMode: "DISABLED",
+  };
+
   const speciesAssignments: Record<string, SpeciesId> = {};
-  players.forEach((player, index) => {
-    speciesAssignments[player.playerId] =
-      player.speciesId ?? DEFAULT_SPECIES[index % DEFAULT_SPECIES.length];
+  players.forEach((player) => {
+    speciesAssignments[player.playerId] = player.speciesId!;
   });
 
   const gameConfig: GameConfig = {
@@ -93,6 +176,7 @@ export function createFiregameEclipseGame(
   const state = createGame(gameConfig);
 
   return {
+    status: "in_game",
     state,
     players,
     config,
@@ -102,6 +186,18 @@ export function createFiregameEclipseGame(
     scores: null,
     winner: null,
   };
+}
+
+function createRoomPlayers(lobby: LobbyType, hostUserId: string): RoomPlayer[] {
+  return Object.entries(lobby)
+    .slice(0, 6)
+    .map(([userId, nickname]) => ({
+      playerId: userId,
+      nickname,
+      speciesId: null,
+      connected: true,
+      isHost: userId === hostUserId,
+    }));
 }
 
 export function processFiregameAction(

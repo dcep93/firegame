@@ -10,6 +10,9 @@ class Home extends React.Component {
   render() {
     return (
       <h2>
+        <div className={styles.bubble}>
+          <Link to="/extension">INSTALL EXTENSION</Link>
+        </div>
         {Object.keys(games).map(this.renderLink.bind(this))}
         <div className={styles.bubble}>
           <button onClick={clearFirebase}>Clear Firebase</button>
