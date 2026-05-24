@@ -52,9 +52,10 @@
           color: #f7f1ff;
           display: flex;
           font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-          inset: 0;
+          inset: auto;
           justify-content: center;
-          padding: 28px;
+          overflow: hidden;
+          padding: 0;
           position: fixed;
           z-index: 2147483647;
         }
@@ -62,14 +63,17 @@
         #${overlayId} .firegame-colonist-dice-panel {
           background: #181a22;
           border: 1px solid rgba(255, 255, 255, 0.24);
-          border-radius: 8px;
-          box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+          border-radius: 0;
+          box-shadow: none;
+          box-sizing: border-box;
           display: flex;
           flex-direction: column;
-          max-width: 960px;
+          height: 100%;
+          max-height: none;
+          max-width: none;
           min-height: 0;
           overflow: hidden;
-          width: min(960px, 100%);
+          width: 100%;
         }
 
         #${overlayId} .firegame-colonist-dice-header {
@@ -100,6 +104,8 @@
         }
 
         #${overlayId} .firegame-colonist-dice-body {
+          flex: 1;
+          min-height: 0;
           overflow: auto;
           padding: 16px 18px 20px;
         }
@@ -135,11 +141,12 @@
         }
 
         #${overlayId} .firegame-colonist-dice-pill {
-          background: rgba(255, 79, 191, 0.14);
-          border: 1px solid rgba(255, 79, 191, 0.35);
+          background: rgba(var(--firegame-pill-r), var(--firegame-pill-g), var(--firegame-pill-b), 0.14);
+          border: 1px solid rgba(var(--firegame-pill-r), var(--firegame-pill-g), var(--firegame-pill-b), 0.42);
           border-radius: 999px;
-          color: #ffd7f0;
+          color: rgb(var(--firegame-pill-r), var(--firegame-pill-g), var(--firegame-pill-b));
           display: inline-block;
+          font-weight: 800;
           margin: 2px 4px 2px 0;
           padding: 3px 8px;
           white-space: nowrap;
@@ -162,16 +169,16 @@
       ["eleven", 11],
       ["twelve", 12],
     ]);
-    const colonistLog = (eventName, details = {}) => {
-      let serializedDetails = "";
-      try {
-        serializedDetails = JSON.stringify(details);
-      } catch {
-        serializedDetails = String(details);
-      }
-      console.log(`[aworldofstruggle:colonist] ${eventName} ${serializedDetails}`);
+    const diceModalState = {
+      rolls: [],
+      seenLogKeys: new Set(),
+      refreshTimer: null,
+      refreshInFlight: false,
+      generation: 0,
+      initialized: false,
+      initialScanPromise: null,
+      boundsCleanup: null,
     };
-
     const diceValueFromText = (text) => {
       const normalized = text.toLowerCase().replace(/[_-]/g, " ");
       const diceMatch = normalized.match(/\bdice(?: red)?\s*([1-6])\b/);
@@ -253,16 +260,6 @@
         feedContainer?.querySelector("[class*='virtualScroller']") ??
         document.querySelector("[class*='virtualScroller']");
       const scrollRoot = getScrollableAncestor(virtualScroller);
-      colonistLog("virtual feed", {
-        hasFeedContainer: Boolean(feedContainer),
-        feedClassName: feedContainer?.className,
-        hasVirtualScroller: Boolean(virtualScroller),
-        virtualScrollerClassName: virtualScroller?.className,
-        hasScrollRoot: Boolean(scrollRoot),
-        scrollRootClassName: scrollRoot?.className,
-        scrollHeight: scrollRoot?.scrollHeight,
-        clientHeight: scrollRoot?.clientHeight,
-      });
       if (!virtualScroller || !scrollRoot) return null;
       return { virtualScroller, scrollRoot };
     };
@@ -279,6 +276,36 @@
         if (!text && !message.querySelector("img")) continue;
         collected.set(index, { index, element: message, text });
       }
+    };
+
+    const normalizeLogText = (text) => (text ?? "").replace(/\s+/g, " ").trim();
+
+    const sourceKey = (source, sum = "") => {
+      if (Number.isFinite(source.index)) {
+        return `feed:${source.index}`;
+      }
+      const text = normalizeLogText(source.text);
+      if (text) return `text:${text}:${sum ?? ""}`;
+      if (source.element) {
+        return `element:${source.element.tagName}:${source.element.id}:${source.element.className}:${sum ?? ""}`;
+      }
+      return "";
+    };
+
+    const collectCurrentVisibleSources = () => {
+      const feed = getVirtualFeed();
+      if (feed) {
+        const collected = new Map();
+        collectVisibleFeedSources(feed.virtualScroller, collected);
+        return Array.from(collected.values()).sort((first, second) => first.index - second.index);
+      }
+
+      const entries = getLogEntries();
+      if (entries.length > 0) {
+        return entries.map((entry) => ({ element: entry, text: entry.textContent ?? "" }));
+      }
+
+      return getVisibleDiceLogLines().map((text) => ({ element: null, text }));
     };
 
     const collectVirtualFeedSources = async () => {
@@ -306,15 +333,6 @@
       }
 
       const sources = Array.from(collected.values()).sort((first, second) => first.index - second.index);
-      colonistLog("virtual feed sources", {
-        count: sources.length,
-        firstIndex: sources[0]?.index,
-        lastIndex: sources[sources.length - 1]?.index,
-        samples: sources.filter((source) => looksLikeDiceRollText(source.text)).slice(0, 12).map((source) => ({
-          index: source.index,
-          text: source.text.slice(0, 220),
-        })),
-      });
       return sources;
     };
 
@@ -329,16 +347,6 @@
           );
         });
 
-      colonistLog("fallback log entries", {
-        count: candidates.length,
-        samples: candidates.slice(0, 12).map((entry) => ({
-          tag: entry.tagName,
-          id: entry.id,
-          className: entry.className,
-          text: (entry.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 220),
-        })),
-      });
-
       return candidates;
     };
 
@@ -347,10 +355,6 @@
         .split(/\n+/)
         .map((line) => line.replace(/\s+/g, " ").trim())
         .filter(looksLikeDiceRollText);
-      colonistLog("visible dice log lines", {
-        count: lines.length,
-        samples: lines.slice(0, 12),
-      });
       return lines;
     };
 
@@ -362,39 +366,46 @@
         document.querySelector("[class*='game-log']"),
       ].filter(Boolean);
       const container = containers[0];
-      colonistLog("log container", {
-        found: Boolean(container),
-        id: container?.id,
-        className: container?.className,
-        childCount: container?.children?.length ?? 0,
-        textSample: (container?.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 300),
-      });
       if (!container) return getFallbackLogEntries();
       const children = Array.from(container.children).filter((child) =>
         (child.textContent ?? "").trim() || child.querySelector("img"),
       );
       const entries = children.length > 0 ? children : [container];
-      colonistLog("log entries", {
-        count: entries.length,
-        samples: entries.slice(0, 8).map((entry) => ({
-          tag: entry.tagName,
-          id: entry.id,
-          className: entry.className,
-          text: (entry.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 220),
-          imageHints: Array.from(entry.querySelectorAll("img")).slice(0, 4).map((image) => ({
-            alt: image.getAttribute("alt"),
-            title: image.getAttribute("title"),
-            ariaLabel: image.getAttribute("aria-label"),
-            src: image.getAttribute("src"),
-            className: image.className,
-          })),
-        })),
-      });
       return entries;
     };
 
+    const parseDiceRollSource = (source) => {
+      let diceValues = source.element ? collectDiceValues(source.element) : [];
+      if (diceValues.length < 2) {
+        diceValues = collectDiceValuesFromText(source.text);
+      }
+      let sum = null;
+      if (diceValues.length >= 2) {
+        sum = diceValues.slice(0, 2).reduce((total, value) => total + value, 0);
+      } else {
+        sum = extractDiceSumFromText(source.text);
+      }
+      if (sum >= 2 && sum <= 12) {
+        return {
+          key: sourceKey(source, sum),
+          roll: { sum },
+        };
+      }
+      return {
+        key: sourceKey(source, sum),
+        roll: null,
+      };
+    };
+
+    const indexRolls = (rolls) =>
+      rolls.map((roll, index) => ({
+        ...roll,
+        turnsAgo: rolls.length - index - 1,
+      }));
+
     const getDiceRolls = async () => {
       const rolls = [];
+      const seenLogKeys = new Set();
       const virtualSources = await collectVirtualFeedSources();
       const entries = virtualSources.length > 0 ? [] : getLogEntries();
       const sources = virtualSources.length > 0
@@ -403,44 +414,51 @@
           ? entries.map((entry) => ({ element: entry, text: entry.textContent ?? "" }))
           : getVisibleDiceLogLines().map((text) => ({ element: null, text }));
       for (const source of sources) {
-        let diceValues = source.element ? collectDiceValues(source.element) : [];
-        if (diceValues.length < 2) {
-          diceValues = collectDiceValuesFromText(source.text);
+        const parsed = parseDiceRollSource(source);
+        if (parsed.key) {
+          seenLogKeys.add(parsed.key);
         }
-        let sum = null;
-        if (diceValues.length >= 2) {
-          sum = diceValues.slice(0, 2).reduce((total, value) => total + value, 0);
-        } else {
-          sum = extractDiceSumFromText(source.text);
-        }
-        colonistLog("entry parsed", {
-          text: source.text.replace(/\s+/g, " ").trim().slice(0, 220),
-          diceValues,
-          sum,
-        });
-        if (sum >= 2 && sum <= 12) {
-          rolls.push({ sum });
+        if (parsed.roll) {
+          rolls.push(parsed.roll);
         }
       }
-      const indexedRolls = rolls.map((roll, index) => ({
-        ...roll,
-        turnsAgo: rolls.length - index - 1,
-      }));
-      colonistLog("rolls parsed", {
-        count: indexedRolls.length,
-        rolls: indexedRolls,
-      });
-      return indexedRolls;
+      const indexedRolls = indexRolls(rolls);
+      return { rolls: indexedRolls, seenLogKeys };
     };
 
-    const formatTurnsAgo = (turnsAgo) => {
-      if (turnsAgo === 0) return "0 turns ago";
-      if (turnsAgo === 1) return "1 turn ago";
-      return `${turnsAgo} turns ago`;
+    const loadInitialDiceCache = async () => {
+      if (diceModalState.initialScanPromise) {
+        return diceModalState.initialScanPromise;
+      }
+
+      diceModalState.initialScanPromise = getDiceRolls()
+        .then(({ rolls, seenLogKeys }) => {
+          diceModalState.rolls = rolls.map(({ sum }) => ({ sum }));
+          diceModalState.seenLogKeys = seenLogKeys;
+          diceModalState.initialized = true;
+          return { rolls, seenLogKeys };
+        })
+        .finally(() => {
+          diceModalState.initialScanPromise = null;
+        });
+
+      return diceModalState.initialScanPromise;
+    };
+
+    const formatTurnsAgo = (turnsAgo) => String(turnsAgo);
+
+    const recencyColorStyle = (turnsAgo, maxTurnsAgo) => {
+      const newest = [83, 255, 181];
+      const oldest = [255, 95, 216];
+      const ratio = maxTurnsAgo > 0 ? Math.min(Math.max(turnsAgo / maxTurnsAgo, 0), 1) : 0;
+      const [red, green, blue] = newest
+        .map((channel, index) => Math.round(channel + (oldest[index] - channel) * ratio))
+      return `--firegame-pill-r: ${red}; --firegame-pill-g: ${green}; --firegame-pill-b: ${blue};`;
     };
 
     const renderDiceRows = (rolls) => {
       const bySum = new Map(Array.from({ length: 11 }, (_, index) => [index + 2, []]));
+      const maxTurnsAgo = Math.max(0, rolls.length - 1);
       for (const roll of rolls) {
         bySum.get(roll.sum)?.push(roll.turnsAgo);
       }
@@ -451,7 +469,10 @@
               ? `<span class="firegame-colonist-dice-empty">Never rolled</span>`
               : [...turnsAgoList]
                   .sort((first, second) => first - second)
-                  .map((turnsAgo) => `<span class="firegame-colonist-dice-pill">${formatTurnsAgo(turnsAgo)}</span>`)
+                  .map((turnsAgo) => {
+                    const style = recencyColorStyle(turnsAgo, maxTurnsAgo);
+                    return `<span class="firegame-colonist-dice-pill" style="${style}">${formatTurnsAgo(turnsAgo)}</span>`;
+                  })
                   .join(" ");
           return `
             <tr>
@@ -464,7 +485,135 @@
         .join("");
     };
 
+    const renderDiceTable = () => {
+      const body = document.querySelector(`#${overlayId} .firegame-colonist-dice-body`);
+      if (!body) return;
+      body.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Sum</th>
+              <th>Rolls</th>
+              <th>How Many Turns Ago</th>
+            </tr>
+          </thead>
+          <tbody>${renderDiceRows(indexRolls(diceModalState.rolls))}</tbody>
+        </table>
+      `;
+    };
+
+    const refreshDiceOverlay = () => {
+      if (!document.getElementById(overlayId)) {
+        stopDiceOverlayRefresh();
+        return;
+      }
+      if (diceModalState.refreshInFlight) {
+        return;
+      }
+      diceModalState.refreshInFlight = true;
+      try {
+        const sources = collectCurrentVisibleSources();
+        const newRollsNewestFirst = [];
+        for (const source of [...sources].reverse()) {
+          const parsed = parseDiceRollSource(source);
+          if (parsed.key && diceModalState.seenLogKeys.has(parsed.key)) {
+            break;
+          }
+          if (parsed.key) {
+            diceModalState.seenLogKeys.add(parsed.key);
+          }
+          if (parsed.roll) {
+            newRollsNewestFirst.push(parsed.roll);
+          }
+        }
+
+        if (newRollsNewestFirst.length > 0) {
+          diceModalState.rolls.push(...newRollsNewestFirst.reverse());
+          renderDiceTable();
+        }
+      } finally {
+        diceModalState.refreshInFlight = false;
+      }
+    };
+
+    const stopDiceOverlayRefresh = () => {
+      if (diceModalState.refreshTimer) {
+        window.clearInterval(diceModalState.refreshTimer);
+        diceModalState.refreshTimer = null;
+      }
+      diceModalState.refreshInFlight = false;
+    };
+
+    const startDiceOverlayRefresh = () => {
+      stopDiceOverlayRefresh();
+      diceModalState.refreshTimer = window.setInterval(refreshDiceOverlay, 1000);
+    };
+
+    const getDiceOverlayTargetRect = () => {
+      const canvases = Array.from(document.querySelectorAll("canvas"));
+      const candidates = canvases
+        .map((canvas) => {
+          const rect = canvas.getBoundingClientRect();
+          const style = window.getComputedStyle(canvas);
+          return {
+            rect,
+            area: rect.width * rect.height,
+            visible:
+              rect.width >= 100 &&
+              rect.height >= 100 &&
+              style.display !== "none" &&
+              style.visibility !== "hidden" &&
+              style.opacity !== "0",
+          };
+        })
+        .filter((candidate) => candidate.visible)
+        .sort((first, second) => second.area - first.area);
+
+      return candidates[0]?.rect ?? {
+        left: 0,
+        top: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+    };
+
+    const applyDiceOverlayBounds = () => {
+      const overlay = document.getElementById(overlayId);
+      if (!overlay) return;
+      const rect = getDiceOverlayTargetRect();
+      Object.assign(overlay.style, {
+        height: `${Math.max(0, rect.height)}px`,
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        width: `${Math.max(0, rect.width / 2)}px`,
+      });
+    };
+
+    const stopDiceOverlayBoundsSync = () => {
+      if (!diceModalState.boundsCleanup) return;
+      diceModalState.boundsCleanup();
+      diceModalState.boundsCleanup = null;
+    };
+
+    const startDiceOverlayBoundsSync = () => {
+      stopDiceOverlayBoundsSync();
+      applyDiceOverlayBounds();
+      const resizeObserver = new ResizeObserver(applyDiceOverlayBounds);
+      resizeObserver.observe(document.documentElement);
+      if (document.body) resizeObserver.observe(document.body);
+      window.addEventListener("resize", applyDiceOverlayBounds);
+      window.addEventListener("scroll", applyDiceOverlayBounds, true);
+      diceModalState.boundsCleanup = () => {
+        resizeObserver.disconnect();
+        window.removeEventListener("resize", applyDiceOverlayBounds);
+        window.removeEventListener("scroll", applyDiceOverlayBounds, true);
+      };
+    };
+
     const closeDiceOverlay = () => {
+      diceModalState.generation++;
+      stopDiceOverlayRefresh();
+      stopDiceOverlayBoundsSync();
       document.getElementById(overlayId)?.remove();
       document.removeEventListener("keydown", handleOverlayKeydown, true);
     };
@@ -477,7 +626,11 @@
 
     const showDiceOverlay = async () => {
       upsertColonistCss();
+      stopDiceOverlayRefresh();
+      stopDiceOverlayBoundsSync();
+      document.removeEventListener("keydown", handleOverlayKeydown, true);
       document.getElementById(overlayId)?.remove();
+      const generation = ++diceModalState.generation;
       const overlay = document.createElement("div");
       overlay.id = overlayId;
       overlay.innerHTML = `
@@ -497,22 +650,20 @@
       });
       document.addEventListener("keydown", handleOverlayKeydown, true);
       document.body.append(overlay);
-      const rolls = await getDiceRolls();
-      colonistLog("show overlay", { rollCount: rolls.length });
-      const body = overlay.querySelector(".firegame-colonist-dice-body");
-      if (!body) return;
-      body.innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Sum</th>
-              <th>Rolls</th>
-              <th>How Many Turns Ago</th>
-            </tr>
-          </thead>
-          <tbody>${renderDiceRows(rolls)}</tbody>
-        </table>
-      `;
+      startDiceOverlayBoundsSync();
+
+      if (diceModalState.initialized) {
+        renderDiceTable();
+        startDiceOverlayRefresh();
+        refreshDiceOverlay();
+        return;
+      }
+
+      await loadInitialDiceCache();
+      if (generation !== diceModalState.generation) return;
+      if (!document.getElementById(overlayId)) return;
+      renderDiceTable();
+      startDiceOverlayRefresh();
     };
 
     const ensureButton = () => {
