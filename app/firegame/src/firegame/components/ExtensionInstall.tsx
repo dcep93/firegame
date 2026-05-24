@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 
 import css from "./index.module.css";
 
-const sourceZipUrl =
-  "https://github.com/dcep93/firegame/archive/refs/heads/master.zip";
+const releasesUrl = "https://github.com/dcep93/firegame/releases";
 
 function ExtensionInstall() {
   const [copyLabel, setCopyLabel] = React.useState("Copy");
@@ -28,8 +27,8 @@ function ExtensionInstall() {
       <h1>Install Firegame extension</h1>
       <ol>
         <li>
-          Download the Firegame source code ZIP from{" "}
-          <a href={sourceZipUrl}>GitHub</a>.
+          Open the Firegame{" "}
+          <a href={releasesUrl}>GitHub releases page</a>.
         </li>
         <li>Unzip the file.</li>
         <li>
@@ -40,7 +39,8 @@ function ExtensionInstall() {
           in Chrome.
         </li>
         <li>
-          Turn on <strong>Developer mode</strong>.
+          If you don't see <strong>Load unpacked</strong>, turn on{" "}
+          <strong>Developer mode</strong>.
         </li>
         <li>
           Click <strong>Load unpacked</strong>, then select the{" "}

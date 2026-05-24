@@ -576,7 +576,7 @@
   const timeWarpCssId = "tfmars420-timewarp-css";
   const notesPanelId = "tfmars420-board-notes";
   const notesCssId = "tfmars420-board-notes-css";
-  const contentScriptVersion = "v0.1.1";
+  const contentScriptVersion = "v0.1.2";
   const runtimeConfigUrl = "https://aworldofstruggle.web.app/extension/config.json";
   let lastRenderKey = "";
   let clickInFlight = false;
