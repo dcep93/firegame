@@ -1,4 +1,4 @@
-const hash = require("object-hash");
+import hash from "object-hash";
 
 type ResultType = { score: number; moves: string[] };
 type Params<T> = {
