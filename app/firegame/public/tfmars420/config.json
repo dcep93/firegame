@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "timeWarp": {
+      "enabled": true,
+      "panel": {
+        "queueMaxHeight": null
+      },
+      "fallbackRenderer": {
+        "preserveFormWhileActive": true,
+        "cardListMaxHeight": null
+      }
+    }
+  }
+}

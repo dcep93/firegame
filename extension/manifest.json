@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "firegame420",
+  "version": "0.1.0",
+  "description": "Adds Firegame browser helpers on supported game sites.",
+  "permissions": ["downloads"],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "icons": {
+    "16": "assets/icon-16.png",
+    "32": "assets/icon-32.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["reload_bridge.js"],
+      "world": "ISOLATED",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    }
+  ]
+}
