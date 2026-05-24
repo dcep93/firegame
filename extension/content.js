@@ -770,6 +770,7 @@
   let notesSaveTimeout = null;
   let notesLastStorageKey = "";
   let notesVisible = true;
+  let helpersHiddenCleaned = false;
   const timeWarpCachedWaitingFor = new Map();
   const timeWarpCachedUiState = new Map();
   let runtimeConfig = {
@@ -918,6 +919,7 @@
   };
 
   const handleSingleCardSelectionChange = (event) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     const target = event.target;
     if (
       !event.isTrusted ||
@@ -1460,8 +1462,16 @@
 
   const isNotesVisible = () => notesVisible;
 
+  const shouldRunTerraformingMarsHelpers = () => isNotesVisible();
+
   const setNotesVisible = (visible) => {
+    if (notesVisible === visible) return;
     notesVisible = visible;
+    if (visible) {
+      helpersHiddenCleaned = false;
+    } else {
+      cleanupTerraformingMarsHelpersForHidden();
+    }
   };
 
   const scheduleNotesSave = (textarea) => {
@@ -1605,6 +1615,52 @@
     renderBoardNotes();
     window.setInterval(renderBoardNotes, 1000);
   };
+
+  function removeTimeWarpUi() {
+    document.getElementById(timeWarpPanelId)?.remove();
+    document.getElementById(timeWarpFallbackFormId)?.remove();
+  }
+
+  function removePreviewUi() {
+    document.getElementById(previewId)?.remove();
+    const wrapper = document.querySelector(".tfmars420-log-preview-layout");
+    const logPanel = wrapper?.querySelector(".log-panel");
+    if (wrapper?.parentElement && logPanel) {
+      wrapper.parentElement.insertBefore(logPanel, wrapper);
+      wrapper.remove();
+    }
+    lastRenderKey = "";
+  }
+
+  function cleanupTerraformingMarsHelpersForHidden() {
+    if (helpersHiddenCleaned) return;
+    const context = timeWarpContext();
+    const playerId = context?.playerView?.id ?? latestPlayerView?.id;
+    if (context?.root) {
+      context.root.isServerSideRequestInProgress = false;
+    }
+    restoreWaitingForPatch();
+    timeWarp.active = false;
+    timeWarp.queue = [];
+    timeWarp.lastError = "";
+    timeWarp.replayInFlight = false;
+    timeWarp.renderingCachedAction = false;
+    timeWarp.renderedCachedComponent = null;
+    timeWarp.cachedWaitingFor = null;
+    timeWarpCachedWaitingFor.clear();
+    timeWarpCachedUiState.clear();
+    hydratedTimeWarpPlayers.clear();
+    hydratingTimeWarpPlayers.clear();
+    latestPlayerView = null;
+    latestPlayerViewCapturedAt = 0;
+    clearRenderedCachedWaitingFor(context);
+    clearFallbackCachedWaitingFor();
+    clearTimeWarpSession(context ?? playerId);
+    removeTimeWarpUi();
+    removePreviewUi();
+    closeRenderedLogCardPanel();
+    helpersHiddenCleaned = true;
+  }
 
   const cssMaxHeight = (value) => {
     if (typeof value === "number" && Number.isFinite(value) && value > 0) {
@@ -2006,6 +2062,7 @@
   };
 
   const capturePlayerViewResponse = (response, source) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     try {
       if (!response?.clone) return;
       if (!response.ok) {
@@ -2150,6 +2207,7 @@
   const timeWarpSessionKey = (playerId) => `tfmars420:timewarp-session:${playerId}`;
 
   const persistTimeWarpSession = (contextOrPlayerId) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     const playerId =
       typeof contextOrPlayerId === "string"
         ? contextOrPlayerId
@@ -2197,6 +2255,9 @@
     hydratingTimeWarpPlayers.add(playerId);
     try {
       const state = await extensionSessionGet(timeWarpSessionKey(playerId));
+      if (!shouldRunTerraformingMarsHelpers()) {
+        return;
+      }
       hydratedTimeWarpPlayers.add(playerId);
       if (!state || state.version !== 1 || state.playerId !== playerId || !state.active) {
         return;
@@ -2673,6 +2734,7 @@
     document.getElementById(timeWarpFallbackFormId);
 
   const rememberTimeWarpUiState = (context = timeWarpContext()) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     if (!timeWarp.active || !context?.playerView?.id) return;
     const rootElement = getTimeWarpUiStateRootElement(context);
     if (!rootElement) return;
@@ -2685,6 +2747,7 @@
   };
 
   const restoreTimeWarpUiState = (context) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     if (!timeWarp.active || !context?.playerView?.id) return;
     const state = getCachedUiState(context.playerView.id);
     if (!state) return;
@@ -2787,6 +2850,7 @@
   }
 
   const renderCachedWaitingFor = (context, cachedWaitingFor) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     if (!context.component || !context.root) {
       renderFallbackCachedWaitingFor(context, cachedWaitingFor);
       return;
@@ -2828,6 +2892,10 @@
   };
 
   const renderTimeWarpPanel = (context = timeWarpContext()) => {
+    if (!shouldRunTerraformingMarsHelpers()) {
+      removeTimeWarpUi();
+      return;
+    }
     upsertCss(timeWarpCssId, timeWarpCss());
 
     const actionsBlock = document.querySelector(".player_home_block--actions");
@@ -3032,6 +3100,7 @@
   };
 
   const replayNextQueuedAction = async (context) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     if (timeWarp.replayInFlight || timeWarp.queue.length === 0) return;
 
     const cachedWaitingFor = getCachedWaitingFor(context.playerView.id);
@@ -3096,6 +3165,14 @@
       }
 
       const nextPlayerView = await response.json();
+      if (!shouldRunTerraformingMarsHelpers()) {
+        if (context.root) {
+          context.root.isServerSideRequestInProgress = false;
+        }
+        timeWarp.replayInFlight = false;
+        cleanupTerraformingMarsHelpersForHidden();
+        return;
+      }
       timeWarpLog(
         "replay-success",
         {
@@ -3158,6 +3235,11 @@
   };
 
   const updateTimeWarp = () => {
+    if (!shouldRunTerraformingMarsHelpers()) {
+      cleanupTerraformingMarsHelpersForHidden();
+      return;
+    }
+
     if (getTimeWarpConfig().enabled === false) {
       if (timeWarp.active) {
         deactivateTimeWarp("Time warp is disabled by tfmars420 remote config");
@@ -3228,6 +3310,7 @@
   };
 
   const handleTimeWarpFormChange = (event) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     if (!timeWarp.active) return;
     const context = timeWarpContext();
     const rootElement = getWaitingForRootElement(context?.component);
@@ -3296,11 +3379,14 @@
 
   const clickMissingCards = async (cards) => {
     for (const card of cards) {
+      if (!shouldRunTerraformingMarsHelpers()) return;
       const slug = slugifyCardName(card.name);
       try {
         preserveScrollDuring(() => clickLogCard(card.logIndex));
         await nextFrame();
+        if (!shouldRunTerraformingMarsHelpers()) return;
         await wait(5);
+        if (!shouldRunTerraformingMarsHelpers()) return;
         if (captureRenderedLogCard(card)) {
           renderedCardRequests.add(slug);
         }
@@ -3312,6 +3398,7 @@
   };
 
   const requestMissingCardRender = (cards, visibleCardsByName) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
     if (clickInFlight) return;
 
     const missingCards = cards.filter((card) => {
@@ -3326,11 +3413,19 @@
       .catch((error) => console.error("[tfmars420] card render click failed", error))
       .finally(() => {
         clickInFlight = false;
-        updatePreview();
+        if (shouldRunTerraformingMarsHelpers()) {
+          updatePreview();
+        } else {
+          removePreviewUi();
+        }
       });
   };
 
   const renderPreview = (logCards, visibleCards) => {
+    if (!shouldRunTerraformingMarsHelpers()) {
+      removePreviewUi();
+      return;
+    }
     const visibleCardsByName = visibleCardMap(visibleCards);
     const recentCards = recentCardsFromLog(logCards);
     const cardsHtml = recentCards
@@ -3377,6 +3472,10 @@
   };
 
   const updatePreview = () => {
+    if (!shouldRunTerraformingMarsHelpers()) {
+      cleanupTerraformingMarsHelpersForHidden();
+      return;
+    }
     try {
       renderPreview(getLogCards(), getVisibleCards());
     } catch (error) {
@@ -3395,7 +3494,11 @@
   document.addEventListener("change", handleSingleCardSelectionChange, true);
   document.addEventListener("change", handleTimeWarpFormChange, true);
   document.addEventListener("input", handleTimeWarpFormChange, true);
-  window.addEventListener("beforeunload", () => rememberTimeWarpUiState());
+  window.addEventListener("beforeunload", () => {
+    if (shouldRunTerraformingMarsHelpers()) {
+      rememberTimeWarpUiState();
+    }
+  });
 
   ready(() => {
     startBoardNotes();
