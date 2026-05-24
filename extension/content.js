@@ -683,6 +683,7 @@
   const handleSingleCardSelectionChange = (event) => {
     const target = event.target;
     if (
+      !event.isTrusted ||
       !(target instanceof HTMLInputElement) ||
       target.type !== "radio" ||
       !target.checked
@@ -696,6 +697,48 @@
     }
 
     scrollToPlayCardAction();
+  };
+
+  const getScrollSnapshot = () => {
+    const scrollingElement = document.scrollingElement ?? document.documentElement;
+    const elements = new Set([
+      scrollingElement,
+      document.documentElement,
+      document.body,
+      document.querySelector(".log-panel"),
+      document.querySelector(".logpanel-scrollable"),
+      document.querySelector(".wf-root"),
+      document.querySelector(".wf-action"),
+      document.querySelector(`#${previewId}`),
+    ]);
+
+    return Array.from(elements)
+      .filter((element) => element instanceof Element)
+      .map((element) => ({
+        element,
+        left: element.scrollLeft,
+        top: element.scrollTop,
+      }));
+  };
+
+  const restoreScrollSnapshot = (snapshot) => {
+    for (const item of snapshot) {
+      if (!item.element.isConnected && item.element !== document.documentElement) {
+        continue;
+      }
+      item.element.scrollLeft = item.left;
+      item.element.scrollTop = item.top;
+    }
+  };
+
+  const preserveScrollDuring = (callback) => {
+    const snapshot = getScrollSnapshot();
+    try {
+      return callback();
+    } finally {
+      restoreScrollSnapshot(snapshot);
+      window.requestAnimationFrame(() => restoreScrollSnapshot(snapshot));
+    }
   };
 
   const wait = (milliseconds) =>
@@ -1664,13 +1707,17 @@
           const checked = Boolean(storedState.checked);
           if (element.checked !== checked) {
             element.checked = checked;
-            dispatchBubbledEvent(element, "change");
-            dispatchBubbledEvent(element, "input");
+            preserveScrollDuring(() => {
+              dispatchBubbledEvent(element, "change");
+              dispatchBubbledEvent(element, "input");
+            });
           }
         } else if (storedState.value !== undefined && element.value !== storedState.value) {
           element.value = storedState.value;
-          dispatchBubbledEvent(element, "input");
-          dispatchBubbledEvent(element, "change");
+          preserveScrollDuring(() => {
+            dispatchBubbledEvent(element, "input");
+            dispatchBubbledEvent(element, "change");
+          });
         }
       } else if (
         (element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement) &&
@@ -1678,8 +1725,10 @@
         element.value !== storedState.value
       ) {
         element.value = storedState.value;
-        dispatchBubbledEvent(element, "input");
-        dispatchBubbledEvent(element, "change");
+        preserveScrollDuring(() => {
+          dispatchBubbledEvent(element, "input");
+          dispatchBubbledEvent(element, "change");
+        });
       }
     }
 
@@ -2714,8 +2763,17 @@
       rememberLatestPlayerView(nextPlayerView, "replay");
       if (context.root) {
         updateRootPlayerView(context.root, nextPlayerView);
-      } else if (!hasMoreQueuedActions) {
-        window.location.reload();
+      } else {
+        timeWarpLog(
+          "replay-no-root-skip-reload",
+          {
+            playerId: context.playerView.id,
+            remainingAfterShift: timeWarp.queue.length,
+            nextWaitingForType: nextPlayerView?.waitingFor?.type,
+            nextWaitingForButtonLabel: nextPlayerView?.waitingFor?.buttonLabel,
+          },
+          { limit: 12 },
+        );
       }
       renderTimeWarpPanel();
     } catch (error) {
@@ -2874,14 +2932,14 @@
     for (const card of cards) {
       const slug = slugifyCardName(card.name);
       try {
-        clickLogCard(card.logIndex);
+        preserveScrollDuring(() => clickLogCard(card.logIndex));
         await nextFrame();
         await wait(5);
         if (captureRenderedLogCard(card)) {
           renderedCardRequests.add(slug);
         }
       } finally {
-        closeRenderedLogCardPanel();
+        preserveScrollDuring(closeRenderedLogCardPanel);
         await nextFrame();
       }
     }
@@ -2945,7 +3003,9 @@
     lastRenderKey = renderKey;
 
     if (container.innerHTML !== html) {
-      container.innerHTML = html;
+      preserveScrollDuring(() => {
+        container.innerHTML = html;
+      });
     }
     requestMissingCardRender(recentCards, visibleCardsByName);
   };
