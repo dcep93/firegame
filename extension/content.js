@@ -2,6 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
+  const contentScriptVersion = "v0.1.2";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -12,6 +13,19 @@
   }
   window.__FIREGAME_EXTENSION_LOADED = true;
   window.__TFMARS420_EXTENSION_LOADED = true;
+
+  const requestRuntimeUpdate = () => {
+    window.postMessage({ type: "tfmars420:update-content-and-reload" }, window.location.origin);
+  };
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== window || event.origin !== window.location.origin) {
+      return;
+    }
+    if (event.data?.type === "tfmars420:reload-page-after-runtime") {
+      window.setTimeout(() => window.location.reload(), 750);
+    }
+  });
 
   function startColonist420() {
     const containerSelector = "div.container-cVxpOtTU.gameHelpButtonsLayer-odYlgrig";
@@ -85,6 +99,13 @@
           padding: 16px 18px;
         }
 
+        #${overlayId} .firegame-colonist-dice-actions {
+          align-items: center;
+          display: flex;
+          flex-shrink: 0;
+          gap: 8px;
+        }
+
         #${overlayId} h2 {
           font-size: 22px;
           line-height: 1.2;
@@ -101,6 +122,18 @@
           font-weight: 800;
           min-height: 36px;
           padding: 6px 12px;
+        }
+
+        #${overlayId} .firegame-colonist-dice-version {
+          background: rgba(83, 255, 181, 0.14);
+          border: 1px solid rgba(83, 255, 181, 0.42);
+          border-radius: 6px;
+          color: #9affd0;
+          cursor: pointer;
+          font: inherit;
+          font-weight: 800;
+          min-height: 36px;
+          padding: 6px 10px;
         }
 
         #${overlayId} .firegame-colonist-dice-body {
@@ -637,13 +670,17 @@
         <section class="firegame-colonist-dice-panel" role="dialog" aria-modal="true" aria-labelledby="firegame-colonist-dice-title">
           <header class="firegame-colonist-dice-header">
             <h2 id="firegame-colonist-dice-title">Dice Rolls</h2>
-            <button class="firegame-colonist-dice-close" type="button">Close</button>
+            <div class="firegame-colonist-dice-actions">
+              <button class="firegame-colonist-dice-version" type="button" aria-label="Update Firegame extension">${contentScriptVersion}</button>
+              <button class="firegame-colonist-dice-close" type="button">Close</button>
+            </div>
           </header>
           <div class="firegame-colonist-dice-body">
             <span class="firegame-colonist-dice-empty">Loading dice history...</span>
           </div>
         </section>
       `;
+      overlay.querySelector(".firegame-colonist-dice-version")?.addEventListener("click", requestRuntimeUpdate);
       overlay.querySelector(".firegame-colonist-dice-close")?.addEventListener("click", closeDiceOverlay);
       overlay.addEventListener("click", (event) => {
         if (event.target === overlay) closeDiceOverlay();
@@ -727,7 +764,6 @@
   const timeWarpCssId = "tfmars420-timewarp-css";
   const notesPanelId = "tfmars420-board-notes";
   const notesCssId = "tfmars420-board-notes-css";
-  const contentScriptVersion = "v0.1.2";
   const runtimeConfigUrl = "https://aworldofstruggle.web.app/extension/config.json";
   let lastRenderKey = "";
   let clickInFlight = false;
@@ -1458,17 +1494,8 @@
   };
 
   const reloadRuntime = () => {
-    window.postMessage({ type: "tfmars420:update-content-and-reload" }, window.location.origin);
+    requestRuntimeUpdate();
   };
-
-  window.addEventListener("message", (event) => {
-    if (event.source !== window || event.origin !== window.location.origin) {
-      return;
-    }
-    if (event.data?.type === "tfmars420:reload-page-after-runtime") {
-      window.setTimeout(() => window.location.reload(), 750);
-    }
-  });
 
   const getBoardNotesAnchor = () => {
     const board = document.querySelector("#main_board");

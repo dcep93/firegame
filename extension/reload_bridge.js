@@ -1,5 +1,9 @@
 (() => {
-  if (window.location.hostname !== "terraforming-mars.herokuapp.com") {
+  const hostname = window.location.hostname;
+  const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
+  const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
+
+  if (!isTerraformingMars && !isColonist) {
     return;
   }
 
