@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "description": "Adds Firegame browser helpers on supported game sites.",
   "permissions": ["downloads"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "service_worker.js"
   },

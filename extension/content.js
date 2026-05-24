@@ -7,11 +7,30 @@
     return;
   }
 
-  if (window.__FIREGAME_EXTENSION_LOADED || window.__TFMARS420_EXTENSION_LOADED) {
+  if (window.__FIREGAME_EXTENSION_LOADED) {
+    console.log("[aworldofstruggle] content script duplicate ignored", {
+      href: window.location.href,
+    });
     return;
   }
   window.__FIREGAME_EXTENSION_LOADED = true;
   window.__TFMARS420_EXTENSION_LOADED = true;
+
+  const extensionLogCounts = new Map();
+  const extensionLog = (eventName, details = {}, options = {}) => {
+    const limit = options.limit ?? 10;
+    const count = extensionLogCounts.get(eventName) ?? 0;
+    if (count >= limit) return;
+    extensionLogCounts.set(eventName, count + 1);
+    console.log(`[aworldofstruggle] ${eventName}`, details);
+  };
+
+  extensionLog("content script loaded", {
+    href: window.location.href,
+    hostname,
+    isTerraformingMars,
+    isColonist,
+  });
 
   function startColonist420() {
     const containerSelector = "div.container-cVxpOtTU.gameHelpButtonsLayer-odYlgrig";
@@ -90,9 +109,15 @@
   }
 
   if (isColonist) {
+    extensionLog("starting colonist helper");
     startColonist420();
     return;
   }
+
+  extensionLog("starting terraforming mars helpers", {
+    version: "v0.1.1",
+    runtimeConfigUrl: "https://aworldofstruggle.web.app/tfmars420/config.json",
+  });
 
   const previewId = "tfmars420-hand-preview";
   const cssId = "tfmars420-hand-preview-css";
@@ -167,10 +192,15 @@
 
   const applyRuntimeConfig = (config, source) => {
     if (!isPlainObject(config) || config.version !== 1) {
+      extensionLog("runtime config ignored", { source, version: config?.version }, { limit: 8 });
       timeWarpLog("runtime-config-ignored", { source, version: config?.version }, { limit: 8 });
       return;
     }
     runtimeConfig = mergeConfig(runtimeConfig, config);
+    extensionLog("runtime config applied", {
+      source,
+      timeWarpEnabled: runtimeConfig.skills?.timeWarp?.enabled,
+    }, { limit: 8 });
     timeWarpLog(
       "runtime-config-applied",
       {
@@ -184,12 +214,18 @@
   };
 
   const loadRemoteRuntimeConfig = () => {
+    extensionLog("runtime config fetch start", { runtimeConfigUrl }, { limit: 4 });
     fetch(runtimeConfigUrl, {
       cache: "no-store",
       credentials: "omit",
       headers: { Accept: "application/json" },
     })
       .then((response) => {
+        extensionLog("runtime config fetch response", {
+          ok: response.ok,
+          status: response.status,
+          statusText: response.statusText,
+        }, { limit: 4 });
         if (!response.ok) {
           throw new Error(`${response.status} ${response.statusText}`);
         }
@@ -197,14 +233,17 @@
       })
       .then((config) => applyRuntimeConfig(config, "remote"))
       .catch((error) => {
+        extensionLog("runtime config fetch error", { message: String(error) }, { limit: 8 });
         timeWarpLog("runtime-config-fetch-error", { message: String(error) }, { limit: 8 });
       });
   };
   const ready = (callback) => {
     if (document.body) {
+      extensionLog("document body ready", { readyState: document.readyState }, { limit: 4 });
       callback();
       return;
     }
+    extensionLog("waiting for document body", { readyState: document.readyState }, { limit: 4 });
     window.requestAnimationFrame(() => ready(callback));
   };
 
@@ -655,6 +694,17 @@
       resize: both;
       width: 100%;
     }
+    #${notesPanelId}.tfmars420-board-notes-fixed {
+      max-height: calc(100vh - 32px);
+      position: fixed;
+      right: 16px;
+      top: 16px;
+      z-index: 2147483647;
+    }
+    #${notesPanelId}.tfmars420-board-notes-fixed textarea {
+      max-height: calc(100vh - 96px);
+      min-height: min(420px, calc(100vh - 96px));
+    }
     #${notesPanelId}.tfmars420-board-notes-hidden textarea {
       display: none;
     }
@@ -785,7 +835,13 @@
   const renderBoardNotes = () => {
     upsertCss(notesCssId, notesCss());
     const anchor = getBoardNotesAnchor();
-    if (!anchor) return;
+    if (!anchor) {
+      extensionLog("board notes waiting for board anchor", {
+        hasMainBoard: Boolean(document.querySelector("#main_board")),
+        hasPlayerHomeBlock: Boolean(document.querySelector(".player_home_block")),
+      }, { limit: 8 });
+      return;
+    }
     const { block, gameBoard } = anchor;
 
     const storageKey = notesStorageKey();
@@ -844,8 +900,16 @@
       block.appendChild(panel);
     }
 
-    panel.style.left = `${gameBoard.offsetLeft + gameBoard.offsetWidth + 12}px`;
-    panel.style.top = `${gameBoard.offsetTop + 28}px`;
+    const boardRect = gameBoard.getBoundingClientRect();
+    const shouldUseFixedPanel = boardRect.top > window.innerHeight || boardRect.bottom < 0;
+    panel.classList.toggle("tfmars420-board-notes-fixed", shouldUseFixedPanel);
+    if (shouldUseFixedPanel) {
+      panel.style.left = "";
+      panel.style.top = "";
+    } else {
+      panel.style.left = `${gameBoard.offsetLeft + gameBoard.offsetWidth + 12}px`;
+      panel.style.top = `${gameBoard.offsetTop + 28}px`;
+    }
 
     const textarea = panel.querySelector(".tfmars420-board-notes-text");
     if (textarea && notesLastStorageKey !== storageKey) {
@@ -859,9 +923,20 @@
       "aria-pressed",
       visible ? "true" : "false",
     );
+    extensionLog("board notes rendered", {
+      fixed: shouldUseFixedPanel,
+      boardTop: Math.round(boardRect.top),
+      boardBottom: Math.round(boardRect.bottom),
+      panelExists: Boolean(panel),
+      hasTextarea: Boolean(textarea),
+    }, { limit: 8 });
   };
 
   const startBoardNotes = () => {
+    extensionLog("starting board notes", {
+      hasMainBoard: Boolean(document.querySelector("#main_board")),
+      hasPlayerHomeBlock: Boolean(document.querySelector(".player_home_block")),
+    }, { limit: 4 });
     renderBoardNotes();
     window.setInterval(renderBoardNotes, 1000);
   };
@@ -1298,11 +1373,17 @@
   };
 
   const startPlayerViewCapture = () => {
-    if (window.__TFMARS420_PLAYER_VIEW_CAPTURE_STARTED) return;
+    if (window.__TFMARS420_PLAYER_VIEW_CAPTURE_STARTED) {
+      extensionLog("player view capture already started", {}, { limit: 4 });
+      return;
+    }
     window.__TFMARS420_PLAYER_VIEW_CAPTURE_STARTED = true;
 
     const originalFetch = window.fetch?.bind(window);
     if (originalFetch) {
+      extensionLog("installing player view fetch capture", {
+        pathname: window.location.pathname,
+      }, { limit: 4 });
       window.fetch = (...args) => {
         const source =
           typeof args[0] === "string"
@@ -1318,6 +1399,8 @@
         });
       };
       timeWarpLog("fetch-capture-installed", { pathname: window.location.pathname }, { limit: 1 });
+    } else {
+      extensionLog("player view fetch capture missing fetch", {}, { limit: 4 });
     }
   };
 
@@ -2329,6 +2412,9 @@
   };
 
   const startTimeWarp = () => {
+    extensionLog("starting time warp", {
+      enabled: getTimeWarpConfig().enabled !== false,
+    }, { limit: 4 });
     updateTimeWarp();
     window.setInterval(updateTimeWarp, 500);
   };
@@ -2455,7 +2541,14 @@
       wrapperClass: "tfmars420-log-preview-layout",
       containerId: previewId,
     });
-    if (!container) return;
+    if (!container) {
+      extensionLog("preview waiting for log panel", {
+        logCards: logCards.length,
+        visibleCards: visibleCards.length,
+        hasLogPanel: Boolean(document.querySelector(".log-panel")),
+      }, { limit: 8 });
+      return;
+    }
     const logReference =
       document.querySelector(".log-panel") ??
       document.querySelector(".logpanel-scrollable");
@@ -2486,10 +2579,16 @@
   };
 
   const startPreview = () => {
+    extensionLog("starting recent card preview", {
+      hasLogPanel: Boolean(document.querySelector(".log-panel")),
+      logCards: getLogCards().length,
+      visibleCards: getVisibleCards().length,
+    }, { limit: 4 });
     updatePreview();
     window.setInterval(updatePreview, 1000);
   };
 
+  extensionLog("installing terraforming mars listeners");
   loadRemoteRuntimeConfig();
   startPlayerViewCapture();
 
@@ -2498,6 +2597,7 @@
   document.addEventListener("input", handleTimeWarpFormChange, true);
 
   ready(() => {
+    extensionLog("starting ready helpers");
     startBoardNotes();
     startPreview();
     startTimeWarp();
