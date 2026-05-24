@@ -8,15 +8,39 @@
   }
   window.__TFMARS420_RELOAD_BRIDGE_LOADED = true;
 
+  const postSessionResponse = (requestId, response) => {
+    window.postMessage(
+      { type: "tfmars420:session-response", requestId, response },
+      window.location.origin,
+    );
+  };
+
   window.addEventListener("message", (event) => {
     if (event.source !== window || event.origin !== window.location.origin) {
       return;
     }
-    if (event.data?.type !== "tfmars420:update-content-and-reload") {
+    if (event.data?.type === "tfmars420:update-content-and-reload") {
+      chrome.runtime.sendMessage({ type: "tfmars420:update-content-and-reload" });
       return;
     }
 
-    chrome.runtime.sendMessage({ type: "tfmars420:update-content-and-reload" });
+    if (
+      event.data?.type === "tfmars420:session-get" ||
+      event.data?.type === "tfmars420:session-set" ||
+      event.data?.type === "tfmars420:session-remove"
+    ) {
+      const { requestId, type, key, value } = event.data;
+      chrome.runtime.sendMessage({ type, key, value }, (response) => {
+        if (chrome.runtime.lastError) {
+          postSessionResponse(requestId, {
+            ok: false,
+            error: chrome.runtime.lastError.message,
+          });
+          return;
+        }
+        postSessionResponse(requestId, response);
+      });
+    }
   });
 
   chrome.runtime.onMessage.addListener((message) => {

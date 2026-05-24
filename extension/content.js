@@ -613,6 +613,56 @@
     console.log(`[tfmars420:timewarp] ${eventName}`, details);
   };
 
+  let sessionRequestId = 0;
+  const sessionRequests = new Map();
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== window || event.origin !== window.location.origin) {
+      return;
+    }
+    if (event.data?.type !== "tfmars420:session-response") {
+      return;
+    }
+
+    const request = sessionRequests.get(event.data.requestId);
+    if (!request) return;
+    window.clearTimeout(request.timeoutId);
+    sessionRequests.delete(event.data.requestId);
+    request.resolve(event.data.response);
+  });
+
+  const extensionSessionRequest = (type, key, value) =>
+    new Promise((resolve) => {
+      const requestId = `tfmars420-session-${Date.now()}-${++sessionRequestId}`;
+      const timeoutId = window.setTimeout(() => {
+        sessionRequests.delete(requestId);
+        resolve({ ok: false, error: "session request timed out" });
+      }, 1500);
+      sessionRequests.set(requestId, { resolve, timeoutId });
+      window.postMessage({ type, requestId, key, value }, window.location.origin);
+    });
+
+  const extensionSessionGet = async (key) => {
+    const response = await extensionSessionRequest("tfmars420:session-get", key);
+    if (response?.ok) return response.value;
+    timeWarpLog("session-get-error", { key, error: response?.error }, { limit: 8 });
+    return undefined;
+  };
+
+  const extensionSessionSet = async (key, value) => {
+    const response = await extensionSessionRequest("tfmars420:session-set", key, value);
+    if (!response?.ok) {
+      timeWarpLog("session-set-error", { key, error: response?.error }, { limit: 8 });
+    }
+  };
+
+  const extensionSessionRemove = async (key) => {
+    const response = await extensionSessionRequest("tfmars420:session-remove", key);
+    if (!response?.ok) {
+      timeWarpLog("session-remove-error", { key, error: response?.error }, { limit: 8 });
+    }
+  };
+
   const isPlainObject = (value) =>
     Boolean(value) && typeof value === "object" && !Array.isArray(value);
 
@@ -1750,6 +1800,8 @@
     cachedWaitingFor: null,
     replayInFlight: false,
   };
+  const hydratedTimeWarpPlayers = new Set();
+  const hydratingTimeWarpPlayers = new Set();
 
   let latestPlayerView = null;
   let latestPlayerViewCapturedAt = 0;
@@ -1917,6 +1969,88 @@
     timeWarpCachedUiState.set(playerId, cloneJson(state));
   };
 
+  const timeWarpSessionKey = (playerId) => `tfmars420:timewarp-session:${playerId}`;
+
+  const persistTimeWarpSession = (contextOrPlayerId) => {
+    const playerId =
+      typeof contextOrPlayerId === "string"
+        ? contextOrPlayerId
+        : contextOrPlayerId?.playerView?.id;
+    if (!playerId) return;
+
+    if (
+      !timeWarp.active &&
+      timeWarp.queue.length === 0 &&
+      !getCachedUiState(playerId) &&
+      !timeWarp.cachedWaitingFor
+    ) {
+      extensionSessionRemove(timeWarpSessionKey(playerId));
+      return;
+    }
+
+    extensionSessionSet(timeWarpSessionKey(playerId), {
+      version: 1,
+      playerId,
+      active: timeWarp.active,
+      queue: cloneJson(timeWarp.queue),
+      cachedWaitingFor: cloneJson(
+        timeWarp.cachedWaitingFor ?? getCachedWaitingFor(playerId) ?? null,
+      ),
+      cachedUiState: cloneJson(getCachedUiState(playerId) ?? null),
+      lastError: timeWarp.lastError,
+    });
+  };
+
+  const clearTimeWarpSession = (contextOrPlayerId) => {
+    const playerId =
+      typeof contextOrPlayerId === "string"
+        ? contextOrPlayerId
+        : contextOrPlayerId?.playerView?.id;
+    if (!playerId) return;
+    extensionSessionRemove(timeWarpSessionKey(playerId));
+  };
+
+  const hydrateTimeWarpSession = async (context) => {
+    const playerId = context?.playerView?.id;
+    if (!playerId || hydratedTimeWarpPlayers.has(playerId) || hydratingTimeWarpPlayers.has(playerId)) {
+      return;
+    }
+
+    hydratingTimeWarpPlayers.add(playerId);
+    try {
+      const state = await extensionSessionGet(timeWarpSessionKey(playerId));
+      hydratedTimeWarpPlayers.add(playerId);
+      if (!state || state.version !== 1 || state.playerId !== playerId || !state.active) {
+        return;
+      }
+
+      timeWarp.active = true;
+      timeWarp.queue = Array.isArray(state.queue) ? cloneJson(state.queue) : [];
+      timeWarp.lastError = state.lastError || "";
+      timeWarp.cachedWaitingFor = state.cachedWaitingFor ? cloneJson(state.cachedWaitingFor) : null;
+      if (state.cachedWaitingFor) {
+        setCachedWaitingFor(playerId, state.cachedWaitingFor);
+      }
+      if (state.cachedUiState) {
+        setCachedUiState(playerId, state.cachedUiState);
+      }
+
+      timeWarpLog(
+        "session-hydrated",
+        {
+          playerId,
+          queueLength: timeWarp.queue.length,
+          hasCachedWaitingFor: Boolean(timeWarp.cachedWaitingFor),
+          hasCachedUiState: Boolean(state.cachedUiState),
+        },
+        { limit: 8 },
+      );
+      renderTimeWarpPanel(context);
+    } finally {
+      hydratingTimeWarpPlayers.delete(playerId);
+    }
+  };
+
   const getWaitingForRootElement = (component) => {
     const element = component?.proxy?.$el;
     return element instanceof Element ? element : null;
@@ -1953,6 +2087,42 @@
     if (value?.data?.message) return value.data.message;
     return String(value ?? "");
   };
+
+  const stableTitleString = (value) => {
+    if (!value || typeof value !== "object") return simpleTitle(value);
+    try {
+      const normalize = (item) => {
+        if (!item || typeof item !== "object") return item;
+        if (Array.isArray(item)) return item.map(normalize);
+        return Object.fromEntries(
+          Object.keys(item)
+            .sort()
+            .map((key) => [key, normalize(item[key])]),
+        );
+      };
+      return JSON.stringify(normalize(value));
+    } catch {
+      return simpleTitle(value);
+    }
+  };
+
+  const optionTitleKeys = (title) => {
+    const keys = new Set();
+    const plainTitle = simpleTitle(title);
+    if (plainTitle && plainTitle !== "[object Object]") {
+      keys.add(plainTitle);
+    }
+    if (title?.key) keys.add(title.key);
+    if (title?.data?.key) keys.add(title.data.key);
+    const stableTitle = stableTitleString(title);
+    if (stableTitle && stableTitle !== "[object Object]") {
+      keys.add(stableTitle);
+    }
+    return keys;
+  };
+
+  const optionTitleLabel = (title) =>
+    Array.from(optionTitleKeys(title))[0] ?? simpleTitle(title) ?? "unknown";
 
   const namedOptionValue = (value) => {
     if (typeof value === "string") return value;
@@ -2232,6 +2402,8 @@
   const queueFallbackResponse = (context, payload) => {
     timeWarp.queue.push(cloneJson(payload));
     timeWarp.lastError = "";
+    rememberTimeWarpUiState(context);
+    persistTimeWarpSession(context);
     timeWarpLog(
       "queued-fallback",
       {
@@ -2305,6 +2477,7 @@
       path: [],
       onSave: (payload) => queueFallbackResponse(context, payload),
     });
+    restoreTimeWarpUiState(context);
   }
 
   const clearFallbackCachedWaitingFor = () => {
@@ -2317,12 +2490,17 @@
     timeWarp.renderedFallbackKey = null;
   };
 
+  const getTimeWarpUiStateRootElement = (context) =>
+    getWaitingForRootElement(context?.component) ??
+    document.getElementById(timeWarpFallbackFormId);
+
   const rememberTimeWarpUiState = (context = timeWarpContext()) => {
     if (!timeWarp.active || !context?.playerView?.id) return;
-    const rootElement = getWaitingForRootElement(context.component);
+    const rootElement = getTimeWarpUiStateRootElement(context);
     if (!rootElement) return;
     try {
       setCachedUiState(context.playerView.id, collectFormState(rootElement));
+      persistTimeWarpSession(context);
     } catch (error) {
       console.warn("[tfmars420] unable to remember time-warp UI state", error);
     }
@@ -2332,7 +2510,7 @@
     if (!timeWarp.active || !context?.playerView?.id) return;
     const state = getCachedUiState(context.playerView.id);
     if (!state) return;
-    const rootElement = getWaitingForRootElement(context.component);
+    const rootElement = getTimeWarpUiStateRootElement(context);
     if (!rootElement) return;
     restoreFormState(rootElement, state);
   };
@@ -2624,6 +2802,7 @@
       timeWarp.queue = [];
       timeWarp.lastError = "";
       timeWarp.cachedWaitingFor = cachedWaitingFor;
+      persistTimeWarpSession(context);
       renderFallbackCachedWaitingFor(context, cachedWaitingFor);
       renderTimeWarpPanel(context);
       return;
@@ -2634,6 +2813,7 @@
     timeWarp.queue = [];
     timeWarp.lastError = "";
     timeWarp.cachedWaitingFor = cachedWaitingFor;
+    persistTimeWarpSession(context);
     renderCachedWaitingFor(context, cachedWaitingFor);
     renderTimeWarpPanel(context);
   };
@@ -2662,6 +2842,7 @@
       timeWarp.lastError = "";
     }
     clearRenderedCachedWaitingFor(context);
+    clearTimeWarpSession(context);
     renderTimeWarpPanel(context);
   }
 
@@ -2683,23 +2864,25 @@
 
     const payload = cloneJson(timeWarp.queue[0]);
     const selectedOptionTitle = cachedWaitingFor.options?.[payload.index]?.title;
-    const nextIndex = liveWaitingFor.options
-      .map((option) => option.title)
-      .indexOf(selectedOptionTitle);
+    const selectedOptionTitleKeys = optionTitleKeys(selectedOptionTitle);
+    const selectedOptionTitleLabel = optionTitleLabel(selectedOptionTitle);
+    const nextIndex = liveWaitingFor.options.findIndex((option) =>
+      Array.from(optionTitleKeys(option.title)).some((key) => selectedOptionTitleKeys.has(key)),
+    );
     timeWarpLog(
       "replay-match",
       {
         playerId: context.playerView.id,
-        selectedOptionTitle,
+        selectedOptionTitle: selectedOptionTitleLabel,
         nextIndex,
-        cachedTitles: cachedWaitingFor.options.map((option) => option.title),
-        liveTitles: liveWaitingFor.options.map((option) => option.title),
+        cachedTitles: cachedWaitingFor.options.map((option) => optionTitleLabel(option.title)),
+        liveTitles: liveWaitingFor.options.map((option) => optionTitleLabel(option.title)),
       },
       { limit: 20 },
     );
 
     if (nextIndex === -1) {
-      deactivateTimeWarp(`Unable to match queued action: ${selectedOptionTitle ?? "unknown"}`, context);
+      deactivateTimeWarp(`Unable to match queued action: ${selectedOptionTitleLabel}`, context);
       return;
     }
 
@@ -2759,6 +2942,9 @@
         timeWarp.renderedCachedComponent = null;
         timeWarp.cachedWaitingFor = null;
         clearFallbackCachedWaitingFor();
+        clearTimeWarpSession(context);
+      } else {
+        persistTimeWarpSession(context);
       }
       rememberLatestPlayerView(nextPlayerView, "replay");
       if (context.root) {
@@ -2807,6 +2993,7 @@
       renderTimeWarpPanel(null);
       return;
     }
+    hydrateTimeWarpSession(context);
 
     const { playerView, liveWaitingFor } = context;
     if (isNormalTakeAction(liveWaitingFor) && !timeWarp.active) {
@@ -2866,7 +3053,8 @@
     if (!timeWarp.active) return;
     const context = timeWarpContext();
     const rootElement = getWaitingForRootElement(context?.component);
-    if (rootElement?.contains(event.target)) {
+    const fallbackElement = document.getElementById(timeWarpFallbackFormId);
+    if (rootElement?.contains(event.target) || fallbackElement?.contains(event.target)) {
       window.setTimeout(() => rememberTimeWarpUiState(context), 0);
     }
   };
@@ -3029,6 +3217,7 @@
   document.addEventListener("change", handleSingleCardSelectionChange, true);
   document.addEventListener("change", handleTimeWarpFormChange, true);
   document.addEventListener("input", handleTimeWarpFormChange, true);
+  window.addEventListener("beforeunload", () => rememberTimeWarpUiState());
 
   ready(() => {
     startBoardNotes();
