@@ -798,11 +798,13 @@
   const recentCardsFromLog = (logCards) => {
     const newestFirst = [...logCards].reverse();
     const deduped = [];
+    const seen = new Set();
     for (const card of newestFirst) {
-      const previous = deduped[deduped.length - 1];
-      if (previous && normalizeCardName(previous.name) === normalizeCardName(card.name)) {
+      const key = normalizeCardName(card.name);
+      if (seen.has(key)) {
         continue;
       }
+      seen.add(key);
       deduped.push(card);
     }
     return deduped.slice(0, 10);
