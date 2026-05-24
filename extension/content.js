@@ -17,6 +17,7 @@
     const containerSelector = "div.container-cVxpOtTU.gameHelpButtonsLayer-odYlgrig";
     const buttonClass = "firegame-colonist-420";
     const cssId = "firegame-colonist-420-css";
+    const overlayId = "firegame-colonist-dice-overlay";
 
     const upsertColonistCss = () => {
       if (document.getElementById(cssId)) return;
@@ -43,12 +44,475 @@
           outline: 2px solid #ff4fbf;
           outline-offset: 2px;
         }
+
+        #${overlayId} {
+          align-items: stretch;
+          background: rgba(0, 0, 0, 0.82);
+          box-sizing: border-box;
+          color: #f7f1ff;
+          display: flex;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          inset: 0;
+          justify-content: center;
+          padding: 28px;
+          position: fixed;
+          z-index: 2147483647;
+        }
+
+        #${overlayId} .firegame-colonist-dice-panel {
+          background: #181a22;
+          border: 1px solid rgba(255, 255, 255, 0.24);
+          border-radius: 8px;
+          box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+          display: flex;
+          flex-direction: column;
+          max-width: 960px;
+          min-height: 0;
+          overflow: hidden;
+          width: min(960px, 100%);
+        }
+
+        #${overlayId} .firegame-colonist-dice-header {
+          align-items: center;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+          display: flex;
+          gap: 16px;
+          justify-content: space-between;
+          padding: 16px 18px;
+        }
+
+        #${overlayId} h2 {
+          font-size: 22px;
+          line-height: 1.2;
+          margin: 0;
+        }
+
+        #${overlayId} .firegame-colonist-dice-close {
+          background: #ff4fbf;
+          border: 0;
+          border-radius: 6px;
+          color: #111;
+          cursor: pointer;
+          font: inherit;
+          font-weight: 800;
+          min-height: 36px;
+          padding: 6px 12px;
+        }
+
+        #${overlayId} .firegame-colonist-dice-body {
+          overflow: auto;
+          padding: 16px 18px 20px;
+        }
+
+        #${overlayId} table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        #${overlayId} th,
+        #${overlayId} td {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+          padding: 10px 8px;
+          text-align: left;
+          vertical-align: top;
+        }
+
+        #${overlayId} th {
+          color: #ffb7e3;
+          font-size: 13px;
+          letter-spacing: 0;
+          text-transform: uppercase;
+        }
+
+        #${overlayId} .firegame-colonist-dice-sum {
+          font-size: 20px;
+          font-weight: 800;
+          width: 72px;
+        }
+
+        #${overlayId} .firegame-colonist-dice-empty {
+          color: #aaaec0;
+        }
+
+        #${overlayId} .firegame-colonist-dice-pill {
+          background: rgba(255, 79, 191, 0.14);
+          border: 1px solid rgba(255, 79, 191, 0.35);
+          border-radius: 999px;
+          color: #ffd7f0;
+          display: inline-block;
+          margin: 2px 4px 2px 0;
+          padding: 3px 8px;
+          white-space: nowrap;
+        }
       `;
       (document.head ?? document.documentElement).append(style);
     };
 
-    const blazeIt = () => {
-      window.alert("blaze it");
+    const numberWordToValue = new Map([
+      ["one", 1],
+      ["two", 2],
+      ["three", 3],
+      ["four", 4],
+      ["five", 5],
+      ["six", 6],
+      ["seven", 7],
+      ["eight", 8],
+      ["nine", 9],
+      ["ten", 10],
+      ["eleven", 11],
+      ["twelve", 12],
+    ]);
+    const colonistLog = (eventName, details = {}) => {
+      let serializedDetails = "";
+      try {
+        serializedDetails = JSON.stringify(details);
+      } catch {
+        serializedDetails = String(details);
+      }
+      console.log(`[aworldofstruggle:colonist] ${eventName} ${serializedDetails}`);
+    };
+
+    const diceValueFromText = (text) => {
+      const normalized = text.toLowerCase().replace(/[_-]/g, " ");
+      const diceMatch = normalized.match(/\bdice(?: red)?\s*([1-6])\b/);
+      if (diceMatch) return Number.parseInt(diceMatch[1], 10);
+      const assetMatch = normalized.match(/\bdice(?:_red)?_([1-6])\b/);
+      if (assetMatch) return Number.parseInt(assetMatch[1], 10);
+      return null;
+    };
+
+    const collectDiceValues = (logEntry) => {
+      const values = [];
+      const seen = new Set();
+      for (const element of logEntry.querySelectorAll("img, [aria-label], [title], [alt]")) {
+        const candidates = [
+          element.getAttribute("alt"),
+          element.getAttribute("title"),
+          element.getAttribute("aria-label"),
+          element.getAttribute("src"),
+          element.className,
+        ].filter(Boolean);
+        for (const candidate of candidates) {
+          const value = diceValueFromText(String(candidate));
+          if (!value) continue;
+          const key = `${values.length}:${candidate}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          values.push(value);
+          break;
+        }
+      }
+      return values;
+    };
+
+    const extractDiceSumFromText = (text) => {
+      const normalized = text.toLowerCase().replace(/\s+/g, " ").trim();
+      const rolledNumber = normalized.match(/\b(?:rolled|rolls|roll)\s+(?:a\s+)?(?:sum\s+of\s+)?([2-9]|1[0-2])\b/);
+      if (rolledNumber) return Number.parseInt(rolledNumber[1], 10);
+      const rolledWord = normalized.match(/\b(?:rolled|rolls|roll)\s+(?:a\s+)?(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b/);
+      if (rolledWord) return numberWordToValue.get(rolledWord[1]) ?? null;
+      return null;
+    };
+
+    const collectDiceValuesFromText = (text) => {
+      const values = [];
+      const normalized = text.toLowerCase();
+      const tokenPattern = /(?::?dice(?:_red)?[:_\s]?([1-6])\b)|(?:\bdice(?:\s+red)?\s+([1-6])\b)/g;
+      let match = tokenPattern.exec(normalized);
+      while (match) {
+        values.push(Number.parseInt(match[1] ?? match[2], 10));
+        match = tokenPattern.exec(normalized);
+      }
+      return values;
+    };
+
+    const looksLikeDiceRollText = (text) => {
+      const normalized = text.toLowerCase();
+      return /\brolled\b/.test(normalized) && /dice(?:_red)?[:_\s]?[1-6]\b/.test(normalized);
+    };
+
+    const wait = (milliseconds) =>
+      new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+
+    const getScrollableAncestor = (element) => {
+      let current = element?.parentElement ?? null;
+      while (current && current !== document.body) {
+        if (current.scrollHeight > current.clientHeight + 20) {
+          return current;
+        }
+        current = current.parentElement;
+      }
+      return null;
+    };
+
+    const getVirtualFeed = () => {
+      const feedContainer =
+        document.querySelector("[class*='gameFeedsContainer']") ??
+        document.querySelector("[class*='gameFeed']");
+      const virtualScroller =
+        feedContainer?.querySelector("[class*='virtualScroller']") ??
+        document.querySelector("[class*='virtualScroller']");
+      const scrollRoot = getScrollableAncestor(virtualScroller);
+      colonistLog("virtual feed", {
+        hasFeedContainer: Boolean(feedContainer),
+        feedClassName: feedContainer?.className,
+        hasVirtualScroller: Boolean(virtualScroller),
+        virtualScrollerClassName: virtualScroller?.className,
+        hasScrollRoot: Boolean(scrollRoot),
+        scrollRootClassName: scrollRoot?.className,
+        scrollHeight: scrollRoot?.scrollHeight,
+        clientHeight: scrollRoot?.clientHeight,
+      });
+      if (!virtualScroller || !scrollRoot) return null;
+      return { virtualScroller, scrollRoot };
+    };
+
+    const collectVisibleFeedSources = (virtualScroller, collected) => {
+      const items = Array.from(
+        virtualScroller.querySelectorAll("[data-index][class*='scrollItemContainer']"),
+      );
+      for (const item of items) {
+        const index = Number.parseInt(item.getAttribute("data-index") ?? "", 10);
+        if (!Number.isFinite(index) || collected.has(index)) continue;
+        const message = item.querySelector("[class*='feedMessage']") ?? item;
+        const text = (message.textContent ?? "").replace(/\s+/g, " ").trim();
+        if (!text && !message.querySelector("img")) continue;
+        collected.set(index, { index, element: message, text });
+      }
+    };
+
+    const collectVirtualFeedSources = async () => {
+      const feed = getVirtualFeed();
+      if (!feed) return [];
+      const { virtualScroller, scrollRoot } = feed;
+      const originalScrollTop = scrollRoot.scrollTop;
+      const maxScrollTop = Math.max(0, scrollRoot.scrollHeight - scrollRoot.clientHeight);
+      const step = Math.max(240, Math.floor(scrollRoot.clientHeight * 0.85));
+      const positions = [];
+      for (let position = 0; position < maxScrollTop; position += step) {
+        positions.push(position);
+      }
+      positions.push(maxScrollTop);
+
+      const collected = new Map();
+      try {
+        for (const position of positions) {
+          scrollRoot.scrollTop = position;
+          await wait(35);
+          collectVisibleFeedSources(virtualScroller, collected);
+        }
+      } finally {
+        scrollRoot.scrollTop = originalScrollTop;
+      }
+
+      const sources = Array.from(collected.values()).sort((first, second) => first.index - second.index);
+      colonistLog("virtual feed sources", {
+        count: sources.length,
+        firstIndex: sources[0]?.index,
+        lastIndex: sources[sources.length - 1]?.index,
+        samples: sources.filter((source) => looksLikeDiceRollText(source.text)).slice(0, 12).map((source) => ({
+          index: source.index,
+          text: source.text.slice(0, 220),
+        })),
+      });
+      return sources;
+    };
+
+    const getFallbackLogEntries = () => {
+      const candidates = Array.from(document.querySelectorAll("div, li, p, span"))
+        .filter((element) => {
+          const text = (element.textContent ?? "").replace(/\s+/g, " ").trim();
+          if (!looksLikeDiceRollText(text)) return false;
+          if (text.length > 500) return false;
+          return !Array.from(element.children).some((child) =>
+            looksLikeDiceRollText((child.textContent ?? "").replace(/\s+/g, " ").trim()),
+          );
+        });
+
+      colonistLog("fallback log entries", {
+        count: candidates.length,
+        samples: candidates.slice(0, 12).map((entry) => ({
+          tag: entry.tagName,
+          id: entry.id,
+          className: entry.className,
+          text: (entry.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 220),
+        })),
+      });
+
+      return candidates;
+    };
+
+    const getVisibleDiceLogLines = () => {
+      const lines = (document.body?.innerText ?? "")
+        .split(/\n+/)
+        .map((line) => line.replace(/\s+/g, " ").trim())
+        .filter(looksLikeDiceRollText);
+      colonistLog("visible dice log lines", {
+        count: lines.length,
+        samples: lines.slice(0, 12),
+      });
+      return lines;
+    };
+
+    const getLogEntries = () => {
+      const containers = [
+        document.getElementById("game-log-text"),
+        document.querySelector("[id*='game-log']"),
+        document.querySelector("[class*='gameLog']"),
+        document.querySelector("[class*='game-log']"),
+      ].filter(Boolean);
+      const container = containers[0];
+      colonistLog("log container", {
+        found: Boolean(container),
+        id: container?.id,
+        className: container?.className,
+        childCount: container?.children?.length ?? 0,
+        textSample: (container?.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 300),
+      });
+      if (!container) return getFallbackLogEntries();
+      const children = Array.from(container.children).filter((child) =>
+        (child.textContent ?? "").trim() || child.querySelector("img"),
+      );
+      const entries = children.length > 0 ? children : [container];
+      colonistLog("log entries", {
+        count: entries.length,
+        samples: entries.slice(0, 8).map((entry) => ({
+          tag: entry.tagName,
+          id: entry.id,
+          className: entry.className,
+          text: (entry.textContent ?? "").replace(/\s+/g, " ").trim().slice(0, 220),
+          imageHints: Array.from(entry.querySelectorAll("img")).slice(0, 4).map((image) => ({
+            alt: image.getAttribute("alt"),
+            title: image.getAttribute("title"),
+            ariaLabel: image.getAttribute("aria-label"),
+            src: image.getAttribute("src"),
+            className: image.className,
+          })),
+        })),
+      });
+      return entries;
+    };
+
+    const getDiceRolls = async () => {
+      const rolls = [];
+      const virtualSources = await collectVirtualFeedSources();
+      const entries = virtualSources.length > 0 ? [] : getLogEntries();
+      const sources = virtualSources.length > 0
+        ? virtualSources
+        : entries.length > 0
+          ? entries.map((entry) => ({ element: entry, text: entry.textContent ?? "" }))
+          : getVisibleDiceLogLines().map((text) => ({ element: null, text }));
+      for (const source of sources) {
+        let diceValues = source.element ? collectDiceValues(source.element) : [];
+        if (diceValues.length < 2) {
+          diceValues = collectDiceValuesFromText(source.text);
+        }
+        let sum = null;
+        if (diceValues.length >= 2) {
+          sum = diceValues.slice(0, 2).reduce((total, value) => total + value, 0);
+        } else {
+          sum = extractDiceSumFromText(source.text);
+        }
+        colonistLog("entry parsed", {
+          text: source.text.replace(/\s+/g, " ").trim().slice(0, 220),
+          diceValues,
+          sum,
+        });
+        if (sum >= 2 && sum <= 12) {
+          rolls.push({ sum });
+        }
+      }
+      const indexedRolls = rolls.map((roll, index) => ({
+        ...roll,
+        turnsAgo: rolls.length - index - 1,
+      }));
+      colonistLog("rolls parsed", {
+        count: indexedRolls.length,
+        rolls: indexedRolls,
+      });
+      return indexedRolls;
+    };
+
+    const formatTurnsAgo = (turnsAgo) => {
+      if (turnsAgo === 0) return "0 turns ago";
+      if (turnsAgo === 1) return "1 turn ago";
+      return `${turnsAgo} turns ago`;
+    };
+
+    const renderDiceRows = (rolls) => {
+      const bySum = new Map(Array.from({ length: 11 }, (_, index) => [index + 2, []]));
+      for (const roll of rolls) {
+        bySum.get(roll.sum)?.push(roll.turnsAgo);
+      }
+      return Array.from(bySum.entries())
+        .map(([sum, turnsAgoList]) => {
+          const contents =
+            turnsAgoList.length === 0
+              ? `<span class="firegame-colonist-dice-empty">Never rolled</span>`
+              : [...turnsAgoList]
+                  .sort((first, second) => first - second)
+                  .map((turnsAgo) => `<span class="firegame-colonist-dice-pill">${formatTurnsAgo(turnsAgo)}</span>`)
+                  .join(" ");
+          return `
+            <tr>
+              <td class="firegame-colonist-dice-sum">${sum}</td>
+              <td>${turnsAgoList.length}</td>
+              <td>${contents}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    };
+
+    const closeDiceOverlay = () => {
+      document.getElementById(overlayId)?.remove();
+      document.removeEventListener("keydown", handleOverlayKeydown, true);
+    };
+
+    function handleOverlayKeydown(event) {
+      if (event.key === "Escape") {
+        closeDiceOverlay();
+      }
+    }
+
+    const showDiceOverlay = async () => {
+      upsertColonistCss();
+      document.getElementById(overlayId)?.remove();
+      const overlay = document.createElement("div");
+      overlay.id = overlayId;
+      overlay.innerHTML = `
+        <section class="firegame-colonist-dice-panel" role="dialog" aria-modal="true" aria-labelledby="firegame-colonist-dice-title">
+          <header class="firegame-colonist-dice-header">
+            <h2 id="firegame-colonist-dice-title">Dice Rolls</h2>
+            <button class="firegame-colonist-dice-close" type="button">Close</button>
+          </header>
+          <div class="firegame-colonist-dice-body">
+            <span class="firegame-colonist-dice-empty">Loading dice history...</span>
+          </div>
+        </section>
+      `;
+      overlay.querySelector(".firegame-colonist-dice-close")?.addEventListener("click", closeDiceOverlay);
+      overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) closeDiceOverlay();
+      });
+      document.addEventListener("keydown", handleOverlayKeydown, true);
+      document.body.append(overlay);
+      const rolls = await getDiceRolls();
+      colonistLog("show overlay", { rollCount: rolls.length });
+      const body = overlay.querySelector(".firegame-colonist-dice-body");
+      if (!body) return;
+      body.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Sum</th>
+              <th>Rolls</th>
+              <th>How Many Turns Ago</th>
+            </tr>
+          </thead>
+          <tbody>${renderDiceRows(rolls)}</tbody>
+        </table>
+      `;
     };
 
     const ensureButton = () => {
@@ -66,11 +530,11 @@
       button.role = "button";
       button.tabIndex = 0;
       button.setAttribute("aria-label", "Blaze it");
-      button.addEventListener("click", blazeIt);
+      button.addEventListener("click", showDiceOverlay);
       button.addEventListener("keydown", (event) => {
         if (event.key !== "Enter" && event.key !== " ") return;
         event.preventDefault();
-        blazeIt();
+        showDiceOverlay();
       });
       container.append(button);
     };
