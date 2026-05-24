@@ -5,15 +5,15 @@
       y="0"
       fill="#ff7bc3"
       font-family="'Comic Sans MS', 'Comic Sans', cursive"
-      font-size="42"
-      font-weight="400"
+      font-size="30"
+      font-weight="700"
       stroke="#000"
       stroke-width="2.7"
       paint-order="stroke fill"
       text-anchor="middle"
       dominant-baseline="middle"
     >
-      tf
+      420
     </text>
   </g>
 </svg>
