@@ -158,12 +158,11 @@ function buildPlantationDeck(): GoodId[] {
 }
 
 function setPlayers(game: GameType): GameType {
-  const lobbyEntries = playerLobbyEntries(store.lobby);
+  const lobbyEntries = playerLobbyEntries(game.params.lobby);
   const count = playerCount(lobbyEntries.length);
   const setup = SETUP[count];
   game.players = utils
     .shuffle(lobbyEntries)
-    .sort((a, b) => (b[0] === store.me.userId ? 1 : -1))
     .map(([userId, userName], index) => ({
       userId,
       userName,
