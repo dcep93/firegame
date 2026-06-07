@@ -175,7 +175,7 @@ function setPlayers(game: GameType): GameType {
       sanJuan: 0,
     }));
   game.playerTimers = Object.fromEntries(game.players.map((player) => [player.userId, 0]));
-  game.governor = Math.floor(Math.random() * game.players.length);
+  game.governor = 0;
   game.currentPlayer = game.governor;
   game.rolePicker = game.governor;
   return game;
