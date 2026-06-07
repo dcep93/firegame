@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import css from "../index.module.css";
-import { goodsInThemeOrder, theme } from "../theme/base";
+import { goodsInThemeOrder, theme, workerText } from "../theme/base";
 import { GameType } from "../utils/NewGame";
 import { TRADER_PRICES } from "../utils/rules";
 import utils, { store } from "../utils/utils";
@@ -10,8 +10,6 @@ function BankView(props: { game?: GameType; readOnly?: boolean }) {
   usePendingActionVersion();
   const game = props.game || store.gameW.game;
   const bank = game.bank;
-  const staffBase = Math.min(game.players.length, bank.colonistShip);
-  const staffExtra = Math.max(0, bank.colonistShip - game.players.length);
   const currentPlayer = game.players[game.currentPlayer];
   const myPlayer = game.players.find((player) => player.userId === store.me.userId);
   const canPlanSettle = !props.readOnly && game.phase === "settler" && utils.canQueueActionForMe("settler");
@@ -186,9 +184,8 @@ function BankView(props: { game?: GameType; readOnly?: boolean }) {
         </div>
         <div className={`${css.tile} ${css.boardTile}`}>
           <strong className={css.tileTitle}>
-            {theme.labels.colonistShip} {staffBase} + {staffExtra} extra
+            {theme.labels.colonistShip}: {workerText(bank.colonistShip)}, {bank.colonistSupply} reserve
           </strong>
-          <span className={css.boardStatsLine}>{bank.colonistShip} total, {bank.colonistSupply} reserve</span>
           <div className={css.cardSeparator} />
           <strong className={css.tileTitle}>{theme.labels.goodsSupply}</strong>
           {goodsInThemeOrder.map((good) => (
