@@ -760,34 +760,23 @@
   const renderedCardRequests = new Set();
   const renderedCardHtmlByKey = new Map();
   const timeWarpPanelId = "tfmars420-timewarp-panel";
-  const timeWarpFallbackFormId = "tfmars420-timewarp-form";
   const timeWarpCssId = "tfmars420-timewarp-css";
-  const notesPanelId = "tfmars420-board-notes";
-  const notesCssId = "tfmars420-board-notes-css";
-  const runtimeConfigUrl = "https://aworldofstruggle.web.app/extension/config.json";
+  const controlsPanelId = "tfmars420-controls";
+  const controlsCssId = "tfmars420-controls-css";
+  const lobbyPanelId = "tfmars420-lobby-panel";
+  const lobbyRootClass = "tfmars420-extension-ui";
+  const firebaseLobbyUrl =
+    "https://firebase-320421-default-rtdb.firebaseio.com/tfmars420/lobby";
+  const extensionActiveStorageKey = "tfmars420:active";
+  const queueSessionStorageKey = "tfmars420:session";
   let lastRenderKey = "";
   let clickInFlight = false;
-  let notesSaveTimeout = null;
-  let notesLastStorageKey = "";
-  let notesVisible = true;
+  let extensionActive = true;
   let helpersHiddenCleaned = false;
-  const timeWarpCachedWaitingFor = new Map();
-  const timeWarpCachedUiState = new Map();
-  let runtimeConfig = {
-    version: 1,
-    skills: {
-      timeWarp: {
-        enabled: true,
-        panel: {
-          queueMaxHeight: null,
-        },
-        fallbackRenderer: {
-          preserveFormWhileActive: true,
-          cardListMaxHeight: null,
-        },
-      },
-    },
-  };
+  let queueUiScheduled = false;
+  let queueExecutionAttempted = false;
+  let queueExecutionInFlight = false;
+  let queueExecutionError = "";
 
   const debug = new URL(window.location.href).searchParams.has("debug");
   const debugLogEnabled = () => debug;
@@ -801,107 +790,8 @@
     console.log(`[tfmars420:timewarp] ${eventName}`, details);
   };
 
-  let sessionRequestId = 0;
-  const sessionRequests = new Map();
-
-  window.addEventListener("message", (event) => {
-    if (event.source !== window || event.origin !== window.location.origin) {
-      return;
-    }
-    if (event.data?.type !== "tfmars420:session-response") {
-      return;
-    }
-
-    const request = sessionRequests.get(event.data.requestId);
-    if (!request) return;
-    window.clearTimeout(request.timeoutId);
-    sessionRequests.delete(event.data.requestId);
-    request.resolve(event.data.response);
-  });
-
-  const extensionSessionRequest = (type, key, value) =>
-    new Promise((resolve) => {
-      const requestId = `tfmars420-session-${Date.now()}-${++sessionRequestId}`;
-      const timeoutId = window.setTimeout(() => {
-        sessionRequests.delete(requestId);
-        resolve({ ok: false, error: "session request timed out" });
-      }, 1500);
-      sessionRequests.set(requestId, { resolve, timeoutId });
-      window.postMessage({ type, requestId, key, value }, window.location.origin);
-    });
-
-  const extensionSessionGet = async (key) => {
-    const response = await extensionSessionRequest("tfmars420:session-get", key);
-    if (response?.ok) return response.value;
-    timeWarpLog("session-get-error", { key, error: response?.error }, { limit: 8 });
-    return undefined;
-  };
-
-  const extensionSessionSet = async (key, value) => {
-    const response = await extensionSessionRequest("tfmars420:session-set", key, value);
-    if (!response?.ok) {
-      timeWarpLog("session-set-error", { key, error: response?.error }, { limit: 8 });
-    }
-  };
-
-  const extensionSessionRemove = async (key) => {
-    const response = await extensionSessionRequest("tfmars420:session-remove", key);
-    if (!response?.ok) {
-      timeWarpLog("session-remove-error", { key, error: response?.error }, { limit: 8 });
-    }
-  };
-
   const isPlainObject = (value) =>
     Boolean(value) && typeof value === "object" && !Array.isArray(value);
-
-  const mergeConfig = (base, override) => {
-    if (!isPlainObject(base) || !isPlainObject(override)) {
-      return override === undefined ? base : override;
-    }
-    const merged = { ...base };
-    for (const [key, value] of Object.entries(override)) {
-      merged[key] = mergeConfig(base[key], value);
-    }
-    return merged;
-  };
-
-  const getTimeWarpConfig = () => runtimeConfig.skills?.timeWarp ?? {};
-
-  const applyRuntimeConfig = (config, source) => {
-    if (!isPlainObject(config) || config.version !== 1) {
-      timeWarpLog("runtime-config-ignored", { source, version: config?.version }, { limit: 8 });
-      return;
-    }
-    runtimeConfig = mergeConfig(runtimeConfig, config);
-    timeWarpLog(
-      "runtime-config-applied",
-      {
-        source,
-        timeWarp: runtimeConfig.skills?.timeWarp,
-      },
-      { limit: 8 },
-    );
-    upsertCss(timeWarpCssId, timeWarpCss());
-    renderTimeWarpPanel();
-  };
-
-  const loadRemoteRuntimeConfig = () => {
-    fetch(runtimeConfigUrl, {
-      cache: "no-store",
-      credentials: "omit",
-      headers: { Accept: "application/json" },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((config) => applyRuntimeConfig(config, "remote"))
-      .catch((error) => {
-        timeWarpLog("runtime-config-fetch-error", { message: String(error) }, { limit: 8 });
-      });
-  };
   const ready = (callback) => {
     if (document.body) {
       callback();
@@ -1354,65 +1244,130 @@
     }
   };
 
-  const notesCss = () => `
-    .tfmars420-board-notes-anchor {
-      position: relative;
-    }
-    #${notesPanelId} {
-      background: #2f2f2f;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 4px;
+  const controlsCss = () => `
+    .${lobbyRootClass} {
       box-sizing: border-box;
+      color: #f5f5f5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #${controlsPanelId} {
+      align-items: center;
+      background: rgba(47, 47, 47, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      box-sizing: border-box;
+      color: #f5f5f5;
+      display: flex;
+      gap: 12px;
+      margin: 8px 0 12px;
+      padding: 8px 10px;
+      position: relative;
+      white-space: nowrap;
+      z-index: 5;
+      width: fit-content;
+    }
+    #${controlsPanelId} .tfmars420-controls-logo {
+      align-items: center;
+      background: transparent;
+      border: 0;
+      color: #ff4fbf;
+      cursor: pointer;
+      display: flex;
+      font-family: "Comic Sans MS", "Comic Sans", cursive;
+      font-size: 34px;
+      font-weight: 700;
+      height: 58px;
+      justify-content: center;
+      line-height: 1;
+      margin: 0;
+      padding: 0;
+      text-shadow: 0 1px 0 #ffffff;
+      user-select: none;
+      width: 72px;
+    }
+    #${controlsPanelId} .tfmars420-controls-logo.is-inactive {
+      filter: grayscale(1);
+      opacity: 0.48;
+      text-shadow: none;
+    }
+    #${controlsPanelId} .tfmars420-controls-version {
+      background: #5d79bd;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      color: #fff;
+      cursor: pointer;
+      font: 13px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-width: 56px;
+      padding: 4px 10px;
+    }
+    #${controlsPanelId} .tfmars420-controls-version:focus-visible,
+    #${controlsPanelId} .tfmars420-controls-logo:focus-visible,
+    #${lobbyPanelId} button:focus-visible,
+    #${lobbyPanelId} a:focus-visible {
+      outline: 2px solid #ff4fbf;
+      outline-offset: 2px;
+    }
+    .tfmars420-newgame-lobby-wrap {
+      margin: 0 0 18px;
+    }
+    .tfmars420-game-lobby-controls {
+      list-style: none;
+      margin: 0 0 8px;
+      padding: 0;
+    }
+    #${lobbyPanelId} {
+      background: rgba(47, 47, 47, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
       color: #f5f5f5;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin: 0;
-      padding: 8px;
-      position: absolute;
-      z-index: 5;
-      width: 360px;
+      margin: 0 0 18px;
+      max-width: 620px;
+      padding: 10px 12px;
+      width: fit-content;
     }
-    #${notesPanelId}.tfmars420-board-notes-hidden {
-      width: auto;
-    }
-    #${notesPanelId} .tfmars420-board-notes-bar {
+    #${lobbyPanelId} .tfmars420-lobby-row {
       align-items: center;
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
     }
-    #${notesPanelId} button {
-      background: #5d79bd;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 4px;
-      color: #fff;
+    #${lobbyPanelId} .tfmars420-lobby-label {
+      color: #d7d7d7;
+      font-size: 13px;
+      font-weight: 700;
+      min-width: 78px;
+    }
+    #${lobbyPanelId} .tfmars420-lobby-time {
+      color: #b9c2d8;
+      font-size: 12px;
+    }
+    #${lobbyPanelId} button,
+    #${lobbyPanelId} a {
+      background: #ff4fbf;
+      border: 0;
+      border-radius: 999px;
+      color: #111;
       cursor: pointer;
-      font: inherit;
-      min-width: 64px;
-      padding: 4px 10px;
+      font: 700 13px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 5px 10px;
+      text-decoration: none;
     }
-    #${notesPanelId} textarea {
-      background: #f8f2df;
-      border: 1px solid rgba(0, 0, 0, 0.45);
-      border-radius: 4px;
-      box-sizing: border-box;
-      color: #191919;
-      font: 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      min-height: 420px;
-      padding: 10px;
-      resize: both;
-      width: 100%;
+    #${lobbyPanelId} a:visited {
+      color: #111;
     }
-    #${notesPanelId}.tfmars420-board-notes-hidden textarea {
-      display: none;
-    }
-    #${notesPanelId}.tfmars420-board-notes-hidden .tfmars420-board-notes-version {
-      display: none;
+    #${lobbyPanelId} .tfmars420-lobby-muted {
+      color: #b9c2d8;
+      font-size: 13px;
     }
     @media (max-width: 1100px) {
-      #${notesPanelId} {
+      #${controlsPanelId} {
+        border-radius: 8px;
         max-width: 95vw;
-        width: 95vw;
       }
     }
   `;
@@ -1441,8 +1396,6 @@
     return container;
   };
 
-  const notesStorageKey = () => "tfmars420:notes";
-
   const readStorageString = (key, fallback = "") => {
     try {
       return localStorage.getItem(key) ?? fallback;
@@ -1460,165 +1413,470 @@
     }
   };
 
-  const isNotesVisible = () => notesVisible;
+  const readExtensionActive = () => {
+    const storedValue = readStorageString(extensionActiveStorageKey, "true");
+    return storedValue !== "false";
+  };
 
-  const shouldRunTerraformingMarsHelpers = () => isNotesVisible();
+  extensionActive = readExtensionActive();
 
-  const setNotesVisible = (visible) => {
-    if (notesVisible === visible) return;
-    notesVisible = visible;
-    if (visible) {
+  const shouldRunTerraformingMarsHelpers = () => extensionActive;
+
+  const setExtensionActive = (active) => {
+    if (extensionActive === active) return;
+    extensionActive = active;
+    writeStorageString(extensionActiveStorageKey, active ? "true" : "false");
+    renderControls();
+    renderLobbyPanel();
+    if (active) {
       helpersHiddenCleaned = false;
+      updatePreview();
+      scheduleTerraformingMarsUpdate();
     } else {
       cleanupTerraformingMarsHelpersForHidden();
     }
-  };
-
-  const scheduleNotesSave = (textarea) => {
-    if (notesSaveTimeout) {
-      window.clearTimeout(notesSaveTimeout);
-    }
-    const key = notesStorageKey();
-    const value = textarea.value;
-    notesSaveTimeout = window.setTimeout(() => {
-      writeStorageString(key, value);
-      notesSaveTimeout = null;
-    }, 1000);
-  };
-
-  const flushNotesSave = (textarea) => {
-    if (notesSaveTimeout) {
-      window.clearTimeout(notesSaveTimeout);
-      notesSaveTimeout = null;
-    }
-    writeStorageString(notesStorageKey(), textarea.value);
-  };
-
-  const stopNotesPropagation = (event) => {
-    event.stopPropagation();
-  };
-
-  const handleNotesInput = (textarea, event) => {
-    event.stopPropagation();
-    scheduleNotesSave(textarea);
   };
 
   const reloadRuntime = () => {
     requestRuntimeUpdate();
   };
 
-  const getBoardNotesAnchor = () => {
-    const board = document.querySelector("#main_board");
-    const gameBoard = board?.parentElement;
-    if (!gameBoard) return null;
+  const isNewGamePage = () => window.location.pathname === "/new-game";
 
-    const oldLayout = gameBoard.parentElement?.classList.contains("tfmars420-board-notes-layout")
-      ? gameBoard.parentElement
-      : null;
-    if (oldLayout) {
-      const oldBlock = oldLayout.closest(".player_home_block");
-      if (oldBlock) {
-        oldBlock.insertBefore(gameBoard, oldLayout);
-      }
-      oldLayout.remove();
-    }
-
-    const block = gameBoard.closest(".player_home_block");
-    if (!block) return null;
-    block.classList.add("tfmars420-board-notes-anchor");
-    return { block, gameBoard };
+  const currentGameId = () => {
+    if (window.location.pathname !== "/game") return "";
+    return new URL(window.location.href).searchParams.get("id") ?? "";
   };
 
-  const renderBoardNotes = () => {
-    upsertCss(notesCssId, notesCss());
-    const anchor = getBoardNotesAnchor();
-    if (!anchor) {
-      document.getElementById(notesPanelId)?.remove();
+  const findSpectatorListItem = () => {
+    const gameHome = document.querySelector("#game-home");
+    if (!gameHome) return null;
+    for (const item of gameHome.querySelectorAll("li")) {
+      const playerName = cleanText(item.querySelector(".player-name")?.textContent ?? "");
+      if (playerName.toLowerCase() === "spectator") return item;
+    }
+    return null;
+  };
+
+  const getControlsHost = () => {
+    if (isNewGamePage()) {
+      const createGame = document.querySelector("#create-game");
+      if (!createGame) return null;
+      let wrapper = document.querySelector(".tfmars420-newgame-lobby-wrap");
+      if (!wrapper) {
+        wrapper = document.createElement("div");
+        wrapper.className = `${lobbyRootClass} tfmars420-newgame-lobby-wrap`;
+        createGame.prepend(wrapper);
+      }
+      return wrapper;
+    }
+
+    const gameId = currentGameId();
+    if (!gameId) return null;
+
+    const spectatorItem = findSpectatorListItem();
+    if (!spectatorItem?.parentElement) return null;
+
+    let wrapper = document.querySelector(".tfmars420-game-lobby-controls");
+    if (!wrapper) {
+      wrapper = document.createElement("li");
+      wrapper.className = `${lobbyRootClass} tfmars420-game-lobby-controls`;
+    }
+    if (wrapper.nextElementSibling !== spectatorItem) {
+      spectatorItem.parentElement.insertBefore(wrapper, spectatorItem);
+    }
+    return wrapper;
+  };
+
+  const renderControls = () => {
+    upsertCss(controlsCssId, controlsCss());
+    const host = getControlsHost();
+    if (!host) {
+      document.getElementById(controlsPanelId)?.remove();
+      document.getElementById(lobbyPanelId)?.remove();
       return;
     }
-    const { block, gameBoard } = anchor;
 
-    const storageKey = notesStorageKey();
-    let panel = document.getElementById(notesPanelId);
+    let panel = document.getElementById(controlsPanelId);
     if (!panel) {
       panel = document.createElement("div");
-      panel.id = notesPanelId;
+      panel.id = controlsPanelId;
+      panel.className = lobbyRootClass;
 
-      const bar = document.createElement("div");
-      bar.className = "tfmars420-board-notes-bar";
-
-      const toggle = document.createElement("button");
-      toggle.type = "button";
-      toggle.className = "tfmars420-board-notes-toggle";
-      toggle.textContent = "notes";
-      bar.appendChild(toggle);
+      const logo = document.createElement("button");
+      logo.type = "button";
+      logo.className = "tfmars420-controls-logo";
+      logo.title = "Toggle tfmars420";
+      logo.textContent = "420";
+      logo.addEventListener("click", () => {
+        setExtensionActive(!shouldRunTerraformingMarsHelpers());
+      });
+      panel.appendChild(logo);
 
       const version = document.createElement("button");
       version.type = "button";
-      version.className = "tfmars420-board-notes-version";
+      version.className = "tfmars420-controls-version";
       version.textContent = contentScriptVersion;
       version.addEventListener("click", reloadRuntime);
-      bar.appendChild(version);
-      panel.appendChild(bar);
+      panel.appendChild(version);
 
-      const textarea = document.createElement("textarea");
-      textarea.className = "tfmars420-board-notes-text";
-      textarea.spellcheck = true;
-      textarea.addEventListener("input", (event) => handleNotesInput(textarea, event), true);
-      textarea.addEventListener("change", (event) => {
-        event.stopPropagation();
-        flushNotesSave(textarea);
-      }, true);
-      textarea.addEventListener("blur", () => flushNotesSave(textarea));
-      window.addEventListener("beforeunload", () => flushNotesSave(textarea));
-      for (const eventName of [
-        "beforeinput",
-        "keydown",
-        "keyup",
-        "keypress",
-        "paste",
-        "copy",
-        "cut",
-      ]) {
-        textarea.addEventListener(eventName, stopNotesPropagation, true);
-      }
-      panel.appendChild(textarea);
-
-      toggle.addEventListener("click", () => {
-        setNotesVisible(panel.classList.contains("tfmars420-board-notes-hidden"));
-        renderBoardNotes();
-      });
-
-      block.appendChild(panel);
-    } else if (panel.parentElement !== block) {
-      block.appendChild(panel);
+      host.appendChild(panel);
+    } else if (panel.parentElement !== host) {
+      host.prepend(panel);
     }
 
-    panel.style.left = `${gameBoard.offsetLeft + gameBoard.offsetWidth + 12}px`;
-    panel.style.top = `${gameBoard.offsetTop + 28}px`;
-
-    const textarea = panel.querySelector(".tfmars420-board-notes-text");
-    if (textarea && notesLastStorageKey !== storageKey) {
-      textarea.value = readStorageString(storageKey);
-      notesLastStorageKey = storageKey;
+    const logo = panel.querySelector(".tfmars420-controls-logo");
+    if (logo) {
+      logo.classList.toggle("is-inactive", !shouldRunTerraformingMarsHelpers());
+      logo.setAttribute(
+        "aria-label",
+        shouldRunTerraformingMarsHelpers() ? "Disable tfmars420" : "Enable tfmars420",
+      );
     }
 
-    const visible = isNotesVisible();
-    panel.classList.toggle("tfmars420-board-notes-hidden", !visible);
-    panel.querySelector(".tfmars420-board-notes-toggle").setAttribute(
-      "aria-pressed",
-      visible ? "true" : "false",
+    renderLobbyPanel();
+  };
+
+  let latestLobbyData = null;
+  let lobbyPollTimer = null;
+  let newGameSettingsWriteTimer = null;
+  let newGameSettingsListenersStarted = false;
+  let applyingNewGameSettings = false;
+  let lastSerializedNewGameSettings = "";
+  let savedGameId = "";
+
+  const firebaseLobbyFieldUrl = (field) => `${firebaseLobbyUrl}/${field}.json`;
+
+  const firebaseSetLobbyField = async (field, value) => {
+    const response = await fetch(firebaseLobbyFieldUrl(field), {
+      method: "PUT",
+      cache: "no-store",
+      credentials: "omit",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(value),
+    });
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  };
+
+  const firebaseReadLobby = async () => {
+    const response = await fetch(`${firebaseLobbyUrl}.json`, {
+      cache: "no-store",
+      credentials: "omit",
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  };
+
+  const formatLobbyTimestamp = (timestamp) => {
+    if (typeof timestamp !== "number" || !Number.isFinite(timestamp)) return "";
+    return new Date(timestamp).toLocaleString();
+  };
+
+  const renderLobbyPanel = () => {
+    if (!isNewGamePage()) {
+      document.getElementById(lobbyPanelId)?.remove();
+      return;
+    }
+
+    const host = document.querySelector(".tfmars420-newgame-lobby-wrap");
+    if (!host) return;
+
+    let panel = document.getElementById(lobbyPanelId);
+    if (!panel) {
+      panel = document.createElement("div");
+      panel.id = lobbyPanelId;
+      panel.className = lobbyRootClass;
+      host.appendChild(panel);
+    } else if (panel.parentElement !== host) {
+      host.appendChild(panel);
+    }
+
+    panel.innerHTML = "";
+
+    const gameEntry = latestLobbyData?.gameId;
+    const settingsEntry = latestLobbyData?.newGameSettings;
+
+    const gameRow = document.createElement("div");
+    gameRow.className = "tfmars420-lobby-row";
+    const gameLabel = document.createElement("span");
+    gameLabel.className = "tfmars420-lobby-label";
+    gameLabel.textContent = "Game";
+    gameRow.append(gameLabel);
+    if (typeof gameEntry?.value === "string" && gameEntry.value.trim()) {
+      const link = document.createElement("a");
+      link.href = `/game?id=${encodeURIComponent(gameEntry.value.trim())}`;
+      link.textContent = gameEntry.value.trim();
+      gameRow.append(link);
+      const timestamp = document.createElement("span");
+      timestamp.className = "tfmars420-lobby-time";
+      timestamp.textContent = formatLobbyTimestamp(gameEntry.timestamp);
+      gameRow.append(timestamp);
+    } else {
+      const empty = document.createElement("span");
+      empty.className = "tfmars420-lobby-muted";
+      empty.textContent = "No game yet.";
+      gameRow.append(empty);
+    }
+    panel.append(gameRow);
+
+    const settingsRow = document.createElement("div");
+    settingsRow.className = "tfmars420-lobby-row";
+    const settingsLabel = document.createElement("span");
+    settingsLabel.className = "tfmars420-lobby-label";
+    settingsLabel.textContent = "Settings";
+    settingsRow.append(settingsLabel);
+    if (settingsEntry?.value?.version === 1 && Array.isArray(settingsEntry.value.controls)) {
+      const apply = document.createElement("button");
+      apply.type = "button";
+      apply.textContent = "Apply settings";
+      apply.addEventListener("click", () => applyNewGameSettings(settingsEntry.value));
+      settingsRow.append(apply);
+      const timestamp = document.createElement("span");
+      timestamp.className = "tfmars420-lobby-time";
+      timestamp.textContent = formatLobbyTimestamp(settingsEntry.timestamp);
+      settingsRow.append(timestamp);
+    } else {
+      const empty = document.createElement("span");
+      empty.className = "tfmars420-lobby-muted";
+      empty.textContent = "No shared settings yet.";
+      settingsRow.append(empty);
+    }
+    panel.append(settingsRow);
+  };
+
+  const isSerializableNewGameControl = (control) =>
+    (control instanceof HTMLInputElement ||
+      control instanceof HTMLSelectElement ||
+      control instanceof HTMLTextAreaElement) &&
+    control.type !== "file" &&
+    !control.closest("dialog, .preferences_panel, .sidebar_item--settings") &&
+    !control.closest(`.${lobbyRootClass}`);
+
+  const getNewGameControls = () => {
+    const createGame = document.querySelector("#create-game");
+    if (!createGame) return [];
+    return Array.from(createGame.querySelectorAll("input, select, textarea")).filter(
+      isSerializableNewGameControl,
     );
   };
 
-  const startBoardNotes = () => {
-    renderBoardNotes();
-    window.setInterval(renderBoardNotes, 1000);
+  const serializeNewGameSettings = () => {
+    const controls = getNewGameControls();
+    if (controls.length === 0) return null;
+
+    const idCounts = new Map();
+    for (const control of controls) {
+      if (!control.id) continue;
+      idCounts.set(control.id, (idCounts.get(control.id) ?? 0) + 1);
+    }
+
+    const seenIds = new Map();
+    return {
+      version: 1,
+      controls: controls.map((control, index) => {
+        const idDuplicateIndex = control.id ? seenIds.get(control.id) ?? 0 : null;
+        if (control.id) {
+          seenIds.set(control.id, idDuplicateIndex + 1);
+        }
+        const type = control instanceof HTMLInputElement ? control.type : control.tagName.toLowerCase();
+        const item = {
+          index,
+          tag: control.tagName.toLowerCase(),
+          type,
+          id: control.id || null,
+          idIsUnique: control.id ? idCounts.get(control.id) === 1 : false,
+          idDuplicateIndex,
+          name: control.getAttribute("name") || null,
+          value: control.value,
+          valueAttribute: control.getAttribute("value"),
+        };
+        if (control instanceof HTMLInputElement && (control.type === "checkbox" || control.type === "radio")) {
+          item.checked = control.checked;
+        }
+        return item;
+      }),
+    };
+  };
+
+  const findNewGameControlForSetting = (item) => {
+    const controls = getNewGameControls();
+    if (!item || controls.length === 0) return null;
+
+    if (item.id) {
+      const matches = controls.filter((control) => control.id === item.id);
+      if (matches.length === 1) return matches[0];
+      if (typeof item.idDuplicateIndex === "number" && matches[item.idDuplicateIndex]) {
+        return matches[item.idDuplicateIndex];
+      }
+    }
+
+    if (item.type === "radio" && item.name) {
+      const radio = controls.find(
+        (control) =>
+          control instanceof HTMLInputElement &&
+          control.type === "radio" &&
+          control.getAttribute("name") === item.name &&
+          control.getAttribute("value") === item.valueAttribute,
+      );
+      if (radio) return radio;
+    }
+
+    return controls[item.index] ?? null;
+  };
+
+  const applyControlSetting = (control, item) => {
+    if (!control) return;
+
+    if (control instanceof HTMLInputElement && (control.type === "checkbox" || control.type === "radio")) {
+      const nextChecked = Boolean(item.checked);
+      if (control.checked === nextChecked) return;
+      control.checked = nextChecked;
+      dispatchBubbledEvent(control, "input");
+      dispatchBubbledEvent(control, "change");
+      return;
+    }
+
+    const nextValue = item.value ?? "";
+    if (control.value === nextValue) return;
+    control.value = nextValue;
+    dispatchBubbledEvent(control, "input");
+    dispatchBubbledEvent(control, "change");
+  };
+
+  const applyNewGameSettings = (settings) => {
+    if (settings?.version !== 1 || !Array.isArray(settings.controls)) return;
+    applyingNewGameSettings = true;
+    try {
+      for (const item of settings.controls) {
+        applyControlSetting(findNewGameControlForSetting(item), item);
+      }
+      lastSerializedNewGameSettings = JSON.stringify(serializeNewGameSettings() ?? {});
+    } finally {
+      window.setTimeout(() => {
+        applyingNewGameSettings = false;
+      }, 0);
+    }
+  };
+
+  const writeNewGameSettingsFromPage = async () => {
+    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || applyingNewGameSettings) return;
+    const settings = serializeNewGameSettings();
+    if (!settings) return;
+
+    const serialized = JSON.stringify(settings);
+    if (serialized === lastSerializedNewGameSettings) return;
+    lastSerializedNewGameSettings = serialized;
+
+    const entry = { value: settings, timestamp: Date.now() };
+    try {
+      await firebaseSetLobbyField("newGameSettings", entry);
+      latestLobbyData = { ...(latestLobbyData ?? {}), newGameSettings: entry };
+      renderLobbyPanel();
+    } catch (error) {
+      console.warn("[tfmars420] unable to write new game settings", error);
+    }
+  };
+
+  const scheduleNewGameSettingsWrite = () => {
+    window.clearTimeout(newGameSettingsWriteTimer);
+    newGameSettingsWriteTimer = window.setTimeout(writeNewGameSettingsFromPage, 450);
+  };
+
+  const handleNewGameSettingsEvent = (event) => {
+    if (
+      !isNewGamePage() ||
+      !shouldRunTerraformingMarsHelpers() ||
+      applyingNewGameSettings ||
+      !event.isTrusted
+    ) {
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest(`.${lobbyRootClass}`)) return;
+    if (target.closest("dialog, .preferences_panel, .sidebar_item--settings")) return;
+    if (!target.closest("#create-game")) return;
+    scheduleNewGameSettingsWrite();
+  };
+
+  const startNewGameSettingsListeners = () => {
+    if (newGameSettingsListenersStarted) return;
+    newGameSettingsListenersStarted = true;
+    document.addEventListener("click", handleNewGameSettingsEvent, true);
+    document.addEventListener("change", handleNewGameSettingsEvent, true);
+    document.addEventListener("input", handleNewGameSettingsEvent, true);
+  };
+
+  const pollFirebaseLobby = async () => {
+    if (!isNewGamePage()) return;
+    try {
+      latestLobbyData = (await firebaseReadLobby()) ?? {};
+      renderLobbyPanel();
+    } catch (error) {
+      console.warn("[tfmars420] unable to read lobby", error);
+    }
+  };
+
+  const startFirebaseLobbyPolling = () => {
+    if (lobbyPollTimer !== null) return;
+    pollFirebaseLobby();
+    lobbyPollTimer = window.setInterval(pollFirebaseLobby, 2500);
+  };
+
+  const saveCurrentGameIdIfNeeded = async () => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
+    const gameId = currentGameId();
+    if (!gameId || gameId === savedGameId) return;
+    const spectatorItem = findSpectatorListItem();
+    if (!spectatorItem) return;
+
+    savedGameId = gameId;
+    const entry = { value: gameId, timestamp: Date.now() };
+    try {
+      await firebaseSetLobbyField("gameId", entry);
+    } catch (error) {
+      savedGameId = "";
+      console.warn("[tfmars420] unable to write game id", error);
+    }
+  };
+
+  const startTerraformingMarsLobbySync = () => {
+    startNewGameSettingsListeners();
+    const updateLobby = () => {
+      if (isNewGamePage()) {
+        startFirebaseLobbyPolling();
+      }
+      saveCurrentGameIdIfNeeded();
+      renderLobbyPanel();
+    };
+    updateLobby();
+    window.setInterval(updateLobby, 1000);
+  };
+
+  const startControls = () => {
+    renderControls();
+    window.setInterval(renderControls, 1000);
   };
 
   function removeTimeWarpUi() {
     document.getElementById(timeWarpPanelId)?.remove();
-    document.getElementById(timeWarpFallbackFormId)?.remove();
+    document
+      .querySelectorAll(".tfmars420-card-tools, .tfmars420-enqueue-tools")
+      .forEach((element) => element.remove());
+    document
+      .querySelectorAll(".tfmars420-card-border, .tfmars420-card-derank")
+      .forEach((element) => {
+        element.classList.remove("tfmars420-card-border", "tfmars420-card-derank");
+      });
   }
 
   function removePreviewUi() {
@@ -1634,295 +1892,14 @@
 
   function cleanupTerraformingMarsHelpersForHidden() {
     if (helpersHiddenCleaned) return;
-    const context = timeWarpContext();
-    const playerId = context?.playerView?.id ?? latestPlayerView?.id;
-    if (context?.root) {
-      context.root.isServerSideRequestInProgress = false;
-    }
-    restoreWaitingForPatch();
-    timeWarp.active = false;
-    timeWarp.queue = [];
-    timeWarp.lastError = "";
-    timeWarp.replayInFlight = false;
-    timeWarp.renderingCachedAction = false;
-    timeWarp.renderedCachedComponent = null;
-    timeWarp.cachedWaitingFor = null;
-    timeWarpCachedWaitingFor.clear();
-    timeWarpCachedUiState.clear();
-    hydratedTimeWarpPlayers.clear();
-    hydratingTimeWarpPlayers.clear();
-    latestPlayerView = null;
-    latestPlayerViewCapturedAt = 0;
-    clearRenderedCachedWaitingFor(context);
-    clearFallbackCachedWaitingFor();
-    clearTimeWarpSession(context ?? playerId);
     removeTimeWarpUi();
     removePreviewUi();
     closeRenderedLogCardPanel();
+    queueExecutionError = "";
+    queueExecutionAttempted = false;
+    queueExecutionInFlight = false;
     helpersHiddenCleaned = true;
   }
-
-  const cssMaxHeight = (value) => {
-    if (typeof value === "number" && Number.isFinite(value) && value > 0) {
-      return `max-height: ${value}px; overflow: auto;`;
-    }
-    if (typeof value === "string" && value.trim()) {
-      return `max-height: ${value}; overflow: auto;`;
-    }
-    return "max-height: none; overflow: visible;";
-  };
-
-  const timeWarpCss = () => {
-    const config = getTimeWarpConfig();
-    const queueMaxHeight = cssMaxHeight(config.panel?.queueMaxHeight);
-    const cardListMaxHeight = cssMaxHeight(config.fallbackRenderer?.cardListMaxHeight);
-
-    return `
-    #${timeWarpPanelId} {
-      align-items: center;
-      background: #2f2f2f;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 4px;
-      box-sizing: border-box;
-      color: #f5f5f5;
-      display: flex;
-      flex-wrap: wrap;
-      font-family: inherit;
-      gap: 8px;
-      margin: 8px 0;
-      padding: 8px;
-    }
-    #${timeWarpPanelId}[hidden] {
-      display: none !important;
-    }
-    #${timeWarpPanelId} button {
-      background: #5d79bd;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 4px;
-      color: #fff;
-      cursor: pointer;
-      font: inherit;
-      padding: 4px 10px;
-    }
-    #${timeWarpPanelId} button:hover {
-      background: #6d8bd0;
-    }
-    #${timeWarpPanelId} .tfmars420-timewarp-anchor {
-      background: #744444;
-    }
-    #${timeWarpPanelId} .tfmars420-timewarp-summary {
-      font-weight: 700;
-    }
-    #${timeWarpPanelId} .tfmars420-timewarp-queue {
-      flex-basis: 100%;
-      font-size: 12px;
-      margin: 0;
-      ${queueMaxHeight}
-      white-space: pre-wrap;
-    }
-    #${timeWarpPanelId} .tfmars420-timewarp-error {
-      color: #ffb4a8;
-      flex-basis: 100%;
-      font-size: 12px;
-    }
-    #${timeWarpFallbackFormId} {
-      background: #3a3a3a;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 4px;
-      color: #f5f5f5;
-      margin: 8px 0;
-      padding: 10px;
-    }
-    #${timeWarpFallbackFormId}[hidden] {
-      display: none !important;
-    }
-    #${timeWarpFallbackFormId} .tfmars420-timewarp-title {
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    #${timeWarpFallbackFormId} .tfmars420-timewarp-row {
-      align-items: center;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 6px 0;
-    }
-    #${timeWarpFallbackFormId} label {
-      cursor: pointer;
-    }
-    #${timeWarpFallbackFormId} input,
-    #${timeWarpFallbackFormId} select {
-      font: inherit;
-    }
-    #${timeWarpFallbackFormId} input[type="number"] {
-      width: 72px;
-    }
-    #${timeWarpFallbackFormId} button {
-      background: #5d79bd;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 4px;
-      color: #fff;
-      cursor: pointer;
-      font: inherit;
-      padding: 4px 10px;
-    }
-    #${timeWarpFallbackFormId} .tfmars420-timewarp-child {
-      border-left: 3px solid rgba(255, 255, 255, 0.2);
-      margin: 8px 0 8px 18px;
-      padding-left: 10px;
-    }
-    #${timeWarpFallbackFormId} .tfmars420-timewarp-card-list {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      margin: 8px 0;
-      ${cardListMaxHeight}
-    }
-    #${timeWarpFallbackFormId} .tfmars420-timewarp-muted {
-      color: #cfcfcf;
-      font-size: 12px;
-    }
-  `;
-  };
-
-  const getComponentName = (component) =>
-    component?.type?.name ??
-    component?.type?.__name ??
-    component?.proxy?.$options?.name ??
-    "";
-
-  const componentFromElement = (element) =>
-    element?.__vueParentComponent ??
-    element?.__vnode?.component ??
-    element?.__vue__?.$ ??
-    element?.__vue__ ??
-    null;
-
-  const isWaitingForLikeComponent = (component) => {
-    const name = getComponentName(component);
-    if (name === "waiting-for") return true;
-
-    const proxy = component?.proxy ?? component;
-    const props = component?.props ?? proxy?.$props ?? {};
-    return (
-      typeof proxy?.onsave === "function" &&
-      typeof proxy?.waitForUpdate === "function" &&
-      (
-        Object.prototype.hasOwnProperty.call(props, "waitingfor") ||
-        Object.prototype.hasOwnProperty.call(proxy, "waitingfor")
-      )
-    );
-  };
-
-  const findParentComponent = (component, predicate) => {
-    let current = component;
-    while (current) {
-      if (predicate(current)) {
-        return current;
-      }
-      current = current.parent ?? current.$parent?.$;
-    }
-    return null;
-  };
-
-  const walkVnodeComponents = (vnode, visit, seen) => {
-    if (!vnode) return null;
-    if (vnode.component && !seen.has(vnode.component)) {
-      const found = walkComponentTree(vnode.component, visit, seen);
-      if (found) return found;
-    }
-
-    const children = Array.isArray(vnode.children) ? vnode.children : [];
-    for (const child of children) {
-      const found = walkVnodeComponents(child, visit, seen);
-      if (found) return found;
-    }
-    return null;
-  };
-
-  function walkComponentTree(component, visit, seen = new Set()) {
-    if (!component || seen.has(component)) return null;
-    seen.add(component);
-    if (visit(component)) return component;
-    return walkVnodeComponents(component.subTree, visit, seen);
-  }
-
-  const findWaitingForComponentFromApp = () => {
-    const appElement = Array.from(document.querySelectorAll("*")).find(
-      (element) => element.__vue_app__,
-    );
-    const app = appElement?.__vue_app__;
-    const rootComponent = app?._instance;
-    const found = walkComponentTree(rootComponent, isWaitingForLikeComponent);
-    if (!found) {
-      timeWarpLog(
-        "vue-app-scan-empty",
-        {
-          hasAppElement: Boolean(appElement),
-          hasRootComponent: Boolean(rootComponent),
-          appElementTag: appElement?.tagName,
-          appElementId: appElement?.id,
-          appKeys: app ? Object.keys(app).slice(0, 24) : [],
-          componentName: app?._component?.name ?? app?._component?.__name,
-        },
-        { limit: 10 },
-      );
-    }
-    return found;
-  };
-
-  const findWaitingForComponent = () => {
-    const actionsBlock = document.querySelector(".player_home_block--actions");
-
-    if (actionsBlock) {
-      const elements = [actionsBlock, ...actionsBlock.querySelectorAll("*")];
-      for (const element of elements) {
-        const component = findParentComponent(
-          componentFromElement(element),
-          isWaitingForLikeComponent,
-        );
-        if (component?.proxy) {
-          return component;
-        }
-      }
-      timeWarpLog(
-        "actions-scan-empty",
-        {
-          childCount: elements.length,
-          hasWfRoot: Boolean(actionsBlock.querySelector(".wf-root")),
-          vueKeys: elements
-            .map((element) =>
-              Object.keys(element)
-                .filter((key) => key.includes("vue") || key.includes("vnode"))
-                .slice(0, 8),
-            )
-            .filter((keys) => keys.length > 0)
-            .slice(0, 4),
-          text: cleanText(actionsBlock.textContent ?? "").slice(0, 160),
-        },
-        { limit: 10 },
-      );
-    }
-    return findWaitingForComponentFromApp();
-  };
-
-  const getRootFromWaitingFor = (component) =>
-    component?.proxy?.$root ?? component?.root?.proxy ?? null;
-
-  const getPlayerViewFromRoot = (root) => root?.playerView ?? null;
-
-  const getLiveWaitingFor = (root, component) => {
-    const playerView = getPlayerViewFromRoot(root);
-    if (playerView && Object.prototype.hasOwnProperty.call(playerView, "waitingFor")) {
-      return playerView.waitingFor;
-    }
-    return component?.props?.waitingfor ?? component?.proxy?.waitingfor;
-  };
-
-  const isNormalTakeAction = (waitingFor) =>
-    waitingFor?.type === "or" &&
-    waitingFor?.buttonLabel === "Take action" &&
-    Array.isArray(waitingFor.options);
 
   const createBubbledEvent = (target, eventName) => {
     const doc = target.ownerDocument ?? document;
@@ -1939,112 +1916,23 @@
     target.dispatchEvent(createBubbledEvent(target, eventName));
   };
 
-  const getElementByPath = (root, path) => {
-    let current = root;
-    for (const index of path) {
-      if (!current?.children || index >= current.children.length) {
-        return null;
-      }
-      current = current.children[index];
-    }
-    return current;
-  };
-
-  const collectFormState = (root) => {
-    const inputs = [];
-
-    const visit = (element, path) => {
-      if (element instanceof HTMLInputElement) {
-        if (element.type === "checkbox" || element.type === "radio") {
-          inputs.push({ path: [...path], type: element.type, checked: element.checked });
-        } else {
-          inputs.push({ path: [...path], type: element.type, value: element.value });
-        }
-      } else if (element instanceof HTMLTextAreaElement) {
-        inputs.push({ path: [...path], type: "textarea", value: element.value });
-      } else if (element instanceof HTMLSelectElement) {
-        inputs.push({ path: [...path], type: "select", value: element.value });
-      }
-
-      Array.from(element.children).forEach((child, index) => {
-        visit(child, [...path, index]);
-      });
-    };
-
-    visit(root, []);
-    return { inputs };
-  };
-
-  const restoreFormState = (root, state, attempt = 0) => {
-    if (!state?.inputs) return;
-    let needsRetry = false;
-
-    for (const storedState of state.inputs) {
-      const element = getElementByPath(root, storedState.path);
-      if (!element?.isConnected) {
-        needsRetry = true;
-        continue;
-      }
-
-      if (element instanceof HTMLInputElement) {
-        if (storedState.type === "checkbox" || storedState.type === "radio") {
-          const checked = Boolean(storedState.checked);
-          if (element.checked !== checked) {
-            element.checked = checked;
-            preserveScrollDuring(() => {
-              dispatchBubbledEvent(element, "change");
-              dispatchBubbledEvent(element, "input");
-            });
-          }
-        } else if (storedState.value !== undefined && element.value !== storedState.value) {
-          element.value = storedState.value;
-          preserveScrollDuring(() => {
-            dispatchBubbledEvent(element, "input");
-            dispatchBubbledEvent(element, "change");
-          });
-        }
-      } else if (
-        (element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement) &&
-        storedState.value !== undefined &&
-        element.value !== storedState.value
-      ) {
-        element.value = storedState.value;
-        preserveScrollDuring(() => {
-          dispatchBubbledEvent(element, "input");
-          dispatchBubbledEvent(element, "change");
-        });
-      }
-    }
-
-    if (needsRetry && attempt < 4) {
-      window.setTimeout(() => restoreFormState(root, state, attempt + 1), 16);
-    }
-  };
-
-  const timeWarp = {
-    active: false,
-    queue: [],
-    lastError: "",
-    patchedComponent: null,
-    originalOnSave: null,
-    originalCtxOnSave: null,
-    renderingCachedAction: false,
-    renderedCachedComponent: null,
-    renderedFallbackKey: null,
-    cachedWaitingFor: null,
-    replayInFlight: false,
-  };
-  const hydratedTimeWarpPlayers = new Set();
-  const hydratingTimeWarpPlayers = new Set();
-
   let latestPlayerView = null;
   let latestPlayerViewCapturedAt = 0;
+  let latestPlayerViewRunId = "";
+  let queueMutationObserver = null;
+  let queueMutationPaused = false;
 
   const looksLikePlayerView = (value) =>
     Boolean(value?.id && value?.game && Object.prototype.hasOwnProperty.call(value, "runId"));
 
   const rememberLatestPlayerView = (playerView, source) => {
     if (!looksLikePlayerView(playerView)) return;
+    const nextRunId = String(playerView.runId ?? "");
+    if (nextRunId && nextRunId !== latestPlayerViewRunId) {
+      queueExecutionAttempted = false;
+      queueExecutionError = "";
+      latestPlayerViewRunId = nextRunId;
+    }
     latestPlayerView = cloneJson(playerView);
     latestPlayerViewCapturedAt = Date.now();
     timeWarpLog(
@@ -2059,36 +1947,20 @@
       },
       { limit: 30 },
     );
+    scheduleTerraformingMarsUpdate();
   };
 
   const capturePlayerViewResponse = (response, source) => {
     if (!shouldRunTerraformingMarsHelpers()) return;
     try {
-      if (!response?.clone) return;
-      if (!response.ok) {
-        timeWarpLog(
-          "player-view-response-not-ok",
-          { source, status: response.status, statusText: response.statusText },
-          { limit: 8 },
-        );
-        return;
-      }
+      if (!response?.clone || !response.ok) return;
       response
         .clone()
         .json()
         .then((value) => {
           if (looksLikePlayerView(value)) {
             rememberLatestPlayerView(value, source);
-            return;
           }
-          timeWarpLog(
-            "player-view-json-not-player",
-            {
-              source,
-              keys: value && typeof value === "object" ? Object.keys(value).slice(0, 12) : [],
-            },
-            { limit: 8 },
-          );
         })
         .catch((error) => {
           timeWarpLog(
@@ -2103,802 +1975,209 @@
   };
 
   const startPlayerViewCapture = () => {
-    if (window.__TFMARS420_PLAYER_VIEW_CAPTURE_STARTED) {
-      return;
-    }
+    if (window.__TFMARS420_PLAYER_VIEW_CAPTURE_STARTED) return;
     window.__TFMARS420_PLAYER_VIEW_CAPTURE_STARTED = true;
 
     const originalFetch = window.fetch?.bind(window);
-    if (originalFetch) {
-      window.fetch = (...args) => {
-        const source =
-          typeof args[0] === "string"
-            ? args[0]
-            : args[0] instanceof Request
-              ? args[0].url
-              : String(args[0]);
-        return originalFetch(...args).then((response) => {
-          if (source.includes("api/player") || source.includes("player/input")) {
-            capturePlayerViewResponse(response, `fetch:${source}`);
-          }
-          return response;
-        });
-      };
-      timeWarpLog("fetch-capture-installed", { pathname: window.location.pathname }, { limit: 1 });
-    }
+    if (!originalFetch) return;
+    window.fetch = (...args) => {
+      const source =
+        typeof args[0] === "string"
+          ? args[0]
+          : args[0] instanceof Request
+            ? args[0].url
+            : String(args[0]);
+      return originalFetch(...args).then((response) => {
+        if (source.includes("api/player") || source.includes("player/input")) {
+          capturePlayerViewResponse(response, `fetch:${source}`);
+        }
+        return response;
+      });
+    };
+    timeWarpLog("fetch-capture-installed", { pathname: window.location.pathname }, { limit: 1 });
   };
 
-  const timeWarpContext = () => {
-    const component = findWaitingForComponent();
-    const root = getRootFromWaitingFor(component);
-    const playerView = getPlayerViewFromRoot(root);
+  const currentPlayerId = () => latestPlayerView?.id ?? "";
 
-    if (component && root && playerView?.id) {
-      return {
-        component,
-        root,
-        playerView,
-        liveWaitingFor: getLiveWaitingFor(root, component),
-        source: "vue",
-      };
+  const freshQueueSession = (playerId) => ({
+    version: 1,
+    playerId,
+    queue: [],
+    cardRanks: {},
+  });
+
+  const normalizeQueueSession = (value, playerId) => {
+    if (!isPlainObject(value) || value.version !== 1 || value.playerId !== playerId) {
+      return freshQueueSession(playerId);
     }
-
-    if (window.location.pathname === "/player" && latestPlayerView?.id) {
-      timeWarpLog(
-        "context-from-player-view",
-        {
-          playerId: latestPlayerView.id,
-          ageMs: Date.now() - latestPlayerViewCapturedAt,
-          hasComponent: Boolean(component),
-          hasRoot: Boolean(root),
-          phase: latestPlayerView.game?.phase,
-          hasWaitingFor: Boolean(latestPlayerView.waitingFor),
-        },
-        { limit: 30 },
-      );
-      return {
-        component,
-        root,
-        playerView: latestPlayerView,
-        liveWaitingFor: latestPlayerView.waitingFor,
-        source: "playerView",
-      };
-    }
-
-    if (!component || !root || !playerView?.id) {
-      timeWarpLog(
-        "no-context",
-        {
-          hasComponent: Boolean(component),
-          hasRoot: Boolean(root),
-          hasPlayerView: Boolean(playerView),
-          hasLatestPlayerView: Boolean(latestPlayerView),
-          latestPlayerViewAgeMs: latestPlayerViewCapturedAt
-            ? Date.now() - latestPlayerViewCapturedAt
-            : undefined,
-          pathname: window.location.pathname,
-        },
-        { limit: 12 },
-      );
-      return null;
-    }
-  };
-
-  const getCachedWaitingFor = (playerId) => timeWarpCachedWaitingFor.get(playerId);
-
-  const setCachedWaitingFor = (playerId, waitingFor) => {
-    if (waitingFor === undefined) {
-      timeWarpCachedWaitingFor.delete(playerId);
-      return;
-    }
-    timeWarpCachedWaitingFor.set(playerId, cloneJson(waitingFor));
-  };
-
-  const getCachedUiState = (playerId) => timeWarpCachedUiState.get(playerId);
-
-  const setCachedUiState = (playerId, state) => {
-    if (state === undefined) {
-      timeWarpCachedUiState.delete(playerId);
-      return;
-    }
-    timeWarpCachedUiState.set(playerId, cloneJson(state));
-  };
-
-  const timeWarpSessionKey = (playerId) => `tfmars420:timewarp-session:${playerId}`;
-
-  const persistTimeWarpSession = (contextOrPlayerId) => {
-    if (!shouldRunTerraformingMarsHelpers()) return;
-    const playerId =
-      typeof contextOrPlayerId === "string"
-        ? contextOrPlayerId
-        : contextOrPlayerId?.playerView?.id;
-    if (!playerId) return;
-
-    if (
-      !timeWarp.active &&
-      timeWarp.queue.length === 0 &&
-      !getCachedUiState(playerId) &&
-      !timeWarp.cachedWaitingFor
-    ) {
-      extensionSessionRemove(timeWarpSessionKey(playerId));
-      return;
-    }
-
-    extensionSessionSet(timeWarpSessionKey(playerId), {
+    return {
       version: 1,
       playerId,
-      active: timeWarp.active,
-      queue: cloneJson(timeWarp.queue),
-      cachedWaitingFor: cloneJson(
-        timeWarp.cachedWaitingFor ?? getCachedWaitingFor(playerId) ?? null,
-      ),
-      cachedUiState: cloneJson(getCachedUiState(playerId) ?? null),
-      lastError: timeWarp.lastError,
-    });
-  };
-
-  const clearTimeWarpSession = (contextOrPlayerId) => {
-    const playerId =
-      typeof contextOrPlayerId === "string"
-        ? contextOrPlayerId
-        : contextOrPlayerId?.playerView?.id;
-    if (!playerId) return;
-    extensionSessionRemove(timeWarpSessionKey(playerId));
-  };
-
-  const hydrateTimeWarpSession = async (context) => {
-    const playerId = context?.playerView?.id;
-    if (!playerId || hydratedTimeWarpPlayers.has(playerId) || hydratingTimeWarpPlayers.has(playerId)) {
-      return;
-    }
-
-    hydratingTimeWarpPlayers.add(playerId);
-    try {
-      const state = await extensionSessionGet(timeWarpSessionKey(playerId));
-      if (!shouldRunTerraformingMarsHelpers()) {
-        return;
-      }
-      hydratedTimeWarpPlayers.add(playerId);
-      if (!state || state.version !== 1 || state.playerId !== playerId || !state.active) {
-        return;
-      }
-
-      timeWarp.active = true;
-      timeWarp.queue = Array.isArray(state.queue) ? cloneJson(state.queue) : [];
-      timeWarp.lastError = state.lastError || "";
-      timeWarp.cachedWaitingFor = state.cachedWaitingFor ? cloneJson(state.cachedWaitingFor) : null;
-      if (state.cachedWaitingFor) {
-        setCachedWaitingFor(playerId, state.cachedWaitingFor);
-      }
-      if (state.cachedUiState) {
-        setCachedUiState(playerId, state.cachedUiState);
-      }
-
-      timeWarpLog(
-        "session-hydrated",
-        {
-          playerId,
-          queueLength: timeWarp.queue.length,
-          hasCachedWaitingFor: Boolean(timeWarp.cachedWaitingFor),
-          hasCachedUiState: Boolean(state.cachedUiState),
-        },
-        { limit: 8 },
-      );
-      renderTimeWarpPanel(context);
-    } finally {
-      hydratingTimeWarpPlayers.delete(playerId);
-    }
-  };
-
-  const getWaitingForRootElement = (component) => {
-    const element = component?.proxy?.$el;
-    return element instanceof Element ? element : null;
-  };
-
-  const allPaymentUnits = [
-    "megacredits",
-    "steel",
-    "titanium",
-    "heat",
-    "plants",
-    "microbes",
-    "floaters",
-    "lunaArchivesScience",
-    "spireScience",
-    "seeds",
-    "auroraiData",
-    "graphene",
-    "kuiperAsteroids",
-  ];
-
-  const emptyPayment = () =>
-    Object.fromEntries(allPaymentUnits.map((unit) => [unit, 0]));
-
-  const playerResourceAmount = (playerView, unit) => {
-    const player = playerView?.thisPlayer ?? {};
-    const value = player[unit];
-    return Number.isFinite(value) ? Math.max(0, value) : 0;
-  };
-
-  const simpleTitle = (value) => {
-    if (typeof value === "string") return value;
-    if (value?.message) return value.message;
-    if (value?.data?.message) return value.data.message;
-    return String(value ?? "");
-  };
-
-  const stableTitleString = (value) => {
-    if (!value || typeof value !== "object") return simpleTitle(value);
-    try {
-      const normalize = (item) => {
-        if (!item || typeof item !== "object") return item;
-        if (Array.isArray(item)) return item.map(normalize);
-        return Object.fromEntries(
-          Object.keys(item)
-            .sort()
-            .map((key) => [key, normalize(item[key])]),
-        );
-      };
-      return JSON.stringify(normalize(value));
-    } catch {
-      return simpleTitle(value);
-    }
-  };
-
-  const optionTitleKeys = (title) => {
-    const keys = new Set();
-    const plainTitle = simpleTitle(title);
-    if (plainTitle && plainTitle !== "[object Object]") {
-      keys.add(plainTitle);
-    }
-    if (title?.key) keys.add(title.key);
-    if (title?.data?.key) keys.add(title.data.key);
-    const stableTitle = stableTitleString(title);
-    if (stableTitle && stableTitle !== "[object Object]") {
-      keys.add(stableTitle);
-    }
-    return keys;
-  };
-
-  const optionTitleLabel = (title) =>
-    Array.from(optionTitleKeys(title))[0] ?? simpleTitle(title) ?? "unknown";
-
-  const namedOptionValue = (value) => {
-    if (typeof value === "string") return value;
-    if (value?.name) return value.name;
-    if (value?.id) return value.id;
-    return String(value ?? "");
-  };
-
-  const addSmallNote = (root, text) => {
-    const note = document.createElement("div");
-    note.className = "tfmars420-timewarp-muted";
-    note.textContent = text;
-    root.appendChild(note);
-  };
-
-  const createFieldset = (title) => {
-    const wrapper = document.createElement("div");
-    const heading = document.createElement("div");
-    heading.className = "tfmars420-timewarp-title";
-    heading.textContent = simpleTitle(title);
-    wrapper.appendChild(heading);
-    return wrapper;
-  };
-
-  const createQueueButton = (label, onClick) => {
-    const row = document.createElement("div");
-    row.className = "tfmars420-timewarp-row";
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = label || "queue";
-    button.addEventListener("click", onClick);
-    row.appendChild(button);
-    return row;
-  };
-
-  const readNumberInputs = (root, selector, fallback = 0) =>
-    Array.from(root.querySelectorAll(selector)).reduce((values, input) => {
-      const name = input.name;
-      if (name) {
-        const value = Number.parseInt(input.value, 10);
-        values[name] = Number.isFinite(value) ? Math.max(0, value) : fallback;
-      }
-      return values;
-    }, {});
-
-  const createPaymentEditor = (root, playerView, card) => {
-    const cost = Math.max(0, card?.calculatedCost ?? 0);
-    const row = document.createElement("div");
-    row.className = "tfmars420-timewarp-row";
-
-    for (const unit of allPaymentUnits) {
-      const available = unit === "megacredits" ? playerResourceAmount(playerView, unit) : playerResourceAmount(playerView, unit);
-      if (unit !== "megacredits" && available <= 0) continue;
-
-      const label = document.createElement("label");
-      label.textContent = `${unit}: `;
-      const input = document.createElement("input");
-      input.type = "number";
-      input.min = "0";
-      input.name = unit;
-      input.value = String(unit === "megacredits" ? Math.min(cost, available || cost) : 0);
-      label.appendChild(input);
-      row.appendChild(label);
-    }
-
-    root.appendChild(row);
-    addSmallNote(root, `Default payment is ${cost} M€ when possible; adjust before queueing if you want to spend steel, titanium, heat, or other resources.`);
-  };
-
-  const getSelectedRadioValue = (root, name) =>
-    root.querySelector(`input[name="${CSS.escape(name)}"]:checked`)?.value;
-
-  const renderUnsupportedInput = (root, input) => {
-    addSmallNote(root, `Time warp cannot render this input type yet: ${input?.type ?? "unknown"}.`);
-  };
-
-  const renderInputFallback = ({ root, input, playerView, onSave, path }) => {
-    const wrapper = createFieldset(input?.title ?? input?.buttonLabel ?? input?.type);
-    root.appendChild(wrapper);
-
-    if (!input) {
-      renderUnsupportedInput(wrapper, input);
-      return;
-    }
-
-    if (input.warning) {
-      addSmallNote(wrapper, simpleTitle(input.warning));
-    }
-
-    if (input.type === "or") {
-      const options = Array.isArray(input.options) ? input.options : [];
-      const radioName = `tfmars420-or-${path.join("-") || "root"}`;
-      const child = document.createElement("div");
-      child.className = "tfmars420-timewarp-child";
-
-      options.forEach((option, index) => {
-        const row = document.createElement("div");
-        row.className = "tfmars420-timewarp-row";
-        const label = document.createElement("label");
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = radioName;
-        radio.value = String(index);
-        radio.checked = index === (input.initialIdx ?? 0);
-        radio.addEventListener("change", () => {
-          child.innerHTML = "";
-          renderInputFallback({
-            root: child,
-            input: option,
-            playerView,
-            path: [...path, index],
-            onSave: (response) => onSave({ type: "or", index, response }),
-          });
-        });
-        label.appendChild(radio);
-        label.append(` ${simpleTitle(option.title)}`);
-        row.appendChild(label);
-        wrapper.appendChild(row);
-      });
-
-      wrapper.appendChild(child);
-      const selectedIndex = Number.parseInt(getSelectedRadioValue(wrapper, radioName) ?? "0", 10);
-      if (options[selectedIndex]) {
-        renderInputFallback({
-          root: child,
-          input: options[selectedIndex],
-          playerView,
-          path: [...path, selectedIndex],
-          onSave: (response) => onSave({ type: "or", index: selectedIndex, response }),
-        });
-      }
-      return;
-    }
-
-    if (input.type === "option") {
-      wrapper.appendChild(createQueueButton(input.buttonLabel, () => onSave({ type: "option" })));
-      return;
-    }
-
-    if (input.type === "projectCard") {
-      const cards = (input.cards ?? []).filter((card) => card?.isDisabled !== true);
-      if (cards.length === 0) {
-        addSmallNote(wrapper, "No playable cards were present in the cached action.");
-        return;
-      }
-      const radioName = `tfmars420-card-${path.join("-") || "root"}`;
-      const cardList = document.createElement("div");
-      cardList.className = "tfmars420-timewarp-card-list";
-      const paymentRoot = document.createElement("div");
-
-      const renderPaymentForSelectedCard = () => {
-        paymentRoot.innerHTML = "";
-        const selectedCardName = getSelectedRadioValue(wrapper, radioName) ?? cards[0].name;
-        const card = cards.find((candidate) => candidate.name === selectedCardName) ?? cards[0];
-        createPaymentEditor(paymentRoot, playerView, card);
-      };
-
-      cards.forEach((card, index) => {
-        const label = document.createElement("label");
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = radioName;
-        radio.value = card.name;
-        radio.checked = index === 0;
-        radio.addEventListener("change", renderPaymentForSelectedCard);
-        label.appendChild(radio);
-        label.append(` ${card.name}${Number.isFinite(card.calculatedCost) ? ` (${card.calculatedCost} M€)` : ""}`);
-        cardList.appendChild(label);
-      });
-
-      wrapper.appendChild(cardList);
-      wrapper.appendChild(paymentRoot);
-      renderPaymentForSelectedCard();
-      wrapper.appendChild(
-        createQueueButton(input.buttonLabel, () => {
-          const card = getSelectedRadioValue(wrapper, radioName) ?? cards[0].name;
-          onSave({
-            type: "projectCard",
-            card,
-            payment: { ...emptyPayment(), ...readNumberInputs(paymentRoot, "input[type='number']") },
-          });
-        }),
-      );
-      return;
-    }
-
-    if (input.type === "amount" || input.type === "deltaProject") {
-      const row = document.createElement("div");
-      row.className = "tfmars420-timewarp-row";
-      const amount = document.createElement("input");
-      amount.type = "number";
-      amount.min = String(input.min ?? Math.min(...(input.validSteps ?? [0])));
-      amount.max = String(input.max ?? Math.max(...(input.validSteps ?? [0])));
-      amount.value = String(input.maxByDefault ? input.max : input.min ?? input.validSteps?.[0] ?? 0);
-      row.appendChild(amount);
-      wrapper.appendChild(row);
-      wrapper.appendChild(
-        createQueueButton(input.buttonLabel, () =>
-          onSave({
-            type: input.type,
-            amount: Number.parseInt(amount.value, 10) || 0,
-          }),
-        ),
-      );
-      return;
-    }
-
-    if (input.type === "card") {
-      const cards = input.cards ?? [];
-      const name = `tfmars420-select-card-${path.join("-") || "root"}`;
-      const multiple = input.max !== 1 || input.min !== 1;
-      const cardList = document.createElement("div");
-      cardList.className = "tfmars420-timewarp-card-list";
-      cards.forEach((card, index) => {
-        const label = document.createElement("label");
-        const selector = document.createElement("input");
-        selector.type = multiple ? "checkbox" : "radio";
-        selector.name = name;
-        selector.value = card.name;
-        selector.checked = index === 0 && !multiple;
-        label.appendChild(selector);
-        label.append(` ${card.name}`);
-        cardList.appendChild(label);
-      });
-      wrapper.appendChild(cardList);
-      wrapper.appendChild(
-        createQueueButton(input.buttonLabel, () => {
-          const selected = Array.from(wrapper.querySelectorAll(`input[name="${CSS.escape(name)}"]:checked`))
-            .map((element) => element.value);
-          const min = input.min ?? 0;
-          const max = input.max ?? selected.length;
-          if (selected.length < min || selected.length > max) {
-            timeWarp.lastError = `Select between ${min} and ${max} cards.`;
-            renderTimeWarpPanel();
-            return;
-          }
-          onSave({ type: "card", cards: selected });
-        }),
-      );
-      return;
-    }
-
-    const simpleSelectConfigs = {
-      player: ["player", input.players ?? []],
-      delegate: ["player", input.players ?? []],
-      party: ["partyName", input.parties ?? []],
-      colony: ["colonyName", input.coloniesModel?.map((colony) => colony.name) ?? []],
-      space: ["spaceId", input.spaces ?? []],
-      globalEvent: ["globalEventName", input.globalEventNames ?? []],
-      resource: ["resource", input.include ?? []],
+      queue: Array.isArray(value.queue) ? value.queue.filter(isPlainObject) : [],
+      cardRanks: isPlainObject(value.cardRanks) ? { ...value.cardRanks } : {},
     };
-    const simpleConfig = simpleSelectConfigs[input.type];
-    if (simpleConfig) {
-      const [field, values] = simpleConfig;
-      const select = document.createElement("select");
-      values.forEach((value) => {
-        const option = document.createElement("option");
-        option.value = namedOptionValue(value);
-        option.textContent = namedOptionValue(value);
-        select.appendChild(option);
-      });
-      const row = document.createElement("div");
-      row.className = "tfmars420-timewarp-row";
-      row.appendChild(select);
-      wrapper.appendChild(row);
-      wrapper.appendChild(
-        createQueueButton(input.buttonLabel, () =>
-          onSave({ type: input.type, [field]: select.value }),
-        ),
-      );
-      return;
+  };
+
+  const writeQueueSession = (session) => {
+    if (!session?.playerId) return;
+    writeStorageString(queueSessionStorageKey, JSON.stringify(session));
+  };
+
+  const readQueueSession = () => {
+    const playerId = currentPlayerId();
+    if (!playerId) return null;
+
+    let parsed = null;
+    try {
+      const raw = window.localStorage.getItem(queueSessionStorageKey);
+      parsed = raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      parsed = null;
     }
 
-    renderUnsupportedInput(wrapper, input);
+    const shouldOverwrite =
+      !isPlainObject(parsed) || parsed.version !== 1 || parsed.playerId !== playerId;
+    const session = normalizeQueueSession(parsed, playerId);
+    if (shouldOverwrite) {
+      writeQueueSession(session);
+    }
+    return session;
   };
 
-  const queueFallbackResponse = (context, payload) => {
-    timeWarp.queue.push(cloneJson(payload));
-    timeWarp.lastError = "";
-    rememberTimeWarpUiState(context);
-    persistTimeWarpSession(context);
-    timeWarpLog(
-      "queued-fallback",
-      {
-        playerId: context.playerView.id,
-        payload,
-        queueLength: timeWarp.queue.length,
-      },
-      { limit: 20 },
-    );
-    renderTimeWarpPanel(context);
-    renderFallbackCachedWaitingFor(context, timeWarp.cachedWaitingFor ?? getCachedWaitingFor(context.playerView.id));
+  const updateQueueSession = (updater) => {
+    const session = readQueueSession();
+    if (!session) return null;
+    const nextSession = normalizeQueueSession(updater(cloneJson(session)) ?? session, session.playerId);
+    writeQueueSession(nextSession);
+    queueExecutionAttempted = false;
+    queueExecutionError = "";
+    scheduleTerraformingMarsUpdate();
+    return nextSession;
   };
 
-  const fallbackRenderKey = (context, cachedWaitingFor) =>
-    JSON.stringify({
-      playerId: context?.playerView?.id,
-      buttonLabel: cachedWaitingFor?.buttonLabel,
-      titles: cachedWaitingFor?.options?.map((option) => simpleTitle(option.title)) ?? [],
-    });
-
-  const getFallbackFormContainer = (context) => {
+  const isCurrentPlayerTurn = () => {
     const actionsBlock = document.querySelector(".player_home_block--actions");
-    if (!actionsBlock || !context?.playerView?.id) return null;
-    let form = document.getElementById(timeWarpFallbackFormId);
-    if (!form) {
-      form = document.createElement("div");
-      form.id = timeWarpFallbackFormId;
-      const panel = document.getElementById(timeWarpPanelId);
-      if (panel?.nextSibling) {
-        actionsBlock.insertBefore(form, panel.nextSibling);
-      } else if (panel) {
-        actionsBlock.insertBefore(form, panel.nextSibling);
-      } else {
-        actionsBlock.prepend(form);
-      }
-    }
-    return form;
+    if (!actionsBlock) return false;
+    if (actionsBlock.querySelector(".wf-root input, .wf-root button, .wf-root select")) return true;
+
+    const text = cleanText(actionsBlock.textContent ?? "");
+    return (
+      text.includes("Pass for this generation") ||
+      text.includes("Play project card") ||
+      text.includes("Perform an action from a played card")
+    );
   };
 
-  function renderFallbackCachedWaitingFor(context, cachedWaitingFor) {
-    const form = getFallbackFormContainer(context);
-    if (!form) return;
-    const config = getTimeWarpConfig();
-    if (!timeWarp.active || !isNormalTakeAction(cachedWaitingFor)) {
-      form.hidden = true;
-      form.innerHTML = "";
-      form.dataset.renderKey = "";
-      timeWarp.renderedFallbackKey = null;
-      return;
+  const hasLiveActionForm = () =>
+    Boolean(document.querySelector(".player_home_block--actions .wf-root, .player_home_block--actions form"));
+
+  const timeWarpCss = () => `
+    #${timeWarpPanelId} {
+      background: #2f2f2f;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 4px;
+      box-sizing: border-box;
+      color: #f5f5f5;
+      font-family: inherit;
+      margin: 8px 0;
+      padding: 8px;
     }
-
-    const renderKey = fallbackRenderKey(context, cachedWaitingFor);
-    if (
-      config.fallbackRenderer?.preserveFormWhileActive !== false &&
-      form.dataset.renderKey === renderKey &&
-      timeWarp.renderedFallbackKey === renderKey &&
-      form.childElementCount > 0
-    ) {
-      form.hidden = false;
-      return;
+    #${timeWarpPanelId}[hidden] {
+      display: none !important;
     }
-
-    form.hidden = false;
-    form.innerHTML = "";
-    form.dataset.renderKey = renderKey;
-    timeWarp.renderedFallbackKey = renderKey;
-    renderInputFallback({
-      root: form,
-      input: cachedWaitingFor,
-      playerView: context.playerView,
-      path: [],
-      onSave: (payload) => queueFallbackResponse(context, payload),
-    });
-    restoreTimeWarpUiState(context);
-  }
-
-  const clearFallbackCachedWaitingFor = () => {
-    const form = document.getElementById(timeWarpFallbackFormId);
-    if (form) {
-      form.hidden = true;
-      form.innerHTML = "";
-      form.dataset.renderKey = "";
+    #${timeWarpPanelId} button,
+    .tfmars420-card-tools button,
+    .tfmars420-enqueue-tools button {
+      background: #5d79bd;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      padding: 4px 9px;
     }
-    timeWarp.renderedFallbackKey = null;
-  };
-
-  const getTimeWarpUiStateRootElement = (context) =>
-    getWaitingForRootElement(context?.component) ??
-    document.getElementById(timeWarpFallbackFormId);
-
-  const rememberTimeWarpUiState = (context = timeWarpContext()) => {
-    if (!shouldRunTerraformingMarsHelpers()) return;
-    if (!timeWarp.active || !context?.playerView?.id) return;
-    const rootElement = getTimeWarpUiStateRootElement(context);
-    if (!rootElement) return;
-    try {
-      setCachedUiState(context.playerView.id, collectFormState(rootElement));
-      persistTimeWarpSession(context);
-    } catch (error) {
-      console.warn("[tfmars420] unable to remember time-warp UI state", error);
+    #${timeWarpPanelId} button:hover:not(:disabled),
+    .tfmars420-card-tools button:hover:not(:disabled),
+    .tfmars420-enqueue-tools button:hover:not(:disabled) {
+      background: #6d8bd0;
     }
-  };
-
-  const restoreTimeWarpUiState = (context) => {
-    if (!shouldRunTerraformingMarsHelpers()) return;
-    if (!timeWarp.active || !context?.playerView?.id) return;
-    const state = getCachedUiState(context.playerView.id);
-    if (!state) return;
-    const rootElement = getTimeWarpUiStateRootElement(context);
-    if (!rootElement) return;
-    restoreFormState(rootElement, state);
-  };
-
-  const forceComponentUpdate = (component) => {
-    try {
-      component?.proxy?.$forceUpdate?.();
-    } catch (error) {
-      console.warn("[tfmars420] unable to force Vue update", error);
+    #${timeWarpPanelId} button:disabled,
+    .tfmars420-card-tools button:disabled,
+    .tfmars420-enqueue-tools button:disabled {
+      cursor: default;
+      opacity: 0.62;
     }
-  };
-
-  const setComponentWaitingFor = (component, waitingFor) => {
-    const attempts = [
-      () => {
-        if (component?.props) component.props.waitingfor = waitingFor;
-      },
-      () => {
-        if (component?.vnode?.props) component.vnode.props.waitingfor = waitingFor;
-      },
-      () => {
-        if (component?.proxy) component.proxy.waitingfor = waitingFor;
-      },
-    ];
-
-    for (const attempt of attempts) {
-      try {
-        attempt();
-      } catch (error) {
-        console.warn("[tfmars420] unable to set one waiting-for prop path", error);
-      }
+    #${timeWarpPanelId} .tfmars420-queue-title {
+      font-weight: 700;
+      margin-bottom: 6px;
     }
-    forceComponentUpdate(component);
-  };
-
-  const patchWaitingForOnSave = (context) => {
-    const { component, playerView } = context;
-    if (timeWarp.patchedComponent === component) return;
-
-    restoreWaitingForPatch();
-    timeWarp.patchedComponent = component;
-    timeWarp.originalOnSave = component.proxy?.onsave;
-    timeWarp.originalCtxOnSave = component.ctx?.onsave;
-
-    const queueOnSave = (out) => {
-      if (!timeWarp.active) {
-        timeWarp.originalOnSave?.call(component.proxy, out);
-        return;
-      }
-
-      const payload = cloneJson(out);
-      delete payload.runId;
-      timeWarp.queue.push(payload);
-      timeWarpLog(
-        "queued",
-        {
-          playerId: playerView.id,
-          payload,
-          queueLength: timeWarp.queue.length,
-        },
-        { limit: 20 },
-      );
-      timeWarp.lastError = "";
-      rememberTimeWarpUiState(context);
-      renderTimeWarpPanel(context);
-    };
-
-    try {
-      if (component.ctx) component.ctx.onsave = queueOnSave;
-      if (component.proxy) component.proxy.onsave = queueOnSave;
-    } catch (error) {
-      timeWarp.lastError = `Unable to prepare time warp for ${playerView.id}`;
-      console.warn("[tfmars420] unable to patch onsave", error);
+    #${timeWarpPanelId} .tfmars420-queue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 8px 0;
     }
-    forceComponentUpdate(component);
-  };
-
-  function restoreWaitingForPatch() {
-    const component = timeWarp.patchedComponent;
-    if (!component) return;
-
-    try {
-      if (component.ctx && timeWarp.originalCtxOnSave) {
-        component.ctx.onsave = timeWarp.originalCtxOnSave;
-      }
-      if (component.proxy && timeWarp.originalOnSave) {
-        component.proxy.onsave = timeWarp.originalOnSave;
-      }
-    } catch (error) {
-      console.warn("[tfmars420] unable to restore onsave", error);
+    #${timeWarpPanelId} .tfmars420-queue-row {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
     }
-
-    timeWarp.patchedComponent = null;
-    timeWarp.originalOnSave = null;
-    timeWarp.originalCtxOnSave = null;
-  }
-
-  const renderCachedWaitingFor = (context, cachedWaitingFor) => {
-    if (!shouldRunTerraformingMarsHelpers()) return;
-    if (!context.component || !context.root) {
-      renderFallbackCachedWaitingFor(context, cachedWaitingFor);
-      return;
+    #${timeWarpPanelId} .tfmars420-queue-label {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
-
-    if (timeWarp.renderedCachedComponent === context.component) {
-      patchWaitingForOnSave(context);
-      return;
+    #${timeWarpPanelId} .tfmars420-queue-total,
+    #${timeWarpPanelId} .tfmars420-queue-empty {
+      color: #d8d8d8;
+      font-size: 12px;
+      margin: 6px 0;
     }
-    if (timeWarp.renderingCachedAction) return;
-    timeWarp.renderingCachedAction = true;
-    timeWarp.cachedWaitingFor = cachedWaitingFor;
-    timeWarp.renderedCachedComponent = context.component;
-    patchWaitingForOnSave(context);
-    setComponentWaitingFor(context.component, cachedWaitingFor);
-    window.setTimeout(() => {
-      restoreTimeWarpUiState(context);
-      timeWarp.renderingCachedAction = false;
-    }, 0);
-    window.setTimeout(() => restoreTimeWarpUiState(context), 32);
-  };
+    #${timeWarpPanelId} .tfmars420-queue-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    #${timeWarpPanelId} .tfmars420-timewarp-error {
+      color: #ffb4a8;
+      font-size: 12px;
+    }
+    .tfmars420-card-tools,
+    .tfmars420-enqueue-tools {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: center;
+      margin: 5px auto 7px;
+      max-width: 210px;
+    }
+    .tfmars420-rank-button[aria-pressed="true"] {
+      background: #ff4fbf;
+      border-color: rgba(255, 255, 255, 0.72);
+    }
+    .tfmars420-card-border {
+      box-shadow: 0 0 0 4px #ff4fbf, 0 0 12px rgba(255, 79, 191, 0.78);
+    }
+    .tfmars420-card-derank {
+      filter: brightness(0.55);
+    }
+    .tfmars420-card-derank:hover {
+      filter: brightness(1);
+    }
+  `;
 
-  const clearRenderedCachedWaitingFor = (context) => {
-    clearFallbackCachedWaitingFor();
-    if (!context?.component) return;
-    timeWarp.renderedCachedComponent = null;
-    timeWarp.cachedWaitingFor = null;
-    setComponentWaitingFor(context.component, context.liveWaitingFor);
-  };
+  const getActionsBlock = () => document.querySelector(".player_home_block--actions");
 
-  const timeWarpQueueSummary = () => {
-    if (timeWarp.queue.length === 0) return "queue empty";
-    return `${timeWarp.queue.length} queued action${timeWarp.queue.length === 1 ? "" : "s"}`;
-  };
-
-  const timeWarpQueueText = () => {
-    if (timeWarp.queue.length === 0) return "";
-    return JSON.stringify(timeWarp.queue, null, 2);
-  };
-
-  const renderTimeWarpPanel = (context = timeWarpContext()) => {
+  const renderQueuePanel = () => {
     if (!shouldRunTerraformingMarsHelpers()) {
       removeTimeWarpUi();
       return;
     }
     upsertCss(timeWarpCssId, timeWarpCss());
 
-    const actionsBlock = document.querySelector(".player_home_block--actions");
+    const actionsBlock = getActionsBlock();
     if (!actionsBlock) return;
 
     let panel = document.getElementById(timeWarpPanelId);
@@ -2913,411 +2192,455 @@
       }
     }
 
-    if (getTimeWarpConfig().enabled === false) {
-      panel.hidden = true;
-      clearFallbackCachedWaitingFor();
-      return;
-    }
+    const session = readQueueSession();
+    const myTurn = isCurrentPlayerTurn();
 
-    if (!context?.playerView?.id) {
+    if (!session) {
       panel.hidden = true;
       return;
     }
 
-    const cachedWaitingFor = getCachedWaitingFor(context.playerView.id);
-    const isActionPhase = context.playerView.game?.phase === "action";
-    const canActivate =
-      !timeWarp.active &&
-      !context.liveWaitingFor &&
-      isActionPhase &&
-      isNormalTakeAction(cachedWaitingFor);
-    timeWarpLog(
-      "panel-state",
-      {
-        playerId: context.playerView.id,
-        source: context.source,
-        phase: context.playerView.game?.phase,
-        active: timeWarp.active,
-        hasComponent: Boolean(context.component),
-        hasRoot: Boolean(context.root),
-        hasLiveWaitingFor: Boolean(context.liveWaitingFor),
-        liveType: context.liveWaitingFor?.type,
-        liveButtonLabel: context.liveWaitingFor?.buttonLabel,
-        hasCachedWaitingFor: Boolean(cachedWaitingFor),
-        cachedType: cachedWaitingFor?.type,
-        cachedButtonLabel: cachedWaitingFor?.buttonLabel,
-        canActivate,
-      },
-      { limit: 40 },
-    );
-
-    if (!timeWarp.active && !canActivate && !timeWarp.lastError) {
-      panel.hidden = true;
+    if (myTurn) {
+      if (queueExecutionError) {
+        panel.hidden = false;
+        panel.innerHTML = "";
+        const error = document.createElement("div");
+        error.className = "tfmars420-timewarp-error";
+        error.textContent = queueExecutionError;
+        panel.append(error);
+      } else {
+        panel.hidden = true;
+        panel.innerHTML = "";
+      }
       return;
     }
 
     panel.hidden = false;
     panel.innerHTML = "";
 
-    if (timeWarp.active) {
-      const cancel = document.createElement("button");
-      cancel.type = "button";
-      cancel.className = "tfmars420-timewarp-anchor";
-      cancel.textContent = "reality anchor";
-      cancel.addEventListener("click", () => deactivateTimeWarp("cancelled"));
-      panel.appendChild(cancel);
+    const title = document.createElement("div");
+    title.className = "tfmars420-queue-title";
+    title.textContent = "Queued actions";
+    panel.append(title);
 
-      const summary = document.createElement("span");
-      summary.className = "tfmars420-timewarp-summary";
-      summary.textContent = `time warp active: ${timeWarpQueueSummary()}`;
-      panel.appendChild(summary);
-    } else if (canActivate) {
-      const activate = document.createElement("button");
-      activate.type = "button";
-      activate.textContent = "time warp";
-      activate.addEventListener("click", () => activateTimeWarp());
-      panel.appendChild(activate);
-
-      const summary = document.createElement("span");
-      summary.className = "tfmars420-timewarp-summary";
-      summary.textContent = "queue a normal action while waiting";
-      panel.appendChild(summary);
-    }
-
-    const queueText = timeWarpQueueText();
-    if (queueText) {
-      const queue = document.createElement("pre");
-      queue.className = "tfmars420-timewarp-queue";
-      queue.textContent = queueText;
-      panel.appendChild(queue);
-    }
-
-    if (timeWarp.lastError) {
-      const error = document.createElement("div");
-      error.className = "tfmars420-timewarp-error";
-      error.textContent = timeWarp.lastError;
-      panel.appendChild(error);
-    }
-  };
-
-  const activateTimeWarp = () => {
-    if (getTimeWarpConfig().enabled === false) {
-      timeWarp.lastError = "Time warp is disabled by tfmars420 remote config.";
-      renderTimeWarpPanel();
-      return;
-    }
-    const context = timeWarpContext();
-    if (!context) {
-      timeWarpLog("activate-no-context", {}, { limit: 10 });
-      return;
-    }
-    const cachedWaitingFor = getCachedWaitingFor(context.playerView.id);
-    if (
-      context.playerView.game?.phase !== "action" ||
-      context.liveWaitingFor ||
-      !isNormalTakeAction(cachedWaitingFor)
-    ) {
-      timeWarpLog(
-        "activate-blocked",
-        {
-          playerId: context.playerView.id,
-          phase: context.playerView.game?.phase,
-          hasLiveWaitingFor: Boolean(context.liveWaitingFor),
-          hasCachedWaitingFor: Boolean(cachedWaitingFor),
-          cachedType: cachedWaitingFor?.type,
-          cachedButtonLabel: cachedWaitingFor?.buttonLabel,
-        },
-        { limit: 10 },
-      );
-      return;
-    }
-
-    if (!context.component || !context.root) {
-      timeWarpLog(
-        "activate-fallback-renderer",
-        {
-          playerId: context.playerView.id,
-          source: context.source,
-          hasComponent: Boolean(context.component),
-          hasRoot: Boolean(context.root),
-          hasCachedWaitingFor: Boolean(cachedWaitingFor),
-        },
-        { limit: 10 },
-      );
-      timeWarp.active = true;
-      timeWarp.queue = [];
-      timeWarp.lastError = "";
-      timeWarp.cachedWaitingFor = cachedWaitingFor;
-      persistTimeWarpSession(context);
-      renderFallbackCachedWaitingFor(context, cachedWaitingFor);
-      renderTimeWarpPanel(context);
-      return;
-    }
-
-    timeWarpLog("activate", { playerId: context.playerView.id }, { limit: 10 });
-    timeWarp.active = true;
-    timeWarp.queue = [];
-    timeWarp.lastError = "";
-    timeWarp.cachedWaitingFor = cachedWaitingFor;
-    persistTimeWarpSession(context);
-    renderCachedWaitingFor(context, cachedWaitingFor);
-    renderTimeWarpPanel(context);
-  };
-
-  function deactivateTimeWarp(reason, context = timeWarpContext()) {
-    timeWarpLog(
-      "deactivate",
-      {
-        reason,
-        playerId: context?.playerView?.id,
-        queueLength: timeWarp.queue.length,
-      },
-      { limit: 20 },
-    );
-    rememberTimeWarpUiState(context);
-    restoreWaitingForPatch();
-    timeWarp.active = false;
-    timeWarp.queue = [];
-    timeWarp.replayInFlight = false;
-    timeWarp.renderingCachedAction = false;
-    timeWarp.renderedCachedComponent = null;
-    timeWarp.cachedWaitingFor = null;
-    if (reason && reason !== "cancelled") {
-      timeWarp.lastError = reason;
-    } else if (reason === "cancelled") {
-      timeWarp.lastError = "";
-    }
-    clearRenderedCachedWaitingFor(context);
-    clearTimeWarpSession(context);
-    renderTimeWarpPanel(context);
-  }
-
-  const updateRootPlayerView = (root, playerView) => {
-    root.screen = "empty";
-    root.playerView = playerView;
-    root.playerkey++;
-    root.screen = "player-home";
-  };
-
-  const replayNextQueuedAction = async (context) => {
-    if (!shouldRunTerraformingMarsHelpers()) return;
-    if (timeWarp.replayInFlight || timeWarp.queue.length === 0) return;
-
-    const cachedWaitingFor = getCachedWaitingFor(context.playerView.id);
-    const liveWaitingFor = context.liveWaitingFor;
-    if (!isNormalTakeAction(cachedWaitingFor) || !isNormalTakeAction(liveWaitingFor)) {
-      return;
-    }
-
-    const payload = cloneJson(timeWarp.queue[0]);
-    const selectedOptionTitle = cachedWaitingFor.options?.[payload.index]?.title;
-    const selectedOptionTitleKeys = optionTitleKeys(selectedOptionTitle);
-    const selectedOptionTitleLabel = optionTitleLabel(selectedOptionTitle);
-    const nextIndex = liveWaitingFor.options.findIndex((option) =>
-      Array.from(optionTitleKeys(option.title)).some((key) => selectedOptionTitleKeys.has(key)),
-    );
-    timeWarpLog(
-      "replay-match",
-      {
-        playerId: context.playerView.id,
-        selectedOptionTitle: selectedOptionTitleLabel,
-        nextIndex,
-        cachedTitles: cachedWaitingFor.options.map((option) => optionTitleLabel(option.title)),
-        liveTitles: liveWaitingFor.options.map((option) => optionTitleLabel(option.title)),
-      },
-      { limit: 20 },
-    );
-
-    if (nextIndex === -1) {
-      deactivateTimeWarp(`Unable to match queued action: ${selectedOptionTitleLabel}`, context);
-      return;
-    }
-
-    if (context.root?.isServerSideRequestInProgress) {
-      deactivateTimeWarp("Server request already in progress", context);
-      return;
-    }
-
-    payload.index = nextIndex;
-    payload.runId = context.playerView.runId;
-    timeWarp.replayInFlight = true;
-    if (context.root) {
-      context.root.isServerSideRequestInProgress = true;
-    }
-    timeWarpLog(
-      "replay-post",
-      {
-        playerId: context.playerView.id,
-        payload,
-      },
-      { limit: 20 },
-    );
-    renderTimeWarpPanel(context);
-
-    try {
-      const response = await fetch(`player/input?id=${encodeURIComponent(context.playerView.id)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        throw new Error(`Server rejected queued action: ${response.status} ${response.statusText}`);
-      }
-
-      const nextPlayerView = await response.json();
-      if (!shouldRunTerraformingMarsHelpers()) {
-        if (context.root) {
-          context.root.isServerSideRequestInProgress = false;
-        }
-        timeWarp.replayInFlight = false;
-        cleanupTerraformingMarsHelpersForHidden();
-        return;
-      }
-      timeWarpLog(
-        "replay-success",
-        {
-          playerId: context.playerView.id,
-          remainingBeforeShift: timeWarp.queue.length,
-          nextWaitingForType: nextPlayerView?.waitingFor?.type,
-          nextWaitingForButtonLabel: nextPlayerView?.waitingFor?.buttonLabel,
-        },
-        { limit: 20 },
-      );
-      if (context.root) {
-        context.root.isServerSideRequestInProgress = false;
-      }
-      timeWarp.replayInFlight = false;
-      timeWarp.queue.shift();
-
-      const hasMoreQueuedActions = timeWarp.queue.length > 0;
-      if (!hasMoreQueuedActions) {
-        restoreWaitingForPatch();
-        timeWarp.active = false;
-        timeWarp.renderingCachedAction = false;
-        timeWarp.renderedCachedComponent = null;
-        timeWarp.cachedWaitingFor = null;
-        clearFallbackCachedWaitingFor();
-        clearTimeWarpSession(context);
-      } else {
-        persistTimeWarpSession(context);
-      }
-      rememberLatestPlayerView(nextPlayerView, "replay");
-      if (context.root) {
-        updateRootPlayerView(context.root, nextPlayerView);
-      } else {
-        timeWarpLog(
-          "replay-no-root-skip-reload",
-          {
-            playerId: context.playerView.id,
-            remainingAfterShift: timeWarp.queue.length,
-            nextWaitingForType: nextPlayerView?.waitingFor?.type,
-            nextWaitingForButtonLabel: nextPlayerView?.waitingFor?.buttonLabel,
-          },
-          { limit: 12 },
-        );
-      }
-      renderTimeWarpPanel();
-    } catch (error) {
-      if (context.root) {
-        context.root.isServerSideRequestInProgress = false;
-      }
-      const message = error instanceof Error ? error.message : String(error);
-      timeWarpLog(
-        "replay-error",
-        {
-          playerId: context.playerView.id,
-          message,
-        },
-        { limit: 20 },
-      );
-      deactivateTimeWarp(message, context);
-    }
-  };
-
-  const updateTimeWarp = () => {
-    if (!shouldRunTerraformingMarsHelpers()) {
-      cleanupTerraformingMarsHelpersForHidden();
-      return;
-    }
-
-    if (getTimeWarpConfig().enabled === false) {
-      if (timeWarp.active) {
-        deactivateTimeWarp("Time warp is disabled by tfmars420 remote config");
-      }
-      renderTimeWarpPanel();
-      return;
-    }
-
-    const context = timeWarpContext();
-    if (!context) {
-      renderTimeWarpPanel(null);
-      return;
-    }
-    hydrateTimeWarpSession(context);
-
-    const { playerView, liveWaitingFor } = context;
-    if (isNormalTakeAction(liveWaitingFor) && !timeWarp.active) {
-      setCachedWaitingFor(playerView.id, cloneJson(liveWaitingFor));
-      timeWarpLog(
-        "cached-waitingfor",
-        {
-          playerId: playerView.id,
-          optionTitles: liveWaitingFor.options.map((option) => option.title),
-        },
-        { limit: 20 },
-      );
+    if (session.queue.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "tfmars420-queue-empty";
+      empty.textContent = "No actions queued.";
+      panel.append(empty);
     } else {
-      timeWarpLog(
-        "not-caching",
-        {
-          playerId: playerView.id,
-          phase: playerView.game?.phase,
-          active: timeWarp.active,
-          hasLiveWaitingFor: Boolean(liveWaitingFor),
-          liveType: liveWaitingFor?.type,
-          liveButtonLabel: liveWaitingFor?.buttonLabel,
-        },
-        { limit: 30 },
-      );
+      const list = document.createElement("div");
+      list.className = "tfmars420-queue-list";
+      session.queue.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "tfmars420-queue-row";
+
+        const label = document.createElement("span");
+        label.className = "tfmars420-queue-label";
+        label.textContent = `${index + 1}. ${queueItemLabel(item)}`;
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "remove";
+        remove.addEventListener("click", () => {
+          updateQueueSession((draft) => {
+            draft.queue.splice(index, 1);
+            return draft;
+          });
+        });
+
+        row.append(label, remove);
+        list.append(row);
+      });
+      panel.append(list);
     }
 
-    if (timeWarp.active) {
-      if (playerView.game?.phase !== "action") {
-        deactivateTimeWarp("Time warp cancelled outside action phase", context);
+    const total = document.createElement("div");
+    total.className = "tfmars420-queue-total";
+    total.textContent = `Total queued M€: ${queuedProjectMoneyCost(session.queue)}`;
+    panel.append(total);
+
+    const actions = document.createElement("div");
+    actions.className = "tfmars420-queue-actions";
+
+    const passButton = document.createElement("button");
+    passButton.type = "button";
+    passButton.textContent = "Pass for this generation";
+    passButton.addEventListener("click", () => {
+      updateQueueSession((draft) => {
+        draft.queue.push({ type: "pass", label: "Pass for this generation" });
+        return draft;
+      });
+    });
+
+    const clearButton = document.createElement("button");
+    clearButton.type = "button";
+    clearButton.textContent = "Clear queue";
+    clearButton.disabled = session.queue.length === 0;
+    clearButton.addEventListener("click", () => {
+      updateQueueSession((draft) => {
+        draft.queue = [];
+        return draft;
+      });
+    });
+
+    actions.append(passButton, clearButton);
+    panel.append(actions);
+  };
+
+  const queuedProjectMoneyCost = (queue) =>
+    queue.reduce((total, item) => {
+      if (item?.type !== "projectCard") return total;
+      const cost = Number(item.cost);
+      return total + (Number.isFinite(cost) && cost > 0 ? cost : 0);
+    }, 0);
+
+  const queueItemLabel = (item) => {
+    if (item?.type === "pass") return "Pass for this generation";
+    if (item?.type === "projectCard") return `Play ${item.cardName ?? "project card"}`;
+    if (item?.type === "playedAction") return `Use ${item.cardName ?? "played action"}`;
+    return "Unknown action";
+  };
+
+  const cardContainerFromBox = (cardBox) => cardBox?.querySelector(".card-container") ?? cardBox;
+
+  const getCardIdentity = (cardElement) => {
+    const container = cardElement?.classList?.contains("card-container")
+      ? cardElement
+      : cardElement?.querySelector?.(".card-container") ?? cardElement;
+    const cardBox = container?.closest?.(".cardbox") ?? container;
+    const name = cardNameFromElement(container) || cardNameFromElement(cardBox) || "Card";
+    const slug = cardSlugFromElement(container) || slugifyCardName(name);
+    const key = slug || normalizeCardName(name);
+    return { name, slug, key };
+  };
+
+  const findQueuedCardPosition = (queue, type, identity) =>
+    queue.findIndex(
+      (item) =>
+        item?.type === type &&
+        (item.cardKey === identity.key ||
+          (item.cardSlug && item.cardSlug === identity.slug) ||
+          normalizeCardName(item.cardName) === normalizeCardName(identity.name)),
+    ) + 1;
+
+  const visibleProjectCost = (cardBox, identity) => {
+    const playerViewCost = playerViewProjectCost(identity);
+    if (playerViewCost !== null) return playerViewCost;
+
+    const costText = cleanText(cardBox?.querySelector?.(".card-cost")?.textContent ?? "");
+    const match = costText.match(/-?\d+/);
+    return match ? Number(match[0]) : 0;
+  };
+
+  const playerViewProjectCost = (identity) => {
+    const cards = collectWaitingForCards(latestPlayerView?.waitingFor);
+    const match = cards.find((card) => {
+      const name = card.name ?? card.cardName ?? card.title ?? "";
+      const slug = card.name ?? card.cardName ?? card.title ?? card.cardType ?? "";
+      return (
+        normalizeCardName(name) === normalizeCardName(identity.name) ||
+        slugifyCardName(slug) === identity.slug
+      );
+    });
+    if (!match) return null;
+
+    for (const key of ["calculatedCost", "discountedCost", "cost", "moneyCost"]) {
+      const value = Number(match[key]);
+      if (Number.isFinite(value)) return value;
+    }
+    return null;
+  };
+
+  const collectWaitingForCards = (waitingFor) => {
+    const cards = [];
+    const visit = (value) => {
+      if (!value || typeof value !== "object") return;
+      if (Array.isArray(value)) {
+        value.forEach(visit);
         return;
       }
-      if (liveWaitingFor) {
-        timeWarp.renderedCachedComponent = null;
-        if (timeWarp.queue.length === 0) {
-          deactivateTimeWarp("cancelled", context);
-          return;
-        }
-        replayNextQueuedAction(context);
-      } else {
-        const cachedWaitingFor = timeWarp.cachedWaitingFor ?? getCachedWaitingFor(playerView.id);
-        if (isNormalTakeAction(cachedWaitingFor)) {
-          renderCachedWaitingFor(context, cachedWaitingFor);
-        }
+      if (Array.isArray(value.cards)) {
+        value.cards.forEach((card) => {
+          if (isPlainObject(card)) cards.push(card);
+        });
       }
+      Object.values(value).forEach(visit);
+    };
+    visit(waitingFor);
+    return cards;
+  };
+
+  const applyCardRankClass = (cardBox, rank) => {
+    const container = cardContainerFromBox(cardBox);
+    container?.classList?.toggle("tfmars420-card-border", rank === "border");
+    container?.classList?.toggle("tfmars420-card-derank", rank === "derank");
+  };
+
+  const renderHandCardTools = () => {
+    const session = readQueueSession();
+    if (!session) return;
+    const myTurn = isCurrentPlayerTurn();
+
+    document.querySelectorAll(".player_home_block--hand .cardbox").forEach((cardBox) => {
+      const identity = getCardIdentity(cardBox);
+      const rank = session.cardRanks[identity.key] ?? "neutral";
+      applyCardRankClass(cardBox, rank);
+
+      let tools = cardBox.querySelector(":scope > .tfmars420-card-tools");
+      if (!tools) {
+        tools = document.createElement("div");
+        tools.className = "tfmars420-card-tools";
+        cardBox.append(tools);
+      }
+      tools.innerHTML = "";
+
+      [
+        ["neutral", "neutral"],
+        ["border", "border"],
+        ["derank", "derank"],
+      ].forEach(([value, label]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "tfmars420-rank-button";
+        button.textContent = label;
+        button.setAttribute("aria-pressed", String(rank === value));
+        button.addEventListener("click", () => {
+          updateQueueSession((draft) => {
+            if (value === "neutral") {
+              delete draft.cardRanks[identity.key];
+            } else {
+              draft.cardRanks[identity.key] = value;
+            }
+            return draft;
+          });
+        });
+        tools.append(button);
+      });
+
+      if (!myTurn) {
+        const position = findQueuedCardPosition(session.queue, "projectCard", identity);
+        const enqueue = document.createElement("button");
+        enqueue.type = "button";
+        enqueue.textContent = position ? `queued #${position}` : "enqueue";
+        enqueue.disabled = Boolean(position);
+        enqueue.addEventListener("click", () => {
+          updateQueueSession((draft) => {
+            draft.queue.push({
+              type: "projectCard",
+              cardName: identity.name,
+              cardSlug: identity.slug,
+              cardKey: identity.key,
+              cost: visibleProjectCost(cardBox, identity),
+            });
+            return draft;
+          });
+        });
+        tools.append(enqueue);
+      }
+    });
+  };
+
+  const isUnusedPlayedActionCard = (cardBox) => {
+    const container = cardContainerFromBox(cardBox);
+    if (!container || container.classList.contains("card-unavailable")) return false;
+    if (cardBox.querySelector(".card-unavailable")) return false;
+    return Boolean(container.querySelector(".background-color-active")) && /Action:/i.test(cardBox.textContent ?? "");
+  };
+
+  const renderPlayedActionTools = () => {
+    const session = readQueueSession();
+    if (!session) return;
+    const myTurn = isCurrentPlayerTurn();
+
+    document.querySelectorAll(".player_home_block--cards .cardbox").forEach((cardBox) => {
+      cardBox.querySelector(":scope > .tfmars420-enqueue-tools")?.remove();
+      if (myTurn || !isUnusedPlayedActionCard(cardBox)) return;
+
+      const identity = getCardIdentity(cardBox);
+      const position = findQueuedCardPosition(session.queue, "playedAction", identity);
+      const tools = document.createElement("div");
+      tools.className = "tfmars420-enqueue-tools";
+
+      const enqueue = document.createElement("button");
+      enqueue.type = "button";
+      enqueue.textContent = position ? `queued #${position}` : "enqueue";
+      enqueue.disabled = Boolean(position);
+      enqueue.addEventListener("click", () => {
+        updateQueueSession((draft) => {
+          draft.queue.push({
+            type: "playedAction",
+            cardName: identity.name,
+            cardSlug: identity.slug,
+            cardKey: identity.key,
+          });
+          return draft;
+        });
+      });
+      tools.append(enqueue);
+      cardBox.append(tools);
+    });
+  };
+
+  const updateQueueUi = () => {
+    queueUiScheduled = false;
+    if (!shouldRunTerraformingMarsHelpers()) {
+      removeTimeWarpUi();
+      return;
     }
 
-    renderTimeWarpPanel(context);
+    queueMutationPaused = true;
+    try {
+      renderQueuePanel();
+      renderHandCardTools();
+      renderPlayedActionTools();
+      maybeExecuteQueuedAction();
+    } catch (error) {
+      console.error("[tfmars420] queue UI update failed", error);
+    } finally {
+      window.setTimeout(() => {
+        queueMutationPaused = false;
+      }, 0);
+    }
   };
 
-  const startTimeWarp = () => {
-    updateTimeWarp();
-    window.setInterval(updateTimeWarp, 500);
+  const scheduleTerraformingMarsUpdate = () => {
+    if (queueUiScheduled) return;
+    queueUiScheduled = true;
+    window.requestAnimationFrame(updateQueueUi);
   };
 
-  const handleTimeWarpFormChange = (event) => {
+  const startQueueUi = () => {
+    scheduleTerraformingMarsUpdate();
+    if (queueMutationObserver) return;
+
+    const target = document.body ?? document.documentElement;
+    queueMutationObserver = new MutationObserver(() => {
+      if (queueMutationPaused) return;
+      scheduleTerraformingMarsUpdate();
+    });
+    queueMutationObserver.observe(target, { childList: true, subtree: true });
+  };
+
+  const popNextQueuedAction = () => {
+    const session = readQueueSession();
+    if (!session || session.queue.length === 0) return null;
+    const [item] = session.queue.splice(0, 1);
+    writeQueueSession(session);
+    return item;
+  };
+
+  const maybeExecuteQueuedAction = () => {
     if (!shouldRunTerraformingMarsHelpers()) return;
-    if (!timeWarp.active) return;
-    const context = timeWarpContext();
-    const rootElement = getWaitingForRootElement(context?.component);
-    const fallbackElement = document.getElementById(timeWarpFallbackFormId);
-    if (rootElement?.contains(event.target) || fallbackElement?.contains(event.target)) {
-      window.setTimeout(() => rememberTimeWarpUiState(context), 0);
+    if (queueExecutionAttempted || queueExecutionInFlight) return;
+    if (!latestPlayerView?.id || readQueueSession()?.playerId !== latestPlayerView.id) return;
+    if (!isCurrentPlayerTurn() || !hasLiveActionForm()) return;
+
+    const item = popNextQueuedAction();
+    if (!item) return;
+
+    queueExecutionAttempted = true;
+    queueExecutionInFlight = true;
+    queueExecutionError = "";
+    executeQueuedItem(item)
+      .then(() => {
+        scheduleTerraformingMarsUpdate();
+      })
+      .catch((error) => {
+        queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
+        renderQueuePanel();
+      })
+      .finally(() => {
+        queueExecutionInFlight = false;
+      });
+  };
+
+  const executeQueuedItem = async (item) => {
+    if (item?.type === "pass") {
+      selectActionOption("Pass for this generation");
+      await nextFrame();
+      clickActionSubmit("Pass");
+      return;
     }
+
+    if (item?.type === "playedAction") {
+      selectActionOption("Perform an action from a played card");
+      await nextFrame();
+      selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
+      await nextFrame();
+      clickActionSubmit("Take action");
+      return;
+    }
+
+    if (item?.type === "projectCard") {
+      selectActionOption("Play project card");
+      await nextFrame();
+      selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
+      await nextFrame();
+      clickActionSubmit("Play card");
+      return;
+    }
+
+    throw new Error("unknown queued action type");
+  };
+
+  const selectActionOption = (labelText) => {
+    const actionsBlock = getActionsBlock();
+    const labels = Array.from(actionsBlock?.querySelectorAll("label.form-radio") ?? []);
+    const label = labels.find((candidate) => {
+      const text = cleanText(
+        candidate.querySelector("span")?.textContent ?? candidate.textContent ?? "",
+      );
+      return text === labelText || text.includes(labelText);
+    });
+    const radio = label?.querySelector("input[type='radio']");
+    if (!label || !radio) {
+      throw new Error(`missing action option: ${labelText}`);
+    }
+    preserveScrollDuring(() => {
+      radio.checked = true;
+      radio.click();
+      dispatchBubbledEvent(radio, "input");
+      dispatchBubbledEvent(radio, "change");
+    });
+  };
+
+  const selectActionCard = (item, selector) => {
+    const cards = Array.from(document.querySelectorAll(selector));
+    const cardBox = cards.find((candidate) => cardMatchesQueuedItem(candidate, item));
+    const input = cardBox?.querySelector("input[type='radio'], input[type='checkbox']");
+    if (!cardBox || !input) {
+      throw new Error(`missing card: ${item.cardName ?? item.cardKey ?? "unknown"}`);
+    }
+    preserveScrollDuring(() => {
+      input.checked = true;
+      input.click();
+      dispatchBubbledEvent(input, "input");
+      dispatchBubbledEvent(input, "change");
+    });
+  };
+
+  const cardMatchesQueuedItem = (cardBox, item) => {
+    const identity = getCardIdentity(cardBox);
+    return (
+      identity.key === item.cardKey ||
+      (item.cardSlug && identity.slug === item.cardSlug) ||
+      normalizeCardName(identity.name) === normalizeCardName(item.cardName)
+    );
+  };
+
+  const clickActionSubmit = (preferredText) => {
+    const actionsRoot =
+      getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
+    const buttons = Array.from(actionsRoot?.querySelectorAll("button, input[type='submit']") ?? []);
+    const button =
+      buttons.find((candidate) => cleanText(candidate.textContent ?? candidate.value ?? "") === preferredText) ??
+      buttons.find((candidate) => candidate.classList?.contains("btn-submit")) ??
+      buttons.find((candidate) => !candidate.disabled);
+    if (!button || button.disabled) {
+      throw new Error(`missing submit button: ${preferredText}`);
+    }
+    preserveScrollDuring(() => button.click());
   };
 
   const clickLogCard = (index) => {
@@ -3488,21 +2811,14 @@
     window.setInterval(updatePreview, 1000);
   };
 
-  loadRemoteRuntimeConfig();
   startPlayerViewCapture();
 
   document.addEventListener("change", handleSingleCardSelectionChange, true);
-  document.addEventListener("change", handleTimeWarpFormChange, true);
-  document.addEventListener("input", handleTimeWarpFormChange, true);
-  window.addEventListener("beforeunload", () => {
-    if (shouldRunTerraformingMarsHelpers()) {
-      rememberTimeWarpUiState();
-    }
-  });
 
   ready(() => {
-    startBoardNotes();
+    startControls();
+    startTerraformingMarsLobbySync();
     startPreview();
-    startTimeWarp();
+    startQueueUi();
   });
 })();
