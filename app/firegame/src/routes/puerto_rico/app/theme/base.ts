@@ -865,7 +865,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
     },
   }),
   puerto_burrito: themed({
-    gameName: "Puerto Burrito",
+    gameName: "Taco Bell Cantina",
     phase: {
       role: "Station choice",
       settler: "Prep",
@@ -902,10 +902,10 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       mayor: "Chooser takes 1 crew first.",
       builder: "Chooser pays 1 less.",
       craftsman: "Chooser may take 1 extra filling.",
-      trader: "Chooser earns +1 tip when selling.",
+      trader: "Chooser earns +1 peso when selling.",
       captain: "Chooser earns +1 VP once.",
-      prospector_1: "Chooser takes 1 tip.",
-      prospector_2: "Chooser takes 1 tip.",
+      prospector_1: "Chooser takes 1 peso.",
+      prospector_2: "Chooser takes 1 peso.",
     },
     goods: { corn: "Elote", indigo: "Chicken", sugar: "Pork", tobacco: "Chorizo", coffee: "Steak" },
     plantations: {
@@ -939,7 +939,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       residence: "La Taqueria",
       fortress: "Los Tacos",
       customs_house: "Son Del Norte",
-      city_hall: "Taco Bell",
+      city_hall: "Taco Bell Cantina",
     },
     buildingDescriptions: buildingCopy({
       indigo: "chicken",
@@ -950,7 +950,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       sugarSource: "pork trays",
       tobaccoSource: "chorizo trays",
       coffeeSource: "steak trays",
-      money: "tips",
+      money: "pesos",
       settler: "prep",
       quarry: "cholo",
       goods: "filling",
@@ -982,7 +982,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
       city: "Truck",
       sanJuan: "Break",
       governor: "Chef",
-      doubloons: "tips",
+      doubloons: "pesos",
       roles: "Stations",
       buildings: "Stations",
       quarry: "cholo",
@@ -1008,7 +1008,7 @@ export const THEMES: Record<PuertoRicoThemeKey, ThemeText> = {
     messages: {
       changedTheme: (themeName) => `changed menu to ${themeName}`,
       choseRole: (playerName, roleName) => `${playerName} chose ${roleName}`,
-      prospected: (playerName) => `${playerName} emptied the tip jar`,
+      prospected: (playerName) => `${playerName} emptied the peso jar`,
       usedHacienda: (playerName, goodName) => `${playerName} prepped secret ${goodName}`,
       settled: (playerName, plantationName) => `${playerName} prepped ${plantationName}`,
       settledQuarry: (playerName) => `${playerName} booked a cholo`,
