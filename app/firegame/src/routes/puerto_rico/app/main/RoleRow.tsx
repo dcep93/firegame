@@ -35,10 +35,10 @@ function RoleRow(props: { game?: GameType; readOnly?: boolean }) {
             <div className={css.roleLine}>{theme.roleDescriptions[role.id]}</div>
             <div className={css.roleFooter}>
               <RoleIcon roleId={role.id} />
-              <span className={css.resourceLine}>{role.doubloons} {theme.labels.doubloons}</span>
               {role.takenBy !== undefined && (
                 <span className={css.roleTakenChip}>{game.players[role.takenBy]?.userName}</span>
               )}
+              <span className={css.resourceLine}>{role.doubloons} {theme.labels.doubloons}</span>
             </div>
             {ROLE_KIND[role.id] === "craftsman" && canChooseCraftsmanBonus && (
               <div className={css.roleActionRow}>
