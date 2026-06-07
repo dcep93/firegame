@@ -979,6 +979,13 @@ button.lobbyRow {
   box-shadow: none;
 }
 
+.pendingActionTile {
+  border-color: #7a3021;
+  box-shadow:
+    0 0 0 3px rgba(122, 48, 33, 0.26),
+    0 8px 18px rgba(84, 37, 25, 0.16);
+}
+
 .roleTile {
   position: relative;
 }
@@ -1203,6 +1210,12 @@ button.lobbyRow {
 .shipActionButton:hover {
   border-color: rgba(39, 91, 73, 0.46);
   background: #ffffff;
+}
+
+.pendingActionButton {
+  border-color: #7a3021;
+  background: #fff2ec;
+  box-shadow: 0 0 0 2px rgba(122, 48, 33, 0.22);
 }
 
 .metricRow:last-child {

@@ -31,9 +31,22 @@ import {
 
 const store: StoreType<GameType> = store_;
 const MAYOR_DRAFT_EVENT = "puerto-rico-mayor-draft";
+const PENDING_ACTION_EVENT = "puerto-rico-pending-action";
+
+type PendingAction =
+  | { phase: "settler"; kind: "hacienda" }
+  | { phase: "settler"; kind: "plantation"; index: number; good: GoodId }
+  | { phase: "settler"; kind: "quarry" }
+  | { phase: "builder"; buildingId: BuildingId }
+  | { phase: "trader"; good: GoodId }
+  | { phase: "captain"; kind: "ship"; good: GoodId; shipIndex: number }
+  | { phase: "captain"; kind: "shipGood"; good: GoodId }
+  | { phase: "captain"; kind: "wharf"; good: GoodId }
+  | { phase: "storage"; good: GoodId };
 
 class Utils extends SharedUtils<GameType, PlayerType> {
   mayorDrafts: Record<string, PlayerType> = {};
+  pendingAction?: PendingAction & { userId: string };
 
   normalizeGame(game: GameType = store.gameW.game): GameType {
     if (!game) return game;
@@ -534,6 +547,119 @@ class Utils extends SharedUtils<GameType, PlayerType> {
   canPass(): boolean {
     const game = store.gameW.game;
     return this.isMyTurn() && ["settler", "builder", "trader"].includes(game.phase);
+  }
+
+  subscribePendingAction(callback: () => void): () => void {
+    window.addEventListener(PENDING_ACTION_EVENT, callback);
+    return () => window.removeEventListener(PENDING_ACTION_EVENT, callback);
+  }
+
+  notifyPendingAction(): void {
+    window.dispatchEvent(new Event(PENDING_ACTION_EVENT));
+  }
+
+  getPendingAction(): (PendingAction & { userId: string }) | undefined {
+    const game = store.gameW.game;
+    if (!this.pendingAction || !game) return undefined;
+    if (this.pendingAction.userId !== store.me.userId) return undefined;
+    if (this.pendingAction.phase !== game.phase) return undefined;
+    const me = this.getMeOrUndefined();
+    if (!me || !game.actionQueue.includes(me.index)) return undefined;
+    return this.pendingAction;
+  }
+
+  setPendingAction(action: PendingAction): void {
+    const next = { ...action, userId: store.me.userId };
+    if (this.pendingActionsEqual(this.pendingAction, next)) delete this.pendingAction;
+    else this.pendingAction = next;
+    this.notifyPendingAction();
+  }
+
+  clearPendingAction(): void {
+    if (!this.pendingAction) return;
+    delete this.pendingAction;
+    this.notifyPendingAction();
+  }
+
+  isPendingAction(action: PendingAction): boolean {
+    const pending = this.getPendingAction();
+    return this.pendingActionsEqual(pending, { ...action, userId: store.me.userId });
+  }
+
+  pendingActionsEqual(
+    a: (PendingAction & { userId: string }) | undefined,
+    b: PendingAction & { userId: string }
+  ): boolean {
+    if (!a || a.userId !== b.userId || a.phase !== b.phase) return false;
+    return JSON.stringify(a) === JSON.stringify(b);
+  }
+
+  canQueueActionForMe(phase: PendingAction["phase"]): boolean {
+    const game = store.gameW.game;
+    if (!game || game.phase !== phase) return false;
+    const me = this.getMeOrUndefined();
+    return !!me && game.actionQueue.includes(me.index);
+  }
+
+  getMeOrUndefined(): PlayerType | undefined {
+    const game = store.gameW.game;
+    return game?.players?.find((player) => player.userId === store.me.userId);
+  }
+
+  playPendingActionIfReady(): void {
+    const game = store.gameW.game;
+    const me = this.getMeOrUndefined();
+    if (
+      this.pendingAction?.userId === store.me.userId &&
+      game &&
+      (this.pendingAction.phase !== game.phase || !me || !game.actionQueue.includes(me.index))
+    ) {
+      this.clearPendingAction();
+      return;
+    }
+    const pending = this.getPendingAction();
+    if (!pending || !this.isMyTurn()) return;
+    if (!this.isPendingActionLegal(pending)) {
+      this.clearPendingAction();
+      return;
+    }
+    this.clearPendingAction();
+    this.playPendingAction(pending);
+  }
+
+  isPendingActionLegal(action: PendingAction): boolean {
+    const player = this.getMeOrUndefined();
+    if (!player || store.gameW.game.phase !== action.phase) return false;
+    if (action.phase === "settler") {
+      if (action.kind === "hacienda") return this.canUseHacienda(player);
+      if (action.kind === "quarry") return this.canSettleQuarry(player);
+      return store.gameW.game.bank.plantationRow[action.index] === action.good && player.island.length < MAX_ISLAND_SPACES;
+    }
+    if (action.phase === "builder") return this.buildError(player, action.buildingId) === null;
+    if (action.phase === "trader") return this.tradeGoods(player).includes(action.good);
+    if (action.phase === "captain") {
+      if (action.kind === "wharf") return this.wharfOptions(player).some((option) => option.good === action.good);
+      if (action.kind === "shipGood") return this.shipOptions(player).some((option) => option.good === action.good);
+      return this.shipOptions(player).some(
+        (option) => option.good === action.good && option.shipIndex === action.shipIndex
+      );
+    }
+    if (action.phase === "storage") return player.goods[action.good] > 0 && !this.canStoreCurrentGoods(player);
+    return false;
+  }
+
+  playPendingAction(action: PendingAction): void {
+    if (action.phase === "settler") {
+      if (action.kind === "hacienda") this.takeHaciendaPlantation();
+      else if (action.kind === "quarry") this.settleQuarry();
+      else this.settlePlantation(action.index);
+    } else if (action.phase === "builder") this.buildBuilding(action.buildingId);
+    else if (action.phase === "trader") this.sellGood(action.good);
+    else if (action.phase === "captain") {
+      if (action.kind === "wharf") this.useWharf(action.good);
+      else if (action.kind === "shipGood") this.shipGoodFromBoard(action.good);
+      else this.shipGood(action.good, action.shipIndex);
+    } else if (action.phase === "storage") this.discardGood(action.good);
   }
 
   canManageMayor(player: PlayerType | undefined): boolean {

@@ -9,6 +9,14 @@ import utils, { store } from "./utils/utils";
 class PuertoRico extends React.Component<{}, { sampleVersion: number }> {
   state = { sampleVersion: 0 };
 
+  componentDidMount(): void {
+    utils.playPendingActionIfReady();
+  }
+
+  componentDidUpdate(): void {
+    utils.playPendingActionIfReady();
+  }
+
   render() {
     const realGame = store.gameW.game;
     if (realGame) utils.normalizeGame();

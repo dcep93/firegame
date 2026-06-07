@@ -12,6 +12,7 @@ const islandOrder: PlantationId[] = [...goodsInThemeOrder, "quarry"];
 
 function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: boolean }) {
   useMayorDraftVersion();
+  usePendingActionVersion();
   const player = props.readOnly ? props.player : utils.getMayorPlayer(props.player);
   const game = props.game || store.gameW.game;
   const canRename = !props.readOnly && player.userId === store.me.userId;
@@ -20,8 +21,11 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
   const canFinishMayor = !props.readOnly && utils.canFinishMayor(player);
   const score = utils.scorePlayer(player);
   const totalColonists = utils.totalColonists(player);
+  const canPlanTrade = canRename && game.phase === "trader" && utils.canQueueActionForMe("trader");
+  const canPlanCaptain = canRename && game.phase === "captain" && utils.canQueueActionForMe("captain");
+  const canPlanStorage = canRename && game.phase === "storage" && utils.canQueueActionForMe("storage");
   const canChooseCraftsmanBonus = canRename && game.phase === "craftsman_bonus" && utils.isMyTurn();
-  const canUseWharf = canRename && game.phase === "captain" && utils.isMyTurn();
+  const canUseWharf = canPlanCaptain;
   const canStore = canRename && game.phase === "storage" && utils.isMyTurn();
   const craftsmanBonusGoods = canChooseCraftsmanBonus
     ? game.producedGoods?.[game.roleOwner || 0] || []
@@ -31,7 +35,7 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
     ? Array.from(new Set(utils.shipOptions(player).map((option) => option.good)))
     : [];
   const tradeGoods =
-    canRename && game.phase === "trader" && utils.isMyTurn()
+    canPlanTrade
       ? utils.tradeGoods(player)
       : [];
   const heldGoods = goodsInThemeOrder.flatMap((good) =>
@@ -100,8 +104,13 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
         {heldGoods.map(({ good, index }) => {
           const canTrade = tradeGoods.includes(good);
           const canShip = shipGoods.includes(good);
-          const canDiscard = canStore && player.goods[good] > 0;
-          const className = `${css.smallTile} ${css.goodTile} ${canTrade || canShip || canDiscard ? css.playerGoodActionTile : ""}`;
+          const canDiscard = canPlanStorage && player.goods[good] > 0 && !utils.canStoreCurrentGoods(player);
+          const pendingTrade = utils.isPendingAction({ phase: "trader", good });
+          const pendingShip = utils.isPendingAction({ phase: "captain", kind: "shipGood", good });
+          const pendingDiscard = utils.isPendingAction({ phase: "storage", good });
+          const className = `${css.smallTile} ${css.goodTile} ${canTrade || canShip || canDiscard ? css.playerGoodActionTile : ""} ${
+            pendingTrade || pendingShip || pendingDiscard ? css.pendingActionTile : ""
+          }`;
           const style = { backgroundColor: theme.colors[good] };
           const content = <span className={css.goodName}>{theme.goods[good]}</span>;
           return canTrade || canShip || canDiscard ? (
@@ -111,9 +120,14 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
               className={className}
               style={style}
               onClick={() => {
-                if (canTrade) utils.sellGood(good);
-                else if (canShip) utils.shipGoodFromBoard(good);
-                else utils.discardGood(good);
+                if (canTrade) {
+                  if (utils.isMyTurn()) utils.sellGood(good);
+                  else utils.setPendingAction({ phase: "trader", good });
+                } else if (canShip) {
+                  if (utils.isMyTurn()) utils.shipGoodFromBoard(good);
+                  else utils.setPendingAction({ phase: "captain", kind: "shipGood", good });
+                } else if (utils.isMyTurn()) utils.discardGood(good);
+                else utils.setPendingAction({ phase: "storage", good });
               }}
             >
               {content}
@@ -138,7 +152,11 @@ function PlayerBoard(props: { game?: GameType; player: PlayerType; readOnly?: bo
             key={`wharf-${option.good}`}
             good={option.good}
             label={`${theme.actions.wharf} ${option.amount} ${theme.goods[option.good]}`}
-            onClick={() => utils.useWharf(option.good)}
+            selected={utils.isPendingAction({ phase: "captain", kind: "wharf", good: option.good })}
+            onClick={() => {
+              if (utils.isMyTurn()) utils.useWharf(option.good);
+              else utils.setPendingAction({ phase: "captain", kind: "wharf", good: option.good });
+            }}
           />
         ))}
       </div>
@@ -233,16 +251,25 @@ function useMayorDraftVersion(): number {
   return version;
 }
 
+function usePendingActionVersion(): number {
+  const [version, setVersion] = useState(0);
+  useEffect(() => utils.subscribePendingAction(() => setVersion((value) => value + 1)), []);
+  return version;
+}
+
 function PlayerGoodAction(props: {
   good: GoodId;
   label: string;
   disabled?: boolean;
+  selected?: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
-      className={`${css.smallTile} ${css.goodTile} ${css.playerGoodActionTile}`}
+      className={`${css.smallTile} ${css.goodTile} ${css.playerGoodActionTile} ${
+        props.selected ? css.pendingActionTile : ""
+      }`}
       style={{ backgroundColor: theme.colors[props.good] }}
       disabled={props.disabled}
       onClick={props.onClick}

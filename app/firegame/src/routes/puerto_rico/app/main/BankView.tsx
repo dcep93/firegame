@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import css from "../index.module.css";
 import { goodsInThemeOrder, theme } from "../theme/base";
 import { GameType } from "../utils/NewGame";
@@ -7,16 +7,22 @@ import utils, { store } from "../utils/utils";
 
 function BankView(props: { game?: GameType; readOnly?: boolean }) {
   const [isOpen, setIsOpen] = useState(true);
+  usePendingActionVersion();
   const game = props.game || store.gameW.game;
   const bank = game.bank;
   const staffBase = Math.min(game.players.length, bank.colonistShip);
   const staffExtra = Math.max(0, bank.colonistShip - game.players.length);
   const currentPlayer = game.players[game.currentPlayer];
-  const canSettle = !props.readOnly && game.phase === "settler" && utils.isMyTurn();
+  const myPlayer = game.players.find((player) => player.userId === store.me.userId);
+  const canPlanSettle = !props.readOnly && game.phase === "settler" && utils.canQueueActionForMe("settler");
+  const canSettle = canPlanSettle;
   const canTradePass = !props.readOnly && game.phase === "trader" && utils.canPass();
+  const settlerPlayer = canPlanSettle ? myPlayer : currentPlayer;
+  const canPlanCaptain = !props.readOnly && game.phase === "captain" && utils.canQueueActionForMe("captain");
+  const captainPlayer = canPlanCaptain ? myPlayer : currentPlayer;
   const shipOptions =
-    !props.readOnly && game.phase === "captain" && utils.isMyTurn()
-      ? utils.shipOptions(currentPlayer)
+    canPlanCaptain && captainPlayer
+      ? utils.shipOptions(captainPlayer)
       : [];
   const shipOptionsByIndex = new Map<number, typeof shipOptions>();
   shipOptions.forEach((option) => {
@@ -44,10 +50,15 @@ function BankView(props: { game?: GameType; readOnly?: boolean }) {
             <span>{theme.labels.quarries} {bank.quarrySupply}</span>
           </div>
           <div className={css.compactRow}>
-            {canSettle && utils.canUseHacienda(currentPlayer) && (
+            {canSettle && settlerPlayer && utils.canUseHacienda(settlerPlayer) && (
               <button
-                className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
-                onClick={() => utils.takeHaciendaPlantation()}
+                className={`${css.smallTile} ${css.goodTile} ${css.buttonTile} ${
+                  utils.isPendingAction({ phase: "settler", kind: "hacienda" }) ? css.pendingActionTile : ""
+                }`}
+                onClick={() => {
+                  if (utils.isMyTurn()) utils.takeHaciendaPlantation();
+                  else utils.setPendingAction({ phase: "settler", kind: "hacienda" });
+                }}
               >
                 <span className={css.goodName}>{theme.actions.haciendaTile}</span>
               </button>
@@ -56,9 +67,16 @@ function BankView(props: { game?: GameType; readOnly?: boolean }) {
               canSettle ? (
                 <button
                   key={`${plantation}-${index}`}
-                  className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
+                  className={`${css.smallTile} ${css.goodTile} ${css.buttonTile} ${
+                    utils.isPendingAction({ phase: "settler", kind: "plantation", index, good: plantation })
+                      ? css.pendingActionTile
+                      : ""
+                  }`}
                   style={{ backgroundColor: theme.colors[plantation] }}
-                  onClick={() => utils.settlePlantation(index)}
+                  onClick={() => {
+                    if (utils.isMyTurn()) utils.settlePlantation(index);
+                    else utils.setPendingAction({ phase: "settler", kind: "plantation", index, good: plantation });
+                  }}
                 >
                   <span className={css.goodName}>{theme.plantations[plantation]}</span>
                 </button>
@@ -74,10 +92,15 @@ function BankView(props: { game?: GameType; readOnly?: boolean }) {
             )}
             {canSettle && (
               <button
-                className={`${css.smallTile} ${css.goodTile} ${css.buttonTile}`}
+                className={`${css.smallTile} ${css.goodTile} ${css.buttonTile} ${
+                  utils.isPendingAction({ phase: "settler", kind: "quarry" }) ? css.pendingActionTile : ""
+                }`}
                 style={{ backgroundColor: theme.colors.quarry }}
-                onClick={() => utils.settleQuarry()}
-                disabled={!utils.canSettleQuarry(currentPlayer)}
+                onClick={() => {
+                  if (utils.isMyTurn()) utils.settleQuarry();
+                  else utils.setPendingAction({ phase: "settler", kind: "quarry" });
+                }}
+                disabled={!utils.canSettleQuarry(settlerPlayer)}
               >
                 <span className={css.goodName}>{theme.plantations.quarry}</span>
               </button>
@@ -105,8 +128,25 @@ function BankView(props: { game?: GameType; readOnly?: boolean }) {
                     {options.map((option) => (
                       <button
                         key={`${option.good}-${option.shipIndex}`}
-                        className={css.shipActionButton}
-                        onClick={() => utils.shipGood(option.good, option.shipIndex)}
+                        className={`${css.shipActionButton} ${
+                          utils.isPendingAction({
+                            phase: "captain",
+                            kind: "ship",
+                            good: option.good,
+                            shipIndex: option.shipIndex,
+                          })
+                            ? css.pendingActionButton
+                            : ""
+                        }`}
+                        onClick={() => {
+                          if (utils.isMyTurn()) utils.shipGood(option.good, option.shipIndex);
+                          else utils.setPendingAction({
+                            phase: "captain",
+                            kind: "ship",
+                            good: option.good,
+                            shipIndex: option.shipIndex,
+                          });
+                        }}
                       >
                         {theme.actions.ship} {option.amount} {theme.goods[option.good]}
                       </button>
@@ -165,6 +205,12 @@ function BankView(props: { game?: GameType; readOnly?: boolean }) {
       </div>}
     </div>
   );
+}
+
+function usePendingActionVersion(): number {
+  const [version, setVersion] = useState(0);
+  useEffect(() => utils.subscribePendingAction(() => setVersion((value) => value + 1)), []);
+  return version;
 }
 
 export default BankView;

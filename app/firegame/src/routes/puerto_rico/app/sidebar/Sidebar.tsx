@@ -270,11 +270,6 @@ class Sidebar extends SharedSidebar<{ onPreGameThemeChange?: () => void }> {
   }
 
   revert(wrapper: GameWrapperType<GameType>): void {
-    const userId = store.me.userId;
-    if (store.gameW.info.host !== userId) {
-      alert("only the host can revert");
-      return;
-    }
     const time = new Date(wrapper.info.timestamp).toLocaleTimeString();
     store.update(`restored to [(${wrapper.info.id}) ${wrapper.info.message} ${time}]`, wrapper.game);
   }

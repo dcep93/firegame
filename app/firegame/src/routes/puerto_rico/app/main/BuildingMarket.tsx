@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import css from "../index.module.css";
 import { theme } from "../theme/base";
 import { GameType } from "../utils/NewGame";
@@ -8,8 +8,11 @@ import BuildingCardContent from "./BuildingCardContent";
 
 function BuildingMarket(props: { game?: GameType; readOnly?: boolean }) {
   const [isOpen, setIsOpen] = useState(true);
+  usePendingActionVersion();
   const game = props.game || store.gameW.game;
-  const player = game.players[game.currentPlayer];
+  const myPlayer = game.players.find((player) => player.userId === store.me.userId);
+  const canPlanBuild = !props.readOnly && game.phase === "builder" && utils.canQueueActionForMe("builder");
+  const player = canPlanBuild ? myPlayer : game.players[game.currentPlayer];
   return (
     <div id={buildingMarketElementId} className={css.section}>
       <div className={css.boardSubhead}>
@@ -40,10 +43,11 @@ function BuildingMarket(props: { game?: GameType; readOnly?: boolean }) {
                   const rule = utils.building(buildingId);
                   const buildError = !props.readOnly && player ? utils.buildError(player, buildingId) : null;
                   const soldOut = game.bank.buildingSupply[buildingId] <= 0;
-                  const canBuild = !props.readOnly && game.phase === "builder" && utils.isMyTurn() && !buildError;
-                  const className = `${css.tile} ${canBuild ? css.buttonTile : ""} ${css.building} ${
+                  const canSelect = canPlanBuild && !buildError;
+                  const isPending = utils.isPendingAction({ phase: "builder", buildingId });
+                  const className = `${css.tile} ${canSelect ? css.buttonTile : ""} ${css.building} ${
                     soldOut ? css.soldOutBuilding : ""
-                  }`;
+                  } ${isPending ? css.pendingActionTile : ""}`;
                   const style = {
                     backgroundColor:
                       rule.kind === "production"
@@ -64,12 +68,15 @@ function BuildingMarket(props: { game?: GameType; readOnly?: boolean }) {
                       }
                     />
                   );
-                  return canBuild ? (
+                  return canSelect ? (
                     <button
                       key={buildingId}
                       className={className}
                       style={style}
-                      onClick={() => utils.buildBuilding(buildingId)}
+                      onClick={() => {
+                        if (utils.isMyTurn()) utils.buildBuilding(buildingId);
+                        else utils.setPendingAction({ phase: "builder", buildingId });
+                      }}
                     >
                       {content}
                     </button>
@@ -89,5 +96,11 @@ function BuildingMarket(props: { game?: GameType; readOnly?: boolean }) {
 }
 
 export const buildingMarketElementId = "puerto-rico-building-market";
+
+function usePendingActionVersion(): number {
+  const [version, setVersion] = useState(0);
+  useEffect(() => utils.subscribePendingAction(() => setVersion((value) => value + 1)), []);
+  return version;
+}
 
 export default BuildingMarket;
