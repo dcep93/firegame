@@ -2156,6 +2156,8 @@
   let latestPlayerViewCapturedAt = 0;
   let latestPlayerViewRunId = "";
   let queueMutationObserver = null;
+  let queueLogDiscoveryObserver = null;
+  let queueObservedLogTarget = null;
   let queueMutationPaused = false;
 
   const looksLikePlayerView = (value) =>
@@ -3015,6 +3017,7 @@
 
     queueMutationPaused = true;
     try {
+      startQueueLogObserver();
       if (!queueExecutionInFlight) {
         renderQueuePanel();
         renderHandCardTools();
@@ -3038,15 +3041,47 @@
 
   const startQueueUi = () => {
     scheduleTerraformingMarsUpdate();
-    if (queueMutationObserver) return;
+    startQueueLogObserver();
+  };
 
-    const target = document.body ?? document.documentElement;
-    queueMutationObserver = new MutationObserver((mutations) => {
+  const queueLogTarget = () =>
+    document.querySelector("#logpanel-scrollable") ??
+    document.querySelector(".logpanel-scrollable") ??
+    document.querySelector(".log-panel");
+
+  const startQueueLogObserver = () => {
+    const target = queueLogTarget();
+    if (!target) {
+      startQueueLogDiscoveryObserver();
+      return;
+    }
+    if (queueMutationObserver && queueObservedLogTarget === target) return;
+
+    queueMutationObserver?.disconnect();
+    queueObservedLogTarget = target;
+    queueMutationObserver = new MutationObserver(() => {
       if (queueMutationPaused) return;
-      if (mutations.every((mutation) => mutationIsOnlyExtensionUi(mutation))) return;
       scheduleTerraformingMarsUpdate();
     });
-    queueMutationObserver.observe(target, { childList: true, subtree: true });
+    queueMutationObserver.observe(target, {
+      characterData: true,
+      childList: true,
+      subtree: true,
+    });
+    queueLogDiscoveryObserver?.disconnect();
+    queueLogDiscoveryObserver = null;
+  };
+
+  const startQueueLogDiscoveryObserver = () => {
+    if (queueLogDiscoveryObserver) return;
+    const target = document.body ?? document.documentElement;
+    queueLogDiscoveryObserver = new MutationObserver(() => {
+      if (queueLogTarget()) {
+        startQueueLogObserver();
+        scheduleTerraformingMarsUpdate();
+      }
+    });
+    queueLogDiscoveryObserver.observe(target, { childList: true, subtree: true });
   };
 
   const popNextQueuedAction = () => {
