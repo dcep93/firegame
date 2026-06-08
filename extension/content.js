@@ -1653,7 +1653,20 @@
     if (settingsEntry?.value?.version === 1 && Array.isArray(settingsEntry.value.controls)) {
       const synced = document.createElement("span");
       synced.className = "tfmars420-lobby-muted";
-      synced.textContent = newGameSettingsDrift(settingsEntry.value) ? "Syncing settings..." : "Settings synced";
+      const settingsTimestamp =
+        typeof settingsEntry.timestamp === "number" && Number.isFinite(settingsEntry.timestamp)
+          ? settingsEntry.timestamp
+          : 0;
+      if (
+        settingsTimestamp > lastHandledRemoteNewGameSettingsTimestamp &&
+        settingsTimestamp > lastLocalNewGameSettingsEditTimestamp
+      ) {
+        synced.textContent = "Syncing settings...";
+      } else if (settingsTimestamp <= lastLocalNewGameSettingsEditTimestamp) {
+        synced.textContent = "Local changes pending";
+      } else {
+        synced.textContent = "Settings synced";
+      }
       settingsRow.append(synced);
       const timestamp = document.createElement("span");
       timestamp.className = "tfmars420-lobby-time";
