@@ -2324,6 +2324,13 @@
     .tfmars420-enqueue-tools button:hover:not(:disabled) {
       background: #6d8bd0;
     }
+    #${timeWarpPanelId} .tfmars420-queue-remove {
+      background: #ff4fbf;
+      color: #111;
+    }
+    #${timeWarpPanelId} .tfmars420-queue-remove:hover:not(:disabled) {
+      background: #ff76cc;
+    }
     #${timeWarpPanelId} button:disabled,
     .tfmars420-card-tools button:disabled,
     .tfmars420-enqueue-tools button:disabled {
@@ -2464,6 +2471,7 @@
 
         const remove = document.createElement("button");
         remove.type = "button";
+        remove.className = "tfmars420-queue-remove";
         remove.textContent = "remove";
         remove.addEventListener("click", () => {
           updateQueueSession((draft) => {
