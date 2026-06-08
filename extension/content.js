@@ -1525,8 +1525,8 @@
         wrapper = document.createElement("div");
         wrapper.className = `${lobbyRootClass} tfmars420-player-lobby-controls`;
       }
-      if (wrapper.nextElementSibling !== playerSpectatorBlock) {
-        playerSpectatorBlock.parentElement.insertBefore(wrapper, playerSpectatorBlock);
+      if (playerSpectatorBlock.nextElementSibling !== wrapper) {
+        playerSpectatorBlock.parentElement.insertBefore(wrapper, playerSpectatorBlock.nextSibling);
       }
       return wrapper;
     }
@@ -1567,8 +1567,8 @@
       version.addEventListener("click", reloadRuntime);
       panel.appendChild(version);
 
-      host.appendChild(panel);
-    } else if (panel.parentElement !== host) {
+      host.prepend(panel);
+    } else if (panel.parentElement !== host || host.firstElementChild !== panel) {
       host.prepend(panel);
     }
 
@@ -2557,6 +2557,29 @@
 
   const getActionsBlock = () => document.querySelector(".player_home_block--actions");
 
+  const getQueuePanelHost = (actionsBlock) => {
+    const playerControls = document.querySelector(".tfmars420-player-lobby-controls") ?? getControlsHost();
+    if (playerControls) return playerControls;
+    return actionsBlock;
+  };
+
+  const placeQueuePanel = (panel, host, actionsBlock) => {
+    if (host?.classList?.contains("tfmars420-player-lobby-controls")) {
+      if (panel.parentElement !== host || host.lastElementChild !== panel) {
+        host.append(panel);
+      }
+      return;
+    }
+
+    if (panel.parentElement === host) return;
+    const title = actionsBlock.querySelector(".dynamic-title, .wf-component-title");
+    if (title?.nextSibling) {
+      actionsBlock.insertBefore(panel, title.nextSibling);
+    } else {
+      actionsBlock.prepend(panel);
+    }
+  };
+
   const renderQueuePanel = () => {
     if (!shouldRunTerraformingMarsHelpers()) {
       removeTimeWarpUi();
@@ -2567,17 +2590,15 @@
     const actionsBlock = getActionsBlock();
     if (!actionsBlock) return;
 
+    const host = getQueuePanelHost(actionsBlock);
+    if (!host) return;
+
     let panel = document.getElementById(timeWarpPanelId);
     if (!panel) {
       panel = document.createElement("div");
       panel.id = timeWarpPanelId;
-      const title = actionsBlock.querySelector(".dynamic-title, .wf-component-title");
-      if (title?.nextSibling) {
-        actionsBlock.insertBefore(panel, title.nextSibling);
-      } else {
-        actionsBlock.prepend(panel);
-      }
     }
+    placeQueuePanel(panel, host, actionsBlock);
 
     const session = readQueueSession();
     const myTurn = isCurrentPlayerTurn();
