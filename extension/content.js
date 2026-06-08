@@ -2302,9 +2302,26 @@
     return "";
   };
 
-  const currentPlayerName = () => currentPlayerValueForKeys(["name", "playerName"]);
+  const playerColorFromClassList = (element) => {
+    if (!element) return "";
+    for (const className of element.classList) {
+      const match = className.toLowerCase().match(/(?:^|_)color_([a-z]+)$/);
+      if (match) return match[1];
+    }
+    return "";
+  };
 
-  const currentPlayerColor = () => currentPlayerValueForKeys(["color", "playerColor"]);
+  const currentPlayerInfoBlock = () =>
+    document.querySelector(".top-bar .player-info") ??
+    document.querySelector(".player_home_block--players > .player-info");
+
+  const currentPlayerName = () =>
+    currentPlayerValueForKeys(["name", "playerName"]) ||
+    cleanText(currentPlayerInfoBlock()?.querySelector(".player-info-name")?.textContent ?? "");
+
+  const currentPlayerColor = () =>
+    currentPlayerValueForKeys(["color", "playerColor"]) ||
+    playerColorFromClassList(currentPlayerInfoBlock());
 
   const playerRecordHasPassed = (record) =>
     record?.passed === true || record?.isPassed === true || record?.hasPassed === true;
@@ -2349,14 +2366,23 @@
   const currentPlayerPassedFromDom = () => {
     const color = currentPlayerColor().toLowerCase();
     const name = currentPlayerName().toLowerCase();
+    const topBar = currentPlayerInfoBlock();
+    if (
+      topBar &&
+      (topBar.querySelector(".player-action-status-container--passed") ||
+        cleanText(topBar.querySelector(".player-action-status")?.textContent ?? "").toLowerCase() === "passed")
+    ) {
+      return true;
+    }
     if (!color && !name) return false;
 
     for (const block of document.querySelectorAll(".players-overview .player-info, .player-info")) {
       const blockMatchesColor =
         color &&
-        Array.from(block.classList).some((className) =>
-          className.toLowerCase().endsWith(`_${color}`),
-        );
+        (playerColorFromClassList(block) === color ||
+          Array.from(block.classList).some((className) =>
+            className.toLowerCase().endsWith(`_${color}`),
+          ));
       const blockName = cleanText(block.querySelector(".player-info-name")?.textContent ?? "").toLowerCase();
       const blockMatchesName = name && blockName === name;
       if (!blockMatchesColor && !blockMatchesName) continue;
@@ -2370,8 +2396,30 @@
     return false;
   };
 
+  const currentPlayerPassedFromLog = () => {
+    const color = currentPlayerColor().toLowerCase();
+    const name = currentPlayerName().toLowerCase();
+    if (!color && !name) return false;
+
+    const rows = Array.from(document.querySelectorAll(".log-panel li, #logpanel-scrollable li"));
+    for (const row of rows.reverse()) {
+      const player = row.querySelector(".log-player");
+      if (!player) continue;
+      const playerName = cleanText(player.textContent ?? "").toLowerCase();
+      const playerColor = playerColorFromClassList(player);
+      const matchesPlayer = (name && playerName === name) || (color && playerColor === color);
+      if (!matchesPlayer) continue;
+
+      const rowText = cleanText(row.textContent ?? "").toLowerCase();
+      return /\bpassed\b/.test(rowText);
+    }
+    return false;
+  };
+
   const hasCurrentPlayerPassed = () =>
-    currentPlayerPassedFromPlayerView() || currentPlayerPassedFromDom();
+    currentPlayerPassedFromPlayerView() ||
+    currentPlayerPassedFromDom() ||
+    currentPlayerPassedFromLog();
 
   const hasLiveActionForm = () =>
     Boolean(document.querySelector(".player_home_block--actions .wf-root, .player_home_block--actions form"));
