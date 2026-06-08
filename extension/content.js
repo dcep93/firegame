@@ -2646,7 +2646,6 @@
     placeQueuePanel(panel, host, actionsBlock);
 
     const session = readQueueSession();
-    const myTurn = isCurrentPlayerTurn();
     const alreadyPassed = hasCurrentPlayerPassed();
 
     if (!session || alreadyPassed) {
@@ -2655,29 +2654,21 @@
       return;
     }
 
-    if (myTurn) {
-      if (queueExecutionError) {
-        panel.hidden = false;
-        panel.innerHTML = "";
-        const error = document.createElement("div");
-        error.className = "tfmars420-timewarp-error";
-        error.textContent = queueExecutionError;
-        panel.append(error);
-        if (queueExecutionDebug) {
-          const debug = document.createElement("pre");
-          debug.className = "tfmars420-timewarp-debug";
-          debug.textContent = queueExecutionDebug;
-          panel.append(debug);
-        }
-      } else {
-        panel.hidden = true;
-        panel.innerHTML = "";
-      }
-      return;
-    }
-
     panel.hidden = false;
     panel.innerHTML = "";
+
+    if (queueExecutionError) {
+      const error = document.createElement("div");
+      error.className = "tfmars420-timewarp-error";
+      error.textContent = queueExecutionError;
+      panel.append(error);
+      if (queueExecutionDebug) {
+        const debug = document.createElement("pre");
+        debug.className = "tfmars420-timewarp-debug";
+        debug.textContent = queueExecutionDebug;
+        panel.append(debug);
+      }
+    }
 
     const title = document.createElement("div");
     title.className = "tfmars420-queue-title";
@@ -2923,7 +2914,6 @@
   const renderHandCardTools = () => {
     const session = readQueueSession();
     if (!session) return;
-    const myTurn = isCurrentPlayerTurn();
     const alreadyPassed = hasCurrentPlayerPassed();
 
     document.querySelectorAll(".player_home_block--hand .cardbox").forEach((cardBox) => {
@@ -2933,7 +2923,7 @@
       ensureHandCardRankCycler(cardBox, identity);
 
       let tools = cardBox.querySelector(":scope > .tfmars420-card-tools");
-      if (myTurn || alreadyPassed) {
+      if (alreadyPassed) {
         tools?.remove();
         return;
       }
@@ -2978,12 +2968,11 @@
   const renderPlayedActionTools = () => {
     const session = readQueueSession();
     if (!session) return;
-    const myTurn = isCurrentPlayerTurn();
     const alreadyPassed = hasCurrentPlayerPassed();
 
     document.querySelectorAll(".player_home_block--cards .cardbox").forEach((cardBox) => {
       const existingTools = cardBox.querySelector(":scope > .tfmars420-enqueue-tools");
-      if (myTurn || alreadyPassed || !isUnusedPlayedActionCard(cardBox)) {
+      if (alreadyPassed || !isUnusedPlayedActionCard(cardBox)) {
         existingTools?.remove();
         return;
       }
