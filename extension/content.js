@@ -937,10 +937,20 @@
   };
 
   const cardTitleFromElement = (element) => {
-    const title = element?.matches?.(".card-title")
-      ? element
-      : element?.querySelector?.(".card-title");
-    return title ? cardNameFromElement(title) : "";
+    const titles = [
+      ...(element?.matches?.(".card-title") ? [element] : []),
+      ...Array.from(element?.querySelectorAll?.(".card-title") ?? []),
+    ];
+    const title = titles
+      .map((candidate) => ({ candidate, text: cardNameFromElement(candidate) }))
+      .filter((entry) => entry.text)
+      .sort((left, right) => right.text.length - left.text.length)
+      .find((entry) => !entry.candidate.querySelector(".card-title")) ??
+      titles
+        .map((candidate) => ({ candidate, text: cardNameFromElement(candidate) }))
+        .filter((entry) => entry.text)
+        .sort((left, right) => left.text.length - right.text.length)[0];
+    return title?.text ?? "";
   };
 
   const cardSlugFromElement = (element) =>
@@ -2493,8 +2503,14 @@
       margin-top: 8px;
     }
     #${timeWarpPanelId} .tfmars420-timewarp-error {
+      background: rgba(47, 47, 47, 0.96);
+      border: 1px solid rgba(255, 180, 168, 0.42);
+      border-radius: 4px;
       color: #ffb4a8;
-      font-size: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+      padding: 10px 12px;
     }
     .tfmars420-card-tools,
     .tfmars420-enqueue-tools {
@@ -3054,7 +3070,7 @@
     if (item?.type === "playedAction") {
       selectActionOption("Perform an action from a played card");
       await nextFrame();
-      selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
+      await selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
       await nextFrame();
       clickActionSubmit("Take action");
       return;
@@ -3063,7 +3079,7 @@
     if (item?.type === "projectCard") {
       selectActionOption("Play project card");
       await nextFrame();
-      selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
+      await selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
       await nextFrame();
       clickActionSubmit("Play card");
       return;
@@ -3093,12 +3109,33 @@
     });
   };
 
-  const selectActionCard = (item, selector) => {
+  const findActionCardForQueuedItem = (item, selector) => {
     const cards = Array.from(document.querySelectorAll(selector));
     const cardBox = cards.find((candidate) => cardMatchesQueuedItem(candidate, item));
     const input = cardBox?.querySelector("input[type='radio'], input[type='checkbox']");
+    return { cardBox, cards, input };
+  };
+
+  const selectActionCard = async (item, selector) => {
+    let cardBox = null;
+    let cards = [];
+    let input = null;
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+      ({ cardBox, cards, input } = findActionCardForQueuedItem(item, selector));
+      if (cardBox && input) break;
+      await nextFrame();
+    }
     if (!cardBox || !input) {
-      throw new Error(`missing card: ${item.cardName ?? item.cardKey ?? "unknown"}`);
+      const foundCards = cards
+        .map((candidate) => getCardIdentity(candidate).name)
+        .filter(Boolean)
+        .slice(0, 12)
+        .join(", ");
+      throw new Error(
+        `missing card: ${item.cardName ?? item.cardKey ?? "unknown"}${
+          foundCards ? `; found: ${foundCards}` : ""
+        }`,
+      );
     }
     preserveScrollDuring(() => {
       input.checked = true;
@@ -3110,6 +3147,22 @@
 
   const cardMatchesQueuedItem = (cardBox, item) => {
     const identity = getCardIdentity(cardBox);
+    const identityNames = new Set([
+      normalizeCardName(identity.name),
+      normalizeCardName(queueCardName(identity.name, "")),
+      identity.slug,
+      identity.key,
+    ]);
+    const queuedNames = new Set([
+      normalizeCardName(item.cardName ?? ""),
+      normalizeCardName(queueCardName(item.cardName, "")),
+      item.cardSlug ?? "",
+      item.cardKey ?? "",
+      slugifyCardName(item.cardName ?? ""),
+    ]);
+    for (const name of queuedNames) {
+      if (name && identityNames.has(name)) return true;
+    }
     return (
       identity.key === item.cardKey ||
       (item.cardSlug && identity.slug === item.cardSlug) ||
