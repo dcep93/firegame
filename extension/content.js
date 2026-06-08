@@ -2380,12 +2380,41 @@
       flex-wrap: wrap;
       gap: 5px;
       justify-content: center;
-      margin: 5px 0 7px;
+      margin: 4px 0 9px;
       width: 100%;
     }
     .tfmars420-card-tools button,
     .tfmars420-enqueue-tools button {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.1;
+      padding: 3px 8px;
+      text-transform: lowercase;
+      transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
       width: 100%;
+    }
+    .tfmars420-card-tools button:hover:not(:disabled),
+    .tfmars420-enqueue-tools button:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.52);
+      color: #fff;
+    }
+    .tfmars420-card-tools button.is-queued,
+    .tfmars420-enqueue-tools button.is-queued {
+      background: rgba(255, 79, 191, 0.13);
+      border-color: rgba(255, 79, 191, 0.72);
+      color: #ffb8e5;
+    }
+    .tfmars420-card-tools button.is-queued:hover:not(:disabled),
+    .tfmars420-enqueue-tools button.is-queued:hover:not(:disabled) {
+      background: rgba(255, 79, 191, 0.22);
+      border-color: #ff4fbf;
+      color: #fff;
     }
     .tfmars420-card-border {
       box-shadow: 0 0 0 4px #ff4fbf, 0 0 12px rgba(255, 79, 191, 0.78);
@@ -2711,10 +2740,10 @@
       }
 
       const position = findQueuedCardPosition(session.queue, "projectCard", identity);
-      upsertCardToolButton(
+      const button = upsertCardToolButton(
         tools,
         "tfmars420-project-queue-button",
-        position ? "dequeue" : "enqueue",
+        position ? "queued" : "queue",
         () => {
           updateQueueSession((draft) => {
             if (removeQueuedCard(draft, "projectCard", identity)) return draft;
@@ -2729,6 +2758,8 @@
           });
         },
       );
+      button.classList.toggle("is-queued", Boolean(position));
+      button.title = position ? "Dequeue card" : "Enqueue card";
     });
   };
 
@@ -2761,10 +2792,10 @@
         cardBox.append(tools);
       }
 
-      upsertCardToolButton(
+      const button = upsertCardToolButton(
         tools,
         "tfmars420-played-action-queue-button",
-        position ? "dequeue" : "enqueue",
+        position ? "queued" : "queue",
         () => {
           updateQueueSession((draft) => {
             if (removeQueuedCard(draft, "playedAction", identity)) return draft;
@@ -2778,6 +2809,8 @@
           });
         },
       );
+      button.classList.toggle("is-queued", Boolean(position));
+      button.title = position ? "Dequeue action" : "Enqueue action";
     });
   };
 
