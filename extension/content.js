@@ -3305,10 +3305,10 @@
     let input = null;
     for (let attempt = 0; attempt < 30; attempt += 1) {
       ({ cardBox, cards, input } = findActionCardForQueuedItem(item, selector));
-      if (cardBox && input) break;
+      if (cardBox) break;
       await nextFrame();
     }
-    if (!cardBox || !input) {
+    if (!cardBox) {
       const foundCards = cards
         .map((candidate) => getCardIdentity(candidate).name)
         .filter(Boolean)
@@ -3321,10 +3321,20 @@
       );
     }
     preserveScrollDuring(() => {
-      input.checked = true;
-      input.click();
-      dispatchBubbledEvent(input, "input");
-      dispatchBubbledEvent(input, "change");
+      if (input) {
+        input.checked = true;
+        input.click();
+        dispatchBubbledEvent(input, "input");
+        dispatchBubbledEvent(input, "change");
+        return;
+      }
+      cardBox.dispatchEvent(
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        }),
+      );
     });
   };
 
