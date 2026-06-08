@@ -1564,11 +1564,13 @@
   };
 
   let latestLobbyData = null;
-  let lobbyPollTimer = null;
+  let lobbyEventSource = null;
   let newGameSettingsWriteTimer = null;
   let newGameSettingsListenersStarted = false;
   let applyingNewGameSettings = false;
   let lastSerializedNewGameSettings = "";
+  let lastHandledRemoteNewGameSettingsTimestamp = 0;
+  let lastLocalNewGameSettingsEditTimestamp = 0;
   let savedGameId = "";
 
   const firebaseLobbyFieldUrl = (field) => `${firebaseLobbyUrl}/${field}.json`;
@@ -1583,18 +1585,6 @@
         "Content-Type": "application/json",
       },
       body: JSON.stringify(value),
-    });
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
-    }
-    return response.json();
-  };
-
-  const firebaseReadLobby = async () => {
-    const response = await fetch(`${firebaseLobbyUrl}.json`, {
-      cache: "no-store",
-      credentials: "omit",
-      headers: { Accept: "application/json" },
     });
     if (!response.ok) {
       throw new Error(`${response.status} ${response.statusText}`);
@@ -1801,8 +1791,21 @@
     return JSON.stringify(localSettings) !== JSON.stringify(settings);
   };
 
-  const autoApplyNewGameSettingsIfDrift = () => {
+  const remoteNewGameSettingsTimestamp = () => {
+    const timestamp = latestLobbyData?.newGameSettings?.timestamp;
+    return typeof timestamp === "number" && Number.isFinite(timestamp) ? timestamp : 0;
+  };
+
+  const autoApplyNewGameSettingsIfNewer = () => {
     if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || applyingNewGameSettings) return;
+    const timestamp = remoteNewGameSettingsTimestamp();
+    if (timestamp <= lastHandledRemoteNewGameSettingsTimestamp) return;
+    if (timestamp <= lastLocalNewGameSettingsEditTimestamp) {
+      lastHandledRemoteNewGameSettingsTimestamp = timestamp;
+      return;
+    }
+
+    lastHandledRemoteNewGameSettingsTimestamp = timestamp;
     const settings = latestLobbyData?.newGameSettings?.value;
     if (!newGameSettingsDrift(settings)) return;
     applyNewGameSettings(settings);
@@ -1821,6 +1824,10 @@
     const entry = { value: settings, timestamp: Date.now() };
     try {
       await firebaseSetLobbyField("newGameSettings", entry);
+      lastHandledRemoteNewGameSettingsTimestamp = Math.max(
+        lastHandledRemoteNewGameSettingsTimestamp,
+        entry.timestamp,
+      );
       latestLobbyData = { ...(latestLobbyData ?? {}), newGameSettings: entry };
       renderLobbyPanel();
     } catch (error) {
@@ -1847,6 +1854,11 @@
     if (target.closest(`.${lobbyRootClass}`)) return;
     if (target.closest("dialog, .preferences_panel, .sidebar_item--settings")) return;
     if (!target.closest("#create-game")) return;
+    lastLocalNewGameSettingsEditTimestamp = Date.now();
+    lastHandledRemoteNewGameSettingsTimestamp = Math.max(
+      lastHandledRemoteNewGameSettingsTimestamp,
+      remoteNewGameSettingsTimestamp(),
+    );
     scheduleNewGameSettingsWrite();
   };
 
@@ -1858,21 +1870,68 @@
     document.addEventListener("input", handleNewGameSettingsEvent, true);
   };
 
-  const pollFirebaseLobby = async () => {
-    if (!isNewGamePage()) return;
-    try {
-      latestLobbyData = (await firebaseReadLobby()) ?? {};
-      autoApplyNewGameSettingsIfDrift();
-      renderLobbyPanel();
-    } catch (error) {
-      console.warn("[tfmars420] unable to read lobby", error);
+  const setLobbyValueAtPath = (path, value) => {
+    if (!path || path === "/") {
+      latestLobbyData = value ?? {};
+      return;
+    }
+
+    const keys = path.split("/").filter(Boolean);
+    if (keys.length === 0) {
+      latestLobbyData = value ?? {};
+      return;
+    }
+
+    const root = isPlainObject(latestLobbyData) ? { ...latestLobbyData } : {};
+    let cursor = root;
+    for (let index = 0; index < keys.length - 1; index += 1) {
+      const key = keys[index];
+      cursor[key] = isPlainObject(cursor[key]) ? { ...cursor[key] } : {};
+      cursor = cursor[key];
+    }
+    const leaf = keys[keys.length - 1];
+    if (value === null) {
+      delete cursor[leaf];
+    } else {
+      cursor[leaf] = value;
+    }
+    latestLobbyData = root;
+  };
+
+  const patchLobbyValueAtPath = (path, value) => {
+    if (!isPlainObject(value)) {
+      setLobbyValueAtPath(path, value);
+      return;
+    }
+    for (const [key, childValue] of Object.entries(value)) {
+      setLobbyValueAtPath(`${path === "/" ? "" : path}/${key}`, childValue);
     }
   };
 
-  const startFirebaseLobbyPolling = () => {
-    if (lobbyPollTimer !== null) return;
-    pollFirebaseLobby();
-    lobbyPollTimer = window.setInterval(pollFirebaseLobby, 2500);
+  const handleFirebaseLobbyStreamEvent = (event) => {
+    if (!isNewGamePage()) return;
+    try {
+      const message = JSON.parse(event.data);
+      if (event.type === "patch") {
+        patchLobbyValueAtPath(message.path ?? "/", message.data);
+      } else {
+        setLobbyValueAtPath(message.path ?? "/", message.data);
+      }
+      autoApplyNewGameSettingsIfNewer();
+      renderLobbyPanel();
+    } catch (error) {
+      console.warn("[tfmars420] unable to process lobby stream", error);
+    }
+  };
+
+  const startFirebaseLobbyStream = () => {
+    if (!isNewGamePage() || lobbyEventSource) return;
+    lobbyEventSource = new EventSource(`${firebaseLobbyUrl}.json`);
+    lobbyEventSource.addEventListener("put", handleFirebaseLobbyStreamEvent);
+    lobbyEventSource.addEventListener("patch", handleFirebaseLobbyStreamEvent);
+    lobbyEventSource.onerror = () => {
+      console.warn("[tfmars420] lobby stream disconnected; browser will retry");
+    };
   };
 
   const saveCurrentGameIdIfNeeded = async () => {
@@ -1896,7 +1955,7 @@
     startNewGameSettingsListeners();
     const updateLobby = () => {
       if (isNewGamePage()) {
-        startFirebaseLobbyPolling();
+        startFirebaseLobbyStream();
       }
       saveCurrentGameIdIfNeeded();
       renderLobbyPanel();
