@@ -1475,12 +1475,14 @@
     extensionActive = active;
     writeStorageString(extensionActiveStorageKey, active ? "true" : "false");
     renderControls();
-    renderLobbyPanel();
     if (active) {
       helpersHiddenCleaned = false;
+      startNewGameSettingsListeners();
+      updateTerraformingMarsLobbySync();
       updatePreview();
       scheduleTerraformingMarsUpdate();
     } else {
+      teardownNewGameLobbySync();
       cleanupTerraformingMarsHelpersForHidden();
     }
   };
@@ -1592,7 +1594,11 @@
       );
     }
 
-    renderLobbyPanel();
+    if (shouldRunTerraformingMarsHelpers()) {
+      renderLobbyPanel();
+    } else {
+      document.getElementById(lobbyPanelId)?.remove();
+    }
   };
 
   let latestLobbyData = null;
@@ -1630,7 +1636,7 @@
   };
 
   const renderLobbyPanel = () => {
-    if (!isNewGamePage()) {
+    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers()) {
       document.getElementById(lobbyPanelId)?.remove();
       return;
     }
@@ -1908,11 +1914,33 @@
   };
 
   const startNewGameSettingsListeners = () => {
-    if (newGameSettingsListenersStarted) return;
+    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || newGameSettingsListenersStarted) return;
     newGameSettingsListenersStarted = true;
     document.addEventListener("click", handleNewGameSettingsEvent, true);
     document.addEventListener("change", handleNewGameSettingsEvent, true);
     document.addEventListener("input", handleNewGameSettingsEvent, true);
+  };
+
+  const stopNewGameSettingsListeners = () => {
+    if (!newGameSettingsListenersStarted) return;
+    newGameSettingsListenersStarted = false;
+    document.removeEventListener("click", handleNewGameSettingsEvent, true);
+    document.removeEventListener("change", handleNewGameSettingsEvent, true);
+    document.removeEventListener("input", handleNewGameSettingsEvent, true);
+  };
+
+  const stopFirebaseLobbyStream = () => {
+    if (!lobbyEventSource) return;
+    lobbyEventSource.close();
+    lobbyEventSource = null;
+  };
+
+  const teardownNewGameLobbySync = () => {
+    stopFirebaseLobbyStream();
+    stopNewGameSettingsListeners();
+    window.clearTimeout(newGameSettingsWriteTimer);
+    newGameSettingsWriteTimer = null;
+    document.getElementById(lobbyPanelId)?.remove();
   };
 
   const setLobbyValueAtPath = (path, value) => {
@@ -1954,7 +1982,7 @@
   };
 
   const handleFirebaseLobbyStreamEvent = (event) => {
-    if (!isNewGamePage()) return;
+    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers()) return;
     try {
       const message = JSON.parse(event.data);
       if (event.type === "patch") {
@@ -1970,7 +1998,7 @@
   };
 
   const startFirebaseLobbyStream = () => {
-    if (!isNewGamePage() || lobbyEventSource) return;
+    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || lobbyEventSource) return;
     lobbyEventSource = new EventSource(`${firebaseLobbyUrl}.json`);
     lobbyEventSource.addEventListener("put", handleFirebaseLobbyStreamEvent);
     lobbyEventSource.addEventListener("patch", handleFirebaseLobbyStreamEvent);
@@ -1997,7 +2025,15 @@
   };
 
   const updateTerraformingMarsLobbySync = () => {
+    if (!isNewGamePage()) {
+      teardownNewGameLobbySync();
+    }
+    if (!shouldRunTerraformingMarsHelpers()) {
+      teardownNewGameLobbySync();
+      return;
+    }
     if (isNewGamePage()) {
+      startNewGameSettingsListeners();
       startFirebaseLobbyStream();
     }
     saveCurrentGameIdIfNeeded();
@@ -2070,7 +2106,9 @@
   };
 
   const startTerraformingMarsDomObserver = () => {
-    startNewGameSettingsListeners();
+    if (shouldRunTerraformingMarsHelpers()) {
+      startNewGameSettingsListeners();
+    }
     renderControls();
     updateTerraformingMarsLobbySync();
     updatePreview();
