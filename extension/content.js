@@ -2380,41 +2380,46 @@
       flex-wrap: wrap;
       gap: 5px;
       justify-content: center;
-      margin: 4px 0 9px;
+      margin: 6px 0 10px;
+      min-height: 40px;
+      position: relative;
       width: 100%;
+      z-index: 2147483646;
     }
     .tfmars420-card-tools button,
     .tfmars420-enqueue-tools button {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.32);
-      border-radius: 999px;
-      color: rgba(255, 255, 255, 0.78);
-      font-size: 13px;
+      background: rgba(93, 121, 189, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 15px;
       font-weight: 700;
       letter-spacing: 0;
       line-height: 1.1;
-      padding: 3px 8px;
+      min-height: 36px;
+      padding: 7px 12px;
       text-transform: lowercase;
       transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
-      width: 100%;
+      width: 132px;
+      max-width: calc(100% - 28px);
     }
     .tfmars420-card-tools button:hover:not(:disabled),
     .tfmars420-enqueue-tools button:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.52);
+      background: #6d8bd0;
+      border-color: rgba(255, 255, 255, 0.54);
       color: #fff;
     }
     .tfmars420-card-tools button.is-queued,
     .tfmars420-enqueue-tools button.is-queued {
-      background: rgba(255, 79, 191, 0.13);
-      border-color: rgba(255, 79, 191, 0.72);
-      color: #ffb8e5;
+      background: rgba(255, 79, 191, 0.94);
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #111;
     }
     .tfmars420-card-tools button.is-queued:hover:not(:disabled),
     .tfmars420-enqueue-tools button.is-queued:hover:not(:disabled) {
-      background: rgba(255, 79, 191, 0.22);
-      border-color: #ff4fbf;
-      color: #fff;
+      background: #ff76cc;
+      border-color: rgba(255, 255, 255, 0.62);
+      color: #111;
     }
     .tfmars420-card-border {
       box-shadow: 0 0 0 4px #ff4fbf, 0 0 12px rgba(255, 79, 191, 0.78);
@@ -2743,7 +2748,7 @@
       const button = upsertCardToolButton(
         tools,
         "tfmars420-project-queue-button",
-        position ? "queued" : "queue",
+        position ? "dequeue" : "enqueue",
         () => {
           updateQueueSession((draft) => {
             if (removeQueuedCard(draft, "projectCard", identity)) return draft;
@@ -2795,7 +2800,7 @@
       const button = upsertCardToolButton(
         tools,
         "tfmars420-played-action-queue-button",
-        position ? "queued" : "queue",
+        position ? "dequeue" : "enqueue",
         () => {
           updateQueueSession((draft) => {
             if (removeQueuedCard(draft, "playedAction", identity)) return draft;
