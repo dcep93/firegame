@@ -3033,6 +3033,13 @@
     return item;
   };
 
+  const clearQueuedActions = () => {
+    const session = readQueueSession();
+    if (!session) return;
+    session.queue = [];
+    writeQueueSession(session);
+  };
+
   const maybeExecuteQueuedAction = () => {
     if (!shouldRunTerraformingMarsHelpers()) return;
     if (queueExecutionAttempted || queueExecutionInFlight) return;
@@ -3052,6 +3059,7 @@
       })
       .catch((error) => {
         queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
+        clearQueuedActions();
         renderQueuePanel();
       })
       .finally(() => {
