@@ -3139,7 +3139,7 @@
     if (item?.type === "playedAction") {
       selectActionOption("Perform an action from a played card");
       await nextFrame();
-      await selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
+      await selectActionCard(item, actionCardSelector());
       await nextFrame();
       clickActionSubmit("Take action");
       return;
@@ -3148,7 +3148,7 @@
     if (item?.type === "projectCard") {
       selectActionOption("Play project card");
       await nextFrame();
-      await selectActionCard(item, ".player_home_block--actions .wf-component--select-card .cardbox");
+      await selectActionCard(item, actionCardSelector());
       await nextFrame();
       clickActionSubmit("Play card");
       return;
@@ -3156,6 +3156,13 @@
 
     throw new Error("unknown queued action type");
   };
+
+  const actionCardSelector = () =>
+    [
+      ".player_home_block--actions .wf-component--select-card .cardbox",
+      ".player_home_block--actions label.cardbox",
+      ".player_home_block--actions .cardbox",
+    ].join(", ");
 
   const elementDisplayInfo = (element) => {
     if (!(element instanceof Element)) return null;
@@ -3228,7 +3235,7 @@
 
   const buildQueueExecutionDebug = (item, error) => {
     const actionsBlock = getActionsBlock();
-    const selector = ".player_home_block--actions .wf-component--select-card .cardbox";
+    const selector = actionCardSelector();
     const cards = Array.from(document.querySelectorAll(selector));
     const optionLabels = Array.from(actionsBlock?.querySelectorAll("label.form-radio") ?? []);
     const buttons = Array.from(
