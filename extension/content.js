@@ -2506,7 +2506,9 @@
         const remove = document.createElement("button");
         remove.type = "button";
         remove.className = "tfmars420-queue-remove";
-        remove.textContent = "remove";
+        remove.textContent = "❌";
+        remove.title = "Remove from queue";
+        remove.setAttribute("aria-label", "Remove from queue");
         remove.addEventListener("click", () => {
           updateQueueSession((draft) => {
             draft.queue.splice(index, 1);
