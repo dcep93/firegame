@@ -1316,6 +1316,9 @@
       margin: 0 0 8px;
       padding: 0;
     }
+    .tfmars420-player-lobby-controls {
+      margin: 8px 0 12px;
+    }
     #${lobbyPanelId} {
       background: rgba(47, 47, 47, 0.96);
       border: 1px solid rgba(255, 255, 255, 0.22);
@@ -1458,6 +1461,16 @@
     return null;
   };
 
+  const findPlayerSpectatorLinkBlock = () => {
+    const playerHome = document.querySelector("#player-home");
+    if (!playerHome) return null;
+    for (const link of playerHome.querySelectorAll("a")) {
+      if (cleanText(link.textContent ?? "").toLowerCase() !== "spectator link") continue;
+      return link.closest("div") ?? link;
+    }
+    return null;
+  };
+
   const getControlsHost = () => {
     if (isNewGamePage()) {
       const createGame = document.querySelector("#create-game");
@@ -1467,6 +1480,19 @@
         wrapper = document.createElement("div");
         wrapper.className = `${lobbyRootClass} tfmars420-newgame-lobby-wrap`;
         createGame.prepend(wrapper);
+      }
+      return wrapper;
+    }
+
+    const playerSpectatorBlock = findPlayerSpectatorLinkBlock();
+    if (playerSpectatorBlock?.parentElement) {
+      let wrapper = document.querySelector(".tfmars420-player-lobby-controls");
+      if (!wrapper) {
+        wrapper = document.createElement("div");
+        wrapper.className = `${lobbyRootClass} tfmars420-player-lobby-controls`;
+      }
+      if (wrapper.nextElementSibling !== playerSpectatorBlock) {
+        playerSpectatorBlock.parentElement.insertBefore(wrapper, playerSpectatorBlock);
       }
       return wrapper;
     }
@@ -1635,11 +1661,10 @@
     settingsLabel.textContent = "Settings";
     settingsRow.append(settingsLabel);
     if (settingsEntry?.value?.version === 1 && Array.isArray(settingsEntry.value.controls)) {
-      const apply = document.createElement("button");
-      apply.type = "button";
-      apply.textContent = "Apply settings";
-      apply.addEventListener("click", () => applyNewGameSettings(settingsEntry.value));
-      settingsRow.append(apply);
+      const synced = document.createElement("span");
+      synced.className = "tfmars420-lobby-muted";
+      synced.textContent = newGameSettingsDrift(settingsEntry.value) ? "Syncing settings..." : "Settings synced";
+      settingsRow.append(synced);
       const timestamp = document.createElement("span");
       timestamp.className = "tfmars420-lobby-time";
       timestamp.textContent = formatLobbyTimestamp(settingsEntry.timestamp);
@@ -1767,6 +1792,23 @@
     }
   };
 
+  const newGameSettingsDrift = (settings) => {
+    if (!isNewGamePage() || settings?.version !== 1 || !Array.isArray(settings.controls)) {
+      return false;
+    }
+    const localSettings = serializeNewGameSettings();
+    if (!localSettings) return false;
+    return JSON.stringify(localSettings) !== JSON.stringify(settings);
+  };
+
+  const autoApplyNewGameSettingsIfDrift = () => {
+    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || applyingNewGameSettings) return;
+    const settings = latestLobbyData?.newGameSettings?.value;
+    if (!newGameSettingsDrift(settings)) return;
+    applyNewGameSettings(settings);
+    renderLobbyPanel();
+  };
+
   const writeNewGameSettingsFromPage = async () => {
     if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || applyingNewGameSettings) return;
     const settings = serializeNewGameSettings();
@@ -1820,6 +1862,7 @@
     if (!isNewGamePage()) return;
     try {
       latestLobbyData = (await firebaseReadLobby()) ?? {};
+      autoApplyNewGameSettingsIfDrift();
       renderLobbyPanel();
     } catch (error) {
       console.warn("[tfmars420] unable to read lobby", error);
@@ -2058,14 +2101,12 @@
   const isCurrentPlayerTurn = () => {
     const actionsBlock = document.querySelector(".player_home_block--actions");
     if (!actionsBlock) return false;
-    if (actionsBlock.querySelector(".wf-root input, .wf-root button, .wf-root select")) return true;
-
-    const text = cleanText(actionsBlock.textContent ?? "");
-    return (
-      text.includes("Pass for this generation") ||
-      text.includes("Play project card") ||
-      text.includes("Perform an action from a played card")
+    const controls = Array.from(
+      actionsBlock.querySelectorAll(
+        ".wf-root input, .wf-root button, .wf-root select, form input, form button, form select",
+      ),
     );
+    return controls.some((control) => !control.disabled && !control.closest(`.${lobbyRootClass}`));
   };
 
   const hasLiveActionForm = () =>
@@ -2152,10 +2193,6 @@
       justify-content: center;
       margin: 5px auto 7px;
       max-width: 210px;
-    }
-    .tfmars420-rank-button[aria-pressed="true"] {
-      background: #ff4fbf;
-      border-color: rgba(255, 255, 255, 0.72);
     }
     .tfmars420-card-border {
       box-shadow: 0 0 0 4px #ff4fbf, 0 0 12px rgba(255, 79, 191, 0.78);
@@ -2324,6 +2361,21 @@
           normalizeCardName(item.cardName) === normalizeCardName(identity.name)),
     ) + 1;
 
+  const removeQueuedCard = (draft, type, identity) => {
+    const index = findQueuedCardPosition(draft.queue, type, identity) - 1;
+    if (index >= 0) {
+      draft.queue.splice(index, 1);
+      return true;
+    }
+    return false;
+  };
+
+  const setButtonText = (button, text) => {
+    if (button.textContent !== text) {
+      button.textContent = text;
+    }
+  };
+
   const visibleProjectCost = (cardBox, identity) => {
     const playerViewCost = playerViewProjectCost(identity);
     if (playerViewCost !== null) return playerViewCost;
@@ -2377,6 +2429,56 @@
     container?.classList?.toggle("tfmars420-card-derank", rank === "derank");
   };
 
+  const nextCardRank = (rank) => {
+    if (rank === "border") return "derank";
+    if (rank === "derank") return "neutral";
+    return "border";
+  };
+
+  const setCardRank = (draft, identity, rank) => {
+    if (rank === "neutral") {
+      delete draft.cardRanks[identity.key];
+    } else {
+      draft.cardRanks[identity.key] = rank;
+    }
+    return draft;
+  };
+
+  const ensureHandCardRankCycler = (cardBox, identity) => {
+    if (cardBox.__tfmars420RankCyclerAttached) return;
+    cardBox.__tfmars420RankCyclerAttached = true;
+    cardBox.addEventListener(
+      "click",
+      (event) => {
+        if (!shouldRunTerraformingMarsHelpers()) return;
+        if (event.target instanceof Element && event.target.closest(".tfmars420-card-tools")) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        updateQueueSession((draft) => {
+          const currentRank = draft.cardRanks[identity.key] ?? "neutral";
+          return setCardRank(draft, identity, nextCardRank(currentRank));
+        });
+      },
+      true,
+    );
+  };
+
+  const upsertCardToolButton = (tools, className, text, onClick) => {
+    let button = tools.querySelector(`:scope > .${className}`);
+    if (!button) {
+      button = document.createElement("button");
+      button.type = "button";
+      button.className = className;
+      button.addEventListener("click", onClick);
+      tools.append(button);
+    }
+    button.disabled = false;
+    setButtonText(button, text);
+    return button;
+  };
+
   const renderHandCardTools = () => {
     const session = readQueueSession();
     if (!session) return;
@@ -2386,46 +2488,28 @@
       const identity = getCardIdentity(cardBox);
       const rank = session.cardRanks[identity.key] ?? "neutral";
       applyCardRankClass(cardBox, rank);
+      ensureHandCardRankCycler(cardBox, identity);
 
       let tools = cardBox.querySelector(":scope > .tfmars420-card-tools");
+      if (myTurn) {
+        tools?.remove();
+        return;
+      }
+
       if (!tools) {
         tools = document.createElement("div");
         tools.className = "tfmars420-card-tools";
         cardBox.append(tools);
       }
-      tools.innerHTML = "";
 
-      [
-        ["neutral", "neutral"],
-        ["border", "border"],
-        ["derank", "derank"],
-      ].forEach(([value, label]) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "tfmars420-rank-button";
-        button.textContent = label;
-        button.setAttribute("aria-pressed", String(rank === value));
-        button.addEventListener("click", () => {
+      const position = findQueuedCardPosition(session.queue, "projectCard", identity);
+      upsertCardToolButton(
+        tools,
+        "tfmars420-project-queue-button",
+        position ? "dequeue" : "enqueue",
+        () => {
           updateQueueSession((draft) => {
-            if (value === "neutral") {
-              delete draft.cardRanks[identity.key];
-            } else {
-              draft.cardRanks[identity.key] = value;
-            }
-            return draft;
-          });
-        });
-        tools.append(button);
-      });
-
-      if (!myTurn) {
-        const position = findQueuedCardPosition(session.queue, "projectCard", identity);
-        const enqueue = document.createElement("button");
-        enqueue.type = "button";
-        enqueue.textContent = position ? `queued #${position}` : "enqueue";
-        enqueue.disabled = Boolean(position);
-        enqueue.addEventListener("click", () => {
-          updateQueueSession((draft) => {
+            if (removeQueuedCard(draft, "projectCard", identity)) return draft;
             draft.queue.push({
               type: "projectCard",
               cardName: identity.name,
@@ -2435,9 +2519,8 @@
             });
             return draft;
           });
-        });
-        tools.append(enqueue);
-      }
+        },
+      );
     });
   };
 
@@ -2454,31 +2537,39 @@
     const myTurn = isCurrentPlayerTurn();
 
     document.querySelectorAll(".player_home_block--cards .cardbox").forEach((cardBox) => {
-      cardBox.querySelector(":scope > .tfmars420-enqueue-tools")?.remove();
-      if (myTurn || !isUnusedPlayedActionCard(cardBox)) return;
+      const existingTools = cardBox.querySelector(":scope > .tfmars420-enqueue-tools");
+      if (myTurn || !isUnusedPlayedActionCard(cardBox)) {
+        existingTools?.remove();
+        return;
+      }
 
       const identity = getCardIdentity(cardBox);
       const position = findQueuedCardPosition(session.queue, "playedAction", identity);
-      const tools = document.createElement("div");
-      tools.className = "tfmars420-enqueue-tools";
 
-      const enqueue = document.createElement("button");
-      enqueue.type = "button";
-      enqueue.textContent = position ? `queued #${position}` : "enqueue";
-      enqueue.disabled = Boolean(position);
-      enqueue.addEventListener("click", () => {
-        updateQueueSession((draft) => {
-          draft.queue.push({
-            type: "playedAction",
-            cardName: identity.name,
-            cardSlug: identity.slug,
-            cardKey: identity.key,
+      let tools = existingTools;
+      if (!tools) {
+        tools = document.createElement("div");
+        tools.className = "tfmars420-enqueue-tools";
+        cardBox.append(tools);
+      }
+
+      upsertCardToolButton(
+        tools,
+        "tfmars420-played-action-queue-button",
+        position ? "dequeue" : "enqueue",
+        () => {
+          updateQueueSession((draft) => {
+            if (removeQueuedCard(draft, "playedAction", identity)) return draft;
+            draft.queue.push({
+              type: "playedAction",
+              cardName: identity.name,
+              cardSlug: identity.slug,
+              cardKey: identity.key,
+            });
+            return draft;
           });
-          return draft;
-        });
-      });
-      tools.append(enqueue);
-      cardBox.append(tools);
+        },
+      );
     });
   };
 
