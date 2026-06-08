@@ -777,6 +777,10 @@
   let queueExecutionAttempted = false;
   let queueExecutionInFlight = false;
   let queueExecutionError = "";
+  let terraformingMarsDomObserver = null;
+  let terraformingMarsDomUpdateScheduled = false;
+  let terraformingMarsDomUpdateNeedsPreview = false;
+  let terraformingMarsDomUpdatePaused = false;
 
   const debug = new URL(window.location.href).searchParams.has("debug");
   const debugLogEnabled = () => debug;
@@ -798,6 +802,29 @@
       return;
     }
     window.requestAnimationFrame(() => ready(callback));
+  };
+
+  const elementFromNode = (node) => {
+    if (node instanceof Element) return node;
+    return node?.parentElement instanceof Element ? node.parentElement : null;
+  };
+
+  const nodeMatchesOrContains = (node, selector) => {
+    const element = elementFromNode(node);
+    if (!element) return false;
+    return (
+      element.matches(selector) ||
+      Boolean(element.closest(selector)) ||
+      Boolean(element.querySelector(selector))
+    );
+  };
+
+  const mutationTouchesSelector = (mutation, selector) => {
+    if (nodeMatchesOrContains(mutation.target, selector)) return true;
+    for (const node of [...mutation.addedNodes, ...mutation.removedNodes]) {
+      if (nodeMatchesOrContains(node, selector)) return true;
+    }
+    return false;
   };
 
   const scrollToPlayCardAction = () => {
@@ -1951,22 +1978,111 @@
     }
   };
 
-  const startTerraformingMarsLobbySync = () => {
-    startNewGameSettingsListeners();
-    const updateLobby = () => {
-      if (isNewGamePage()) {
-        startFirebaseLobbyStream();
-      }
-      saveCurrentGameIdIfNeeded();
-      renderLobbyPanel();
-    };
-    updateLobby();
-    window.setInterval(updateLobby, 1000);
+  const updateTerraformingMarsLobbySync = () => {
+    if (isNewGamePage()) {
+      startFirebaseLobbyStream();
+    }
+    saveCurrentGameIdIfNeeded();
+    renderLobbyPanel();
   };
 
-  const startControls = () => {
+  const extensionUiMutationSelector = [
+    `.${lobbyRootClass}`,
+    `#${previewId}`,
+    `#${timeWarpPanelId}`,
+    ".tfmars420-card-tools",
+    ".tfmars420-enqueue-tools",
+  ].join(", ");
+  const terraformingMarsDomSelector = [
+    "#create-game",
+    "#game-home",
+    "#player-home",
+    ".log-panel",
+    ".logpanel-scrollable",
+    ".card-panel",
+    "#log_panel_card",
+    ".player_home_block--hand",
+    ".player_home_block--cards",
+    ".wf-root",
+    ".wf-action",
+  ].join(", ");
+  const terraformingMarsPreviewDomSelector = [
+    ".log-panel",
+    ".logpanel-scrollable",
+    ".card-panel",
+    "#log_panel_card",
+    ".player_home_block--hand",
+    ".player_home_block--cards",
+  ].join(", ");
+
+  const mutationIsOnlyExtensionUi = (mutation) => {
+    const changedNodes = [...mutation.addedNodes, ...mutation.removedNodes].filter((node) =>
+      elementFromNode(node),
+    );
+    if (changedNodes.length > 0) {
+      return changedNodes.every((node) => nodeMatchesOrContains(node, extensionUiMutationSelector));
+    }
+    return nodeMatchesOrContains(mutation.target, extensionUiMutationSelector);
+  };
+
+  const runTerraformingMarsDomUpdate = () => {
+    terraformingMarsDomUpdateScheduled = false;
+    const needsPreview = terraformingMarsDomUpdateNeedsPreview;
+    terraformingMarsDomUpdateNeedsPreview = false;
+
+    terraformingMarsDomUpdatePaused = true;
+    try {
+      renderControls();
+      updateTerraformingMarsLobbySync();
+      if (needsPreview) {
+        updatePreview();
+      }
+    } finally {
+      window.setTimeout(() => {
+        terraformingMarsDomUpdatePaused = false;
+      }, 0);
+    }
+  };
+
+  const scheduleTerraformingMarsDomUpdate = ({ preview = false } = {}) => {
+    terraformingMarsDomUpdateNeedsPreview = terraformingMarsDomUpdateNeedsPreview || preview;
+    if (terraformingMarsDomUpdateScheduled) return;
+    terraformingMarsDomUpdateScheduled = true;
+    window.requestAnimationFrame(runTerraformingMarsDomUpdate);
+  };
+
+  const startTerraformingMarsDomObserver = () => {
+    startNewGameSettingsListeners();
     renderControls();
-    window.setInterval(renderControls, 1000);
+    updateTerraformingMarsLobbySync();
+    updatePreview();
+    if (terraformingMarsDomObserver) return;
+
+    const target = document.body ?? document.documentElement;
+    terraformingMarsDomObserver = new MutationObserver((mutations) => {
+      if (terraformingMarsDomUpdatePaused) return;
+      const relevantMutations = mutations.filter((mutation) => !mutationIsOnlyExtensionUi(mutation));
+      if (relevantMutations.length === 0) return;
+
+      const pageWantsWholeDom = isNewGamePage();
+      const shouldUpdate =
+        pageWantsWholeDom ||
+        relevantMutations.some((mutation) => mutationTouchesSelector(mutation, terraformingMarsDomSelector));
+      if (!shouldUpdate) return;
+
+      const shouldUpdatePreview =
+        !pageWantsWholeDom &&
+        relevantMutations.some((mutation) =>
+          mutationTouchesSelector(mutation, terraformingMarsPreviewDomSelector),
+        );
+      scheduleTerraformingMarsDomUpdate({ preview: shouldUpdatePreview });
+    });
+    terraformingMarsDomObserver.observe(target, {
+      attributes: true,
+      characterData: true,
+      childList: true,
+      subtree: true,
+    });
   };
 
   function removeTimeWarpUi() {
@@ -2961,19 +3077,12 @@
     }
   };
 
-  const startPreview = () => {
-    updatePreview();
-    window.setInterval(updatePreview, 1000);
-  };
-
   startPlayerViewCapture();
 
   document.addEventListener("change", handleSingleCardSelectionChange, true);
 
   ready(() => {
-    startControls();
-    startTerraformingMarsLobbySync();
-    startPreview();
+    startTerraformingMarsDomObserver();
     startQueueUi();
   });
 })();
