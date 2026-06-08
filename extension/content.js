@@ -3015,9 +3015,11 @@
 
     queueMutationPaused = true;
     try {
-      renderQueuePanel();
-      renderHandCardTools();
-      renderPlayedActionTools();
+      if (!queueExecutionInFlight) {
+        renderQueuePanel();
+        renderHandCardTools();
+        renderPlayedActionTools();
+      }
       maybeExecuteQueuedAction();
     } catch (error) {
       console.error("[tfmars420] queue UI update failed", error);
@@ -3039,8 +3041,9 @@
     if (queueMutationObserver) return;
 
     const target = document.body ?? document.documentElement;
-    queueMutationObserver = new MutationObserver(() => {
+    queueMutationObserver = new MutationObserver((mutations) => {
       if (queueMutationPaused) return;
+      if (mutations.every((mutation) => mutationIsOnlyExtensionUi(mutation))) return;
       scheduleTerraformingMarsUpdate();
     });
     queueMutationObserver.observe(target, { childList: true, subtree: true });
