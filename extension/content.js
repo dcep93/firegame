@@ -769,7 +769,6 @@
     "https://firebase-320421-default-rtdb.firebaseio.com/tfmars420/lobby";
   const extensionActiveStorageKey = "tfmars420:active";
   const queueSessionStorageKey = "tfmars420:session";
-  const queueEventLogStorageKey = "tfmars420:queue-event-log";
   let lastRenderKey = "";
   let clickInFlight = false;
   let extensionActive = true;
@@ -779,7 +778,6 @@
   let queueExecutionInFlight = false;
   let queuePendingLogMutation = false;
   let queueExecutionError = "";
-  let queueExecutionDebug = "";
   let terraformingMarsDomObserver = null;
   let terraformingMarsDomUpdateScheduled = false;
   let terraformingMarsDomUpdateNeedsPreview = false;
@@ -2261,70 +2259,6 @@
     writeStorageString(queueSessionStorageKey, JSON.stringify(session));
   };
 
-  const queueItemDebugLabel = (item) => {
-    if (!item) return "";
-    if (item.type === "pass") return "<pass>";
-    return item.cardName ?? item.cardKey ?? item.cardSlug ?? item.type ?? "unknown";
-  };
-
-  const queueDebugSnapshot = (session = null) => {
-    let queueSession = session;
-    if (!queueSession) {
-      try {
-        const raw = window.localStorage.getItem(queueSessionStorageKey);
-        queueSession = raw ? JSON.parse(raw) : null;
-      } catch (error) {
-        queueSession = null;
-      }
-    }
-    const queue = Array.isArray(queueSession?.queue) ? queueSession.queue : [];
-    return queue.map((item, index) => ({
-      index: index + 1,
-      type: item?.type ?? "unknown",
-      label: queueItemDebugLabel(item),
-      cost: item?.cost ?? null,
-      key: item?.cardKey ?? item?.cardSlug ?? null,
-    }));
-  };
-
-  const readQueueEventLog = () => {
-    try {
-      const raw = window.localStorage.getItem(queueEventLogStorageKey);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed.filter(isPlainObject) : [];
-    } catch (error) {
-      return [];
-    }
-  };
-
-  const writeQueueEventLog = (entries) => {
-    writeStorageString(queueEventLogStorageKey, JSON.stringify(entries.slice(-60)));
-  };
-
-  const clearQueueEventLog = () => {
-    writeQueueEventLog([]);
-    renderQueuePanel();
-  };
-
-  const logQueueEvent = (eventName, details = {}, session = null) => {
-    const entry = {
-      at: new Date().toLocaleTimeString(),
-      event: eventName,
-      details,
-      queue: queueDebugSnapshot(session),
-      state: {
-        attempted: queueExecutionAttempted,
-        inFlight: queueExecutionInFlight,
-        pendingLog: queuePendingLogMutation,
-        prompt: currentActionPromptText(),
-        turn: isCurrentPlayerTurn(),
-      },
-    };
-    const entries = readQueueEventLog();
-    entries.push(entry);
-    writeQueueEventLog(entries);
-  };
-
   const readQueueSession = () => {
     const playerId = currentPlayerId();
     if (!playerId) return null;
@@ -2342,7 +2276,6 @@
     const session = normalizeQueueSession(parsed, playerId);
     if (shouldOverwrite) {
       writeQueueSession(session);
-      logQueueEvent("session-reset", { playerId }, session);
     }
     return session;
   };
@@ -2350,13 +2283,10 @@
   const updateQueueSession = (updater) => {
     const session = readQueueSession();
     if (!session) return null;
-    const before = queueDebugSnapshot(session);
     const nextSession = normalizeQueueSession(updater(cloneJson(session)) ?? session, session.playerId);
     writeQueueSession(nextSession);
     queueExecutionAttempted = false;
     queueExecutionError = "";
-    queueExecutionDebug = "";
-    logQueueEvent("queue-update", { before }, nextSession);
     scheduleTerraformingMarsUpdate();
     return nextSession;
   };
@@ -2595,45 +2525,6 @@
       line-height: 1.25;
       padding: 10px 12px;
     }
-    #${timeWarpPanelId} .tfmars420-timewarp-debug {
-      background: rgba(0, 0, 0, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 4px;
-      color: #f5f5f5;
-      font: 14px/1.35 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      margin: 10px 0 0;
-      max-height: 460px;
-      overflow: auto;
-      padding: 10px 12px;
-      white-space: pre-wrap;
-    }
-    #${timeWarpPanelId} .tfmars420-queue-event-log {
-      background: rgba(0, 0, 0, 0.56);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 4px;
-      margin-top: 10px;
-      padding: 8px;
-    }
-    #${timeWarpPanelId} .tfmars420-queue-event-log-header {
-      align-items: center;
-      display: flex;
-      gap: 8px;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-    #${timeWarpPanelId} .tfmars420-queue-event-log-title {
-      color: #d8d8d8;
-      font-size: 13px;
-      font-weight: 700;
-    }
-    #${timeWarpPanelId} .tfmars420-queue-event-log pre {
-      color: #f5f5f5;
-      font: 12px/1.35 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      margin: 0;
-      max-height: 280px;
-      overflow: auto;
-      white-space: pre-wrap;
-    }
     .tfmars420-card-tools,
     .tfmars420-enqueue-tools {
       align-items: center;
@@ -2754,12 +2645,6 @@
       error.className = "tfmars420-timewarp-error";
       error.textContent = queueExecutionError;
       panel.append(error);
-      if (queueExecutionDebug) {
-        const debug = document.createElement("pre");
-        debug.className = "tfmars420-timewarp-debug";
-        debug.textContent = queueExecutionDebug;
-        panel.append(debug);
-      }
     }
 
     const title = document.createElement("div");
@@ -2834,33 +2719,6 @@
 
     actions.append(passButton, clearButton);
     panel.append(actions);
-    renderQueueEventLog(panel);
-  };
-
-  const renderQueueEventLog = (panel) => {
-    const entries = readQueueEventLog();
-    if (entries.length === 0) return;
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "tfmars420-queue-event-log";
-
-    const header = document.createElement("div");
-    header.className = "tfmars420-queue-event-log-header";
-    const title = document.createElement("div");
-    title.className = "tfmars420-queue-event-log-title";
-    title.textContent = "Queue event log";
-
-    const clear = document.createElement("button");
-    clear.type = "button";
-    clear.textContent = "Clear log";
-    clear.addEventListener("click", clearQueueEventLog);
-    header.append(title, clear);
-
-    const body = document.createElement("pre");
-    body.textContent = JSON.stringify(entries.slice(-20).reverse(), null, 2);
-
-    wrapper.append(header, body);
-    panel.append(wrapper);
   };
 
   const queuedProjectMoneyCost = (queue) =>
@@ -3215,13 +3073,10 @@
       if (queueMutationPaused) return;
       if (queueExecutionInFlight) {
         queuePendingLogMutation = true;
-        logQueueEvent("log-mutation-pending");
         return;
       }
       queueExecutionAttempted = false;
       queueExecutionError = "";
-      queueExecutionDebug = "";
-      logQueueEvent("log-mutation");
       scheduleTerraformingMarsUpdate();
     });
     queueMutationObserver.observe(target, {
@@ -3239,7 +3094,6 @@
     queueLogDiscoveryObserver = new MutationObserver(() => {
       if (queueLogTarget()) {
         startQueueLogObserver();
-        logQueueEvent("log-observer-attached");
         scheduleTerraformingMarsUpdate();
       }
     });
@@ -3251,48 +3105,35 @@
     if (!session || session.queue.length === 0) return null;
     const [item] = session.queue.splice(0, 1);
     writeQueueSession(session);
-    logQueueEvent("queue-pop", { item: queueItemDebugLabel(item) }, session);
     return item;
   };
 
   const clearQueuedActions = () => {
     const session = readQueueSession();
     if (!session) return;
-    const before = queueDebugSnapshot(session);
     session.queue = [];
     writeQueueSession(session);
-    logQueueEvent("queue-clear", { before }, session);
   };
 
   const maybeExecuteQueuedAction = () => {
     if (!shouldRunTerraformingMarsHelpers()) return;
     const session = readQueueSession();
-    const hasQueuedItems = Boolean(session?.queue?.length);
-    const logGuard = (reason) => {
-      if (hasQueuedItems) logQueueEvent("execute-guard", { reason }, session);
-    };
     if (queueExecutionAttempted) {
-      logGuard("already-attempted");
       return;
     }
     if (queueExecutionInFlight) {
-      logGuard(queuePendingLogMutation ? "in-flight-pending-log" : "in-flight");
       return;
     }
     if (!latestPlayerView?.id || session?.playerId !== latestPlayerView.id) {
-      logGuard("missing-or-mismatched-player");
       return;
     }
     if (hasCurrentPlayerPassed()) {
-      logGuard("already-passed");
       return;
     }
     if (!isCurrentPlayerTurn() || !hasLiveActionForm()) {
-      logGuard("not-turn-or-no-form");
       return;
     }
     if (!isTakeNextActionPhase()) {
-      logGuard("not-take-action-phase");
       return;
     }
 
@@ -3303,20 +3144,10 @@
     queueExecutionInFlight = true;
     queuePendingLogMutation = false;
     queueExecutionError = "";
-    queueExecutionDebug = "";
-    logQueueEvent("execute-start", { item: queueItemDebugLabel(item) });
     executeQueuedItem(item)
-      .then(() => {
-        logQueueEvent("execute-success", { item: queueItemDebugLabel(item) });
-        logQueueEvent("execute-wait-for-log", { item: queueItemDebugLabel(item) });
-      })
+      .then(() => {})
       .catch((error) => {
         queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
-        queueExecutionDebug = buildQueueExecutionDebug(item, error);
-        logQueueEvent("execute-error", {
-          item: queueItemDebugLabel(item),
-          message: String(error?.message ?? error),
-        });
         clearQueuedActions();
         renderQueuePanel();
       })
@@ -3326,7 +3157,6 @@
           queuePendingLogMutation = false;
           queueExecutionAttempted = false;
           window.setTimeout(() => {
-            logQueueEvent("pending-log-resume");
             scheduleTerraformingMarsUpdate();
           }, 350);
         }
@@ -3368,114 +3198,6 @@
       ".player_home_block--actions label.cardbox",
       ".player_home_block--actions .cardbox",
     ].join(", ");
-
-  const elementDisplayInfo = (element) => {
-    if (!(element instanceof Element)) return null;
-    const style = window.getComputedStyle(element);
-    const rect = element.getBoundingClientRect();
-    return {
-      classes: Array.from(element.classList),
-      display: style.display,
-      visibility: style.visibility,
-      opacity: style.opacity,
-      rect: {
-        height: Math.round(rect.height),
-        width: Math.round(rect.width),
-        x: Math.round(rect.x),
-        y: Math.round(rect.y),
-      },
-      visible:
-        style.display !== "none" &&
-        style.visibility !== "hidden" &&
-        Number(style.opacity) !== 0 &&
-        rect.width > 0 &&
-        rect.height > 0,
-    };
-  };
-
-  const inputDebugInfo = (input) => {
-    if (!(input instanceof HTMLInputElement)) return null;
-    return {
-      checked: input.checked,
-      disabled: input.disabled,
-      name: input.name,
-      type: input.type,
-      value: input.value,
-      visible: elementDisplayInfo(input),
-    };
-  };
-
-  const labelDebugInfo = (label) => {
-    const input = label.querySelector("input");
-    return {
-      input: inputDebugInfo(input),
-      text: cleanText(label.textContent ?? ""),
-      visible: elementDisplayInfo(label),
-    };
-  };
-
-  const cardDebugInfo = (cardBox) => {
-    const container = cardContainerFromBox(cardBox);
-    const input = cardBox.querySelector("input[type='radio'], input[type='checkbox']");
-    const titleElements = [
-      ...(container?.matches?.(".card-title") ? [container] : []),
-      ...Array.from(container?.querySelectorAll?.(".card-title") ?? []),
-    ];
-    return {
-      identity: getCardIdentity(cardBox),
-      input: inputDebugInfo(input),
-      text: cleanText(cardBox.textContent ?? ""),
-      titleTexts: titleElements.map((title) => cleanText(title.textContent ?? "")).filter(Boolean),
-      containerClasses: Array.from(container?.classList ?? []),
-      cardBoxClasses: Array.from(cardBox.classList ?? []),
-      visible: elementDisplayInfo(cardBox),
-    };
-  };
-
-  const logRowDebugInfo = (row) => ({
-    player: cleanText(row.querySelector(".log-player")?.textContent ?? ""),
-    text: cleanText(row.textContent ?? ""),
-    visible: elementDisplayInfo(row),
-  });
-
-  const buildQueueExecutionDebug = (item, error) => {
-    const actionsBlock = getActionsBlock();
-    const selector = actionCardSelector();
-    const cards = Array.from(document.querySelectorAll(selector));
-    const optionLabels = Array.from(actionsBlock?.querySelectorAll("label.form-radio") ?? []);
-    const buttons = Array.from(
-      actionsBlock?.querySelectorAll("button, input[type='submit']") ?? [],
-    );
-    const logRows = Array.from(document.querySelectorAll(".log-panel li, #logpanel-scrollable li"));
-    const debug = {
-      at: new Date().toLocaleString(),
-      url: window.location.href,
-      error: String(error?.message ?? error),
-      queuedItem: item,
-      currentPlayer: {
-        id: currentPlayerId(),
-        name: currentPlayerName(),
-        color: currentPlayerColor(),
-        hasPassed: hasCurrentPlayerPassed(),
-        isTurn: isCurrentPlayerTurn(),
-        hasLiveActionForm: hasLiveActionForm(),
-        actionPrompt: currentActionPromptText(),
-      },
-      actionOptions: optionLabels.map(labelDebugInfo),
-      actionCards: cards.map(cardDebugInfo),
-      submitButtons: buttons.map((button) => ({
-        disabled: Boolean(button.disabled),
-        text: cleanText(button.textContent ?? button.value ?? ""),
-        type: button.type,
-        visible: elementDisplayInfo(button),
-      })),
-      visibleLogRows: logRows
-        .filter((row) => elementDisplayInfo(row)?.visible)
-        .slice(-20)
-        .map(logRowDebugInfo),
-    };
-    return JSON.stringify(debug, null, 2);
-  };
 
   const selectActionOption = (labelText) => {
     const actionsBlock = getActionsBlock();
