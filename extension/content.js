@@ -2291,6 +2291,88 @@
     return controls.some((control) => !control.disabled && !control.closest(`.${lobbyRootClass}`));
   };
 
+  const currentPlayerValueForKeys = (keys) => {
+    for (const key of keys) {
+      const value =
+        latestPlayerView?.[key] ??
+        latestPlayerView?.thisPlayer?.[key] ??
+        latestPlayerView?.player?.[key];
+      if (value !== undefined && value !== null && value !== "") return String(value);
+    }
+    return "";
+  };
+
+  const currentPlayerName = () => currentPlayerValueForKeys(["name", "playerName"]);
+
+  const currentPlayerColor = () => currentPlayerValueForKeys(["color", "playerColor"]);
+
+  const playerRecordHasPassed = (record) =>
+    record?.passed === true || record?.isPassed === true || record?.hasPassed === true;
+
+  const playerRecordMatchesCurrentPlayer = (record) => {
+    if (!isPlainObject(record)) return false;
+    const id = currentPlayerId();
+    const color = currentPlayerColor().toLowerCase();
+    const name = currentPlayerName().toLowerCase();
+    return (
+      (id && String(record.id ?? "") === id) ||
+      (color && String(record.color ?? record.playerColor ?? "").toLowerCase() === color) ||
+      (name && String(record.name ?? record.playerName ?? "").toLowerCase() === name)
+    );
+  };
+
+  const findCurrentPlayerRecord = (value, seen = new Set()) => {
+    if (!value || typeof value !== "object" || seen.has(value)) return null;
+    seen.add(value);
+    const fallback = playerRecordMatchesCurrentPlayer(value) ? value : null;
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        const match = findCurrentPlayerRecord(item, seen);
+        if (playerRecordHasPassed(match)) return match;
+      }
+      return fallback;
+    }
+    for (const item of Object.values(value)) {
+      const match = findCurrentPlayerRecord(item, seen);
+      if (playerRecordHasPassed(match)) return match;
+    }
+    return fallback;
+  };
+
+  const currentPlayerPassedFromPlayerView = () => {
+    if (playerRecordHasPassed(latestPlayerView) || playerRecordHasPassed(latestPlayerView?.thisPlayer)) {
+      return true;
+    }
+    return playerRecordHasPassed(findCurrentPlayerRecord(latestPlayerView));
+  };
+
+  const currentPlayerPassedFromDom = () => {
+    const color = currentPlayerColor().toLowerCase();
+    const name = currentPlayerName().toLowerCase();
+    if (!color && !name) return false;
+
+    for (const block of document.querySelectorAll(".players-overview .player-info, .player-info")) {
+      const blockMatchesColor =
+        color &&
+        Array.from(block.classList).some((className) =>
+          className.toLowerCase().endsWith(`_${color}`),
+        );
+      const blockName = cleanText(block.querySelector(".player-info-name")?.textContent ?? "").toLowerCase();
+      const blockMatchesName = name && blockName === name;
+      if (!blockMatchesColor && !blockMatchesName) continue;
+
+      const status = cleanText(block.querySelector(".player-action-status")?.textContent ?? "").toLowerCase();
+      return (
+        Boolean(block.querySelector(".player-action-status-container--passed")) ||
+        status === "passed"
+      );
+    }
+    return false;
+  };
+
+  const hasCurrentPlayerPassed = () =>
+    currentPlayerPassedFromPlayerView() || currentPlayerPassedFromDom();
+
   const hasLiveActionForm = () =>
     Boolean(document.querySelector(".player_home_block--actions .wf-root, .player_home_block--actions form"));
 
@@ -2458,9 +2540,11 @@
 
     const session = readQueueSession();
     const myTurn = isCurrentPlayerTurn();
+    const alreadyPassed = hasCurrentPlayerPassed();
 
-    if (!session) {
+    if (!session || alreadyPassed) {
       panel.hidden = true;
+      panel.innerHTML = "";
       return;
     }
 
@@ -2727,6 +2811,7 @@
     const session = readQueueSession();
     if (!session) return;
     const myTurn = isCurrentPlayerTurn();
+    const alreadyPassed = hasCurrentPlayerPassed();
 
     document.querySelectorAll(".player_home_block--hand .cardbox").forEach((cardBox) => {
       const identity = getCardIdentity(cardBox);
@@ -2735,7 +2820,7 @@
       ensureHandCardRankCycler(cardBox, identity);
 
       let tools = cardBox.querySelector(":scope > .tfmars420-card-tools");
-      if (myTurn) {
+      if (myTurn || alreadyPassed) {
         tools?.remove();
         return;
       }
@@ -2781,10 +2866,11 @@
     const session = readQueueSession();
     if (!session) return;
     const myTurn = isCurrentPlayerTurn();
+    const alreadyPassed = hasCurrentPlayerPassed();
 
     document.querySelectorAll(".player_home_block--cards .cardbox").forEach((cardBox) => {
       const existingTools = cardBox.querySelector(":scope > .tfmars420-enqueue-tools");
-      if (myTurn || !isUnusedPlayedActionCard(cardBox)) {
+      if (myTurn || alreadyPassed || !isUnusedPlayedActionCard(cardBox)) {
         existingTools?.remove();
         return;
       }
@@ -2873,6 +2959,7 @@
     if (!shouldRunTerraformingMarsHelpers()) return;
     if (queueExecutionAttempted || queueExecutionInFlight) return;
     if (!latestPlayerView?.id || readQueueSession()?.playerId !== latestPlayerView.id) return;
+    if (hasCurrentPlayerPassed()) return;
     if (!isCurrentPlayerTurn() || !hasLiveActionForm()) return;
 
     const item = popNextQueuedAction();
