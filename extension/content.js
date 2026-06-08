@@ -1342,7 +1342,7 @@
       border-radius: 999px;
       color: #fff;
       cursor: pointer;
-      font: 700 34px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 700 25.5px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-width: 56px;
       padding: 4px 10px;
     }
@@ -2536,7 +2536,6 @@
       min-height: 40px;
       position: relative;
       width: 100%;
-      z-index: 2147483646;
     }
     .tfmars420-card-tools button,
     .tfmars420-enqueue-tools button {
