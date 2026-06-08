@@ -777,6 +777,7 @@
   let queueUiScheduled = false;
   let queueExecutionAttempted = false;
   let queueExecutionInFlight = false;
+  let queuePendingLogMutation = false;
   let queueExecutionError = "";
   let queueExecutionDebug = "";
   let terraformingMarsDomObserver = null;
@@ -2314,6 +2315,7 @@
       state: {
         attempted: queueExecutionAttempted,
         inFlight: queueExecutionInFlight,
+        pendingLog: queuePendingLogMutation,
         prompt: currentActionPromptText(),
         turn: isCurrentPlayerTurn(),
       },
@@ -3211,6 +3213,11 @@
     queueObservedLogTarget = target;
     queueMutationObserver = new MutationObserver(() => {
       if (queueMutationPaused) return;
+      if (queueExecutionInFlight) {
+        queuePendingLogMutation = true;
+        logQueueEvent("log-mutation-pending");
+        return;
+      }
       queueExecutionAttempted = false;
       queueExecutionError = "";
       queueExecutionDebug = "";
@@ -3269,7 +3276,7 @@
       return;
     }
     if (queueExecutionInFlight) {
-      logGuard("in-flight");
+      logGuard(queuePendingLogMutation ? "in-flight-pending-log" : "in-flight");
       return;
     }
     if (!latestPlayerView?.id || session?.playerId !== latestPlayerView.id) {
@@ -3294,13 +3301,14 @@
 
     queueExecutionAttempted = true;
     queueExecutionInFlight = true;
+    queuePendingLogMutation = false;
     queueExecutionError = "";
     queueExecutionDebug = "";
     logQueueEvent("execute-start", { item: queueItemDebugLabel(item) });
     executeQueuedItem(item)
       .then(() => {
         logQueueEvent("execute-success", { item: queueItemDebugLabel(item) });
-        scheduleTerraformingMarsUpdate();
+        logQueueEvent("execute-wait-for-log", { item: queueItemDebugLabel(item) });
       })
       .catch((error) => {
         queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
@@ -3314,6 +3322,14 @@
       })
       .finally(() => {
         queueExecutionInFlight = false;
+        if (queuePendingLogMutation) {
+          queuePendingLogMutation = false;
+          queueExecutionAttempted = false;
+          window.setTimeout(() => {
+            logQueueEvent("pending-log-resume");
+            scheduleTerraformingMarsUpdate();
+          }, 350);
+        }
       });
   };
 
@@ -3321,7 +3337,7 @@
     if (item?.type === "pass") {
       selectActionOption("Pass for this generation");
       await nextFrame();
-      clickActionSubmit("Pass");
+      clickActionSubmit("Pass", ["Pass for this generation"]);
       return;
     }
 
@@ -3553,12 +3569,15 @@
     );
   };
 
-  const clickActionSubmit = (preferredText) => {
+  const clickActionSubmit = (preferredText, alternateTexts = []) => {
     const actionsRoot =
       getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
     const buttons = Array.from(actionsRoot?.querySelectorAll("button, input[type='submit']") ?? []);
+    const preferredTexts = [preferredText, ...alternateTexts];
     const button =
-      buttons.find((candidate) => cleanText(candidate.textContent ?? candidate.value ?? "") === preferredText) ??
+      buttons.find((candidate) =>
+        preferredTexts.includes(cleanText(candidate.textContent ?? candidate.value ?? "")),
+      ) ??
       buttons.find((candidate) => candidate.classList?.contains("btn-submit")) ??
       buttons.find((candidate) => !candidate.disabled);
     if (!button || button.disabled) {
