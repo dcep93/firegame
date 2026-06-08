@@ -2747,9 +2747,21 @@
   const queuedProjectMoneyCost = (queue) =>
     queue.reduce((total, item) => {
       if (item?.type !== "projectCard") return total;
-      const cost = Number(item.cost);
+      const cost = effectiveQueuedProjectCost(item);
       return total + (Number.isFinite(cost) && cost > 0 ? cost : 0);
     }, 0);
+
+  const effectiveQueuedProjectCost = (item) => {
+    const visibleCard = Array.from(document.querySelectorAll(".player_home_block--hand .cardbox")).find(
+      (cardBox) => cardMatchesQueuedItem(cardBox, item),
+    );
+    if (visibleCard) {
+      const identity = getCardIdentity(visibleCard);
+      return visibleProjectCost(visibleCard, identity);
+    }
+    const cost = Number(item.cost);
+    return Number.isFinite(cost) ? cost : 0;
+  };
 
   const queueItemLabel = (item) => {
     if (item?.type === "pass") return "<pass>";
@@ -2809,12 +2821,32 @@
   };
 
   const visibleProjectCost = (cardBox, identity) => {
+    const visibleCost = visibleCardMoneyCost(cardBox);
+    if (visibleCost !== null) return visibleCost;
+
     const playerViewCost = playerViewProjectCost(identity);
     if (playerViewCost !== null) return playerViewCost;
 
-    const costText = cleanText(cardBox?.querySelector?.(".card-cost")?.textContent ?? "");
-    const match = costText.match(/-?\d+/);
-    return match ? Number(match[0]) : 0;
+    return 0;
+  };
+
+  const visibleCardMoneyCost = (cardBox) => {
+    const costs = Array.from(
+      cardBox?.querySelectorAll?.(".card-cost-and-tags .card-cost, .card-cost-and-tags .card-old-cost, .card-cost") ??
+        [],
+    )
+      .filter((element) => {
+        if (element.classList.contains("visibility-hidden")) return false;
+        const style = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      })
+      .flatMap((element) =>
+        Array.from(cleanText(element.textContent ?? "").matchAll(/-?\d+/g)).map((match) => Number(match[0])),
+      )
+      .filter((value) => Number.isFinite(value) && value >= 0);
+    if (costs.length === 0) return null;
+    return Math.min(...costs);
   };
 
   const playerViewProjectCost = (identity) => {
