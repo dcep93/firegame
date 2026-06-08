@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v0.1.2";
+  const contentScriptVersion = "v1.0.0";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -1342,7 +1342,7 @@
       border-radius: 999px;
       color: #fff;
       cursor: pointer;
-      font: 13px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 700 34px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-width: 56px;
       padding: 4px 10px;
     }
@@ -2578,9 +2578,6 @@
     }
     .tfmars420-card-derank {
       filter: brightness(0.55);
-    }
-    .tfmars420-card-derank:hover {
-      filter: brightness(1);
     }
   `;
 
