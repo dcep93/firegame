@@ -2221,7 +2221,7 @@
       align-items: center;
       display: flex;
       gap: 8px;
-      justify-content: space-between;
+      justify-content: flex-start;
     }
     #${timeWarpPanelId} .tfmars420-queue-label {
       min-width: 0;
@@ -2250,8 +2250,12 @@
       flex-wrap: wrap;
       gap: 5px;
       justify-content: center;
-      margin: 5px auto 7px;
-      max-width: 210px;
+      margin: 5px 0 7px;
+      width: 100%;
+    }
+    .tfmars420-card-tools button,
+    .tfmars420-enqueue-tools button {
+      width: 100%;
     }
     .tfmars420-card-border {
       box-shadow: 0 0 0 4px #ff4fbf, 0 0 12px rgba(255, 79, 191, 0.78);
@@ -2316,7 +2320,7 @@
 
     const title = document.createElement("div");
     title.className = "tfmars420-queue-title";
-    title.textContent = "Queued actions";
+    title.textContent = `Queued Actions M€: ${queuedProjectMoneyCost(session.queue)}`;
     panel.append(title);
 
     if (session.queue.length === 0) {
@@ -2345,26 +2349,27 @@
           });
         });
 
-        row.append(label, remove);
+        row.append(remove, label);
         list.append(row);
       });
       panel.append(list);
     }
 
-    const total = document.createElement("div");
-    total.className = "tfmars420-queue-total";
-    total.textContent = `Total queued M€: ${queuedProjectMoneyCost(session.queue)}`;
-    panel.append(total);
-
     const actions = document.createElement("div");
     actions.className = "tfmars420-queue-actions";
 
+    const passQueued = session.queue.some((item) => item?.type === "pass");
     const passButton = document.createElement("button");
     passButton.type = "button";
-    passButton.textContent = "Pass for this generation";
+    passButton.textContent = passQueued ? "Dequeue Pass" : "Enqueue Pass";
     passButton.addEventListener("click", () => {
       updateQueueSession((draft) => {
-        draft.queue.push({ type: "pass", label: "Pass for this generation" });
+        const passIndex = draft.queue.findIndex((item) => item?.type === "pass");
+        if (passIndex >= 0) {
+          draft.queue.splice(passIndex, 1);
+          return draft;
+        }
+        draft.queue.push({ type: "pass", label: "<pass>" });
         return draft;
       });
     });
@@ -2392,9 +2397,9 @@
     }, 0);
 
   const queueItemLabel = (item) => {
-    if (item?.type === "pass") return "Pass for this generation";
-    if (item?.type === "projectCard") return `Play ${item.cardName ?? "project card"}`;
-    if (item?.type === "playedAction") return `Use ${item.cardName ?? "played action"}`;
+    if (item?.type === "pass") return "<pass>";
+    if (item?.type === "projectCard") return item.cardName ?? "project card";
+    if (item?.type === "playedAction") return item.cardName ?? "played action";
     return "Unknown action";
   };
 
