@@ -769,6 +769,7 @@
     "https://firebase-320421-default-rtdb.firebaseio.com/tfmars420/lobby";
   const extensionActiveStorageKey = "tfmars420:active";
   const queueSessionStorageKey = "tfmars420:session";
+  const queueEventLogStorageKey = "tfmars420:queue-event-log";
   let lastRenderKey = "";
   let clickInFlight = false;
   let extensionActive = true;
@@ -2259,6 +2260,69 @@
     writeStorageString(queueSessionStorageKey, JSON.stringify(session));
   };
 
+  const queueItemDebugLabel = (item) => {
+    if (!item) return "";
+    if (item.type === "pass") return "<pass>";
+    return item.cardName ?? item.cardKey ?? item.cardSlug ?? item.type ?? "unknown";
+  };
+
+  const queueDebugSnapshot = (session = null) => {
+    let queueSession = session;
+    if (!queueSession) {
+      try {
+        const raw = window.localStorage.getItem(queueSessionStorageKey);
+        queueSession = raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        queueSession = null;
+      }
+    }
+    const queue = Array.isArray(queueSession?.queue) ? queueSession.queue : [];
+    return queue.map((item, index) => ({
+      index: index + 1,
+      type: item?.type ?? "unknown",
+      label: queueItemDebugLabel(item),
+      cost: item?.cost ?? null,
+      key: item?.cardKey ?? item?.cardSlug ?? null,
+    }));
+  };
+
+  const readQueueEventLog = () => {
+    try {
+      const raw = window.localStorage.getItem(queueEventLogStorageKey);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter(isPlainObject) : [];
+    } catch (error) {
+      return [];
+    }
+  };
+
+  const writeQueueEventLog = (entries) => {
+    writeStorageString(queueEventLogStorageKey, JSON.stringify(entries.slice(-60)));
+  };
+
+  const clearQueueEventLog = () => {
+    writeQueueEventLog([]);
+    renderQueuePanel();
+  };
+
+  const logQueueEvent = (eventName, details = {}, session = null) => {
+    const entry = {
+      at: new Date().toLocaleTimeString(),
+      event: eventName,
+      details,
+      queue: queueDebugSnapshot(session),
+      state: {
+        attempted: queueExecutionAttempted,
+        inFlight: queueExecutionInFlight,
+        prompt: currentActionPromptText(),
+        turn: isCurrentPlayerTurn(),
+      },
+    };
+    const entries = readQueueEventLog();
+    entries.push(entry);
+    writeQueueEventLog(entries);
+  };
+
   const readQueueSession = () => {
     const playerId = currentPlayerId();
     if (!playerId) return null;
@@ -2276,6 +2340,7 @@
     const session = normalizeQueueSession(parsed, playerId);
     if (shouldOverwrite) {
       writeQueueSession(session);
+      logQueueEvent("session-reset", { playerId }, session);
     }
     return session;
   };
@@ -2283,11 +2348,13 @@
   const updateQueueSession = (updater) => {
     const session = readQueueSession();
     if (!session) return null;
+    const before = queueDebugSnapshot(session);
     const nextSession = normalizeQueueSession(updater(cloneJson(session)) ?? session, session.playerId);
     writeQueueSession(nextSession);
     queueExecutionAttempted = false;
     queueExecutionError = "";
     queueExecutionDebug = "";
+    logQueueEvent("queue-update", { before }, nextSession);
     scheduleTerraformingMarsUpdate();
     return nextSession;
   };
@@ -2538,6 +2605,33 @@
       padding: 10px 12px;
       white-space: pre-wrap;
     }
+    #${timeWarpPanelId} .tfmars420-queue-event-log {
+      background: rgba(0, 0, 0, 0.56);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
+      margin-top: 10px;
+      padding: 8px;
+    }
+    #${timeWarpPanelId} .tfmars420-queue-event-log-header {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    #${timeWarpPanelId} .tfmars420-queue-event-log-title {
+      color: #d8d8d8;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    #${timeWarpPanelId} .tfmars420-queue-event-log pre {
+      color: #f5f5f5;
+      font: 12px/1.35 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin: 0;
+      max-height: 280px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
     .tfmars420-card-tools,
     .tfmars420-enqueue-tools {
       align-items: center;
@@ -2739,6 +2833,33 @@
 
     actions.append(passButton, clearButton);
     panel.append(actions);
+    renderQueueEventLog(panel);
+  };
+
+  const renderQueueEventLog = (panel) => {
+    const entries = readQueueEventLog();
+    if (entries.length === 0) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "tfmars420-queue-event-log";
+
+    const header = document.createElement("div");
+    header.className = "tfmars420-queue-event-log-header";
+    const title = document.createElement("div");
+    title.className = "tfmars420-queue-event-log-title";
+    title.textContent = "Queue event log";
+
+    const clear = document.createElement("button");
+    clear.type = "button";
+    clear.textContent = "Clear log";
+    clear.addEventListener("click", clearQueueEventLog);
+    header.append(title, clear);
+
+    const body = document.createElement("pre");
+    body.textContent = JSON.stringify(entries.slice(-20).reverse(), null, 2);
+
+    wrapper.append(header, body);
+    panel.append(wrapper);
   };
 
   const queuedProjectMoneyCost = (queue) =>
@@ -3094,6 +3215,7 @@
       queueExecutionAttempted = false;
       queueExecutionError = "";
       queueExecutionDebug = "";
+      logQueueEvent("log-mutation");
       scheduleTerraformingMarsUpdate();
     });
     queueMutationObserver.observe(target, {
@@ -3111,6 +3233,7 @@
     queueLogDiscoveryObserver = new MutationObserver(() => {
       if (queueLogTarget()) {
         startQueueLogObserver();
+        logQueueEvent("log-observer-attached");
         scheduleTerraformingMarsUpdate();
       }
     });
@@ -3122,23 +3245,50 @@
     if (!session || session.queue.length === 0) return null;
     const [item] = session.queue.splice(0, 1);
     writeQueueSession(session);
+    logQueueEvent("queue-pop", { item: queueItemDebugLabel(item) }, session);
     return item;
   };
 
   const clearQueuedActions = () => {
     const session = readQueueSession();
     if (!session) return;
+    const before = queueDebugSnapshot(session);
     session.queue = [];
     writeQueueSession(session);
+    logQueueEvent("queue-clear", { before }, session);
   };
 
   const maybeExecuteQueuedAction = () => {
     if (!shouldRunTerraformingMarsHelpers()) return;
-    if (queueExecutionAttempted || queueExecutionInFlight) return;
-    if (!latestPlayerView?.id || readQueueSession()?.playerId !== latestPlayerView.id) return;
-    if (hasCurrentPlayerPassed()) return;
-    if (!isCurrentPlayerTurn() || !hasLiveActionForm()) return;
-    if (!isTakeNextActionPhase()) return;
+    const session = readQueueSession();
+    const hasQueuedItems = Boolean(session?.queue?.length);
+    const logGuard = (reason) => {
+      if (hasQueuedItems) logQueueEvent("execute-guard", { reason }, session);
+    };
+    if (queueExecutionAttempted) {
+      logGuard("already-attempted");
+      return;
+    }
+    if (queueExecutionInFlight) {
+      logGuard("in-flight");
+      return;
+    }
+    if (!latestPlayerView?.id || session?.playerId !== latestPlayerView.id) {
+      logGuard("missing-or-mismatched-player");
+      return;
+    }
+    if (hasCurrentPlayerPassed()) {
+      logGuard("already-passed");
+      return;
+    }
+    if (!isCurrentPlayerTurn() || !hasLiveActionForm()) {
+      logGuard("not-turn-or-no-form");
+      return;
+    }
+    if (!isTakeNextActionPhase()) {
+      logGuard("not-take-action-phase");
+      return;
+    }
 
     const item = popNextQueuedAction();
     if (!item) return;
@@ -3147,13 +3297,19 @@
     queueExecutionInFlight = true;
     queueExecutionError = "";
     queueExecutionDebug = "";
+    logQueueEvent("execute-start", { item: queueItemDebugLabel(item) });
     executeQueuedItem(item)
       .then(() => {
+        logQueueEvent("execute-success", { item: queueItemDebugLabel(item) });
         scheduleTerraformingMarsUpdate();
       })
       .catch((error) => {
         queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
         queueExecutionDebug = buildQueueExecutionDebug(item, error);
+        logQueueEvent("execute-error", {
+          item: queueItemDebugLabel(item),
+          message: String(error?.message ?? error),
+        });
         clearQueuedActions();
         renderQueuePanel();
       })
