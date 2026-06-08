@@ -777,6 +777,7 @@
   let queueExecutionAttempted = false;
   let queueExecutionInFlight = false;
   let queueExecutionError = "";
+  let queueExecutionDebug = "";
   let terraformingMarsDomObserver = null;
   let terraformingMarsDomUpdateScheduled = false;
   let terraformingMarsDomUpdateNeedsPreview = false;
@@ -2166,6 +2167,7 @@
     if (nextRunId && nextRunId !== latestPlayerViewRunId) {
       queueExecutionAttempted = false;
       queueExecutionError = "";
+      queueExecutionDebug = "";
       latestPlayerViewRunId = nextRunId;
     }
     latestPlayerView = cloneJson(playerView);
@@ -2286,6 +2288,7 @@
     writeQueueSession(nextSession);
     queueExecutionAttempted = false;
     queueExecutionError = "";
+    queueExecutionDebug = "";
     scheduleTerraformingMarsUpdate();
     return nextSession;
   };
@@ -2512,6 +2515,18 @@
       line-height: 1.25;
       padding: 10px 12px;
     }
+    #${timeWarpPanelId} .tfmars420-timewarp-debug {
+      background: rgba(0, 0, 0, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 4px;
+      color: #f5f5f5;
+      font: 14px/1.35 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      margin: 10px 0 0;
+      max-height: 460px;
+      overflow: auto;
+      padding: 10px 12px;
+      white-space: pre-wrap;
+    }
     .tfmars420-card-tools,
     .tfmars420-enqueue-tools {
       align-items: center;
@@ -2634,6 +2649,12 @@
         error.className = "tfmars420-timewarp-error";
         error.textContent = queueExecutionError;
         panel.append(error);
+        if (queueExecutionDebug) {
+          const debug = document.createElement("pre");
+          debug.className = "tfmars420-timewarp-debug";
+          debug.textContent = queueExecutionDebug;
+          panel.append(debug);
+        }
       } else {
         panel.hidden = true;
         panel.innerHTML = "";
@@ -3053,12 +3074,14 @@
     queueExecutionAttempted = true;
     queueExecutionInFlight = true;
     queueExecutionError = "";
+    queueExecutionDebug = "";
     executeQueuedItem(item)
       .then(() => {
         scheduleTerraformingMarsUpdate();
       })
       .catch((error) => {
         queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
+        queueExecutionDebug = buildQueueExecutionDebug(item, error);
         clearQueuedActions();
         renderQueuePanel();
       })
@@ -3094,6 +3117,113 @@
     }
 
     throw new Error("unknown queued action type");
+  };
+
+  const elementDisplayInfo = (element) => {
+    if (!(element instanceof Element)) return null;
+    const style = window.getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return {
+      classes: Array.from(element.classList),
+      display: style.display,
+      visibility: style.visibility,
+      opacity: style.opacity,
+      rect: {
+        height: Math.round(rect.height),
+        width: Math.round(rect.width),
+        x: Math.round(rect.x),
+        y: Math.round(rect.y),
+      },
+      visible:
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
+        Number(style.opacity) !== 0 &&
+        rect.width > 0 &&
+        rect.height > 0,
+    };
+  };
+
+  const inputDebugInfo = (input) => {
+    if (!(input instanceof HTMLInputElement)) return null;
+    return {
+      checked: input.checked,
+      disabled: input.disabled,
+      name: input.name,
+      type: input.type,
+      value: input.value,
+      visible: elementDisplayInfo(input),
+    };
+  };
+
+  const labelDebugInfo = (label) => {
+    const input = label.querySelector("input");
+    return {
+      input: inputDebugInfo(input),
+      text: cleanText(label.textContent ?? ""),
+      visible: elementDisplayInfo(label),
+    };
+  };
+
+  const cardDebugInfo = (cardBox) => {
+    const container = cardContainerFromBox(cardBox);
+    const input = cardBox.querySelector("input[type='radio'], input[type='checkbox']");
+    const titleElements = [
+      ...(container?.matches?.(".card-title") ? [container] : []),
+      ...Array.from(container?.querySelectorAll?.(".card-title") ?? []),
+    ];
+    return {
+      identity: getCardIdentity(cardBox),
+      input: inputDebugInfo(input),
+      text: cleanText(cardBox.textContent ?? ""),
+      titleTexts: titleElements.map((title) => cleanText(title.textContent ?? "")).filter(Boolean),
+      containerClasses: Array.from(container?.classList ?? []),
+      cardBoxClasses: Array.from(cardBox.classList ?? []),
+      visible: elementDisplayInfo(cardBox),
+    };
+  };
+
+  const logRowDebugInfo = (row) => ({
+    player: cleanText(row.querySelector(".log-player")?.textContent ?? ""),
+    text: cleanText(row.textContent ?? ""),
+    visible: elementDisplayInfo(row),
+  });
+
+  const buildQueueExecutionDebug = (item, error) => {
+    const actionsBlock = getActionsBlock();
+    const selector = ".player_home_block--actions .wf-component--select-card .cardbox";
+    const cards = Array.from(document.querySelectorAll(selector));
+    const optionLabels = Array.from(actionsBlock?.querySelectorAll("label.form-radio") ?? []);
+    const buttons = Array.from(
+      actionsBlock?.querySelectorAll("button, input[type='submit']") ?? [],
+    );
+    const logRows = Array.from(document.querySelectorAll(".log-panel li, #logpanel-scrollable li"));
+    const debug = {
+      at: new Date().toLocaleString(),
+      url: window.location.href,
+      error: String(error?.message ?? error),
+      queuedItem: item,
+      currentPlayer: {
+        id: currentPlayerId(),
+        name: currentPlayerName(),
+        color: currentPlayerColor(),
+        hasPassed: hasCurrentPlayerPassed(),
+        isTurn: isCurrentPlayerTurn(),
+        hasLiveActionForm: hasLiveActionForm(),
+      },
+      actionOptions: optionLabels.map(labelDebugInfo),
+      actionCards: cards.map(cardDebugInfo),
+      submitButtons: buttons.map((button) => ({
+        disabled: Boolean(button.disabled),
+        text: cleanText(button.textContent ?? button.value ?? ""),
+        type: button.type,
+        visible: elementDisplayInfo(button),
+      })),
+      visibleLogRows: logRows
+        .filter((row) => elementDisplayInfo(row)?.visible)
+        .slice(-20)
+        .map(logRowDebugInfo),
+    };
+    return JSON.stringify(debug, null, 2);
   };
 
   const selectActionOption = (labelText) => {
