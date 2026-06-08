@@ -936,6 +936,13 @@
     return cleanText(clone.textContent ?? "");
   };
 
+  const cardTitleFromElement = (element) => {
+    const title = element?.matches?.(".card-title")
+      ? element
+      : element?.querySelector?.(".card-title");
+    return title ? cardNameFromElement(title) : "";
+  };
+
   const cardSlugFromElement = (element) =>
     Array.from(element.classList)
       .find(
@@ -2514,9 +2521,17 @@
 
   const queueItemLabel = (item) => {
     if (item?.type === "pass") return "<pass>";
-    if (item?.type === "projectCard") return item.cardName ?? "project card";
-    if (item?.type === "playedAction") return item.cardName ?? "played action";
+    if (item?.type === "projectCard") return queueCardName(item.cardName, "project card");
+    if (item?.type === "playedAction") return queueCardName(item.cardName, "played action");
     return "Unknown action";
+  };
+
+  const queueCardName = (name, fallback) => {
+    const cleaned = cleanText(String(name ?? ""));
+    if (!cleaned) return fallback;
+    const detailIndex = cleaned.indexOf("(");
+    if (detailIndex < 0) return cleaned;
+    return cleanText(cleaned.slice(0, detailIndex).replace(/\d+$/, "")) || fallback;
   };
 
   const cardContainerFromBox = (cardBox) => cardBox?.querySelector(".card-container") ?? cardBox;
@@ -2526,7 +2541,12 @@
       ? cardElement
       : cardElement?.querySelector?.(".card-container") ?? cardElement;
     const cardBox = container?.closest?.(".cardbox") ?? container;
-    const name = cardNameFromElement(container) || cardNameFromElement(cardBox) || "Card";
+    const name =
+      cardTitleFromElement(container) ||
+      cardTitleFromElement(cardBox) ||
+      cardNameFromElement(container) ||
+      cardNameFromElement(cardBox) ||
+      "Card";
     const slug = cardSlugFromElement(container) || slugifyCardName(name);
     const key = slug || normalizeCardName(name);
     return { name, slug, key };
