@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v1.0.0";
+  const contentScriptVersion = "v1.0.1";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -768,6 +768,7 @@
   const firebaseLobbyUrl =
     "https://firebase-320421-default-rtdb.firebaseio.com/tfmars420/lobby";
   const extensionActiveStorageKey = "tfmars420:active";
+  const newGameClientIdStorageKey = "tfmars420:newGameClientId";
   const queueSessionStorageKey = "tfmars420:session";
   let lastRenderKey = "";
   let clickInFlight = false;
@@ -1466,7 +1467,20 @@
     return storedValue !== "false";
   };
 
+  const readNewGameClientId = () => {
+    const storedValue = readStorageString(newGameClientIdStorageKey, "");
+    if (storedValue) return storedValue;
+
+    const generatedValue =
+      typeof globalThis.crypto?.randomUUID === "function"
+        ? globalThis.crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    writeStorageString(newGameClientIdStorageKey, generatedValue);
+    return generatedValue;
+  };
+
   extensionActive = readExtensionActive();
+  const newGameClientId = readNewGameClientId();
 
   const shouldRunTerraformingMarsHelpers = () => extensionActive;
 
@@ -1606,6 +1620,7 @@
   let newGameSettingsWriteTimer = null;
   let newGameSettingsListenersStarted = false;
   let applyingNewGameSettings = false;
+  let newGameSettingsApplyToken = 0;
   let lastSerializedNewGameSettings = "";
   let lastHandledRemoteNewGameSettingsTimestamp = 0;
   let lastLocalNewGameSettingsEditTimestamp = 0;
@@ -1796,11 +1811,28 @@
       if (radio) return radio;
     }
 
-    return controls[item.index] ?? null;
+    const fallback = controls[item.index] ?? null;
+    return controlMatchesNewGameSettingShape(fallback, item) ? fallback : null;
+  };
+
+  const controlMatchesNewGameSettingShape = (control, item) => {
+    if (
+      !control ||
+      !item ||
+      !(control instanceof HTMLInputElement ||
+        control instanceof HTMLSelectElement ||
+        control instanceof HTMLTextAreaElement)
+    ) {
+      return false;
+    }
+
+    const tag = control.tagName.toLowerCase();
+    const type = control instanceof HTMLInputElement ? control.type : tag;
+    return tag === item.tag && type === item.type;
   };
 
   const applyControlSetting = (control, item) => {
-    if (!control) return;
+    if (!controlMatchesNewGameSettingShape(control, item)) return;
 
     if (control instanceof HTMLInputElement && (control.type === "checkbox" || control.type === "radio")) {
       const nextChecked = Boolean(item.checked);
@@ -1818,19 +1850,45 @@
     dispatchBubbledEvent(control, "change");
   };
 
+  const applyNewGameSettingsPass = (settings, applyToken) => {
+    if (applyToken !== newGameSettingsApplyToken || !isNewGamePage() || !shouldRunTerraformingMarsHelpers()) return;
+    for (const item of settings.controls) {
+      applyControlSetting(findNewGameControlForSetting(item), item);
+    }
+    lastSerializedNewGameSettings = JSON.stringify(serializeNewGameSettings() ?? {});
+    renderLobbyPanel();
+  };
+
+  const cancelNewGameSettingsApply = () => {
+    newGameSettingsApplyToken += 1;
+    applyingNewGameSettings = false;
+  };
+
   const applyNewGameSettings = (settings) => {
     if (settings?.version !== 1 || !Array.isArray(settings.controls)) return;
+    const passDelays = [0, 75, 250, 700, 1500];
+    const applyToken = newGameSettingsApplyToken + 1;
+    newGameSettingsApplyToken = applyToken;
     applyingNewGameSettings = true;
-    try {
-      for (const item of settings.controls) {
-        applyControlSetting(findNewGameControlForSetting(item), item);
-      }
-      lastSerializedNewGameSettings = JSON.stringify(serializeNewGameSettings() ?? {});
-    } finally {
+    passDelays.forEach((delay, index) => {
       window.setTimeout(() => {
+        if (applyToken !== newGameSettingsApplyToken) return;
+        try {
+          applyNewGameSettingsPass(settings, applyToken);
+        } finally {
+          if (index === passDelays.length - 1 && applyToken === newGameSettingsApplyToken) {
+            applyingNewGameSettings = false;
+            autoApplyNewGameSettingsIfNewer();
+          }
+        }
+      }, delay);
+    });
+    window.setTimeout(() => {
+      if (applyingNewGameSettings && applyToken === newGameSettingsApplyToken) {
         applyingNewGameSettings = false;
-      }, 0);
-    }
+        autoApplyNewGameSettingsIfNewer();
+      }
+    }, Math.max(...passDelays) + 250);
   };
 
   const newGameSettingsDrift = (settings) => {
@@ -1849,22 +1907,27 @@
 
   const autoApplyNewGameSettingsIfNewer = () => {
     if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || applyingNewGameSettings) return;
+    const settingsEntry = latestLobbyData?.newGameSettings;
     const timestamp = remoteNewGameSettingsTimestamp();
     if (timestamp <= lastHandledRemoteNewGameSettingsTimestamp) return;
+    if (settingsEntry?.sourceClientId === newGameClientId) {
+      lastHandledRemoteNewGameSettingsTimestamp = timestamp;
+      return;
+    }
     if (timestamp <= lastLocalNewGameSettingsEditTimestamp) {
       lastHandledRemoteNewGameSettingsTimestamp = timestamp;
       return;
     }
 
     lastHandledRemoteNewGameSettingsTimestamp = timestamp;
-    const settings = latestLobbyData?.newGameSettings?.value;
+    const settings = settingsEntry?.value;
     if (!newGameSettingsDrift(settings)) return;
     applyNewGameSettings(settings);
     renderLobbyPanel();
   };
 
   const writeNewGameSettingsFromPage = async () => {
-    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers() || applyingNewGameSettings) return;
+    if (!isNewGamePage() || !shouldRunTerraformingMarsHelpers()) return;
     const settings = serializeNewGameSettings();
     if (!settings) return;
 
@@ -1872,7 +1935,7 @@
     if (serialized === lastSerializedNewGameSettings) return;
     lastSerializedNewGameSettings = serialized;
 
-    const entry = { value: settings, timestamp: Date.now() };
+    const entry = { value: settings, timestamp: Date.now(), sourceClientId: newGameClientId };
     try {
       await firebaseSetLobbyField("newGameSettings", entry);
       lastHandledRemoteNewGameSettingsTimestamp = Math.max(
@@ -1888,14 +1951,13 @@
 
   const scheduleNewGameSettingsWrite = () => {
     window.clearTimeout(newGameSettingsWriteTimer);
-    newGameSettingsWriteTimer = window.setTimeout(writeNewGameSettingsFromPage, 450);
+    newGameSettingsWriteTimer = window.setTimeout(writeNewGameSettingsFromPage, 200);
   };
 
   const handleNewGameSettingsEvent = (event) => {
     if (
       !isNewGamePage() ||
       !shouldRunTerraformingMarsHelpers() ||
-      applyingNewGameSettings ||
       !event.isTrusted
     ) {
       return;
@@ -1905,6 +1967,7 @@
     if (target.closest(`.${lobbyRootClass}`)) return;
     if (target.closest("dialog, .preferences_panel, .sidebar_item--settings")) return;
     if (!target.closest("#create-game")) return;
+    cancelNewGameSettingsApply();
     lastLocalNewGameSettingsEditTimestamp = Date.now();
     lastHandledRemoteNewGameSettingsTimestamp = Math.max(
       lastHandledRemoteNewGameSettingsTimestamp,
@@ -1936,6 +1999,7 @@
   };
 
   const teardownNewGameLobbySync = () => {
+    cancelNewGameSettingsApply();
     stopFirebaseLobbyStream();
     stopNewGameSettingsListeners();
     window.clearTimeout(newGameSettingsWriteTimer);
