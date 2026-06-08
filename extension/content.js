@@ -2439,6 +2439,18 @@
   const hasLiveActionForm = () =>
     Boolean(document.querySelector(".player_home_block--actions .wf-root, .player_home_block--actions form"));
 
+  const currentActionPromptText = () => {
+    const actionsBlock = getActionsBlock();
+    const labels = Array.from(
+      actionsBlock?.querySelectorAll(".wf-options > label, .wf-root > label, form > label") ?? [],
+    );
+    return labels
+      .map((label) => cleanText(label.textContent ?? ""))
+      .find((text) => /^take your (first|next) action/i.test(text)) ?? "";
+  };
+
+  const isTakeNextActionPhase = () => Boolean(currentActionPromptText());
+
   const timeWarpCss = () => `
     #${timeWarpPanelId} {
       background: #2f2f2f;
@@ -3061,6 +3073,9 @@
     queueObservedLogTarget = target;
     queueMutationObserver = new MutationObserver(() => {
       if (queueMutationPaused) return;
+      queueExecutionAttempted = false;
+      queueExecutionError = "";
+      queueExecutionDebug = "";
       scheduleTerraformingMarsUpdate();
     });
     queueMutationObserver.observe(target, {
@@ -3105,6 +3120,7 @@
     if (!latestPlayerView?.id || readQueueSession()?.playerId !== latestPlayerView.id) return;
     if (hasCurrentPlayerPassed()) return;
     if (!isCurrentPlayerTurn() || !hasLiveActionForm()) return;
+    if (!isTakeNextActionPhase()) return;
 
     const item = popNextQueuedAction();
     if (!item) return;
@@ -3254,6 +3270,7 @@
         hasPassed: hasCurrentPlayerPassed(),
         isTurn: isCurrentPlayerTurn(),
         hasLiveActionForm: hasLiveActionForm(),
+        actionPrompt: currentActionPromptText(),
       },
       actionOptions: optionLabels.map(labelDebugInfo),
       actionCards: cards.map(cardDebugInfo),
