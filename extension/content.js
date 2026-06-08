@@ -2737,9 +2737,8 @@
     placeQueuePanel(panel, host, actionsBlock);
 
     const session = readQueueSession();
-    const alreadyPassed = hasCurrentPlayerPassed();
 
-    if (!session || alreadyPassed) {
+    if (!session) {
       panel.hidden = true;
       panel.innerHTML = "";
       return;
