@@ -2167,9 +2167,6 @@
     if (!looksLikePlayerView(playerView)) return;
     const nextRunId = String(playerView.runId ?? "");
     if (nextRunId && nextRunId !== latestPlayerViewRunId) {
-      queueExecutionAttempted = false;
-      queueExecutionError = "";
-      queueExecutionDebug = "";
       latestPlayerViewRunId = nextRunId;
     }
     latestPlayerView = cloneJson(playerView);
