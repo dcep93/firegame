@@ -1497,21 +1497,7 @@
       return wrapper;
     }
 
-    const gameId = currentGameId();
-    if (!gameId) return null;
-
-    const spectatorItem = findSpectatorListItem();
-    if (!spectatorItem?.parentElement) return null;
-
-    let wrapper = document.querySelector(".tfmars420-game-lobby-controls");
-    if (!wrapper) {
-      wrapper = document.createElement("li");
-      wrapper.className = `${lobbyRootClass} tfmars420-game-lobby-controls`;
-    }
-    if (wrapper.nextElementSibling !== spectatorItem) {
-      spectatorItem.parentElement.insertBefore(wrapper, spectatorItem);
-    }
-    return wrapper;
+    return null;
   };
 
   const renderControls = () => {
@@ -1520,6 +1506,7 @@
     if (!host) {
       document.getElementById(controlsPanelId)?.remove();
       document.getElementById(lobbyPanelId)?.remove();
+      document.querySelector(".tfmars420-game-lobby-controls")?.remove();
       return;
     }
 
