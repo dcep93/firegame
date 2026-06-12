@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v1.0.1";
+  const contentScriptVersion = "v1.0.2";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -768,7 +768,6 @@
   const firebaseLobbyUrl =
     "https://firebase-320421-default-rtdb.firebaseio.com/tfmars420/lobby";
   const extensionActiveStorageKey = "tfmars420:active";
-  const newGameClientIdStorageKey = "tfmars420:newGameClientId";
   const queueSessionStorageKey = "tfmars420:session";
   let lastRenderKey = "";
   let clickInFlight = false;
@@ -1467,20 +1466,7 @@
     return storedValue !== "false";
   };
 
-  const readNewGameClientId = () => {
-    const storedValue = readStorageString(newGameClientIdStorageKey, "");
-    if (storedValue) return storedValue;
-
-    const generatedValue =
-      typeof globalThis.crypto?.randomUUID === "function"
-        ? globalThis.crypto.randomUUID()
-        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-    writeStorageString(newGameClientIdStorageKey, generatedValue);
-    return generatedValue;
-  };
-
   extensionActive = readExtensionActive();
-  const newGameClientId = readNewGameClientId();
 
   const shouldRunTerraformingMarsHelpers = () => extensionActive;
 
@@ -1910,10 +1896,6 @@
     const settingsEntry = latestLobbyData?.newGameSettings;
     const timestamp = remoteNewGameSettingsTimestamp();
     if (timestamp <= lastHandledRemoteNewGameSettingsTimestamp) return;
-    if (settingsEntry?.sourceClientId === newGameClientId) {
-      lastHandledRemoteNewGameSettingsTimestamp = timestamp;
-      return;
-    }
     if (timestamp <= lastLocalNewGameSettingsEditTimestamp) {
       lastHandledRemoteNewGameSettingsTimestamp = timestamp;
       return;
@@ -1935,7 +1917,7 @@
     if (serialized === lastSerializedNewGameSettings) return;
     lastSerializedNewGameSettings = serialized;
 
-    const entry = { value: settings, timestamp: Date.now(), sourceClientId: newGameClientId };
+    const entry = { value: settings, timestamp: Date.now() };
     try {
       await firebaseSetLobbyField("newGameSettings", entry);
       lastHandledRemoteNewGameSettingsTimestamp = Math.max(
