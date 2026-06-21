@@ -257,6 +257,14 @@
     const collectDiceValuesFromText = (text) => {
       const values = [];
       const normalized = text.toLowerCase();
+      const explicitDice = normalized.match(/\bdice=([1-6]),([1-6])\b/);
+      if (explicitDice) {
+        return [
+          Number.parseInt(explicitDice[1], 10),
+          Number.parseInt(explicitDice[2], 10),
+        ];
+      }
+
       const tokenPattern = /(?::?dice(?:_red)?[:_\s]?([1-6])\b)|(?:\bdice(?:\s+red)?\s+([1-6])\b)/g;
       let match = tokenPattern.exec(normalized);
       while (match) {
@@ -273,6 +281,11 @@
 
     const wait = (milliseconds) =>
       new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+
+    const waitForScrollRender = () =>
+      new Promise((resolve) => {
+        window.requestAnimationFrame(() => window.setTimeout(resolve, 8));
+      });
 
     const getScrollableAncestor = (element) => {
       let current = element?.parentElement ?? null;
@@ -341,6 +354,96 @@
       return getVisibleDiceLogLines().map((text) => ({ element: null, text }));
     };
 
+    const getElementDescriptorText = (element) => {
+      if (!element) return "";
+      const descriptors = [];
+      for (const child of element.querySelectorAll("img, [aria-label], [title], [alt]")) {
+        const text = [
+          child.getAttribute("aria-label"),
+          child.getAttribute("title"),
+          child.getAttribute("alt"),
+          child.getAttribute("src"),
+        ]
+          .filter(Boolean)
+          .map((value) => String(value).trim())
+          .filter(Boolean)
+          .join(" | ");
+        if (text) descriptors.push(text);
+      }
+      return descriptors.join("; ");
+    };
+
+    const formatLogSourceForClipboard = (source) => {
+      const parts = [];
+      if (Number.isFinite(source.index)) {
+        parts.push(`[${source.index}]`);
+      }
+
+      const text = normalizeLogText(source.text);
+      if (text) parts.push(text);
+
+      const diceValues = source.element ? collectDiceValues(source.element) : [];
+      if (diceValues.length > 0) {
+        parts.push(`dice=${diceValues.join(",")}`);
+      }
+
+      const descriptorText = getElementDescriptorText(source.element);
+      if (descriptorText && descriptorText !== text) {
+        parts.push(`assets=${descriptorText}`);
+      }
+
+      return parts.join(" ").trim();
+    };
+
+    const collectAllLogSources = async () => {
+      const virtualSources = await collectVirtualFeedSources();
+      const entries = virtualSources.length > 0 ? [] : getLogEntries();
+      return virtualSources.length > 0
+        ? virtualSources
+        : entries.length > 0
+          ? entries.map((entry) => ({ element: entry, text: entry.textContent ?? "" }))
+          : getVisibleDiceLogLines().map((text) => ({ element: null, text }));
+    };
+
+    const getFullLogClipboardText = (sources) => {
+      return sources
+        .map(formatLogSourceForClipboard)
+        .filter(Boolean)
+        .join("\n");
+    };
+
+    const copyTextToClipboard = async (text) => {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      Object.assign(textarea.style, {
+        left: "-9999px",
+        position: "fixed",
+        top: "0",
+      });
+      document.body.append(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+      } finally {
+        textarea.remove();
+      }
+    };
+
+    const copyFullLogToClipboard = async (sourcesPromise) => {
+      const sources = await sourcesPromise;
+      const text = getFullLogClipboardText(sources);
+      await copyTextToClipboard(text || "[firegame] No Colonist log entries found.");
+      console.log("[firegame-colonist] copied log to clipboard", {
+        characters: text.length,
+      });
+    };
+
     const collectVirtualFeedSources = async () => {
       const feed = getVirtualFeed();
       if (!feed) return [];
@@ -358,7 +461,7 @@
       try {
         for (const position of positions) {
           scrollRoot.scrollTop = position;
-          await wait(35);
+          await waitForScrollRender();
           collectVisibleFeedSources(virtualScroller, collected);
         }
       } finally {
@@ -436,16 +539,9 @@
         turnsAgo: rolls.length - index - 1,
       }));
 
-    const getDiceRolls = async () => {
+    const parseDiceRollsFromSources = (sources) => {
       const rolls = [];
       const seenLogKeys = new Set();
-      const virtualSources = await collectVirtualFeedSources();
-      const entries = virtualSources.length > 0 ? [] : getLogEntries();
-      const sources = virtualSources.length > 0
-        ? virtualSources
-        : entries.length > 0
-          ? entries.map((entry) => ({ element: entry, text: entry.textContent ?? "" }))
-          : getVisibleDiceLogLines().map((text) => ({ element: null, text }));
       for (const source of sources) {
         const parsed = parseDiceRollSource(source);
         if (parsed.key) {
@@ -459,12 +555,15 @@
       return { rolls: indexedRolls, seenLogKeys };
     };
 
-    const loadInitialDiceCache = async () => {
+    const getDiceRolls = async () => parseDiceRollsFromSources(await collectAllLogSources());
+
+    const loadInitialDiceCache = async (sourcesPromise) => {
       if (diceModalState.initialScanPromise) {
         return diceModalState.initialScanPromise;
       }
 
-      diceModalState.initialScanPromise = getDiceRolls()
+      diceModalState.initialScanPromise = Promise.resolve(sourcesPromise ?? collectAllLogSources())
+        .then(parseDiceRollsFromSources)
         .then(({ rolls, seenLogKeys }) => {
           diceModalState.rolls = rolls.map(({ sum }) => ({ sum }));
           diceModalState.seenLogKeys = seenLogKeys;
@@ -659,6 +758,10 @@
 
     const showDiceOverlay = async () => {
       upsertColonistCss();
+      const sourcesPromise = collectAllLogSources();
+      copyFullLogToClipboard(sourcesPromise).catch((error) => {
+        console.warn("[firegame-colonist] unable to copy log to clipboard", error);
+      });
       stopDiceOverlayRefresh();
       stopDiceOverlayBoundsSync();
       document.removeEventListener("keydown", handleOverlayKeydown, true);
@@ -696,7 +799,7 @@
         return;
       }
 
-      await loadInitialDiceCache();
+      await loadInitialDiceCache(sourcesPromise);
       if (generation !== diceModalState.generation) return;
       if (!document.getElementById(overlayId)) return;
       renderDiceTable();
