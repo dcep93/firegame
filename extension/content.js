@@ -2762,6 +2762,7 @@
       font-size: 13px;
       min-height: 32px;
       padding: 6px 8px;
+      white-space: pre-line;
       width: 112px;
       max-width: calc(50% - 4px);
     }
@@ -3245,7 +3246,7 @@
         const actionButton = upsertCardToolButton(
           tools,
           "tfmars420-played-action-queue-button",
-          actionPosition ? "dequeue action" : "enqueue action",
+          actionPosition ? "dequeue\naction" : "enqueue\naction",
           () => {
             updateQueueSession((draft) => {
               if (removeQueuedCard(draft, "playedAction", identity)) return draft;
@@ -3271,7 +3272,7 @@
         const targetButton = upsertCardToolButton(
           tools,
           "tfmars420-played-target-queue-button",
-          targetPosition ? "dequeue target" : "enqueue target",
+          targetPosition ? "dequeue\ntarget" : "enqueue\ntarget",
           () => {
             updateQueueSession((draft) => {
               if (removeQueuedCard(draft, "cardTarget", identity)) return draft;
