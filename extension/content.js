@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v1.0.2";
+  const contentScriptVersion = "v1.0.4";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -28,7 +28,11 @@
   });
 
   function startColonist420() {
-    const containerSelector = "div.container-cVxpOtTU.gameHelpButtonsLayer-odYlgrig";
+    const containerSelectors = [
+      "[class*='gameHelpButtonsLayer']",
+      "[class*='gameHelpButtonsContainer']",
+      "div.container-cVxpOtTU.gameHelpButtonsLayer-odYlgrig",
+    ];
     const buttonClass = "firegame-colonist-420";
     const cssId = "firegame-colonist-420-css";
     const overlayId = "firegame-colonist-dice-overlay";
@@ -208,7 +212,6 @@
       refreshTimer: null,
       refreshInFlight: false,
       generation: 0,
-      initialized: false,
       initialScanPromise: null,
       boundsCleanup: null,
     };
@@ -276,7 +279,11 @@
 
     const looksLikeDiceRollText = (text) => {
       const normalized = text.toLowerCase();
-      return /\brolled\b/.test(normalized) && /dice(?:_red)?[:_\s]?[1-6]\b/.test(normalized);
+      return (
+        /\brolled\b/.test(normalized) &&
+        (/\bdice=[1-6],[1-6]\b/.test(normalized) ||
+          /dice(?:_red)?[:_\s]?[1-6]\b/.test(normalized))
+      );
     };
 
     const wait = (milliseconds) =>
@@ -557,8 +564,8 @@
 
     const getDiceRolls = async () => parseDiceRollsFromSources(await collectAllLogSources());
 
-    const loadInitialDiceCache = async (sourcesPromise) => {
-      if (diceModalState.initialScanPromise) {
+    const loadInitialDiceCache = async (sourcesPromise, options = {}) => {
+      if (!options.force && diceModalState.initialScanPromise) {
         return diceModalState.initialScanPromise;
       }
 
@@ -567,7 +574,6 @@
         .then(({ rolls, seenLogKeys }) => {
           diceModalState.rolls = rolls.map(({ sum }) => ({ sum }));
           diceModalState.seenLogKeys = seenLogKeys;
-          diceModalState.initialized = true;
           return { rolls, seenLogKeys };
         })
         .finally(() => {
@@ -792,23 +798,24 @@
       document.body.append(overlay);
       startDiceOverlayBoundsSync();
 
-      if (diceModalState.initialized) {
-        renderDiceTable();
-        startDiceOverlayRefresh();
-        refreshDiceOverlay();
-        return;
-      }
-
-      await loadInitialDiceCache(sourcesPromise);
+      await loadInitialDiceCache(sourcesPromise, { force: true });
       if (generation !== diceModalState.generation) return;
       if (!document.getElementById(overlayId)) return;
       renderDiceTable();
       startDiceOverlayRefresh();
     };
 
+    const findButtonContainer = () => {
+      for (const selector of containerSelectors) {
+        const container = document.querySelector(selector);
+        if (container) return container;
+      }
+      return null;
+    };
+
     const ensureButton = () => {
       upsertColonistCss();
-      const container = document.querySelector(containerSelector);
+      const container = findButtonContainer();
       if (!container) return;
       const existing = Array.from(container.children).find((child) =>
         child.classList.contains(buttonClass),
@@ -2702,6 +2709,16 @@
       gap: 8px;
       margin-top: 8px;
     }
+    #${timeWarpPanelId} .tfmars420-radio-option-index {
+      background: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 4px;
+      box-sizing: border-box;
+      color: #111;
+      font: inherit;
+      padding: 4px 6px;
+      width: 58px;
+    }
     #${timeWarpPanelId} .tfmars420-timewarp-error {
       background: rgba(47, 47, 47, 0.96);
       border: 1px solid rgba(255, 180, 168, 0.42);
@@ -2740,6 +2757,13 @@
       transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
       width: 132px;
       max-width: calc(100% - 28px);
+    }
+    .tfmars420-enqueue-tools button {
+      font-size: 13px;
+      min-height: 32px;
+      padding: 6px 8px;
+      width: 112px;
+      max-width: calc(50% - 4px);
     }
     .tfmars420-card-tools button:hover:not(:disabled),
     .tfmars420-enqueue-tools button:hover:not(:disabled) {
@@ -2900,7 +2924,33 @@
       });
     });
 
-    actions.append(passButton, clearButton);
+    const optionIndexInput = document.createElement("input");
+    optionIndexInput.type = "number";
+    optionIndexInput.className = "tfmars420-radio-option-index";
+    optionIndexInput.min = "1";
+    optionIndexInput.step = "1";
+    optionIndexInput.value = "1";
+    optionIndexInput.title = "1-based radio option index";
+    optionIndexInput.setAttribute("aria-label", "Radio option index");
+    optionIndexInput.addEventListener("input", () => optionIndexInput.setCustomValidity(""));
+
+    const optionIndexButton = document.createElement("button");
+    optionIndexButton.type = "button";
+    optionIndexButton.textContent = "Enqueue option";
+    optionIndexButton.addEventListener("click", () => {
+      const optionIndex = optionIndexInput.valueAsNumber;
+      if (!Number.isInteger(optionIndex) || optionIndex < 1) {
+        optionIndexInput.setCustomValidity("Enter an option index of 1 or greater.");
+        optionIndexInput.reportValidity();
+        return;
+      }
+      updateQueueSession((draft) => {
+        draft.queue.push({ type: "radioOption", optionIndex });
+        return draft;
+      });
+    });
+
+    actions.append(passButton, clearButton, optionIndexInput, optionIndexButton);
     panel.append(actions);
   };
 
@@ -2927,6 +2977,8 @@
     if (item?.type === "pass") return "<pass>";
     if (item?.type === "projectCard") return queueCardName(item.cardName, "project card");
     if (item?.type === "playedAction") return queueCardName(item.cardName, "played action");
+    if (item?.type === "radioOption") return `radio option ${item.optionIndex}`;
+    if (item?.type === "cardTarget") return `target: ${queueCardName(item.cardName, "played card")}`;
     return "Unknown action";
   };
 
@@ -3154,8 +3206,15 @@
     const container = cardContainerFromBox(cardBox);
     if (!container || container.classList.contains("card-unavailable")) return false;
     if (cardBox.querySelector(".card-unavailable")) return false;
-    return Boolean(container.querySelector(".background-color-active")) && /Action:/i.test(cardBox.textContent ?? "");
+    return /Action:/i.test(cardBox.textContent ?? "");
   };
+
+  const isEnqueueablePlayedCardTarget = (cardBox) =>
+    Boolean(
+      cardContainerFromBox(cardBox)?.querySelector(
+        ".card-title.is-corporation, .card-title.background-color-prelude, .card-title.background-color-active",
+      ),
+    );
 
   const renderPlayedActionTools = () => {
     const session = readQueueSession();
@@ -3164,13 +3223,14 @@
 
     document.querySelectorAll(".player_home_block--cards .cardbox").forEach((cardBox) => {
       const existingTools = cardBox.querySelector(":scope > .tfmars420-enqueue-tools");
-      if (alreadyPassed || !isUnusedPlayedActionCard(cardBox)) {
+      const canQueueAction = !alreadyPassed && isUnusedPlayedActionCard(cardBox);
+      const canQueueTarget = !alreadyPassed && isEnqueueablePlayedCardTarget(cardBox);
+      if (!canQueueAction && !canQueueTarget) {
         existingTools?.remove();
         return;
       }
 
       const identity = getCardIdentity(cardBox);
-      const position = findQueuedCardPosition(session.queue, "playedAction", identity);
 
       let tools = existingTools;
       if (!tools) {
@@ -3179,25 +3239,57 @@
         cardBox.append(tools);
       }
 
-      const button = upsertCardToolButton(
-        tools,
-        "tfmars420-played-action-queue-button",
-        position ? "dequeue" : "enqueue",
-        () => {
-          updateQueueSession((draft) => {
-            if (removeQueuedCard(draft, "playedAction", identity)) return draft;
-            draft.queue.push({
-              type: "playedAction",
-              cardName: identity.name,
-              cardSlug: identity.slug,
-              cardKey: identity.key,
+      const existingActionButton = tools.querySelector(":scope > .tfmars420-played-action-queue-button");
+      if (canQueueAction) {
+        const actionPosition = findQueuedCardPosition(session.queue, "playedAction", identity);
+        const actionButton = upsertCardToolButton(
+          tools,
+          "tfmars420-played-action-queue-button",
+          actionPosition ? "dequeue action" : "enqueue action",
+          () => {
+            updateQueueSession((draft) => {
+              if (removeQueuedCard(draft, "playedAction", identity)) return draft;
+              draft.queue.push({
+                type: "playedAction",
+                cardName: identity.name,
+                cardSlug: identity.slug,
+                cardKey: identity.key,
+              });
+              return draft;
             });
-            return draft;
-          });
-        },
-      );
-      button.classList.toggle("is-queued", Boolean(position));
-      button.title = position ? "Dequeue action" : "Enqueue action";
+          },
+        );
+        actionButton.classList.toggle("is-queued", Boolean(actionPosition));
+        actionButton.title = actionPosition ? "Dequeue action" : "Enqueue action";
+      } else {
+        existingActionButton?.remove();
+      }
+
+      const existingTargetButton = tools.querySelector(":scope > .tfmars420-played-target-queue-button");
+      if (canQueueTarget) {
+        const targetPosition = findQueuedCardPosition(session.queue, "cardTarget", identity);
+        const targetButton = upsertCardToolButton(
+          tools,
+          "tfmars420-played-target-queue-button",
+          targetPosition ? "dequeue target" : "enqueue target",
+          () => {
+            updateQueueSession((draft) => {
+              if (removeQueuedCard(draft, "cardTarget", identity)) return draft;
+              draft.queue.push({
+                type: "cardTarget",
+                cardName: identity.name,
+                cardSlug: identity.slug,
+                cardKey: identity.key,
+              });
+              return draft;
+            });
+          },
+        );
+        targetButton.classList.toggle("is-queued", Boolean(targetPosition));
+        targetButton.title = targetPosition ? "Dequeue target" : "Enqueue target";
+      } else {
+        existingTargetButton?.remove();
+      }
     });
   };
 
@@ -3301,6 +3393,7 @@
   const maybeExecuteQueuedAction = () => {
     if (!shouldRunTerraformingMarsHelpers()) return;
     const session = readQueueSession();
+    const nextItem = session?.queue?.[0];
     if (queueExecutionAttempted) {
       return;
     }
@@ -3316,7 +3409,11 @@
     if (!isCurrentPlayerTurn() || !hasLiveActionForm()) {
       return;
     }
-    if (!isTakeNextActionPhase()) {
+    const isFollowUpItem = nextItem?.type === "radioOption" || nextItem?.type === "cardTarget";
+    if (isFollowUpItem && isTakeNextActionPhase()) {
+      return;
+    }
+    if (!isFollowUpItem && !isTakeNextActionPhase()) {
       return;
     }
 
@@ -3372,6 +3469,20 @@
       return;
     }
 
+    if (item?.type === "radioOption") {
+      selectIndexedRadioOption(item.optionIndex);
+      await nextFrame();
+      clickIndexedRadioSubmit();
+      return;
+    }
+
+    if (item?.type === "cardTarget") {
+      await selectActionCard(item, actionCardSelector(), { requireEnabledInput: true });
+      await nextFrame();
+      clickCardTargetSubmit();
+      return;
+    }
+
     throw new Error("unknown queued action type");
   };
 
@@ -3403,6 +3514,50 @@
     });
   };
 
+  const selectIndexedRadioOption = (optionIndex) => {
+    const normalizedIndex = Number(optionIndex);
+    if (!Number.isInteger(normalizedIndex) || normalizedIndex < 1) {
+      throw new Error(`invalid radio option index: ${optionIndex}`);
+    }
+
+    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
+    if (!actionsRoot) {
+      throw new Error("missing action form");
+    }
+
+    const radios = Array.from(actionsRoot.querySelectorAll("input[type='radio']"));
+    const radio = radios[normalizedIndex - 1];
+    if (!radio) {
+      throw new Error(`missing radio option ${normalizedIndex}; found ${radios.length}`);
+    }
+    if (radio.disabled) {
+      throw new Error(`radio option ${normalizedIndex} is disabled`);
+    }
+
+    preserveScrollDuring(() => {
+      radio.checked = true;
+      radio.click();
+      dispatchBubbledEvent(radio, "input");
+      dispatchBubbledEvent(radio, "change");
+    });
+  };
+
+  const clickExactActionSubmit = (expectedTexts) => {
+    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
+    const buttons = Array.from(actionsRoot?.querySelectorAll("button, input[type='submit']") ?? []);
+    const button = buttons.find((candidate) =>
+      expectedTexts.includes(cleanText(candidate.textContent ?? candidate.value ?? "")),
+    );
+    if (!button || button.disabled) {
+      throw new Error(`missing submit button: ${expectedTexts.join(" or ")}`);
+    }
+    preserveScrollDuring(() => button.click());
+  };
+
+  const clickIndexedRadioSubmit = () => clickExactActionSubmit(["Confirm"]);
+
+  const clickCardTargetSubmit = () => clickExactActionSubmit(["Add resource", "Add resources"]);
+
   const findActionCardForQueuedItem = (item, selector) => {
     const cards = Array.from(document.querySelectorAll(selector));
     const cardBox = cards.find((candidate) => cardMatchesQueuedItem(candidate, item));
@@ -3410,7 +3565,7 @@
     return { cardBox, cards, input };
   };
 
-  const selectActionCard = async (item, selector) => {
+  const selectActionCard = async (item, selector, options = {}) => {
     let cardBox = null;
     let cards = [];
     let input = null;
@@ -3430,6 +3585,9 @@
           foundCards ? `; found: ${foundCards}` : ""
         }`,
       );
+    }
+    if (options.requireEnabledInput && (!input || input.disabled)) {
+      throw new Error(`card is not selectable: ${item.cardName ?? item.cardKey ?? "unknown"}`);
     }
     preserveScrollDuring(() => {
       if (input) {
