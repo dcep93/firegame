@@ -18,19 +18,20 @@ Reduce the public `v1.0.6` release notes to at most 200 words before the
 
 ## Structure
 
-The shortened feature summary will retain four scannable areas:
+The shortened feature summary will retain two top-level site areas:
 
 1. Terraforming Mars
-2. Autopilots
-3. Colonist
-4. Controls and updates
+2. Colonist
 
 The Terraforming Mars section will consolidate shared setup, card previews,
-hand sorting, live scoring, queues, remembered choices, and turn helpers. The
-Autopilots section will name and summarize Escape, Got a Lotta Energy, and Buy
-Everything. The Colonist section will retain full-log dice history, live
-recency display, refresh behavior, and clipboard copying. Controls and updates
-will retain enable/disable behavior and the content-only update workflow.
+hand sorting, live scoring, queues, remembered choices, and turn helpers. A
+third-level `Autopilots` subsection inside Terraforming Mars will name and
+summarize Escape, Got a Lotta Energy, and Buy Everything. The Colonist section
+will retain full-log dice history, live recency display, refresh behavior, and
+clipboard copying.
+
+There will be no standalone `Controls and updates` feature section. Update and
+disable behavior remains documented only in the unchanged instruction sections.
 
 ## Verification
 
@@ -38,5 +39,9 @@ will retain enable/disable behavior and the content-only update workflow.
   publishing.
 - Confirm the instruction portion exactly matches the previously published
   instruction text.
-- Confirm all four feature headings and all three autopilot names remain.
+- Confirm Terraforming Mars and Colonist are the only top-level feature
+  headings.
+- Confirm Autopilots is nested under Terraforming Mars and all three autopilot
+  names remain.
+- Confirm no standalone Controls and updates section remains.
 - Confirm `v1.0.6` remains the only release.
