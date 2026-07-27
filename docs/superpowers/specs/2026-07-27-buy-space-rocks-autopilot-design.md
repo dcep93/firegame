@@ -18,7 +18,7 @@ everywhere else.
 ## Goal
 
 Add a persistent autopilot mode named `buy space rocks` that buys permitted
-copies of three exact cards in rendered order, completes the corresponding
+copies of four exact cards in rendered order, completes the corresponding
 payment, and safely declines or escapes when no desired purchase is possible.
 
 ## Exact card allowlist
@@ -28,6 +28,7 @@ The mode recognizes these upstream English card names exactly:
 - `Comet Aiming`
 - `Asteroid Deflection System`
 - `Solarnet`
+- `Capital`
 
 Near matches, localized names, and `Solarnet Shutdown` do not qualify.
 
@@ -86,8 +87,10 @@ Other queue-item modes retain their current eligibility rules.
 The purchase executor operates only inside the active select-card workflow.
 
 1. Read card labels in their rendered DOM order.
-2. Resolve each card's visible name through the extension's existing card-name
-   helper.
+2. Resolve each card's visible title through the extension's existing
+   `cardTitleFromElement` helper. The purchase row's full text includes cost,
+   description, effects, and other metadata and must never be used as the
+   exact-name comparison value.
 3. Uncheck any checked non-allowlisted card, waiting one animation frame after
    each change.
 4. Leave checked allowlisted cards selected.
@@ -167,6 +170,8 @@ Behavioral coverage will include:
 
 - mode normalization, label rendering, persistence, and dropdown order;
 - exact allowlist acceptance and near-match rejection;
+- realistic nested `.card-title` markup with surrounding cost and description,
+  proving full-row text cannot mask an exact target;
 - multiple matching cards selected in rendered order;
 - maximum-one behavior caused by live checkbox disabling;
 - checked allowlisted cards retained;
