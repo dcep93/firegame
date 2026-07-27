@@ -5305,7 +5305,7 @@
       cardTargetQuickChoiceLearningCandidate(item);
     if (item?.type === "playedAction") {
       rememberPlayedActionForLearning(item);
-    } else if (isFollowUpQueueItem(item)) {
+    } else if (isFollowUpQueueItem(item) && item?.type !== "radioOption") {
       clearPlayedActionLearning();
     }
     queueExecutionAttempted = true;
@@ -5324,7 +5324,7 @@
         auditLog("game.action.success", auditDetails);
       })
       .catch((error) => {
-        if (item?.type === "playedAction") {
+        if (item?.type === "playedAction" || item?.type === "radioOption") {
           clearPlayedActionLearning();
         }
         auditLog("game.action.failure", {
@@ -6101,6 +6101,7 @@
     if (buttons.length > 1) {
       throw new Error(`ambiguous indexed-radio submit buttons: ${buttons.length}`);
     }
+    captureRememberedQuickChoiceSubmit(buttons[0]);
     preserveScrollDuring(() => buttons[0].click());
   };
 

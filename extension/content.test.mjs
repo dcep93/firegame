@@ -1240,7 +1240,7 @@ const radioWithNestedWorkflow = (nestedWorkflow) => ({
   },
 });
 
-const createIndexedRadioSubmit = (buttons) => {
+const createIndexedRadioSubmit = (buttons, {capture = () => false} = {}) => {
   const actionsRoot = {
     querySelectorAll(selector) {
       assert.equal(selector, "button.btn-submit, input.btn-submit");
@@ -1256,10 +1256,12 @@ const createIndexedRadioSubmit = (buttons) => {
   return Function(
     "getActionsBlock",
     "preserveScrollDuring",
+    "captureRememberedQuickChoiceSubmit",
     `"use strict"; ${indexedRadioSubmitSource}; return clickIndexedRadioSubmit;`,
   )(
     () => actionsBlock,
     (callback) => callback(),
+    capture,
   );
 };
 
@@ -5540,6 +5542,70 @@ test("indexed-radio execution stops at children and submits leaf options", async
     await executeRadioOption({hasChildren: false}),
     ["select:2", "frame", "children:2", "submit"],
   );
+});
+
+test("indexed-radio leaf submission offers the canonical submit for learning before click", () => {
+  const events = [];
+  const button = {
+    disabled: false,
+    click() {
+      events.push("click");
+    },
+  };
+  const submit = createIndexedRadioSubmit([button], {
+    capture(candidate) {
+      events.push("capture");
+      assert.equal(candidate, button);
+      return true;
+    },
+  });
+
+  submit();
+
+  assert.deepEqual(events, ["capture", "click"]);
+});
+
+test("indexed-radio execution preserves armed learning while other follow-ups clear it", async () => {
+  const radio = createQueueExecutor([]);
+  assert.equal(
+    radio.executeQueueItemNow({
+      type: "radioOption",
+      optionIndex: 2,
+      label: "radio option 2",
+    }),
+    true,
+  );
+
+  const quick = createQueueExecutor([]);
+  assert.equal(
+    quick.executeQueueItemNow({
+      type: "quickChoice",
+      optionText: "Add 1 microbe to this card",
+      label: "quick choice",
+    }),
+    true,
+  );
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(radio.learningClearCount(), 0);
+  assert.equal(quick.learningClearCount(), 1);
+});
+
+test("failed indexed-radio execution clears its learning association", async () => {
+  const radio = createQueueExecutor([], {reject: true});
+  assert.equal(
+    radio.executeQueueItemNow({
+      type: "radioOption",
+      optionIndex: 2,
+      label: "radio option 2",
+    }),
+    true,
+  );
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(radio.learningClearCount(), 1);
 });
 
 test("indexed-radio child detection distinguishes leaf and branching workflows", () => {
