@@ -3,10 +3,10 @@
 ## Goal
 
 Remember the first follow-up choice a player manually completes after tfmars420
-executes a played-card action, then offer that exact choice as a one-click queue
-item the next time the same played-card action is last in the queue. This
-includes both conventional outer radio choices and workflows that directly ask
-the player to select a target card.
+executes a played-card action, then offer that exact choice either after a
+queued copy of the same action or during that action's current unfinished
+follow-up. This includes both conventional outer radio choices and workflows
+that directly ask the player to select a target card.
 
 Learning applies equally to all three tfmars420 activation paths:
 
@@ -72,14 +72,33 @@ Programmatic quick-choice playback does not create a new memory.
 ## Card UI
 
 Render remembered quick-choice buttons inside the matching played card's
-enqueue tools, directly below its pink queued-action button, only when that
-card's `playedAction` item is the final item in the persisted queue.
+enqueue tools when either:
+
+- that card's `playedAction` item is the final item in the persisted queue; or
+- the card is the armed source of the current unfinished non-Pass follow-up.
+
+The second condition reuses the learning association already established from
+the network player view. It does not infer the source card from visible prompt
+text. A live-follow-up match keeps the enqueue-tools container and remembered
+buttons visible even when using the action made the card unavailable and the
+card has no target-resource control.
 
 Each button identifies the remembered option. A compound choice also identifies
 its target card. A direct-target choice uses only the target, such as `quick:
-Regolith Eaters`. Clicking a quick-choice button appends one compound follow-up
+Regolith Eaters`.
+
+In queued mode, clicking a quick-choice button appends one compound follow-up
 item after the played action. Once appended, the played action is no longer the
 latest queue item, so its quick-choice buttons disappear on the next render.
+
+In live-follow-up mode, clicking executes the remembered choice immediately
+through the existing immediate queue-item executor and does not add, remove, or
+reorder persisted queue items. This matches hand-card enqueue behavior when a
+card can be played immediately. Live-follow-up mode takes precedence if both
+visibility conditions overlap.
+
+The click handler rechecks its mode immediately before acting. If neither the
+queued parent nor the matching live follow-up still exists, it does nothing.
 
 The normal action and target buttons keep their existing layout, colors, and
 toggle behavior.
@@ -124,6 +143,12 @@ A direct-target recipe omits `optionText` and includes the originating prompt:
    whose exact cleaned title equals `targetCardText`, selects it, and clicks the
    unique enabled structural submit control regardless of the button's label.
 
+The same strict executor handles both persisted queued quick choices and
+immediate live-follow-up clicks. Immediate execution is attempted only while
+the matching armed source, live action form, and non-top-level prompt remain
+current. A failed eligibility recheck does not fall back to persisting an
+orphaned quick choice.
+
 All option, prompt, and target matching uses strict `===` equality after the
 existing whitespace-only `cleanText` normalization. It does not use substring
 matching, case folding, radio indexes, slugs, normalized card names, or fuzzy
@@ -144,14 +169,16 @@ Selecting a radio before discovering a stale target may change local form
 state, but no server-side action is submitted. Existing queue lifecycle rules
 remain authoritative: an automatic failure reports the error and clears later
 queued work, while a manual failure restores the failed row for inspection or
-removal.
+removal. A stale live-follow-up button is a no-op; an immediate playback error
+uses the existing immediate execution error reporting and leaves the queue
+unchanged.
 
 ## Scope
 
 This feature does not change:
 
 - played-action activation itself;
-- immediate-versus-persisted enqueue policy;
+- played-action immediate-versus-persisted enqueue policy;
 - Autoqueue ordering or readiness;
 - existing indexed radio-option items;
 - existing standalone card-target items;
@@ -173,8 +200,13 @@ Focused tests cover:
 - exact-text matching without fuzzy fallbacks;
 - duplicate-memory suppression and multiple distinct memories;
 - reload persistence and different-player reset;
-- quick-button visibility only for the final queued played action;
-- appending one compound item from a quick button;
+- quick-button visibility for the final queued played action;
+- quick-button visibility for the matching armed live follow-up;
+- keeping live quick buttons on an action card that became unavailable;
+- appending one compound item in queued mode;
+- immediate execution without queue mutation in live-follow-up mode;
+- live-follow-up precedence when both modes overlap;
+- stale live-click no-op behavior;
 - missing, duplicate, and disabled option failures;
 - missing, duplicate, and disabled target failures;
 - missing and ambiguous submit failures;
