@@ -7,8 +7,11 @@ const reloadBridgeSource = readFileSync(
   new URL("./reload_bridge.js", import.meta.url),
   "utf8",
 );
+const manifest = JSON.parse(
+  readFileSync(new URL("./manifest.json", import.meta.url), "utf8"),
+);
 
-const loadReloadBridge = (sendMessage) => {
+const loadReloadBridge = (sendMessage, manifestVersion = "1.0.6") => {
   const logs = [];
   const auditLogs = [];
   const postedMessages = [];
@@ -31,6 +34,9 @@ const loadReloadBridge = (sendMessage) => {
   const chrome = {
     runtime: {
       sendMessage,
+      getManifest() {
+        return {version: manifestVersion};
+      },
       onMessage: {
         addListener(listener) {
           runtimeListeners.push(listener);
@@ -51,14 +57,23 @@ const loadReloadBridge = (sendMessage) => {
   vm.runInNewContext(reloadBridgeSource, {chrome, console, window});
 
   return {
-    dispatchUpdateRequest() {
+    dispatchWindowMessage(data, overrides = {}) {
       for (const listener of windowMessageListeners) {
         listener({
-          source: window,
-          origin: window.location.origin,
-          data: {type: "tfmars420:update-content-and-reload"},
+          source: overrides.source ?? window,
+          origin: overrides.origin ?? window.location.origin,
+          data,
         });
       }
+    },
+    dispatchUpdateRequest() {
+      this.dispatchWindowMessage({type: "tfmars420:update-content-and-reload"});
+    },
+    dispatchVersionRequest(overrides = {}) {
+      this.dispatchWindowMessage(
+        {type: "tfmars420:request-extension-version"},
+        overrides,
+      );
     },
     dispatchRuntimeMessage(message) {
       runtimeListeners.forEach((listener) => listener(message));
@@ -68,6 +83,56 @@ const loadReloadBridge = (sendMessage) => {
     postedMessages,
   };
 };
+
+test("manifest declares version 1.0.6", () => {
+  assert.equal(manifest.version, "1.0.6");
+});
+
+test("returns the manifest version to a trusted local page request", () => {
+  let serviceWorkerCalls = 0;
+  const bridge = loadReloadBridge(() => {
+    serviceWorkerCalls += 1;
+  });
+
+  bridge.dispatchVersionRequest();
+
+  assert.equal(serviceWorkerCalls, 0);
+  assert.deepEqual(JSON.parse(JSON.stringify(bridge.postedMessages)), [
+    {
+      message: {
+        type: "tfmars420:extension-version",
+        version: "1.0.6",
+      },
+      origin: "https://terraforming-mars.herokuapp.com",
+    },
+  ]);
+});
+
+test("ignores foreign extension-version requests", () => {
+  const bridge = loadReloadBridge(() => Promise.resolve());
+
+  bridge.dispatchVersionRequest({source: {}});
+  bridge.dispatchVersionRequest({origin: "https://example.com"});
+
+  assert.deepEqual(bridge.postedMessages, []);
+});
+
+test("logs and ignores an unavailable manifest version", () => {
+  const bridge = loadReloadBridge(() => Promise.resolve(), "");
+
+  assert.doesNotThrow(() => bridge.dispatchVersionRequest());
+  assert.deepEqual(bridge.postedMessages, []);
+  assert.equal(bridge.logs.length, 1);
+  assert.match(bridge.logs[0][1].message, /missing manifest version/);
+  assert.deepEqual(
+    bridge.auditLogs.map((entry) => entry[1]),
+    [
+      "runtime.message.received",
+      "runtime.message.attempt",
+      "runtime.message.failure",
+    ],
+  );
+});
 
 test("logs a synchronous invalidated-context error instead of throwing", () => {
   const error = new Error("Extension context invalidated.");

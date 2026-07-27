@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v1.0.5";
+  let contentScriptVersion = "v…";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -19,6 +19,48 @@
       globalThis.console?.log?.("[tfmars420:audit]", eventName, details);
     } catch {
       // Audit logging must never affect extension behavior.
+    }
+  };
+
+  const manifestVersionLabel = (value) => {
+    const version = typeof value === "string" ? value.trim() : "";
+    return /^\d+(?:\.\d+){0,3}$/.test(version) ? `v${version}` : "";
+  };
+
+  const updateRenderedExtensionVersion = () => {
+    for (const control of document.querySelectorAll(
+      ".tfmars420-controls-version, .firegame-colonist-dice-version",
+    )) {
+      control.textContent = contentScriptVersion;
+    }
+  };
+
+  const rememberManifestVersion = (value) => {
+    const label = manifestVersionLabel(value);
+    if (!label) return false;
+    contentScriptVersion = label;
+    updateRenderedExtensionVersion();
+    return true;
+  };
+
+  const requestManifestVersion = () => {
+    const type = "tfmars420:request-extension-version";
+    auditLog("runtime.message.attempt", {
+      direction: "page-to-reload-bridge",
+      type,
+    });
+    try {
+      window.postMessage({type}, window.location.origin);
+      auditLog("runtime.message.success", {
+        direction: "page-to-reload-bridge",
+        type,
+      });
+    } catch (error) {
+      auditLog("runtime.message.failure", {
+        direction: "page-to-reload-bridge",
+        type,
+        error: String(error?.message ?? error),
+      });
     }
   };
 
@@ -42,6 +84,15 @@
     if (event.source !== window || event.origin !== window.location.origin) {
       return;
     }
+    if (event.data?.type === "tfmars420:extension-version") {
+      if (rememberManifestVersion(event.data.version)) {
+        auditLog("runtime.message.received", {
+          direction: "reload-bridge-to-page",
+          type: event.data.type,
+        });
+      }
+      return;
+    }
     if (event.data?.type === "tfmars420:reload-page-after-runtime") {
       auditLog("runtime.message.received", {
         direction: "reload-bridge-to-page",
@@ -53,6 +104,7 @@
       }, 750);
     }
   });
+  requestManifestVersion();
 
   function startColonist420() {
     const containerSelectors = [
