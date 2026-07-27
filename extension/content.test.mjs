@@ -3552,22 +3552,34 @@ test("player-home turn tint cleans up when disabled and tolerates a missing page
   assert.equal(missing.updatePlayerHomeTurnTint(), "idle");
 });
 
-test("turn tint CSS preserves the starfield behind exact translucent colors", () => {
-  const pinkRule = source.match(
-    /#player-home\.tfmars420-turn-can-pass \{([\s\S]*?)\}/,
+test("turn tint CSS pulses natively from zero to 25 percent every five seconds", () => {
+  const sharedRule = source.match(
+    /#player-home\.tfmars420-turn-can-pass,\s*#player-home\.tfmars420-turn-no-pass \{([\s\S]*?)\}/,
   )?.[1] ?? "";
-  const yellowRule = source.match(
-    /#player-home\.tfmars420-turn-no-pass \{([\s\S]*?)\}/,
-  )?.[1] ?? "";
+  const pinkRule = Array.from(
+    source.matchAll(/#player-home\.tfmars420-turn-can-pass \{([\s\S]*?)\}/g),
+  ).at(-1)?.[1] ?? "";
+  const yellowRule = Array.from(
+    source.matchAll(/#player-home\.tfmars420-turn-no-pass \{([\s\S]*?)\}/g),
+  ).at(-1)?.[1] ?? "";
 
   assert.match(
+    source,
+    /@keyframes tfmars420-turn-tint-pulse \{[\s\S]*?0%, 100% \{[\s\S]*?rgba\(var\(--tfmars420-turn-tint-rgb\), 0\)[\s\S]*?50% \{[\s\S]*?rgba\(var\(--tfmars420-turn-tint-rgb\), 0\.25\)/,
+  );
+  assert.match(
+    sharedRule,
+    /animation: tfmars420-turn-tint-pulse 5s ease-in-out infinite/,
+  );
+  assert.match(
     pinkRule,
-    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 79, 191, 0\.10\)/,
+    /--tfmars420-turn-tint-rgb: 255, 79, 191/,
   );
   assert.match(
     yellowRule,
-    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 214, 64, 0\.10\)/,
+    /--tfmars420-turn-tint-rgb: 255, 214, 64/,
   );
+  assert.doesNotMatch(sharedRule, /background(?:-image)?:/);
   assert.doesNotMatch(pinkRule, /background(?:-image)?:/);
   assert.doesNotMatch(yellowRule, /background(?:-image)?:/);
 });

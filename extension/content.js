@@ -3368,11 +3368,23 @@
   };
 
   const timeWarpCss = () => `
+    @keyframes tfmars420-turn-tint-pulse {
+      0%, 100% {
+        box-shadow: inset 0 0 0 10000vmax rgba(var(--tfmars420-turn-tint-rgb), 0);
+      }
+      50% {
+        box-shadow: inset 0 0 0 10000vmax rgba(var(--tfmars420-turn-tint-rgb), 0.25);
+      }
+    }
+    #player-home.tfmars420-turn-can-pass,
+    #player-home.tfmars420-turn-no-pass {
+      animation: tfmars420-turn-tint-pulse 5s ease-in-out infinite;
+    }
     #player-home.tfmars420-turn-can-pass {
-      box-shadow: inset 0 0 0 10000vmax rgba(255, 79, 191, 0.10);
+      --tfmars420-turn-tint-rgb: 255, 79, 191;
     }
     #player-home.tfmars420-turn-no-pass {
-      box-shadow: inset 0 0 0 10000vmax rgba(255, 214, 64, 0.10);
+      --tfmars420-turn-tint-rgb: 255, 214, 64;
     }
     #${timeWarpPanelId} {
       background: #2f2f2f;
