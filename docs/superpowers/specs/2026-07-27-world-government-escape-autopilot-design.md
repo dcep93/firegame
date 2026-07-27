@@ -9,6 +9,14 @@ Extend `autopilot: escape` to handle the exact Terraforming Mars prompt:
 At that prompt, Escape submits whichever option the game selected by default.
 It must not choose or change a radio option.
 
+Escape must also finish the exact blocking follow-up:
+
+`Select space for ocean from temperature increase`
+
+This follow-up can occur when World Government raises temperature across the
+ocean-bonus threshold. It is not a request to choose Ocean on the original
+World Government parameter screen.
+
 ## Prompt Recognition
 
 Use an exact, case-sensitive comparison with the English prompt text. Recognize
@@ -25,6 +33,12 @@ captured model.
 This recognition is intentionally narrow. Other choice prompts must retain
 their current queue classification and behavior.
 
+Recognize the ocean follow-up by the exact normalized title
+`Select space for ocean from temperature increase`, using the player-input
+model first and rendered `.wf-select-space` text as a fallback. The rendered
+fallback must read the workflow title without including its `go to map` link.
+Near matches and other select-space prompts do not qualify.
+
 ## Queue Eligibility
 
 The existing queue considers normal top-level items executable only during
@@ -32,8 +46,8 @@ The existing queue considers normal top-level items executable only during
 
 Add one exception:
 
-- an autopilot item whose normalized mode is `escape` matches the World
-  Government Terraforming prompt.
+- an Escape-fallback autopilot item matches the World Government Terraforming
+  prompt and its exact ocean-placement follow-up.
 
 `autopilot: got a lotta energy` does not match that prompt and remains eligible
 only during a normal take-action phase. No other top-level or follow-up queue
@@ -45,11 +59,22 @@ All other readiness checks remain mandatory:
 - it is the current player’s turn; and
 - a live action form exists.
 
+The ocean-placement follow-up has no normal action form or enabled control
+inside the actions block. Add a prompt-specific readiness exception only when:
+
+- the queue item is an Escape-fallback autopilot mode;
+- the exact ocean-placement prompt is active; and
+- at least one rendered, available ocean space exists on the main board.
+
+No other select-space prompt bypasses the ordinary current-turn and live-form
+checks.
+
 Automatic queue processing ordinarily pauses when the player appears to have
 passed. World Government Terraforming occurs after the action phase, and the
 DOM or log fallback can still report the player’s prior Pass. Allow only the
-queue-head `autopilot: escape` item through that guard while the exact World
-Government prompt is active. Every other item remains paused after passing.
+queue-head Escape-fallback autopilot item through that guard while the exact
+World Government prompt or its exact ocean-placement follow-up is active.
+Every other item remains paused after passing.
 
 ## Escape Execution
 
@@ -66,6 +91,29 @@ Route Escape through a dedicated executor:
 This behavior applies whether the queued Escape item is processed
 automatically or executed manually because both paths use the shared queued
 item executor.
+
+## Blocking Ocean Placement
+
+When the exact ocean-placement follow-up is active:
+
+1. Read only direct main-board spaces matching
+   `#main_board > .board-space.board-space--available`.
+2. Keep only spaces that render a `.board-space-type-ocean` child.
+3. Count each space's rendered `.board-space-bonus` elements.
+4. Select the space with the fewest bonuses. Break ties by rendered DOM order.
+5. Click that space without scrolling the user's page.
+6. Wait for the next rendered frame.
+7. If the game shows exactly one visible, enabled confirmation button whose
+   normalized text is `Yes`, click it. If no such confirmation is visible, the
+   native space click has already submitted and execution is complete.
+
+Missing available ocean spaces are a safe failure. Multiple visible enabled
+`Yes` controls are ambiguous and must fail without clicking a confirmation.
+Hidden confirmation controls must not be clicked.
+
+The behavior applies to `autopilot: escape` and modes such as
+`autopilot: buy space rocks` that explicitly fall back to the same Escape
+executor. It does not apply to `got a lotta energy`.
 
 ## Submit Safety
 
@@ -97,6 +145,8 @@ This change does not alter:
 - Escape behavior during ordinary action turns;
 - the energy autopilot workflow;
 - the selected World Government radio;
+- the World Government parameter-selection strategy;
+- any city, greenery, colony, or other map-placement prompt;
 - queue ordering, removal, restoration, or Autoqueue rules;
 - immediate execution behavior for other Enqueue controls;
 - network default-Pass selection;
@@ -115,5 +165,12 @@ Tests will cover:
 - clicking the single enabled submit without selecting a radio;
 - ignoring the submit label;
 - missing, disabled, and ambiguous submit controls;
+- exact ocean-follow-up recognition and rejection of near matches;
+- prompt-specific queue eligibility without a normal action form;
+- least-bonus ocean selection with rendered-order tie-breaking;
+- rejection of non-ocean and unavailable map spaces;
+- optional visible `Yes` confirmation and direct-submit behavior;
+- missing-space and ambiguous-confirmation failures;
+- post-pass execution for only the exact ocean follow-up;
 - unchanged ordinary Escape-to-Pass behavior; and
 - the focused and full extension test suites.
