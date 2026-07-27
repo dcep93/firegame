@@ -25,6 +25,14 @@ A qualifying response creates a pending one-shot selection. The extension waits
 until the corresponding action form is rendered, then uses the existing action
 option selection behavior to choose `Pass for this generation`.
 
+After the canonical radio is selected, the extension finds the exact matching
+radio in the current `.tfmars420-actions-mirror` and sets its local `checked`
+property. It does not click the mirrored radio or dispatch mirrored events,
+because the mirror proxies those interactions back to the canonical form and
+would otherwise activate the same option twice. A missing or stale mirror does
+not make canonical selection fail; the next mirror render inherits the
+canonical state.
+
 After selecting the radio, the extension immediately consumes the pending
 state. DOM mutations, queue rerenders, and other UI updates do not re-arm it.
 The player can therefore select a different radio afterward without the
@@ -35,8 +43,9 @@ selection while carrying out that queued action.
 
 ## Submission
 
-The default behavior changes only the selected radio. It never clicks a submit
-button, sends player input, or passes the player automatically.
+The default behavior changes only the selected canonical and mirrored radio
+state. It never clicks a submit button, sends player input, or passes the player
+automatically.
 
 ## Rendering and Races
 
@@ -58,6 +67,8 @@ Focused tests will verify:
 - qualifying `api/player` and `player/input` responses can both arm the
   default;
 - intermediate `player/input` follow-up prompts do not arm it;
-- the Pass option is selected once after the form renders;
+- the canonical Pass option is selected once after the form renders;
+- the mirrored Pass radio is checked without a click or dispatched event;
+- a missing mirror does not block canonical selection;
 - later UI updates do not select it again; and
 - the one-shot path contains no submit action.
