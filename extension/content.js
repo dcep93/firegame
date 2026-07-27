@@ -4306,6 +4306,34 @@
   const rememberedQuickChoicesForCard = (session, identity) =>
     normalizeRememberedQuickChoices(session?.rememberedQuickChoices)[identity.key] ?? [];
 
+  const playedActionLearningMatchesIdentity = (learning, identity) =>
+    Boolean(
+      learning &&
+        identity &&
+        ((learning.cardKey && learning.cardKey === identity.key) ||
+          (learning.cardName &&
+            normalizeCardName(learning.cardName) === normalizeCardName(identity.name))),
+    );
+
+  const matchingArmedPlayedActionFollowUp = (identity) =>
+    playedActionLearningMatchesIdentity(armedPlayedActionLearning, identity) &&
+    hasLiveActionForm() &&
+    !isTakeNextActionPhase() &&
+    !hasEnabledExactPassOption();
+
+  const rememberedQuickChoiceRenderMode = (session, identity) => {
+    if (matchingArmedPlayedActionFollowUp(identity)) return "live";
+    if (latestQueuedPlayedActionMatches(session?.queue, identity)) return "queued";
+    return null;
+  };
+
+  const rememberedQuickChoicePresentation = (session, identity) => {
+    const mode = rememberedQuickChoiceRenderMode(session, identity);
+    if (!mode) return null;
+    const choices = rememberedQuickChoicesForCard(session, identity);
+    return choices.length > 0 ? { mode, choices } : null;
+  };
+
   const targetQueueButtonPresentation = (count) => {
     const stars = "*".repeat(count);
     return {
@@ -4752,15 +4780,48 @@
     ...(choice.targetCardText ? { targetCardText: choice.targetCardText } : {}),
   });
 
-  const renderRememberedQuickChoiceTools = (tools, session, identity) => {
+  const activateRememberedQuickChoice = (choice, identity) => {
+    const currentSession = readQueueSession();
+    const mode = rememberedQuickChoiceRenderMode(currentSession, identity);
+    if (!currentSession || !mode) return false;
+    const item = quickChoiceQueueItem(choice);
+    const auditDetails = {
+      cardName: identity.name,
+      ...(choice.optionText ? { optionText: choice.optionText } : {}),
+      ...(choice.promptText ? { promptText: choice.promptText } : {}),
+      hasTarget: Boolean(choice.targetCardText),
+    };
+    if (mode === "live") {
+      auditLog("user.card.quick-choice.execute", auditDetails);
+      return executeQueueItemNow(item, { executionSource: "immediate" });
+    }
+
+    let appended = false;
+    updateQueueSession((draft) => {
+      if (rememberedQuickChoiceRenderMode(draft, identity) === "queued") {
+        draft.queue.push(item);
+        appended = true;
+      }
+      return draft;
+    });
+    if (appended) {
+      auditLog("user.card.quick-choice.enqueue", auditDetails);
+    }
+    return appended;
+  };
+
+  const renderRememberedQuickChoiceTools = (
+    tools,
+    session,
+    identity,
+    presentation = rememberedQuickChoicePresentation(session, identity),
+  ) => {
     tools.querySelector(":scope > .tfmars420-quick-choice-list")?.remove();
-    if (!latestQueuedPlayedActionMatches(session.queue, identity)) return;
-    const choices = rememberedQuickChoicesForCard(session, identity);
-    if (choices.length === 0) return;
+    if (!presentation) return;
 
     const list = document.createElement("div");
     list.className = "tfmars420-quick-choice-list";
-    for (const choice of choices) {
+    for (const choice of presentation.choices) {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "tfmars420-quick-choice-button";
@@ -4772,23 +4833,7 @@
         (choice.optionText && choice.targetCardText ? ` → ${choice.targetCardText}` : "");
       button.title = button.textContent;
       button.addEventListener("click", () => {
-        const currentSession = readQueueSession();
-        if (!currentSession || !latestQueuedPlayedActionMatches(currentSession.queue, identity)) {
-          return;
-        }
-        const item = quickChoiceQueueItem(choice);
-        auditLog("user.card.quick-choice.enqueue", {
-          cardName: identity.name,
-          ...(choice.optionText ? { optionText: choice.optionText } : {}),
-          ...(choice.promptText ? { promptText: choice.promptText } : {}),
-          hasTarget: Boolean(choice.targetCardText),
-        });
-        updateQueueSession((draft) => {
-          if (latestQueuedPlayedActionMatches(draft.queue, identity)) {
-            draft.queue.push(item);
-          }
-          return draft;
-        });
+        activateRememberedQuickChoice(choice, identity);
       });
       list.append(button);
     }
@@ -4803,12 +4848,12 @@
       const existingTools = cardBox.querySelector(":scope > .tfmars420-enqueue-tools");
       const canQueueAction = isUnusedPlayedActionCard(cardBox);
       const canQueueTarget = isEnqueueablePlayedCardTarget(cardBox);
-      if (!canQueueAction && !canQueueTarget) {
+      const identity = getCardIdentity(cardBox);
+      const quickChoicePresentation = rememberedQuickChoicePresentation(session, identity);
+      if (!canQueueAction && !canQueueTarget && !quickChoicePresentation) {
         existingTools?.remove();
         return;
       }
-
-      const identity = getCardIdentity(cardBox);
 
       let tools = existingTools;
       if (!tools) {
@@ -4876,7 +4921,7 @@
         existingTargetButton?.remove();
       }
 
-      renderRememberedQuickChoiceTools(tools, session, identity);
+      renderRememberedQuickChoiceTools(tools, session, identity, quickChoicePresentation);
     });
   };
 

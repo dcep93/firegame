@@ -120,6 +120,22 @@ const quickChoiceUiSource = source.slice(
   source.indexOf("const quickChoiceQueueItem"),
   source.indexOf("const renderPlayedActionTools"),
 );
+const quickChoiceModeStart = source.indexOf("const playedActionLearningMatchesIdentity");
+const quickChoiceModeSource =
+  quickChoiceModeStart < 0
+    ? ""
+    : source.slice(
+        quickChoiceModeStart,
+        source.indexOf("const targetQueueButtonPresentation"),
+      );
+const quickChoiceActivationStart = source.indexOf("const activateRememberedQuickChoice");
+const quickChoiceActivationSource =
+  quickChoiceActivationStart < 0
+    ? ""
+    : source.slice(
+        quickChoiceActivationStart,
+        source.indexOf("const renderRememberedQuickChoiceTools"),
+      );
 const playedToolsSource = source.slice(
   source.indexOf("const renderPlayedActionTools"),
   source.indexOf("const updateQueueUi"),
@@ -862,6 +878,97 @@ const {countQueuedCards, latestQueuedPlayedActionMatches, targetQueueButtonPrese
 const quickChoiceQueueItem = Function(
   `"use strict"; ${quickChoiceUiSource}; return quickChoiceQueueItem;`,
 )();
+
+const createQuickChoiceModeHarness = ({
+  armed = null,
+  hasLiveForm = true,
+  takeNextAction = false,
+  hasPass = false,
+} = {}) => {
+  if (!quickChoiceModeSource) {
+    return {
+      matches: () => false,
+      mode: () => null,
+    };
+  }
+  return Function(
+    "normalizeCardName",
+    "latestQueuedPlayedActionMatches",
+    "hasLiveActionForm",
+    "isTakeNextActionPhase",
+    "hasEnabledExactPassOption",
+    "initialArmed",
+    `"use strict";
+      let armedPlayedActionLearning = initialArmed;
+      ${quickChoiceModeSource}
+      return {
+        matches: playedActionLearningMatchesIdentity,
+        mode: rememberedQuickChoiceRenderMode,
+      };
+    `,
+  )(
+    (value) => String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(),
+    latestQueuedPlayedActionMatches,
+    () => hasLiveForm,
+    () => takeNextAction,
+    () => hasPass,
+    armed,
+  );
+};
+
+const createQuickChoiceActivationHarness = ({
+  initialQueue = [],
+  modes = ["queued"],
+  immediateResult = true,
+} = {}) => {
+  const session = {queue: [...initialQueue]};
+  const auditEvents = [];
+  const executions = [];
+  let updateCount = 0;
+  let modeIndex = 0;
+  if (!quickChoiceActivationSource) {
+    return {
+      activate: () => false,
+      auditEvents,
+      executions,
+      session,
+      updateCount: () => updateCount,
+    };
+  }
+  const activate = Function(
+    "readQueueSession",
+    "rememberedQuickChoiceRenderMode",
+    "quickChoiceQueueItem",
+    "auditLog",
+    "executeQueueItemNow",
+    "updateQueueSession",
+    `"use strict";
+      ${quickChoiceActivationSource}
+      return activateRememberedQuickChoice;
+    `,
+  )(
+    () => session,
+    () => modes[Math.min(modeIndex++, modes.length - 1)] ?? null,
+    quickChoiceQueueItem,
+    (eventName, details) => auditEvents.push({eventName, details}),
+    (item, options) => {
+      executions.push({item, options});
+      return immediateResult;
+    },
+    (updater) => {
+      updateCount += 1;
+      updater(session);
+      return session;
+    },
+  );
+  return {
+    activate,
+    auditEvents,
+    executions,
+    session,
+    updateCount: () => updateCount,
+  };
+};
 
 const createCardTargetSubmit = (buttons) => {
   const actionsRoot = {
@@ -5426,7 +5533,144 @@ test("remembered-choice capture ignores nested checked radios and rejects synthe
   }
 });
 
-test("quick buttons are offered only for a matching latest queued played action", () => {
+test("remembered quick-choice mode prefers the matching live follow-up", () => {
+  const identity = {key: "regolith-eaters", slug: "regolith-eaters", name: "Regolith Eaters"};
+  const action = {
+    type: "playedAction",
+    cardKey: "regolith-eaters",
+    cardSlug: "regolith-eaters",
+    cardName: "Regolith Eaters",
+  };
+  const live = createQuickChoiceModeHarness({
+    armed: {
+      playerId: "player-1",
+      cardKey: "regolith-eaters",
+      cardName: "Regolith Eaters",
+    },
+  });
+
+  assert.equal(live.matches({
+    cardKey: "regolith-eaters",
+    cardName: "Regolith Eaters",
+  }, identity), true);
+  assert.equal(live.mode({queue: []}, identity), "live");
+  assert.equal(live.mode({queue: [action]}, identity), "live");
+
+  const nameFallback = createQuickChoiceModeHarness({
+    armed: {
+      playerId: "player-1",
+      cardKey: "old-regolith-key",
+      cardName: "  Regolith Eaters ",
+    },
+  });
+  assert.equal(nameFallback.mode({queue: []}, identity), "live");
+
+  const queued = createQuickChoiceModeHarness();
+  assert.equal(queued.mode({queue: [action]}, identity), "queued");
+  assert.equal(queued.mode({queue: []}, identity), null);
+});
+
+test("live quick-choice mode rejects stale, top-level, and Pass inputs", () => {
+  const identity = {key: "regolith-eaters", slug: "regolith-eaters", name: "Regolith Eaters"};
+  const armed = {
+    playerId: "player-1",
+    cardKey: "regolith-eaters",
+    cardName: "Regolith Eaters",
+  };
+
+  for (const harness of [
+    createQuickChoiceModeHarness({armed: null}),
+    createQuickChoiceModeHarness({
+      armed: {...armed, cardKey: "nitrite-reducing-bacteria", cardName: "Nitrite Reducing Bacteria"},
+    }),
+    createQuickChoiceModeHarness({armed, hasLiveForm: false}),
+    createQuickChoiceModeHarness({armed, takeNextAction: true}),
+    createQuickChoiceModeHarness({armed, hasPass: true}),
+  ]) {
+    assert.equal(harness.mode({queue: []}, identity), null);
+  }
+});
+
+test("live quick controls survive an action card becoming unavailable", () => {
+  assert.match(
+    playedToolsSource,
+    /if \(!canQueueAction && !canQueueTarget && !quickChoicePresentation\)/,
+  );
+  assert.match(
+    playedToolsSource,
+    /renderRememberedQuickChoiceTools\(tools, session, identity, quickChoicePresentation\)/,
+  );
+});
+
+test("quick-choice activation executes live inputs and appends queued inputs", () => {
+  const identity = {key: "regolith-eaters", name: "Regolith Eaters"};
+  const choice = {optionText: "Add 1 microbe to this card"};
+  const action = {
+    type: "playedAction",
+    cardKey: "regolith-eaters",
+    cardName: "Regolith Eaters",
+  };
+
+  const live = createQuickChoiceActivationHarness({
+    initialQueue: [{type: "pass"}],
+    modes: ["live"],
+  });
+  assert.equal(live.activate(choice, identity), true);
+  assert.deepEqual(live.session.queue, [{type: "pass"}]);
+  assert.deepEqual(live.executions, [
+    {
+      item: {type: "quickChoice", optionText: "Add 1 microbe to this card"},
+      options: {executionSource: "immediate"},
+    },
+  ]);
+  assert.equal(live.updateCount(), 0);
+  assert.equal(live.auditEvents[0]?.eventName, "user.card.quick-choice.execute");
+
+  const queued = createQuickChoiceActivationHarness({
+    initialQueue: [action],
+    modes: ["queued", "queued"],
+  });
+  assert.equal(queued.activate(choice, identity), true);
+  assert.deepEqual(queued.session.queue, [
+    action,
+    {type: "quickChoice", optionText: "Add 1 microbe to this card"},
+  ]);
+  assert.deepEqual(queued.executions, []);
+  assert.equal(queued.updateCount(), 1);
+  assert.equal(queued.auditEvents[0]?.eventName, "user.card.quick-choice.enqueue");
+});
+
+test("quick-choice activation rechecks mode and never persists an orphan", () => {
+  const identity = {key: "regolith-eaters", name: "Regolith Eaters"};
+  const choice = {optionText: "Add 1 microbe to this card"};
+
+  const stale = createQuickChoiceActivationHarness({
+    initialQueue: [{type: "pass"}],
+    modes: [null],
+  });
+  assert.equal(stale.activate(choice, identity), false);
+  assert.deepEqual(stale.session.queue, [{type: "pass"}]);
+  assert.deepEqual(stale.executions, []);
+  assert.equal(stale.updateCount(), 0);
+
+  const racedQueue = createQuickChoiceActivationHarness({
+    initialQueue: [{type: "playedAction", cardKey: "regolith-eaters"}],
+    modes: ["queued", null],
+  });
+  assert.equal(racedQueue.activate(choice, identity), false);
+  assert.equal(racedQueue.session.queue.length, 1);
+
+  const failedLive = createQuickChoiceActivationHarness({
+    initialQueue: [{type: "pass"}],
+    modes: ["live"],
+    immediateResult: false,
+  });
+  assert.equal(failedLive.activate(choice, identity), false);
+  assert.deepEqual(failedLive.session.queue, [{type: "pass"}]);
+  assert.equal(failedLive.updateCount(), 0);
+});
+
+test("quick buttons support queued and live follow-up modes", () => {
   const identity = {key: "astrodrill", slug: "astrodrill", name: "AstroDrill"};
   const action = {
     type: "playedAction",
@@ -5479,7 +5723,14 @@ test("quick buttons are offered only for a matching latest queued played action"
     quickChoiceUiSource,
     /choice\.optionText[\s\S]*\? `quick: \$\{choice\.optionText\}`[\s\S]*: `quick: \$\{choice\.targetCardText\}`/,
   );
-  assert.match(quickChoiceUiSource, /latestQueuedPlayedActionMatches\(session\.queue, identity\)/);
+  assert.match(
+    quickChoiceUiSource,
+    /rememberedQuickChoiceRenderMode\(currentSession, identity\)/,
+  );
+  assert.match(
+    quickChoiceUiSource,
+    /executeQueueItemNow\(item, \{ executionSource: "immediate" \}\)/,
+  );
   assert.match(quickChoiceUiSource, /draft\.queue\.push\(item\)/);
   assert.doesNotMatch(quickChoiceUiSource, /enqueueOrExecuteNow/);
   assert.match(source, /\.tfmars420-quick-choice-list[\s\S]*flex: 1 0 100%/);
