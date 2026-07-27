@@ -3342,7 +3342,7 @@
     #${timeWarpPanelId}[hidden] {
       display: none !important;
     }
-    #${timeWarpPanelId} button,
+    #${timeWarpPanelId} button:not([${actionsMirrorSourceAttribute}]),
     .tfmars420-card-tools button,
     .tfmars420-enqueue-tools button {
       background: #5d79bd;
@@ -3353,12 +3353,12 @@
       font: inherit;
       padding: 4px 9px;
     }
-    #${timeWarpPanelId} button:hover:not(:disabled),
+    #${timeWarpPanelId} button:not([${actionsMirrorSourceAttribute}]):hover:not(:disabled),
     .tfmars420-card-tools button:hover:not(:disabled),
     .tfmars420-enqueue-tools button:hover:not(:disabled) {
       background: #6d8bd0;
     }
-    #${timeWarpPanelId} button:disabled,
+    #${timeWarpPanelId} button:not([${actionsMirrorSourceAttribute}]):disabled,
     .tfmars420-card-tools button:disabled,
     .tfmars420-enqueue-tools button:disabled {
       cursor: default;
@@ -3417,6 +3417,13 @@
       border-top: 1px solid rgba(255, 255, 255, 0.2);
       margin-top: 12px;
       padding-top: 10px;
+    }
+    #${timeWarpPanelId} > .tfmars420-actions-mirror {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      box-sizing: border-box;
+      margin-top: 14px;
+      padding-top: 12px;
+      width: 100%;
     }
     #${timeWarpPanelId} .tfmars420-live-scores-scroll {
       max-width: 100%;
@@ -3583,6 +3590,146 @@
     } else {
       actionsBlock.prepend(panel);
     }
+  };
+
+  const actionsMirrorSourceAttribute = "data-tfmars420-actions-source";
+  const actionsMirrorExtensionSelector = [
+    `#${timeWarpPanelId}`,
+    `.${lobbyRootClass}`,
+    ".tfmars420-card-tools",
+    ".tfmars420-enqueue-tools",
+    ".tfmars420-actions-mirror",
+  ].join(", ");
+
+  const mapActionsMirrorElements = (source, mirror) => {
+    const sourceElements = [source, ...source.querySelectorAll("*")];
+    const mirrorElements = [mirror, ...mirror.querySelectorAll("*")];
+    const sourceByKey = new Map();
+    const pairCount = Math.min(sourceElements.length, mirrorElements.length);
+    for (let index = 0; index < pairCount; index += 1) {
+      const key = String(index);
+      mirrorElements[index].setAttribute(actionsMirrorSourceAttribute, key);
+      sourceByKey.set(key, sourceElements[index]);
+    }
+    return sourceByKey;
+  };
+
+  const sanitizeActionsMirror = (mirror) => {
+    mirror.classList.remove("player_home_block--actions");
+    mirror.classList.add("tfmars420-actions-mirror");
+    mirror
+      .querySelectorAll(actionsMirrorExtensionSelector)
+      .forEach((element) => element.remove());
+    const duplicatedIdentityAttributes = [
+      "id",
+      "name",
+      "for",
+      "form",
+      "autofocus",
+      "aria-controls",
+      "aria-describedby",
+      "aria-labelledby",
+    ];
+    for (const element of [mirror, ...mirror.querySelectorAll("*")]) {
+      for (const attribute of duplicatedIdentityAttributes) {
+        element.removeAttribute(attribute);
+      }
+    }
+    return mirror;
+  };
+
+  const isActionsMirrorValueEditor = (target) => {
+    const control = target?.closest?.("input, textarea, select");
+    if (!control) return false;
+    const tagName = String(control.tagName ?? "").toUpperCase();
+    if (tagName === "TEXTAREA" || tagName === "SELECT") return true;
+    const clickOnlyTypes = new Set([
+      "button",
+      "checkbox",
+      "file",
+      "image",
+      "radio",
+      "reset",
+      "submit",
+    ]);
+    return tagName === "INPUT" && !clickOnlyTypes.has(String(control.type ?? "").toLowerCase());
+  };
+
+  const mappedActionsMirrorSource = (target, mirror, sourceByKey) => {
+    const keyedElement = target?.closest?.(`[${actionsMirrorSourceAttribute}]`);
+    if (!keyedElement || !mirror.contains(keyedElement)) return null;
+    return sourceByKey.get(keyedElement.getAttribute(actionsMirrorSourceAttribute)) ?? null;
+  };
+
+  const stopActionsMirrorActivation = (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  };
+
+  const proxyActionsMirrorClick = (event, mirror, sourceByKey) => {
+    if (isActionsMirrorValueEditor(event.target)) return false;
+    stopActionsMirrorActivation(event);
+    const source = mappedActionsMirrorSource(event.target, mirror, sourceByKey);
+    if (!source || source.isConnected === false) {
+      scheduleTerraformingMarsUpdate();
+      return false;
+    }
+    preserveScrollDuring(() => {
+      if (typeof source.click === "function") {
+        source.click();
+      } else {
+        dispatchBubbledEvent(source, "click");
+      }
+    });
+    scheduleTerraformingMarsUpdate();
+    return true;
+  };
+
+  const proxyActionsMirrorValueEvent = (event, mirror, sourceByKey) => {
+    event.stopImmediatePropagation();
+    const mirrorControl = event.target;
+    const source = mappedActionsMirrorSource(mirrorControl, mirror, sourceByKey);
+    if (!source || source.isConnected === false) {
+      scheduleTerraformingMarsUpdate();
+      return false;
+    }
+    if ("value" in mirrorControl && "value" in source) {
+      source.value = mirrorControl.value;
+    }
+    if ("checked" in mirrorControl && "checked" in source) {
+      source.checked = mirrorControl.checked;
+    }
+    if ("selectedIndex" in mirrorControl && "selectedIndex" in source) {
+      source.selectedIndex = mirrorControl.selectedIndex;
+    }
+    preserveScrollDuring(() => dispatchBubbledEvent(source, event.type));
+    if (event.type === "change") {
+      scheduleTerraformingMarsUpdate();
+    }
+    return true;
+  };
+
+  const renderActionsMirror = (actionsBlock) => {
+    if (!actionsBlock?.cloneNode) return null;
+    const mirror = actionsBlock.cloneNode(true);
+    const sourceByKey = mapActionsMirrorElements(actionsBlock, mirror);
+    sanitizeActionsMirror(mirror);
+    mirror.addEventListener(
+      "click",
+      (event) => proxyActionsMirrorClick(event, mirror, sourceByKey),
+      true,
+    );
+    mirror.addEventListener(
+      "input",
+      (event) => proxyActionsMirrorValueEvent(event, mirror, sourceByKey),
+      true,
+    );
+    mirror.addEventListener(
+      "change",
+      (event) => proxyActionsMirrorValueEvent(event, mirror, sourceByKey),
+      true,
+    );
+    return mirror;
   };
 
   const createQueueIconButton = (className, iconClassName, title) => {
@@ -3909,6 +4056,11 @@
     const liveScoreTable = renderLiveScoreTable(latestPlayerView);
     if (liveScoreTable) {
       panel.append(liveScoreTable);
+    }
+
+    const actionsMirror = renderActionsMirror(actionsBlock);
+    if (actionsMirror) {
+      panel.append(actionsMirror);
     }
   };
 

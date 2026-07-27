@@ -155,6 +155,10 @@ const queuePanelSource = source.slice(
   source.indexOf("const createQueueIconButton"),
   source.indexOf("const queuedProjectMoneyCost"),
 );
+const actionsMirrorSource = source.slice(
+  source.indexOf("const actionsMirrorSourceAttribute"),
+  source.indexOf("const createQueueIconButton"),
+);
 const queueItemLabelSource = source.slice(
   source.indexOf("const queueItemLabel"),
   source.indexOf("const queueCardName"),
@@ -604,6 +608,69 @@ const createNavigationHotkeyExecutor = ({
   };
 
   return {event, handle, scrollCalls, selectors};
+};
+
+const createActionsMirrorExecutor = () => {
+  const preserved = [];
+  const dispatched = [];
+  let refreshCount = 0;
+  const executor = Function(
+    "timeWarpPanelId",
+    "lobbyRootClass",
+    "preserveScrollDuring",
+    "dispatchBubbledEvent",
+    "scheduleTerraformingMarsUpdate",
+    `"use strict";
+      ${actionsMirrorSource}
+      return {
+        mapActionsMirrorElements,
+        sanitizeActionsMirror,
+        proxyActionsMirrorClick,
+        proxyActionsMirrorValueEvent,
+      };
+    `,
+  )(
+    "tfmars420-timewarp-panel",
+    "tfmars420-extension-ui",
+    (callback) => {
+      preserved.push(true);
+      return callback();
+    },
+    (target, eventName) => dispatched.push({target, eventName}),
+    () => {
+      refreshCount += 1;
+    },
+  );
+  return {
+    ...executor,
+    dispatched,
+    preserved,
+    refreshCount: () => refreshCount,
+  };
+};
+
+const createMirrorEvent = (type, target) => {
+  let preventDefaultCount = 0;
+  let stopImmediatePropagationCount = 0;
+  let stopPropagationCount = 0;
+  return {
+    event: {
+      preventDefault() {
+        preventDefaultCount += 1;
+      },
+      stopImmediatePropagation() {
+        stopImmediatePropagationCount += 1;
+      },
+      stopPropagation() {
+        stopPropagationCount += 1;
+      },
+      target,
+      type,
+    },
+    preventDefaultCount: () => preventDefaultCount,
+    stopImmediatePropagationCount: () => stopImmediatePropagationCount,
+    stopPropagationCount: () => stopPropagationCount,
+  };
 };
 
 const createTargetEligibilityCheck = (resourceCounter) =>
@@ -3105,6 +3172,215 @@ test("turn scroll never manipulates the rendered autoprocess checkbox", () => {
   assert.doesNotMatch(
     turnScrollSource,
     /querySelector|autoProcessInput|checked|dispatchEvent|\.click\(/,
+  );
+});
+
+test("Actions mirror maps every cloned element to its exact source element", () => {
+  const executor = createActionsMirrorExecutor();
+  const sourceChild = {};
+  const source = {
+    querySelectorAll(selector) {
+      assert.equal(selector, "*");
+      return [sourceChild];
+    },
+  };
+  const cloneKeys = [];
+  const cloneChild = {
+    setAttribute(name, value) {
+      cloneKeys.push({name, value});
+    },
+  };
+  const clone = {
+    querySelectorAll(selector) {
+      assert.equal(selector, "*");
+      return [cloneChild];
+    },
+    setAttribute(name, value) {
+      cloneKeys.push({name, value});
+    },
+  };
+
+  const sourceByKey = executor.mapActionsMirrorElements(source, clone);
+
+  assert.deepEqual(cloneKeys, [
+    {name: "data-tfmars420-actions-source", value: "0"},
+    {name: "data-tfmars420-actions-source", value: "1"},
+  ]);
+  assert.equal(sourceByKey.get("0"), source);
+  assert.equal(sourceByKey.get("1"), sourceChild);
+  assert.equal(sourceByKey.size, 2);
+});
+
+test("Actions mirror sanitization avoids selectors and native-control conflicts", () => {
+  const executor = createActionsMirrorExecutor();
+  const classes = new Set(["player_home_block", "player_home_block--actions"]);
+  const removedAttributes = [];
+  const createSanitizedNode = () => ({
+    removeAttribute(name) {
+      removedAttributes.push(name);
+    },
+  });
+  const child = createSanitizedNode();
+  let extensionRemoveCount = 0;
+  const extensionChild = {
+    remove() {
+      extensionRemoveCount += 1;
+    },
+  };
+  const queryOrder = [];
+  const mirror = {
+    ...createSanitizedNode(),
+    classList: {
+      add(name) {
+        classes.add(name);
+      },
+      remove(name) {
+        classes.delete(name);
+      },
+    },
+    querySelectorAll(selector) {
+      queryOrder.push(selector);
+      if (selector === "*") return [child];
+      if (selector.includes("#tfmars420-timewarp-panel")) return [extensionChild];
+      throw new Error(`unexpected selector: ${selector}`);
+    },
+  };
+
+  assert.equal(executor.sanitizeActionsMirror(mirror), mirror);
+  assert.equal(classes.has("player_home_block--actions"), false);
+  assert.equal(classes.has("tfmars420-actions-mirror"), true);
+  for (const attribute of ["id", "name", "for", "form"]) {
+    assert.equal(
+      removedAttributes.filter((name) => name === attribute).length,
+      2,
+    );
+  }
+  assert.equal(extensionRemoveCount, 1);
+  assert.equal(queryOrder[0].includes("#tfmars420-timewarp-panel"), true);
+  assert.equal(queryOrder[1], "*");
+});
+
+test("Actions mirror clicks activate the mapped source through scroll preservation", () => {
+  const executor = createActionsMirrorExecutor();
+  let clickCount = 0;
+  const source = {
+    click() {
+      clickCount += 1;
+    },
+    isConnected: true,
+  };
+  const keyed = {
+    getAttribute: () => "7",
+  };
+  const target = {
+    closest(selector) {
+      if (selector === "[data-tfmars420-actions-source]") return keyed;
+      if (selector === "input, textarea, select") return null;
+      return null;
+    },
+  };
+  const mirror = {contains: (candidate) => candidate === keyed};
+  const sourceByKey = new Map([["7", source]]);
+  const interaction = createMirrorEvent("click", target);
+
+  assert.equal(
+    executor.proxyActionsMirrorClick(interaction.event, mirror, sourceByKey),
+    true,
+  );
+  assert.equal(clickCount, 1);
+  assert.equal(executor.preserved.length, 1);
+  assert.equal(executor.refreshCount(), 1);
+  assert.equal(interaction.preventDefaultCount(), 1);
+  assert.equal(interaction.stopImmediatePropagationCount(), 1);
+});
+
+test("Actions mirror value events update and notify the mapped source", () => {
+  const executor = createActionsMirrorExecutor();
+  const source = {
+    checked: false,
+    isConnected: true,
+    value: "1",
+  };
+  const target = {
+    checked: true,
+    closest: () => target,
+    getAttribute: () => "4",
+    tagName: "INPUT",
+    type: "number",
+    value: "12",
+  };
+  const mirror = {contains: (candidate) => candidate === target};
+  const sourceByKey = new Map([["4", source]]);
+  const interaction = createMirrorEvent("change", target);
+
+  assert.equal(
+    executor.proxyActionsMirrorValueEvent(interaction.event, mirror, sourceByKey),
+    true,
+  );
+  assert.equal(source.value, "12");
+  assert.equal(source.checked, true);
+  assert.deepEqual(executor.dispatched, [{target: source, eventName: "change"}]);
+  assert.equal(executor.preserved.length, 1);
+  assert.equal(executor.refreshCount(), 1);
+  assert.equal(interaction.stopImmediatePropagationCount(), 1);
+});
+
+test("Actions mirror ignores its own editable clicks and refreshes stale mappings", () => {
+  const executor = createActionsMirrorExecutor();
+  const editableTarget = {
+    closest(selector) {
+      if (selector === "input, textarea, select") {
+        return {tagName: "INPUT", type: "text"};
+      }
+      return null;
+    },
+  };
+  const editableInteraction = createMirrorEvent("click", editableTarget);
+  assert.equal(
+    executor.proxyActionsMirrorClick(
+      editableInteraction.event,
+      {contains: () => false},
+      new Map(),
+    ),
+    false,
+  );
+  assert.equal(editableInteraction.preventDefaultCount(), 0);
+
+  const staleSource = {click: () => assert.fail("stale source must not click"), isConnected: false};
+  const keyed = {getAttribute: () => "9"};
+  const staleTarget = {
+    closest(selector) {
+      if (selector === "[data-tfmars420-actions-source]") return keyed;
+      if (selector === "input, textarea, select") return null;
+      return null;
+    },
+  };
+  const staleInteraction = createMirrorEvent("click", staleTarget);
+  assert.equal(
+    executor.proxyActionsMirrorClick(
+      staleInteraction.event,
+      {contains: (candidate) => candidate === keyed},
+      new Map([["9", staleSource]]),
+    ),
+    false,
+  );
+  assert.equal(executor.refreshCount(), 1);
+  assert.equal(staleInteraction.preventDefaultCount(), 1);
+  assert.equal(staleInteraction.stopImmediatePropagationCount(), 1);
+});
+
+test("interactive Actions mirror is appended after every extension panel section", () => {
+  assert.match(
+    queuePanelSource,
+    /const actionsMirror = renderActionsMirror\(actionsBlock\);\s*if \(actionsMirror\) \{\s*panel\.append\(actionsMirror\);\s*\}/,
+  );
+  assert.ok(
+    queuePanelSource.indexOf("const actionsMirror = renderActionsMirror(actionsBlock)") >
+      queuePanelSource.indexOf("panel.append(liveScoreTable)"),
+  );
+  assert.match(
+    source,
+    /#\$\{timeWarpPanelId\} > \.tfmars420-actions-mirror \{[\s\S]*?width: 100%;[\s\S]*?\}/,
   );
 });
 
