@@ -123,7 +123,7 @@ Missing available ocean spaces are a safe failure. Multiple visible enabled
 Hidden confirmation controls must not be clicked.
 
 The behavior applies to `autopilot: escape` and modes such as
-`autopilot: buy space rocks` that explicitly fall back to the same Escape
+`autopilot: buy everything` that explicitly fall back to the same Escape
 executor. It does not apply to `got a lotta energy`.
 
 ## Submit Safety

@@ -25,7 +25,7 @@ fallback. Near matches and other greenery-placement prompts do not qualify.
 Treat the exact final-greenery prompt as an Escape-fallback prompt for:
 
 - `autopilot: escape`; and
-- `autopilot: buy space rocks`, when it falls back to Escape.
+- `autopilot: buy everything`, when it falls back to Escape.
 
 Do not make `autopilot: got a lotta energy`, Pass, or other queue item types
 eligible at this prompt.
