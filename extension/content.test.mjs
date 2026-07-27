@@ -371,10 +371,16 @@ const createPlayedActionLearningTracker = (playerId = "player-1") =>
 const createQuickChoiceCaptureHarness = ({
   optionText = "Gain a standard resource",
   targetCardText = "",
+  direct = false,
+  directPromptText = "",
+  directSelectedInputCount = 1,
+  directTargetDisabled = false,
+  directWorkflowCount = 1,
   nestedCheckedOptionText = "",
   trusted = true,
   playbackActive = false,
 } = {}) => {
+  const isDirect = direct || directPromptText !== "";
   class FakeElement {
     closest(selector) {
       assert.equal(selector, "button.btn-submit, input.btn-submit");
@@ -385,7 +391,7 @@ const createQuickChoiceCaptureHarness = ({
   const draft = freshQueueSession("player-1");
   const auditEvents = [];
   let updateCount = 0;
-  const outerOptions = {
+  const outerOptions = isDirect ? null : {
     querySelectorAll(selector) {
       assert.equal(selector, "label.form-radio input[type='radio']:checked");
       return nestedRadio ? [topLevelRadio, nestedRadio] : [topLevelRadio];
@@ -394,7 +400,7 @@ const createQuickChoiceCaptureHarness = ({
   const nestedOptions = {};
   const selectedCardInput = targetCardText
     ? {
-        disabled: false,
+        disabled: directTargetDisabled,
         closest(selector) {
           assert.equal(selector, ".cardbox");
           return {name: targetCardText};
@@ -403,12 +409,18 @@ const createQuickChoiceCaptureHarness = ({
     : null;
   const cardWorkflow = targetCardText
     ? {
+        querySelector(selector) {
+          assert.equal(selector, ":scope > .wf-component-title");
+          return directPromptText ? {textContent: directPromptText} : null;
+        },
         querySelectorAll(selector) {
-          assert.equal(
-            selector,
-            "input[type='radio']:checked, input[type='checkbox']:checked",
-          );
-          return [selectedCardInput];
+          if (
+            selector ===
+            "input[type='radio']:checked, input[type='checkbox']:checked"
+          ) {
+            return Array.from({length: directSelectedInputCount}, () => selectedCardInput);
+          }
+          assert.fail(`unexpected selector: ${selector}`);
         },
       }
     : null;
@@ -451,6 +463,12 @@ const createQuickChoiceCaptureHarness = ({
     querySelector(selector) {
       assert.equal(selector, ".wf-options");
       return outerOptions;
+    },
+    querySelectorAll(selector) {
+      assert.equal(selector, ":scope > .wf-component--select-card");
+      return isDirect && cardWorkflow
+        ? Array.from({length: directWorkflowCount}, () => cardWorkflow)
+        : [];
     },
   };
   const submit = {disabled: false};
@@ -996,17 +1014,24 @@ const executeRadioOption = async ({hasChildren}) => {
 const createExactQuickChoiceHarness = ({
   optionLabels = [],
   targetCards = [],
+  directPromptTexts = [],
   submitButtons = [{disabled: false}],
   hasChildren = false,
   hasCardWorkflow = true,
 } = {}) => {
   const events = [];
-  const cardWorkflow = {
+  const createCardWorkflow = (promptText = "") => ({
+    querySelector(selector) {
+      assert.equal(selector, ":scope > .wf-component-title");
+      return promptText ? {textContent: promptText} : null;
+    },
     querySelectorAll(selector) {
       assert.equal(selector, ".cardbox");
       return targetCards;
     },
-  };
+  });
+  const cardWorkflow = createCardWorkflow();
+  const directWorkflows = directPromptTexts.map(createCardWorkflow);
   const labels = optionLabels.map(({text, disabled = false}) => {
     const radio = {
       checked: false,
@@ -1053,6 +1078,9 @@ const createExactQuickChoiceHarness = ({
   const actionsRoot = {
     querySelectorAll(selector) {
       if (selector === "label.form-radio") return labels;
+      if (selector === ":scope > .wf-component--select-card") {
+        return directWorkflows;
+      }
       assert.equal(selector, "button.btn-submit, input.btn-submit");
       return submitButtons;
     },
@@ -1070,6 +1098,7 @@ const createExactQuickChoiceHarness = ({
     "dispatchBubbledEvent",
     "cleanText",
     "getCardIdentity",
+    "quickChoiceCardWorkflowPrompt",
     "normalizeRememberedQuickChoice",
     "clearPlayedActionLearning",
     "nextFrame",
@@ -1080,6 +1109,7 @@ const createExactQuickChoiceHarness = ({
       return {
         selectOption: selectExactQuickChoiceOption,
         selectTarget: selectExactQuickChoiceTarget,
+        selectDirectTarget: selectExactDirectQuickChoiceTarget,
         submit: clickQuickChoiceSubmit,
         execute: executeRememberedQuickChoice,
         playbackActive: () => quickChoicePlaybackActive,
@@ -1092,6 +1122,12 @@ const createExactQuickChoiceHarness = ({
     (_input, eventName) => events.push(`event:${eventName}`),
     (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
     (card) => ({name: card?.name ?? "Card"}),
+    (workflow) =>
+      String(
+        workflow?.querySelector(":scope > .wf-component-title")?.textContent ?? "",
+      )
+        .replace(/\s+/g, " ")
+        .trim(),
     normalizeRememberedQuickChoice,
     () => events.push("clear-learning"),
     async () => events.push("frame"),
@@ -1262,8 +1298,12 @@ const createAutopilotEnqueuer = (initialQueue = [], {executeNow = false} = {}) =
 
 const autopilotQueueItemLabel = Function(
   "autopilotModeLabel",
+  "cleanText",
   `"use strict"; ${queueItemLabelSource}; return queueItemLabel;`,
-)(autopilotModeLabel);
+)(
+  autopilotModeLabel,
+  (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
+);
 
 const executeAutopilotItem = async (mode, energyResult) => {
   const events = [];
@@ -3810,6 +3850,25 @@ test("autopilot queue labels include the captured mode", () => {
   );
 });
 
+test("target-only quick-choice queue labels identify the remembered card", () => {
+  assert.equal(
+    autopilotQueueItemLabel({
+      type: "quickChoice",
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    "quick: Regolith Eaters",
+  );
+  assert.equal(
+    autopilotQueueItemLabel({
+      type: "quickChoice",
+      optionText: "Select card to add 1 asteroid",
+      targetCardText: "AstroDrill",
+    }),
+    "quick: Select card to add 1 asteroid → AstroDrill",
+  );
+});
+
 test("enabled exact Pass capability is heading-independent and read-only", () => {
   const polderTechPrompt = createEnabledExactPassOptionCheck([
     {
@@ -5018,6 +5077,18 @@ test("remembered quick choices are normalized and bounded to the player session"
           {optionText: ""},
           {optionText: "Gain a standard resource", targetCardText: 4},
         ],
+        "mohole-lake": [
+          {
+            promptText: "  Select card   to add microbe or animal ",
+            targetCardText: " Regolith Eaters ",
+          },
+          {
+            promptText: "Select card to add microbe or animal",
+            targetCardText: "Regolith Eaters",
+          },
+          {promptText: "", targetCardText: "Vermin"},
+          {promptText: "Select card to add microbe or animal", targetCardText: 4},
+        ],
       },
     },
     "player-1",
@@ -5028,6 +5099,12 @@ test("remembered quick choices are normalized and bounded to the player session"
       {
         optionText: "Select card to add 1 asteroid",
         targetCardText: "AstroDrill",
+      },
+    ],
+    "mohole-lake": [
+      {
+        promptText: "Select card to add microbe or animal",
+        targetCardText: "Regolith Eaters",
       },
     ],
   });
@@ -5066,6 +5143,38 @@ test("remembered quick-choice insertion deduplicates exact option and target tup
     true,
   );
   assert.equal(draft.rememberedQuickChoices.astrodrill.length, 2);
+
+  assert.equal(
+    rememberQuickChoice(draft, "mohole-lake", {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    true,
+  );
+  assert.equal(
+    rememberQuickChoice(draft, "mohole-lake", {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    false,
+  );
+  assert.equal(
+    rememberQuickChoice(draft, "mohole-lake", {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Vermin",
+    }),
+    true,
+  );
+  assert.deepEqual(draft.rememberedQuickChoices["mohole-lake"], [
+    {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    },
+    {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Vermin",
+    },
+  ]);
 });
 
 test("played-action learning arms only for the same player's non-Pass follow-up", () => {
@@ -5220,6 +5329,69 @@ test("remembered-choice capture stores leaf and exact card-target recipes", () =
   ]);
 });
 
+test("remembered-choice capture stores direct card-target recipes", () => {
+  const direct = createQuickChoiceCaptureHarness({
+    directPromptText: "  Select card   to add microbe or animal ",
+    targetCardText: "Regolith Eaters",
+  });
+
+  assert.equal(direct.handle(direct.event), true);
+  assert.deepEqual(direct.draft.rememberedQuickChoices, {
+    astrodrill: [
+      {
+        promptText: "Select card to add microbe or animal",
+        targetCardText: "Regolith Eaters",
+      },
+    ],
+  });
+  assert.deepEqual(direct.auditEvents, [
+    {
+      eventName: "user.card.quick-choice.learn",
+      details: {
+        cardName: "AstroDrill",
+        promptText: "Select card to add microbe or animal",
+        hasTarget: true,
+      },
+    },
+  ]);
+  assert.equal(direct.clearCount(), 1);
+  assert.equal(direct.updateCount(), 1);
+});
+
+test("remembered-choice capture rejects incomplete direct card targets", () => {
+  for (const blocked of [
+    createQuickChoiceCaptureHarness({
+      direct: true,
+      targetCardText: "Regolith Eaters",
+    }),
+    createQuickChoiceCaptureHarness({
+      directPromptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+      directSelectedInputCount: 0,
+    }),
+    createQuickChoiceCaptureHarness({
+      directPromptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+      directSelectedInputCount: 2,
+    }),
+    createQuickChoiceCaptureHarness({
+      directPromptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+      directTargetDisabled: true,
+    }),
+    createQuickChoiceCaptureHarness({
+      directPromptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+      directWorkflowCount: 2,
+    }),
+  ]) {
+    assert.equal(blocked.handle(blocked.event), false);
+    assert.deepEqual(blocked.draft.rememberedQuickChoices, {});
+    assert.equal(blocked.updateCount(), 0);
+    assert.equal(blocked.clearCount(), 1);
+  }
+});
+
 test("remembered-choice capture ignores nested checked radios and rejects synthetic playback", () => {
   const nested = createQuickChoiceCaptureHarness({
     optionText: "Gain a standard resource",
@@ -5280,6 +5452,21 @@ test("quick buttons are offered only for a matching latest queued played action"
       targetCardText: "AstroDrill",
     },
   );
+  assert.deepEqual(
+    quickChoiceQueueItem({
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    {
+      type: "quickChoice",
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    },
+  );
+  assert.match(
+    quickChoiceUiSource,
+    /choice\.optionText[\s\S]*\? `quick: \$\{choice\.optionText\}`[\s\S]*: `quick: \$\{choice\.targetCardText\}`/,
+  );
   assert.match(quickChoiceUiSource, /latestQueuedPlayedActionMatches\(session\.queue, identity\)/);
   assert.match(quickChoiceUiSource, /draft\.queue\.push\(item\)/);
   assert.doesNotMatch(quickChoiceUiSource, /enqueueOrExecuteNow/);
@@ -5329,6 +5516,33 @@ test("exact quick-choice playback handles leaf and compound AstroDrill recipes",
     "submit:0",
   ]);
   assert.equal(compound.playbackActive(), false);
+});
+
+test("exact quick-choice playback handles direct Mohole Lake card targets", async () => {
+  const direct = createExactQuickChoiceHarness({
+    directPromptTexts: ["Select card to add microbe or animal"],
+    targetCards: [
+      {name: "Regolith Eaters"},
+      {name: "Nitrite Reducing Bacteria"},
+      {name: "Vermin"},
+    ],
+  });
+
+  await direct.execute({
+    type: "quickChoice",
+    promptText: "Select card to add microbe or animal",
+    targetCardText: "Regolith Eaters",
+  });
+
+  assert.deepEqual(direct.events, [
+    "clear-learning",
+    "target:Regolith Eaters",
+    "event:input",
+    "event:change",
+    "frame",
+    "submit:0",
+  ]);
+  assert.equal(direct.playbackActive(), false);
 });
 
 test("target-less quick playback stops safely at a real child workflow", async () => {
@@ -5427,6 +5641,83 @@ test("exact quick targets and submits bail out before stale choices are submitte
   });
   assert.throws(ambiguous.submit, /ambiguous quick-choice submit buttons: 2/);
   assert.equal(submitCount, 0);
+});
+
+test("direct quick targets reject stale prompts and cards before submit", async () => {
+  const missingPrompt = createExactQuickChoiceHarness({
+    directPromptTexts: ["Select a different card"],
+    targetCards: [{name: "Regolith Eaters"}],
+  });
+  await assert.rejects(
+    missingPrompt.execute({
+      type: "quickChoice",
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    /missing exact direct quick prompt/,
+  );
+  assert.equal(missingPrompt.events.includes("submit:0"), false);
+
+  const duplicatePrompt = createExactQuickChoiceHarness({
+    directPromptTexts: [
+      "Select card to add microbe or animal",
+      "Select card to add microbe or animal",
+    ],
+    targetCards: [{name: "Regolith Eaters"}],
+  });
+  await assert.rejects(
+    duplicatePrompt.execute({
+      type: "quickChoice",
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    /ambiguous exact direct quick prompt/,
+  );
+  assert.equal(duplicatePrompt.events.includes("submit:0"), false);
+
+  const missingTarget = createExactQuickChoiceHarness({
+    directPromptTexts: ["Select card to add microbe or animal"],
+    targetCards: [{name: "Vermin"}],
+  });
+  await assert.rejects(
+    missingTarget.execute({
+      type: "quickChoice",
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    /missing exact quick target/,
+  );
+  assert.equal(missingTarget.events.includes("submit:0"), false);
+
+  const duplicateTarget = createExactQuickChoiceHarness({
+    directPromptTexts: ["Select card to add microbe or animal"],
+    targetCards: [{name: "Regolith Eaters"}, {name: "Regolith Eaters"}],
+  });
+  await assert.rejects(
+    duplicateTarget.execute({
+      type: "quickChoice",
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    /ambiguous exact quick target/,
+  );
+  assert.equal(duplicateTarget.events.includes("submit:0"), false);
+
+  const disabledTarget = createExactQuickChoiceHarness({
+    directPromptTexts: ["Select card to add microbe or animal"],
+    targetCards: [
+      {name: "Regolith Eaters", input: {disabled: true, click() {}}},
+    ],
+  });
+  await assert.rejects(
+    disabledTarget.execute({
+      type: "quickChoice",
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    }),
+    /exact quick target is disabled/,
+  );
+  assert.equal(disabledTarget.events.includes("submit:0"), false);
 });
 
 test("stale compound quick choices reject without submitting the form", async () => {

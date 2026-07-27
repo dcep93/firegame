@@ -2722,18 +2722,32 @@
   };
 
   const normalizeRememberedQuickChoice = (value) => {
-    if (!isPlainObject(value) || typeof value.optionText !== "string") return null;
-    const optionText = cleanText(value.optionText);
-    if (!optionText) return null;
+    if (!isPlainObject(value)) return null;
+    const hasOption = Object.prototype.hasOwnProperty.call(value, "optionText");
     const hasTarget = Object.prototype.hasOwnProperty.call(value, "targetCardText");
-    if (hasTarget && typeof value.targetCardText !== "string") return null;
+    if (hasOption) {
+      if (typeof value.optionText !== "string") return null;
+      const optionText = cleanText(value.optionText);
+      if (!optionText || (hasTarget && typeof value.targetCardText !== "string")) return null;
+      const targetCardText = hasTarget ? cleanText(value.targetCardText) : "";
+      if (hasTarget && !targetCardText) return null;
+      return targetCardText ? { optionText, targetCardText } : { optionText };
+    }
+    if (
+      typeof value.promptText !== "string" ||
+      typeof value.targetCardText !== "string"
+    ) {
+      return null;
+    }
+    const promptText = cleanText(value.promptText);
     const targetCardText = hasTarget ? cleanText(value.targetCardText) : "";
-    if (hasTarget && !targetCardText) return null;
-    return targetCardText ? { optionText, targetCardText } : { optionText };
+    if (!promptText || !targetCardText) return null;
+    return { promptText, targetCardText };
   };
 
   const rememberedQuickChoicesEqual = (left, right) =>
     left?.optionText === right?.optionText &&
+    left?.promptText === right?.promptText &&
     (left?.targetCardText ?? "") === (right?.targetCardText ?? "");
 
   const normalizeRememberedQuickChoices = (value) => {
@@ -4122,9 +4136,12 @@
     if (item?.type === "cardTarget") return `target: ${queueCardName(item.cardName, "played card")}`;
     if (item?.type === "autopilot") return `autopilot: ${autopilotModeLabel(item.mode)}`;
     if (item?.type === "quickChoice") {
-      const optionText = cleanText(String(item.optionText ?? "")) || "remembered choice";
+      const optionText = cleanText(String(item.optionText ?? ""));
       const targetCardText = cleanText(String(item.targetCardText ?? ""));
-      return `quick: ${optionText}${targetCardText ? ` → ${targetCardText}` : ""}`;
+      if (!optionText && targetCardText) return `quick: ${targetCardText}`;
+      return `quick: ${optionText || "remembered choice"}${
+        targetCardText ? ` → ${targetCardText}` : ""
+      }`;
     }
     return "Unknown action";
   };
@@ -4176,6 +4193,31 @@
     return { hasCardWorkflow: true, targetCardText };
   };
 
+  const quickChoiceCardWorkflowPrompt = (cardWorkflow) =>
+    cleanText(
+      cardWorkflow?.querySelector?.(":scope > .wf-component-title")?.textContent ?? "",
+    );
+
+  const selectedDirectQuickChoiceTarget = (actionsRoot) => {
+    const cardWorkflows = Array.from(
+      actionsRoot?.querySelectorAll?.(":scope > .wf-component--select-card") ?? [],
+    );
+    if (cardWorkflows.length !== 1) return null;
+    const cardWorkflow = cardWorkflows[0];
+    const promptText = quickChoiceCardWorkflowPrompt(cardWorkflow);
+    if (!promptText) return null;
+    const selectedInputs = Array.from(
+      cardWorkflow.querySelectorAll(
+        "input[type='radio']:checked, input[type='checkbox']:checked",
+      ),
+    ).filter((input) => !input.disabled);
+    if (selectedInputs.length !== 1) return null;
+    const cardBox = selectedInputs[0].closest?.(".cardbox");
+    const targetCardText = cleanText(getCardIdentity(cardBox).name);
+    if (!cardBox || !targetCardText || targetCardText === "Card") return null;
+    return { promptText, targetCardText };
+  };
+
   const handleRememberedQuickChoiceSubmit = (event) => {
     if (!armedPlayedActionLearning || quickChoicePlaybackActive || event.isTrusted !== true) {
       return false;
@@ -4194,17 +4236,22 @@
     );
     const learning = armedPlayedActionLearning;
     clearPlayedActionLearning();
-    if (checkedRadios.length !== 1) return false;
-
-    const optionText = exactRadioOptionText(checkedRadios[0]);
-    const selectedTarget = selectedQuickChoiceTarget(checkedRadios[0]);
-    if (!optionText || !selectedTarget) return false;
-    const choice = {
-      optionText,
-      ...(selectedTarget.hasCardWorkflow
-        ? { targetCardText: selectedTarget.targetCardText }
-        : {}),
-    };
+    let choice = null;
+    if (checkedRadios.length === 1) {
+      const optionText = exactRadioOptionText(checkedRadios[0]);
+      const selectedTarget = selectedQuickChoiceTarget(checkedRadios[0]);
+      if (optionText && selectedTarget) {
+        choice = {
+          optionText,
+          ...(selectedTarget.hasCardWorkflow
+            ? { targetCardText: selectedTarget.targetCardText }
+            : {}),
+        };
+      }
+    } else if (checkedRadios.length === 0) {
+      choice = selectedDirectQuickChoiceTarget(actionsRoot);
+    }
+    if (!choice) return false;
     let learned = false;
     updateQueueSession((draft) => {
       learned = rememberQuickChoice(draft, learning.cardKey, choice);
@@ -4213,8 +4260,9 @@
     if (learned) {
       auditLog("user.card.quick-choice.learn", {
         cardName: learning.cardName,
-        optionText,
-        hasTarget: selectedTarget.hasCardWorkflow,
+        ...(choice.optionText ? { optionText: choice.optionText } : {}),
+        ...(choice.promptText ? { promptText: choice.promptText } : {}),
+        hasTarget: Boolean(choice.targetCardText),
       });
     }
     return learned;
@@ -4687,7 +4735,8 @@
 
   const quickChoiceQueueItem = (choice) => ({
     type: "quickChoice",
-    optionText: choice.optionText,
+    ...(choice.optionText ? { optionText: choice.optionText } : {}),
+    ...(choice.promptText ? { promptText: choice.promptText } : {}),
     ...(choice.targetCardText ? { targetCardText: choice.targetCardText } : {}),
   });
 
@@ -4703,9 +4752,12 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = "tfmars420-quick-choice-button";
+      const choiceText = choice.optionText
+        ? `quick: ${choice.optionText}`
+        : `quick: ${choice.targetCardText}`;
       button.textContent =
-        `quick: ${choice.optionText}` +
-        (choice.targetCardText ? ` → ${choice.targetCardText}` : "");
+        choiceText +
+        (choice.optionText && choice.targetCardText ? ` → ${choice.targetCardText}` : "");
       button.title = button.textContent;
       button.addEventListener("click", () => {
         const currentSession = readQueueSession();
@@ -4715,7 +4767,8 @@
         const item = quickChoiceQueueItem(choice);
         auditLog("user.card.quick-choice.enqueue", {
           cardName: identity.name,
-          optionText: choice.optionText,
+          ...(choice.optionText ? { optionText: choice.optionText } : {}),
+          ...(choice.promptText ? { promptText: choice.promptText } : {}),
           hasTarget: Boolean(choice.targetCardText),
         });
         updateQueueSession((draft) => {
@@ -5691,12 +5744,7 @@
     return radio;
   };
 
-  const selectExactQuickChoiceTarget = (radio, targetCardText) => {
-    const optionContainer = radio?.closest("label.form-radio")?.parentElement;
-    const cardWorkflow = optionContainer?.querySelector(".wf-component--select-card");
-    if (!cardWorkflow) {
-      throw new Error(`missing card choices for exact quick target: ${targetCardText}`);
-    }
+  const selectExactQuickChoiceTargetFromWorkflow = (cardWorkflow, targetCardText) => {
     const matches = Array.from(cardWorkflow.querySelectorAll(".cardbox")).filter(
       (cardBox) => cleanText(getCardIdentity(cardBox).name) === targetCardText,
     );
@@ -5716,6 +5764,32 @@
       dispatchBubbledEvent(input, "input");
       dispatchBubbledEvent(input, "change");
     });
+  };
+
+  const selectExactQuickChoiceTarget = (radio, targetCardText) => {
+    const optionContainer = radio?.closest("label.form-radio")?.parentElement;
+    const cardWorkflow = optionContainer?.querySelector(".wf-component--select-card");
+    if (!cardWorkflow) {
+      throw new Error(`missing card choices for exact quick target: ${targetCardText}`);
+    }
+    selectExactQuickChoiceTargetFromWorkflow(cardWorkflow, targetCardText);
+  };
+
+  const selectExactDirectQuickChoiceTarget = (promptText, targetCardText) => {
+    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
+    if (!actionsRoot) throw new Error("missing action form");
+    const matches = Array.from(
+      actionsRoot.querySelectorAll(":scope > .wf-component--select-card"),
+    ).filter(
+      (cardWorkflow) => quickChoiceCardWorkflowPrompt(cardWorkflow) === promptText,
+    );
+    if (matches.length === 0) {
+      throw new Error(`missing exact direct quick prompt: ${promptText}`);
+    }
+    if (matches.length > 1) {
+      throw new Error(`ambiguous exact direct quick prompt: ${promptText}`);
+    }
+    selectExactQuickChoiceTargetFromWorkflow(matches[0], targetCardText);
   };
 
   const clickQuickChoiceSubmit = () => {
@@ -5739,6 +5813,12 @@
     clearPlayedActionLearning();
     quickChoicePlaybackActive = true;
     try {
+      if (!choice.optionText) {
+        selectExactDirectQuickChoiceTarget(choice.promptText, choice.targetCardText);
+        await nextFrame();
+        clickQuickChoiceSubmit();
+        return;
+      }
       const radio = selectExactQuickChoiceOption(choice.optionText);
       await nextFrame();
       if (choice.targetCardText) {
