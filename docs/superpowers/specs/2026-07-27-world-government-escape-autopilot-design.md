@@ -45,6 +45,12 @@ All other readiness checks remain mandatory:
 - it is the current player’s turn; and
 - a live action form exists.
 
+Automatic queue processing ordinarily pauses when the player appears to have
+passed. World Government Terraforming occurs after the action phase, and the
+DOM or log fallback can still report the player’s prior Pass. Allow only the
+queue-head `autopilot: escape` item through that guard while the exact World
+Government prompt is active. Every other item remains paused after passing.
+
 ## Escape Execution
 
 Route Escape through a dedicated executor:
