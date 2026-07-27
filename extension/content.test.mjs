@@ -547,6 +547,7 @@ const createTurnScrollExecutor = (readiness = {}) => {
 const createNavigationHotkeyExecutor = ({
   active = true,
   innerHeight = 600,
+  scrollHeight = 5000,
   scrollY = 100,
   targets = {},
 } = {}) => {
@@ -563,6 +564,7 @@ const createNavigationHotkeyExecutor = ({
     `,
   )(
     {
+      documentElement: {scrollHeight},
       querySelector(selector) {
         selectors.push(selector);
         return targets[selector] ?? null;
@@ -3136,18 +3138,15 @@ test("W accepts uppercase and jumps the Played Cards top to the viewport top", (
   assert.equal(shortcut.preventDefaultCount(), 1);
 });
 
-test("E jumps the extension panel bottom to the viewport bottom", () => {
-  const extensionPanel = {
-    getBoundingClientRect: () => ({top: 300, bottom: 900}),
-  };
+test("E jumps to the bottom of the page without querying an element", () => {
   const executor = createNavigationHotkeyExecutor({
-    targets: {"#tfmars420-timewarp-panel": extensionPanel},
+    scrollHeight: 4321,
   });
   const shortcut = executor.event("e");
 
   assert.equal(executor.handle(shortcut.keyboardEvent), true);
-  assert.deepEqual(executor.selectors, ["#tfmars420-timewarp-panel"]);
-  assert.deepEqual(executor.scrollCalls, [{top: 400, behavior: "instant"}]);
+  assert.deepEqual(executor.selectors, []);
+  assert.deepEqual(executor.scrollCalls, [{top: 4321, behavior: "instant"}]);
   assert.equal(shortcut.preventDefaultCount(), 1);
 });
 

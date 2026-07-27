@@ -1626,7 +1626,7 @@
       case "w":
         return {selector: ".player_home_block--cards", edge: "top"};
       case "e":
-        return {selector: `#${timeWarpPanelId}`, edge: "bottom"};
+        return {edge: "pageBottom"};
       default:
         return null;
     }
@@ -1653,15 +1653,15 @@
     const destination = navigationHotkeyDestination(event.key);
     if (!destination) return false;
 
-    const target = document.querySelector(destination.selector);
-    if (!isVisibleNavigationHotkeyTarget(target)) return false;
+    let targetTop = document.documentElement.scrollHeight;
+    if (destination.edge !== "pageBottom") {
+      const target = document.querySelector(destination.selector);
+      if (!isVisibleNavigationHotkeyTarget(target)) return false;
 
-    const bounds = target.getBoundingClientRect();
-    const currentScrollY = Number.isFinite(window.scrollY) ? window.scrollY : 0;
-    const targetTop =
-      destination.edge === "bottom"
-        ? currentScrollY + bounds.bottom - window.innerHeight
-        : currentScrollY + bounds.top;
+      const bounds = target.getBoundingClientRect();
+      const currentScrollY = Number.isFinite(window.scrollY) ? window.scrollY : 0;
+      targetTop = currentScrollY + bounds.top;
+    }
     window.scrollTo({
       top: Math.max(0, targetTop),
       behavior: "instant",
