@@ -1612,6 +1612,68 @@
 
   const shouldRunTerraformingMarsHelpers = () => extensionActive;
 
+  const isEditableNavigationHotkeyTarget = (target) =>
+    Boolean(
+      target?.closest?.(
+        "input, textarea, select, [contenteditable]:not([contenteditable='false'])",
+      ),
+    );
+
+  const navigationHotkeyDestination = (key) => {
+    switch (String(key ?? "").toLowerCase()) {
+      case "q":
+        return {selector: ".player_home_block--actions", edge: "top"};
+      case "w":
+        return {selector: ".player_home_block--cards", edge: "top"};
+      case "e":
+        return {selector: `#${timeWarpPanelId}`, edge: "bottom"};
+      default:
+        return null;
+    }
+  };
+
+  const isVisibleNavigationHotkeyTarget = (target) => {
+    if (!target || target.hidden) return false;
+    const style = window.getComputedStyle(target);
+    return style.display !== "none" && style.visibility !== "hidden";
+  };
+
+  const handleTerraformingMarsNavigationHotkey = (event) => {
+    if (
+      !shouldRunTerraformingMarsHelpers() ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.isComposing ||
+      isEditableNavigationHotkeyTarget(event.target)
+    ) {
+      return false;
+    }
+
+    const destination = navigationHotkeyDestination(event.key);
+    if (!destination) return false;
+
+    const target = document.querySelector(destination.selector);
+    if (!isVisibleNavigationHotkeyTarget(target)) return false;
+
+    const bounds = target.getBoundingClientRect();
+    const currentScrollY = Number.isFinite(window.scrollY) ? window.scrollY : 0;
+    const targetTop =
+      destination.edge === "bottom"
+        ? currentScrollY + bounds.bottom - window.innerHeight
+        : currentScrollY + bounds.top;
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "instant",
+    });
+    event.preventDefault();
+    return true;
+  };
+
+  const startTerraformingMarsNavigationHotkeys = () => {
+    document.addEventListener("keydown", handleTerraformingMarsNavigationHotkey, true);
+  };
+
   const setExtensionActive = (active) => {
     if (extensionActive === active) return;
     extensionActive = active;
@@ -5794,6 +5856,7 @@
   startPlayerViewCapture();
   startGlobalHandTagClickListener();
   startRememberedQuickChoiceListener();
+  startTerraformingMarsNavigationHotkeys();
 
   document.addEventListener("change", handleSingleCardSelectionChange, true);
 

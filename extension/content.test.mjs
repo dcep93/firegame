@@ -52,6 +52,10 @@ const turnScrollSource = source.slice(
   source.indexOf("const maybeScrollToBottomForTurn"),
   source.indexOf("const selectIndexedRadioOption"),
 );
+const navigationHotkeySource = source.slice(
+  source.indexOf("const isEditableNavigationHotkeyTarget"),
+  source.indexOf("const startTerraformingMarsNavigationHotkeys"),
+);
 const handSortStateSource = source.slice(
   source.indexOf("const normalizeHandSortMode"),
   source.indexOf("const writeQueueSession"),
@@ -538,6 +542,66 @@ const createTurnScrollExecutor = (readiness = {}) => {
     session,
     updateCount: () => updateCount,
   };
+};
+
+const createNavigationHotkeyExecutor = ({
+  active = true,
+  innerHeight = 600,
+  scrollY = 100,
+  targets = {},
+} = {}) => {
+  const scrollCalls = [];
+  const selectors = [];
+  const handle = Function(
+    "document",
+    "window",
+    "timeWarpPanelId",
+    "shouldRunTerraformingMarsHelpers",
+    `"use strict";
+      ${navigationHotkeySource}
+      return handleTerraformingMarsNavigationHotkey;
+    `,
+  )(
+    {
+      querySelector(selector) {
+        selectors.push(selector);
+        return targets[selector] ?? null;
+      },
+    },
+    {
+      getComputedStyle(target) {
+        return target.style ?? {display: "block", visibility: "visible"};
+      },
+      innerHeight,
+      scrollTo(options) {
+        scrollCalls.push(options);
+      },
+      scrollY,
+    },
+    "tfmars420-timewarp-panel",
+    () => active,
+  );
+
+  const event = (key, overrides = {}) => {
+    let preventDefaultCount = 0;
+    const keyboardEvent = {
+      altKey: false,
+      ctrlKey: false,
+      key,
+      metaKey: false,
+      preventDefault() {
+        preventDefaultCount += 1;
+      },
+      target: {closest: () => null},
+      ...overrides,
+    };
+    return {
+      keyboardEvent,
+      preventDefaultCount: () => preventDefaultCount,
+    };
+  };
+
+  return {event, handle, scrollCalls, selectors};
 };
 
 const createTargetEligibilityCheck = (resourceCounter) =>
@@ -3039,6 +3103,110 @@ test("turn scroll never manipulates the rendered autoprocess checkbox", () => {
   assert.doesNotMatch(
     turnScrollSource,
     /querySelector|autoProcessInput|checked|dispatchEvent|\.click\(/,
+  );
+});
+
+test("Q jumps the Actions block top to the viewport top", () => {
+  const actions = {
+    getBoundingClientRect: () => ({top: 250, bottom: 650}),
+  };
+  const executor = createNavigationHotkeyExecutor({
+    targets: {".player_home_block--actions": actions},
+  });
+  const shortcut = executor.event("q");
+
+  assert.equal(executor.handle(shortcut.keyboardEvent), true);
+  assert.deepEqual(executor.selectors, [".player_home_block--actions"]);
+  assert.deepEqual(executor.scrollCalls, [{top: 350, behavior: "instant"}]);
+  assert.equal(shortcut.preventDefaultCount(), 1);
+});
+
+test("W accepts uppercase and jumps the Played Cards top to the viewport top", () => {
+  const playedCards = {
+    getBoundingClientRect: () => ({top: 900, bottom: 1400}),
+  };
+  const executor = createNavigationHotkeyExecutor({
+    targets: {".player_home_block--cards": playedCards},
+  });
+  const shortcut = executor.event("W");
+
+  assert.equal(executor.handle(shortcut.keyboardEvent), true);
+  assert.deepEqual(executor.selectors, [".player_home_block--cards"]);
+  assert.deepEqual(executor.scrollCalls, [{top: 1000, behavior: "instant"}]);
+  assert.equal(shortcut.preventDefaultCount(), 1);
+});
+
+test("E jumps the extension panel bottom to the viewport bottom", () => {
+  const extensionPanel = {
+    getBoundingClientRect: () => ({top: 300, bottom: 900}),
+  };
+  const executor = createNavigationHotkeyExecutor({
+    targets: {"#tfmars420-timewarp-panel": extensionPanel},
+  });
+  const shortcut = executor.event("e");
+
+  assert.equal(executor.handle(shortcut.keyboardEvent), true);
+  assert.deepEqual(executor.selectors, ["#tfmars420-timewarp-panel"]);
+  assert.deepEqual(executor.scrollCalls, [{top: 400, behavior: "instant"}]);
+  assert.equal(shortcut.preventDefaultCount(), 1);
+});
+
+test("navigation hotkeys ignore editable targets and browser modifiers", () => {
+  const target = {
+    getBoundingClientRect: () => ({top: 250, bottom: 650}),
+  };
+  const executor = createNavigationHotkeyExecutor({
+    targets: {".player_home_block--actions": target},
+  });
+  const editable = executor.event("q", {
+    target: {closest: () => ({tagName: "INPUT"})},
+  });
+  const modified = executor.event("q", {metaKey: true});
+
+  assert.equal(executor.handle(editable.keyboardEvent), false);
+  assert.equal(executor.handle(modified.keyboardEvent), false);
+  assert.deepEqual(executor.selectors, []);
+  assert.deepEqual(executor.scrollCalls, []);
+  assert.equal(editable.preventDefaultCount(), 0);
+  assert.equal(modified.preventDefaultCount(), 0);
+});
+
+test("navigation hotkeys ignore inactive helpers and absent or hidden destinations", () => {
+  const hidden = {
+    getBoundingClientRect: () => ({top: 250, bottom: 650}),
+    hidden: true,
+  };
+  const hiddenExecutor = createNavigationHotkeyExecutor({
+    targets: {".player_home_block--actions": hidden},
+  });
+  const hiddenShortcut = hiddenExecutor.event("q");
+  assert.equal(hiddenExecutor.handle(hiddenShortcut.keyboardEvent), false);
+  assert.deepEqual(hiddenExecutor.scrollCalls, []);
+  assert.equal(hiddenShortcut.preventDefaultCount(), 0);
+
+  const absentExecutor = createNavigationHotkeyExecutor();
+  const absentShortcut = absentExecutor.event("w");
+  assert.equal(absentExecutor.handle(absentShortcut.keyboardEvent), false);
+  assert.deepEqual(absentExecutor.scrollCalls, []);
+  assert.equal(absentShortcut.preventDefaultCount(), 0);
+
+  const inactiveExecutor = createNavigationHotkeyExecutor({
+    active: false,
+    targets: {".player_home_block--actions": hidden},
+  });
+  const inactiveShortcut = inactiveExecutor.event("q");
+  assert.equal(inactiveExecutor.handle(inactiveShortcut.keyboardEvent), false);
+  assert.deepEqual(inactiveExecutor.selectors, []);
+});
+
+test("Terraforming Mars startup installs one capture-phase navigation listener", () => {
+  assert.match(
+    source,
+    /const startTerraformingMarsNavigationHotkeys = \(\) => \{\s*document\.addEventListener\("keydown", handleTerraformingMarsNavigationHotkey, true\);\s*\}/,
+  );
+  assert.equal(
+    source.match(/\n  startTerraformingMarsNavigationHotkeys\(\);/g)?.length,
+    1,
   );
 });
 
