@@ -37,8 +37,8 @@ CSS uses a large inset translucent shadow, which is painted over the existing
 background but under the page content. This preserves the upstream fixed
 gradient and `stars.jpg` layers:
 
-- can Pass: `rgba(255, 79, 191, 0.30)`;
-- cannot Pass: `rgba(255, 214, 64, 0.26)`.
+- can Pass: `rgba(255, 79, 191, 0.10)`;
+- cannot Pass: `rgba(255, 214, 64, 0.10)`.
 
 No upstream background declaration is replaced.
 
