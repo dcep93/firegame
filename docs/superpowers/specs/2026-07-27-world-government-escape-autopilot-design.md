@@ -7,7 +7,9 @@ Extend `autopilot: escape` to handle the exact Terraforming Mars prompt:
 `Select action for World Government Terraforming`
 
 At that prompt, Escape submits whichever option the game selected by default.
-It must not choose or change a radio option.
+It must not choose or change a radio option. When that selected default is
+`Add an ocean`, Escape must satisfy its embedded `Must select a space`
+requirement before submitting the WGT form.
 
 Escape must also finish the exact blocking follow-up:
 
@@ -80,13 +82,20 @@ Every other item remains paused after passing.
 
 Route Escape through a dedicated executor:
 
-1. If the exact World Government Terraforming prompt is active, leave the
-   currently selected radio untouched.
-2. Find enabled `.btn-submit` controls inside the current action form.
-3. Click the control when exactly one is enabled, regardless of its text.
-4. Return without running the ordinary Pass workflow.
-5. For every other prompt, select `Pass for this generation`, wait for the
+1. If the exact World Government Terraforming prompt is active, find the
+   exactly one checked, enabled top-level radio and leave it untouched.
+2. If its normalized label is exactly `Add an ocean` and available ocean
+   spaces remain, run the least-bonus ocean-placement workflow before submit.
+3. Wait for the map selection and any optional visible `Yes` confirmation to
+   render completely.
+4. Find enabled `.btn-submit` controls inside the current action form.
+5. Click the control when exactly one is enabled, regardless of its text.
+6. Return without running the ordinary Pass workflow.
+7. For every other prompt, select `Pass for this generation`, wait for the
    render update, and submit Pass exactly as before.
+
+If a different WGT option is checked, submit it unchanged without interacting
+with the board. Missing or ambiguous checked WGT options are safe failures.
 
 This behavior applies whether the queued Escape item is processed
 automatically or executed manually because both paths use the shared queued
@@ -106,6 +115,8 @@ When the exact ocean-placement follow-up is active:
 7. If the game shows exactly one visible, enabled confirmation button whose
    normalized text is `Yes`, click it. If no such confirmation is visible, the
    native space click has already submitted and execution is complete.
+8. After clicking a visible confirmation, wait for one more rendered frame
+   before a caller submits any containing WGT form.
 
 Missing available ocean spaces are a safe failure. Multiple visible enabled
 `Yes` controls are ambiguous and must fail without clicking a confirmation.
@@ -119,6 +130,7 @@ executor. It does not apply to `got a lotta energy`.
 
 The World Government path must not guess:
 
+- zero or multiple checked enabled WGT radios produce a selection error;
 - zero enabled submit controls produces a missing-submit error;
 - more than one enabled submit control produces an ambiguous-submit error; and
 - neither case clicks anything.
@@ -137,6 +149,12 @@ actions during the wrong phase.
 
 Selecting a known World Government radio before submission would override the
 game’s default and contradict the requested behavior.
+
+Submitting first and handling a later validation response cannot work when the
+client keeps the invalid WGT form open without changing the player input.
+
+Selecting a map space for every WGT option would couple unrelated parameter
+choices to board interaction.
 
 ## Scope
 
@@ -163,6 +181,11 @@ Tests will cover:
 - Escape eligibility at the World Government prompt;
 - energy and all other top-level items remaining ineligible there;
 - clicking the single enabled submit without selecting a radio;
+- preserving a checked non-ocean WGT option and submitting directly;
+- recognizing only an exact checked `Add an ocean` option;
+- selecting the least-bonus ocean before submitting an embedded WGT form;
+- waiting through optional ocean confirmation before WGT submit;
+- missing and ambiguous checked-option failures;
 - ignoring the submit label;
 - missing, disabled, and ambiguous submit controls;
 - exact ocean-follow-up recognition and rejection of near matches;
