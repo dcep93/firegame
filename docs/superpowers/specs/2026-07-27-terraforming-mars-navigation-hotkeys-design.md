@@ -8,7 +8,8 @@ manually scrolling.
 
 ## Behavior
 
-- `Q` aligns the top of the Actions block with the top of the viewport.
+- `Q` aligns the top of the Actions block with the vertical midpoint of the
+  viewport.
 - `W` aligns the top of the Played Cards block with the top of the viewport.
 - `E` jumps to the bottom of the page.
 - Scrolling is immediate, not animated.
@@ -30,17 +31,19 @@ startup path. Map keys to existing stable selectors:
 - Actions: `.player_home_block--actions`
 - Played Cards: `.player_home_block--cards`
 
-For `Q` and `W`, compute the destination's document-relative top and move the
-window there. For `E`, use the document element's total scroll height as the
-destination. Use an explicit instant window scroll so page CSS cannot introduce
-animation.
+For `Q`, compute the Actions block's document-relative top and subtract half
+the viewport height, clamping the result to zero. For `W`, compute the Played
+Cards block's document-relative top. For `E`, use the document element's total
+scroll height as the destination. Use an explicit instant window scroll so page
+CSS cannot introduce animation.
 
 Only prevent the handled key event's default behavior after a valid destination
 has been resolved and a scroll has been requested.
 
 ## Verification
 
-Automated tests will cover the two element position calculations, the page
-bottom destination, uppercase handling, missing and hidden destinations,
-modifier keys, and editable targets. The full extension test suite will run
-afterward to guard existing queue, autopilot, and turn-scroll behavior.
+Automated tests will cover the Actions midpoint and top-of-page clamp, the
+Played Cards top calculation, the page-bottom destination, uppercase handling,
+missing and hidden destinations, modifier keys, and editable targets. The full
+extension test suite will run afterward to guard existing queue, autopilot, and
+turn-scroll behavior.
