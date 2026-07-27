@@ -3378,7 +3378,7 @@
     }
     #player-home.tfmars420-turn-can-pass,
     #player-home.tfmars420-turn-no-pass {
-      animation: tfmars420-turn-tint-pulse 5s ease-in-out infinite;
+      animation: tfmars420-turn-tint-pulse 4s ease-in-out infinite;
     }
     #player-home.tfmars420-turn-can-pass {
       --tfmars420-turn-tint-rgb: 255, 79, 191;

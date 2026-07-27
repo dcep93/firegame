@@ -3552,7 +3552,7 @@ test("player-home turn tint cleans up when disabled and tolerates a missing page
   assert.equal(missing.updatePlayerHomeTurnTint(), "idle");
 });
 
-test("turn tint CSS pulses natively from zero to 25 percent every five seconds", () => {
+test("turn tint CSS pulses natively from zero to 25 percent every four seconds", () => {
   const sharedRule = source.match(
     /#player-home\.tfmars420-turn-can-pass,\s*#player-home\.tfmars420-turn-no-pass \{([\s\S]*?)\}/,
   )?.[1] ?? "";
@@ -3569,7 +3569,7 @@ test("turn tint CSS pulses natively from zero to 25 percent every five seconds",
   );
   assert.match(
     sharedRule,
-    /animation: tfmars420-turn-tint-pulse 5s ease-in-out infinite/,
+    /animation: tfmars420-turn-tint-pulse 4s ease-in-out infinite/,
   );
   assert.match(
     pinkRule,
