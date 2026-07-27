@@ -338,11 +338,13 @@ const shouldArmNetworkPassSelection = Function(
 
 const createNetworkPassSelector = (options = {}) => {
   let selectionCount = 0;
+  const mirrorSelections = [];
   const state = Function(
     "isCurrentPlayerTurn",
     "hasLiveActionForm",
     "isTakeNextActionPhase",
     "selectActionOption",
+    "checkActionsMirrorOption",
     `"use strict";
       let pendingNetworkPassSelection = true;
       ${networkPassSelectionSource}
@@ -361,8 +363,16 @@ const createNetworkPassSelector = (options = {}) => {
       selectionCount += 1;
       return options.optionExists ?? true;
     },
+    (label) => {
+      mirrorSelections.push(label);
+      return options.mirrorOptionExists ?? true;
+    },
   );
-  return {...state, selectionCount: () => selectionCount};
+  return {
+    ...state,
+    mirrorSelections,
+    selectionCount: () => selectionCount,
+  };
 };
 
 const createNetworkTurnTracker = () =>
@@ -845,7 +855,7 @@ const createNavigationHotkeyExecutor = ({
   return {event, handle, scrollCalls, selectors};
 };
 
-const createActionsMirrorExecutor = () => {
+const createActionsMirrorExecutor = (mirror = null) => {
   const preserved = [];
   const dispatched = [];
   let refreshCount = 0;
@@ -855,6 +865,8 @@ const createActionsMirrorExecutor = () => {
     "preserveScrollDuring",
     "dispatchBubbledEvent",
     "scheduleTerraformingMarsUpdate",
+    "document",
+    "cleanText",
     `"use strict";
       ${actionsMirrorSource}
       return {
@@ -862,6 +874,7 @@ const createActionsMirrorExecutor = () => {
         sanitizeActionsMirror,
         proxyActionsMirrorClick,
         proxyActionsMirrorValueEvent,
+        checkActionsMirrorOption,
       };
     `,
   )(
@@ -875,6 +888,13 @@ const createActionsMirrorExecutor = () => {
     () => {
       refreshCount += 1;
     },
+    {
+      querySelector(selector) {
+        assert.equal(selector, ".tfmars420-actions-mirror");
+        return mirror;
+      },
+    },
+    (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
   );
   return {
     ...executor,
@@ -3493,6 +3513,7 @@ test("network default selects Pass once and never submits", () => {
   assert.equal(selector.pending(), false);
   assert.equal(selector.select(), false);
   assert.equal(selector.selectionCount(), 1);
+  assert.deepEqual(selector.mirrorSelections, ["Pass for this generation"]);
   assert.doesNotMatch(networkPassSelectionSource, /clickActionSubmit|clickExactActionSubmit|\.click\(/);
 });
 
@@ -3504,6 +3525,17 @@ test("network default remains pending until the action form is ready", () => {
   assert.equal(missingForm.pending(), true);
   assert.equal(missingOption.select(), false);
   assert.equal(missingOption.pending(), true);
+  assert.deepEqual(missingForm.mirrorSelections, []);
+  assert.deepEqual(missingOption.mirrorSelections, []);
+});
+
+test("network default remains successful when the mirrored Pass option is absent", () => {
+  const selector = createNetworkPassSelector({mirrorOptionExists: false});
+
+  assert.equal(selector.select(), true);
+  assert.equal(selector.pending(), false);
+  assert.equal(selector.selectionCount(), 1);
+  assert.deepEqual(selector.mirrorSelections, ["Pass for this generation"]);
 });
 
 test("network turn tracking suppresses the initial state and duplicate updates", () => {
@@ -3719,6 +3751,107 @@ test("Actions mirror sanitization avoids selectors and native-control conflicts"
   assert.equal(extensionRemoveCount, 1);
   assert.equal(queryOrder[0].includes("#tfmars420-timewarp-panel"), true);
   assert.equal(queryOrder[1], "*");
+});
+
+test("Actions mirror checks exact Pass locally without activating either form", () => {
+  const passGroup = {};
+  const nestedGroup = {};
+  let clickCount = 0;
+  const createRadio = (group, checked = false) => ({
+    checked,
+    click() {
+      clickCount += 1;
+    },
+    closest(selector) {
+      assert.equal(selector, ".wf-options");
+      return group;
+    },
+    disabled: false,
+  });
+  const other = createRadio(passGroup, true);
+  const pass = createRadio(passGroup);
+  const nested = createRadio(nestedGroup, true);
+  const labels = [
+    {text: "Perform an action", radio: other},
+    {text: "Pass for this generation", radio: pass},
+    {text: "Nested choice", radio: nested},
+  ].map(({text, radio}) => ({
+    querySelector(selector) {
+      if (selector === "input[type='radio']") return radio;
+      assert.equal(selector, "span");
+      return {textContent: text};
+    },
+  }));
+  const mirror = {
+    querySelectorAll(selector) {
+      if (selector === "label.form-radio") return labels;
+      assert.equal(selector, "label.form-radio input[type='radio']");
+      return [other, pass, nested];
+    },
+  };
+  const executor = createActionsMirrorExecutor(mirror);
+
+  assert.equal(
+    executor.checkActionsMirrorOption("Pass for this generation"),
+    true,
+  );
+  assert.equal(pass.checked, true);
+  assert.equal(other.checked, false);
+  assert.equal(nested.checked, true);
+  assert.equal(clickCount, 0);
+  assert.doesNotMatch(
+    actionsMirrorSource.slice(
+      actionsMirrorSource.indexOf("const checkActionsMirrorOption"),
+    ),
+    /\.click\(|dispatchBubbledEvent/,
+  );
+});
+
+test("Actions mirror ignores missing, disabled, and ambiguous Pass options", () => {
+  assert.equal(
+    createActionsMirrorExecutor().checkActionsMirrorOption(
+      "Pass for this generation",
+    ),
+    false,
+  );
+
+  const createMirror = ({disabled = false, duplicate = false} = {}) => {
+    const radio = {
+      checked: false,
+      disabled,
+      closest: () => ({}),
+    };
+    const label = {
+      querySelector(selector) {
+        if (selector === "input[type='radio']") return radio;
+        return {textContent: "Pass for this generation"};
+      },
+    };
+    return {
+      radio,
+      root: {
+        querySelectorAll(selector) {
+          if (selector === "label.form-radio") {
+            return duplicate ? [label, label] : [label];
+          }
+          return [radio];
+        },
+      },
+    };
+  };
+
+  for (const candidate of [
+    createMirror({disabled: true}),
+    createMirror({duplicate: true}),
+  ]) {
+    assert.equal(
+      createActionsMirrorExecutor(candidate.root).checkActionsMirrorOption(
+        "Pass for this generation",
+      ),
+      false,
+    );
+    assert.equal(candidate.radio.checked, false);
+  }
 });
 
 test("Actions mirror clicks activate the mapped source through scroll preservation", () => {

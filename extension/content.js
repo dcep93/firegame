@@ -3840,6 +3840,34 @@
     return mirror;
   };
 
+  const checkActionsMirrorOption = (optionText) => {
+    const mirror = document.querySelector(".tfmars420-actions-mirror");
+    if (!mirror) return false;
+    const matches = Array.from(mirror.querySelectorAll("label.form-radio"))
+      .map((label) => ({
+        radio: label.querySelector("input[type='radio']"),
+        text: cleanText(
+          label.querySelector("span")?.textContent ?? label.textContent ?? "",
+        ),
+      }))
+      .filter(({ radio, text }) => radio && text === optionText);
+    if (matches.length !== 1 || matches[0].radio.disabled) return false;
+
+    const selected = matches[0].radio;
+    const optionGroup = selected.closest(".wf-options");
+    if (optionGroup) {
+      for (const candidate of mirror.querySelectorAll(
+        "label.form-radio input[type='radio']",
+      )) {
+        if (candidate.closest(".wf-options") === optionGroup) {
+          candidate.checked = false;
+        }
+      }
+    }
+    selected.checked = true;
+    return true;
+  };
+
   const createQueueIconButton = (className, iconClassName, title) => {
     const button = document.createElement("button");
     button.type = "button";
@@ -5871,6 +5899,7 @@
     }
     const selected = selectActionOption("Pass for this generation", {required: false});
     if (!selected) return false;
+    checkActionsMirrorOption("Pass for this generation");
     pendingNetworkPassSelection = false;
     return true;
   };
