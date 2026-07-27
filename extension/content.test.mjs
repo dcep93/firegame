@@ -112,8 +112,28 @@ const queuedCardCountSource = source.slice(
   source.indexOf("const queuedCardMatches"),
   source.indexOf("const removeQueuedCard"),
 );
-const quickChoiceCaptureSource = source.slice(
+const quickChoiceSelectionSource = source.slice(
   source.indexOf("const exactRadioOptionText"),
+  source.indexOf("const persistPlayedActionQuickChoice"),
+);
+const quickChoicePersistenceSource = source.slice(
+  source.indexOf("const persistPlayedActionQuickChoice"),
+  source.indexOf("const currentPlayedActionLearningSource"),
+);
+const cardTargetLearningSource = source.slice(
+  source.indexOf("const currentPlayedActionLearningSource"),
+  source.indexOf("const handleRememberedQuickChoiceSubmit"),
+);
+const quickChoiceSubmitSource = source.slice(
+  source.indexOf("const handleRememberedQuickChoiceSubmit"),
+  source.indexOf("const startRememberedQuickChoiceListener"),
+);
+const quickChoiceCaptureSource = [
+  quickChoiceSelectionSource,
+  quickChoiceSubmitSource,
+].join("\n");
+const quickChoiceListenerSource = source.slice(
+  source.indexOf("const startRememberedQuickChoiceListener"),
   source.indexOf("const queuedCardMatches"),
 );
 const quickChoiceUiSource = source.slice(
@@ -365,23 +385,34 @@ const createPlayedActionLearningTracker = (playerId = "player-1") =>
   Function(
     "cleanText",
     "currentPlayerId",
+    "initialPlayerView",
     `"use strict";
+      let latestPlayerView = initialPlayerView;
       let pendingPlayedActionLearning = null;
       let armedPlayedActionLearning = null;
+      let stagedPlayedActionLearning = null;
       ${playedActionLearningSource}
       return {
         remember: rememberPlayedActionForLearning,
         update: updatePlayedActionLearningFromPlayerView,
+        stage: stagePlayedActionQuickChoice,
+        takeConfirmed: takeConfirmedStagedPlayedActionQuickChoice,
+        setPlayerView: (playerView) => { latestPlayerView = playerView; },
         clear: clearPlayedActionLearning,
         state: () => ({
           pendingPlayedActionLearning,
           armedPlayedActionLearning,
+          stagedPlayedActionLearning,
         }),
       };
     `,
   )(
     (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
     () => playerId,
+    {
+      id: playerId,
+      waitingFor: {type: "or", title: "Select one option", options: []},
+    },
   );
 
 const createQuickChoiceCaptureHarness = ({
@@ -404,9 +435,7 @@ const createQuickChoiceCaptureHarness = ({
     }
   }
 
-  const draft = freshQueueSession("player-1");
-  const auditEvents = [];
-  let updateCount = 0;
+  const stagedChoices = [];
   const outerOptions = isDirect ? null : {
     querySelectorAll(selector) {
       assert.equal(selector, "label.form-radio input[type='radio']:checked");
@@ -502,9 +531,7 @@ const createQuickChoiceCaptureHarness = ({
     "getActionsBlock",
     "cleanText",
     "getCardIdentity",
-    "updateQueueSession",
-    "rememberQuickChoice",
-    "auditLog",
+    "recordStagedChoice",
     "initialPlaybackActive",
     `"use strict";
       let armedPlayedActionLearning = {
@@ -512,19 +539,17 @@ const createQuickChoiceCaptureHarness = ({
         cardKey: "astrodrill",
         cardName: "AstroDrill",
       };
-      let pendingPlayedActionLearning = null;
       let quickChoicePlaybackActive = initialPlaybackActive;
-      let clearCount = 0;
-      const clearPlayedActionLearning = () => {
-        pendingPlayedActionLearning = null;
+      const currentPlayedActionLearningSource = () => armedPlayedActionLearning;
+      const stagePlayedActionQuickChoice = (learning, choice) => {
+        recordStagedChoice(learning, choice);
         armedPlayedActionLearning = null;
-        clearCount += 1;
+        return true;
       };
       ${quickChoiceCaptureSource}
       return {
         handle: handleRememberedQuickChoiceSubmit,
         armed: () => armedPlayedActionLearning,
-        clearCount: () => clearCount,
       };
     `,
   )(
@@ -532,21 +557,177 @@ const createQuickChoiceCaptureHarness = ({
     () => actionsBlock,
     (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
     (cardBox) => ({name: cardBox?.name ?? "Card"}),
-    (updater) => {
-      updateCount += 1;
-      updater(draft);
-      return draft;
+    (learning, choice) => {
+      stagedChoices.push({learning: {...learning}, choice});
     },
-    rememberQuickChoice,
-    (eventName, details) => auditEvents.push({eventName, details}),
     playbackActive,
   );
   return {
     ...capture,
-    auditEvents,
-    draft,
     event: {isTrusted: trusted, target: new FakeElement()},
+    stagedChoices,
+  };
+};
+
+const createQuickChoicePersistenceHarness = (playerId = "player-1") => {
+  const session = freshQueueSession(playerId);
+  const auditEvents = [];
+  let updateCount = 0;
+  const persist = Function(
+    "normalizeRememberedQuickChoice",
+    "readQueueSession",
+    "updateQueueSession",
+    "rememberQuickChoice",
+    "auditLog",
+    `"use strict";
+      ${quickChoicePersistenceSource}
+      return persistPlayedActionQuickChoice;
+    `,
+  )(
+    normalizeRememberedQuickChoice,
+    () => session,
+    (updater) => {
+      updateCount += 1;
+      updater(session);
+      return session;
+    },
+    rememberQuickChoice,
+    (eventName, details) => auditEvents.push({eventName, details}),
+  );
+  return {
+    auditEvents,
+    persist,
+    session,
     updateCount: () => updateCount,
+  };
+};
+
+const createCardTargetLearningHarness = ({
+  direct = true,
+  duplicateTarget = false,
+  targetDisabled = false,
+  playbackActive = false,
+  hasLiveForm = true,
+  takeNextAction = false,
+  hasPass = false,
+} = {}) => {
+  const targetName = "Regolith Eaters";
+  const input = {disabled: targetDisabled};
+  const makeCard = () => ({
+    name: targetName,
+    querySelector(selector) {
+      assert.equal(selector, "input[type='radio'], input[type='checkbox']");
+      return input;
+    },
+  });
+  const cards = duplicateTarget ? [makeCard(), makeCard()] : [makeCard()];
+  const workflow = {
+    querySelector(selector) {
+      assert.equal(selector, ":scope > .wf-component-title");
+      return {textContent: "Select card to add microbe or animal"};
+    },
+    querySelectorAll(selector) {
+      assert.equal(selector, ".cardbox");
+      return cards;
+    },
+  };
+  const outerOptions = {};
+  const optionLabel = {
+    parentElement: {
+      contains(candidate) {
+        return candidate === workflow;
+      },
+    },
+    querySelector(selector) {
+      assert.equal(selector, "span");
+      return {textContent: "Select card to add 1 microbe"};
+    },
+  };
+  const optionRadio = {
+    disabled: false,
+    closest(selector) {
+      if (selector === ".wf-options") return outerOptions;
+      assert.equal(selector, "label.form-radio");
+      return optionLabel;
+    },
+  };
+  outerOptions.querySelectorAll = (selector) => {
+    assert.equal(selector, "label.form-radio input[type='radio']:checked");
+    return direct ? [] : [optionRadio];
+  };
+  const actionsRoot = {
+    querySelector(selector) {
+      assert.equal(selector, ".wf-options");
+      return direct ? null : outerOptions;
+    },
+    querySelectorAll(selector) {
+      if (selector === ".wf-component--select-card") return [workflow];
+      assert.equal(selector, ":scope > .wf-component--select-card");
+      return direct ? [workflow] : [];
+    },
+  };
+  const latestPlayerView = {
+    id: "player-1",
+    waitingFor: {type: "card", title: "Select card to add microbe or animal"},
+  };
+  const candidate = Function(
+    "initialPlaybackActive",
+    "latestPlayerView",
+    "playedActionInputKey",
+    "hasLiveActionForm",
+    "isTakeNextActionPhase",
+    "hasEnabledExactPassOption",
+    "getActionsBlock",
+    "cardMatchesQueuedItem",
+    "getCardIdentity",
+    "cleanText",
+    "quickChoiceCardWorkflowPrompt",
+    "exactRadioOptionText",
+    `"use strict";
+      let quickChoicePlaybackActive = initialPlaybackActive;
+      let armedPlayedActionLearning = {
+        playerId: "player-1",
+        cardKey: "mohole-lake",
+        cardName: "Mohole Lake",
+      };
+      let stagedPlayedActionLearning = null;
+      ${cardTargetLearningSource}
+      return cardTargetQuickChoiceLearningCandidate;
+    `,
+  )(
+    playbackActive,
+    latestPlayerView,
+    (playerView) => JSON.stringify(playerView?.waitingFor ?? null),
+    () => hasLiveForm,
+    () => takeNextAction,
+    () => hasPass,
+    () => ({
+      querySelector(selector) {
+        assert.equal(selector, ".wf-root, form");
+        return actionsRoot;
+      },
+    }),
+    (cardBox, item) => cardBox.name === item.cardName,
+    (cardBox) => ({name: cardBox?.name ?? "Card"}),
+    (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
+    (cardWorkflow) =>
+      String(
+        cardWorkflow?.querySelector(":scope > .wf-component-title")?.textContent ?? "",
+      )
+        .replace(/\s+/g, " ")
+        .trim(),
+    (radio) =>
+      String(radio.closest("label.form-radio").querySelector("span").textContent)
+        .replace(/\s+/g, " ")
+        .trim(),
+  );
+  return {
+    candidate,
+    item: {
+      type: "cardTarget",
+      cardKey: "regolith-eaters",
+      cardName: targetName,
+    },
   };
 };
 
@@ -2181,7 +2362,10 @@ const executeEscape = async ({
   return events;
 };
 
-const createQueueExecutor = (initialQueue, {reject = false, canExecute = true} = {}) => {
+const createQueueExecutor = (
+  initialQueue,
+  {reject = false, canExecute = true, targetLearningCandidate = null} = {},
+) => {
   const session = {playerId: "player-1", queue: [...initialQueue]};
   const auditEvents = [];
   let clearCount = 0;
@@ -2189,6 +2373,7 @@ const createQueueExecutor = (initialQueue, {reject = false, canExecute = true} =
   let writeCount = 0;
   const executedItems = [];
   const learningItems = [];
+  const persistedTargetLearnings = [];
   let learningClearCount = 0;
   const executor = Function(
     "readQueueSession",
@@ -2203,6 +2388,8 @@ const createQueueExecutor = (initialQueue, {reject = false, canExecute = true} =
     "clearQueuedActions",
     "isPersistentQueueItem",
     "auditLog",
+    "cardTargetQuickChoiceLearningCandidate",
+    "persistPlayedActionQuickChoice",
     "rememberPlayedActionForLearning",
     "isFollowUpQueueItem",
     "clearPlayedActionLearning",
@@ -2248,6 +2435,11 @@ const createQueueExecutor = (initialQueue, {reject = false, canExecute = true} =
     },
     (item) => item?.type === "autopilot",
     (eventName, details) => auditEvents.push({eventName, details}),
+    (item) => (item?.type === "cardTarget" ? targetLearningCandidate : null),
+    (learning, choice) => {
+      persistedTargetLearnings.push({learning, choice});
+      return true;
+    },
     (item) => {
       learningItems.push(item);
       return true;
@@ -2274,6 +2466,7 @@ const createQueueExecutor = (initialQueue, {reject = false, canExecute = true} =
     executedItems,
     learningClearCount: () => learningClearCount,
     learningItems,
+    persistedTargetLearnings,
     restoreCount: () => restoreCount,
     writeCount: () => writeCount,
   };
@@ -3014,14 +3207,12 @@ test("manual indexed execution restores only the selected item after failure", a
   assert.match(executor.state().queueExecutionError, /test failure/);
   assert.deepEqual(
     executor.auditEvents.map(({eventName, details}) => [eventName, details.executionSource]),
-    [
-      ["game.action.attempt", "manual"],
-      ["game.action.failure", "manual"],
-    ],
+    [["game.action.failure", "manual"]],
   );
 });
 
 test("successful immediate execution audits its source and outcome", async () => {
+  assert.doesNotMatch(queueLifecycleSource, /game\.action\.attempt/);
   const requested = {type: "projectCard", label: "requested"};
   const executor = createQueueExecutor([]);
 
@@ -3030,10 +3221,75 @@ test("successful immediate execution audits its source and outcome", async () =>
 
   assert.deepEqual(
     executor.auditEvents.map(({eventName, details}) => [eventName, details.executionSource]),
-    [
-      ["game.action.attempt", "immediate"],
-      ["game.action.success", "immediate"],
-    ],
+    [["game.action.success", "immediate"]],
+  );
+});
+
+test("successful card-target execution persists its captured quick choice", async () => {
+  const item = {
+    type: "cardTarget",
+    cardName: "Regolith Eaters",
+    label: "target: Regolith Eaters",
+  };
+  const targetLearningCandidate = {
+    playerId: "player-1",
+    cardKey: "mohole-lake",
+    cardName: "Mohole Lake",
+    choice: {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    },
+  };
+  const executor = createQueueExecutor([], {targetLearningCandidate});
+
+  assert.equal(executor.executeQueueItemNow(item), true);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(executor.persistedTargetLearnings, [
+    {
+      learning: targetLearningCandidate,
+      choice: targetLearningCandidate.choice,
+    },
+  ]);
+
+  const queued = createQueueExecutor([item], {targetLearningCandidate});
+  assert.equal(queued.executeQueuedActionAt(0), true);
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.deepEqual(queued.persistedTargetLearnings, [
+    {
+      learning: targetLearningCandidate,
+      choice: targetLearningCandidate.choice,
+    },
+  ]);
+});
+
+test("failed card-target execution discards its captured quick choice", async () => {
+  const item = {
+    type: "cardTarget",
+    cardName: "Regolith Eaters",
+    label: "target: Regolith Eaters",
+  };
+  const targetLearningCandidate = {
+    playerId: "player-1",
+    cardKey: "mohole-lake",
+    cardName: "Mohole Lake",
+    choice: {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    },
+  };
+  const executor = createQueueExecutor([], {
+    reject: true,
+    targetLearningCandidate,
+  });
+
+  assert.equal(executor.executeQueueItemNow(item), true);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(executor.persistedTargetLearnings, []);
+  assert.deepEqual(
+    executor.auditEvents.map(({eventName}) => eventName),
+    ["game.action.failure"],
   );
 });
 
@@ -3060,10 +3316,7 @@ test("failed direct execution stays unqueued and reports the error", async () =>
   );
   assert.deepEqual(
     executor.auditEvents.map(({eventName, details}) => [eventName, details.executionSource]),
-    [
-      ["game.action.attempt", "immediate"],
-      ["game.action.failure", "immediate"],
-    ],
+    [["game.action.failure", "immediate"]],
   );
 });
 
@@ -3117,10 +3370,7 @@ test("automatic indexed failure still clears the persisted queue", async () => {
   assert.equal(executor.learningClearCount(), 1);
   assert.deepEqual(
     executor.auditEvents.map(({eventName, details}) => [eventName, details.executionSource]),
-    [
-      ["game.action.attempt", "automatic"],
-      ["game.action.failure", "automatic"],
-    ],
+    [["game.action.failure", "automatic"]],
   );
 });
 
@@ -5327,6 +5577,7 @@ test("played-action learning arms only for the same player's non-Pass follow-up"
       cardKey: "astrodrill",
       cardName: "AstroDrill",
     },
+    stagedPlayedActionLearning: null,
   });
 
   const pass = createPlayedActionLearningTracker();
@@ -5345,6 +5596,7 @@ test("played-action learning arms only for the same player's non-Pass follow-up"
   assert.deepEqual(pass.state(), {
     pendingPlayedActionLearning: null,
     armedPlayedActionLearning: null,
+    stagedPlayedActionLearning: null,
   });
 
   for (const playerView of [
@@ -5365,8 +5617,62 @@ test("played-action learning arms only for the same player's non-Pass follow-up"
     assert.deepEqual(cancelled.state(), {
       pendingPlayedActionLearning: null,
       armedPlayedActionLearning: null,
+      stagedPlayedActionLearning: null,
     });
   }
+});
+
+test("native played-action choices stage until the player input advances", () => {
+  assert.match(
+    source,
+    /takeConfirmedStagedPlayedActionQuickChoice\(playerView\)[\s\S]*persistPlayedActionQuickChoice\([\s\S]*confirmedQuickChoice\.choice/,
+  );
+  const tracker = createPlayedActionLearningTracker();
+  const learning = {
+    playerId: "player-1",
+    cardKey: "mohole-lake",
+    cardName: "Mohole Lake",
+  };
+  const firstChoice = {
+    promptText: "Select card to add microbe or animal",
+    targetCardText: "Regolith Eaters",
+  };
+  const retryChoice = {
+    promptText: "Select card to add microbe or animal",
+    targetCardText: "Fish",
+  };
+
+  assert.equal(tracker.stage(learning, firstChoice), true);
+  assert.equal(tracker.stage(learning, retryChoice), true);
+  assert.deepEqual(tracker.state().stagedPlayedActionLearning?.choice, retryChoice);
+  assert.equal(
+    tracker.takeConfirmed({
+      id: "player-1",
+      waitingFor: {type: "or", title: "Select one option", options: []},
+    }),
+    null,
+  );
+
+  const confirmed = tracker.takeConfirmed({
+    id: "player-1",
+    waitingFor: {type: "or", title: "Take your next action", options: []},
+  });
+  assert.deepEqual(confirmed?.choice, retryChoice);
+  assert.equal(tracker.state().stagedPlayedActionLearning, null);
+
+  tracker.stage(learning, firstChoice);
+  assert.equal(
+    tracker.takeConfirmed({
+      id: "player-2",
+      waitingFor: {type: "or", title: "Take your next action", options: []},
+    }),
+    null,
+  );
+  assert.deepEqual(tracker.state(), {
+    pendingPlayedActionLearning: null,
+    armedPlayedActionLearning: null,
+    stagedPlayedActionLearning: null,
+  });
 });
 
 test("immediate, automatic, and manual played-action execution share the learning hook", async () => {
@@ -5391,6 +5697,38 @@ test("immediate, automatic, and manual played-action execution share the learnin
   await new Promise((resolve) => setImmediate(resolve));
 });
 
+test("confirmed played-action choices persist once and audit only new memories", () => {
+  const harness = createQuickChoicePersistenceHarness();
+  const learning = {
+    playerId: "player-1",
+    cardKey: "mohole-lake",
+    cardName: "Mohole Lake",
+  };
+  const choice = {
+    promptText: "Select card to add microbe or animal",
+    targetCardText: "Regolith Eaters",
+  };
+
+  assert.equal(harness.persist(learning, choice), true);
+  assert.equal(harness.persist(learning, choice), false);
+  assert.deepEqual(harness.session.rememberedQuickChoices["mohole-lake"], [choice]);
+  assert.equal(harness.updateCount(), 2);
+  assert.deepEqual(harness.auditEvents, [
+    {
+      eventName: "user.card.quick-choice.learn",
+      details: {
+        cardName: "Mohole Lake",
+        promptText: "Select card to add microbe or animal",
+        hasTarget: true,
+      },
+    },
+  ]);
+  assert.equal(
+    harness.persist({...learning, playerId: "other-player"}, choice),
+    false,
+  );
+});
+
 test("remembered-choice capture accepts only trusted first-step submissions", () => {
   assert.match(quickChoiceCaptureSource, /event\.isTrusted !== true/);
   assert.match(
@@ -5401,26 +5739,34 @@ test("remembered-choice capture accepts only trusted first-step submissions", ()
     quickChoiceCaptureSource,
     /input\[type='radio'\]:checked, input\[type='checkbox'\]:checked/,
   );
-  assert.match(quickChoiceCaptureSource, /rememberQuickChoice\(draft, learning\.cardKey, choice\)/);
-  assert.match(quickChoiceCaptureSource, /clearPlayedActionLearning\(\)/);
   assert.match(
-    source,
+    quickChoiceCaptureSource,
+    /stagePlayedActionQuickChoice\(learning, choice\)/,
+  );
+  assert.doesNotMatch(quickChoiceCaptureSource, /rememberQuickChoice\(/);
+  assert.match(
+    quickChoiceListenerSource,
     /document\.addEventListener\("click", handleRememberedQuickChoiceSubmit, true\)/,
   );
 });
 
-test("remembered-choice capture stores leaf and exact card-target recipes", () => {
+test("remembered-choice capture stages leaf and exact card-target recipes", () => {
   const leaf = createQuickChoiceCaptureHarness({
     optionText: "  Remove 1 asteroid   on this card to gain 3 titanium  ",
   });
   assert.equal(leaf.handle(leaf.event), true);
-  assert.deepEqual(leaf.draft.rememberedQuickChoices, {
-    astrodrill: [
-      {optionText: "Remove 1 asteroid on this card to gain 3 titanium"},
-    ],
-  });
-  assert.equal(leaf.clearCount(), 1);
-  assert.equal(leaf.updateCount(), 1);
+  assert.deepEqual(leaf.stagedChoices, [
+    {
+      learning: {
+        playerId: "player-1",
+        cardKey: "astrodrill",
+        cardName: "AstroDrill",
+      },
+      choice: {
+        optionText: "Remove 1 asteroid on this card to gain 3 titanium",
+      },
+    },
+  ]);
   assert.equal(leaf.armed(), null);
 
   const compound = createQuickChoiceCaptureHarness({
@@ -5428,53 +5774,41 @@ test("remembered-choice capture stores leaf and exact card-target recipes", () =
     targetCardText: "AstroDrill",
   });
   assert.equal(compound.handle(compound.event), true);
-  assert.deepEqual(compound.draft.rememberedQuickChoices, {
-    astrodrill: [
-      {
+  assert.deepEqual(compound.stagedChoices, [
+    {
+      learning: {
+        playerId: "player-1",
+        cardKey: "astrodrill",
+        cardName: "AstroDrill",
+      },
+      choice: {
         optionText: "Select card to add 1 asteroid",
         targetCardText: "AstroDrill",
-      },
-    ],
-  });
-  assert.deepEqual(compound.auditEvents, [
-    {
-      eventName: "user.card.quick-choice.learn",
-      details: {
-        cardName: "AstroDrill",
-        optionText: "Select card to add 1 asteroid",
-        hasTarget: true,
       },
     },
   ]);
 });
 
-test("remembered-choice capture stores direct card-target recipes", () => {
+test("remembered-choice capture stages direct card-target recipes", () => {
   const direct = createQuickChoiceCaptureHarness({
     directPromptText: "  Select card   to add microbe or animal ",
     targetCardText: "Regolith Eaters",
   });
 
   assert.equal(direct.handle(direct.event), true);
-  assert.deepEqual(direct.draft.rememberedQuickChoices, {
-    astrodrill: [
-      {
+  assert.deepEqual(direct.stagedChoices, [
+    {
+      learning: {
+        playerId: "player-1",
+        cardKey: "astrodrill",
+        cardName: "AstroDrill",
+      },
+      choice: {
         promptText: "Select card to add microbe or animal",
         targetCardText: "Regolith Eaters",
       },
-    ],
-  });
-  assert.deepEqual(direct.auditEvents, [
-    {
-      eventName: "user.card.quick-choice.learn",
-      details: {
-        cardName: "AstroDrill",
-        promptText: "Select card to add microbe or animal",
-        hasTarget: true,
-      },
     },
   ]);
-  assert.equal(direct.clearCount(), 1);
-  assert.equal(direct.updateCount(), 1);
 });
 
 test("remembered-choice capture rejects incomplete direct card targets", () => {
@@ -5505,9 +5839,8 @@ test("remembered-choice capture rejects incomplete direct card targets", () => {
     }),
   ]) {
     assert.equal(blocked.handle(blocked.event), false);
-    assert.deepEqual(blocked.draft.rememberedQuickChoices, {});
-    assert.equal(blocked.updateCount(), 0);
-    assert.equal(blocked.clearCount(), 1);
+    assert.deepEqual(blocked.stagedChoices, []);
+    assert.notEqual(blocked.armed(), null);
   }
 });
 
@@ -5517,8 +5850,8 @@ test("remembered-choice capture ignores nested checked radios and rejects synthe
     nestedCheckedOptionText: "Gain 1 titanium",
   });
   assert.equal(nested.handle(nested.event), true);
-  assert.deepEqual(nested.draft.rememberedQuickChoices, {
-    astrodrill: [{optionText: "Gain a standard resource"}],
+  assert.deepEqual(nested.stagedChoices[0]?.choice, {
+    optionText: "Gain a standard resource",
   });
 
   for (const blocked of [
@@ -5526,10 +5859,45 @@ test("remembered-choice capture ignores nested checked radios and rejects synthe
     createQuickChoiceCaptureHarness({playbackActive: true}),
   ]) {
     assert.equal(blocked.handle(blocked.event), false);
-    assert.deepEqual(blocked.draft.rememberedQuickChoices, {});
-    assert.equal(blocked.clearCount(), 0);
-    assert.equal(blocked.updateCount(), 0);
+    assert.deepEqual(blocked.stagedChoices, []);
     assert.notEqual(blocked.armed(), null);
+  }
+});
+
+test("card-target execution derives Mohole Lake direct and nested quick choices", () => {
+  const direct = createCardTargetLearningHarness();
+  assert.deepEqual(direct.candidate(direct.item), {
+    playerId: "player-1",
+    cardKey: "mohole-lake",
+    cardName: "Mohole Lake",
+    choice: {
+      promptText: "Select card to add microbe or animal",
+      targetCardText: "Regolith Eaters",
+    },
+  });
+
+  const nested = createCardTargetLearningHarness({direct: false});
+  assert.deepEqual(nested.candidate(nested.item), {
+    playerId: "player-1",
+    cardKey: "mohole-lake",
+    cardName: "Mohole Lake",
+    choice: {
+      optionText: "Select card to add 1 microbe",
+      targetCardText: "Regolith Eaters",
+    },
+  });
+});
+
+test("card-target learning rejects stale, ambiguous, disabled, and playback targets", () => {
+  for (const harness of [
+    createCardTargetLearningHarness({duplicateTarget: true}),
+    createCardTargetLearningHarness({targetDisabled: true}),
+    createCardTargetLearningHarness({playbackActive: true}),
+    createCardTargetLearningHarness({hasLiveForm: false}),
+    createCardTargetLearningHarness({takeNextAction: true}),
+    createCardTargetLearningHarness({hasPass: true}),
+  ]) {
+    assert.equal(harness.candidate(harness.item), null);
   }
 });
 

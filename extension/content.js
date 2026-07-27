@@ -2488,6 +2488,7 @@
   let pendingTurnScroll = false;
   let pendingPlayedActionLearning = null;
   let armedPlayedActionLearning = null;
+  let stagedPlayedActionLearning = null;
   let quickChoicePlaybackActive = false;
   let queueMutationObserver = null;
   let queueLogDiscoveryObserver = null;
@@ -2515,6 +2516,48 @@
   const clearPlayedActionLearning = () => {
     pendingPlayedActionLearning = null;
     armedPlayedActionLearning = null;
+    stagedPlayedActionLearning = null;
+  };
+
+  const playedActionInputKey = (playerView) =>
+    JSON.stringify(playerView?.waitingFor ?? null);
+
+  const stagePlayedActionQuickChoice = (
+    learning,
+    choice,
+    playerView = latestPlayerView,
+  ) => {
+    if (
+      !learning?.playerId ||
+      !learning.cardKey ||
+      !learning.cardName ||
+      !choice ||
+      playerView?.id !== learning.playerId
+    ) {
+      return false;
+    }
+    stagedPlayedActionLearning = {
+      playerId: learning.playerId,
+      cardKey: learning.cardKey,
+      cardName: learning.cardName,
+      inputKey: playedActionInputKey(playerView),
+      choice,
+    };
+    pendingPlayedActionLearning = null;
+    armedPlayedActionLearning = null;
+    return true;
+  };
+
+  const takeConfirmedStagedPlayedActionQuickChoice = (playerView) => {
+    const staged = stagedPlayedActionLearning;
+    if (!staged) return null;
+    if (playerView?.id !== staged.playerId) {
+      clearPlayedActionLearning();
+      return null;
+    }
+    if (playedActionInputKey(playerView) === staged.inputKey) return null;
+    stagedPlayedActionLearning = null;
+    return staged;
   };
 
   const rememberPlayedActionForLearning = (item) => {
@@ -2608,6 +2651,14 @@
       lastNetworkTurnState = undefined;
       pendingTurnScroll = false;
       clearPlayedActionLearning();
+    }
+    const confirmedQuickChoice =
+      takeConfirmedStagedPlayedActionQuickChoice(playerView);
+    if (confirmedQuickChoice) {
+      persistPlayedActionQuickChoice(
+        confirmedQuickChoice,
+        confirmedQuickChoice.choice,
+      );
     }
     if (playerViewInputChanged(latestPlayerView, playerView)) {
       if (queueExecutionInFlight) {
@@ -4230,8 +4281,126 @@
     return { promptText, targetCardText };
   };
 
+  const persistPlayedActionQuickChoice = (learning, choice) => {
+    const normalizedChoice = normalizeRememberedQuickChoice(choice);
+    const session = readQueueSession();
+    if (
+      !learning?.playerId ||
+      !learning.cardKey ||
+      !learning.cardName ||
+      !normalizedChoice ||
+      session?.playerId !== learning.playerId
+    ) {
+      return false;
+    }
+    let learned = false;
+    updateQueueSession((draft) => {
+      if (draft.playerId === learning.playerId) {
+        learned = rememberQuickChoice(draft, learning.cardKey, normalizedChoice);
+      }
+      return draft;
+    });
+    if (learned) {
+      auditLog("user.card.quick-choice.learn", {
+        cardName: learning.cardName,
+        ...(normalizedChoice.optionText
+          ? { optionText: normalizedChoice.optionText }
+          : {}),
+        ...(normalizedChoice.promptText
+          ? { promptText: normalizedChoice.promptText }
+          : {}),
+        hasTarget: Boolean(normalizedChoice.targetCardText),
+      });
+    }
+    return learned;
+  };
+
+  const currentPlayedActionLearningSource = () => {
+    if (armedPlayedActionLearning) return armedPlayedActionLearning;
+    if (
+      stagedPlayedActionLearning &&
+      stagedPlayedActionLearning.playerId === latestPlayerView?.id &&
+      stagedPlayedActionLearning.inputKey === playedActionInputKey(latestPlayerView)
+    ) {
+      return stagedPlayedActionLearning;
+    }
+    return null;
+  };
+
+  const cardTargetQuickChoiceLearningCandidate = (item) => {
+    if (
+      item?.type !== "cardTarget" ||
+      quickChoicePlaybackActive ||
+      !hasLiveActionForm() ||
+      isTakeNextActionPhase() ||
+      hasEnabledExactPassOption()
+    ) {
+      return null;
+    }
+    const learning = currentPlayedActionLearningSource();
+    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
+    if (!learning || !actionsRoot) return null;
+
+    const matches = Array.from(
+      actionsRoot.querySelectorAll(".wf-component--select-card"),
+    ).flatMap((cardWorkflow) =>
+      Array.from(cardWorkflow.querySelectorAll(".cardbox"))
+        .filter((cardBox) => cardMatchesQueuedItem(cardBox, item))
+        .map((cardBox) => ({ cardBox, cardWorkflow })),
+    );
+    if (matches.length !== 1) return null;
+
+    const { cardBox, cardWorkflow } = matches[0];
+    const input = cardBox.querySelector(
+      "input[type='radio'], input[type='checkbox']",
+    );
+    const targetCardText = cleanText(getCardIdentity(cardBox).name);
+    if (!input || input.disabled || !targetCardText || targetCardText === "Card") {
+      return null;
+    }
+
+    const directWorkflows = Array.from(
+      actionsRoot.querySelectorAll(":scope > .wf-component--select-card"),
+    ).filter((workflow) => workflow === cardWorkflow);
+    let choice = null;
+    if (directWorkflows.length === 1) {
+      const promptText = quickChoiceCardWorkflowPrompt(cardWorkflow);
+      if (promptText) {
+        choice = { promptText, targetCardText };
+      }
+    } else if (directWorkflows.length === 0) {
+      const outerOptions = actionsRoot.querySelector(".wf-options");
+      const matchingRadios = Array.from(
+        outerOptions?.querySelectorAll(
+          "label.form-radio input[type='radio']:checked",
+        ) ?? [],
+      ).filter(
+        (radio) =>
+          !radio.disabled &&
+          radio.closest?.(".wf-options") === outerOptions &&
+          radio.closest?.("label.form-radio")?.parentElement?.contains?.(
+            cardWorkflow,
+          ),
+      );
+      if (matchingRadios.length === 1) {
+        const optionText = exactRadioOptionText(matchingRadios[0]);
+        if (optionText) {
+          choice = { optionText, targetCardText };
+        }
+      }
+    }
+    if (!choice) return null;
+    return {
+      playerId: learning.playerId,
+      cardKey: learning.cardKey,
+      cardName: learning.cardName,
+      choice,
+    };
+  };
+
   const handleRememberedQuickChoiceSubmit = (event) => {
-    if (!armedPlayedActionLearning || quickChoicePlaybackActive || event.isTrusted !== true) {
+    const learning = currentPlayedActionLearningSource();
+    if (!learning || quickChoicePlaybackActive || event.isTrusted !== true) {
       return false;
     }
     const target = event.target instanceof Element ? event.target : null;
@@ -4246,8 +4415,6 @@
     ).filter(
       (radio) => !radio.disabled && radio.closest?.(".wf-options") === outerOptions,
     );
-    const learning = armedPlayedActionLearning;
-    clearPlayedActionLearning();
     let choice = null;
     if (checkedRadios.length === 1) {
       const optionText = exactRadioOptionText(checkedRadios[0]);
@@ -4264,20 +4431,7 @@
       choice = selectedDirectQuickChoiceTarget(actionsRoot);
     }
     if (!choice) return false;
-    let learned = false;
-    updateQueueSession((draft) => {
-      learned = rememberQuickChoice(draft, learning.cardKey, choice);
-      return draft;
-    });
-    if (learned) {
-      auditLog("user.card.quick-choice.learn", {
-        cardName: learning.cardName,
-        ...(choice.optionText ? { optionText: choice.optionText } : {}),
-        ...(choice.promptText ? { promptText: choice.promptText } : {}),
-        hasTarget: Boolean(choice.targetCardText),
-      });
-    }
-    return learned;
+    return stagePlayedActionQuickChoice(learning, choice);
   };
 
   const startRememberedQuickChoiceListener = () => {
@@ -5111,7 +5265,8 @@
       itemType: item?.type ?? "unknown",
       label: queueItemLabel(item),
     };
-    auditLog("game.action.attempt", auditDetails);
+    const targetLearningCandidate =
+      cardTargetQuickChoiceLearningCandidate(item);
     if (item?.type === "playedAction") {
       rememberPlayedActionForLearning(item);
     } else if (isFollowUpQueueItem(item)) {
@@ -5124,6 +5279,12 @@
     renderQueuePanel();
     executeQueuedItem(item)
       .then(() => {
+        if (targetLearningCandidate) {
+          persistPlayedActionQuickChoice(
+            targetLearningCandidate,
+            targetLearningCandidate.choice,
+          );
+        }
         auditLog("game.action.success", auditDetails);
       })
       .catch((error) => {
