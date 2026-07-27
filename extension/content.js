@@ -1679,6 +1679,7 @@
     if (extensionActive === active) return;
     extensionActive = active;
     writeStorageString(extensionActiveStorageKey, active ? "true" : "false");
+    updatePlayerHomeTurnTint();
     renderControls();
     if (active) {
       helpersHiddenCleaned = false;
@@ -2360,6 +2361,7 @@
 
     terraformingMarsDomUpdatePaused = true;
     try {
+      updatePlayerHomeTurnTint();
       renderControls();
       updateTerraformingMarsLobbySync();
       if (needsPreview) {
@@ -2389,6 +2391,7 @@
     renderControls();
     updateTerraformingMarsLobbySync();
     updatePreview();
+    updatePlayerHomeTurnTint();
     if (terraformingMarsDomObserver) return;
 
     const target = document.body ?? document.documentElement;
@@ -3064,6 +3067,28 @@
     return radios.length === 1;
   };
 
+  const playerHomeTurnTintState = () => {
+    if (!shouldRunTerraformingMarsHelpers() || !isCurrentPlayerTurn()) {
+      return "idle";
+    }
+    return hasEnabledExactPassOption() ? "can-pass" : "no-pass";
+  };
+
+  const updatePlayerHomeTurnTint = () => {
+    const playerHome = document.querySelector("#player-home");
+    if (!playerHome) return "idle";
+    const state = playerHomeTurnTintState();
+    playerHome.classList.toggle(
+      "tfmars420-turn-can-pass",
+      state === "can-pass",
+    );
+    playerHome.classList.toggle(
+      "tfmars420-turn-no-pass",
+      state === "no-pass",
+    );
+    return state;
+  };
+
   const isWorldGovernmentTerraformingPrompt = () => {
     if (
       playerInputModelTitle(latestPlayerView?.waitingFor) ===
@@ -3329,6 +3354,12 @@
   };
 
   const timeWarpCss = () => `
+    #player-home.tfmars420-turn-can-pass {
+      box-shadow: inset 0 0 0 10000vmax rgba(255, 79, 191, 0.30);
+    }
+    #player-home.tfmars420-turn-no-pass {
+      box-shadow: inset 0 0 0 10000vmax rgba(255, 214, 64, 0.26);
+    }
     #${timeWarpPanelId} {
       background: #2f2f2f;
       border: 1px solid rgba(255, 255, 255, 0.22);
@@ -4786,6 +4817,7 @@
 
   const updateQueueUi = () => {
     queueUiScheduled = false;
+    updatePlayerHomeTurnTint();
     if (!shouldRunTerraformingMarsHelpers()) {
       removeTimeWarpUi();
       return;

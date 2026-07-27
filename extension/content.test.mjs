@@ -52,6 +52,26 @@ const turnScrollSource = source.slice(
   source.indexOf("const maybeScrollToBottomForTurn"),
   source.indexOf("const selectIndexedRadioOption"),
 );
+const turnTintSource = source.slice(
+  source.indexOf("const playerHomeTurnTintState"),
+  source.indexOf("const isWorldGovernmentTerraformingPrompt"),
+);
+const extensionToggleSource = source.slice(
+  source.indexOf("const setExtensionActive"),
+  source.indexOf("const reloadRuntime"),
+);
+const domUpdateSource = source.slice(
+  source.indexOf("const runTerraformingMarsDomUpdate"),
+  source.indexOf("const scheduleTerraformingMarsDomUpdate"),
+);
+const domObserverStartSource = source.slice(
+  source.indexOf("const startTerraformingMarsDomObserver"),
+  source.indexOf("function removeTimeWarpUi"),
+);
+const queueUiUpdateSource = source.slice(
+  source.indexOf("const updateQueueUi"),
+  source.indexOf("const scheduleTerraformingMarsUpdate"),
+);
 const navigationHotkeySource = source.slice(
   source.indexOf("const isEditableNavigationHotkeyTarget"),
   source.indexOf("const startTerraformingMarsNavigationHotkeys"),
@@ -671,6 +691,50 @@ const createMirrorEvent = (type, target) => {
     stopImmediatePropagationCount: () => stopImmediatePropagationCount,
     stopPropagationCount: () => stopPropagationCount,
   };
+};
+
+const createTurnTintExecutor = ({
+  active = true,
+  canPass = false,
+  isTurn = false,
+  playerHomeExists = true,
+  startingClasses = [],
+} = {}) => {
+  const classes = new Set(startingClasses);
+  const playerHome = playerHomeExists
+    ? {
+        classList: {
+          toggle(name, force) {
+            if (force) {
+              classes.add(name);
+            } else {
+              classes.delete(name);
+            }
+          },
+        },
+      }
+    : null;
+  const executor = Function(
+    "document",
+    "shouldRunTerraformingMarsHelpers",
+    "isCurrentPlayerTurn",
+    "hasEnabledExactPassOption",
+    `"use strict";
+      ${turnTintSource}
+      return {playerHomeTurnTintState, updatePlayerHomeTurnTint};
+    `,
+  )(
+    {
+      querySelector(selector) {
+        assert.equal(selector, "#player-home");
+        return playerHome;
+      },
+    },
+    () => active,
+    () => isTurn,
+    () => canPass,
+  );
+  return {...executor, classes};
 };
 
 const createTargetEligibilityCheck = (resourceCounter) =>
@@ -3382,6 +3446,97 @@ test("interactive Actions mirror is appended after every extension panel section
     source,
     /#\$\{timeWarpPanelId\} > \.tfmars420-actions-mirror \{[\s\S]*?width: 100%;[\s\S]*?\}/,
   );
+});
+
+test("player-home turn tint resolves idle, pink, and yellow states", () => {
+  assert.equal(
+    createTurnTintExecutor({active: false, isTurn: true, canPass: true})
+      .playerHomeTurnTintState(),
+    "idle",
+  );
+  assert.equal(
+    createTurnTintExecutor({active: true, isTurn: false, canPass: true})
+      .playerHomeTurnTintState(),
+    "idle",
+  );
+  assert.equal(
+    createTurnTintExecutor({active: true, isTurn: true, canPass: true})
+      .playerHomeTurnTintState(),
+    "can-pass",
+  );
+  assert.equal(
+    createTurnTintExecutor({active: true, isTurn: true, canPass: false})
+      .playerHomeTurnTintState(),
+    "no-pass",
+  );
+  assert.match(turnTintSource, /hasEnabledExactPassOption\(\)/);
+});
+
+test("player-home turn tint applies one mutually exclusive state class", () => {
+  const pink = createTurnTintExecutor({
+    canPass: true,
+    isTurn: true,
+    startingClasses: ["tfmars420-turn-no-pass"],
+  });
+  assert.equal(pink.updatePlayerHomeTurnTint(), "can-pass");
+  assert.deepEqual([...pink.classes], ["tfmars420-turn-can-pass"]);
+
+  const yellow = createTurnTintExecutor({
+    canPass: false,
+    isTurn: true,
+    startingClasses: ["tfmars420-turn-can-pass"],
+  });
+  assert.equal(yellow.updatePlayerHomeTurnTint(), "no-pass");
+  assert.deepEqual([...yellow.classes], ["tfmars420-turn-no-pass"]);
+});
+
+test("player-home turn tint cleans up when disabled and tolerates a missing page", () => {
+  const disabled = createTurnTintExecutor({
+    active: false,
+    canPass: true,
+    isTurn: true,
+    startingClasses: [
+      "tfmars420-turn-can-pass",
+      "tfmars420-turn-no-pass",
+    ],
+  });
+  assert.equal(disabled.updatePlayerHomeTurnTint(), "idle");
+  assert.deepEqual([...disabled.classes], []);
+
+  const missing = createTurnTintExecutor({
+    active: true,
+    isTurn: true,
+    canPass: true,
+    playerHomeExists: false,
+  });
+  assert.equal(missing.updatePlayerHomeTurnTint(), "idle");
+});
+
+test("turn tint CSS preserves the starfield behind exact translucent colors", () => {
+  const pinkRule = source.match(
+    /#player-home\.tfmars420-turn-can-pass \{([\s\S]*?)\}/,
+  )?.[1] ?? "";
+  const yellowRule = source.match(
+    /#player-home\.tfmars420-turn-no-pass \{([\s\S]*?)\}/,
+  )?.[1] ?? "";
+
+  assert.match(
+    pinkRule,
+    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 79, 191, 0\.30\)/,
+  );
+  assert.match(
+    yellowRule,
+    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 214, 64, 0\.26\)/,
+  );
+  assert.doesNotMatch(pinkRule, /background(?:-image)?:/);
+  assert.doesNotMatch(yellowRule, /background(?:-image)?:/);
+});
+
+test("turn tint refreshes on toggle, initial setup, DOM, and queue-network updates", () => {
+  assert.match(extensionToggleSource, /updatePlayerHomeTurnTint\(\)/);
+  assert.match(domUpdateSource, /updatePlayerHomeTurnTint\(\)/);
+  assert.match(domObserverStartSource, /updatePlayerHomeTurnTint\(\)/);
+  assert.match(queueUiUpdateSource, /updatePlayerHomeTurnTint\(\)/);
 });
 
 test("Q jumps the Actions block top to the viewport midpoint", () => {
