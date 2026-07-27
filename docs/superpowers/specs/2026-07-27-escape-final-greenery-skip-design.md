@@ -43,11 +43,11 @@ When Escape sees the exact prompt:
    `Don't place a greenery`.
 2. Select it with the existing action-option interaction.
 3. Wait for the rendered child state to settle.
-4. Click the exact enabled submit button labeled `Save`.
+4. Click the exact enabled submit button labeled `Confirm`.
 5. Return without attempting Pass.
 
 Missing, disabled, or ambiguous opt-out controls are safe failures. A missing,
-disabled, or ambiguous `Save` button is also a safe failure. No approximate
+disabled, or ambiguous `Confirm` button is also a safe failure. No approximate
 button label or radio index is allowed.
 
 The behavior applies to both automatic and manual queue execution because both
@@ -75,5 +75,5 @@ Pass selection.
 ## Verification
 
 Tests cover exact model and DOM prompt recognition, near-match rejection,
-queue eligibility by autopilot mode, post-Pass allowance, exact radio and Save
+queue eligibility by autopilot mode, post-Pass allowance, exact radio and Confirm
 interaction order, safe failures, and unchanged ordinary Escape behavior.
