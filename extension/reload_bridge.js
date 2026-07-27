@@ -20,32 +20,6 @@
     }
   };
 
-  const postExtensionVersion = () => {
-    const type = "tfmars420:extension-version";
-    auditLog("runtime.message.attempt", {
-      direction: "reload-bridge-to-page",
-      type,
-    });
-    try {
-      const version = chrome.runtime.getManifest()?.version;
-      if (typeof version !== "string" || !version) {
-        throw new Error("missing manifest version");
-      }
-      window.postMessage({type, version}, window.location.origin);
-      auditLog("runtime.message.success", {
-        direction: "reload-bridge-to-page",
-        type,
-      });
-    } catch (error) {
-      auditLog("runtime.message.failure", {
-        direction: "reload-bridge-to-page",
-        type,
-        error: String(error?.message ?? error),
-      });
-      console.log("[tfmars420 reload bridge] Manifest version failed:", error);
-    }
-  };
-
   const logRuntimeMessageFailure = (error) => {
     auditLog("runtime.message.failure", {
       direction: "page-to-service-worker",
@@ -76,14 +50,6 @@
 
   window.addEventListener("message", (event) => {
     if (event.source !== window || event.origin !== window.location.origin) {
-      return;
-    }
-    if (event.data?.type === "tfmars420:request-extension-version") {
-      auditLog("runtime.message.received", {
-        direction: "page-to-reload-bridge",
-        type: event.data.type,
-      });
-      postExtensionVersion();
       return;
     }
     if (event.data?.type === "tfmars420:update-content-and-reload") {

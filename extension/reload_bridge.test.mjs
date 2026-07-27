@@ -11,7 +11,7 @@ const manifest = JSON.parse(
   readFileSync(new URL("./manifest.json", import.meta.url), "utf8"),
 );
 
-const loadReloadBridge = (sendMessage, manifestVersion = "1.0.6") => {
+const loadReloadBridge = (sendMessage) => {
   const logs = [];
   const auditLogs = [];
   const postedMessages = [];
@@ -34,9 +34,6 @@ const loadReloadBridge = (sendMessage, manifestVersion = "1.0.6") => {
   const chrome = {
     runtime: {
       sendMessage,
-      getManifest() {
-        return {version: manifestVersion};
-      },
       onMessage: {
         addListener(listener) {
           runtimeListeners.push(listener);
@@ -69,12 +66,6 @@ const loadReloadBridge = (sendMessage, manifestVersion = "1.0.6") => {
     dispatchUpdateRequest() {
       this.dispatchWindowMessage({type: "tfmars420:update-content-and-reload"});
     },
-    dispatchVersionRequest(overrides = {}) {
-      this.dispatchWindowMessage(
-        {type: "tfmars420:request-extension-version"},
-        overrides,
-      );
-    },
     dispatchRuntimeMessage(message) {
       runtimeListeners.forEach((listener) => listener(message));
     },
@@ -84,53 +75,14 @@ const loadReloadBridge = (sendMessage, manifestVersion = "1.0.6") => {
   };
 };
 
-test("manifest declares version 1.0.6", () => {
-  assert.equal(manifest.version, "1.0.6");
+test("manifest keeps the unpacked extension package version", () => {
+  assert.equal(manifest.version, "0.1.2");
 });
 
-test("returns the manifest version to a trusted local page request", () => {
-  let serviceWorkerCalls = 0;
-  const bridge = loadReloadBridge(() => {
-    serviceWorkerCalls += 1;
-  });
-
-  bridge.dispatchVersionRequest();
-
-  assert.equal(serviceWorkerCalls, 0);
-  assert.deepEqual(JSON.parse(JSON.stringify(bridge.postedMessages)), [
-    {
-      message: {
-        type: "tfmars420:extension-version",
-        version: "1.0.6",
-      },
-      origin: "https://terraforming-mars.herokuapp.com",
-    },
-  ]);
-});
-
-test("ignores foreign extension-version requests", () => {
-  const bridge = loadReloadBridge(() => Promise.resolve());
-
-  bridge.dispatchVersionRequest({source: {}});
-  bridge.dispatchVersionRequest({origin: "https://example.com"});
-
-  assert.deepEqual(bridge.postedMessages, []);
-});
-
-test("logs and ignores an unavailable manifest version", () => {
-  const bridge = loadReloadBridge(() => Promise.resolve(), "");
-
-  assert.doesNotThrow(() => bridge.dispatchVersionRequest());
-  assert.deepEqual(bridge.postedMessages, []);
-  assert.equal(bridge.logs.length, 1);
-  assert.match(bridge.logs[0][1].message, /missing manifest version/);
-  assert.deepEqual(
-    bridge.auditLogs.map((entry) => entry[1]),
-    [
-      "runtime.message.received",
-      "runtime.message.attempt",
-      "runtime.message.failure",
-    ],
+test("reload bridge contains no user-facing version transport", () => {
+  assert.doesNotMatch(
+    reloadBridgeSource,
+    /getManifest|request-extension-version|tfmars420:extension-version/,
   );
 });
 

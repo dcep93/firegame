@@ -3,67 +3,18 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const source = await readFile(new URL("./content.js", import.meta.url), "utf8");
-const manifestVersionHelpersSource = source.slice(
-  source.indexOf("const manifestVersionLabel"),
-  source.indexOf("const requestRuntimeUpdate"),
-);
 
-test("in-page version is requested from the extension manifest", () => {
-  assert.doesNotMatch(source, /contentScriptVersion\s*=\s*["']v\d/);
-  assert.match(source, /tfmars420:request-extension-version/);
-  assert.match(source, /tfmars420:extension-version/);
-  assert.match(source, /\.tfmars420-controls-version/);
-  assert.match(source, /\.firegame-colonist-dice-version/);
-});
-
-const createManifestVersionState = () => {
-  const controls = [{textContent: "v…"}, {textContent: "v…"}];
-  const state = Function(
-    "document",
-    `"use strict";
-      let contentScriptVersion = "v…";
-      ${manifestVersionHelpersSource}
-      return {
-        label: manifestVersionLabel,
-        remember: rememberManifestVersion,
-        current: () => contentScriptVersion,
-      };
-    `,
-  )({
-    querySelectorAll(selector) {
-      assert.equal(
-        selector,
-        ".tfmars420-controls-version, .firegame-colonist-dice-version",
-      );
-      return controls;
-    },
-  });
-  return {...state, controls};
-};
-
-test("manifest versions render with a v prefix in both page controls", () => {
-  const state = createManifestVersionState();
-
-  assert.equal(state.current(), "v…");
-  assert.equal(state.label("1.0.6"), "v1.0.6");
-  assert.equal(state.remember("1.0.6"), true);
-  assert.equal(state.current(), "v1.0.6");
-  assert.deepEqual(
-    state.controls.map((control) => control.textContent),
-    ["v1.0.6", "v1.0.6"],
+test("in-page release version travels with content.js", () => {
+  assert.match(source, /const contentScriptVersion = "v1\.0\.6"/);
+  assert.match(
+    source,
+    /firegame-colonist-dice-version"[^]*\$\{contentScriptVersion\}/,
   );
-});
-
-test("invalid manifest versions leave the transient page label unchanged", () => {
-  for (const value of ["v1.0.6", "1.0.6.0.1", "1.0.beta", "", null]) {
-    const state = createManifestVersionState();
-    assert.equal(state.remember(value), false);
-    assert.equal(state.current(), "v…");
-    assert.deepEqual(
-      state.controls.map((control) => control.textContent),
-      ["v…", "v…"],
-    );
-  }
+  assert.match(source, /version\.textContent = contentScriptVersion/);
+  assert.doesNotMatch(
+    source,
+    /manifestVersion|request-extension-version|tfmars420:extension-version/,
+  );
 });
 const auditLoggerSource = source.slice(
   source.indexOf("const auditLog"),

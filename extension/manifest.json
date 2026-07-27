@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "aworldofstruggle",
-  "version": "1.0.6",
+  "version": "0.1.2",
   "description": "Adds Firegame browser helpers on supported game sites.",
   "permissions": ["downloads", "storage"],
   "host_permissions": ["<all_urls>"],
