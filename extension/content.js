@@ -3601,14 +3601,16 @@
     .tfmars420-card-tools,
     .tfmars420-enqueue-tools {
       align-items: center;
+      box-sizing: border-box;
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
       justify-content: center;
       margin: 6px 0 10px;
+      max-width: min(100%, var(--tfmars420-card-tools-width, 100%));
       min-height: 40px;
       position: relative;
-      width: 100%;
+      width: min(100%, var(--tfmars420-card-tools-width, 100%));
     }
     .tfmars420-card-tools button,
     .tfmars420-enqueue-tools button {
@@ -3636,18 +3638,22 @@
       max-width: calc(50% - 4px);
     }
     .tfmars420-enqueue-tools .tfmars420-quick-choice-list {
+      box-sizing: border-box;
       display: flex;
       flex: 1 0 100%;
       flex-direction: column;
       gap: 5px;
+      min-width: 0;
       order: 2;
       width: 100%;
     }
     .tfmars420-enqueue-tools .tfmars420-quick-choice-button {
-      max-width: calc(100% - 20px);
+      box-sizing: border-box;
+      max-width: 100%;
+      overflow-wrap: anywhere;
       text-transform: none;
       white-space: normal;
-      width: auto;
+      width: 100%;
     }
     .tfmars420-card-tools button:hover:not(:disabled),
     .tfmars420-enqueue-tools button:hover:not(:disabled) {
@@ -4249,6 +4255,19 @@
   };
 
   const cardContainerFromBox = (cardBox) => cardBox?.querySelector(".card-container") ?? cardBox;
+
+  const syncCardToolsWidth = (tools, cardBox) => {
+    const cardContainer = cardBox?.classList?.contains?.("card-container")
+      ? cardBox
+      : cardBox?.querySelector?.(".card-container");
+    const width = Number(cardContainer?.offsetWidth);
+    if (!Number.isFinite(width) || width <= 0) {
+      tools?.style?.removeProperty?.("--tfmars420-card-tools-width");
+      return false;
+    }
+    tools?.style?.setProperty?.("--tfmars420-card-tools-width", `${width}px`);
+    return true;
+  };
 
   const getCardIdentity = (cardElement) => {
     const container = cardElement?.classList?.contains("card-container")
@@ -4922,6 +4941,7 @@
         tools.className = "tfmars420-card-tools";
         cardBox.append(tools);
       }
+      syncCardToolsWidth(tools, cardBox);
 
       const position = findQueuedCardPosition(session.queue, "projectCard", identity);
       const button = upsertCardToolButton(
@@ -5051,6 +5071,7 @@
         tools.className = "tfmars420-enqueue-tools";
         cardBox.append(tools);
       }
+      syncCardToolsWidth(tools, cardBox);
 
       const existingActionButton = tools.querySelector(":scope > .tfmars420-played-action-queue-button");
       if (canQueueAction) {

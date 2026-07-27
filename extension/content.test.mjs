@@ -104,6 +104,10 @@ const handToolsSource = source.slice(
   source.indexOf("const renderHandCardTools"),
   source.indexOf("const isUnusedPlayedActionCard"),
 );
+const cardToolsWidthSource = source.slice(
+  source.indexOf("const syncCardToolsWidth"),
+  source.indexOf("const getCardIdentity"),
+);
 const targetEligibilitySource = source.slice(
   source.indexOf("const isEnqueueablePlayedCardTarget"),
   source.indexOf("const renderPlayedActionTools"),
@@ -206,6 +210,13 @@ const liveScoreRenderSource = source.slice(
 const liveScoreCssSource = source.slice(
   source.indexOf(`#\${timeWarpPanelId} .tfmars420-live-scores-scroll`),
   source.indexOf(`#\${timeWarpPanelId} .tfmars420-radio-option-index`),
+);
+const cardToolsCssStart = source.indexOf(
+  "    .tfmars420-card-tools,\n    .tfmars420-enqueue-tools {",
+);
+const cardToolsCssSource = source.slice(
+  cardToolsCssStart,
+  source.indexOf("    .tfmars420-card-tools button:hover", cardToolsCssStart),
 );
 const queuePanelSource = source.slice(
   source.indexOf("const createQueueIconButton"),
@@ -6372,6 +6383,56 @@ test("quick buttons support queued and live follow-up modes", () => {
   assert.match(quickChoiceUiSource, /draft\.queue\.push\(item\)/);
   assert.doesNotMatch(quickChoiceUiSource, /enqueueOrExecuteNow/);
   assert.match(source, /\.tfmars420-quick-choice-list[\s\S]*flex: 1 0 100%/);
+});
+
+test("quick actions are constrained to their rendered card width", () => {
+  const syncCardToolsWidth = Function(
+    `"use strict"; ${cardToolsWidthSource}; return syncCardToolsWidth;`,
+  )();
+  const properties = new Map();
+  const tools = {
+    style: {
+      removeProperty(name) {
+        properties.delete(name);
+      },
+      setProperty(name, value) {
+        properties.set(name, value);
+      },
+    },
+  };
+  const cardContainer = {offsetWidth: 248};
+  const cardBox = {
+    classList: {contains: () => false},
+    querySelector(selector) {
+      assert.equal(selector, ".card-container");
+      return cardContainer;
+    },
+  };
+
+  assert.equal(syncCardToolsWidth(tools, cardBox), true);
+  assert.equal(properties.get("--tfmars420-card-tools-width"), "248px");
+  cardContainer.offsetWidth = 224;
+  assert.equal(syncCardToolsWidth(tools, cardBox), true);
+  assert.equal(properties.get("--tfmars420-card-tools-width"), "224px");
+  cardContainer.offsetWidth = 0;
+  assert.equal(syncCardToolsWidth(tools, cardBox), false);
+  assert.equal(properties.has("--tfmars420-card-tools-width"), false);
+
+  assert.match(source, /const syncCardToolsWidth = \(tools, cardBox\) =>/);
+  assert.match(handToolsSource, /syncCardToolsWidth\(tools, cardBox\)/);
+  assert.match(playedToolsSource, /syncCardToolsWidth\(tools, cardBox\)/);
+  assert.match(
+    cardToolsCssSource,
+    /width: min\(100%, var\(--tfmars420-card-tools-width, 100%\)\)/,
+  );
+  assert.match(
+    cardToolsCssSource,
+    /\.tfmars420-enqueue-tools \.tfmars420-quick-choice-list \{[\s\S]*?min-width: 0;/,
+  );
+  assert.match(
+    cardToolsCssSource,
+    /\.tfmars420-enqueue-tools \.tfmars420-quick-choice-button \{[\s\S]*?box-sizing: border-box;[\s\S]*?max-width: 100%;[\s\S]*?overflow-wrap: anywhere;[\s\S]*?width: 100%;/,
+  );
 });
 
 test("exact quick-choice playback handles leaf and compound AstroDrill recipes", async () => {
