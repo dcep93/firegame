@@ -113,11 +113,11 @@ declines the purchase using exactly one enabled control in this order:
 
 1. `Skip this action`
 2. `Buy 0`
-3. `Ok`
+3. `Ok` or the SelectCard-rendered `Ok 0`
 
-Only exact normalized labels qualify. The first label category with exactly one
-enabled match is clicked. Missing or duplicate controls are treated as a safe
-failure rather than submitting an unknown action.
+Only those exact normalized labels qualify. The first label category with
+exactly one enabled match is clicked. Missing or duplicate controls are treated
+as a safe failure rather than submitting an unknown action.
 
 This covers ordinary optional purchases, maximum-one purchases whose valid
 zero-card action is `Buy 0`, and the server's `You cannot afford any cards`
@@ -172,7 +172,7 @@ Behavioral coverage will include:
 - checked allowlisted cards retained;
 - checked non-allowlisted cards cleared;
 - missing and disabled target inputs;
-- `Skip this action`, `Buy 0`, and `Ok` fallback paths;
+- `Skip this action`, `Buy 0`, `Ok`, and `Ok 0` fallback paths;
 - positive `Buy N` submit matching and ambiguous-submit rejection;
 - exact purchase-payment recognition and Pay submission without input changes;
 - rejection of unrelated payment prompts;
