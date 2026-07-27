@@ -5,7 +5,7 @@ import test from "node:test";
 const source = await readFile(new URL("./content.js", import.meta.url), "utf8");
 
 test("in-page release version travels with content.js", () => {
-  assert.match(source, /const contentScriptVersion = "v1\.0\.6"/);
+  assert.match(source, /const contentScriptVersion = "v1\.0\.7"/);
   assert.match(
     source,
     /firegame-colonist-dice-version"[^]*\$\{contentScriptVersion\}/,

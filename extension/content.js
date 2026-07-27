@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v1.0.6";
+  const contentScriptVersion = "v1.0.7";
 
   if (!isTerraformingMars && !isColonist) {
     return;
