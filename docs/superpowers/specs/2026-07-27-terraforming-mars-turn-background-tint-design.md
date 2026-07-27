@@ -35,12 +35,20 @@ Apply one mutually exclusive class to `#player-home`:
 
 CSS uses a large inset translucent shadow, which is painted over the existing
 background but under the page content. This preserves the upstream fixed
-gradient and `stars.jpg` layers:
+gradient and `stars.jpg` layers.
 
-- can Pass: `rgba(255, 79, 191, 0.10)`;
-- cannot Pass: `rgba(255, 214, 64, 0.10)`.
+Both turn-state classes run one shared native CSS animation:
 
-No upstream background declaration is replaced.
+- duration: five seconds for one complete cycle;
+- timing: `ease-in-out`;
+- repetition: infinite;
+- `0%` and `100%`: tint opacity `0`;
+- `50%`: tint opacity `0.25`.
+
+The can-Pass class supplies pink `255, 79, 191`; the cannot-Pass class supplies
+yellow `255, 214, 64`. The shared keyframes animate the inset shadow with the
+state class's RGB custom property. No upstream background declaration is
+replaced, and JavaScript does not run an animation timer.
 
 ## Lifecycle
 
@@ -58,6 +66,7 @@ containers and disabled helpers are safe no-op cleanup states.
 
 Automated tests will cover idle, pink, and yellow state resolution; exclusive
 class application; missing containers; extension-disable cleanup; exact Pass
-eligibility reuse; CSS colors and background-preserving technique; and all
-initial, DOM, queue/network, and toggle refresh hooks. The full extension suite
-will then guard existing queue, autopilot, Actions mirror, and hotkey behavior.
+eligibility reuse; the shared five-second animation; exact opacity endpoints;
+CSS colors and the background-preserving technique; and all initial, DOM,
+queue/network, and toggle refresh hooks. The full extension suite will then
+guard existing queue, autopilot, Actions mirror, and hotkey behavior.
