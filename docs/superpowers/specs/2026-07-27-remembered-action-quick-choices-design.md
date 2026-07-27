@@ -4,7 +4,9 @@
 
 Remember the first follow-up choice a player manually completes after tfmars420
 executes a played-card action, then offer that exact choice as a one-click queue
-item the next time the same played-card action is last in the queue.
+item the next time the same played-card action is last in the queue. This
+includes both conventional outer radio choices and workflows that directly ask
+the player to select a target card.
 
 Learning applies equally to all three tfmars420 activation paths:
 
@@ -15,17 +17,20 @@ Learning applies equally to all three tfmars420 activation paths:
 ## Session Data
 
 Extend the current player queue session with remembered quick choices grouped by
-the played action card's existing identity key. Each remembered choice contains:
+the played action card's existing identity key. Each remembered choice contains
+one of:
 
-- the exact cleaned visible radio-option text; and
-- when applicable, the exact cleaned visible target-card title.
+- an exact cleaned visible radio-option text, plus an optional exact target-card
+  title; or
+- an exact target-card title and the exact direct card-selection prompt that
+  contained it.
 
 Memories survive page and extension reloads because they use the existing local
 queue session. They reset when the extension changes to a different player or
 game, matching the current queue-session lifecycle.
 
-Identical option/target tuples are stored once. Distinct choices for the same
-played card coexist and each receive their own quick-select button.
+Identical recipe tuples are stored once. Distinct choices for the same played
+card coexist and each receive their own quick-select button.
 
 ## Learning Lifecycle
 
@@ -48,12 +53,19 @@ follow-up.
 While learning is armed, observe the player's manual completion of the first
 follow-up workflow. At its submit:
 
-1. Read the selected radio's exact cleaned label.
-2. If the selected option has a card-selection child, read the exact cleaned
-   title of the selected enabled card.
+1. If the workflow has an outer options group, read the selected radio's exact
+   cleaned label and, when present, the exact title of its selected enabled card
+   child.
+2. Otherwise, if the root follow-up is a direct card-selection workflow, read
+   the exact prompt and exact title of its one selected enabled card.
 3. Persist the completed recipe for the pending played card.
 4. Clear the learning context so nested prompts are not incorrectly attributed
    as additional first-step choices.
+
+For example, Mohole Lake can open `Select card to add microbe or animal` as a
+root card-selection component. Selecting Regolith Eaters and clicking `Add
+resource` learns a direct-target recipe even though there is no outer choice
+radio.
 
 Programmatic quick-choice playback does not create a new memory.
 
@@ -64,7 +76,8 @@ enqueue tools, directly below its pink queued-action button, only when that
 card's `playedAction` item is the final item in the persisted queue.
 
 Each button identifies the remembered option. A compound choice also identifies
-its target card. Clicking a quick-choice button appends one compound follow-up
+its target card. A direct-target choice uses only the target, such as `quick:
+Regolith Eaters`. Clicking a quick-choice button appends one compound follow-up
 item after the played action. Once appended, the played action is no longer the
 latest queue item, so its quick-choice buttons disappear on the next render.
 
@@ -85,22 +98,36 @@ Use one dedicated compound queue item:
 
 `targetCardText` is absent for choices that do not select a card.
 
+A direct-target recipe omits `optionText` and includes the originating prompt:
+
+```js
+{
+  type: "quickChoice",
+  promptText: "Select card to add microbe or animal",
+  targetCardText: "Regolith Eaters"
+}
+```
+
 `quickChoice` is a follow-up queue type. Its executor:
 
-1. Finds exactly one enabled radio whose cleaned visible label equals
-   `optionText`.
-2. Selects it and waits for the chosen workflow to render.
-3. If `targetCardText` is present, finds exactly one enabled card input whose
-   cleaned visible card title equals it, selects the card, and clicks the unique
-   enabled structural submit control.
-4. If no target is present and the option exposes a real child workflow, stops
-   successfully after selecting the option.
-5. Otherwise clicks the unique enabled structural submit control for the leaf
+1. For an option recipe, finds exactly one enabled outer radio whose cleaned
+   visible label equals `optionText`, selects it, and waits for its workflow to
+   render.
+2. If that option recipe includes `targetCardText`, finds exactly one enabled
+   child card input with that exact cleaned title, selects it, and clicks the
+   unique enabled structural submit control.
+3. If an option recipe has no target and exposes a real child workflow, stops
+   successfully after selecting the option. Otherwise it submits the leaf
    option.
+4. For a direct-target recipe, requires one root card-selection workflow whose
+   exact cleaned prompt equals `promptText`, finds exactly one enabled card input
+   whose exact cleaned title equals `targetCardText`, selects it, and clicks the
+   unique enabled structural submit control regardless of the button's label.
 
-All option and target matching uses strict `===` equality after the existing
-whitespace-only `cleanText` normalization. It does not use substring matching,
-case folding, radio indexes, slugs, normalized card names, or fuzzy fallbacks.
+All option, prompt, and target matching uses strict `===` equality after the
+existing whitespace-only `cleanText` normalization. It does not use substring
+matching, case folding, radio indexes, slugs, normalized card names, or fuzzy
+fallbacks.
 
 ## Failure Behavior
 
@@ -108,6 +135,7 @@ Execution throws and does not submit when:
 
 - the exact option is absent, duplicated, or disabled;
 - the exact target card is absent, duplicated, or disabled;
+- a direct-target prompt is absent, duplicated, or does not match exactly;
 - a target is remembered but the selected option does not expose card choices;
 - a required enabled submit control is absent or ambiguous; or
 - the current prompt is otherwise incompatible with the recipe.
@@ -139,6 +167,9 @@ Focused tests cover:
 - refusing to arm when the player changed, the turn ended, or Pass is offered;
 - leaf radio memories;
 - radio-plus-card compound memories;
+- direct card-target learning without an outer radio group;
+- direct-target quick-button labeling;
+- exact direct-prompt and target playback;
 - exact-text matching without fuzzy fallbacks;
 - duplicate-memory suppression and multiple distinct memories;
 - reload persistence and different-player reset;
