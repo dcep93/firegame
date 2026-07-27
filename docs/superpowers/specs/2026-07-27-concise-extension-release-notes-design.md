@@ -24,11 +24,11 @@ The shortened feature summary will retain two top-level site areas:
 2. Colonist
 
 The Terraforming Mars section will consolidate shared setup, card previews,
-hand sorting, live scoring, queues, remembered choices, and turn helpers. A
-third-level `Autopilots` subsection inside Terraforming Mars will name and
-summarize Escape, Got a Lotta Energy, and Buy Everything. The Colonist section
-will retain full-log dice history, live recency display, refresh behavior, and
-clipboard copying.
+hand sorting, live scoring, queues, remembered choices, and turn helpers.
+Autopilots will be a Terraforming Mars feature bullet with three nested bullets
+that name and summarize Escape, Got a Lotta Energy, and Buy Everything. The
+Colonist section will retain full-log dice history, live recency display,
+refresh behavior, and clipboard copying.
 
 There will be no standalone `Controls and updates` feature section. Update and
 disable behavior remains documented only in the unchanged instruction sections.
@@ -41,7 +41,7 @@ disable behavior remains documented only in the unchanged instruction sections.
   instruction text.
 - Confirm Terraforming Mars and Colonist are the only top-level feature
   headings.
-- Confirm Autopilots is nested under Terraforming Mars and all three autopilot
-  names remain.
+- Confirm Autopilots is a Terraforming Mars bullet with nested bullets for all
+  three autopilot names.
 - Confirm no standalone Controls and updates section remains.
 - Confirm `v1.0.6` remains the only release.
