@@ -3782,6 +3782,9 @@
       scheduleTerraformingMarsUpdate();
       return false;
     }
+    if (event.isTrusted === true) {
+      captureRememberedQuickChoiceSubmit(source);
+    }
     preserveScrollDuring(() => {
       if (typeof source.click === "function") {
         source.click();
@@ -4426,13 +4429,12 @@
     };
   };
 
-  const handleRememberedQuickChoiceSubmit = (event) => {
+  const captureRememberedQuickChoiceSubmit = (candidate) => {
     const learning = currentPlayedActionLearningSource();
-    if (!learning || quickChoicePlaybackActive || event.isTrusted !== true) {
+    if (!learning || quickChoicePlaybackActive) {
       return false;
     }
-    const target = event.target instanceof Element ? event.target : null;
-    const submit = target?.closest?.("button.btn-submit, input.btn-submit");
+    const submit = candidate?.closest?.("button.btn-submit, input.btn-submit");
     const actionsBlock = getActionsBlock();
     if (!submit || submit.disabled || !actionsBlock?.contains?.(submit)) return false;
 
@@ -4460,6 +4462,12 @@
     }
     if (!choice) return false;
     return stagePlayedActionQuickChoice(learning, choice);
+  };
+
+  const handleRememberedQuickChoiceSubmit = (event) => {
+    if (event.isTrusted !== true) return false;
+    const target = event.target instanceof Element ? event.target : null;
+    return captureRememberedQuickChoiceSubmit(target);
   };
 
   const startRememberedQuickChoiceListener = () => {

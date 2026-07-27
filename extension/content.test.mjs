@@ -125,7 +125,7 @@ const cardTargetLearningSource = source.slice(
   source.indexOf("const handleRememberedQuickChoiceSubmit"),
 );
 const quickChoiceSubmitSource = source.slice(
-  source.indexOf("const handleRememberedQuickChoiceSubmit"),
+  source.indexOf("const captureRememberedQuickChoiceSubmit"),
   source.indexOf("const startRememberedQuickChoiceListener"),
 );
 const quickChoiceCaptureSource = [
@@ -558,6 +558,7 @@ const createQuickChoiceCaptureHarness = ({
       };
       ${quickChoiceCaptureSource}
       return {
+        capture: captureRememberedQuickChoiceSubmit,
         handle: handleRememberedQuickChoiceSubmit,
         armed: () => armedPlayedActionLearning,
       };
@@ -858,6 +859,7 @@ const createNavigationHotkeyExecutor = ({
 const createActionsMirrorExecutor = (mirror = null) => {
   const preserved = [];
   const dispatched = [];
+  const rememberedSubmits = [];
   let refreshCount = 0;
   const executor = Function(
     "timeWarpPanelId",
@@ -867,6 +869,7 @@ const createActionsMirrorExecutor = (mirror = null) => {
     "scheduleTerraformingMarsUpdate",
     "document",
     "cleanText",
+    "captureRememberedQuickChoiceSubmit",
     `"use strict";
       ${actionsMirrorSource}
       return {
@@ -895,16 +898,21 @@ const createActionsMirrorExecutor = (mirror = null) => {
       },
     },
     (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
+    (source) => {
+      rememberedSubmits.push(source);
+      return true;
+    },
   );
   return {
     ...executor,
     dispatched,
     preserved,
+    rememberedSubmits,
     refreshCount: () => refreshCount,
   };
 };
 
-const createMirrorEvent = (type, target) => {
+const createMirrorEvent = (type, target, overrides = {}) => {
   let preventDefaultCount = 0;
   let stopImmediatePropagationCount = 0;
   let stopPropagationCount = 0;
@@ -921,6 +929,7 @@ const createMirrorEvent = (type, target) => {
       },
       target,
       type,
+      ...overrides,
     },
     preventDefaultCount: () => preventDefaultCount,
     stopImmediatePropagationCount: () => stopImmediatePropagationCount,
@@ -3884,8 +3893,45 @@ test("Actions mirror clicks activate the mapped source through scroll preservati
   assert.equal(clickCount, 1);
   assert.equal(executor.preserved.length, 1);
   assert.equal(executor.refreshCount(), 1);
+  assert.deepEqual(executor.rememberedSubmits, []);
   assert.equal(interaction.preventDefaultCount(), 1);
   assert.equal(interaction.stopImmediatePropagationCount(), 1);
+});
+
+test("trusted Actions mirror clicks offer the canonical source for learning once", () => {
+  let clickCount = 0;
+  const source = {
+    click() {
+      clickCount += 1;
+    },
+    isConnected: true,
+  };
+  const keyed = {getAttribute: () => "5"};
+  const target = {
+    closest(selector) {
+      if (selector === "[data-tfmars420-actions-source]") return keyed;
+      if (selector === "input, textarea, select") return null;
+      return null;
+    },
+  };
+  const mirror = {contains: (candidate) => candidate === keyed};
+  const executor = createActionsMirrorExecutor();
+  const interaction = createMirrorEvent("click", target, {isTrusted: true});
+
+  assert.equal(
+    executor.proxyActionsMirrorClick(
+      interaction.event,
+      mirror,
+      new Map([["5", source]]),
+    ),
+    true,
+  );
+  assert.deepEqual(executor.rememberedSubmits, [source]);
+  assert.equal(clickCount, 1);
+  assert.match(
+    actionsMirrorSource,
+    /event\.isTrusted === true[\s\S]*captureRememberedQuickChoiceSubmit\(source\)[\s\S]*source\.click\(\)/,
+  );
 });
 
 test("Actions mirror value events update and notify the mapped source", () => {
@@ -5881,6 +5927,31 @@ test("remembered-choice capture accepts only trusted first-step submissions", ()
     quickChoiceListenerSource,
     /document\.addEventListener\("click", handleRememberedQuickChoiceSubmit, true\)/,
   );
+});
+
+test("trusted mirror submission uses canonical capture without accepting synthetic document clicks", () => {
+  const mirrored = createQuickChoiceCaptureHarness({
+    optionText: "Remove 2 microbes to raise oxygen level 1 step",
+  });
+
+  assert.equal(mirrored.capture(mirrored.event.target), true);
+  assert.deepEqual(mirrored.stagedChoices[0]?.choice, {
+    optionText: "Remove 2 microbes to raise oxygen level 1 step",
+  });
+
+  const synthetic = createQuickChoiceCaptureHarness({
+    optionText: "Remove 2 microbes to raise oxygen level 1 step",
+    trusted: false,
+  });
+  assert.equal(synthetic.handle(synthetic.event), false);
+  assert.deepEqual(synthetic.stagedChoices, []);
+
+  const playback = createQuickChoiceCaptureHarness({
+    optionText: "Remove 2 microbes to raise oxygen level 1 step",
+    playbackActive: true,
+  });
+  assert.equal(playback.capture(playback.event.target), false);
+  assert.deepEqual(playback.stagedChoices, []);
 });
 
 test("remembered-choice capture stages leaf and exact card-target recipes", () => {
