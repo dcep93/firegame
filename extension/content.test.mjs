@@ -3108,7 +3108,7 @@ test("turn scroll never manipulates the rendered autoprocess checkbox", () => {
   );
 });
 
-test("Q jumps the Actions block top to the viewport top", () => {
+test("Q jumps the Actions block top to the viewport midpoint", () => {
   const actions = {
     getBoundingClientRect: () => ({top: 250, bottom: 650}),
   };
@@ -3119,7 +3119,22 @@ test("Q jumps the Actions block top to the viewport top", () => {
 
   assert.equal(executor.handle(shortcut.keyboardEvent), true);
   assert.deepEqual(executor.selectors, [".player_home_block--actions"]);
-  assert.deepEqual(executor.scrollCalls, [{top: 350, behavior: "instant"}]);
+  assert.deepEqual(executor.scrollCalls, [{top: 50, behavior: "instant"}]);
+  assert.equal(shortcut.preventDefaultCount(), 1);
+});
+
+test("Q midpoint alignment clamps at the top of the page", () => {
+  const actions = {
+    getBoundingClientRect: () => ({top: 100, bottom: 500}),
+  };
+  const executor = createNavigationHotkeyExecutor({
+    scrollY: 0,
+    targets: {".player_home_block--actions": actions},
+  });
+  const shortcut = executor.event("q");
+
+  assert.equal(executor.handle(shortcut.keyboardEvent), true);
+  assert.deepEqual(executor.scrollCalls, [{top: 0, behavior: "instant"}]);
   assert.equal(shortcut.preventDefaultCount(), 1);
 });
 

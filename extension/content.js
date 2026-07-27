@@ -1622,7 +1622,7 @@
   const navigationHotkeyDestination = (key) => {
     switch (String(key ?? "").toLowerCase()) {
       case "q":
-        return {selector: ".player_home_block--actions", edge: "top"};
+        return {selector: ".player_home_block--actions", edge: "midpoint"};
       case "w":
         return {selector: ".player_home_block--cards", edge: "top"};
       case "e":
@@ -1660,7 +1660,8 @@
 
       const bounds = target.getBoundingClientRect();
       const currentScrollY = Number.isFinite(window.scrollY) ? window.scrollY : 0;
-      targetTop = currentScrollY + bounds.top;
+      const viewportOffset = destination.edge === "midpoint" ? window.innerHeight / 2 : 0;
+      targetTop = currentScrollY + bounds.top - viewportOffset;
     }
     window.scrollTo({
       top: Math.max(0, targetTop),
