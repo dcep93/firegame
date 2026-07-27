@@ -50,22 +50,42 @@ Abandon the pending source if the player changes, loses the turn, returns to a
 top-level action prompt, or the played action fails before producing a
 follow-up.
 
-While learning is armed, observe the player's manual completion of the first
-follow-up workflow. At its submit:
+While learning is armed, observe the player's completion of the first follow-up
+workflow through either tfmars420 controls or the native action panel.
+
+For a native action-panel submission:
 
 1. If the workflow has an outer options group, read the selected radio's exact
    cleaned label and, when present, the exact title of its selected enabled card
    child.
 2. Otherwise, if the root follow-up is a direct card-selection workflow, read
    the exact prompt and exact title of its one selected enabled card.
-3. Persist the completed recipe for the pending played card.
-4. Clear the learning context so nested prompts are not incorrectly attributed
-   as additional first-step choices.
+3. Stage the completed recipe with the pending played-card identity and current
+   player-input key.
+4. Persist it only after a subsequent same-player network update confirms that
+   the input advanced. If the input remains unchanged, keep waiting; if the
+   player or game changes or learning is otherwise invalidated, discard it.
+
+For an extension `cardTarget` execution:
+
+1. Before the shared executor clears the armed follow-up association, inspect
+   the target card's live workflow.
+2. Build the same radio-plus-target or direct-prompt-plus-target recipe used by
+   native learning.
+3. Retain the played-card identity and recipe through execution.
+4. Persist the recipe only after the shared executor reports success. Discard
+   it when execution fails.
+
+Both paths clear the active first-step learning context once a candidate is
+staged, so nested prompts are not incorrectly attributed as additional
+first-step choices. Identical recipes remain deduplicated by the session store.
 
 For example, Mohole Lake can open `Select card to add microbe or animal` as a
 root card-selection component. Selecting Regolith Eaters and clicking `Add
 resource` learns a direct-target recipe even though there is no outer choice
-radio.
+radio. Clicking tfmars420's `enqueue target` on Regolith Eaters in that same
+prompt learns the identical recipe after the immediate target execution
+succeeds.
 
 Programmatic quick-choice playback does not create a new memory.
 
@@ -154,6 +174,17 @@ existing whitespace-only `cleanText` normalization. It does not use substring
 matching, case folding, radio indexes, slugs, normalized card names, or fuzzy
 fallbacks.
 
+## Execution Audit Logging
+
+The shared queue executor emits one terminal audit result for each execution:
+
+- `game.action.success` after the executor completes; or
+- `game.action.failure` with the existing failure details when it throws.
+
+It does not emit a separate `game.action.attempt` entry. User-control audit
+events such as `user.card.action.enqueue` and `user.card.target.enqueue` remain
+unchanged.
+
 ## Failure Behavior
 
 Execution throws and does not submit when:
@@ -181,7 +212,7 @@ This feature does not change:
 - played-action immediate-versus-persisted enqueue policy;
 - Autoqueue ordering or readiness;
 - existing indexed radio-option items;
-- existing standalone card-target items;
+- standalone card-target queue ordering, labeling, and readiness;
 - default Pass selection;
 - card identity matching used by existing action controls; or
 - memories outside the current player's queue session.
@@ -195,6 +226,11 @@ Focused tests cover:
 - leaf radio memories;
 - radio-plus-card compound memories;
 - direct card-target learning without an outer radio group;
+- successful extension `cardTarget` learning for direct and nested target
+  workflows;
+- discarding an extension target candidate after execution failure;
+- staging native action-panel choices until a player-input network transition;
+- discarding stale native candidates on player or game changes;
 - direct-target quick-button labeling;
 - exact direct-prompt and target playback;
 - exact-text matching without fuzzy fallbacks;
@@ -210,5 +246,6 @@ Focused tests cover:
 - missing, duplicate, and disabled option failures;
 - missing, duplicate, and disabled target failures;
 - missing and ambiguous submit failures;
-- no programmatic relearning during playback; and
+- no programmatic relearning during playback;
+- terminal-only execution audit logging without `game.action.attempt`; and
 - the complete extension test suite and syntax checks.
