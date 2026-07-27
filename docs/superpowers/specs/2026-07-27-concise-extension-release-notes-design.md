@@ -33,6 +33,9 @@ refresh behavior, and clipboard copying.
 There will be no standalone `Controls and updates` feature section. Update and
 disable behavior remains documented only in the unchanged instruction sections.
 
+A Markdown horizontal rule (`---`) with blank lines around it will separate the
+feature summary from the `Install` heading.
+
 ## Verification
 
 - Confirm the pre-Install portion is at most 200 words locally and after
@@ -44,4 +47,5 @@ disable behavior remains documented only in the unchanged instruction sections.
 - Confirm Autopilots is a Terraforming Mars bullet with nested bullets for all
   three autopilot names.
 - Confirm no standalone Controls and updates section remains.
+- Confirm a horizontal rule visibly separates the feature summary from Install.
 - Confirm `v1.0.6` remains the only release.
