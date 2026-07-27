@@ -39,7 +39,7 @@ gradient and `stars.jpg` layers.
 
 Both turn-state classes run one shared native CSS animation:
 
-- duration: five seconds for one complete cycle;
+- duration: four seconds for one complete cycle;
 - timing: `ease-in-out`;
 - repetition: infinite;
 - `0%` and `100%`: tint opacity `0`;
@@ -66,7 +66,7 @@ containers and disabled helpers are safe no-op cleanup states.
 
 Automated tests will cover idle, pink, and yellow state resolution; exclusive
 class application; missing containers; extension-disable cleanup; exact Pass
-eligibility reuse; the shared five-second animation; exact opacity endpoints;
+eligibility reuse; the shared four-second animation; exact opacity endpoints;
 CSS colors and the background-preserving technique; and all initial, DOM,
 queue/network, and toggle refresh hooks. The full extension suite will then
 guard existing queue, autopilot, Actions mirror, and hotkey behavior.
