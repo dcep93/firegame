@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v1.0.4";
+  const contentScriptVersion = "v1.0.5";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -14,8 +14,28 @@
   window.__FIREGAME_EXTENSION_LOADED = true;
   window.__TFMARS420_EXTENSION_LOADED = true;
 
+  const auditLog = (eventName, details = {}) => {
+    try {
+      globalThis.console?.log?.("[tfmars420:audit]", eventName, details);
+    } catch {
+      // Audit logging must never affect extension behavior.
+    }
+  };
+
   const requestRuntimeUpdate = () => {
-    window.postMessage({ type: "tfmars420:update-content-and-reload" }, window.location.origin);
+    const type = "tfmars420:update-content-and-reload";
+    auditLog("runtime.message.attempt", { direction: "page-to-reload-bridge", type });
+    try {
+      window.postMessage({ type }, window.location.origin);
+      auditLog("runtime.message.success", { direction: "page-to-reload-bridge", type });
+    } catch (error) {
+      auditLog("runtime.message.failure", {
+        direction: "page-to-reload-bridge",
+        type,
+        error: String(error?.message ?? error),
+      });
+      throw error;
+    }
   };
 
   window.addEventListener("message", (event) => {
@@ -23,7 +43,14 @@
       return;
     }
     if (event.data?.type === "tfmars420:reload-page-after-runtime") {
-      window.setTimeout(() => window.location.reload(), 750);
+      auditLog("runtime.message.received", {
+        direction: "reload-bridge-to-page",
+        type: event.data.type,
+      });
+      window.setTimeout(() => {
+        auditLog("page.reload.requested", {});
+        window.location.reload();
+      }, 750);
     }
   });
 
@@ -1566,7 +1593,12 @@
   const writeStorageString = (key, value) => {
     try {
       localStorage.setItem(key, value);
+      auditLog("storage.write.success", { key });
     } catch (error) {
+      auditLog("storage.write.failure", {
+        key,
+        error: String(error?.message ?? error),
+      });
       console.warn("[tfmars420] unable to write localStorage", error);
     }
   };
@@ -1679,7 +1711,9 @@
       logo.title = "Toggle tfmars420";
       logo.textContent = "420";
       logo.addEventListener("click", () => {
-        setExtensionActive(!shouldRunTerraformingMarsHelpers());
+        const active = !shouldRunTerraformingMarsHelpers();
+        auditLog("user.extension.toggle", { active });
+        setExtensionActive(active);
       });
       panel.appendChild(logo);
 
@@ -1687,7 +1721,10 @@
       version.type = "button";
       version.className = "tfmars420-controls-version";
       version.textContent = contentScriptVersion;
-      version.addEventListener("click", reloadRuntime);
+      version.addEventListener("click", () => {
+        auditLog("user.runtime.update", { version: contentScriptVersion });
+        reloadRuntime();
+      });
       panel.appendChild(version);
 
       host.prepend(panel);
@@ -1725,20 +1762,31 @@
   const firebaseLobbyFieldUrl = (field) => `${firebaseLobbyUrl}/${field}.json`;
 
   const firebaseSetLobbyField = async (field, value) => {
-    const response = await fetch(firebaseLobbyFieldUrl(field), {
-      method: "PUT",
-      cache: "no-store",
-      credentials: "omit",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(value),
-    });
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
+    auditLog("firebase.write.attempt", { field });
+    try {
+      const response = await fetch(firebaseLobbyFieldUrl(field), {
+        method: "PUT",
+        cache: "no-store",
+        credentials: "omit",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(value),
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      const result = await response.json();
+      auditLog("firebase.write.success", { field, status: response.status });
+      return result;
+    } catch (error) {
+      auditLog("firebase.write.failure", {
+        field,
+        error: String(error?.message ?? error),
+      });
+      throw error;
     }
-    return response.json();
   };
 
   const formatLobbyTimestamp = (timestamp) => {
@@ -1780,6 +1828,9 @@
       const link = document.createElement("a");
       link.href = `/game?id=${encodeURIComponent(gameEntry.value.trim())}`;
       link.textContent = gameEntry.value.trim();
+      link.addEventListener("click", () => {
+        auditLog("user.lobby.open-game", { gameId: gameEntry.value.trim() });
+      });
       gameRow.append(link);
       const timestamp = document.createElement("span");
       timestamp.className = "tfmars420-lobby-time";
@@ -2059,6 +2110,10 @@
     if (target.closest(`.${lobbyRootClass}`)) return;
     if (target.closest("dialog, .preferences_panel, .sidebar_item--settings")) return;
     if (!target.closest("#create-game")) return;
+    auditLog("user.settings.edit", {
+      eventType: event.type,
+      control: target.id || target.getAttribute("name") || target.tagName.toLowerCase(),
+    });
     cancelNewGameSettingsApply();
     lastLocalNewGameSettingsEditTimestamp = Date.now();
     lastHandledRemoteNewGameSettingsTimestamp = Math.max(
@@ -2247,6 +2302,9 @@
       if (needsPreview) {
         updatePreview();
       }
+      if (pendingNetworkPassSelection || pendingTurnScroll) {
+        scheduleTerraformingMarsUpdate();
+      }
     } finally {
       window.setTimeout(() => {
         terraformingMarsDomUpdatePaused = false;
@@ -2281,6 +2339,13 @@
         pageWantsWholeDom ||
         relevantMutations.some((mutation) => mutationTouchesSelector(mutation, terraformingMarsDomSelector));
       if (!shouldUpdate) return;
+
+      const handChanged = relevantMutations.some((mutation) =>
+        mutationTouchesSelector(mutation, "#shortkey-hand .sortable-cards"),
+      );
+      if (handChanged && !queueMutationPaused) {
+        scheduleTerraformingMarsUpdate();
+      }
 
       const shouldUpdatePreview =
         !pageWantsWholeDom &&
@@ -2328,6 +2393,9 @@
     queueExecutionError = "";
     queueExecutionAttempted = false;
     queueExecutionInFlight = false;
+    lastNetworkTurnState = undefined;
+    pendingTurnScroll = false;
+    clearPlayedActionLearning();
     helpersHiddenCleaned = true;
   }
 
@@ -2349,6 +2417,12 @@
   let latestPlayerView = null;
   let latestPlayerViewCapturedAt = 0;
   let latestPlayerViewRunId = "";
+  let pendingNetworkPassSelection = false;
+  let lastNetworkTurnState;
+  let pendingTurnScroll = false;
+  let pendingPlayedActionLearning = null;
+  let armedPlayedActionLearning = null;
+  let quickChoicePlaybackActive = false;
   let queueMutationObserver = null;
   let queueLogDiscoveryObserver = null;
   let queueObservedLogTarget = null;
@@ -2357,8 +2431,129 @@
   const looksLikePlayerView = (value) =>
     Boolean(value?.id && value?.game && Object.prototype.hasOwnProperty.call(value, "runId"));
 
+  const playerInputModelTitle = (model) =>
+    typeof model?.title === "string" ? cleanText(model.title) : "";
+
+  const worldGovernmentTerraformingPrompt =
+    "Select action for World Government Terraforming";
+  const worldGovernmentOceanPlacementPrompt =
+    "Select space for ocean from temperature increase";
+  const finalGreeneryPlacementPrompt =
+    "Place any final greenery from plants";
+  const declineFinalGreeneryOption = "Don't place a greenery";
+
+  const playerInputOffersExactTitle = (model, expectedTitle) =>
+    Array.isArray(model?.options) &&
+    model.options.some((option) => playerInputModelTitle(option) === expectedTitle);
+
+  const clearPlayedActionLearning = () => {
+    pendingPlayedActionLearning = null;
+    armedPlayedActionLearning = null;
+  };
+
+  const rememberPlayedActionForLearning = (item) => {
+    if (item?.type !== "playedAction") return false;
+    const playerId = currentPlayerId();
+    const cardKey = cleanText(String(item.cardKey ?? ""));
+    const cardName = cleanText(String(item.cardName ?? ""));
+    if (!playerId || !cardKey || !cardName) {
+      clearPlayedActionLearning();
+      return false;
+    }
+    pendingPlayedActionLearning = {
+      playerId,
+      cardKey,
+      cardName,
+    };
+    armedPlayedActionLearning = null;
+    return true;
+  };
+
+  const networkPlayerTurnState = (playerView) => {
+    const waitingFor = playerView?.waitingFor;
+    if (waitingFor === null || waitingFor === undefined) return false;
+    if (
+      waitingFor.type === "or" &&
+      /^Take your (first|next) action$/i.test(playerInputModelTitle(waitingFor))
+    ) {
+      return true;
+    }
+    return null;
+  };
+
+  const updatePlayedActionLearningFromPlayerView = (playerView) => {
+    const learning = pendingPlayedActionLearning ?? armedPlayedActionLearning;
+    if (!learning) return false;
+    const waitingFor = playerView?.waitingFor;
+    if (
+      playerView?.id !== learning.playerId ||
+      !waitingFor ||
+      networkPlayerTurnState(playerView) === true ||
+      playerInputOffersExactTitle(waitingFor, "Pass for this generation")
+    ) {
+      clearPlayedActionLearning();
+      return false;
+    }
+    if (!pendingPlayedActionLearning) return false;
+    armedPlayedActionLearning = pendingPlayedActionLearning;
+    pendingPlayedActionLearning = null;
+    return true;
+  };
+
+  const rememberNetworkTurnState = (playerView) => {
+    const nextTurnState = networkPlayerTurnState(playerView);
+    if (nextTurnState === null) return false;
+    const becameCurrentPlayerTurn = lastNetworkTurnState === false && nextTurnState === true;
+    lastNetworkTurnState = nextTurnState;
+    if (becameCurrentPlayerTurn) {
+      pendingTurnScroll = true;
+    }
+    return becameCurrentPlayerTurn;
+  };
+
+  const shouldArmNetworkPassSelection = (playerView, source) => {
+    if (!source.includes("api/player") && !source.includes("player/input")) return false;
+    const waitingFor = playerView?.waitingFor;
+    if (
+      networkPlayerTurnState(playerView) !== true ||
+      !Array.isArray(waitingFor.options)
+    ) {
+      return false;
+    }
+    return waitingFor.options.some(
+      (option) => playerInputModelTitle(option) === "Pass for this generation",
+    );
+  };
+
+  const playerViewWaitingForKey = (playerView) =>
+    JSON.stringify(playerView?.waitingFor ?? null);
+
+  const playerViewInputChanged = (previousPlayerView, nextPlayerView) =>
+    Boolean(
+      previousPlayerView?.id &&
+        previousPlayerView.id === nextPlayerView?.id &&
+        playerViewWaitingForKey(previousPlayerView) !==
+          playerViewWaitingForKey(nextPlayerView),
+    );
+
   const rememberLatestPlayerView = (playerView, source) => {
     if (!looksLikePlayerView(playerView)) return;
+    if (latestPlayerView?.id && latestPlayerView.id !== playerView.id) {
+      lastNetworkTurnState = undefined;
+      pendingTurnScroll = false;
+      clearPlayedActionLearning();
+    }
+    if (playerViewInputChanged(latestPlayerView, playerView)) {
+      if (queueExecutionInFlight) {
+        queuePendingLogMutation = true;
+      } else {
+        queueExecutionAttempted = false;
+        queueExecutionError = "";
+      }
+    }
+    updatePlayedActionLearningFromPlayerView(playerView);
+    rememberNetworkTurnState(playerView);
+    pendingNetworkPassSelection = shouldArmNetworkPassSelection(playerView, source);
     const nextRunId = String(playerView.runId ?? "");
     if (nextRunId && nextRunId !== latestPlayerViewRunId) {
       latestPlayerViewRunId = nextRunId;
@@ -2429,11 +2624,142 @@
 
   const currentPlayerId = () => latestPlayerView?.id ?? "";
 
+  const normalizeHandSortMode = (value) => {
+    if (value === null || typeof value === "undefined") return null;
+    if (typeof value !== "string") return null;
+    const mode = value.trim().toLowerCase();
+    if (mode === "server") return mode;
+    if (mode === "asterisk" || !/^[a-z][a-z0-9-]*$/.test(mode)) return null;
+    return mode;
+  };
+
+  const nextHandSortModeForTag = (currentMode, tagType) => {
+    const current = normalizeHandSortMode(currentMode);
+    const tag = normalizeHandSortMode(tagType);
+    if (!tag || tag === "server") return current;
+    return current === tag ? null : tag;
+  };
+
+  const nextHandSortModeForCost = (currentMode) =>
+    normalizeHandSortMode(currentMode) === null ? "server" : null;
+
+  const normalizeAutopilotMode = (value) => {
+    if (value === "gotALottaEnergy" || value === "buyEverything") return value;
+    return "escape";
+  };
+
+  const autopilotModeLabel = (value) => {
+    const mode = normalizeAutopilotMode(value);
+    if (mode === "gotALottaEnergy") return "got a lotta energy";
+    if (mode === "buyEverything") return "buy everything";
+    return "escape";
+  };
+
+  const normalizeRememberedQuickChoice = (value) => {
+    if (!isPlainObject(value) || typeof value.optionText !== "string") return null;
+    const optionText = cleanText(value.optionText);
+    if (!optionText) return null;
+    const hasTarget = Object.prototype.hasOwnProperty.call(value, "targetCardText");
+    if (hasTarget && typeof value.targetCardText !== "string") return null;
+    const targetCardText = hasTarget ? cleanText(value.targetCardText) : "";
+    if (hasTarget && !targetCardText) return null;
+    return targetCardText ? { optionText, targetCardText } : { optionText };
+  };
+
+  const rememberedQuickChoicesEqual = (left, right) =>
+    left?.optionText === right?.optionText &&
+    (left?.targetCardText ?? "") === (right?.targetCardText ?? "");
+
+  const normalizeRememberedQuickChoices = (value) => {
+    if (!isPlainObject(value)) return {};
+    const entries = [];
+    for (const [rawCardKey, rawChoices] of Object.entries(value)) {
+      const cardKey = cleanText(rawCardKey);
+      if (!cardKey || !Array.isArray(rawChoices)) continue;
+      const choices = [];
+      for (const rawChoice of rawChoices) {
+        const choice = normalizeRememberedQuickChoice(rawChoice);
+        if (!choice || choices.some((candidate) => rememberedQuickChoicesEqual(candidate, choice))) {
+          continue;
+        }
+        choices.push(choice);
+      }
+      if (choices.length > 0) entries.push([cardKey, choices]);
+    }
+    return Object.fromEntries(entries);
+  };
+
+  const rememberQuickChoice = (draft, cardKey, rawChoice) => {
+    const normalizedCardKey = cleanText(String(cardKey ?? ""));
+    const choice = normalizeRememberedQuickChoice(rawChoice);
+    if (!normalizedCardKey || !choice) return false;
+    draft.rememberedQuickChoices = normalizeRememberedQuickChoices(
+      draft.rememberedQuickChoices,
+    );
+    const choices = draft.rememberedQuickChoices[normalizedCardKey] ?? [];
+    if (choices.some((candidate) => rememberedQuickChoicesEqual(candidate, choice))) {
+      return false;
+    }
+    draft.rememberedQuickChoices[normalizedCardKey] = [...choices, choice];
+    return true;
+  };
+
+  const terraformingMarsTagTypes = new Set([
+    "animal",
+    "building",
+    "city",
+    "clone",
+    "crime",
+    "earth",
+    "event",
+    "jovian",
+    "mars",
+    "microbe",
+    "moon",
+    "plant",
+    "power",
+    "science",
+    "space",
+    "venus",
+    "wild",
+  ]);
+
+  const tagTypeFromClassNames = (classNames) => {
+    const classes = new Set(classNames ?? []);
+    for (const tagType of terraformingMarsTagTypes) {
+      if (
+        classes.has(`tag-${tagType}`) ||
+        classes.has(`card-tag-${tagType}`) ||
+        classes.has(`track-tag-${tagType}`)
+      ) {
+        return tagType;
+      }
+    }
+    return null;
+  };
+
+  const terraformingMarsTagTypeFromElement = (element) => {
+    let candidate =
+      element instanceof Element ? element : element?.parentElement instanceof Element
+        ? element.parentElement
+        : null;
+    while (candidate) {
+      const tagType = tagTypeFromClassNames(candidate.classList);
+      if (tagType) return tagType;
+      candidate = candidate.parentElement;
+    }
+    return null;
+  };
+
   const freshQueueSession = (playerId) => ({
     version: 1,
     playerId,
     queue: [],
     cardRanks: {},
+    autoProcess: false,
+    handSortMode: null,
+    autopilotMode: "escape",
+    rememberedQuickChoices: {},
   });
 
   const normalizeQueueSession = (value, playerId) => {
@@ -2445,6 +2771,10 @@
       playerId,
       queue: Array.isArray(value.queue) ? value.queue.filter(isPlainObject) : [],
       cardRanks: isPlainObject(value.cardRanks) ? { ...value.cardRanks } : {},
+      autoProcess: value.autoProcess === true,
+      handSortMode: normalizeHandSortMode(value.handSortMode),
+      autopilotMode: normalizeAutopilotMode(value.autopilotMode),
+      rememberedQuickChoices: normalizeRememberedQuickChoices(value.rememberedQuickChoices),
     };
   };
 
@@ -2483,6 +2813,20 @@
     queueExecutionError = "";
     scheduleTerraformingMarsUpdate();
     return nextSession;
+  };
+
+  const enqueueAutopilot = (rawMode) => {
+    const mode = normalizeAutopilotMode(rawMode);
+    const item = {type: "autopilot", mode};
+    const session = updateQueueSession((draft) => {
+      draft.autopilotMode = mode;
+      draft.queue.push(item);
+      return draft;
+    });
+    const executed =
+      Boolean(session) &&
+      executeQueueItemNow(item, {executionSource: "immediate"});
+    return {mode, executed};
   };
 
   const isCurrentPlayerTurn = () => {
@@ -2641,6 +2985,286 @@
 
   const isTakeNextActionPhase = () => Boolean(currentActionPromptText());
 
+  const hasEnabledExactPassOption = () => {
+    const labels = Array.from(
+      getActionsBlock()?.querySelectorAll("label.form-radio") ?? [],
+    );
+    const radios = labels
+      .filter((label) => {
+        const text = cleanText(
+          label.querySelector("span")?.textContent ?? label.textContent ?? "",
+        );
+        return text === "Pass for this generation";
+      })
+      .map((label) => label.querySelector("input[type='radio']"))
+      .filter((radio) => radio && !radio.disabled);
+    return radios.length === 1;
+  };
+
+  const isWorldGovernmentTerraformingPrompt = () => {
+    if (
+      playerInputModelTitle(latestPlayerView?.waitingFor) ===
+      worldGovernmentTerraformingPrompt
+    ) {
+      return true;
+    }
+    const labels = Array.from(
+      getActionsBlock()?.querySelectorAll(".wf-options > label") ?? [],
+    );
+    return labels.some(
+      (label) =>
+        cleanText(label.textContent ?? "") === worldGovernmentTerraformingPrompt,
+    );
+  };
+
+  const isFinalGreeneryPlacementPrompt = () => {
+    if (
+      playerInputModelTitle(latestPlayerView?.waitingFor) ===
+      finalGreeneryPlacementPrompt
+    ) {
+      return true;
+    }
+    const labels = Array.from(
+      getActionsBlock()?.querySelectorAll(".wf-options > label") ?? [],
+    );
+    return labels.some(
+      (label) =>
+        cleanText(label.textContent ?? "") === finalGreeneryPlacementPrompt,
+    );
+  };
+
+  const renderedSelectSpaceTitle = (workflow) => {
+    const clone = workflow?.cloneNode?.(true);
+    if (!clone) return "";
+    for (const link of clone.querySelectorAll("a")) {
+      link.remove();
+    }
+    return cleanText(clone.textContent ?? "");
+  };
+
+  const isWorldGovernmentOceanPlacementPrompt = () => {
+    if (
+      playerInputModelTitle(latestPlayerView?.waitingFor) ===
+      worldGovernmentOceanPlacementPrompt
+    ) {
+      return true;
+    }
+    const workflows = Array.from(
+      getActionsBlock()?.querySelectorAll(".wf-select-space") ?? [],
+    );
+    return workflows.some(
+      (workflow) =>
+        renderedSelectSpaceTitle(workflow) ===
+        worldGovernmentOceanPlacementPrompt,
+    );
+  };
+
+  const worldGovernmentOceanPlacementSpaces = () =>
+    Array.from(
+      document.querySelectorAll(
+        "#main_board > .board-space.board-space--available",
+      ),
+    ).filter((space) => space.querySelector(".board-space-type-ocean"));
+
+  const isResearchCardPurchaseTitle = (value) => {
+    const title = cleanText(String(value ?? ""));
+    return (
+      title === "Select card(s) to buy" ||
+      /^Select up to \d+ card\(s\) to buy$/.test(title)
+    );
+  };
+
+  const isResearchCardPurchasePrompt = () => {
+    if (isResearchCardPurchaseTitle(playerInputModelTitle(latestPlayerView?.waitingFor))) {
+      return true;
+    }
+    const titles = Array.from(
+      getActionsBlock()?.querySelectorAll(
+        ".wf-component--select-card .wf-component-title",
+      ) ?? [],
+    );
+    return titles.some((title) =>
+      isResearchCardPurchaseTitle(title.textContent ?? ""),
+    );
+  };
+
+  const isBuyEverythingPurchaseTitle = (value) =>
+    isResearchCardPurchaseTitle(value) ||
+    cleanText(String(value ?? "")) === "You cannot afford any cards";
+
+  const isBuyEverythingPurchasePrompt = () => {
+    if (isBuyEverythingPurchaseTitle(playerInputModelTitle(latestPlayerView?.waitingFor))) {
+      return true;
+    }
+    const titles = Array.from(
+      getActionsBlock()?.querySelectorAll(
+        ".wf-component--select-card .wf-component-title",
+      ) ?? [],
+    );
+    return titles.some((title) =>
+      isBuyEverythingPurchaseTitle(title.textContent ?? ""),
+    );
+  };
+
+  const isBuyEverythingPurchasePaymentTitle = (value) =>
+    /^Select how to spend \d+ M€ for \d+ cards$/.test(
+      cleanText(String(value ?? "")),
+    );
+
+  const isBuyEverythingPurchasePaymentPrompt = () => {
+    if (
+      isBuyEverythingPurchasePaymentTitle(
+        playerInputModelTitle(latestPlayerView?.waitingFor),
+      )
+    ) {
+      return true;
+    }
+    const titles = Array.from(
+      getActionsBlock()?.querySelectorAll(".payments_cont .payments_title") ?? [],
+    );
+    return titles.some((title) =>
+      isBuyEverythingPurchasePaymentTitle(title.textContent ?? ""),
+    );
+  };
+
+  const baseGlobalContributionColumns = [
+    {
+      key: "temperature",
+      title: "Temperature contributions",
+      iconClass: "tile temperature-tile",
+    },
+    {
+      key: "oxygen",
+      title: "Oxygen contributions",
+      iconClass: "tile oxygen-tile",
+    },
+    {
+      key: "oceans",
+      title: "Ocean contributions",
+      iconClass: "tile ocean-tile",
+    },
+  ];
+  const venusGlobalContributionColumn = {
+    key: "venus",
+    title: "Venus contributions",
+    iconClass: "tile venus-tile",
+  };
+  const moonGlobalContributionColumns = [
+    {
+      key: "moon-habitat",
+      title: "Moon habitat contributions",
+      iconClass: "table-moon-colony-tile",
+    },
+    {
+      key: "moon-logistic",
+      title: "Moon logistics contributions",
+      iconClass: "table-moon-road-tile",
+    },
+    {
+      key: "moon-mining",
+      title: "Moon mining contributions",
+      iconClass: "table-moon-mine-tile",
+    },
+  ];
+  const greeneryTileTypes = new Set([0, 36]);
+  const cityTileTypes = new Set([2, 3, 20, 37, 43]);
+
+  const globalContributionColumnsForGame = (game) => {
+    const columns = [...baseGlobalContributionColumns];
+    const expansions = game?.gameOptions?.expansions;
+    if (expansions?.venus === true) {
+      columns.push(venusGlobalContributionColumn);
+    }
+    if (expansions?.moon === true) {
+      columns.push(...moonGlobalContributionColumns);
+    }
+    return columns;
+  };
+
+  const playerGlobalContributionData = (player, columns) => {
+    const steps = player?.globalParameterSteps;
+    if (!isPlainObject(steps) || Object.keys(steps).length === 0) {
+      return { values: columns.map(() => null), total: null };
+    }
+
+    const values = columns.map((column) => {
+      const value = Number(steps[column.key] ?? 0);
+      return Number.isFinite(value) ? value : null;
+    });
+    const total = values.every((value) => value !== null)
+      ? values.reduce((sum, value) => sum + value, 0)
+      : null;
+    return { values, total };
+  };
+
+  const boardSpaceCoordinateKey = (x, y) => `${x},${y}`;
+
+  const adjacentBoardSpaceCoordinates = (space, maxY) => {
+    if (
+      space?.spaceType === "colony" ||
+      !Number.isFinite(space?.x) ||
+      !Number.isFinite(space?.y) ||
+      !Number.isFinite(maxY)
+    ) {
+      return [];
+    }
+
+    const middleRow = maxY / 2;
+    const left = [space.x - 1, space.y];
+    const right = [space.x + 1, space.y];
+    const topLeft = [space.x, space.y - 1];
+    const topRight = [space.x, space.y - 1];
+    const bottomLeft = [space.x, space.y + 1];
+    const bottomRight = [space.x, space.y + 1];
+    if (space.y < middleRow) {
+      bottomLeft[0] -= 1;
+      topRight[0] += 1;
+    } else if (space.y === middleRow) {
+      bottomRight[0] += 1;
+      topRight[0] += 1;
+    } else {
+      bottomRight[0] += 1;
+      topLeft[0] -= 1;
+    }
+    return [topLeft, topRight, right, bottomRight, bottomLeft, left];
+  };
+
+  const spaceOwnedByColor = (space, color) =>
+    Boolean(color) && (space?.color === color || space?.coOwner === color);
+
+  const boardVictoryPointsForColor = (spaces, color) => {
+    if (!Array.isArray(spaces) || !color) return null;
+    const boardSpaces = spaces.filter(
+      (space) =>
+        space?.spaceType !== "colony" &&
+        Number.isFinite(space?.x) &&
+        Number.isFinite(space?.y),
+    );
+    if (boardSpaces.length === 0) return null;
+
+    const maxY = Math.max(...boardSpaces.map((space) => space.y));
+    const spacesByCoordinate = new Map(
+      boardSpaces.map((space) => [boardSpaceCoordinateKey(space.x, space.y), space]),
+    );
+    const greenery = boardSpaces.filter(
+      (space) =>
+        greeneryTileTypes.has(Number(space.tileType)) && spaceOwnedByColor(space, color),
+    ).length;
+    let city = 0;
+    for (const space of boardSpaces) {
+      if (!cityTileTypes.has(Number(space.tileType)) || !spaceOwnedByColor(space, color)) {
+        continue;
+      }
+      for (const [x, y] of adjacentBoardSpaceCoordinates(space, maxY)) {
+        const adjacentSpace = spacesByCoordinate.get(boardSpaceCoordinateKey(x, y));
+        if (greeneryTileTypes.has(Number(adjacentSpace?.tileType))) {
+          city += 1;
+        }
+      }
+    }
+    return { greenery, city };
+  };
+
   const timeWarpCss = () => `
     #${timeWarpPanelId} {
       background: #2f2f2f;
@@ -2693,6 +3317,15 @@
       gap: 8px;
       justify-content: flex-start;
     }
+    #${timeWarpPanelId} .tfmars420-queue-icon-button {
+      align-items: center;
+      display: inline-flex;
+      flex: 0 0 28px;
+      height: 28px;
+      justify-content: center;
+      padding: 4px;
+      width: 28px;
+    }
     #${timeWarpPanelId} .tfmars420-queue-label {
       min-width: 0;
       overflow-wrap: anywhere;
@@ -2708,6 +3341,64 @@
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 8px;
+    }
+    #${timeWarpPanelId} .tfmars420-autoprocess {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      width: fit-content;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      margin-top: 12px;
+      padding-top: 10px;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-scroll {
+      max-width: 100%;
+      overflow-x: auto;
+      width: fit-content;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-table {
+      border-collapse: collapse;
+      font-size: 13px;
+      table-layout: auto;
+      width: max-content;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-table th,
+    #${timeWarpPanelId} .tfmars420-live-scores-table td {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 5px 7px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-table th {
+      background: rgba(0, 0, 0, 0.28);
+      height: 34px;
+      vertical-align: middle;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-table th:first-child,
+    #${timeWarpPanelId} .tfmars420-live-scores-table td:first-child {
+      font-weight: 700;
+      text-align: left;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-table .tfmars420-score-total-heading {
+      font-size: 26px;
+      line-height: 1;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-table .tfmars420-score-total,
+    #${timeWarpPanelId} .tfmars420-live-scores-table .tfmars420-score-board-vp {
+      font-weight: 700;
+    }
+    #${timeWarpPanelId} .tfmars420-live-scores-table .tile,
+    #${timeWarpPanelId} .tfmars420-live-scores-table .card-delegate,
+    #${timeWarpPanelId} .tfmars420-live-scores-table .table-moon-colony-tile,
+    #${timeWarpPanelId} .tfmars420-live-scores-table .table-moon-road-tile,
+    #${timeWarpPanelId} .tfmars420-live-scores-table .table-moon-mine-tile {
+      display: inline-block;
+      margin: 0 auto;
+      vertical-align: middle;
     }
     #${timeWarpPanelId} .tfmars420-radio-option-index {
       background: #fff;
@@ -2766,6 +3457,20 @@
       width: 112px;
       max-width: calc(50% - 4px);
     }
+    .tfmars420-enqueue-tools .tfmars420-quick-choice-list {
+      display: flex;
+      flex: 1 0 100%;
+      flex-direction: column;
+      gap: 5px;
+      order: 2;
+      width: 100%;
+    }
+    .tfmars420-enqueue-tools .tfmars420-quick-choice-button {
+      max-width: calc(100% - 20px);
+      text-transform: none;
+      white-space: normal;
+      width: auto;
+    }
     .tfmars420-card-tools button:hover:not(:disabled),
     .tfmars420-enqueue-tools button:hover:not(:disabled) {
       background: #6d8bd0;
@@ -2815,6 +3520,109 @@
     } else {
       actionsBlock.prepend(panel);
     }
+  };
+
+  const createQueueIconButton = (className, iconClassName, title) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `${className} tfmars420-queue-icon-button`;
+    button.title = title;
+    button.setAttribute("aria-label", title);
+
+    const icon = document.createElement("span");
+    icon.className = `icon ${iconClassName}`;
+    icon.setAttribute("aria-hidden", "true");
+    button.append(icon);
+    return button;
+  };
+
+  const liveScoreText = (value) =>
+    typeof value === "number" && Number.isFinite(value) ? String(value) : "—";
+
+  const createLiveScoreHeaderCell = (title, iconClass = "") => {
+    const header = document.createElement("th");
+    header.scope = "col";
+    header.title = title;
+    header.setAttribute("aria-label", title);
+    if (!iconClass) {
+      header.textContent = title;
+      return header;
+    }
+
+    const icon = document.createElement("div");
+    icon.className = iconClass;
+    icon.setAttribute("aria-hidden", "true");
+    header.append(icon);
+    return header;
+  };
+
+  const renderLiveScoreTable = (playerView) => {
+    const players = Array.isArray(playerView?.players) ? playerView.players : [];
+    if (players.length === 0) return null;
+
+    const contributionColumns = globalContributionColumnsForGame(playerView.game);
+    const section = document.createElement("section");
+    section.className = "tfmars420-live-scores";
+
+    const scroller = document.createElement("div");
+    scroller.className = "tfmars420-live-scores-scroll";
+    const table = document.createElement("table");
+    table.className = "tfmars420-live-scores-table";
+
+    const head = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    headerRow.append(createLiveScoreHeaderCell("Player", "card-delegate"));
+    for (const column of contributionColumns) {
+      headerRow.append(createLiveScoreHeaderCell(column.title, column.iconClass));
+    }
+    const totalHeader = createLiveScoreHeaderCell("Contribution total");
+    totalHeader.className = "tfmars420-score-total-heading";
+    totalHeader.textContent = "Σ";
+    headerRow.append(
+      totalHeader,
+      createLiveScoreHeaderCell("Greenery VP", "tile greenery-no-O2-tile"),
+      createLiveScoreHeaderCell("City VP", "tile city-tile"),
+    );
+    head.append(headerRow);
+
+    const body = document.createElement("tbody");
+    for (const player of players) {
+      const row = document.createElement("tr");
+      const color = String(player?.color ?? "");
+      if (/^[a-z][a-z0-9-]*$/i.test(color)) {
+        row.classList.add(`player_translucent_bg_color_${color}`);
+      }
+
+      const playerCell = document.createElement("td");
+      playerCell.textContent = cleanText(player?.name ?? "") || color || "Player";
+      row.append(playerCell);
+
+      const contributions = playerGlobalContributionData(player, contributionColumns);
+      for (const value of contributions.values) {
+        const cell = document.createElement("td");
+        cell.textContent = liveScoreText(value);
+        row.append(cell);
+      }
+
+      const totalCell = document.createElement("td");
+      totalCell.className = "tfmars420-score-total";
+      totalCell.textContent = liveScoreText(contributions.total);
+
+      const boardPoints = boardVictoryPointsForColor(playerView.game?.spaces, player?.color);
+      const greeneryCell = document.createElement("td");
+      greeneryCell.className = "tfmars420-score-board-vp";
+      greeneryCell.textContent = liveScoreText(boardPoints?.greenery);
+      const cityCell = document.createElement("td");
+      cityCell.className = "tfmars420-score-board-vp";
+      cityCell.textContent = liveScoreText(boardPoints?.city);
+      row.append(totalCell, greeneryCell, cityCell);
+      body.append(row);
+    }
+
+    table.append(head, body);
+    scroller.append(table);
+    section.append(scroller);
+    return section;
   };
 
   const renderQueuePanel = () => {
@@ -2876,24 +3684,59 @@
         label.className = "tfmars420-queue-label";
         label.textContent = `${index + 1}. ${queueItemLabel(item)}`;
 
-        const remove = document.createElement("button");
-        remove.type = "button";
-        remove.className = "tfmars420-queue-remove";
-        remove.textContent = "❌";
-        remove.title = "Remove from queue";
-        remove.setAttribute("aria-label", "Remove from queue");
+        const remove = createQueueIconButton(
+          "tfmars420-queue-remove",
+          "icon-cross",
+          "Remove from queue",
+        );
+        remove.disabled = queueExecutionInFlight;
         remove.addEventListener("click", () => {
+          auditLog("user.queue.remove", {
+            index,
+            itemType: item?.type ?? "unknown",
+            label: queueItemLabel(item),
+          });
           updateQueueSession((draft) => {
             draft.queue.splice(index, 1);
             return draft;
           });
         });
 
-        row.append(remove, label);
+        const execute = createQueueIconButton(
+          "tfmars420-queue-execute",
+          "icon-check",
+          "Execute queued action",
+        );
+        execute.disabled = !canExecuteQueuedItemNow(item);
+        execute.addEventListener("click", () => {
+          auditLog("user.queue.execute", {
+            index,
+            itemType: item?.type ?? "unknown",
+            label: queueItemLabel(item),
+          });
+          executeQueuedActionAt(index, { manual: true });
+        });
+
+        row.append(remove, execute, label);
         list.append(row);
       });
       panel.append(list);
     }
+
+    const autoProcessLabel = document.createElement("label");
+    autoProcessLabel.className = "tfmars420-autoprocess";
+    const autoProcessInput = document.createElement("input");
+    autoProcessInput.type = "checkbox";
+    autoProcessInput.checked = session.autoProcess;
+    autoProcessInput.addEventListener("change", () => {
+      auditLog("user.queue.autoprocess", { enabled: autoProcessInput.checked });
+      updateQueueSession((draft) => {
+        draft.autoProcess = autoProcessInput.checked;
+        return draft;
+      });
+    });
+    autoProcessLabel.append(autoProcessInput, document.createTextNode("autoprocess queue"));
+    panel.append(autoProcessLabel);
 
     const actions = document.createElement("div");
     actions.className = "tfmars420-queue-actions";
@@ -2903,15 +3746,21 @@
     passButton.type = "button";
     passButton.textContent = passQueued ? "Dequeue Pass" : "Enqueue Pass";
     passButton.addEventListener("click", () => {
-      updateQueueSession((draft) => {
-        const passIndex = draft.queue.findIndex((item) => item?.type === "pass");
-        if (passIndex >= 0) {
-          draft.queue.splice(passIndex, 1);
+      const currentSession = readQueueSession();
+      const passIndex = currentSession?.queue.findIndex((item) => item?.type === "pass") ?? -1;
+      if (passIndex >= 0) {
+        auditLog("user.queue.pass.dequeue", { index: passIndex });
+        updateQueueSession((draft) => {
+          const currentPassIndex = draft.queue.findIndex((item) => item?.type === "pass");
+          if (currentPassIndex >= 0) {
+            draft.queue.splice(currentPassIndex, 1);
+          }
           return draft;
-        }
-        draft.queue.push({ type: "pass", label: "<pass>" });
-        return draft;
-      });
+        });
+        return;
+      }
+      auditLog("user.queue.pass.enqueue", {});
+      enqueueOrExecuteNow({ type: "pass", label: "<pass>" });
     });
 
     const clearButton = document.createElement("button");
@@ -2919,6 +3768,7 @@
     clearButton.textContent = "Clear queue";
     clearButton.disabled = session.queue.length === 0;
     clearButton.addEventListener("click", () => {
+      auditLog("user.queue.clear", { queueLength: session.queue.length });
       updateQueueSession((draft) => {
         draft.queue = [];
         return draft;
@@ -2933,7 +3783,10 @@
     optionIndexInput.value = "1";
     optionIndexInput.title = "1-based radio option index";
     optionIndexInput.setAttribute("aria-label", "Radio option index");
-    optionIndexInput.addEventListener("input", () => optionIndexInput.setCustomValidity(""));
+    optionIndexInput.addEventListener("input", () => {
+      auditLog("user.queue.option.input", { optionIndex: optionIndexInput.value });
+      optionIndexInput.setCustomValidity("");
+    });
 
     const optionIndexButton = document.createElement("button");
     optionIndexButton.type = "button";
@@ -2941,18 +3794,59 @@
     optionIndexButton.addEventListener("click", () => {
       const optionIndex = optionIndexInput.valueAsNumber;
       if (!Number.isInteger(optionIndex) || optionIndex < 1) {
+        auditLog("user.queue.option.reject", { optionIndex: optionIndexInput.value });
         optionIndexInput.setCustomValidity("Enter an option index of 1 or greater.");
         optionIndexInput.reportValidity();
         return;
       }
-      updateQueueSession((draft) => {
-        draft.queue.push({ type: "radioOption", optionIndex });
-        return draft;
-      });
+      auditLog("user.queue.option.enqueue", { optionIndex });
+      enqueueOrExecuteNow({ type: "radioOption", optionIndex });
     });
 
     actions.append(passButton, clearButton, optionIndexInput, optionIndexButton);
     panel.append(actions);
+
+    const autopilotActions = document.createElement("div");
+    autopilotActions.className = "tfmars420-queue-actions";
+
+    const autopilotButton = document.createElement("button");
+    autopilotButton.type = "button";
+    autopilotButton.textContent = "enqueue autopilot";
+
+    const autopilotModeSelect = document.createElement("select");
+    autopilotModeSelect.setAttribute("aria-label", "Autopilot mode");
+    const escapeOption = document.createElement("option");
+    escapeOption.value = "escape";
+    escapeOption.textContent = "escape";
+    const energyOption = document.createElement("option");
+    energyOption.value = "gotALottaEnergy";
+    energyOption.textContent = "got a lotta energy";
+    const buyEverythingOption = document.createElement("option");
+    buyEverythingOption.value = "buyEverything";
+    buyEverythingOption.textContent = "buy everything";
+    autopilotModeSelect.append(escapeOption, energyOption, buyEverythingOption);
+    autopilotModeSelect.value = session.autopilotMode;
+    autopilotModeSelect.addEventListener("change", () => {
+      const mode = normalizeAutopilotMode(autopilotModeSelect.value);
+      auditLog("user.queue.autopilot.mode", { mode });
+      updateQueueSession((draft) => {
+        draft.autopilotMode = mode;
+        return draft;
+      });
+    });
+
+    autopilotButton.addEventListener("click", () => {
+      const {mode, executed} = enqueueAutopilot(autopilotModeSelect.value);
+      auditLog("user.queue.autopilot.enqueue", {mode, executed});
+    });
+
+    autopilotActions.append(autopilotButton, autopilotModeSelect);
+    panel.append(autopilotActions);
+
+    const liveScoreTable = renderLiveScoreTable(latestPlayerView);
+    if (liveScoreTable) {
+      panel.append(liveScoreTable);
+    }
   };
 
   const queuedProjectMoneyCost = (queue) =>
@@ -2980,6 +3874,12 @@
     if (item?.type === "playedAction") return queueCardName(item.cardName, "played action");
     if (item?.type === "radioOption") return `radio option ${item.optionIndex}`;
     if (item?.type === "cardTarget") return `target: ${queueCardName(item.cardName, "played card")}`;
+    if (item?.type === "autopilot") return `autopilot: ${autopilotModeLabel(item.mode)}`;
+    if (item?.type === "quickChoice") {
+      const optionText = cleanText(String(item.optionText ?? "")) || "remembered choice";
+      const targetCardText = cleanText(String(item.targetCardText ?? ""));
+      return `quick: ${optionText}${targetCardText ? ` → ${targetCardText}` : ""}`;
+    }
     return "Unknown action";
   };
 
@@ -3009,14 +3909,104 @@
     return { name, slug, key };
   };
 
+  const exactRadioOptionText = (radio) => {
+    const label = radio?.closest?.("label.form-radio");
+    return cleanText(label?.querySelector?.("span")?.textContent ?? label?.textContent ?? "");
+  };
+
+  const selectedQuickChoiceTarget = (radio) => {
+    const optionContainer = radio?.closest?.("label.form-radio")?.parentElement;
+    const cardWorkflow = optionContainer?.querySelector?.(".wf-component--select-card");
+    if (!cardWorkflow) return { hasCardWorkflow: false, targetCardText: "" };
+    const selectedInputs = Array.from(
+      cardWorkflow.querySelectorAll(
+        "input[type='radio']:checked, input[type='checkbox']:checked",
+      ),
+    ).filter((input) => !input.disabled);
+    if (selectedInputs.length !== 1) return null;
+    const cardBox = selectedInputs[0].closest?.(".cardbox");
+    const targetCardText = cleanText(getCardIdentity(cardBox).name);
+    if (!cardBox || !targetCardText || targetCardText === "Card") return null;
+    return { hasCardWorkflow: true, targetCardText };
+  };
+
+  const handleRememberedQuickChoiceSubmit = (event) => {
+    if (!armedPlayedActionLearning || quickChoicePlaybackActive || event.isTrusted !== true) {
+      return false;
+    }
+    const target = event.target instanceof Element ? event.target : null;
+    const submit = target?.closest?.("button.btn-submit, input.btn-submit");
+    const actionsBlock = getActionsBlock();
+    if (!submit || submit.disabled || !actionsBlock?.contains?.(submit)) return false;
+
+    const actionsRoot = actionsBlock.querySelector(".wf-root, form") ?? actionsBlock;
+    const outerOptions = actionsRoot.querySelector(".wf-options");
+    const checkedRadios = Array.from(
+      outerOptions?.querySelectorAll("label.form-radio input[type='radio']:checked") ?? [],
+    ).filter(
+      (radio) => !radio.disabled && radio.closest?.(".wf-options") === outerOptions,
+    );
+    const learning = armedPlayedActionLearning;
+    clearPlayedActionLearning();
+    if (checkedRadios.length !== 1) return false;
+
+    const optionText = exactRadioOptionText(checkedRadios[0]);
+    const selectedTarget = selectedQuickChoiceTarget(checkedRadios[0]);
+    if (!optionText || !selectedTarget) return false;
+    const choice = {
+      optionText,
+      ...(selectedTarget.hasCardWorkflow
+        ? { targetCardText: selectedTarget.targetCardText }
+        : {}),
+    };
+    let learned = false;
+    updateQueueSession((draft) => {
+      learned = rememberQuickChoice(draft, learning.cardKey, choice);
+      return draft;
+    });
+    if (learned) {
+      auditLog("user.card.quick-choice.learn", {
+        cardName: learning.cardName,
+        optionText,
+        hasTarget: selectedTarget.hasCardWorkflow,
+      });
+    }
+    return learned;
+  };
+
+  const startRememberedQuickChoiceListener = () => {
+    if (document.__tfmars420RememberedQuickChoiceListenerAttached) return;
+    document.__tfmars420RememberedQuickChoiceListenerAttached = true;
+    document.addEventListener("click", handleRememberedQuickChoiceSubmit, true);
+  };
+
+  const queuedCardMatches = (item, type, identity) =>
+    item?.type === type &&
+    (item.cardKey === identity.key ||
+      (item.cardSlug && item.cardSlug === identity.slug) ||
+      normalizeCardName(item.cardName) === normalizeCardName(identity.name));
+
   const findQueuedCardPosition = (queue, type, identity) =>
-    queue.findIndex(
-      (item) =>
-        item?.type === type &&
-        (item.cardKey === identity.key ||
-          (item.cardSlug && item.cardSlug === identity.slug) ||
-          normalizeCardName(item.cardName) === normalizeCardName(identity.name)),
-    ) + 1;
+    queue.findIndex((item) => queuedCardMatches(item, type, identity)) + 1;
+
+  const countQueuedCards = (queue, type, identity) =>
+    queue.filter((item) => queuedCardMatches(item, type, identity)).length;
+
+  const latestQueuedPlayedActionMatches = (queue, identity) =>
+    Array.isArray(queue) &&
+    queue.length > 0 &&
+    queuedCardMatches(queue[queue.length - 1], "playedAction", identity);
+
+  const rememberedQuickChoicesForCard = (session, identity) =>
+    normalizeRememberedQuickChoices(session?.rememberedQuickChoices)[identity.key] ?? [];
+
+  const targetQueueButtonPresentation = (count) => {
+    const stars = "*".repeat(count);
+    return {
+      text: `enqueue\ntarget${stars ? ` ${stars}` : ""}`,
+      title: count > 0 ? `Enqueue target (${count} queued)` : "Enqueue target",
+    };
+  };
 
   const removeQueuedCard = (draft, type, identity) => {
     const index = findQueuedCardPosition(draft.queue, type, identity) - 1;
@@ -3030,6 +4020,229 @@
   const setButtonText = (button, text) => {
     if (button.textContent !== text) {
       button.textContent = text;
+    }
+  };
+
+  const compareHandServerOrder = (left, right) => {
+    const leftServerIndex = Number.isFinite(left.serverIndex)
+      ? left.serverIndex
+      : Number.MAX_SAFE_INTEGER;
+    const rightServerIndex = Number.isFinite(right.serverIndex)
+      ? right.serverIndex
+      : Number.MAX_SAFE_INTEGER;
+    if (leftServerIndex !== rightServerIndex) {
+      return leftServerIndex - rightServerIndex;
+    }
+    return left.domIndex - right.domIndex;
+  };
+
+  const sortHandCardEntries = (cards, handSortMode) => {
+    const serverOrdered = [...cards].sort(compareHandServerOrder);
+    const mode = normalizeHandSortMode(handSortMode);
+    if (mode === "server") return serverOrdered;
+    if (mode === null) {
+      return [...serverOrdered].sort((left, right) => {
+        const leftHasCost = Number.isFinite(left.cost);
+        const rightHasCost = Number.isFinite(right.cost);
+        if (leftHasCost !== rightHasCost) return leftHasCost ? -1 : 1;
+        if (leftHasCost && left.cost !== right.cost) return left.cost - right.cost;
+        return compareHandServerOrder(left, right);
+      });
+    }
+
+    const ordered = [];
+    let remaining = serverOrdered;
+    const appendTagGroup = (tagType) => {
+      const matching = [];
+      const rest = [];
+      remaining.forEach((card) => {
+        if (card.tags.includes(tagType)) {
+          matching.push(card);
+        } else {
+          rest.push(card);
+        }
+      });
+      ordered.push(...matching);
+      remaining = rest;
+    };
+
+    appendTagGroup(mode);
+    while (remaining.length > 0) {
+      const counts = new Map();
+      remaining.forEach((card) => {
+        new Set(card.tags).forEach((tagType) => {
+          counts.set(tagType, (counts.get(tagType) ?? 0) + 1);
+        });
+      });
+      if (counts.size === 0) break;
+      const nextTag = [...counts.entries()].sort(
+        ([leftTag, leftCount], [rightTag, rightCount]) =>
+          rightCount - leftCount || leftTag.localeCompare(rightTag),
+      )[0][0];
+      appendTagGroup(nextTag);
+    }
+    ordered.push(...remaining);
+    return ordered;
+  };
+
+  const handSortableContainer = () =>
+    document.querySelector("#shortkey-hand .sortable-cards");
+
+  const handleGlobalHandTagClick = (event) => {
+    if (!shouldRunTerraformingMarsHelpers()) return false;
+    const tagType = terraformingMarsTagTypeFromElement(event.target);
+    if (!tagType || !handSortableContainer()) return false;
+    const session = readQueueSession();
+    if (!session) return false;
+    const handSortMode = nextHandSortModeForTag(session.handSortMode, tagType);
+    event.preventDefault();
+    event.stopPropagation();
+    auditLog("user.hand.sort", { trigger: "tag", tagType, handSortMode });
+    updateQueueSession((draft) => {
+      draft.handSortMode = handSortMode;
+      return draft;
+    });
+    return true;
+  };
+
+  const startGlobalHandTagClickListener = () => {
+    if (document.__tfmars420GlobalHandTagClickAttached) return;
+    document.__tfmars420GlobalHandTagClickAttached = true;
+    document.addEventListener("click", handleGlobalHandTagClick, true);
+  };
+
+  const playerViewHandCards = () =>
+    ["preludeCardsInHand", "ceoCardsInHand", "cardsInHand"].flatMap((key) =>
+      Array.isArray(latestPlayerView?.[key]) ? latestPlayerView[key] : [],
+    );
+
+  const playerViewCardMatchesIdentity = (card, identity) => {
+    const name = card?.name ?? card?.cardName ?? card?.title ?? "";
+    return (
+      normalizeCardName(name) === normalizeCardName(identity.name) ||
+      slugifyCardName(name) === identity.slug
+    );
+  };
+
+  const handCardTagTypes = (cardBox) => {
+    const tags = new Set();
+    cardBox
+      .querySelectorAll(".card-cost-and-tags > .card-tags > .card-tag")
+      .forEach((tagElement) => {
+        const tagType = terraformingMarsTagTypeFromElement(tagElement);
+        if (tagType) tags.add(tagType);
+      });
+    if (cardBox.querySelector(".card-title.background-color-events")) {
+      tags.add("event");
+    }
+    return [...tags];
+  };
+
+  const visibleAdjustedHandCardCost = (cardBox) => {
+    const element = cardBox.querySelector(".card-cost-and-tags .card-old-cost");
+    if (!element || element.classList.contains("visibility-hidden")) return null;
+    const style = window.getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    if (
+      style.display === "none" ||
+      style.visibility === "hidden" ||
+      rect.width <= 0 ||
+      rect.height <= 0
+    ) {
+      return null;
+    }
+    const value = Number(cleanText(element.textContent ?? "").match(/-?\d+/)?.[0]);
+    return Number.isFinite(value) && value >= 0 ? value : null;
+  };
+
+  const handCardCost = (cardBox, playerViewCard) => {
+    const adjustedCost = visibleAdjustedHandCardCost(cardBox);
+    if (adjustedCost !== null) return adjustedCost;
+    const visibleCost = visibleCardMoneyCost(cardBox);
+    if (visibleCost !== null) return visibleCost;
+    for (const key of ["calculatedCost", "discountedCost", "cost", "moneyCost"]) {
+      const rawValue = playerViewCard?.[key];
+      if (rawValue === null || typeof rawValue === "undefined") continue;
+      const value = Number(rawValue);
+      if (Number.isFinite(value) && value >= 0) return value;
+    }
+    return null;
+  };
+
+  const collectHandCardEntries = (sortable) => {
+    const serverCards = playerViewHandCards();
+    const usedServerIndexes = new Set();
+    return Array.from(sortable.children).flatMap((wrapper, domIndex) => {
+      const cardBox = wrapper.classList.contains("cardbox")
+        ? wrapper
+        : wrapper.querySelector(":scope > .cardbox");
+      if (!cardBox) return [];
+      const identity = getCardIdentity(cardBox);
+      const serverIndex = serverCards.findIndex(
+        (card, index) =>
+          !usedServerIndexes.has(index) && playerViewCardMatchesIdentity(card, identity),
+      );
+      if (serverIndex >= 0) usedServerIndexes.add(serverIndex);
+      const playerViewCard = serverIndex >= 0 ? serverCards[serverIndex] : null;
+      return [
+        {
+          wrapper,
+          cardBox,
+          name: identity.name,
+          cost: handCardCost(cardBox, playerViewCard),
+          tags: handCardTagTypes(cardBox),
+          serverIndex: serverIndex >= 0 ? serverIndex : serverCards.length + domIndex,
+          domIndex,
+        },
+      ];
+    });
+  };
+
+  const handCostSortClickTarget = (target) => {
+    if (!(target instanceof Element)) return null;
+    return target.closest(
+      ".card-cost-and-tags .card-cost, .card-cost-and-tags .card-old-cost",
+    );
+  };
+
+  const ensureHandCostSortClickHandler = (sortable) => {
+    if (sortable.__tfmars420HandCostSortClickAttached) return;
+    sortable.__tfmars420HandCostSortClickAttached = true;
+    sortable.addEventListener(
+      "click",
+      (event) => {
+        if (!shouldRunTerraformingMarsHelpers()) return;
+        const costTarget = handCostSortClickTarget(event.target);
+        if (!costTarget || !sortable.contains(costTarget)) return;
+        const session = readQueueSession();
+        if (!session) return;
+        const handSortMode = nextHandSortModeForCost(session.handSortMode);
+        event.preventDefault();
+        event.stopPropagation();
+        auditLog("user.hand.sort", { trigger: "cost", handSortMode });
+        updateQueueSession((draft) => {
+          draft.handSortMode = handSortMode;
+          return draft;
+        });
+      },
+      true,
+    );
+  };
+
+  const renderHandSorting = (session) => {
+    const sortable = handSortableContainer();
+    if (!sortable) return;
+    ensureHandCostSortClickHandler(sortable);
+    const entries = collectHandCardEntries(sortable);
+    const orderedWrappers = sortHandCardEntries(entries, session.handSortMode).map(
+      (entry) => entry.wrapper,
+    );
+    const currentWrappers = entries.map((entry) => entry.wrapper);
+    if (
+      orderedWrappers.length === currentWrappers.length &&
+      orderedWrappers.some((wrapper, index) => wrapper !== currentWrappers[index])
+    ) {
+      sortable.append(...orderedWrappers);
     }
   };
 
@@ -3128,14 +4341,26 @@
       "click",
       (event) => {
         if (!shouldRunTerraformingMarsHelpers()) return;
-        if (event.target instanceof Element && event.target.closest(".tfmars420-card-tools")) {
+        if (
+          terraformingMarsTagTypeFromElement(event.target) ||
+          handCostSortClickTarget(event.target) ||
+          (event.target instanceof Element && event.target.closest(".tfmars420-card-tools"))
+        ) {
           return;
         }
         event.preventDefault();
         event.stopPropagation();
+        const session = readQueueSession();
+        if (!session) return;
+        const currentRank = session.cardRanks[identity.key] ?? "neutral";
+        const rank = nextCardRank(currentRank);
+        auditLog("user.card.rank", {
+          cardName: identity.name,
+          previousRank: currentRank,
+          rank,
+        });
         updateQueueSession((draft) => {
-          const currentRank = draft.cardRanks[identity.key] ?? "neutral";
-          return setCardRank(draft, identity, nextCardRank(currentRank));
+          return setCardRank(draft, identity, rank);
         });
       },
       true,
@@ -3159,7 +4384,7 @@
   const renderHandCardTools = () => {
     const session = readQueueSession();
     if (!session) return;
-    const alreadyPassed = hasCurrentPlayerPassed();
+    renderHandSorting(session);
 
     document.querySelectorAll(".player_home_block--hand .cardbox").forEach((cardBox) => {
       const identity = getCardIdentity(cardBox);
@@ -3168,11 +4393,6 @@
       ensureHandCardRankCycler(cardBox, identity);
 
       let tools = cardBox.querySelector(":scope > .tfmars420-card-tools");
-      if (alreadyPassed) {
-        tools?.remove();
-        return;
-      }
-
       if (!tools) {
         tools = document.createElement("div");
         tools.className = "tfmars420-card-tools";
@@ -3185,16 +4405,22 @@
         "tfmars420-project-queue-button",
         position ? "dequeue" : "enqueue",
         () => {
-          updateQueueSession((draft) => {
-            if (removeQueuedCard(draft, "projectCard", identity)) return draft;
-            draft.queue.push({
-              type: "projectCard",
-              cardName: identity.name,
-              cardSlug: identity.slug,
-              cardKey: identity.key,
-              cost: visibleProjectCost(cardBox, identity),
+          const currentSession = readQueueSession();
+          if (findQueuedCardPosition(currentSession?.queue ?? [], "projectCard", identity)) {
+            auditLog("user.card.project.dequeue", { cardName: identity.name });
+            updateQueueSession((draft) => {
+              removeQueuedCard(draft, "projectCard", identity);
+              return draft;
             });
-            return draft;
+            return;
+          }
+          auditLog("user.card.project.enqueue", { cardName: identity.name });
+          enqueueOrExecuteNow({
+            type: "projectCard",
+            cardName: identity.name,
+            cardSlug: identity.slug,
+            cardKey: identity.key,
+            cost: visibleProjectCost(cardBox, identity),
           });
         },
       );
@@ -3211,21 +4437,61 @@
   };
 
   const isEnqueueablePlayedCardTarget = (cardBox) =>
-    Boolean(
-      cardContainerFromBox(cardBox)?.querySelector(
-        ".card-title.is-corporation, .card-title.background-color-prelude, .card-title.background-color-active",
-      ),
-    );
+    Boolean(cardContainerFromBox(cardBox)?.querySelector(".card-resources-counter"));
+
+  const quickChoiceQueueItem = (choice) => ({
+    type: "quickChoice",
+    optionText: choice.optionText,
+    ...(choice.targetCardText ? { targetCardText: choice.targetCardText } : {}),
+  });
+
+  const renderRememberedQuickChoiceTools = (tools, session, identity) => {
+    tools.querySelector(":scope > .tfmars420-quick-choice-list")?.remove();
+    if (!latestQueuedPlayedActionMatches(session.queue, identity)) return;
+    const choices = rememberedQuickChoicesForCard(session, identity);
+    if (choices.length === 0) return;
+
+    const list = document.createElement("div");
+    list.className = "tfmars420-quick-choice-list";
+    for (const choice of choices) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "tfmars420-quick-choice-button";
+      button.textContent =
+        `quick: ${choice.optionText}` +
+        (choice.targetCardText ? ` → ${choice.targetCardText}` : "");
+      button.title = button.textContent;
+      button.addEventListener("click", () => {
+        const currentSession = readQueueSession();
+        if (!currentSession || !latestQueuedPlayedActionMatches(currentSession.queue, identity)) {
+          return;
+        }
+        const item = quickChoiceQueueItem(choice);
+        auditLog("user.card.quick-choice.enqueue", {
+          cardName: identity.name,
+          optionText: choice.optionText,
+          hasTarget: Boolean(choice.targetCardText),
+        });
+        updateQueueSession((draft) => {
+          if (latestQueuedPlayedActionMatches(draft.queue, identity)) {
+            draft.queue.push(item);
+          }
+          return draft;
+        });
+      });
+      list.append(button);
+    }
+    tools.append(list);
+  };
 
   const renderPlayedActionTools = () => {
     const session = readQueueSession();
     if (!session) return;
-    const alreadyPassed = hasCurrentPlayerPassed();
 
     document.querySelectorAll(".player_home_block--cards .cardbox").forEach((cardBox) => {
       const existingTools = cardBox.querySelector(":scope > .tfmars420-enqueue-tools");
-      const canQueueAction = !alreadyPassed && isUnusedPlayedActionCard(cardBox);
-      const canQueueTarget = !alreadyPassed && isEnqueueablePlayedCardTarget(cardBox);
+      const canQueueAction = isUnusedPlayedActionCard(cardBox);
+      const canQueueTarget = isEnqueueablePlayedCardTarget(cardBox);
       if (!canQueueAction && !canQueueTarget) {
         existingTools?.remove();
         return;
@@ -3248,15 +4514,21 @@
           "tfmars420-played-action-queue-button",
           actionPosition ? "dequeue\naction" : "enqueue\naction",
           () => {
-            updateQueueSession((draft) => {
-              if (removeQueuedCard(draft, "playedAction", identity)) return draft;
-              draft.queue.push({
-                type: "playedAction",
-                cardName: identity.name,
-                cardSlug: identity.slug,
-                cardKey: identity.key,
+            const currentSession = readQueueSession();
+            if (findQueuedCardPosition(currentSession?.queue ?? [], "playedAction", identity)) {
+              auditLog("user.card.action.dequeue", { cardName: identity.name });
+              updateQueueSession((draft) => {
+                removeQueuedCard(draft, "playedAction", identity);
+                return draft;
               });
-              return draft;
+              return;
+            }
+            auditLog("user.card.action.enqueue", { cardName: identity.name });
+            enqueueOrExecuteNow({
+              type: "playedAction",
+              cardName: identity.name,
+              cardSlug: identity.slug,
+              cardKey: identity.key,
             });
           },
         );
@@ -3268,29 +4540,32 @@
 
       const existingTargetButton = tools.querySelector(":scope > .tfmars420-played-target-queue-button");
       if (canQueueTarget) {
-        const targetPosition = findQueuedCardPosition(session.queue, "cardTarget", identity);
+        const targetCount = countQueuedCards(session.queue, "cardTarget", identity);
+        const targetPresentation = targetQueueButtonPresentation(targetCount);
         const targetButton = upsertCardToolButton(
           tools,
           "tfmars420-played-target-queue-button",
-          targetPosition ? "dequeue\ntarget" : "enqueue\ntarget",
+          targetPresentation.text,
           () => {
-            updateQueueSession((draft) => {
-              if (removeQueuedCard(draft, "cardTarget", identity)) return draft;
-              draft.queue.push({
-                type: "cardTarget",
-                cardName: identity.name,
-                cardSlug: identity.slug,
-                cardKey: identity.key,
-              });
-              return draft;
+            auditLog("user.card.target.enqueue", {
+              cardName: identity.name,
+              queuedBefore: targetCount,
+            });
+            enqueueOrExecuteNow({
+              type: "cardTarget",
+              cardName: identity.name,
+              cardSlug: identity.slug,
+              cardKey: identity.key,
             });
           },
         );
-        targetButton.classList.toggle("is-queued", Boolean(targetPosition));
-        targetButton.title = targetPosition ? "Dequeue target" : "Enqueue target";
+        targetButton.classList.remove("is-queued");
+        targetButton.title = targetPresentation.title;
       } else {
         existingTargetButton?.remove();
       }
+
+      renderRememberedQuickChoiceTools(tools, session, identity);
     });
   };
 
@@ -3309,6 +4584,8 @@
         renderHandCardTools();
         renderPlayedActionTools();
       }
+      maybeSelectNetworkDefaultPass();
+      maybeScrollToBottomForTurn();
       maybeExecuteQueuedAction();
     } catch (error) {
       console.error("[tfmars420] queue UI update failed", error);
@@ -3376,12 +4653,80 @@
     queueLogDiscoveryObserver.observe(target, { childList: true, subtree: true });
   };
 
-  const popNextQueuedAction = () => {
-    const session = readQueueSession();
-    if (!session || session.queue.length === 0) return null;
-    const [item] = session.queue.splice(0, 1);
-    writeQueueSession(session);
-    return item;
+  const isFollowUpQueueItem = (item) =>
+    item?.type === "radioOption" ||
+    item?.type === "cardTarget" ||
+    item?.type === "quickChoice";
+
+  const isPersistentQueueItem = (item) => item?.type === "autopilot";
+
+  const isEscapeFallbackAutopilotMode = (value) => {
+    const mode = normalizeAutopilotMode(value);
+    return mode === "escape" || mode === "buyEverything";
+  };
+
+  const isEscapeOceanPlacementQueueItemReady = (item) =>
+    item?.type === "autopilot" &&
+    isEscapeFallbackAutopilotMode(item.mode) &&
+    isWorldGovernmentOceanPlacementPrompt() &&
+    worldGovernmentOceanPlacementSpaces().length > 0;
+
+  const queueItemMatchesCurrentPrompt = (item) => {
+    if (!item) return false;
+    if (item.type === "autopilot") {
+      const mode = normalizeAutopilotMode(item.mode);
+      if (
+        isEscapeFallbackAutopilotMode(mode) &&
+        (isWorldGovernmentTerraformingPrompt() ||
+          isWorldGovernmentOceanPlacementPrompt() ||
+          isFinalGreeneryPlacementPrompt() ||
+          isResearchCardPurchasePrompt() ||
+          hasEnabledExactPassOption())
+      ) {
+        return true;
+      }
+      if (
+        mode === "buyEverything" &&
+        (isBuyEverythingPurchasePrompt() ||
+          isBuyEverythingPurchasePaymentPrompt())
+      ) {
+        return true;
+      }
+    }
+    return isFollowUpQueueItem(item) ? !isTakeNextActionPhase() : isTakeNextActionPhase();
+  };
+
+  const canExecuteQueuedItemNow = (item) => {
+    if (queueExecutionInFlight || !queueItemMatchesCurrentPrompt(item)) {
+      return false;
+    }
+    if (isEscapeOceanPlacementQueueItemReady(item)) {
+      return true;
+    }
+    return isCurrentPlayerTurn() && hasLiveActionForm();
+  };
+
+  const enqueueOrExecuteNow = (item) => {
+    if (executeQueueItemNow(item, { executionSource: "immediate" })) return true;
+    updateQueueSession((draft) => {
+      draft.queue.push(item);
+      return draft;
+    });
+    return false;
+  };
+
+  const removeQueuedItemAt = (queue, index) => {
+    if (!Array.isArray(queue) || !Number.isInteger(index) || index < 0 || index >= queue.length) {
+      return null;
+    }
+    const [item] = queue.splice(index, 1);
+    return item ?? null;
+  };
+
+  const restoreQueuedItemAt = (queue, index, item) => {
+    if (!Array.isArray(queue) || !item) return;
+    const restoredIndex = Math.max(0, Math.min(Number.isInteger(index) ? index : 0, queue.length));
+    queue.splice(restoredIndex, 0, item);
   };
 
   const clearQueuedActions = () => {
@@ -3391,10 +4736,111 @@
     writeQueueSession(session);
   };
 
+  const restoreQueuedAction = (item, index, playerId) => {
+    const session = readQueueSession();
+    if (!session || session.playerId !== playerId) return;
+    restoreQueuedItemAt(session.queue, index, item);
+    writeQueueSession(session);
+  };
+
+  const startQueueItemExecution = (
+    item,
+    { onFailure, executionSource = "automatic" } = {},
+  ) => {
+    if (queueExecutionInFlight) return false;
+
+    const auditDetails = {
+      executionSource,
+      itemType: item?.type ?? "unknown",
+      label: queueItemLabel(item),
+    };
+    auditLog("game.action.attempt", auditDetails);
+    if (item?.type === "playedAction") {
+      rememberPlayedActionForLearning(item);
+    } else if (isFollowUpQueueItem(item)) {
+      clearPlayedActionLearning();
+    }
+    queueExecutionAttempted = true;
+    queueExecutionInFlight = true;
+    queuePendingLogMutation = false;
+    queueExecutionError = "";
+    renderQueuePanel();
+    executeQueuedItem(item)
+      .then(() => {
+        auditLog("game.action.success", auditDetails);
+      })
+      .catch((error) => {
+        if (item?.type === "playedAction") {
+          clearPlayedActionLearning();
+        }
+        auditLog("game.action.failure", {
+          ...auditDetails,
+          error: String(error?.message ?? error),
+        });
+        queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
+        onFailure?.();
+      })
+      .finally(() => {
+        queueExecutionInFlight = false;
+        renderQueuePanel();
+        if (queuePendingLogMutation) {
+          queuePendingLogMutation = false;
+          queueExecutionAttempted = false;
+          window.setTimeout(() => {
+            scheduleTerraformingMarsUpdate();
+          }, 350);
+        }
+      });
+    return true;
+  };
+
+  const executeQueueItemNow = (item, { executionSource = "immediate" } = {}) => {
+    const session = readQueueSession();
+    if (!latestPlayerView?.id || session?.playerId !== latestPlayerView.id) {
+      return false;
+    }
+    if (!canExecuteQueuedItemNow(item)) return false;
+    return startQueueItemExecution(item, { executionSource });
+  };
+
+  const executeQueuedActionAt = (index, { manual = false, executionSource } = {}) => {
+    if (queueExecutionInFlight) return false;
+
+    const session = readQueueSession();
+    if (!latestPlayerView?.id || session?.playerId !== latestPlayerView.id) {
+      return false;
+    }
+    const item = session.queue[index];
+    if (!canExecuteQueuedItemNow(item)) return false;
+
+    if (isPersistentQueueItem(item)) {
+      return startQueueItemExecution(item, {
+        executionSource: executionSource ?? (manual ? "manual" : "automatic"),
+      });
+    }
+
+    removeQueuedItemAt(session.queue, index);
+    writeQueueSession(session);
+
+    return startQueueItemExecution(item, {
+      executionSource: executionSource ?? (manual ? "manual" : "automatic"),
+      onFailure: () => {
+        if (manual) {
+          restoreQueuedAction(item, index, session.playerId);
+          queueExecutionAttempted = false;
+        } else {
+          clearQueuedActions();
+        }
+      },
+    });
+  };
+
   const maybeExecuteQueuedAction = () => {
     if (!shouldRunTerraformingMarsHelpers()) return;
     const session = readQueueSession();
-    const nextItem = session?.queue?.[0];
+    if (session?.autoProcess !== true) {
+      return;
+    }
     if (queueExecutionAttempted) {
       return;
     }
@@ -3404,51 +4850,40 @@
     if (!latestPlayerView?.id || session?.playerId !== latestPlayerView.id) {
       return;
     }
-    if (hasCurrentPlayerPassed()) {
+    const item = session.queue[0];
+    const autopilotMode = normalizeAutopilotMode(item?.mode);
+    const allowedEscapeAfterPassing =
+      item?.type === "autopilot" &&
+      isEscapeFallbackAutopilotMode(item.mode) &&
+      (isWorldGovernmentTerraformingPrompt() ||
+        isWorldGovernmentOceanPlacementPrompt() ||
+        isFinalGreeneryPlacementPrompt() ||
+        isResearchCardPurchasePrompt() ||
+        (autopilotMode === "buyEverything" &&
+          (isBuyEverythingPurchasePrompt() ||
+            isBuyEverythingPurchasePaymentPrompt())));
+    if (hasCurrentPlayerPassed() && !allowedEscapeAfterPassing) {
       return;
     }
-    if (!isCurrentPlayerTurn() || !hasLiveActionForm()) {
-      return;
-    }
-    const isFollowUpItem = nextItem?.type === "radioOption" || nextItem?.type === "cardTarget";
-    if (isFollowUpItem && isTakeNextActionPhase()) {
-      return;
-    }
-    if (!isFollowUpItem && !isTakeNextActionPhase()) {
-      return;
-    }
-
-    const item = popNextQueuedAction();
-    if (!item) return;
-
-    queueExecutionAttempted = true;
-    queueExecutionInFlight = true;
-    queuePendingLogMutation = false;
-    queueExecutionError = "";
-    executeQueuedItem(item)
-      .then(() => {})
-      .catch((error) => {
-        queueExecutionError = `Could not execute ${queueItemLabel(item)}: ${error.message ?? error}`;
-        clearQueuedActions();
-        renderQueuePanel();
-      })
-      .finally(() => {
-        queueExecutionInFlight = false;
-        if (queuePendingLogMutation) {
-          queuePendingLogMutation = false;
-          queueExecutionAttempted = false;
-          window.setTimeout(() => {
-            scheduleTerraformingMarsUpdate();
-          }, 350);
-        }
-      });
+    executeQueuedActionAt(0);
   };
 
   const executeQueuedItem = async (item) => {
     if (item?.type === "pass") {
-      selectActionOption("Pass for this generation");
-      await nextFrame();
-      clickActionSubmit("Pass", ["Pass for this generation"]);
+      await executePassAction();
+      return;
+    }
+
+    if (item?.type === "autopilot") {
+      const mode = normalizeAutopilotMode(item.mode);
+      if (mode === "buyEverything") {
+        await executeBuyEverythingAutopilot();
+        return;
+      }
+      if (mode === "gotALottaEnergy" && (await tryExecutePowerPlantStandardProject())) {
+        return;
+      }
+      await executeEscapeAutopilot();
       return;
     }
 
@@ -3471,9 +4906,15 @@
     }
 
     if (item?.type === "radioOption") {
-      selectIndexedRadioOption(item.optionIndex);
+      const radio = selectIndexedRadioOption(item.optionIndex);
       await nextFrame();
+      if (selectedRadioOptionHasChildren(radio)) return;
       clickIndexedRadioSubmit();
+      return;
+    }
+
+    if (item?.type === "quickChoice") {
+      await executeRememberedQuickChoice(item);
       return;
     }
 
@@ -3494,7 +4935,7 @@
       ".player_home_block--actions .cardbox",
     ].join(", ");
 
-  const selectActionOption = (labelText) => {
+  const selectActionOption = (labelText, {required = true} = {}) => {
     const actionsBlock = getActionsBlock();
     const labels = Array.from(actionsBlock?.querySelectorAll("label.form-radio") ?? []);
     const label = labels.find((candidate) => {
@@ -3505,7 +4946,16 @@
     });
     const radio = label?.querySelector("input[type='radio']");
     if (!label || !radio) {
-      throw new Error(`missing action option: ${labelText}`);
+      if (required) {
+        throw new Error(`missing action option: ${labelText}`);
+      }
+      return false;
+    }
+    if (radio.disabled) {
+      if (required) {
+        throw new Error(`action option is disabled: ${labelText}`);
+      }
+      return false;
     }
     preserveScrollDuring(() => {
       radio.checked = true;
@@ -3513,6 +4963,414 @@
       dispatchBubbledEvent(radio, "input");
       dispatchBubbledEvent(radio, "change");
     });
+    return true;
+  };
+
+  const selectExactActionOption = (labelText) => {
+    const labels = Array.from(
+      getActionsBlock()?.querySelectorAll("label.form-radio") ?? [],
+    ).filter((candidate) => {
+      const text = cleanText(
+        candidate.querySelector("span")?.textContent ??
+          candidate.textContent ??
+          "",
+      );
+      return text === labelText;
+    });
+    if (labels.length === 0) {
+      throw new Error(`missing exact action option: ${labelText}`);
+    }
+    if (labels.length > 1) {
+      throw new Error(`ambiguous exact action options: ${labelText}`);
+    }
+    const radio = labels[0].querySelector("input[type='radio']");
+    if (!radio) {
+      throw new Error(`missing exact action option: ${labelText}`);
+    }
+    if (radio.disabled) {
+      throw new Error(`exact action option is disabled: ${labelText}`);
+    }
+    preserveScrollDuring(() => {
+      radio.checked = true;
+      radio.click();
+      dispatchBubbledEvent(radio, "input");
+      dispatchBubbledEvent(radio, "change");
+    });
+  };
+
+  const executePassAction = async () => {
+    selectActionOption("Pass for this generation");
+    await nextFrame();
+    clickActionSubmit("Pass", ["Pass for this generation"]);
+  };
+
+  const clickWorldGovernmentSubmit = () => {
+    const actionsRoot =
+      getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
+    const buttons = Array.from(
+      actionsRoot?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter((candidate) => !candidate.disabled);
+    if (buttons.length === 0) {
+      throw new Error("missing World Government submit button");
+    }
+    if (buttons.length > 1) {
+      throw new Error(`ambiguous World Government submit buttons: ${buttons.length}`);
+    }
+    preserveScrollDuring(() => buttons[0].click());
+  };
+
+  const leastBonusWorldGovernmentOceanPlacementSpace = () => {
+    const spaces = worldGovernmentOceanPlacementSpaces();
+    if (spaces.length === 0) return null;
+    let selected = spaces[0];
+    let selectedBonusCount =
+      selected.querySelectorAll(".board-space-bonus").length;
+    for (const space of spaces.slice(1)) {
+      const bonusCount =
+        space.querySelectorAll(".board-space-bonus").length;
+      if (bonusCount < selectedBonusCount) {
+        selected = space;
+        selectedBonusCount = bonusCount;
+      }
+    }
+    return selected;
+  };
+
+  const isVisibleWorldGovernmentOceanConfirmation = (candidate) => {
+    const style = window.getComputedStyle(candidate);
+    const rect = candidate.getBoundingClientRect();
+    return (
+      style.display !== "none" &&
+      style.visibility !== "hidden" &&
+      rect.width > 0 &&
+      rect.height > 0
+    );
+  };
+
+  const executeWorldGovernmentOceanPlacement = async () => {
+    const space = leastBonusWorldGovernmentOceanPlacementSpace();
+    if (!space) {
+      throw new Error("missing available World Government ocean space");
+    }
+    preserveScrollDuring(() => space.click());
+    await nextFrame();
+
+    const confirmations = Array.from(
+      getActionsBlock()?.querySelectorAll(".select_space_cont button") ?? [],
+    ).filter(
+      (candidate) =>
+        !candidate.disabled &&
+        cleanText(candidate.textContent ?? "") === "Yes" &&
+        isVisibleWorldGovernmentOceanConfirmation(candidate),
+    );
+    if (confirmations.length > 1) {
+      throw new Error(
+        `ambiguous World Government ocean confirmations: ${confirmations.length}`,
+      );
+    }
+    if (confirmations.length === 1) {
+      preserveScrollDuring(() => confirmations[0].click());
+      await nextFrame();
+    }
+  };
+
+  const selectedWorldGovernmentOptionTitle = () => {
+    const selected = Array.from(
+      getActionsBlock()?.querySelectorAll("label.form-radio") ?? [],
+    ).filter((label) => {
+      const radio = label.querySelector("input[type='radio']");
+      return radio?.checked === true && !radio.disabled;
+    });
+    if (selected.length === 0) {
+      throw new Error("missing selected World Government option");
+    }
+    if (selected.length > 1) {
+      throw new Error(
+        `ambiguous selected World Government options: ${selected.length}`,
+      );
+    }
+    return cleanText(
+      selected[0].querySelector("span")?.textContent ??
+        selected[0].textContent ??
+        "",
+    );
+  };
+
+  const executeWorldGovernmentTerraforming = async () => {
+    const selectedTitle = selectedWorldGovernmentOptionTitle();
+    if (
+      selectedTitle === "Add an ocean" &&
+      worldGovernmentOceanPlacementSpaces().length > 0
+    ) {
+      await executeWorldGovernmentOceanPlacement();
+    }
+    clickWorldGovernmentSubmit();
+  };
+
+  const clickResearchPurchaseSkip = () => {
+    const workflow = getActionsBlock()?.querySelector(
+      ".wf-component--select-card",
+    );
+    const buttons = Array.from(
+      workflow?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter(
+      (candidate) =>
+        !candidate.disabled &&
+        cleanText(candidate.textContent || candidate.value || "") ===
+          "Skip this action",
+    );
+    if (buttons.length === 0) {
+      throw new Error("missing research-purchase Skip button");
+    }
+    if (buttons.length > 1) {
+      throw new Error(
+        `ambiguous research-purchase Skip buttons: ${buttons.length}`,
+      );
+    }
+    preserveScrollDuring(() => buttons[0].click());
+  };
+
+  const buyEverythingPurchaseWorkflow = () =>
+    getActionsBlock()?.querySelector(".wf-component--select-card");
+
+  const buyEverythingSubmitButtons = (workflow) =>
+    Array.from(
+      workflow?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter((candidate) => !candidate.disabled);
+
+  const buyEverythingSubmitText = (candidate) =>
+    cleanText(candidate?.textContent || candidate?.value || "");
+
+  const clickBuyEverythingBuySubmit = (workflow) => {
+    const buttons = buyEverythingSubmitButtons(workflow).filter((candidate) =>
+      /^Buy [1-9]\d*$/.test(buyEverythingSubmitText(candidate)),
+    );
+    if (buttons.length === 0) {
+      throw new Error("missing buy-everything Buy button");
+    }
+    if (buttons.length > 1) {
+      throw new Error(`ambiguous buy-everything Buy buttons: ${buttons.length}`);
+    }
+    preserveScrollDuring(() => buttons[0].click());
+  };
+
+  const clickBuyEverythingNoPurchaseSubmit = (
+    workflow = buyEverythingPurchaseWorkflow(),
+  ) => {
+    const buttons = buyEverythingSubmitButtons(workflow);
+    for (const buttonText of ["Skip this action", "Buy 0", "Ok"]) {
+      const matches = buttons.filter(
+        (candidate) => {
+          const candidateText = buyEverythingSubmitText(candidate);
+          return (
+            candidateText === buttonText ||
+            (buttonText === "Ok" && candidateText === "Ok 0")
+          );
+        },
+      );
+      if (matches.length > 1) {
+        throw new Error(
+          `ambiguous buy-everything ${buttonText} buttons: ${matches.length}`,
+        );
+      }
+      if (matches.length === 1) {
+        preserveScrollDuring(() => matches[0].click());
+        return;
+      }
+    }
+    throw new Error("missing buy-everything no-purchase button");
+  };
+
+  const clickBuyEverythingPurchaseCheckbox = (input) => {
+    preserveScrollDuring(() => input.click());
+  };
+
+  const executeBuyEverythingPurchase = async () => {
+    let workflow = buyEverythingPurchaseWorkflow();
+    if (!workflow) {
+      throw new Error("missing buy-everything purchase workflow");
+    }
+    const initialRows = Array.from(
+      workflow.querySelectorAll(":scope > label.cardbox"),
+    );
+
+    for (let index = 0; index < initialRows.length; index += 1) {
+      workflow = buyEverythingPurchaseWorkflow();
+      if (!workflow) {
+        throw new Error("missing buy-everything purchase workflow");
+      }
+      const rows = Array.from(
+        workflow.querySelectorAll(":scope > label.cardbox"),
+      );
+      const row = rows[index];
+      const input = row?.querySelector("input[type='checkbox']");
+      if (!input || input.checked || input.disabled) continue;
+      clickBuyEverythingPurchaseCheckbox(input);
+      await nextFrame();
+    }
+
+    workflow = buyEverythingPurchaseWorkflow();
+    if (!workflow) {
+      throw new Error("missing buy-everything purchase workflow");
+    }
+    const selectedCount = Array.from(
+      workflow.querySelectorAll(":scope > label.cardbox"),
+    ).filter(
+      (row) =>
+        row.querySelector("input[type='checkbox']")?.checked === true,
+    ).length;
+    if (selectedCount > 0) {
+      clickBuyEverythingBuySubmit(workflow);
+      return;
+    }
+    clickBuyEverythingNoPurchaseSubmit(workflow);
+  };
+
+  const clickPurchasePaymentSubmit = () => {
+    const payment = getActionsBlock()?.querySelector(".payments_cont");
+    const buttons = Array.from(
+      payment?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter(
+      (candidate) =>
+        !candidate.disabled &&
+        cleanText(candidate.textContent || candidate.value || "") === "Pay",
+    );
+    if (buttons.length === 0) {
+      throw new Error("missing purchase-payment Pay button");
+    }
+    if (buttons.length > 1) {
+      throw new Error(
+        `ambiguous purchase-payment Pay buttons: ${buttons.length}`,
+      );
+    }
+    preserveScrollDuring(() => buttons[0].click());
+  };
+
+  const executeBuyEverythingAutopilot = async () => {
+    if (isBuyEverythingPurchasePaymentPrompt()) {
+      clickPurchasePaymentSubmit();
+      return;
+    }
+    if (isBuyEverythingPurchasePrompt()) {
+      await executeBuyEverythingPurchase();
+      return;
+    }
+    await executeEscapeAutopilot();
+  };
+
+  const executeFinalGreenerySkip = async () => {
+    selectExactActionOption(declineFinalGreeneryOption);
+    await nextFrame();
+    clickExactActionSubmit("Confirm");
+  };
+
+  const executeEscapeAutopilot = async () => {
+    if (isWorldGovernmentTerraformingPrompt()) {
+      await executeWorldGovernmentTerraforming();
+      return;
+    }
+    if (isWorldGovernmentOceanPlacementPrompt()) {
+      await executeWorldGovernmentOceanPlacement();
+      return;
+    }
+    if (isFinalGreeneryPlacementPrompt()) {
+      await executeFinalGreenerySkip();
+      return;
+    }
+    if (isResearchCardPurchasePrompt()) {
+      clickResearchPurchaseSkip();
+      return;
+    }
+    await executePassAction();
+  };
+
+  const selectPowerPlantStandardProject = ({required = true} = {}) => {
+    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
+    const matches = Array.from(
+      actionsRoot?.querySelectorAll(".card-title-standard-project") ?? [],
+    ).filter((title) => cleanText(title.textContent ?? "") === "Power Plant");
+    const labels = matches
+      .map((title) => title.closest("label"))
+      .filter(Boolean);
+    const uniqueLabels = [...new Set(labels)];
+    const radio =
+      uniqueLabels.length === 1
+        ? uniqueLabels[0].querySelector("input[type='radio']")
+        : null;
+    if (uniqueLabels.length !== 1 || !radio) {
+      if (required) {
+        throw new Error("missing standard project: Power Plant");
+      }
+      return false;
+    }
+    if (radio.disabled) {
+      if (required) {
+        throw new Error("standard project is disabled: Power Plant");
+      }
+      return false;
+    }
+    preserveScrollDuring(() => {
+      radio.checked = true;
+      radio.click();
+      dispatchBubbledEvent(radio, "input");
+      dispatchBubbledEvent(radio, "change");
+    });
+    return true;
+  };
+
+  const clickExactActionSubmit = (buttonText, {required = true} = {}) => {
+    const actionsRoot =
+      getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
+    const matches = Array.from(
+      actionsRoot?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter(
+      (candidate) =>
+        !candidate.disabled &&
+        cleanText(candidate.textContent ?? candidate.value ?? "") === buttonText,
+    );
+    if (matches.length !== 1) {
+      if (required) {
+        throw new Error(`missing exact action submit button: ${buttonText}`);
+      }
+      return false;
+    }
+    preserveScrollDuring(() => matches[0].click());
+    return true;
+  };
+
+  const tryExecutePowerPlantStandardProject = async () => {
+    if (!selectActionOption("Standard projects", {required: false})) return false;
+    await nextFrame();
+    if (!selectPowerPlantStandardProject({required: false})) return false;
+    await nextFrame();
+    return clickExactActionSubmit("Confirm", {required: false});
+  };
+
+  const maybeSelectNetworkDefaultPass = () => {
+    if (!pendingNetworkPassSelection) return false;
+    if (!isCurrentPlayerTurn() || !hasLiveActionForm() || !isTakeNextActionPhase()) {
+      return false;
+    }
+    const selected = selectActionOption("Pass for this generation", {required: false});
+    if (!selected) return false;
+    pendingNetworkPassSelection = false;
+    return true;
+  };
+
+  const maybeScrollToBottomForTurn = () => {
+    if (!pendingTurnScroll) return false;
+    if (!isCurrentPlayerTurn() || !hasLiveActionForm() || !isTakeNextActionPhase()) {
+      return false;
+    }
+    const session = readQueueSession();
+    if (!session) return false;
+    pendingTurnScroll = false;
+    if (session.autoProcess) return false;
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+    return true;
   };
 
   const selectIndexedRadioOption = (optionIndex) => {
@@ -3541,23 +5399,143 @@
       dispatchBubbledEvent(radio, "input");
       dispatchBubbledEvent(radio, "change");
     });
+    return radio;
   };
 
-  const clickExactActionSubmit = (expectedTexts) => {
-    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
-    const buttons = Array.from(actionsRoot?.querySelectorAll("button, input[type='submit']") ?? []);
-    const button = buttons.find((candidate) =>
-      expectedTexts.includes(cleanText(candidate.textContent ?? candidate.value ?? "")),
-    );
-    if (!button || button.disabled) {
-      throw new Error(`missing submit button: ${expectedTexts.join(" or ")}`);
+  const selectedRadioOptionHasChildren = (radio) => {
+    const optionContainer = radio?.closest("label.form-radio")?.parentElement;
+    const nestedWorkflow = optionContainer?.querySelector(":scope > div .wf-component");
+    if (!nestedWorkflow) return false;
+    if (!nestedWorkflow.classList.contains("wf-component--select-option")) {
+      return true;
     }
-    preserveScrollDuring(() => button.click());
+    return Boolean(
+      nestedWorkflow.querySelector(
+        "input:not([type='hidden']), select, textarea, button, .cardbox, .wf-component",
+      ),
+    );
   };
 
-  const clickIndexedRadioSubmit = () => clickExactActionSubmit(["Confirm"]);
+  const selectExactQuickChoiceOption = (optionText) => {
+    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
+    if (!actionsRoot) throw new Error("missing action form");
+    const matches = Array.from(actionsRoot.querySelectorAll("label.form-radio"))
+      .map((label) => ({
+        label,
+        radio: label.querySelector("input[type='radio']"),
+      }))
+      .filter(({ radio }) => radio && exactRadioOptionText(radio) === optionText);
+    if (matches.length === 0) {
+      throw new Error(`missing exact quick option: ${optionText}`);
+    }
+    if (matches.length > 1) {
+      throw new Error(`ambiguous exact quick option: ${optionText}`);
+    }
+    const radio = matches[0].radio;
+    if (radio.disabled) {
+      throw new Error(`exact quick option is disabled: ${optionText}`);
+    }
+    preserveScrollDuring(() => {
+      radio.checked = true;
+      radio.click();
+      dispatchBubbledEvent(radio, "input");
+      dispatchBubbledEvent(radio, "change");
+    });
+    return radio;
+  };
 
-  const clickCardTargetSubmit = () => clickExactActionSubmit(["Add resource", "Add resources"]);
+  const selectExactQuickChoiceTarget = (radio, targetCardText) => {
+    const optionContainer = radio?.closest("label.form-radio")?.parentElement;
+    const cardWorkflow = optionContainer?.querySelector(".wf-component--select-card");
+    if (!cardWorkflow) {
+      throw new Error(`missing card choices for exact quick target: ${targetCardText}`);
+    }
+    const matches = Array.from(cardWorkflow.querySelectorAll(".cardbox")).filter(
+      (cardBox) => cleanText(getCardIdentity(cardBox).name) === targetCardText,
+    );
+    if (matches.length === 0) {
+      throw new Error(`missing exact quick target: ${targetCardText}`);
+    }
+    if (matches.length > 1) {
+      throw new Error(`ambiguous exact quick target: ${targetCardText}`);
+    }
+    const input = matches[0].querySelector("input[type='radio'], input[type='checkbox']");
+    if (!input || input.disabled) {
+      throw new Error(`exact quick target is disabled: ${targetCardText}`);
+    }
+    preserveScrollDuring(() => {
+      input.checked = true;
+      input.click();
+      dispatchBubbledEvent(input, "input");
+      dispatchBubbledEvent(input, "change");
+    });
+  };
+
+  const clickQuickChoiceSubmit = () => {
+    const actionsRoot =
+      getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
+    const buttons = Array.from(
+      actionsRoot?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter((candidate) => !candidate.disabled);
+    if (buttons.length === 0) {
+      throw new Error("missing quick-choice submit button");
+    }
+    if (buttons.length > 1) {
+      throw new Error(`ambiguous quick-choice submit buttons: ${buttons.length}`);
+    }
+    preserveScrollDuring(() => buttons[0].click());
+  };
+
+  const executeRememberedQuickChoice = async (item) => {
+    const choice = normalizeRememberedQuickChoice(item);
+    if (!choice) throw new Error("invalid remembered quick choice");
+    clearPlayedActionLearning();
+    quickChoicePlaybackActive = true;
+    try {
+      const radio = selectExactQuickChoiceOption(choice.optionText);
+      await nextFrame();
+      if (choice.targetCardText) {
+        selectExactQuickChoiceTarget(radio, choice.targetCardText);
+        await nextFrame();
+        clickQuickChoiceSubmit();
+        return;
+      }
+      if (selectedRadioOptionHasChildren(radio)) return;
+      clickQuickChoiceSubmit();
+    } finally {
+      quickChoicePlaybackActive = false;
+    }
+  };
+
+  const clickIndexedRadioSubmit = () => {
+    const actionsRoot =
+      getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
+    const buttons = Array.from(
+      actionsRoot?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter((candidate) => !candidate.disabled);
+    if (buttons.length === 0) {
+      throw new Error("missing indexed-radio submit button");
+    }
+    if (buttons.length > 1) {
+      throw new Error(`ambiguous indexed-radio submit buttons: ${buttons.length}`);
+    }
+    preserveScrollDuring(() => buttons[0].click());
+  };
+
+  const clickCardTargetSubmit = () => {
+    const actionsRoot =
+      getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
+    const buttons = Array.from(
+      actionsRoot?.querySelectorAll("button.btn-submit, input.btn-submit") ?? [],
+    ).filter((candidate) => !candidate.disabled);
+    if (buttons.length === 0) {
+      throw new Error("missing card-target submit button");
+    }
+    if (buttons.length > 1) {
+      throw new Error(`ambiguous card-target submit buttons: ${buttons.length}`);
+    }
+    preserveScrollDuring(() => buttons[0].click());
+  };
 
   const findActionCardForQueuedItem = (item, selector) => {
     const cards = Array.from(document.querySelectorAll(selector));
@@ -3814,6 +5792,8 @@
   };
 
   startPlayerViewCapture();
+  startGlobalHandTagClickListener();
+  startRememberedQuickChoiceListener();
 
   document.addEventListener("change", handleSingleCardSelectionChange, true);
 
