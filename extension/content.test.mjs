@@ -3522,11 +3522,11 @@ test("turn tint CSS preserves the starfield behind exact translucent colors", ()
 
   assert.match(
     pinkRule,
-    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 79, 191, 0\.30\)/,
+    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 79, 191, 0\.10\)/,
   );
   assert.match(
     yellowRule,
-    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 214, 64, 0\.26\)/,
+    /box-shadow: inset 0 0 0 10000vmax rgba\(255, 214, 64, 0\.10\)/,
   );
   assert.doesNotMatch(pinkRule, /background(?:-image)?:/);
   assert.doesNotMatch(yellowRule, /background(?:-image)?:/);

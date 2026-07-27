@@ -3355,10 +3355,10 @@
 
   const timeWarpCss = () => `
     #player-home.tfmars420-turn-can-pass {
-      box-shadow: inset 0 0 0 10000vmax rgba(255, 79, 191, 0.30);
+      box-shadow: inset 0 0 0 10000vmax rgba(255, 79, 191, 0.10);
     }
     #player-home.tfmars420-turn-no-pass {
-      box-shadow: inset 0 0 0 10000vmax rgba(255, 214, 64, 0.26);
+      box-shadow: inset 0 0 0 10000vmax rgba(255, 214, 64, 0.10);
     }
     #${timeWarpPanelId} {
       background: #2f2f2f;
