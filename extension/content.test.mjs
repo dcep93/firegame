@@ -52,6 +52,10 @@ const turnScrollSource = source.slice(
   source.indexOf("const maybeScrollToBottomForTurn"),
   source.indexOf("const selectIndexedRadioOption"),
 );
+const queuedViewportAnchorSource = source.slice(
+  source.indexOf("const queuedExecutionSourceUsesViewportAnchor"),
+  source.indexOf("const getQueuePanelHost"),
+);
 const turnTintSource = source.slice(
   source.indexOf("const playerHomeTurnTintState"),
   source.indexOf("const isWorldGovernmentTerraformingPrompt"),
@@ -802,6 +806,90 @@ const createTurnScrollExecutor = (readiness = {}) => {
     actions,
     session,
     updateCount: () => updateCount,
+  };
+};
+
+const createQueuedViewportAnchorHarness = ({
+  actionsTop = -300,
+  actionsBottom = -100,
+  candidateTop = 120,
+} = {}) => {
+  const actionsRect = {top: actionsTop, bottom: actionsBottom};
+  const candidateRect = {top: candidateTop, bottom: candidateTop + 40};
+  const scrollCalls = [];
+  const listeners = new Map();
+  const timers = new Map();
+  let nextTimer = 1;
+  const candidate = {
+    isConnected: true,
+    closest: () => null,
+    getBoundingClientRect: () => ({...candidateRect}),
+  };
+  const actionsBlock = {
+    contains: () => false,
+    getBoundingClientRect: () => ({...actionsRect}),
+  };
+  const documentElement = {};
+  const body = {};
+  const document = {
+    body,
+    documentElement,
+    elementsFromPoint: () => [candidate],
+    addEventListener(type, listener) {
+      listeners.set(type, listener);
+    },
+  };
+  const window = {
+    innerHeight: 800,
+    innerWidth: 1200,
+    clearTimeout(timer) {
+      timers.delete(timer);
+    },
+    getComputedStyle: () => ({position: "static"}),
+    scrollBy(options) {
+      scrollCalls.push(options);
+      candidateRect.top -= options.top;
+      candidateRect.bottom -= options.top;
+      actionsRect.top -= options.top;
+      actionsRect.bottom -= options.top;
+    },
+    setTimeout(callback) {
+      const timer = nextTimer++;
+      timers.set(timer, callback);
+      return timer;
+    },
+  };
+  const executor = Function(
+    "window",
+    "document",
+    "getActionsBlock",
+    `"use strict";
+      let queuedExecutionViewportAnchor = null;
+      let queuedExecutionViewportAnchorSettleTimer = null;
+      ${queuedViewportAnchorSource}
+      return {
+        begin: beginQueuedExecutionViewportAnchor,
+        maintain: maintainQueuedExecutionViewportAnchor,
+        markRelease: markQueuedExecutionViewportAnchorForRelease,
+        startInput: startQueuedExecutionViewportUserInput,
+        state: () => queuedExecutionViewportAnchor,
+      };
+    `,
+  )(window, document, () => actionsBlock);
+  return {
+    ...executor,
+    actionsRect,
+    candidate,
+    candidateRect,
+    listeners,
+    runLastTimer() {
+      const entry = [...timers.entries()].at(-1);
+      if (!entry) return false;
+      timers.delete(entry[0]);
+      entry[1]();
+      return true;
+    },
+    scrollCalls,
   };
 };
 
@@ -2417,6 +2505,8 @@ const createQueueExecutor = (
   const learningItems = [];
   const persistedTargetLearnings = [];
   let learningClearCount = 0;
+  const viewportAnchorBegins = [];
+  let viewportAnchorClearCount = 0;
   const executor = Function(
     "readQueueSession",
     "latestPlayerView",
@@ -2435,6 +2525,8 @@ const createQueueExecutor = (
     "rememberPlayedActionForLearning",
     "isFollowUpQueueItem",
     "clearPlayedActionLearning",
+    "beginQueuedExecutionViewportAnchor",
+    "clearQueuedExecutionViewportAnchor",
     "window",
     "scheduleTerraformingMarsUpdate",
     "queueExecutionAttempted",
@@ -2493,6 +2585,13 @@ const createQueueExecutor = (
     () => {
       learningClearCount += 1;
     },
+    (executionSource) => {
+      viewportAnchorBegins.push(executionSource);
+      return executionSource !== "immediate";
+    },
+    () => {
+      viewportAnchorClearCount += 1;
+    },
     {setTimeout: (callback) => callback()},
     () => {},
     false,
@@ -2511,6 +2610,8 @@ const createQueueExecutor = (
     persistedTargetLearnings,
     restoreCount: () => restoreCount,
     writeCount: () => writeCount,
+    viewportAnchorBegins,
+    viewportAnchorClearCount: () => viewportAnchorClearCount,
   };
 };
 
@@ -3245,6 +3346,8 @@ test("manual indexed execution restores only the selected item after failure", a
 
   assert.deepEqual(executor.queue(), [first, selected, last]);
   assert.equal(executor.clearCount(), 0);
+  assert.deepEqual(executor.viewportAnchorBegins, ["manual"]);
+  assert.equal(executor.viewportAnchorClearCount(), 1);
   assert.equal(executor.state().queueExecutionInFlight, false);
   assert.match(executor.state().queueExecutionError, /test failure/);
   assert.deepEqual(
@@ -3265,6 +3368,8 @@ test("successful immediate execution audits its source and outcome", async () =>
     executor.auditEvents.map(({eventName, details}) => [eventName, details.executionSource]),
     [["game.action.success", "immediate"]],
   );
+  assert.deepEqual(executor.viewportAnchorBegins, ["immediate"]);
+  assert.equal(executor.viewportAnchorClearCount(), 0);
 });
 
 test("successful card-target execution persists its captured quick choice", async () => {
@@ -3687,6 +3792,68 @@ test("turn scroll never manipulates the rendered autoprocess checkbox", () => {
   assert.doesNotMatch(
     turnScrollSource,
     /querySelector|autoProcessInput|checked|dispatchEvent|\.click\(/,
+  );
+});
+
+test("queued viewport anchoring excludes immediate execution and visible Actions", () => {
+  const offscreen = createQueuedViewportAnchorHarness();
+  assert.equal(offscreen.begin("immediate"), false);
+  assert.equal(offscreen.state(), null);
+  assert.equal(offscreen.begin("automatic"), true);
+  assert.equal(offscreen.state()?.candidates.length, 1);
+
+  const visible = createQueuedViewportAnchorHarness({
+    actionsTop: -50,
+    actionsBottom: 100,
+  });
+  assert.equal(visible.begin("manual"), false);
+  assert.equal(visible.state(), null);
+  assert.deepEqual(visible.scrollCalls, []);
+
+  const below = createQueuedViewportAnchorHarness({
+    actionsTop: 900,
+    actionsBottom: 1100,
+  });
+  assert.equal(below.begin("automatic"), false);
+  assert.equal(below.state(), null);
+});
+
+test("queued viewport anchoring corrects residual movement and falls back to Actions", () => {
+  const candidate = createQueuedViewportAnchorHarness();
+  assert.equal(candidate.begin("automatic"), true);
+  candidate.candidateRect.top += 35;
+  candidate.candidateRect.bottom += 35;
+  assert.equal(candidate.maintain(), true);
+  assert.deepEqual(candidate.scrollCalls, [{top: 35, left: 0, behavior: "auto"}]);
+  assert.equal(candidate.maintain(), true);
+  assert.equal(candidate.scrollCalls.length, 1);
+
+  const fallback = createQueuedViewportAnchorHarness();
+  assert.equal(fallback.begin("manual"), true);
+  fallback.candidate.isConnected = false;
+  fallback.actionsRect.top -= 45;
+  fallback.actionsRect.bottom -= 45;
+  assert.equal(fallback.maintain(), true);
+  assert.deepEqual(fallback.scrollCalls, [{top: -45, left: 0, behavior: "auto"}]);
+});
+
+test("queued viewport anchoring yields to user scrolling and releases after settling", () => {
+  const user = createQueuedViewportAnchorHarness();
+  assert.equal(user.begin("automatic"), true);
+  user.startInput();
+  user.listeners.get("wheel")({type: "wheel", isTrusted: true});
+  assert.equal(user.state(), null);
+
+  const settled = createQueuedViewportAnchorHarness();
+  assert.equal(settled.begin("manual"), true);
+  assert.equal(settled.markRelease(), true);
+  assert.equal(settled.runLastTimer(), true);
+  assert.equal(settled.state(), null);
+  assert.match(domUpdateSource, /refreshQueuedExecutionViewportAnchor\(\)/);
+  assert.match(queueUiUpdateSource, /refreshQueuedExecutionViewportAnchor\(\)/);
+  assert.match(
+    playerViewQueueRearmSource,
+    /markQueuedExecutionViewportAnchorForRelease\(\)/,
   );
 });
 

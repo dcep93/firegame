@@ -2370,6 +2370,7 @@
       if (pendingNetworkPassSelection || pendingTurnScroll) {
         scheduleTerraformingMarsUpdate();
       }
+      refreshQueuedExecutionViewportAnchor();
     } finally {
       window.setTimeout(() => {
         terraformingMarsDomUpdatePaused = false;
@@ -2462,6 +2463,7 @@
     lastNetworkTurnState = undefined;
     pendingTurnScroll = false;
     clearPlayedActionLearning();
+    clearQueuedExecutionViewportAnchor();
     helpersHiddenCleaned = true;
   }
 
@@ -2494,6 +2496,8 @@
   let queueLogDiscoveryObserver = null;
   let queueObservedLogTarget = null;
   let queueMutationPaused = false;
+  let queuedExecutionViewportAnchor = null;
+  let queuedExecutionViewportAnchorSettleTimer = null;
 
   const looksLikePlayerView = (value) =>
     Boolean(value?.id && value?.game && Object.prototype.hasOwnProperty.call(value, "runId"));
@@ -2651,6 +2655,7 @@
       lastNetworkTurnState = undefined;
       pendingTurnScroll = false;
       clearPlayedActionLearning();
+      clearQueuedExecutionViewportAnchor();
     }
     const confirmedQuickChoice =
       takeConfirmedStagedPlayedActionQuickChoice(playerView);
@@ -2661,6 +2666,7 @@
       );
     }
     if (playerViewInputChanged(latestPlayerView, playerView)) {
+      markQueuedExecutionViewportAnchorForRelease();
       if (queueExecutionInFlight) {
         queuePendingLogMutation = true;
       } else {
@@ -3682,6 +3688,182 @@
   `;
 
   const getActionsBlock = () => document.querySelector(".player_home_block--actions");
+
+  const queuedExecutionSourceUsesViewportAnchor = (executionSource) =>
+    executionSource === "automatic" || executionSource === "manual";
+
+  const actionsPanelIntersectsViewport = (rect, viewportHeight = window.innerHeight) =>
+    Boolean(
+      rect &&
+        Number.isFinite(rect.top) &&
+        Number.isFinite(rect.bottom) &&
+        rect.bottom > 0 &&
+        rect.top < viewportHeight,
+    );
+
+  const actionsPanelIsAboveViewport = (rect) =>
+    Boolean(rect && Number.isFinite(rect.bottom) && rect.bottom <= 0);
+
+  const queuedViewportAnchorDelta = (currentOffset, expectedOffset) =>
+    Number.isFinite(currentOffset) && Number.isFinite(expectedOffset)
+      ? currentOffset - expectedOffset
+      : null;
+
+  const clearQueuedExecutionViewportAnchor = () => {
+    if (queuedExecutionViewportAnchorSettleTimer !== null) {
+      window.clearTimeout(queuedExecutionViewportAnchorSettleTimer);
+      queuedExecutionViewportAnchorSettleTimer = null;
+    }
+    queuedExecutionViewportAnchor = null;
+  };
+
+  const queuedExecutionViewportCandidates = (actionsBlock) => {
+    if (typeof document.elementsFromPoint !== "function") return [];
+    const viewportHeight = Math.max(0, Number(window.innerHeight) || 0);
+    const viewportWidth = Math.max(0, Number(window.innerWidth) || 0);
+    if (viewportHeight <= 1 || viewportWidth <= 1) return [];
+    const x = Math.max(1, Math.min(viewportWidth - 1, viewportWidth / 2));
+    const points = [1, viewportHeight * 0.25, viewportHeight * 0.5, viewportHeight * 0.75];
+    const seen = new Set();
+    const candidates = [];
+    for (const rawY of points) {
+      const y = Math.max(1, Math.min(viewportHeight - 1, rawY));
+      const elements = document.elementsFromPoint(x, y);
+      for (const element of elements) {
+        if (
+          !element?.getBoundingClientRect ||
+          seen.has(element) ||
+          element === document.documentElement ||
+          element === document.body ||
+          actionsBlock?.contains?.(element) ||
+          element.closest?.(".tfmars420-actions-mirror")
+        ) {
+          continue;
+        }
+        const position = window.getComputedStyle?.(element)?.position;
+        if (position === "fixed" || position === "sticky") continue;
+        const rect = element.getBoundingClientRect();
+        if (
+          !Number.isFinite(rect.top) ||
+          !Number.isFinite(rect.bottom) ||
+          rect.bottom <= 0 ||
+          rect.top >= viewportHeight
+        ) {
+          continue;
+        }
+        seen.add(element);
+        candidates.push({ element, top: rect.top });
+        break;
+      }
+    }
+    return candidates;
+  };
+
+  const beginQueuedExecutionViewportAnchor = (executionSource) => {
+    if (!queuedExecutionSourceUsesViewportAnchor(executionSource)) return false;
+    clearQueuedExecutionViewportAnchor();
+    const actionsBlock = getActionsBlock();
+    const actionsRect = actionsBlock?.getBoundingClientRect?.();
+    if (
+      !actionsBlock ||
+      !actionsRect ||
+      actionsPanelIntersectsViewport(actionsRect) ||
+      !actionsPanelIsAboveViewport(actionsRect)
+    ) {
+      return false;
+    }
+    queuedExecutionViewportAnchor = {
+      actionsBottom: actionsRect.bottom,
+      candidates: queuedExecutionViewportCandidates(actionsBlock),
+      releasePending: false,
+    };
+    return true;
+  };
+
+  const maintainQueuedExecutionViewportAnchor = () => {
+    const anchor = queuedExecutionViewportAnchor;
+    if (!anchor) return false;
+    const actionsBlock = getActionsBlock();
+    const actionsRect = actionsBlock?.getBoundingClientRect?.();
+    if (
+      !actionsBlock ||
+      !actionsRect ||
+      actionsPanelIntersectsViewport(actionsRect) ||
+      !actionsPanelIsAboveViewport(actionsRect)
+    ) {
+      clearQueuedExecutionViewportAnchor();
+      return false;
+    }
+    const candidate = anchor.candidates.find(
+      ({ element }) => element?.isConnected !== false && element?.getBoundingClientRect,
+    );
+    const currentOffset = candidate
+      ? candidate.element.getBoundingClientRect().top
+      : actionsRect.bottom;
+    const expectedOffset = candidate ? candidate.top : anchor.actionsBottom;
+    const delta = queuedViewportAnchorDelta(currentOffset, expectedOffset);
+    if (delta === null || Math.abs(delta) < 0.5) return true;
+    window.scrollBy({ top: delta, left: 0, behavior: "auto" });
+    return true;
+  };
+
+  const scheduleQueuedExecutionViewportAnchorRelease = () => {
+    if (!queuedExecutionViewportAnchor?.releasePending) return false;
+    if (queuedExecutionViewportAnchorSettleTimer !== null) {
+      window.clearTimeout(queuedExecutionViewportAnchorSettleTimer);
+    }
+    queuedExecutionViewportAnchorSettleTimer = window.setTimeout(() => {
+      queuedExecutionViewportAnchorSettleTimer = null;
+      maintainQueuedExecutionViewportAnchor();
+      clearQueuedExecutionViewportAnchor();
+    }, 350);
+    return true;
+  };
+
+  const markQueuedExecutionViewportAnchorForRelease = () => {
+    if (!queuedExecutionViewportAnchor) return false;
+    queuedExecutionViewportAnchor.releasePending = true;
+    return scheduleQueuedExecutionViewportAnchorRelease();
+  };
+
+  const refreshQueuedExecutionViewportAnchor = () => {
+    if (!maintainQueuedExecutionViewportAnchor()) return false;
+    scheduleQueuedExecutionViewportAnchorRelease();
+    return true;
+  };
+
+  const handleQueuedExecutionViewportUserInput = (event) => {
+    if (!queuedExecutionViewportAnchor || event.isTrusted !== true) return;
+    if (
+      event.type === "keydown" &&
+      !new Set([
+        "ArrowDown",
+        "ArrowUp",
+        "End",
+        "Home",
+        "PageDown",
+        "PageUp",
+        " ",
+      ]).has(event.key)
+    ) {
+      return;
+    }
+    clearQueuedExecutionViewportAnchor();
+  };
+
+  const startQueuedExecutionViewportUserInput = () => {
+    if (document.__tfmars420QueuedViewportInputAttached) return;
+    document.__tfmars420QueuedViewportInputAttached = true;
+    document.addEventListener("wheel", handleQueuedExecutionViewportUserInput, {
+      capture: true,
+      passive: true,
+    });
+    document.addEventListener("touchstart", handleQueuedExecutionViewportUserInput, {
+      capture: true,
+      passive: true,
+    });
+    document.addEventListener("keydown", handleQueuedExecutionViewportUserInput, true);
+  };
 
   const getQueuePanelHost = (actionsBlock) => {
     const playerControls = document.querySelector(".tfmars420-player-lobby-controls") ?? getControlsHost();
@@ -5158,6 +5340,7 @@
     } catch (error) {
       console.error("[tfmars420] queue UI update failed", error);
     } finally {
+      refreshQueuedExecutionViewportAnchor();
       window.setTimeout(() => {
         queueMutationPaused = false;
       }, 0);
@@ -5171,6 +5354,7 @@
   };
 
   const startQueueUi = () => {
+    startQueuedExecutionViewportUserInput();
     scheduleTerraformingMarsUpdate();
     startQueueLogObserver();
   };
@@ -5316,6 +5500,7 @@
     { onFailure, executionSource = "automatic" } = {},
   ) => {
     if (queueExecutionInFlight) return false;
+    beginQueuedExecutionViewportAnchor(executionSource);
 
     const auditDetails = {
       executionSource,
@@ -5345,6 +5530,7 @@
         auditLog("game.action.success", auditDetails);
       })
       .catch((error) => {
+        clearQueuedExecutionViewportAnchor();
         if (item?.type === "playedAction" || item?.type === "radioOption") {
           clearPlayedActionLearning();
         }
