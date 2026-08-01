@@ -5,7 +5,7 @@ import test from "node:test";
 const source = await readFile(new URL("./content.js", import.meta.url), "utf8");
 
 test("in-page release version travels with content.js", () => {
-  assert.match(source, /const contentScriptVersion = "v1\.0\.7"/);
+  assert.match(source, /const contentScriptVersion = "v1\.0\.8"/);
   assert.match(
     source,
     /firegame-colonist-dice-version"[^]*\$\{contentScriptVersion\}/,
@@ -178,6 +178,10 @@ const targetToolsSource = playedToolsSource.slice(
 const cardTargetSubmitSource = source.slice(
   source.indexOf("const clickCardTargetSubmit"),
   source.indexOf("const findActionCardForQueuedItem"),
+);
+const actionSubmitSource = source.slice(
+  source.indexOf("const clickActionSubmit"),
+  source.indexOf("const clickLogCard"),
 );
 const executeQueuedItemSource = source.slice(
   source.indexOf("const executeQueuedItem"),
@@ -358,10 +362,13 @@ const createNetworkPassSelector = (options = {}) => {
     "isCurrentPlayerTurn",
     "hasLiveActionForm",
     "isTakeNextActionPhase",
+    "readQueueSession",
     "selectActionOption",
     "checkActionsMirrorOption",
+    "initialQueueExecutionInFlight",
     `"use strict";
       let pendingNetworkPassSelection = true;
+      let queueExecutionInFlight = initialQueueExecutionInFlight;
       ${networkPassSelectionSource}
       return {
         select: maybeSelectNetworkDefaultPass,
@@ -372,6 +379,10 @@ const createNetworkPassSelector = (options = {}) => {
     () => options.isCurrentPlayerTurn ?? true,
     () => options.hasLiveActionForm ?? true,
     () => options.isTakeNextActionPhase ?? true,
+    () => ({
+      autoProcess: options.autoProcess ?? false,
+      queue: options.queue ?? [],
+    }),
     (label, selectOptions) => {
       assert.equal(label, "Pass for this generation");
       assert.deepEqual(selectOptions, {required: false});
@@ -382,12 +393,38 @@ const createNetworkPassSelector = (options = {}) => {
       mirrorSelections.push(label);
       return options.mirrorOptionExists ?? true;
     },
+    options.queueExecutionInFlight ?? false,
   );
   return {
     ...state,
     mirrorSelections,
     selectionCount: () => selectionCount,
   };
+};
+
+const createActionSubmit = (buttons) => {
+  const actionsRoot = {
+    querySelectorAll(selector) {
+      assert.equal(selector, "button, input[type='submit']");
+      return buttons;
+    },
+  };
+  const actionsBlock = {
+    querySelector(selector) {
+      assert.equal(selector, ".wf-root, form");
+      return actionsRoot;
+    },
+  };
+  return Function(
+    "getActionsBlock",
+    "cleanText",
+    "preserveScrollDuring",
+    `"use strict"; ${actionSubmitSource}; return clickActionSubmit;`,
+  )(
+    () => actionsBlock,
+    (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
+    (callback) => callback(),
+  );
 };
 
 const createNetworkTurnTracker = () =>
@@ -3665,6 +3702,48 @@ test("network default remains successful when the mirrored Pass option is absent
   assert.deepEqual(selector.mirrorSelections, ["Pass for this generation"]);
 });
 
+test("network default preserves Pass when Autoqueue is disabled", () => {
+  const selector = createNetworkPassSelector({
+    autoProcess: false,
+    queue: [{type: "playedAction", cardName: "Bio Printing Facility"}],
+  });
+
+  assert.equal(selector.select(), true);
+  assert.equal(selector.pending(), false);
+  assert.equal(selector.selectionCount(), 1);
+  assert.deepEqual(selector.mirrorSelections, ["Pass for this generation"]);
+});
+
+test("network default preserves Pass when Autoqueue has no pending work", () => {
+  const selector = createNetworkPassSelector({autoProcess: true, queue: []});
+
+  assert.equal(selector.select(), true);
+  assert.equal(selector.pending(), false);
+  assert.equal(selector.selectionCount(), 1);
+  assert.deepEqual(selector.mirrorSelections, ["Pass for this generation"]);
+});
+
+test("network default suppresses Pass while Autoqueue has pending work", () => {
+  const selector = createNetworkPassSelector({
+    autoProcess: true,
+    queue: [{type: "playedAction", cardName: "Bio Printing Facility"}],
+  });
+
+  assert.equal(selector.select(), true);
+  assert.equal(selector.pending(), false);
+  assert.equal(selector.selectionCount(), 0);
+  assert.deepEqual(selector.mirrorSelections, []);
+});
+
+test("network default suppresses Pass while queue execution is in flight", () => {
+  const selector = createNetworkPassSelector({queueExecutionInFlight: true});
+
+  assert.equal(selector.select(), true);
+  assert.equal(selector.pending(), false);
+  assert.equal(selector.selectionCount(), 0);
+  assert.deepEqual(selector.mirrorSelections, []);
+});
+
 test("network turn tracking suppresses the initial state and duplicate updates", () => {
   const currentTurnView = {
     waitingFor: {type: "or", title: "Take your next action"},
@@ -5558,6 +5637,106 @@ test("energy autopilot selects only an enabled exact Power Plant project", () =>
     createPowerPlantSelector({disabled: true}).select({required: false}),
     false,
   );
+});
+
+test("queued action submission clicks only the requested exact label", () => {
+  let takeActionClicks = 0;
+  let passClicks = 0;
+  const submit = createActionSubmit([
+    {
+      disabled: false,
+      textContent: "Pass",
+      classList: {contains: () => true},
+      click() {
+        passClicks += 1;
+      },
+    },
+    {
+      disabled: false,
+      textContent: "Take action",
+      classList: {contains: () => true},
+      click() {
+        takeActionClicks += 1;
+      },
+    },
+  ]);
+
+  submit("Take action");
+  assert.equal(takeActionClicks, 1);
+  assert.equal(passClicks, 0);
+});
+
+test("queued project submission clicks the exact Play card label", () => {
+  let playCardClicks = 0;
+  const submit = createActionSubmit([
+    {
+      disabled: false,
+      textContent: "Play card",
+      classList: {contains: () => true},
+      click() {
+        playCardClicks += 1;
+      },
+    },
+  ]);
+
+  submit("Play card");
+  assert.equal(playCardClicks, 1);
+});
+
+test("queued action submission never falls back to Pass", () => {
+  let passClicks = 0;
+  const submit = createActionSubmit([
+    {
+      disabled: false,
+      textContent: "Pass",
+      classList: {contains: () => true},
+      click() {
+        passClicks += 1;
+      },
+    },
+  ]);
+
+  assert.throws(
+    () => submit("Take action"),
+    /missing exact action submit button: Take action/,
+  );
+  assert.equal(passClicks, 0);
+});
+
+test("queued action submission rejects ambiguous exact controls", () => {
+  let clickCount = 0;
+  const button = () => ({
+    disabled: false,
+    textContent: "Take action",
+    classList: {contains: () => true},
+    click() {
+      clickCount += 1;
+    },
+  });
+  const submit = createActionSubmit([button(), button()]);
+
+  assert.throws(
+    () => submit("Take action"),
+    /ambiguous exact action submit buttons: Take action/,
+  );
+  assert.equal(clickCount, 0);
+});
+
+test("explicit Pass submission accepts its exact alternate label", () => {
+  let passClicks = 0;
+  const submit = createActionSubmit([
+    {
+      disabled: false,
+      value: "Pass for this generation",
+      classList: {contains: () => true},
+      click() {
+        passClicks += 1;
+      },
+    },
+  ]);
+
+  submit("Pass", ["Pass for this generation"]);
+  assert.equal(passClicks, 1);
 });
 
 test("energy autopilot clicks only an enabled exact Confirm submit", () => {

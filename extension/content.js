@@ -2,7 +2,7 @@
   const hostname = window.location.hostname;
   const isTerraformingMars = hostname === "terraforming-mars.herokuapp.com";
   const isColonist = hostname === "colonist.io" || hostname.endsWith(".colonist.io");
-  const contentScriptVersion = "v1.0.7";
+  const contentScriptVersion = "v1.0.8";
 
   if (!isTerraformingMars && !isColonist) {
     return;
@@ -6109,6 +6109,16 @@
 
   const maybeSelectNetworkDefaultPass = () => {
     if (!pendingNetworkPassSelection) return false;
+    const session = readQueueSession();
+    const shouldSuppressDefaultPass =
+      queueExecutionInFlight ||
+      (session?.autoProcess === true &&
+        Array.isArray(session.queue) &&
+        session.queue.length > 0);
+    if (shouldSuppressDefaultPass) {
+      pendingNetworkPassSelection = false;
+      return true;
+    }
     if (!isCurrentPlayerTurn() || !hasLiveActionForm() || !isTakeNextActionPhase()) {
       return false;
     }
@@ -6406,16 +6416,20 @@
       getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
     const buttons = Array.from(actionsRoot?.querySelectorAll("button, input[type='submit']") ?? []);
     const preferredTexts = [preferredText, ...alternateTexts];
-    const button =
-      buttons.find((candidate) =>
-        preferredTexts.includes(cleanText(candidate.textContent ?? candidate.value ?? "")),
-      ) ??
-      buttons.find((candidate) => candidate.classList?.contains("btn-submit")) ??
-      buttons.find((candidate) => !candidate.disabled);
-    if (!button || button.disabled) {
-      throw new Error(`missing submit button: ${preferredText}`);
+    const matches = buttons.filter(
+      (candidate) =>
+        !candidate.disabled &&
+        preferredTexts.includes(
+          cleanText(candidate.textContent ?? candidate.value ?? ""),
+        ),
+    );
+    if (matches.length === 0) {
+      throw new Error(`missing exact action submit button: ${preferredText}`);
     }
-    preserveScrollDuring(() => button.click());
+    if (matches.length > 1) {
+      throw new Error(`ambiguous exact action submit buttons: ${preferredText}`);
+    }
+    preserveScrollDuring(() => matches[0].click());
   };
 
   const clickLogCard = (index) => {
