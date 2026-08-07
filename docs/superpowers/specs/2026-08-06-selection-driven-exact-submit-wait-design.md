@@ -38,7 +38,7 @@ Keep `exactActionSubmitMatches` as the single exact enabled-text lookup. General
 2. If none exists, poll every 25 ms for at most 250 ms.
 3. Click exactly once when one match exists.
 4. Fail immediately if multiple exact matches exist.
-5. Throw the timeout-specific missing-control error after the full bound.
+5. After the full bound, throw the timeout-specific missing-control error for required submits or return `false` for an explicitly optional submit.
 
 The helper never repeats the preceding selection and never retries after clicking. Existing scroll preservation remains around the click.
 
@@ -62,6 +62,7 @@ No whole-action retry, queue mutation change, network fetch, or additional audit
 - Disabled controls do not qualify.
 - A successful lookup produces at most one click.
 - The wait is bounded to 250 ms and does not cross into retrying the selection.
+- Power Plant retains its existing optional fallback semantics: a missing `Confirm` returns `false` after the bound so the autopilot can continue to its fallback, while duplicate `Confirm` controls remain an error.
 - Non-text and immediate prompt-entry submit paths retain their existing behavior.
 
 ## Testing
@@ -71,7 +72,7 @@ Tests will verify:
 1. `Pass`, `Take action`, `Play card`, and both selection-driven `Confirm` flows use the bounded wait.
 2. A matching control that appears during the bound is clicked once.
 3. Immediate exact controls are still clicked without an artificial initial delay.
-4. Missing controls fail after 250 ms with the timeout-specific error.
+4. Missing required controls fail after 250 ms with the timeout-specific error, while the optional Power Plant confirmation returns `false` after the same bound.
 5. Ambiguous controls fail immediately without waiting or clicking.
 6. Preceding selections occur only once.
 7. Structural and already-rendered prompt-entry submit paths remain synchronous and unchanged.
