@@ -181,7 +181,11 @@ const targetToolsSource = playedToolsSource.slice(
 );
 const cardTargetSubmitSource = source.slice(
   source.indexOf("const clickCardTargetSubmit"),
-  source.indexOf("const findActionCardForQueuedItem"),
+  source.indexOf("const selectionInputForActionCard"),
+);
+const cardSelectionSource = source.slice(
+  source.indexOf("const selectionInputForActionCard"),
+  source.indexOf("const cardMatchesQueuedItem"),
 );
 const actionSubmitSource = source.slice(
   source.indexOf("const exactActionSubmitMatches"),
@@ -501,6 +505,103 @@ const createWaitingActionSubmit = (buttonsForProbe) => {
   return {
     submit,
     probeCount: () => probeCount,
+    waits,
+  };
+};
+
+const createActionCardSelection = ({
+  cardName = "Queued Card",
+  inputLocation = "direct",
+  inputAfterProbe = 0,
+  disabled = false,
+  checked = false,
+  activationRegisters = true,
+  includeMatchingCard = true,
+  includeNeighbor = false,
+} = {}) => {
+  let probeCount = 0;
+  let clickCount = 0;
+  const waits = [];
+  const input = {
+    checked,
+    disabled,
+    click() {
+      clickCount += 1;
+      if (activationRegisters) this.checked = true;
+    },
+  };
+  const neighborInput = {
+    checked: false,
+    disabled: false,
+    click() {
+      assert.fail("neighbor input must not be clicked");
+    },
+  };
+  const createCard = (name, candidateInput) => {
+    const ownerLabel = {
+      querySelector(selector) {
+        assert.equal(selector, "input[type='radio'], input[type='checkbox']");
+        return probeCount > inputAfterProbe ? candidateInput : null;
+      },
+    };
+    return {
+      name,
+      querySelector(selector) {
+        assert.equal(selector, "input[type='radio'], input[type='checkbox']");
+        if (inputLocation !== "direct") return null;
+        return probeCount > inputAfterProbe ? candidateInput : null;
+      },
+      closest(selector) {
+        assert.equal(selector, "label");
+        return inputLocation === "ancestor" ? ownerLabel : null;
+      },
+    };
+  };
+  const cards = [];
+  if (includeNeighbor) cards.push(createCard("Neighbor Card", neighborInput));
+  if (includeMatchingCard) cards.push(createCard(cardName, input));
+
+  const selection = Function(
+    "document",
+    "cardMatchesQueuedItem",
+    "getCardIdentity",
+    "createQueueActionDeferredError",
+    "preserveScrollDuring",
+    "wait",
+    `"use strict";
+      ${cardSelectionSource}
+      return {selectionInputForActionCard, selectActionCard};
+    `,
+  )(
+    {
+      querySelectorAll(selector) {
+        assert.equal(selector, ".action-card");
+        probeCount += 1;
+        return cards;
+      },
+    },
+    (cardBox, item) => cardBox.name === item.cardName,
+    (cardBox) => ({name: cardBox.name}),
+    (message, reason, details = {}) => {
+      const error = new Error(message);
+      error.code = "queue-action-deferred";
+      error.reason = reason;
+      Object.assign(error, details);
+      return error;
+    },
+    (callback) => callback(),
+    async (milliseconds) => {
+      waits.push(milliseconds);
+    },
+  );
+
+  return {
+    ...selection,
+    clickCount: () => clickCount,
+    input,
+    neighborInput,
+    probeCount: () => probeCount,
+    select: () => selection.selectActionCard({cardName}, ".action-card"),
     waits,
   };
 };
@@ -2110,7 +2211,8 @@ const createPowerPlantAttempt = ({
         const error = new Error(
           "missing exact action submit button after 1000ms: Confirm",
         );
-        error.code = "queue-submit-deferred";
+        error.code = "queue-action-deferred";
+        error.reason = "exact-submit-not-ready";
         error.expectedSubmit = "Confirm";
         error.alternateSubmitTexts = [];
         throw error;
@@ -2756,7 +2858,7 @@ const createQueueExecutor = (
     "clearPlayedActionLearning",
     "beginQueuedExecutionViewportAnchor",
     "clearQueuedExecutionViewportAnchor",
-    "isQueueSubmitDeferredError",
+    "isQueueActionDeferredError",
     "rememberDeferredQueueSubmit",
     "maybeResumeDeferredQueueExecution",
     "window",
@@ -2792,11 +2894,19 @@ const createQueueExecutor = (
       if (reject) throw new Error("test failure");
       if (defer) {
         const error = new Error(
-          "missing exact action submit button after 1000ms: Play card",
+          defer === "selection"
+            ? `card selection not ready after 1000ms: ${item.cardName ?? item.label}`
+            : "missing exact action submit button after 1000ms: Play card",
         );
-        error.code = "queue-submit-deferred";
-        error.expectedSubmit = "Play card";
-        error.alternateSubmitTexts = [];
+        error.code = "queue-action-deferred";
+        if (defer === "selection") {
+          error.reason = "card-selection-not-ready";
+          error.expectedCard = item.cardName ?? item.label;
+        } else {
+          error.reason = "exact-submit-not-ready";
+          error.expectedSubmit = "Play card";
+          error.alternateSubmitTexts = [];
+        }
         throw error;
       }
     },
@@ -2834,7 +2944,7 @@ const createQueueExecutor = (
     () => {
       viewportAnchorClearCount += 1;
     },
-    (error) => error?.code === "queue-submit-deferred",
+    (error) => error?.code === "queue-action-deferred",
     () => {},
     () => false,
     {setTimeout: (callback) => callback()},
@@ -4138,7 +4248,41 @@ test("automatic exact-submit deferral restores the head without failing", async 
         executionSource: "automatic",
         itemType: "projectCard",
         label: "first",
+        reason: "exact-submit-not-ready",
         expectedSubmit: "Play card",
+      },
+    },
+  ]);
+});
+
+test("automatic card-selection deferral restores and pauses the strict-FIFO head", async () => {
+  const first = {
+    type: "playedAction",
+    cardName: "Queued Action",
+    label: "Queued Action",
+  };
+  const second = {type: "projectCard", label: "later project"};
+  const executor = createQueueExecutor([first, second], {defer: "selection"});
+
+  assert.equal(executor.executeQueuedActionAt(0), true);
+  assert.deepEqual(executor.queue(), [second]);
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(executor.queue(), [first, second]);
+  assert.equal(executor.restoreCount(), 1);
+  assert.equal(executor.clearCount(), 0);
+  assert.equal(executor.state().queueExecutionAttempted, true);
+  assert.equal(executor.state().queueExecutionError, "");
+  assert.deepEqual(executor.auditEvents, [
+    {
+      eventName: "game.action.deferred",
+      details: {
+        executionSource: "automatic",
+        itemType: "playedAction",
+        label: "Queued Action",
+        reason: "card-selection-not-ready",
+        expectedCard: "Queued Action",
       },
     },
   ]);
@@ -4174,6 +4318,31 @@ test("manual and immediate exact-submit timeouts retain failure semantics", asyn
       details.executionSource,
     ]),
     [["game.action.failure", "immediate"]],
+  );
+});
+
+test("manual and immediate card-selection deferrals remain visible failures", async () => {
+  const item = {
+    type: "playedAction",
+    cardName: "Queued Action",
+    label: "Queued Action",
+  };
+  const manual = createQueueExecutor([item], {defer: "selection"});
+  const immediate = createQueueExecutor([], {defer: "selection"});
+
+  assert.equal(manual.executeQueuedActionAt(0, {manual: true}), true);
+  assert.equal(immediate.executeQueueItemNow(item), true);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(manual.queue(), [item]);
+  assert.match(manual.state().queueExecutionError, /card selection not ready/);
+  assert.deepEqual(immediate.queue(), []);
+  assert.match(immediate.state().queueExecutionError, /card selection not ready/);
+  assert.deepEqual(
+    [manual, immediate].map((executor) =>
+      executor.auditEvents.map(({eventName}) => eventName),
+    ),
+    [["game.action.failure"], ["game.action.failure"]],
   );
 });
 
@@ -6234,7 +6403,7 @@ test("energy autopilot selects Standard projects, Power Plant, and exact Confirm
   await assert.rejects(
     noConfirm.attempt(),
     (error) =>
-      error.code === "queue-submit-deferred" &&
+      error.code === "queue-action-deferred" &&
       error.expectedSubmit === "Confirm",
   );
   assert.deepEqual(noConfirm.events, [
@@ -6260,6 +6429,88 @@ test("energy autopilot selects only an enabled exact Power Plant project", () =>
   assert.equal(
     createPowerPlantSelector({disabled: true}).select({required: false}),
     false,
+  );
+});
+
+test("queued card selection confirms direct and ancestor-label inputs", async () => {
+  for (const inputLocation of ["direct", "ancestor"]) {
+    const selection = createActionCardSelection({
+      inputLocation,
+      includeNeighbor: true,
+    });
+
+    await selection.select();
+
+    assert.equal(selection.input.checked, true);
+    assert.equal(selection.clickCount(), 1);
+    assert.equal(selection.neighborInput.checked, false);
+    assert.equal(selection.probeCount(), 1);
+    assert.deepEqual(selection.waits, []);
+  }
+});
+
+test("queued card selection waits for its exact enabled input", async () => {
+  const selection = createActionCardSelection({
+    inputLocation: "ancestor",
+    inputAfterProbe: 3,
+  });
+
+  await selection.select();
+
+  assert.equal(selection.input.checked, true);
+  assert.equal(selection.clickCount(), 1);
+  assert.equal(selection.probeCount(), 4);
+  assert.deepEqual(selection.waits, [25, 25, 25]);
+});
+
+test("queued card selection never toggles an already-selected input", async () => {
+  const selection = createActionCardSelection({checked: true});
+
+  await selection.select();
+
+  assert.equal(selection.input.checked, true);
+  assert.equal(selection.clickCount(), 0);
+});
+
+test("queued card selection defers unavailable and unconfirmed inputs", async () => {
+  for (const selection of [
+    createActionCardSelection({disabled: true}),
+    createActionCardSelection({
+      includeMatchingCard: false,
+      includeNeighbor: true,
+    }),
+  ]) {
+    await assert.rejects(selection.select(), (error) => {
+      assert.equal(error.code, "queue-action-deferred");
+      assert.equal(error.reason, "card-selection-not-ready");
+      assert.equal(error.expectedCard, "Queued Card");
+      return true;
+    });
+    assert.equal(selection.clickCount(), 0);
+    assert.equal(selection.probeCount(), 41);
+    assert.deepEqual(selection.waits, Array(40).fill(25));
+  }
+
+  const unconfirmed = createActionCardSelection({activationRegisters: false});
+  await assert.rejects(unconfirmed.select(), (error) => {
+    assert.equal(error.code, "queue-action-deferred");
+    assert.equal(error.reason, "card-selection-not-confirmed");
+    assert.equal(error.expectedCard, "Queued Card");
+    return true;
+  });
+  assert.equal(unconfirmed.clickCount(), 1);
+  assert.equal(unconfirmed.input.checked, false);
+});
+
+test("queued card selection uses only confirmed native input activation", () => {
+  assert.doesNotMatch(cardSelectionSource, /input\.checked\s*=\s*true/);
+  assert.doesNotMatch(cardSelectionSource, /dispatchBubbledEvent/);
+  assert.doesNotMatch(cardSelectionSource, /cardBox\.dispatchEvent|new MouseEvent/);
+  assert.doesNotMatch(cardSelectionSource, /requireEnabledInput/);
+  assert.match(cardSelectionSource, /if \(!input\.checked\)[\s\S]*input\.click\(\)/);
+  assert.match(
+    cardSelectionSource,
+    /if \(!input\.checked\)[\s\S]*"card-selection-not-confirmed"/,
   );
 });
 
@@ -6414,7 +6665,8 @@ test("automatic Pass stops after its bounded submit wait", async () => {
         error.message,
         /missing exact action submit button after 1000ms: Pass/,
       );
-      assert.equal(error.code, "queue-submit-deferred");
+      assert.equal(error.code, "queue-action-deferred");
+      assert.equal(error.reason, "exact-submit-not-ready");
       assert.equal(error.expectedSubmit, "Pass");
       assert.deepEqual(error.alternateSubmitTexts, ["Pass for this generation"]);
       return true;
@@ -6539,6 +6791,10 @@ test("selection-driven exact submits use the bounded wait", async () => {
   assert.match(
     executeQueuedItemSource,
     /await selectActionCard\(item, actionCardSelector\(\)\);[\s\S]*await nextFrame\(\);[\s\S]*await waitForActionSubmit\("Play card"\)/,
+  );
+  assert.match(
+    executeQueuedItemSource,
+    /if \(item\?\.type === "cardTarget"\)[\s\S]*await selectActionCard\(item, actionCardSelector\(\)\);[\s\S]*clickCardTargetSubmit\(\)/,
   );
   assert.match(finalGreenerySkipSource, /await waitForActionSubmit\("Confirm"\)/);
   assert.match(

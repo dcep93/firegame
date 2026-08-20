@@ -6065,13 +6065,21 @@
         }
         if (
           executionSource === "automatic" &&
-          isQueueSubmitDeferredError(error)
+          isQueueActionDeferredError(error)
         ) {
           onDeferred?.();
-          rememberDeferredQueueSubmit(item, error);
+          if (error.expectedSubmit) {
+            rememberDeferredQueueSubmit(item, error);
+          }
           auditLog("game.action.deferred", {
             ...auditDetails,
-            expectedSubmit: error.expectedSubmit,
+            reason: error.reason,
+            ...(error.expectedSubmit
+              ? {expectedSubmit: error.expectedSubmit}
+              : {}),
+            ...(error.expectedCard
+              ? {expectedCard: error.expectedCard}
+              : {}),
           });
           queueExecutionError = "";
           return;
@@ -6226,7 +6234,7 @@
     }
 
     if (item?.type === "cardTarget") {
-      await selectActionCard(item, actionCardSelector(), { requireEnabledInput: true });
+      await selectActionCard(item, actionCardSelector());
       await nextFrame();
       clickCardTargetSubmit();
       return;
@@ -6883,53 +6891,58 @@
     preserveScrollDuring(() => buttons[0].click());
   };
 
+  const selectionInputForActionCard = (cardBox) =>
+    cardBox?.querySelector("input[type='radio'], input[type='checkbox']") ??
+    cardBox?.closest("label")?.querySelector(
+      "input[type='radio'], input[type='checkbox']",
+    ) ??
+    null;
+
   const findActionCardForQueuedItem = (item, selector) => {
     const cards = Array.from(document.querySelectorAll(selector));
     const cardBox = cards.find((candidate) => cardMatchesQueuedItem(candidate, item));
-    const input = cardBox?.querySelector("input[type='radio'], input[type='checkbox']");
+    const input = selectionInputForActionCard(cardBox);
     return { cardBox, cards, input };
   };
 
-  const selectActionCard = async (item, selector, options = {}) => {
+  const selectActionCard = async (item, selector) => {
+    const waitLimitMs = 1000;
+    const pollIntervalMs = 25;
+    const expectedCard = item.cardName ?? item.cardKey ?? "unknown";
     let cardBox = null;
     let cards = [];
     let input = null;
-    for (let attempt = 0; attempt < 30; attempt += 1) {
+    for (let elapsedMs = 0; elapsedMs <= waitLimitMs; elapsedMs += pollIntervalMs) {
       ({ cardBox, cards, input } = findActionCardForQueuedItem(item, selector));
-      if (cardBox) break;
-      await nextFrame();
-    }
-    if (!cardBox) {
-      const foundCards = cards
-        .map((candidate) => getCardIdentity(candidate).name)
-        .filter(Boolean)
-        .slice(0, 12)
-        .join(", ");
-      throw new Error(
-        `missing card: ${item.cardName ?? item.cardKey ?? "unknown"}${
-          foundCards ? `; found: ${foundCards}` : ""
-        }`,
-      );
-    }
-    if (options.requireEnabledInput && (!input || input.disabled)) {
-      throw new Error(`card is not selectable: ${item.cardName ?? item.cardKey ?? "unknown"}`);
-    }
-    preserveScrollDuring(() => {
-      if (input) {
-        input.checked = true;
-        input.click();
-        dispatchBubbledEvent(input, "input");
-        dispatchBubbledEvent(input, "change");
-        return;
+      if (cardBox && input && !input.disabled) break;
+      if (elapsedMs === waitLimitMs) {
+        const foundCards = cards
+          .map((candidate) => getCardIdentity(candidate).name)
+          .filter(Boolean)
+          .slice(0, 12);
+        throw createQueueActionDeferredError(
+          `card selection not ready after ${waitLimitMs}ms: ${expectedCard}${
+            foundCards.length > 0 ? `; found: ${foundCards.join(", ")}` : ""
+          }`,
+          "card-selection-not-ready",
+          {expectedCard, foundCards},
+        );
       }
-      cardBox.dispatchEvent(
-        new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-          view: window,
-        }),
+      await wait(pollIntervalMs);
+    }
+
+    if (!input.checked) {
+      preserveScrollDuring(() => {
+        input.click();
+      });
+    }
+    if (!input.checked) {
+      throw createQueueActionDeferredError(
+        `card selection did not register: ${expectedCard}`,
+        "card-selection-not-confirmed",
+        {expectedCard},
       );
-    });
+    }
   };
 
   const cardMatchesQueuedItem = (cardBox, item) => {
@@ -6971,24 +6984,37 @@
     );
   };
 
-  const queueSubmitDeferredErrorCode = "queue-submit-deferred";
+  const queueActionDeferredErrorCode = "queue-action-deferred";
+
+  const createQueueActionDeferredError = (
+    message,
+    reason,
+    details = {},
+  ) => {
+    const error = new Error(message);
+    error.code = queueActionDeferredErrorCode;
+    error.reason = reason;
+    Object.assign(error, details);
+    return error;
+  };
 
   const createQueueSubmitDeferredError = (
     preferredText,
     alternateTexts,
     waitLimitMs,
   ) => {
-    const error = new Error(
+    return createQueueActionDeferredError(
       `missing exact action submit button after ${waitLimitMs}ms: ${preferredText}`,
+      "exact-submit-not-ready",
+      {
+        expectedSubmit: preferredText,
+        alternateSubmitTexts: [...alternateTexts],
+      },
     );
-    error.code = queueSubmitDeferredErrorCode;
-    error.expectedSubmit = preferredText;
-    error.alternateSubmitTexts = [...alternateTexts];
-    return error;
   };
 
-  const isQueueSubmitDeferredError = (error) =>
-    error?.code === queueSubmitDeferredErrorCode;
+  const isQueueActionDeferredError = (error) =>
+    error?.code === queueActionDeferredErrorCode;
 
   const queueItemRetryKey = (item) => JSON.stringify(item ?? null);
 
