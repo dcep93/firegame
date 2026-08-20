@@ -44,6 +44,10 @@ const playerViewQueueRearmSource = source.slice(
   source.indexOf("const playerViewWaitingForKey"),
   source.indexOf("const capturePlayerViewResponse"),
 );
+const playerViewCaptureTransportSource = source.slice(
+  source.indexOf("const capturePlayerViewResponse"),
+  source.indexOf("const currentPlayerId"),
+);
 const playedActionLearningSource = source.slice(
   source.indexOf("const playerInputModelTitle"),
   source.indexOf("const rememberNetworkTurnState"),
@@ -180,8 +184,28 @@ const cardTargetSubmitSource = source.slice(
   source.indexOf("const findActionCardForQueuedItem"),
 );
 const actionSubmitSource = source.slice(
-  source.indexOf("const clickActionSubmit"),
+  source.indexOf("const exactActionSubmitMatches"),
   source.indexOf("const clickLogCard"),
+);
+const deferredQueueResumeSource = source.slice(
+  source.indexOf("const queueItemRetryKey"),
+  source.indexOf("const clickActionSubmit"),
+);
+const logCardClickSource = source.slice(
+  source.indexOf("const clickLogCard"),
+  source.indexOf("const closeRenderedLogCardPanel"),
+);
+const renderedLogCardCaptureSource = source.slice(
+  source.indexOf("const captureRenderedLogCard"),
+  source.indexOf("const waitForRenderedLogCard"),
+);
+const renderedLogCardWaitSource = source.slice(
+  source.indexOf("const waitForRenderedLogCard"),
+  source.indexOf("const clickMissingCards"),
+);
+const missingLogCardRenderSource = source.slice(
+  source.indexOf("const clickMissingCards"),
+  source.indexOf("const requestMissingCardRender"),
 );
 const executeQueuedItemSource = source.slice(
   source.indexOf("const executeQueuedItem"),
@@ -211,9 +235,25 @@ const liveScoreDataSource = source.slice(
   source.indexOf("const baseGlobalContributionColumns"),
   source.indexOf("const timeWarpCss = () =>"),
 );
+const theftHistoryStateSource = source.slice(
+  source.indexOf('let theftHistoryPlayerId = ""'),
+  source.indexOf("const looksLikePlayerView"),
+);
+const theftHistoryDataSource = source.slice(
+  source.indexOf("const parseTheftHistoryLogRequest"),
+  source.indexOf("const baseGlobalContributionColumns"),
+);
+const theftHistoryRenderSource = source.slice(
+  source.indexOf("const createTheftHistoryPlayerName"),
+  source.indexOf("const renderLiveScoreTable"),
+);
 const liveScoreRenderSource = source.slice(
   source.indexOf("const liveScoreText"),
   source.indexOf("const renderQueuePanel"),
+);
+const theftHistoryCssSource = source.slice(
+  source.indexOf(`#\${timeWarpPanelId} .tfmars420-theft-history {`),
+  source.indexOf(`#\${timeWarpPanelId} > .tfmars420-actions-mirror`),
 );
 const liveScoreCssSource = source.slice(
   source.indexOf(`#\${timeWarpPanelId} .tfmars420-live-scores-scroll`),
@@ -425,6 +465,92 @@ const createActionSubmit = (buttons) => {
     (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
     (callback) => callback(),
   );
+};
+
+const createWaitingActionSubmit = (buttonsForProbe) => {
+  let probeCount = 0;
+  const waits = [];
+  const actionsRoot = {
+    querySelectorAll(selector) {
+      assert.equal(selector, "button, input[type='submit']");
+      const buttons = buttonsForProbe(probeCount);
+      probeCount += 1;
+      return buttons;
+    },
+  };
+  const actionsBlock = {
+    querySelector(selector) {
+      assert.equal(selector, ".wf-root, form");
+      return actionsRoot;
+    },
+  };
+  const submit = Function(
+    "getActionsBlock",
+    "cleanText",
+    "preserveScrollDuring",
+    "wait",
+    `"use strict"; ${actionSubmitSource}; return waitForActionSubmit;`,
+  )(
+    () => actionsBlock,
+    (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
+    (callback) => callback(),
+    async (milliseconds) => {
+      waits.push(milliseconds);
+    },
+  );
+  return {
+    submit,
+    probeCount: () => probeCount,
+    waits,
+  };
+};
+
+const createDeferredQueueResume = ({
+  buttons = [],
+  autoProcess = true,
+  playerId = "player-1",
+  queuedItem = {type: "projectCard", cardName: "Queued Project"},
+} = {}) => {
+  const session = {playerId, autoProcess, queue: [queuedItem]};
+  let scheduleCount = 0;
+  const resume = Function(
+    "exactActionSubmitMatches",
+    "readQueueSession",
+    "latestPlayerView",
+    "scheduleTerraformingMarsUpdate",
+    "queueDeferredSubmit",
+    "queueExecutionInFlight",
+    "queueExecutionAttempted",
+    "queueExecutionError",
+    `"use strict";
+      ${deferredQueueResumeSource}
+      return {
+        remember: rememberDeferredQueueSubmit,
+        resume: maybeResumeDeferredQueueExecution,
+        state: () => ({
+          queueDeferredSubmit,
+          queueExecutionAttempted,
+          queueExecutionError,
+        }),
+      };
+    `,
+  )(
+    () => buttons,
+    () => session,
+    {id: "player-1"},
+    () => {
+      scheduleCount += 1;
+    },
+    null,
+    false,
+    true,
+    "waiting",
+  );
+  return {
+    ...resume,
+    scheduleCount: () => scheduleCount,
+    session,
+  };
 };
 
 const createNetworkTurnTracker = () =>
@@ -1613,6 +1739,38 @@ const {
   `,
 )((value) => Boolean(value) && typeof value === "object" && !Array.isArray(value));
 
+const {
+  parseTheftHistoryLogRequest,
+  theftHistoryObservationIsCurrent,
+  parseTheftLogEntry,
+  sortedUniqueTheftHistoryEvents,
+  theftHistoryTimestampText,
+  theftGenerationFingerprint,
+  promoteCompletedTheftHistoryFingerprints,
+  theftGenerationRequestPlan,
+} = Function(
+  "cleanText",
+  "normalizeCardName",
+  "isPlainObject",
+  `"use strict";
+    ${theftHistoryDataSource}
+    return {
+      parseTheftHistoryLogRequest,
+      theftHistoryObservationIsCurrent,
+      parseTheftLogEntry,
+      sortedUniqueTheftHistoryEvents,
+      theftHistoryTimestampText,
+      theftGenerationFingerprint,
+      promoteCompletedTheftHistoryFingerprints,
+      theftGenerationRequestPlan,
+    };
+  `,
+)(
+  (value) => String(value ?? "").replace(/\s+/g, " ").trim(),
+  (value) => String(value ?? "").replace(/\s+/g, " ").trim().toLowerCase(),
+  (value) => Boolean(value) && typeof value === "object" && !Array.isArray(value),
+);
+
 const createQueuePromptChecks = (options = {}) =>
   Function(
     "isTakeNextActionPhase",
@@ -1817,7 +1975,7 @@ const executePass = async () => {
   await Function(
     "selectActionOption",
     "nextFrame",
-    "clickActionSubmit",
+    "waitForActionSubmit",
     `"use strict"; ${passActionSource}; return executePassAction();`,
   )(
     (label) => {
@@ -1834,13 +1992,32 @@ const executePass = async () => {
   return events;
 };
 
+const executeQueuedCard = async (type) => {
+  const events = [];
+  await Function(
+    "selectActionOption",
+    "nextFrame",
+    "selectActionCard",
+    "actionCardSelector",
+    "waitForActionSubmit",
+    `"use strict"; ${executeQueuedItemSource}; return executeQueuedItem({type: ${JSON.stringify(type)}});`,
+  )(
+    (label) => events.push(`select:${label}`),
+    async () => events.push("frame"),
+    async () => events.push("select-card"),
+    () => ".action-card",
+    async (label) => events.push(`submit:${label}`),
+  );
+  return events;
+};
+
 const executeFinalGreenerySkip = async () => {
   const events = [];
   await Function(
     "selectExactActionOption",
     "declineFinalGreeneryOption",
     "nextFrame",
-    "clickExactActionSubmit",
+    "waitForActionSubmit",
     `"use strict";
       ${finalGreenerySkipSource}
       return executeFinalGreenerySkip();
@@ -1909,7 +2086,7 @@ const createPowerPlantAttempt = ({
     "selectActionOption",
     "nextFrame",
     "selectPowerPlantStandardProject",
-    "clickExactActionSubmit",
+    "waitForActionSubmit",
     `"use strict"; ${powerPlantAttemptSource}; return tryExecutePowerPlantStandardProject;`,
   )(
     (label, options) => {
@@ -1925,10 +2102,20 @@ const createPowerPlantAttempt = ({
       assert.deepEqual(options, {required: false});
       return powerPlant;
     },
-    (label, options) => {
+    async (label, alternatives = [], options = {}) => {
       events.push(`submit:${label}`);
-      assert.deepEqual(options, {required: false});
-      return confirm;
+      assert.deepEqual(alternatives, []);
+      assert.deepEqual(options, {});
+      if (!confirm) {
+        const error = new Error(
+          "missing exact action submit button after 1000ms: Confirm",
+        );
+        error.code = "queue-submit-deferred";
+        error.expectedSubmit = "Confirm";
+        error.alternateSubmitTexts = [];
+        throw error;
+      }
+      return true;
     },
   );
   return {attempt, events};
@@ -2531,7 +2718,12 @@ const executeEscape = async ({
 
 const createQueueExecutor = (
   initialQueue,
-  {reject = false, canExecute = true, targetLearningCandidate = null} = {},
+  {
+    reject = false,
+    defer = false,
+    canExecute = true,
+    targetLearningCandidate = null,
+  } = {},
 ) => {
   const session = {playerId: "player-1", queue: [...initialQueue]};
   const auditEvents = [];
@@ -2564,12 +2756,16 @@ const createQueueExecutor = (
     "clearPlayedActionLearning",
     "beginQueuedExecutionViewportAnchor",
     "clearQueuedExecutionViewportAnchor",
+    "isQueueSubmitDeferredError",
+    "rememberDeferredQueueSubmit",
+    "maybeResumeDeferredQueueExecution",
     "window",
     "scheduleTerraformingMarsUpdate",
     "queueExecutionAttempted",
     "queueExecutionInFlight",
     "queuePendingLogMutation",
     "queueExecutionError",
+    "queueDeferredSubmit",
     `"use strict";
       ${queueLifecycleSource}
       return {
@@ -2594,6 +2790,15 @@ const createQueueExecutor = (
     async (item) => {
       executedItems.push(item);
       if (reject) throw new Error("test failure");
+      if (defer) {
+        const error = new Error(
+          "missing exact action submit button after 1000ms: Play card",
+        );
+        error.code = "queue-submit-deferred";
+        error.expectedSubmit = "Play card";
+        error.alternateSubmitTexts = [];
+        throw error;
+      }
     },
     (item) => item.label,
     (item, index) => {
@@ -2629,12 +2834,16 @@ const createQueueExecutor = (
     () => {
       viewportAnchorClearCount += 1;
     },
+    (error) => error?.code === "queue-submit-deferred",
+    () => {},
+    () => false,
     {setTimeout: (callback) => callback()},
     () => {},
     false,
     false,
     false,
     "",
+    null,
   );
   return {
     ...executor,
@@ -3078,6 +3287,355 @@ test("hand sorting is scoped to the real hand and stays local", () => {
   assert.doesNotMatch(handSortDomSource, /fetch\(|XMLHttpRequest|clickActionSubmit|\\.click\(\)/);
 });
 
+const theftHistoryPlayers = [
+  {name: "tran", color: "yellow"},
+  {name: "dan", color: "red"},
+  {name: "santiano", color: "green"},
+  {name: "neil", color: "black"},
+];
+
+test("theft history recognizes same-origin relative and absolute log requests", () => {
+  const baseUrl = "https://terraforming-mars.herokuapp.com/player?id=p123";
+  assert.deepEqual(
+    parseTheftHistoryLogRequest("/api/game/logs?id=p123&generation=4", baseUrl),
+    {playerId: "p123", generation: 4},
+  );
+  assert.deepEqual(
+    parseTheftHistoryLogRequest(
+      "https://terraforming-mars.herokuapp.com/api/game/logs?generation=9&id=s456",
+      baseUrl,
+    ),
+    {playerId: "s456", generation: 9},
+  );
+  assert.equal(
+    parseTheftHistoryLogRequest(
+      "https://example.com/api/game/logs?id=p123&generation=4",
+      baseUrl,
+    ),
+    null,
+  );
+  assert.equal(parseTheftHistoryLogRequest("/api/game/logs?id=p123", baseUrl), null);
+  assert.equal(
+    parseTheftHistoryLogRequest("/api/game/logs?id=p123&generation=0", baseUrl),
+    null,
+  );
+  assert.equal(
+    parseTheftHistoryLogRequest("/api/player?id=p123&generation=4", baseUrl),
+    null,
+  );
+});
+
+test("theft history observations require the current player session and sequence", () => {
+  const observation = {
+    playerId: "p123",
+    generation: 4,
+    sequence: 8,
+    sessionRevision: 3,
+  };
+  assert.equal(
+    theftHistoryObservationIsCurrent(observation, {
+      playerId: "p123",
+      sessionRevision: 3,
+      latestSequence: 8,
+    }),
+    true,
+  );
+  assert.equal(
+    theftHistoryObservationIsCurrent(observation, {
+      playerId: "p999",
+      sessionRevision: 3,
+      latestSequence: 8,
+    }),
+    false,
+  );
+  assert.equal(
+    theftHistoryObservationIsCurrent(observation, {
+      playerId: "p123",
+      sessionRevision: 4,
+      latestSequence: 8,
+    }),
+    false,
+  );
+  assert.equal(
+    theftHistoryObservationIsCurrent(observation, {
+      playerId: "p123",
+      sessionRevision: 3,
+      latestSequence: 9,
+    }),
+    false,
+  );
+});
+
+test("theft history parses production and direct-resource log messages", () => {
+  assert.deepEqual(
+    parseTheftLogEntry(
+      {
+        message: "${3} stole ${1} ${2} production from ${0}",
+        data: [
+          {type: 2, value: "green"},
+          {type: 1, value: "1"},
+          {type: 0, value: "steel"},
+          {type: 2, value: "yellow"},
+        ],
+        timestamp: 1000,
+      },
+      2,
+      theftHistoryPlayers,
+    ),
+    {
+      generation: 2,
+      timestamp: 1000,
+      thiefName: "tran",
+      thiefColor: "yellow",
+      descriptor: "1 steel production",
+      victimName: "santiano",
+      victimColor: "green",
+    },
+  );
+
+  assert.deepEqual(
+    parseTheftLogEntry(
+      {
+        message: "${3} stole ${1} ${2} from ${0}",
+        data: [
+          {type: 2, value: "black"},
+          {type: 1, value: "3"},
+          {type: 0, value: "M€"},
+          {type: 2, value: "red"},
+        ],
+        timestamp: 2000,
+      },
+      9,
+      theftHistoryPlayers,
+    ),
+    {
+      generation: 9,
+      timestamp: 2000,
+      thiefName: "dan",
+      thiefColor: "red",
+      descriptor: "3 M€",
+      victimName: "neil",
+      victimColor: "black",
+    },
+  );
+});
+
+test("theft history rejects malformed, unresolved, and non-theft logs", () => {
+  const baseEntry = {
+    message: "${3} stole ${1} ${2} from ${0}",
+    data: [
+      {type: 2, value: "black"},
+      {type: 1, value: "3"},
+      {type: 0, value: "M€"},
+      {type: 2, value: "red"},
+    ],
+    timestamp: 2000,
+  };
+  assert.equal(
+    parseTheftLogEntry(
+      {...baseEntry, data: [{type: 2, value: "purple"}, ...baseEntry.data.slice(1)]},
+      9,
+      theftHistoryPlayers,
+    ),
+    null,
+  );
+  assert.equal(
+    parseTheftLogEntry({...baseEntry, message: "${4} stole ${1} from ${0}"}, 9, theftHistoryPlayers),
+    null,
+  );
+  assert.equal(
+    parseTheftLogEntry({...baseEntry, message: "${3} gained ${1} ${2}"}, 9, theftHistoryPlayers),
+    null,
+  );
+  assert.equal(
+    parseTheftLogEntry({...baseEntry, timestamp: undefined}, 9, theftHistoryPlayers),
+    null,
+  );
+});
+
+test("theft history sorts chronologically and removes exact duplicates", () => {
+  const early = {
+    generation: 2,
+    timestamp: 1000,
+    thiefName: "tran",
+    thiefColor: "yellow",
+    descriptor: "1 steel production",
+    victimName: "santiano",
+    victimColor: "green",
+  };
+  const late = {
+    generation: 9,
+    timestamp: 2000,
+    thiefName: "dan",
+    thiefColor: "red",
+    descriptor: "3 M€",
+    victimName: "neil",
+    victimColor: "black",
+  };
+  assert.deepEqual(
+    sortedUniqueTheftHistoryEvents([late, early, {...late}]),
+    [early, late],
+  );
+});
+
+test("theft history formats visible and full timestamps locally", () => {
+  const timestamp = Date.UTC(2026, 7, 2, 15, 4);
+  assert.equal(
+    theftHistoryTimestampText(timestamp, {locales: "en-US", timeZone: "UTC"}),
+    "3:04 PM",
+  );
+  assert.equal(
+    theftHistoryTimestampText(timestamp, {
+      full: true,
+      locales: "en-US",
+      timeZone: "UTC",
+    }),
+    "Aug 2, 2026, 3:04 PM",
+  );
+  assert.equal(theftHistoryTimestampText(Number.NaN), "—");
+  assert.equal(theftHistoryTimestampText("1785683040000"), "—");
+  assert.equal(theftHistoryTimestampText(timestamp, {timeZone: "Not/AZone"}), "—");
+});
+
+test("theft generation requests promote observed history and exclude the active generation", () => {
+  const playerView = {game: {generation: 3, step: 10}};
+  const loaded = new Map();
+  const inFlight = new Map();
+  assert.deepEqual(
+    theftGenerationRequestPlan(playerView, loaded, inFlight),
+    [
+      {generation: 1, fingerprint: "complete"},
+      {generation: 2, fingerprint: "complete"},
+    ],
+  );
+
+  loaded.set(1, "complete");
+  loaded.set(2, "active:9");
+  loaded.set(3, "active:10");
+  promoteCompletedTheftHistoryFingerprints(playerView, loaded);
+  assert.equal(loaded.get(2), "complete");
+  assert.equal(loaded.get(3), "active:10");
+  assert.deepEqual(theftGenerationRequestPlan(playerView, loaded, inFlight), []);
+  assert.equal(theftGenerationFingerprint({game: {generation: 3, step: 11}}, 2), "complete");
+  assert.deepEqual(
+    theftGenerationRequestPlan(
+      {game: {generation: 3, step: 11}},
+      loaded,
+      inFlight,
+    ),
+    [],
+  );
+
+  loaded.delete(2);
+  assert.deepEqual(
+    theftGenerationRequestPlan(playerView, loaded, inFlight),
+    [{generation: 2, fingerprint: "complete"}],
+  );
+  inFlight.set(2, "complete");
+  assert.deepEqual(theftGenerationRequestPlan(playerView, loaded, inFlight), []);
+});
+
+test("theft history latches page log responses without delaying the game response", () => {
+  assert.match(
+    playerViewCaptureTransportSource,
+    /terraformingMarsOriginalFetch = originalFetch/,
+  );
+  assert.match(
+    playerViewCaptureTransportSource,
+    /const theftHistoryObservation = beginTheftHistoryLogObservation\(source\)/,
+  );
+  assert.match(
+    playerViewCaptureTransportSource,
+    /captureTheftHistoryLogResponse\(response, theftHistoryObservation\);\s*}\s*return response/,
+  );
+  assert.match(theftHistoryDataSource, /response\s*\.clone\(\)\s*\.json\(\)/);
+  assert.match(
+    theftHistoryDataSource,
+    /theftHistoryObservationIsCurrent\(observation,[\s\S]*latestSequence:/,
+  );
+  assert.match(
+    theftHistoryDataSource,
+    /theftHistoryEventsByGeneration\.set\(observation\.generation, events\)/,
+  );
+  assert.match(
+    theftHistoryDataSource,
+    /theftHistoryLoadedFingerprints\.set\([\s\S]*theftGenerationFingerprint\(playerView, observation\.generation\)/,
+  );
+});
+
+test("theft history requests only missing history and resets observation state", () => {
+  assert.match(
+    theftHistoryDataSource,
+    /terraformingMarsOriginalFetch\(\s*`\/api\/game\/logs\?\$\{query\.toString\(\)\}`/,
+  );
+  assert.doesNotMatch(
+    theftHistoryDataSource,
+    /window\.fetch\(`\/api\/game\/logs/,
+  );
+  assert.ok(
+    theftHistoryDataSource.indexOf("theftHistoryEventsByGeneration.set") <
+      theftHistoryDataSource.indexOf("theftHistoryLoadedFingerprints.set"),
+  );
+  assert.match(theftHistoryDataSource, /catch \(error\)[\s\S]*theft-history-request-error/);
+  assert.match(theftHistoryDataSource, /finally[\s\S]*theftHistoryInFlightFingerprints\.delete/);
+  assert.match(
+    theftHistoryDataSource,
+    /theftHistoryInFlightFingerprints\.get\(request\.generation\) !==\s*request\.fingerprint/,
+  );
+  assert.doesNotMatch(theftHistoryDataSource, /catch \(error\)[\s\S]*theftHistoryEventsByGeneration\.clear/);
+  assert.match(theftHistoryStateSource, /theftHistoryEventsByGeneration\.clear\(\)/);
+  assert.match(theftHistoryStateSource, /theftHistoryLoadedFingerprints\.clear\(\)/);
+  assert.match(theftHistoryStateSource, /theftHistoryInFlightFingerprints\.clear\(\)/);
+  assert.match(theftHistoryStateSource, /theftHistorySessionRevision \+= 1/);
+  assert.match(theftHistoryStateSource, /theftHistoryLatestObservationSequence\.clear\(\)/);
+  assert.match(source, /cleanupTerraformingMarsHelpersForHidden[\s\S]*resetTheftHistoryState\(\)/);
+});
+
+test("theft history renders a metadata table below contributions with safe colored names", () => {
+  assert.match(
+    liveScoreRenderSource,
+    /section\.append\(scroller, renderTheftHistory\(playerView\)\)/,
+  );
+  assert.match(theftHistoryRenderSource, /title\.textContent = "Theft history"/);
+  assert.match(theftHistoryRenderSource, /"Loading theft history…"/);
+  assert.match(theftHistoryRenderSource, /"No theft recorded\."/);
+  assert.match(theftHistoryRenderSource, /className = "tfmars420-theft-history-scroll"/);
+  assert.match(theftHistoryRenderSource, /className = "tfmars420-theft-history-table"/);
+  assert.match(theftHistoryRenderSource, /\["Gen", "Time", "Event"\]/);
+  assert.match(theftHistoryRenderSource, /generationCell\.textContent = String\(event\.generation\)/);
+  assert.match(
+    theftHistoryRenderSource,
+    /timeCell\.textContent = theftHistoryTimestampText\(event\.timestamp\)/,
+  );
+  assert.match(
+    theftHistoryRenderSource,
+    /timeCell\.title = theftHistoryTimestampText\(event\.timestamp, \{full: true\}\)/,
+  );
+  assert.match(theftHistoryRenderSource, /document\.createElement\("tr"\)/);
+  assert.match(theftHistoryRenderSource, /table\.append\(head, body\)/);
+  assert.match(theftHistoryRenderSource, /document\.createElement\("strong"\)/);
+  assert.match(theftHistoryRenderSource, /player_bg_color_\$\{color\}/);
+  assert.match(theftHistoryRenderSource, /` stole \$\{event\.descriptor\} from `/);
+  assert.doesNotMatch(theftHistoryRenderSource, /innerHTML|insertAdjacentHTML/);
+  assert.match(
+    theftHistoryCssSource,
+    /\.tfmars420-theft-history-scroll[\s\S]*max-width: 100%[\s\S]*overflow-x: auto/,
+  );
+  assert.match(
+    theftHistoryCssSource,
+    /\.tfmars420-theft-history-table th,[\s\S]*border: 1px solid[\s\S]*padding: 4px 6px/,
+  );
+  assert.match(
+    theftHistoryCssSource,
+    /\.tfmars420-theft-history-generation,[\s\S]*white-space: nowrap/,
+  );
+  assert.match(theftHistoryCssSource, /\.tfmars420-theft-history-player[\s\S]*font-weight: 700/);
+  assert.match(
+    theftHistoryCssSource,
+    /\.tfmars420-theft-history-event[\s\S]*max-width: 420px[\s\S]*overflow-wrap: anywhere[\s\S]*white-space: normal/,
+  );
+});
+
 test("live contribution columns follow enabled global tracks", () => {
   assert.deepEqual(
     globalContributionColumnsForGame({gameOptions: {expansions: {}}}).map(
@@ -3262,7 +3820,7 @@ test("live score table omits its label and uses globally styled native tile icon
 test("live score table follows queue controls", () => {
   assert.match(
     queuePanelSource,
-    /panel\.append\(actions\);[\s\S]*panel\.append\(autopilotActions\);\s*const liveScoreTable[\s\S]*panel\.append\(liveScoreTable\)/,
+    /panel\.append\(actions\);[\s\S]*panel\.append\(autopilotActions\);[\s\S]*requestTheftHistory\(latestPlayerView\);\s*const liveScoreTable[\s\S]*panel\.append\(liveScoreTable\)/,
   );
 });
 
@@ -3538,7 +4096,7 @@ test("direct execution declines cleanly when the current prompt cannot accept th
   assert.equal(executor.writeCount(), 0);
 });
 
-test("automatic indexed failure still clears the persisted queue", async () => {
+test("automatic indexed failure preserves the strict-FIFO queue", async () => {
   const first = {type: "playedAction", label: "first"};
   const second = {type: "cardTarget", label: "second"};
   const executor = createQueueExecutor([first, second], {reject: true});
@@ -3548,13 +4106,74 @@ test("automatic indexed failure still clears the persisted queue", async () => {
 
   await new Promise((resolve) => setImmediate(resolve));
 
-  assert.deepEqual(executor.queue(), []);
-  assert.equal(executor.clearCount(), 1);
-  assert.equal(executor.restoreCount(), 0);
+  assert.deepEqual(executor.queue(), [first, second]);
+  assert.equal(executor.clearCount(), 0);
+  assert.equal(executor.restoreCount(), 1);
   assert.equal(executor.learningClearCount(), 1);
   assert.deepEqual(
     executor.auditEvents.map(({eventName, details}) => [eventName, details.executionSource]),
     [["game.action.failure", "automatic"]],
+  );
+});
+
+test("automatic exact-submit deferral restores the head without failing", async () => {
+  const first = {type: "projectCard", label: "first"};
+  const second = {type: "playedAction", label: "second"};
+  const executor = createQueueExecutor([first, second], {defer: true});
+
+  assert.equal(executor.executeQueuedActionAt(0), true);
+  assert.deepEqual(executor.queue(), [second]);
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(executor.queue(), [first, second]);
+  assert.equal(executor.clearCount(), 0);
+  assert.equal(executor.restoreCount(), 1);
+  assert.equal(executor.state().queueExecutionAttempted, true);
+  assert.equal(executor.state().queueExecutionError, "");
+  assert.deepEqual(executor.auditEvents, [
+    {
+      eventName: "game.action.deferred",
+      details: {
+        executionSource: "automatic",
+        itemType: "projectCard",
+        label: "first",
+        expectedSubmit: "Play card",
+      },
+    },
+  ]);
+});
+
+test("manual and immediate exact-submit timeouts retain failure semantics", async () => {
+  const item = {type: "projectCard", label: "queued project"};
+  const manual = createQueueExecutor([item], {defer: true});
+  const immediate = createQueueExecutor([], {defer: true});
+
+  assert.equal(manual.executeQueuedActionAt(0, {manual: true}), true);
+  assert.equal(immediate.executeQueueItemNow(item), true);
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.deepEqual(manual.queue(), [item]);
+  assert.equal(manual.restoreCount(), 1);
+  assert.match(manual.state().queueExecutionError, /after 1000ms: Play card/);
+  assert.deepEqual(
+    manual.auditEvents.map(({eventName, details}) => [
+      eventName,
+      details.executionSource,
+    ]),
+    [["game.action.failure", "manual"]],
+  );
+
+  assert.deepEqual(immediate.queue(), []);
+  assert.equal(immediate.restoreCount(), 0);
+  assert.match(immediate.state().queueExecutionError, /after 1000ms: Play card/);
+  assert.deepEqual(
+    immediate.auditEvents.map(({eventName, details}) => [
+      eventName,
+      details.executionSource,
+    ]),
+    [["game.action.failure", "immediate"]],
   );
 });
 
@@ -5612,7 +6231,12 @@ test("energy autopilot selects Standard projects, Power Plant, and exact Confirm
   ]);
 
   const noConfirm = createPowerPlantAttempt({confirm: false});
-  assert.equal(await noConfirm.attempt(), false);
+  await assert.rejects(
+    noConfirm.attempt(),
+    (error) =>
+      error.code === "queue-submit-deferred" &&
+      error.expectedSubmit === "Confirm",
+  );
   assert.deepEqual(noConfirm.events, [
     "action:Standard projects",
     "frame",
@@ -5737,6 +6361,195 @@ test("explicit Pass submission accepts its exact alternate label", () => {
 
   submit("Pass", ["Pass for this generation"]);
   assert.equal(passClicks, 1);
+});
+
+test("automatic Pass waits briefly for its exact submit control", async () => {
+  let passClicks = 0;
+  const button = {
+    disabled: false,
+    value: "Pass for this generation",
+    click() {
+      passClicks += 1;
+    },
+  };
+  const waitingSubmit = createWaitingActionSubmit((probe) =>
+    probe < 3 ? [] : [button],
+  );
+
+  assert.equal(
+    await waitingSubmit.submit("Pass", ["Pass for this generation"]),
+    true,
+  );
+
+  assert.equal(waitingSubmit.probeCount(), 4);
+  assert.deepEqual(waitingSubmit.waits, [25, 25, 25]);
+  assert.equal(passClicks, 1);
+});
+
+test("an immediately available exact submit is clicked without waiting", async () => {
+  let clickCount = 0;
+  const waitingSubmit = createWaitingActionSubmit(() => [
+    {
+      disabled: false,
+      textContent: "Take action",
+      click() {
+        clickCount += 1;
+      },
+    },
+  ]);
+
+  assert.equal(await waitingSubmit.submit("Take action"), true);
+  assert.equal(waitingSubmit.probeCount(), 1);
+  assert.deepEqual(waitingSubmit.waits, []);
+  assert.equal(clickCount, 1);
+});
+
+test("automatic Pass stops after its bounded submit wait", async () => {
+  const waitingSubmit = createWaitingActionSubmit(() => []);
+
+  await assert.rejects(
+    waitingSubmit.submit("Pass", ["Pass for this generation"]),
+    (error) => {
+      assert.match(
+        error.message,
+        /missing exact action submit button after 1000ms: Pass/,
+      );
+      assert.equal(error.code, "queue-submit-deferred");
+      assert.equal(error.expectedSubmit, "Pass");
+      assert.deepEqual(error.alternateSubmitTexts, ["Pass for this generation"]);
+      return true;
+    },
+  );
+
+  assert.equal(waitingSubmit.probeCount(), 41);
+  assert.deepEqual(waitingSubmit.waits, Array(40).fill(25));
+});
+
+test("optional exact submit returns false after the same bounded wait", async () => {
+  const waitingSubmit = createWaitingActionSubmit(() => []);
+
+  assert.equal(
+    await waitingSubmit.submit("Confirm", [], {required: false}),
+    false,
+  );
+
+  assert.equal(waitingSubmit.probeCount(), 41);
+  assert.deepEqual(waitingSubmit.waits, Array(40).fill(25));
+});
+
+test("optional exact submit rejects ambiguity without waiting or clicking", async () => {
+  let passClicks = 0;
+  const button = () => ({
+    disabled: false,
+    textContent: "Pass",
+    click() {
+      passClicks += 1;
+    },
+  });
+  const waitingSubmit = createWaitingActionSubmit(() => [button(), button()]);
+
+  await assert.rejects(
+    waitingSubmit.submit("Pass", ["Pass for this generation"], {required: false}),
+    /ambiguous exact action submit buttons: Pass/,
+  );
+
+  assert.equal(waitingSubmit.probeCount(), 1);
+  assert.deepEqual(waitingSubmit.waits, []);
+  assert.equal(passClicks, 0);
+});
+
+test("deferred queue execution resumes only for the same head and exact submit", () => {
+  const queuedItem = {type: "projectCard", cardName: "Queued Project"};
+  const exact = createDeferredQueueResume({
+    queuedItem,
+    buttons: [{disabled: false, textContent: "Play card"}],
+  });
+  exact.remember(queuedItem, {
+    expectedSubmit: "Play card",
+    alternateSubmitTexts: [],
+  });
+
+  assert.equal(exact.resume(), true);
+  assert.equal(exact.scheduleCount(), 1);
+  assert.deepEqual(exact.state(), {
+    queueDeferredSubmit: null,
+    queueExecutionAttempted: false,
+    queueExecutionError: "",
+  });
+
+  for (const blocked of [
+    createDeferredQueueResume({queuedItem, buttons: []}),
+    createDeferredQueueResume({
+      queuedItem,
+      buttons: [
+        {disabled: false, textContent: "Play card"},
+        {disabled: false, textContent: "Play card"},
+      ],
+    }),
+    createDeferredQueueResume({
+      queuedItem: {type: "projectCard", cardName: "Different Project"},
+      buttons: [{disabled: false, textContent: "Play card"}],
+    }),
+    createDeferredQueueResume({
+      queuedItem,
+      playerId: "player-2",
+      buttons: [{disabled: false, textContent: "Play card"}],
+    }),
+  ]) {
+    blocked.remember(queuedItem, {
+      expectedSubmit: "Play card",
+      alternateSubmitTexts: [],
+    });
+    assert.equal(blocked.resume(), false);
+    assert.equal(blocked.scheduleCount(), 0);
+    assert.equal(blocked.state().queueExecutionAttempted, true);
+  }
+});
+
+test("relevant Terraforming Mars DOM mutations probe deferred submit readiness", () => {
+  assert.match(
+    source.slice(
+      source.indexOf("const startTerraformingMarsDomObserver"),
+      source.indexOf("function removeTimeWarpUi"),
+    ),
+    /if \(!shouldUpdate\) return;\s*maybeResumeDeferredQueueExecution\(\)/,
+  );
+});
+
+test("selection-driven exact submits use the bounded wait", async () => {
+  assert.deepEqual(await executeQueuedCard("playedAction"), [
+    "select:Perform an action from a played card",
+    "frame",
+    "select-card",
+    "frame",
+    "submit:Take action",
+  ]);
+  assert.deepEqual(await executeQueuedCard("projectCard"), [
+    "select:Play project card",
+    "frame",
+    "select-card",
+    "frame",
+    "submit:Play card",
+  ]);
+  assert.match(passActionSource, /await waitForActionSubmit\("Pass"/);
+  assert.match(
+    executeQueuedItemSource,
+    /await selectActionCard\(item, actionCardSelector\(\)\);[\s\S]*await nextFrame\(\);[\s\S]*await waitForActionSubmit\("Take action"\)/,
+  );
+  assert.match(
+    executeQueuedItemSource,
+    /await selectActionCard\(item, actionCardSelector\(\)\);[\s\S]*await nextFrame\(\);[\s\S]*await waitForActionSubmit\("Play card"\)/,
+  );
+  assert.match(finalGreenerySkipSource, /await waitForActionSubmit\("Confirm"\)/);
+  assert.match(
+    powerPlantAttemptSource,
+    /return await waitForActionSubmit\("Confirm"\)/,
+  );
+  assert.doesNotMatch(executeQueuedItemSource, /clickActionSubmit\("(?:Take action|Play card)"\)/);
+  assert.doesNotMatch(cardTargetSubmitSource, /waitForActionSubmit/);
+  assert.doesNotMatch(radioOptionExecutionSource, /waitForActionSubmit/);
+  assert.doesNotMatch(researchPurchaseSkipSource, /waitForActionSubmit/);
+  assert.doesNotMatch(purchasePaymentSubmitSource, /waitForActionSubmit/);
 });
 
 test("energy autopilot clicks only an enabled exact Confirm submit", () => {
@@ -7064,4 +7877,156 @@ test("stale compound quick choices reject without submitting the form", async ()
   );
   assert.equal(missingTarget.events.includes("submit:0"), false);
   assert.equal(missingTarget.playbackActive(), false);
+});
+
+test("log card rendering clicks the exact card within a shared log row", () => {
+  const dispatched = [];
+  const sharedRow = {
+    dispatchEvent() {
+      dispatched.push("row");
+    },
+  };
+  const cards = ["Protected Growth", "Lichen"].map((name) => ({
+    closest() {
+      return sharedRow;
+    },
+    dispatchEvent(event) {
+      dispatched.push({name, event});
+    },
+  }));
+  class MockMouseEvent {
+    constructor(type, options) {
+      this.type = type;
+      this.options = options;
+    }
+  }
+  const clickLogCard = Function(
+    "document",
+    "MouseEvent",
+    "window",
+    `"use strict"; ${logCardClickSource}; return clickLogCard;`,
+  )(
+    {querySelectorAll: () => cards},
+    MockMouseEvent,
+    {},
+  );
+
+  clickLogCard(0);
+  clickLogCard(1);
+
+  assert.deepEqual(
+    dispatched.map((entry) => entry.name),
+    ["Protected Growth", "Lichen"],
+  );
+  assert.equal(dispatched.some((entry) => entry === "row"), false);
+  assert.equal(dispatched[0].event.type, "click");
+  assert.equal(dispatched[0].event.options.bubbles, true);
+  assert.throws(() => clickLogCard(2), /No log card found at 2/);
+});
+
+const createRenderedLogCardCaptureHarness = ({renderedName, renderedSlug}) => {
+  const renderedCardHtmlByKey = new Map();
+  const title = {};
+  const rendered = {
+    outerHTML: `<article>${renderedName}</article>`,
+    querySelector(selector) {
+      return selector === ".card-title" ? title : null;
+    },
+  };
+  const document = {
+    querySelector(selector) {
+      return selector === ".card-panel #log_panel_card .card-container"
+        ? rendered
+        : null;
+    },
+  };
+  const normalizeCardName = (name) => name.trim().toLowerCase();
+  const slugifyCardName = (name) =>
+    normalizeCardName(name)
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  const captureRenderedLogCard = Function(
+    "document",
+    "cardNameFromElement",
+    "cardSlugFromElement",
+    "normalizeCardName",
+    "slugifyCardName",
+    "renderedCardHtmlByKey",
+    `"use strict"; ${renderedLogCardCaptureSource}; return captureRenderedLogCard;`,
+  )(
+    document,
+    (element) => (element === title ? renderedName : ""),
+    () => renderedSlug,
+    normalizeCardName,
+    slugifyCardName,
+    renderedCardHtmlByKey,
+  );
+  return {captureRenderedLogCard, renderedCardHtmlByKey, rendered};
+};
+
+test("rendered log cards are cached only under a matching identity", () => {
+  const matching = createRenderedLogCardCaptureHarness({
+    renderedName: "Lichen",
+    renderedSlug: "lichen",
+  });
+  assert.equal(matching.captureRenderedLogCard({name: "Lichen"}), true);
+  assert.equal(
+    matching.renderedCardHtmlByKey.get("lichen"),
+    matching.rendered.outerHTML,
+  );
+
+  const stale = createRenderedLogCardCaptureHarness({
+    renderedName: "Protected Growth",
+    renderedSlug: "protected-growth",
+  });
+  assert.equal(stale.captureRenderedLogCard({name: "Lichen"}), false);
+  assert.equal(stale.renderedCardHtmlByKey.size, 0);
+});
+
+test("rendered log card waiting accepts a later matching panel state", async () => {
+  let captureAttempts = 0;
+  let waits = 0;
+  const waitForRenderedLogCard = Function(
+    "captureRenderedLogCard",
+    "shouldRunTerraformingMarsHelpers",
+    "wait",
+    `"use strict"; ${renderedLogCardWaitSource}; return waitForRenderedLogCard;`,
+  )(
+    () => {
+      captureAttempts += 1;
+      return captureAttempts === 3;
+    },
+    () => true,
+    async () => {
+      waits += 1;
+    },
+  );
+
+  assert.equal(await waitForRenderedLogCard({name: "Lichen"}, 5, 0), true);
+  assert.equal(captureAttempts, 3);
+  assert.equal(waits, 2);
+
+  let timeoutAttempts = 0;
+  const timeoutWaitForRenderedLogCard = Function(
+    "captureRenderedLogCard",
+    "shouldRunTerraformingMarsHelpers",
+    "wait",
+    `"use strict"; ${renderedLogCardWaitSource}; return waitForRenderedLogCard;`,
+  )(
+    () => {
+      timeoutAttempts += 1;
+      return false;
+    },
+    () => true,
+    async () => {},
+  );
+  assert.equal(
+    await timeoutWaitForRenderedLogCard({name: "Lichen"}, 3, 0),
+    false,
+  );
+  assert.equal(timeoutAttempts, 3);
+  assert.match(
+    missingLogCardRenderSource,
+    /await waitForRenderedLogCard\(card\)[\s\S]*renderedCardRequests\.add\(slug\)/,
+  );
 });

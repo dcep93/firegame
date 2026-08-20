@@ -915,6 +915,7 @@
   let queueExecutionInFlight = false;
   let queuePendingLogMutation = false;
   let queueExecutionError = "";
+  let queueDeferredSubmit = null;
   let terraformingMarsDomObserver = null;
   let terraformingMarsDomUpdateScheduled = false;
   let terraformingMarsDomUpdateNeedsPreview = false;
@@ -2407,6 +2408,8 @@
         relevantMutations.some((mutation) => mutationTouchesSelector(mutation, terraformingMarsDomSelector));
       if (!shouldUpdate) return;
 
+      maybeResumeDeferredQueueExecution();
+
       const handChanged = relevantMutations.some((mutation) =>
         mutationTouchesSelector(mutation, "#shortkey-hand .sortable-cards"),
       );
@@ -2460,10 +2463,12 @@
     queueExecutionError = "";
     queueExecutionAttempted = false;
     queueExecutionInFlight = false;
+    queueDeferredSubmit = null;
     lastNetworkTurnState = undefined;
     pendingTurnScroll = false;
     clearPlayedActionLearning();
     clearQueuedExecutionViewportAnchor();
+    resetTheftHistoryState();
     helpersHiddenCleaned = true;
   }
 
@@ -2485,6 +2490,7 @@
   let latestPlayerView = null;
   let latestPlayerViewCapturedAt = 0;
   let latestPlayerViewRunId = "";
+  let terraformingMarsOriginalFetch = null;
   let pendingNetworkPassSelection = false;
   let lastNetworkTurnState;
   let pendingTurnScroll = false;
@@ -2492,12 +2498,34 @@
   let armedPlayedActionLearning = null;
   let stagedPlayedActionLearning = null;
   let quickChoicePlaybackActive = false;
+  let theftHistoryPlayerId = "";
+  let theftHistorySessionRevision = 0;
+  let theftHistoryObservationSequence = 0;
+  const theftHistoryEventsByGeneration = new Map();
+  const theftHistoryLoadedFingerprints = new Map();
+  const theftHistoryInFlightFingerprints = new Map();
+  const theftHistoryLatestObservationSequence = new Map();
   let queueMutationObserver = null;
   let queueLogDiscoveryObserver = null;
   let queueObservedLogTarget = null;
   let queueMutationPaused = false;
   let queuedExecutionViewportAnchor = null;
   let queuedExecutionViewportAnchorSettleTimer = null;
+
+  const resetTheftHistoryState = (playerId = "") => {
+    theftHistoryPlayerId = playerId;
+    theftHistorySessionRevision += 1;
+    theftHistoryEventsByGeneration.clear();
+    theftHistoryLoadedFingerprints.clear();
+    theftHistoryInFlightFingerprints.clear();
+    theftHistoryLatestObservationSequence.clear();
+  };
+
+  const ensureTheftHistoryPlayer = (playerId) => {
+    if (theftHistoryPlayerId !== playerId) {
+      resetTheftHistoryState(playerId);
+    }
+  };
 
   const looksLikePlayerView = (value) =>
     Boolean(value?.id && value?.game && Object.prototype.hasOwnProperty.call(value, "runId"));
@@ -2651,6 +2679,7 @@
 
   const rememberLatestPlayerView = (playerView, source) => {
     if (!looksLikePlayerView(playerView)) return;
+    ensureTheftHistoryPlayer(playerView.id);
     if (latestPlayerView?.id && latestPlayerView.id !== playerView.id) {
       lastNetworkTurnState = undefined;
       pendingTurnScroll = false;
@@ -2672,6 +2701,7 @@
       } else {
         queueExecutionAttempted = false;
         queueExecutionError = "";
+        queueDeferredSubmit = null;
       }
     }
     updatePlayedActionLearningFromPlayerView(playerView);
@@ -2728,6 +2758,7 @@
 
     const originalFetch = window.fetch?.bind(window);
     if (!originalFetch) return;
+    terraformingMarsOriginalFetch = originalFetch;
     window.fetch = (...args) => {
       const source =
         typeof args[0] === "string"
@@ -2735,9 +2766,13 @@
           : args[0] instanceof Request
             ? args[0].url
             : String(args[0]);
+      const theftHistoryObservation = beginTheftHistoryLogObservation(source);
       return originalFetch(...args).then((response) => {
         if (source.includes("api/player") || source.includes("player/input")) {
           capturePlayerViewResponse(response, `fetch:${source}`);
+        }
+        if (theftHistoryObservation) {
+          captureTheftHistoryLogResponse(response, theftHistoryObservation);
         }
         return response;
       });
@@ -2948,6 +2983,7 @@
     writeQueueSession(nextSession);
     queueExecutionAttempted = false;
     queueExecutionError = "";
+    queueDeferredSubmit = null;
     scheduleTerraformingMarsUpdate();
     return nextSession;
   };
@@ -3286,6 +3322,372 @@
     );
   };
 
+  const parseTheftHistoryLogRequest = (source, baseUrl) => {
+    if (typeof source !== "string" || typeof baseUrl !== "string") return null;
+    try {
+      const base = new URL(baseUrl);
+      const url = new URL(source, base);
+      if (
+        url.origin !== base.origin ||
+        url.pathname.replace(/\/+$/, "") !== "/api/game/logs"
+      ) {
+        return null;
+      }
+      const playerId = cleanText(url.searchParams.get("id") ?? "");
+      const generation = Number(url.searchParams.get("generation"));
+      if (!playerId || !Number.isInteger(generation) || generation < 1) return null;
+      return {playerId, generation};
+    } catch {
+      return null;
+    }
+  };
+
+  const theftHistoryObservationIsCurrent = (
+    observation,
+    {playerId, sessionRevision, latestSequence},
+  ) =>
+    Boolean(
+      observation?.playerId &&
+        observation.playerId === playerId &&
+        observation.sessionRevision === sessionRevision &&
+        observation.sequence === latestSequence,
+    );
+
+  const beginTheftHistoryLogObservation = (source) => {
+    if (!shouldRunTerraformingMarsHelpers()) return null;
+    const request = parseTheftHistoryLogRequest(source, window.location.href);
+    if (!request) return null;
+    if (!theftHistoryPlayerId) {
+      resetTheftHistoryState(request.playerId);
+    }
+    if (theftHistoryPlayerId !== request.playerId) return null;
+
+    theftHistoryObservationSequence += 1;
+    theftHistoryLatestObservationSequence.set(
+      request.generation,
+      theftHistoryObservationSequence,
+    );
+    return {
+      ...request,
+      sequence: theftHistoryObservationSequence,
+      sessionRevision: theftHistorySessionRevision,
+    };
+  };
+
+  const captureTheftHistoryLogResponse = (response, observation) => {
+    if (!response?.clone || !response.ok || !observation) return;
+    try {
+      response
+        .clone()
+        .json()
+        .then((entries) => {
+          const playerView = latestPlayerView;
+          if (
+            !Array.isArray(entries) ||
+            !shouldRunTerraformingMarsHelpers() ||
+            playerView?.id !== observation.playerId ||
+            !theftHistoryObservationIsCurrent(observation, {
+              playerId: theftHistoryPlayerId,
+              sessionRevision: theftHistorySessionRevision,
+              latestSequence: theftHistoryLatestObservationSequence.get(
+                observation.generation,
+              ),
+            })
+          ) {
+            return;
+          }
+
+          const events = entries
+            .map((entry) =>
+              parseTheftLogEntry(
+                entry,
+                observation.generation,
+                playerView.players,
+              ),
+            )
+            .filter(Boolean);
+          theftHistoryEventsByGeneration.set(observation.generation, events);
+          theftHistoryLoadedFingerprints.set(
+            observation.generation,
+            theftGenerationFingerprint(playerView, observation.generation),
+          );
+          scheduleTerraformingMarsUpdate();
+        })
+        .catch((error) => {
+          timeWarpLog(
+            "theft-history-observation-json-error",
+            {
+              generation: observation.generation,
+              message: String(error?.message ?? error),
+            },
+            {limit: 12},
+          );
+        });
+    } catch (error) {
+      timeWarpLog(
+        "theft-history-observation-error",
+        {
+          generation: observation.generation,
+          message: String(error?.message ?? error),
+        },
+        {limit: 12},
+      );
+    }
+  };
+
+  const theftLogPlayerDataType = 2;
+
+  const theftPlayerRecords = (players) =>
+    (Array.isArray(players) ? players : [])
+      .map((player) => ({
+        name: cleanText(String(player?.name ?? "")),
+        color: cleanText(String(player?.color ?? "")).toLowerCase(),
+      }))
+      .filter((player) => player.name && player.color);
+
+  const parseTheftLogEntry = (entry, generation, players) => {
+    if (
+      !isPlainObject(entry) ||
+      typeof entry.message !== "string" ||
+      !Array.isArray(entry.data) ||
+      !Number.isInteger(generation) ||
+      generation < 1
+    ) {
+      return null;
+    }
+
+    const timestamp = Number(entry.timestamp);
+    if (!Number.isFinite(timestamp)) return null;
+
+    const playerRecords = theftPlayerRecords(players);
+    const playersByColor = new Map(
+      playerRecords.map((player) => [player.color, player]),
+    );
+    const playersByName = new Map(
+      playerRecords.map((player) => [normalizeCardName(player.name), player]),
+    );
+    const resolvedData = entry.data.map((item) => {
+      if (!isPlainObject(item) || !Object.prototype.hasOwnProperty.call(item, "value")) {
+        return null;
+      }
+      if (Number(item.type) === theftLogPlayerDataType) {
+        return playersByColor.get(cleanText(String(item.value ?? "")).toLowerCase())?.name ?? null;
+      }
+      return cleanText(String(item.value ?? ""));
+    });
+
+    let unresolvedPlaceholder = false;
+    const resolvedMessage = entry.message.replace(/\$\{(\d+)\}/g, (placeholder, rawIndex) => {
+      const index = Number.parseInt(rawIndex, 10);
+      const value = resolvedData[index];
+      if (!Number.isInteger(index) || value === null || typeof value === "undefined") {
+        unresolvedPlaceholder = true;
+        return placeholder;
+      }
+      return value;
+    });
+    if (unresolvedPlaceholder || /\$\{\d+\}/.test(resolvedMessage)) return null;
+
+    const match = cleanText(resolvedMessage).match(/^(.+?) stole (.+) from (.+)$/i);
+    if (!match) return null;
+
+    const thief = playersByName.get(normalizeCardName(match[1]));
+    const victim = playersByName.get(normalizeCardName(match[3]));
+    const descriptor = cleanText(match[2]);
+    if (!thief || !victim || !descriptor) return null;
+
+    return {
+      generation,
+      timestamp,
+      thiefName: thief.name,
+      thiefColor: thief.color,
+      descriptor,
+      victimName: victim.name,
+      victimColor: victim.color,
+    };
+  };
+
+  const theftHistoryEventKey = (event) =>
+    [
+      event.generation,
+      event.timestamp,
+      normalizeCardName(event.thiefName),
+      normalizeCardName(event.descriptor),
+      normalizeCardName(event.victimName),
+    ].join("\u0000");
+
+  const sortedUniqueTheftHistoryEvents = (events) => {
+    const unique = new Map();
+    for (const event of events) {
+      if (!event) continue;
+      unique.set(theftHistoryEventKey(event), event);
+    }
+    return [...unique.values()].sort(
+      (left, right) =>
+        left.timestamp - right.timestamp ||
+        left.generation - right.generation ||
+        theftHistoryEventKey(left).localeCompare(theftHistoryEventKey(right)),
+    );
+  };
+
+  const theftHistoryTimestampText = (
+    timestamp,
+    {full = false, locales, timeZone} = {},
+  ) => {
+    if (typeof timestamp !== "number" || !Number.isFinite(timestamp)) return "—";
+    const date = new Date(timestamp);
+    if (!Number.isFinite(date.getTime())) return "—";
+
+    const options = full
+      ? {dateStyle: "medium", timeStyle: "short"}
+      : {hour: "numeric", minute: "2-digit"};
+    if (timeZone) options.timeZone = timeZone;
+    try {
+      return new Intl.DateTimeFormat(locales, options).format(date);
+    } catch {
+      return "—";
+    }
+  };
+
+  const theftHistoryGenerationCount = (playerView) => {
+    const generation = Number(playerView?.game?.generation);
+    return Number.isInteger(generation) && generation > 0 ? generation : 0;
+  };
+
+  const theftGenerationFingerprint = (playerView, generation) => {
+    const currentGeneration = theftHistoryGenerationCount(playerView);
+    if (generation < currentGeneration) return "complete";
+    return `active:${String(playerView?.game?.step ?? "")}`;
+  };
+
+  const promoteCompletedTheftHistoryFingerprints = (
+    playerView,
+    loadedFingerprints,
+  ) => {
+    const currentGeneration = theftHistoryGenerationCount(playerView);
+    for (const generation of loadedFingerprints.keys()) {
+      if (generation < currentGeneration) {
+        loadedFingerprints.set(generation, "complete");
+      }
+    }
+  };
+
+  const theftGenerationRequestPlan = (
+    playerView,
+    loadedFingerprints,
+    inFlightFingerprints,
+  ) => {
+    const requests = [];
+    const generationCount = theftHistoryGenerationCount(playerView);
+    for (let generation = 1; generation < generationCount; generation += 1) {
+      const fingerprint = theftGenerationFingerprint(playerView, generation);
+      if (
+        loadedFingerprints.get(generation) === fingerprint ||
+        inFlightFingerprints.get(generation) === fingerprint
+      ) {
+        continue;
+      }
+      requests.push({generation, fingerprint});
+    }
+    return requests;
+  };
+
+  const theftHistoryAllGenerationsLoaded = (playerView) => {
+    const generationCount = theftHistoryGenerationCount(playerView);
+    if (generationCount === 0) return false;
+    for (let generation = 1; generation <= generationCount; generation += 1) {
+      if (
+        theftHistoryLoadedFingerprints.get(generation) !==
+        theftGenerationFingerprint(playerView, generation)
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const currentTheftHistoryEvents = () =>
+    sortedUniqueTheftHistoryEvents(
+      [...theftHistoryEventsByGeneration.values()].flat(),
+    );
+
+  const requestTheftHistoryGeneration = async (playerView, request) => {
+    const playerId = cleanText(String(playerView?.id ?? ""));
+    if (!playerId) return;
+    theftHistoryInFlightFingerprints.set(request.generation, request.fingerprint);
+    try {
+      const query = new URLSearchParams({
+        id: playerId,
+        generation: String(request.generation),
+      });
+      if (typeof terraformingMarsOriginalFetch !== "function") {
+        throw new Error("original fetch is unavailable");
+      }
+      const response = await terraformingMarsOriginalFetch(
+        `/api/game/logs?${query.toString()}`,
+      );
+      if (!response?.ok) {
+        throw new Error(`game log request failed: ${response?.status ?? "unknown"}`);
+      }
+      const entries = await response.json();
+      if (!Array.isArray(entries)) {
+        throw new Error("game log response was not an array");
+      }
+      if (
+        !shouldRunTerraformingMarsHelpers() ||
+        theftHistoryPlayerId !== playerId ||
+        theftHistoryInFlightFingerprints.get(request.generation) !==
+          request.fingerprint
+      ) {
+        return;
+      }
+
+      const events = entries
+        .map((entry) =>
+          parseTheftLogEntry(entry, request.generation, playerView.players),
+        )
+        .filter(Boolean);
+      theftHistoryEventsByGeneration.set(request.generation, events);
+      theftHistoryLoadedFingerprints.set(request.generation, request.fingerprint);
+      scheduleTerraformingMarsUpdate();
+    } catch (error) {
+      timeWarpLog(
+        "theft-history-request-error",
+        {
+          generation: request.generation,
+          message: String(error?.message ?? error),
+        },
+        {limit: 12},
+      );
+    } finally {
+      if (
+        theftHistoryInFlightFingerprints.get(request.generation) ===
+        request.fingerprint
+      ) {
+        theftHistoryInFlightFingerprints.delete(request.generation);
+      }
+    }
+  };
+
+  const requestTheftHistory = (playerView) => {
+    if (!shouldRunTerraformingMarsHelpers()) return;
+    const playerId = cleanText(String(playerView?.id ?? ""));
+    if (!playerId) return;
+    ensureTheftHistoryPlayer(playerId);
+    promoteCompletedTheftHistoryFingerprints(
+      playerView,
+      theftHistoryLoadedFingerprints,
+    );
+    const requests = theftGenerationRequestPlan(
+      playerView,
+      theftHistoryLoadedFingerprints,
+      theftHistoryInFlightFingerprints,
+    );
+    for (const request of requests) {
+      void requestTheftHistoryGeneration(playerView, request);
+    }
+  };
+
   const baseGlobalContributionColumns = [
     {
       key: "temperature",
@@ -3531,6 +3933,57 @@
       border-top: 1px solid rgba(255, 255, 255, 0.2);
       margin-top: 12px;
       padding-top: 10px;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history {
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      margin-top: 10px;
+      padding-top: 9px;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-scroll {
+      max-width: 100%;
+      overflow-x: auto;
+      width: fit-content;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-table {
+      border-collapse: collapse;
+      font-size: 13px;
+      width: max-content;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-table th,
+    #${timeWarpPanelId} .tfmars420-theft-history-table td {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-table th {
+      background: rgba(0, 0, 0, 0.28);
+      font-weight: 700;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-generation,
+    #${timeWarpPanelId} .tfmars420-theft-history-time {
+      white-space: nowrap;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-event {
+      font-size: 13px;
+      line-height: 1.4;
+      max-width: 420px;
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-player {
+      border-radius: 2px;
+      font-weight: 700;
+      padding: 1px 4px;
+    }
+    #${timeWarpPanelId} .tfmars420-theft-history-status {
+      font-size: 13px;
+      opacity: 0.78;
     }
     #${timeWarpPanelId} > .tfmars420-actions-mirror {
       border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -4093,6 +4546,79 @@
     return header;
   };
 
+  const createTheftHistoryPlayerName = (name, color) => {
+    const player = document.createElement("strong");
+    player.className = "tfmars420-theft-history-player";
+    if (/^[a-z][a-z0-9-]*$/i.test(color)) {
+      player.classList.add(`player_bg_color_${color}`);
+    }
+    player.textContent = name;
+    return player;
+  };
+
+  const renderTheftHistory = (playerView) => {
+    const section = document.createElement("section");
+    section.className = "tfmars420-theft-history";
+
+    const title = document.createElement("div");
+    title.className = "tfmars420-theft-history-title";
+    title.textContent = "Theft history";
+    section.append(title);
+
+    const events = currentTheftHistoryEvents();
+    if (events.length === 0) {
+      const status = document.createElement("div");
+      status.className = "tfmars420-theft-history-status";
+      status.textContent = theftHistoryAllGenerationsLoaded(playerView)
+        ? "No theft recorded."
+        : "Loading theft history…";
+      section.append(status);
+      return section;
+    }
+
+    const scroller = document.createElement("div");
+    scroller.className = "tfmars420-theft-history-scroll";
+    const table = document.createElement("table");
+    table.className = "tfmars420-theft-history-table";
+    const head = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    for (const label of ["Gen", "Time", "Event"]) {
+      const header = document.createElement("th");
+      header.scope = "col";
+      header.textContent = label;
+      headerRow.append(header);
+    }
+    head.append(headerRow);
+
+    const body = document.createElement("tbody");
+    for (const event of events) {
+      const row = document.createElement("tr");
+      const generationCell = document.createElement("td");
+      generationCell.className = "tfmars420-theft-history-generation";
+      generationCell.textContent = String(event.generation);
+
+      const timeCell = document.createElement("td");
+      timeCell.className = "tfmars420-theft-history-time";
+      timeCell.textContent = theftHistoryTimestampText(event.timestamp);
+      timeCell.title = theftHistoryTimestampText(event.timestamp, {full: true});
+
+      const eventCell = document.createElement("td");
+      eventCell.className = "tfmars420-theft-history-event";
+      eventCell.append(
+        "🕑 ",
+        createTheftHistoryPlayerName(event.thiefName, event.thiefColor),
+        ` stole ${event.descriptor} from `,
+        createTheftHistoryPlayerName(event.victimName, event.victimColor),
+      );
+      row.append(generationCell, timeCell, eventCell);
+      body.append(row);
+    }
+    table.append(head, body);
+    scroller.append(table);
+    section.append(scroller);
+    return section;
+  };
+
   const renderLiveScoreTable = (playerView) => {
     const players = Array.isArray(playerView?.players) ? playerView.players : [];
     if (players.length === 0) return null;
@@ -4158,7 +4684,7 @@
 
     table.append(head, body);
     scroller.append(table);
-    section.append(scroller);
+    section.append(scroller, renderTheftHistory(playerView));
     return section;
   };
 
@@ -4380,6 +4906,7 @@
     autopilotActions.append(autopilotButton, autopilotModeSelect);
     panel.append(autopilotActions);
 
+    requestTheftHistory(latestPlayerView);
     const liveScoreTable = renderLiveScoreTable(latestPlayerView);
     if (liveScoreTable) {
       panel.append(liveScoreTable);
@@ -5382,6 +5909,7 @@
       }
       queueExecutionAttempted = false;
       queueExecutionError = "";
+      queueDeferredSubmit = null;
       scheduleTerraformingMarsUpdate();
     });
     queueMutationObserver.observe(target, {
@@ -5497,7 +6025,7 @@
 
   const startQueueItemExecution = (
     item,
-    { onFailure, executionSource = "automatic" } = {},
+    { onFailure, onDeferred, executionSource = "automatic" } = {},
   ) => {
     if (queueExecutionInFlight) return false;
     beginQueuedExecutionViewportAnchor(executionSource);
@@ -5518,6 +6046,7 @@
     queueExecutionInFlight = true;
     queuePendingLogMutation = false;
     queueExecutionError = "";
+    queueDeferredSubmit = null;
     renderQueuePanel();
     executeQueuedItem(item)
       .then(() => {
@@ -5534,6 +6063,19 @@
         if (item?.type === "playedAction" || item?.type === "radioOption") {
           clearPlayedActionLearning();
         }
+        if (
+          executionSource === "automatic" &&
+          isQueueSubmitDeferredError(error)
+        ) {
+          onDeferred?.();
+          rememberDeferredQueueSubmit(item, error);
+          auditLog("game.action.deferred", {
+            ...auditDetails,
+            expectedSubmit: error.expectedSubmit,
+          });
+          queueExecutionError = "";
+          return;
+        }
         auditLog("game.action.failure", {
           ...auditDetails,
           error: String(error?.message ?? error),
@@ -5547,9 +6089,12 @@
         if (queuePendingLogMutation) {
           queuePendingLogMutation = false;
           queueExecutionAttempted = false;
+          queueDeferredSubmit = null;
           window.setTimeout(() => {
             scheduleTerraformingMarsUpdate();
           }, 350);
+        } else {
+          maybeResumeDeferredQueueExecution();
         }
       });
     return true;
@@ -5586,12 +6131,13 @@
     return startQueueItemExecution(item, {
       executionSource: executionSource ?? (manual ? "manual" : "automatic"),
       onFailure: () => {
+        restoreQueuedAction(item, index, session.playerId);
         if (manual) {
-          restoreQueuedAction(item, index, session.playerId);
           queueExecutionAttempted = false;
-        } else {
-          clearQueuedActions();
         }
+      },
+      onDeferred: () => {
+        restoreQueuedAction(item, index, session.playerId);
       },
     });
   };
@@ -5653,7 +6199,7 @@
       await nextFrame();
       await selectActionCard(item, actionCardSelector());
       await nextFrame();
-      clickActionSubmit("Take action");
+      await waitForActionSubmit("Take action");
       return;
     }
 
@@ -5662,7 +6208,7 @@
       await nextFrame();
       await selectActionCard(item, actionCardSelector());
       await nextFrame();
-      clickActionSubmit("Play card");
+      await waitForActionSubmit("Play card");
       return;
     }
 
@@ -5762,7 +6308,7 @@
   const executePassAction = async () => {
     selectActionOption("Pass for this generation");
     await nextFrame();
-    clickActionSubmit("Pass", ["Pass for this generation"]);
+    await waitForActionSubmit("Pass", ["Pass for this generation"]);
   };
 
   const clickWorldGovernmentSubmit = () => {
@@ -6022,7 +6568,7 @@
   const executeFinalGreenerySkip = async () => {
     selectExactActionOption(declineFinalGreeneryOption);
     await nextFrame();
-    clickExactActionSubmit("Confirm");
+    await waitForActionSubmit("Confirm");
   };
 
   const executeEscapeAutopilot = async () => {
@@ -6104,7 +6650,7 @@
     await nextFrame();
     if (!selectPowerPlantStandardProject({required: false})) return false;
     await nextFrame();
-    return clickExactActionSubmit("Confirm", {required: false});
+    return await waitForActionSubmit("Confirm");
   };
 
   const maybeSelectNetworkDefaultPass = () => {
@@ -6411,18 +6957,77 @@
     );
   };
 
-  const clickActionSubmit = (preferredText, alternateTexts = []) => {
+  const exactActionSubmitMatches = (preferredText, alternateTexts = []) => {
     const actionsRoot =
       getActionsBlock()?.querySelector(".wf-root, form") ?? getActionsBlock();
     const buttons = Array.from(actionsRoot?.querySelectorAll("button, input[type='submit']") ?? []);
     const preferredTexts = [preferredText, ...alternateTexts];
-    const matches = buttons.filter(
+    return buttons.filter(
       (candidate) =>
         !candidate.disabled &&
         preferredTexts.includes(
           cleanText(candidate.textContent ?? candidate.value ?? ""),
         ),
     );
+  };
+
+  const queueSubmitDeferredErrorCode = "queue-submit-deferred";
+
+  const createQueueSubmitDeferredError = (
+    preferredText,
+    alternateTexts,
+    waitLimitMs,
+  ) => {
+    const error = new Error(
+      `missing exact action submit button after ${waitLimitMs}ms: ${preferredText}`,
+    );
+    error.code = queueSubmitDeferredErrorCode;
+    error.expectedSubmit = preferredText;
+    error.alternateSubmitTexts = [...alternateTexts];
+    return error;
+  };
+
+  const isQueueSubmitDeferredError = (error) =>
+    error?.code === queueSubmitDeferredErrorCode;
+
+  const queueItemRetryKey = (item) => JSON.stringify(item ?? null);
+
+  const rememberDeferredQueueSubmit = (item, error) => {
+    queueDeferredSubmit = {
+      playerId: latestPlayerView?.id ?? "",
+      itemKey: queueItemRetryKey(item),
+      expectedSubmit: error.expectedSubmit,
+      alternateSubmitTexts: [...(error.alternateSubmitTexts ?? [])],
+    };
+  };
+
+  const maybeResumeDeferredQueueExecution = () => {
+    const deferred = queueDeferredSubmit;
+    if (!deferred || queueExecutionInFlight) return false;
+    const session = readQueueSession();
+    if (
+      session?.autoProcess !== true ||
+      !latestPlayerView?.id ||
+      session.playerId !== latestPlayerView.id ||
+      deferred.playerId !== latestPlayerView.id ||
+      queueItemRetryKey(session.queue?.[0]) !== deferred.itemKey
+    ) {
+      return false;
+    }
+    const matches = exactActionSubmitMatches(
+      deferred.expectedSubmit,
+      deferred.alternateSubmitTexts,
+    );
+    if (matches.length !== 1) return false;
+    queueDeferredSubmit = null;
+    queueExecutionAttempted = false;
+    queueExecutionError = "";
+    scheduleTerraformingMarsUpdate();
+    return true;
+  };
+
+  const clickActionSubmit = (preferredText, alternateTexts = []) => {
+    const matches = exactActionSubmitMatches(preferredText, alternateTexts);
     if (matches.length === 0) {
       throw new Error(`missing exact action submit button: ${preferredText}`);
     }
@@ -6432,9 +7037,36 @@
     preserveScrollDuring(() => matches[0].click());
   };
 
+  const waitForActionSubmit = async (
+    preferredText,
+    alternateTexts = [],
+    {required = true} = {},
+  ) => {
+    const waitLimitMs = 1000;
+    const pollIntervalMs = 25;
+    for (let elapsedMs = 0; elapsedMs <= waitLimitMs; elapsedMs += pollIntervalMs) {
+      const matches = exactActionSubmitMatches(preferredText, alternateTexts);
+      if (matches.length > 1) {
+        throw new Error(`ambiguous exact action submit buttons: ${preferredText}`);
+      }
+      if (matches.length === 1) {
+        preserveScrollDuring(() => matches[0].click());
+        return true;
+      }
+      if (elapsedMs === waitLimitMs) {
+        if (!required) return false;
+        throw createQueueSubmitDeferredError(
+          preferredText,
+          alternateTexts,
+          waitLimitMs,
+        );
+      }
+      await wait(pollIntervalMs);
+    }
+  };
+
   const clickLogCard = (index) => {
-    const element = document.querySelectorAll(".log-panel .log-card")[index];
-    const target = element?.closest("li") ?? element;
+    const target = document.querySelectorAll(".log-panel .log-card")[index];
     if (!target) {
       throw new Error(`No log card found at ${index}`);
     }
@@ -6474,19 +7106,43 @@
     const title = rendered.querySelector(".card-title") ?? rendered;
     const renderedName = cardNameFromElement(title);
     const renderedSlug = cardSlugFromElement(rendered);
-    const html = rendered.outerHTML;
-
-    for (const key of [
+    const requestedKeys = new Set([
       normalizeCardName(card.name),
       slugifyCardName(card.name),
+    ]);
+    const renderedKeys = new Set([
       renderedName ? normalizeCardName(renderedName) : "",
+      renderedName ? slugifyCardName(renderedName) : "",
       renderedSlug ?? "",
-    ]) {
+    ]);
+    const identityMatches = [...requestedKeys].some(
+      (key) => key && renderedKeys.has(key),
+    );
+    if (!identityMatches) return false;
+
+    const html = rendered.outerHTML;
+
+    for (const key of new Set([...requestedKeys, ...renderedKeys])) {
       if (key) {
         renderedCardHtmlByKey.set(key, html);
       }
     }
     return true;
+  };
+
+  const waitForRenderedLogCard = async (
+    card,
+    maxAttempts = 40,
+    intervalMilliseconds = 25,
+  ) => {
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      if (!shouldRunTerraformingMarsHelpers()) return false;
+      if (captureRenderedLogCard(card)) return true;
+      if (attempt + 1 < maxAttempts) {
+        await wait(intervalMilliseconds);
+      }
+    }
+    return false;
   };
 
   const clickMissingCards = async (cards) => {
@@ -6497,11 +7153,9 @@
         preserveScrollDuring(() => clickLogCard(card.logIndex));
         await nextFrame();
         if (!shouldRunTerraformingMarsHelpers()) return;
-        await wait(5);
+        await waitForRenderedLogCard(card);
         if (!shouldRunTerraformingMarsHelpers()) return;
-        if (captureRenderedLogCard(card)) {
-          renderedCardRequests.add(slug);
-        }
+        renderedCardRequests.add(slug);
       } finally {
         preserveScrollDuring(closeRenderedLogCardPanel);
         await nextFrame();
