@@ -224,7 +224,7 @@ const selectedRadioChildrenSource = source.slice(
   source.indexOf("const clickIndexedRadioSubmit"),
 );
 const exactQuickChoiceExecutionSource = source.slice(
-  source.indexOf("const selectExactQuickChoiceOption"),
+  source.indexOf("const exactQuickChoiceOptionMatch"),
   source.indexOf("const clickIndexedRadioSubmit"),
 );
 const selectIndexedRadioSource = source.slice(
@@ -516,6 +516,8 @@ const createActionCardSelection = ({
   disabled = false,
   checked = false,
   activationRegisters = true,
+  replaceInputAfterClick = false,
+  replacementChecked = false,
   includeMatchingCard = true,
   includeNeighbor = false,
 } = {}) => {
@@ -525,14 +527,29 @@ const createActionCardSelection = ({
   const input = {
     checked,
     disabled,
+    isConnected: true,
     click() {
       clickCount += 1;
       if (activationRegisters) this.checked = true;
+      if (replaceInputAfterClick) {
+        this.isConnected = false;
+        currentInput = replacementInput;
+      }
     },
   };
+  const replacementInput = {
+    checked: replacementChecked,
+    disabled: false,
+    isConnected: true,
+    click() {
+      assert.fail("replacement input must not be clicked during confirmation");
+    },
+  };
+  let currentInput = input;
   const neighborInput = {
     checked: false,
     disabled: false,
+    isConnected: true,
     click() {
       assert.fail("neighbor input must not be clicked");
     },
@@ -541,7 +558,9 @@ const createActionCardSelection = ({
     const ownerLabel = {
       querySelector(selector) {
         assert.equal(selector, "input[type='radio'], input[type='checkbox']");
-        return probeCount > inputAfterProbe ? candidateInput : null;
+        return probeCount > inputAfterProbe
+          ? candidateInput === input ? currentInput : candidateInput
+          : null;
       },
     };
     return {
@@ -549,7 +568,9 @@ const createActionCardSelection = ({
       querySelector(selector) {
         assert.equal(selector, "input[type='radio'], input[type='checkbox']");
         if (inputLocation !== "direct") return null;
-        return probeCount > inputAfterProbe ? candidateInput : null;
+        return probeCount > inputAfterProbe
+          ? candidateInput === input ? currentInput : candidateInput
+          : null;
       },
       closest(selector) {
         assert.equal(selector, "label");
@@ -567,6 +588,7 @@ const createActionCardSelection = ({
     "getCardIdentity",
     "createQueueActionDeferredError",
     "preserveScrollDuring",
+    "nextFrame",
     "wait",
     `"use strict";
       ${cardSelectionSource}
@@ -590,6 +612,7 @@ const createActionCardSelection = ({
       return error;
     },
     (callback) => callback(),
+    async () => {},
     async (milliseconds) => {
       waits.push(milliseconds);
     },
@@ -600,6 +623,7 @@ const createActionCardSelection = ({
     clickCount: () => clickCount,
     input,
     neighborInput,
+    replacementInput,
     probeCount: () => probeCount,
     select: () => selection.selectActionCard({cardName}, ".action-card"),
     waits,
@@ -1742,12 +1766,14 @@ const createExactQuickChoiceHarness = ({
     return label;
   });
   targetCards.forEach((card) => {
-    card.input ??= {
-      checked: false,
-      disabled: false,
-      click() {
-        events.push(`target:${card.name}`);
-      },
+    card.input ??= {};
+    card.input.type ??= "radio";
+    card.input.checked ??= false;
+    card.input.disabled ??= false;
+    card.input.isConnected ??= true;
+    card.input.click ??= function clickTargetInput() {
+      this.checked = this.type === "checkbox" ? !this.checked : true;
+      events.push(`target:${card.name}`);
     };
     card.querySelector = (selector) => {
       assert.equal(selector, "input[type='radio'], input[type='checkbox']");
@@ -1783,10 +1809,13 @@ const createExactQuickChoiceHarness = ({
     "quickChoiceCardWorkflowPrompt",
     "normalizeRememberedQuickChoice",
     "clearPlayedActionLearning",
+    "createQueueActionDeferredError",
+    "wait",
     "nextFrame",
     "selectedRadioOptionHasChildren",
     `"use strict";
       let quickChoicePlaybackActive = false;
+      ${cardSelectionSource}
       ${exactQuickChoiceExecutionSource}
       return {
         selectOption: selectExactQuickChoiceOption,
@@ -1812,6 +1841,14 @@ const createExactQuickChoiceHarness = ({
         .trim(),
     normalizeRememberedQuickChoice,
     () => events.push("clear-learning"),
+    (message, reason, details = {}) => {
+      const error = new Error(message);
+      error.code = "queue-action-deferred";
+      error.reason = reason;
+      Object.assign(error, details);
+      return error;
+    },
+    async () => {},
     async () => events.push("frame"),
     () => hasChildren,
   );
@@ -6444,7 +6481,7 @@ test("queued card selection confirms direct and ancestor-label inputs", async ()
     assert.equal(selection.input.checked, true);
     assert.equal(selection.clickCount(), 1);
     assert.equal(selection.neighborInput.checked, false);
-    assert.equal(selection.probeCount(), 1);
+    assert.equal(selection.probeCount(), 2);
     assert.deepEqual(selection.waits, []);
   }
 });
@@ -6459,7 +6496,7 @@ test("queued card selection waits for its exact enabled input", async () => {
 
   assert.equal(selection.input.checked, true);
   assert.equal(selection.clickCount(), 1);
-  assert.equal(selection.probeCount(), 4);
+  assert.equal(selection.probeCount(), 5);
   assert.deepEqual(selection.waits, [25, 25, 25]);
 });
 
@@ -6470,6 +6507,28 @@ test("queued card selection never toggles an already-selected input", async () =
 
   assert.equal(selection.input.checked, true);
   assert.equal(selection.clickCount(), 0);
+});
+
+test("queued card selection confirms the current input after Vue replaces it", async () => {
+  const confirmed = createActionCardSelection({
+    replaceInputAfterClick: true,
+    replacementChecked: true,
+  });
+
+  await confirmed.select();
+
+  assert.equal(confirmed.input.isConnected, false);
+  assert.equal(confirmed.replacementInput.checked, true);
+
+  const unconfirmed = createActionCardSelection({
+    replaceInputAfterClick: true,
+    replacementChecked: false,
+  });
+  await assert.rejects(unconfirmed.select(), (error) => {
+    assert.equal(error.code, "queue-action-deferred");
+    assert.equal(error.reason, "card-selection-not-confirmed");
+    return true;
+  });
 });
 
 test("queued card selection defers unavailable and unconfirmed inputs", async () => {
@@ -6507,10 +6566,13 @@ test("queued card selection uses only confirmed native input activation", () => 
   assert.doesNotMatch(cardSelectionSource, /dispatchBubbledEvent/);
   assert.doesNotMatch(cardSelectionSource, /cardBox\.dispatchEvent|new MouseEvent/);
   assert.doesNotMatch(cardSelectionSource, /requireEnabledInput/);
-  assert.match(cardSelectionSource, /if \(!input\.checked\)[\s\S]*input\.click\(\)/);
   assert.match(
     cardSelectionSource,
-    /if \(!input\.checked\)[\s\S]*"card-selection-not-confirmed"/,
+    /if \(!candidate\.input\.checked\)[\s\S]*candidate\.input\.click\(\)/,
+  );
+  assert.match(
+    cardSelectionSource,
+    /await nextFrame\(\)[\s\S]*current\.input\.checked[\s\S]*"card-selection-not-confirmed"/,
   );
 });
 
@@ -7887,8 +7949,7 @@ test("exact quick-choice playback handles leaf and compound AstroDrill recipes",
     "event:change",
     "frame",
     "target:AstroDrill",
-    "event:input",
-    "event:change",
+    "frame",
     "frame",
     "submit:0",
   ]);
@@ -7914,8 +7975,7 @@ test("exact quick-choice playback handles direct Mohole Lake card targets", asyn
   assert.deepEqual(direct.events, [
     "clear-learning",
     "target:Regolith Eaters",
-    "event:input",
-    "event:change",
+    "frame",
     "frame",
     "submit:0",
   ]);
@@ -7935,6 +7995,75 @@ test("target-less quick playback stops safely at a real child workflow", async (
     "event:change",
     "frame",
   ]);
+});
+
+test("quick card targets use native checkbox activation before submit", async () => {
+  const targetInput = {
+    type: "checkbox",
+    checked: false,
+    disabled: false,
+    isConnected: true,
+    click() {
+      this.checked = !this.checked;
+    },
+  };
+  const harness = createExactQuickChoiceHarness({
+    directPromptTexts: ["Select card to add an asteroid"],
+    targetCards: [{name: "Main Belt Asteroids", input: targetInput}],
+  });
+
+  await harness.execute({
+    type: "quickChoice",
+    promptText: "Select card to add an asteroid",
+    targetCardText: "Main Belt Asteroids",
+  });
+
+  assert.equal(targetInput.checked, true);
+  assert.equal(harness.events.includes("submit:0"), true);
+});
+
+test("quick card targets reject an unchecked Vue replacement before submit", async () => {
+  const replacementInput = {
+    type: "radio",
+    checked: false,
+    disabled: false,
+    isConnected: true,
+    click() {
+      assert.fail("replacement input must not be activated");
+    },
+  };
+  const targetCard = {name: "Main Belt Asteroids"};
+  targetCard.input = {
+    type: "radio",
+    checked: false,
+    disabled: false,
+    isConnected: true,
+    click() {
+      this.checked = true;
+      this.isConnected = false;
+      targetCard.input = replacementInput;
+    },
+  };
+  const harness = createExactQuickChoiceHarness({
+    directPromptTexts: ["Select card to add an asteroid"],
+    targetCards: [targetCard],
+  });
+
+  await assert.rejects(
+    harness.execute({
+      type: "quickChoice",
+      promptText: "Select card to add an asteroid",
+      targetCardText: "Main Belt Asteroids",
+    }),
+    (error) => {
+      assert.equal(error.code, "queue-action-deferred");
+      assert.equal(error.reason, "card-selection-not-confirmed");
+      return true;
+    },
+  );
+
+  assert.equal(replacementInput.checked, false);
+  assert.equal(harness.events.includes("submit:0"), false);
 });
 
 test("exact quick-option matching rejects missing, duplicate, and disabled text", () => {
@@ -7968,27 +8097,22 @@ test("exact quick-option matching rejects missing, duplicate, and disabled text"
   );
 });
 
-test("exact quick targets and submits bail out before stale choices are submitted", () => {
+test("exact quick targets and submits bail out before stale choices are submitted", async () => {
   const missingTarget = createExactQuickChoiceHarness({
     optionLabels: [{text: "Select card to add 1 asteroid"}],
     targetCards: [{name: "Asteroid Rights"}],
   });
-  const radio = missingTarget.labels[0].querySelector("input[type='radio']");
-  assert.throws(
-    () => missingTarget.selectTarget(radio, "AstroDrill"),
-    /missing exact quick target/,
+  await assert.rejects(
+    missingTarget.selectTarget("Select card to add 1 asteroid", "AstroDrill"),
+    /card selection not ready/,
   );
 
   const duplicateTarget = createExactQuickChoiceHarness({
     optionLabels: [{text: "Select card to add 1 asteroid"}],
     targetCards: [{name: "AstroDrill"}, {name: "AstroDrill"}],
   });
-  assert.throws(
-    () =>
-      duplicateTarget.selectTarget(
-        duplicateTarget.labels[0].querySelector("input[type='radio']"),
-        "AstroDrill",
-      ),
+  await assert.rejects(
+    duplicateTarget.selectTarget("Select card to add 1 asteroid", "AstroDrill"),
     /ambiguous exact quick target/,
   );
 
@@ -7996,13 +8120,9 @@ test("exact quick targets and submits bail out before stale choices are submitte
     optionLabels: [{text: "Select card to add 1 asteroid"}],
     targetCards: [{name: "AstroDrill", input: {disabled: true, click() {}}}],
   });
-  assert.throws(
-    () =>
-      disabledTarget.selectTarget(
-        disabledTarget.labels[0].querySelector("input[type='radio']"),
-        "AstroDrill",
-      ),
-    /exact quick target is disabled/,
+  await assert.rejects(
+    disabledTarget.selectTarget("Select card to add 1 asteroid", "AstroDrill"),
+    /card selection not ready/,
   );
 
   assert.throws(
@@ -8062,7 +8182,7 @@ test("direct quick targets reject stale prompts and cards before submit", async 
       promptText: "Select card to add microbe or animal",
       targetCardText: "Regolith Eaters",
     }),
-    /missing exact quick target/,
+    /card selection not ready/,
   );
   assert.equal(missingTarget.events.includes("submit:0"), false);
 
@@ -8092,7 +8212,7 @@ test("direct quick targets reject stale prompts and cards before submit", async 
       promptText: "Select card to add microbe or animal",
       targetCardText: "Regolith Eaters",
     }),
-    /exact quick target is disabled/,
+    /card selection not ready/,
   );
   assert.equal(disabledTarget.events.includes("submit:0"), false);
 });
@@ -8108,7 +8228,7 @@ test("stale compound quick choices reject without submitting the form", async ()
       optionText: "Select card to add 1 asteroid",
       targetCardText: "AstroDrill",
     }),
-    /missing card choices for exact quick target/,
+    /card selection not ready/,
   );
   assert.deepEqual(missingWorkflow.events, [
     "clear-learning",
@@ -8129,7 +8249,7 @@ test("stale compound quick choices reject without submitting the form", async ()
       optionText: "Select card to add 1 asteroid",
       targetCardText: "AstroDrill",
     }),
-    /missing exact quick target/,
+    /card selection not ready/,
   );
   assert.equal(missingTarget.events.includes("submit:0"), false);
   assert.equal(missingTarget.playbackActive(), false);

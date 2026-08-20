@@ -6742,7 +6742,7 @@
     );
   };
 
-  const selectExactQuickChoiceOption = (optionText) => {
+  const exactQuickChoiceOptionMatch = (optionText) => {
     const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
     if (!actionsRoot) throw new Error("missing action form");
     const matches = Array.from(actionsRoot.querySelectorAll("label.form-radio"))
@@ -6761,6 +6761,11 @@
     if (radio.disabled) {
       throw new Error(`exact quick option is disabled: ${optionText}`);
     }
+    return matches[0];
+  };
+
+  const selectExactQuickChoiceOption = (optionText) => {
+    const {radio} = exactQuickChoiceOptionMatch(optionText);
     preserveScrollDuring(() => {
       radio.checked = true;
       radio.click();
@@ -6770,52 +6775,46 @@
     return radio;
   };
 
-  const selectExactQuickChoiceTargetFromWorkflow = (cardWorkflow, targetCardText) => {
-    const matches = Array.from(cardWorkflow.querySelectorAll(".cardbox")).filter(
-      (cardBox) => cleanText(getCardIdentity(cardBox).name) === targetCardText,
-    );
-    if (matches.length === 0) {
-      throw new Error(`missing exact quick target: ${targetCardText}`);
-    }
-    if (matches.length > 1) {
-      throw new Error(`ambiguous exact quick target: ${targetCardText}`);
-    }
-    const input = matches[0].querySelector("input[type='radio'], input[type='checkbox']");
-    if (!input || input.disabled) {
-      throw new Error(`exact quick target is disabled: ${targetCardText}`);
-    }
-    preserveScrollDuring(() => {
-      input.checked = true;
-      input.click();
-      dispatchBubbledEvent(input, "input");
-      dispatchBubbledEvent(input, "change");
+  const selectExactQuickChoiceTargetFromWorkflow = async (
+    cardWorkflowLocator,
+    targetCardText,
+  ) => {
+    await selectConfirmedActionCard({
+      expectedCard: targetCardText,
+      findCards: () => {
+        const cardWorkflow = cardWorkflowLocator();
+        return Array.from(cardWorkflow?.querySelectorAll(".cardbox") ?? []);
+      },
+      matchesCard: (cardBox) =>
+        cleanText(getCardIdentity(cardBox).name) === targetCardText,
+      ambiguousMessage: `ambiguous exact quick target: ${targetCardText}`,
     });
   };
 
-  const selectExactQuickChoiceTarget = (radio, targetCardText) => {
-    const optionContainer = radio?.closest("label.form-radio")?.parentElement;
-    const cardWorkflow = optionContainer?.querySelector(".wf-component--select-card");
-    if (!cardWorkflow) {
-      throw new Error(`missing card choices for exact quick target: ${targetCardText}`);
-    }
-    selectExactQuickChoiceTargetFromWorkflow(cardWorkflow, targetCardText);
+  const selectExactQuickChoiceTarget = async (optionText, targetCardText) => {
+    await selectExactQuickChoiceTargetFromWorkflow(() => {
+      const {label} = exactQuickChoiceOptionMatch(optionText);
+      return label.parentElement?.querySelector(".wf-component--select-card");
+    }, targetCardText);
   };
 
-  const selectExactDirectQuickChoiceTarget = (promptText, targetCardText) => {
-    const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
-    if (!actionsRoot) throw new Error("missing action form");
-    const matches = Array.from(
-      actionsRoot.querySelectorAll(":scope > .wf-component--select-card"),
-    ).filter(
-      (cardWorkflow) => quickChoiceCardWorkflowPrompt(cardWorkflow) === promptText,
-    );
-    if (matches.length === 0) {
-      throw new Error(`missing exact direct quick prompt: ${promptText}`);
-    }
-    if (matches.length > 1) {
-      throw new Error(`ambiguous exact direct quick prompt: ${promptText}`);
-    }
-    selectExactQuickChoiceTargetFromWorkflow(matches[0], targetCardText);
+  const selectExactDirectQuickChoiceTarget = async (promptText, targetCardText) => {
+    await selectExactQuickChoiceTargetFromWorkflow(() => {
+      const actionsRoot = getActionsBlock()?.querySelector(".wf-root, form");
+      if (!actionsRoot) throw new Error("missing action form");
+      const matches = Array.from(
+        actionsRoot.querySelectorAll(":scope > .wf-component--select-card"),
+      ).filter(
+        (cardWorkflow) => quickChoiceCardWorkflowPrompt(cardWorkflow) === promptText,
+      );
+      if (matches.length === 0) {
+        throw new Error(`missing exact direct quick prompt: ${promptText}`);
+      }
+      if (matches.length > 1) {
+        throw new Error(`ambiguous exact direct quick prompt: ${promptText}`);
+      }
+      return matches[0];
+    }, targetCardText);
   };
 
   const clickQuickChoiceSubmit = () => {
@@ -6840,7 +6839,7 @@
     quickChoicePlaybackActive = true;
     try {
       if (!choice.optionText) {
-        selectExactDirectQuickChoiceTarget(choice.promptText, choice.targetCardText);
+        await selectExactDirectQuickChoiceTarget(choice.promptText, choice.targetCardText);
         await nextFrame();
         clickQuickChoiceSubmit();
         return;
@@ -6848,7 +6847,7 @@
       const radio = selectExactQuickChoiceOption(choice.optionText);
       await nextFrame();
       if (choice.targetCardText) {
-        selectExactQuickChoiceTarget(radio, choice.targetCardText);
+        await selectExactQuickChoiceTarget(choice.optionText, choice.targetCardText);
         await nextFrame();
         clickQuickChoiceSubmit();
         return;
@@ -6898,26 +6897,54 @@
     ) ??
     null;
 
-  const findActionCardForQueuedItem = (item, selector) => {
-    const cards = Array.from(document.querySelectorAll(selector));
-    const cardBox = cards.find((candidate) => cardMatchesQueuedItem(candidate, item));
-    const input = selectionInputForActionCard(cardBox);
-    return { cardBox, cards, input };
+  const resolveConfirmedActionCardCandidate = ({
+    expectedCard,
+    findCards,
+    matchesCard,
+    ambiguousMessage,
+  }) => {
+    const cards = findCards();
+    const matches = cards.filter(matchesCard);
+    if (matches.length > 1) {
+      throw new Error(
+        ambiguousMessage ?? `ambiguous exact card selection: ${expectedCard}`,
+      );
+    }
+    const cardBox = matches[0] ?? null;
+    return {
+      cardBox,
+      cards,
+      input: selectionInputForActionCard(cardBox),
+    };
   };
 
-  const selectActionCard = async (item, selector) => {
+  const selectConfirmedActionCard = async ({
+    expectedCard,
+    findCards,
+    matchesCard,
+    ambiguousMessage,
+  }) => {
     const waitLimitMs = 1000;
     const pollIntervalMs = 25;
-    const expectedCard = item.cardName ?? item.cardKey ?? "unknown";
-    let cardBox = null;
-    let cards = [];
-    let input = null;
+    let candidate = null;
     for (let elapsedMs = 0; elapsedMs <= waitLimitMs; elapsedMs += pollIntervalMs) {
-      ({ cardBox, cards, input } = findActionCardForQueuedItem(item, selector));
-      if (cardBox && input && !input.disabled) break;
+      candidate = resolveConfirmedActionCardCandidate({
+        expectedCard,
+        findCards,
+        matchesCard,
+        ambiguousMessage,
+      });
+      if (
+        candidate.cardBox &&
+        candidate.input &&
+        candidate.input.isConnected !== false &&
+        !candidate.input.disabled
+      ) {
+        break;
+      }
       if (elapsedMs === waitLimitMs) {
-        const foundCards = cards
-          .map((candidate) => getCardIdentity(candidate).name)
+        const foundCards = candidate.cards
+          .map((cardBox) => getCardIdentity(cardBox).name)
           .filter(Boolean)
           .slice(0, 12);
         throw createQueueActionDeferredError(
@@ -6931,18 +6958,46 @@
       await wait(pollIntervalMs);
     }
 
-    if (!input.checked) {
-      preserveScrollDuring(() => {
-        input.click();
+    if (!candidate.input.checked) {
+      preserveScrollDuring(() => candidate.input.click());
+    }
+    await nextFrame();
+
+    for (let elapsedMs = 0; elapsedMs <= waitLimitMs; elapsedMs += pollIntervalMs) {
+      const current = resolveConfirmedActionCardCandidate({
+        expectedCard,
+        findCards,
+        matchesCard,
+        ambiguousMessage,
       });
+      if (
+        current.cardBox &&
+        current.input &&
+        current.input.isConnected !== false &&
+        !current.input.disabled &&
+        current.input.checked
+      ) {
+        return current.input;
+      }
+      if (elapsedMs === waitLimitMs) {
+        throw createQueueActionDeferredError(
+          `card selection did not register in the live form: ${expectedCard}`,
+          "card-selection-not-confirmed",
+          {expectedCard},
+        );
+      }
+      await wait(pollIntervalMs);
     }
-    if (!input.checked) {
-      throw createQueueActionDeferredError(
-        `card selection did not register: ${expectedCard}`,
-        "card-selection-not-confirmed",
-        {expectedCard},
-      );
-    }
+    return null;
+  };
+
+  const selectActionCard = async (item, selector) => {
+    const expectedCard = item.cardName ?? item.cardKey ?? "unknown";
+    await selectConfirmedActionCard({
+      expectedCard,
+      findCards: () => Array.from(document.querySelectorAll(selector)),
+      matchesCard: (cardBox) => cardMatchesQueuedItem(cardBox, item),
+    });
   };
 
   const cardMatchesQueuedItem = (cardBox, item) => {
